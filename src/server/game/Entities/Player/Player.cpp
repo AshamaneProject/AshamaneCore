@@ -22948,25 +22948,7 @@ bool Player::ActivateTaxiPathTo(std::vector<uint32> const& nodes, Creature* npc 
         return false;
     }
 
-    // check node starting pos data set case if provided
-    if (node->Pos.X != 0.0f || node->Pos.Y != 0.0f || node->Pos.Z != 0.0f)
-    {
-        // Check only if start != end
-        if (nodes.size() > 2 || nodes[0] != nodes[1])
-        {
-            if (node->ContinentID != GetMapId() || !IsInDist(node->Pos.X, node->Pos.Y, node->Pos.Z, 2 * INTERACTION_DISTANCE))
-            {
-                GetSession()->SendActivateTaxiReply(ERR_TAXITOOFARAWAY);
-                return false;
-            }
-        }
-    }
-    // node must have pos if taxi master case (npc != NULL)
-    else if (npc)
-    {
-        GetSession()->SendActivateTaxiReply(ERR_TAXIUNSPECIFIEDSERVERERROR);
-        return false;
-    }
+
     // Prepare to flight start now
 
     // stop combat at start taxi flight if any
