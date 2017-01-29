@@ -3631,6 +3631,9 @@ void World::AddCharacterInfo(ObjectGuid const& guid, uint32 accountId, std::stri
     data.Class = playerClass;
     data.Level = level;
     data.IsDeleted = isDeleted;
+
+    // Fill Name to Guid Store
+    _characterGuidByNameStore[name] = guid;
 }
 
 void World::UpdateCharacterInfo(ObjectGuid const& guid, std::string const& name, uint8 gender /*= GENDER_NONE*/, uint8 race /*= RACE_NONE*/)
