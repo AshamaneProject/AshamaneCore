@@ -169,7 +169,8 @@ struct TC_GAME_API LootItem
     uint8   context;
     ConditionContainer conditions;                               // additional loot condition
     GuidSet allowedGUIDs;
-    uint32  count;
+    ObjectGuid rollWinnerGUID;          // Stores the guid of person who won loot, if his bags are full only he can see the item in loot list!
+    uint8   count             : 8;
     bool    currency          : 1;
     bool    is_looted         : 1;
     bool    is_blocked        : 1;
