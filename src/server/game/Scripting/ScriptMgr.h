@@ -795,6 +795,9 @@ class TC_GAME_API PlayerScript : public UnitScript
         // Called when a player power change
         virtual void OnModifyPower(Player* /*player*/, Powers /*power*/, int32 /*oldValue*/, int32& /*newValue*/, bool /*regen*/, bool /*after*/) { }
 
+        // Called when a player presses release when he died
+        virtual void OnPlayerRepop(Player* /*player*/) { }
+
         // Called when a player take damage
         virtual void OnTakeDamage(Player* /*player*/, uint32 /*damage*/, SpellSchoolMask /*schoolMask*/) { }
 
@@ -1247,6 +1250,7 @@ class TC_GAME_API ScriptMgr
         void OnQuestAbandon(Player* player, const Quest* quest);
         void OnQuestStatusChange(Player* player, uint32 questId);
         void OnModifyPower(Player* player, Powers power, int32 oldValue, int32& newValue, bool regen, bool after);
+        void OnPlayerRepop(Player* player);
         void OnPlayerTakeDamage(Player* player, uint32 damage, SpellSchoolMask schoolMask);
         void OnSceneStart(Player* player, uint32 scenePackageId, uint32 sceneInstanceId);
         void OnSceneTriggerEvent(Player* player, uint32 sceneInstanceId, std::string event);

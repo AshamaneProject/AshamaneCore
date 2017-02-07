@@ -2415,6 +2415,11 @@ void ScriptMgr::OnModifyPower(Player* player, Powers power, int32 oldValue, int3
     FOREACH_SCRIPT(PlayerScript)->OnModifyPower(player, power, oldValue, newValue, regen, after);
 }
 
+void ScriptMgr::OnPlayerRepop(Player* player)
+{
+    FOREACH_SCRIPT(PlayerScript)->OnPlayerRepop(player);
+}
+
 void ScriptMgr::OnPlayerTakeDamage(Player* player, uint32 damage, SpellSchoolMask schoolMask)
 {
     FOREACH_SCRIPT(PlayerScript)->OnTakeDamage(player, damage, schoolMask);
