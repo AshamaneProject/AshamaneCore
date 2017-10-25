@@ -21,7 +21,11 @@ void AddSC_boss_balinda();
 void AddSC_boss_drekthar();
 void AddSC_boss_galvangar();
 void AddSC_boss_vanndar();
-void AddSC_boss_romogg_bonecrusher();           //Blackrock Caverns
+void AddSC_boss_alizabal();                  //Baradin Hold
+void AddSC_boss_occuthar();
+void AddSC_boss_pit_lord_argaloth();
+void AddSC_instance_baradin_hold();
+void AddSC_boss_romogg_bonecrusher();        //Blackrock Caverns
 void AddSC_boss_corla();
 void AddSC_boss_karsh_steelbender();
 void AddSC_boss_beauty();
@@ -240,7 +244,6 @@ void AddSC_zone_gnomeregan();
 void AddSC_ghostlands();
 void AddSC_hinterlands();
 void AddSC_ironforge();
-void AddSC_isle_of_queldanas();
 void AddSC_loch_modan();
 void AddSC_northern_stranglethorn();
 void AddSC_redridge_mountains();
@@ -484,7 +487,6 @@ void AddEasternKingdomsScripts()
     AddSC_ghostlands();
     AddSC_hinterlands();
     AddSC_ironforge();
-    AddSC_isle_of_queldanas();
     AddSC_northern_stranglethorn();
     AddSC_loch_modan();
     AddSC_redridge_mountains();
