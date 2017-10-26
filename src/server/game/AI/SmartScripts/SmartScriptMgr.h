@@ -643,7 +643,7 @@ struct SmartAction
         {
             uint32 sound;
             uint32 onlySelf;
-            uint32 distance; // NYI: awaiting cherry-pick
+            uint32 distance;
             uint32 keyBroadcastTextId;
         } sound;
 
@@ -1117,8 +1117,9 @@ struct SmartAction
 
         struct
         {
-            uint32 sounds[SMART_ACTION_PARAM_COUNT - 1];
+            uint32 sounds[SMART_ACTION_PARAM_COUNT - 2];
             uint32 onlySelf;
+            uint32 distance;
         } randomSound;
 
         struct
