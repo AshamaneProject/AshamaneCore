@@ -1,22 +1,22 @@
 /*
- * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
- * Copyright (C) 2011-2016 ArkCORE <http://www.arkania.net/>
- * Copyright (C) 2008-2014 TrinityCore <http://www.trinitycore.org/>
- * Copyright (C) 2006-2009 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation; either version 2 of the License, or (at your
- * option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
- * more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program. If not, see <http://www.gnu.org/licenses/>.
- */
+* Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
+* Copyright (C) 2011-2016 ArkCORE <http://www.arkania.net/>
+* Copyright (C) 2008-2014 TrinityCore <http://www.trinitycore.org/>
+* Copyright (C) 2006-2009 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
+*
+* This program is free software; you can redistribute it and/or modify it
+* under the terms of the GNU General Public License as published by the
+* Free Software Foundation; either version 2 of the License, or (at your
+* option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+* more details.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
 
 #include "Cell.h"
 #include "CellImpl.h"
@@ -104,7 +104,6 @@ enum eZoneGilneas
     SPELL_SUMMON_GILNEAN_MASTIFF = 67807,
     SPELL_RESCUE_KRENNAN = 68219,
     SPELL_FORCECAST_SUMMON_GRAYMANE_HORSE = 68232,
-    SPELL_SUMMON_CROWLEY_HORSE = 67001,
     SPELL_CANNON_FIRE = 68235,
     SPELL_CURSE_OF_THE_WORGEN = 68630,
     SPELL_TWO_FORMS = 68996,
@@ -121,7 +120,7 @@ enum eZoneGilneas
     SPELL_ALTERED_FORM = 94293,
     SPELL_ALTERED_FORM2 = 97709,
     SPELL_FORCE_WORGEN_ALTERED_FORM = 98274,
-
+    SPELL_SUMMON_CROWLEY_HORSE = 67001,
     ZONE_DUSKHAVEN = 4786,
 
     SPELL_GENERIC_QUEST_INVISIBILITY_DETECTION_1 = 49416,
@@ -2647,7 +2646,7 @@ public:
                             m_badAveryGUID = badAvery->GetGUID();
                             badAvery->SetOrientation(badAvery->GetAngle(player)); // Face Player
                             badAvery->CastSpell(player, SPELL_COSMETIC_COMBAT_ATTACK, true); // Do Cosmetic Attack
-                            //player->GetMotionMaster()->MoveKnockTo(-1791.94f, 1427.29f, 12.4584f, 22.0f, 8.0f, m_playerGUID.GetCounter());
+                                                                                             //player->GetMotionMaster()->MoveKnockTo(-1791.94f, 1427.29f, 12.4584f, 22.0f, 8.0f, m_playerGUID.GetCounter());
                             badAvery->getThreatManager().resetAllAggro();
                         }
                     m_events.ScheduleEvent(EVENTS_ANIM_2, 1200);
@@ -3110,8 +3109,6 @@ public:
         SAY_KRENNAN_HORSE_THANKS = 2,
         EVENT_SAY_KRENNAN_HELP = 101,   // krennan 35753 in tree
         EVENT_STARTING_RESCUE_PART2,
-        EVENT_STARTING_RESCUE_PART1 = 1003, //add
-        EVENT_STARTING_RESCUE_PART1_2 = 1004, //add
         EVENT_SAY_KRENNAN_THANKS,
     };
 
@@ -3150,7 +3147,6 @@ public:
                         m_playerGUID = player->GetGUID();
                         Start(false, true, m_playerGUID);
                         player->SetClientControl(me, false);
-                        m_events.ScheduleEvent(EVENT_STARTING_RESCUE_PART1, 400);//add                       
                     }
                 }
                 else if (who->GetEntry() == NPC_KRENNAN_ARANAS && !m_krennanHorseGUID)
@@ -3175,25 +3171,20 @@ public:
             {
                 if (me->GetVehicleKit()->HasEmptySeat(1))
                 {
-                    //SetEscortPaused(true);
-                    //me->GetMotionMaster()->MoveJump(-1679.089f, 1348.42f, 15.31f, 0.0f, 25.0f, 15.0f);
+                    SetEscortPaused(true);
+                    me->GetMotionMaster()->MoveJump(-1679.089f, 1348.42f, 15.31f, 0.0f, 25.0f, 15.0f);
                     if (Player* player = GetPlayerForEscort())
                     {
                         Talk(SAY_HORSE_HOW_DO_HELP, player);
-                        //player->SetClientControl(me, true); //remove
+                        player->SetClientControl(me, true);
                     }
                 }
                 break;
             }
             case 6:
             {
-                if (Player* player = GetPlayerForEscort()) {
+                if (Player* player = GetPlayerForEscort())
                     player->SetClientControl(me, false);
-                    player->KilledMonsterCredit(35753);//add
-                    player->SummonCreature(35907, player->GetPosition(), TEMPSUMMON_TIMED_DESPAWN, 10000);//add
-                }
-
-                m_events.ScheduleEvent(EVENT_STARTING_RESCUE_PART1_2, 400);//add  
                 break;
             }
             case 12:
@@ -3224,11 +3215,6 @@ public:
             {
                 switch (eventId)
                 {
-                case EVENT_STARTING_RESCUE_PART1:
-                {
-                    me->GetMotionMaster()->MovePath(35905, false); //add
-                    break;
-                }
                 case EVENT_SAY_KRENNAN_HELP:
                 {
                     if (!m_krennanTreeGUID)
