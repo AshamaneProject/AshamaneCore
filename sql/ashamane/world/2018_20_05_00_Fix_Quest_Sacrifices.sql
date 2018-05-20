@@ -57,11 +57,3 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 ('3523100', '9', '26', '0', '0', '0', '100', '512', '4500', '4500', '4500', '4500', '41', '1', '0', '0', '0', '0', '0', '19', '35230', '5', '0', '0', '0', '0', '0', ''),
 ('3523100', '9', '27', '0', '0', '0', '100', '512', '100', '100', '100', '100', '28', '67063', '0', '0', '0', '0', '0', '23', '0', '0', '0', '0', '0', '0', '0', ''),
 ('3523100', '9', '28', '0', '0', '0', '100', '512', '0', '0', '0', '0', '11', '68576', '4', '0', '0', '0', '0', '1', '0', '0', '0', '0', '0', '0', '0', '');
-
--- Quest: By Blood and Ash
--- Stablishing to the correct amount of target
-UPDATE `quest_objectives` SET `Amount` = '80' WHERE `ID` = '264948'; 
-
--- Fix Rebel Cannon to kill the 80 target easily. doing it as it is
-DELETE FROM `npc_spellclick_spells` WHERE `npc_entry`= 35317 and `spell_id`=46598;
-INSERT INTO `npc_spellclick_spells` (`npc_entry`, `spell_id`, `cast_flags`, `user_type`) VALUES ('35317', '46598', '1', '0');
