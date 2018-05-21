@@ -185,6 +185,7 @@ class TC_GAME_API MotionMaster
         void MovePath(WaypointPath& path, bool repeatable);
         void MoveRotate(uint32 time, RotateDirection direction);
         void MoveBackward(uint32 id, float x, float y, float z, float speed = 0.0f);
+		void MoveSmoothGroundPath(uint32 path_id, bool repeatable, bool walk);
 
     private:
         void pop();
