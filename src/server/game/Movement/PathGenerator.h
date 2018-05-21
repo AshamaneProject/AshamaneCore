@@ -61,6 +61,8 @@ class TC_GAME_API PathGenerator
         bool CalculatePath(float destX, float destY, float destZ, bool forceDest = false, bool straightLine = false);
         bool IsInvalidDestinationZ(Unit const* target) const;
 
+		bool CalculatePath(float srcX, float srcY, float srcZ, float destX, float destY, float destZ, bool forceDest = false, bool straightLine = false);
+
         // option setters - use optional
         void SetUseStraightPath(bool useStraightPath) { _useStraightPath = useStraightPath; }
         void SetPathLengthLimit(float distance) { _pointPathLimit = std::min<uint32>(uint32(distance/SMOOTH_PATH_STEP_SIZE), MAX_POINT_PATH_LENGTH); }
@@ -75,6 +77,9 @@ class TC_GAME_API PathGenerator
         PathType GetPathType() const { return _type; }
 
         void ReducePathLenghtByDist(float dist); // path must be already built
+
+		void AddPathStartPoint(G3D::Vector3 pos) { _pathPoints.insert(_pathPoints.begin(), pos); }
+		void AddPathStartPoint(float x, float y, float z) { _pathPoints.insert(_pathPoints.begin(), G3D::Vector3(x, y, z)); }
 
     private:
 

@@ -62,7 +62,34 @@ class npc_rate_xp_modifier : public CreatureScript
         }
 };
 
+class npc_movesmoothgroundpath : public CreatureScript
+{
+public:
+	npc_movesmoothgroundpath() : CreatureScript("npc_movesmoothgroundpath") { }
+
+	struct npc_movesmoothgroundpathAI : public CreatureAI
+	{
+		npc_movesmoothgroundpathAI(Creature* p_Creature) : CreatureAI(p_Creature) { }
+
+		void UpdateAI(uint32 /*diff*/) override
+		{
+		}
+
+		void Reset() override
+		{
+			me->setFaction(35); // make friendly
+			me->GetMotionMaster()->MoveSmoothGroundPath(100, true, true);
+		}
+	};
+
+	CreatureAI* GetAI(Creature* p_Creature) const override
+	{
+		return new npc_movesmoothgroundpathAI(p_Creature);
+	}
+};
+
 void AddSC_custom_npcs()
 {
     new npc_rate_xp_modifier();
+	new npc_movesmoothgroundpath();
 }

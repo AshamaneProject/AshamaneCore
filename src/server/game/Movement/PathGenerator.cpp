@@ -56,6 +56,40 @@ PathGenerator::~PathGenerator()
     TC_LOG_DEBUG("maps", "++ PathGenerator::~PathGenerator() for %s", _sourceUnit->GetGUID().ToString().c_str());
 }
 
+bool PathGenerator::CalculatePath(float srcX, float srcY, float srcZ, float destX, float destY, float destZ, bool forceDest, bool straightLine)
+{
+	if (!Trinity::IsValidMapCoord(destX, destY, destZ) || !Trinity::IsValidMapCoord(srcX, srcY, srcZ))
+		return false;
+
+	TC_METRIC_EVENT("mmap_events", "CalculatePath", "");
+
+	G3D::Vector3 dest(destX, destY, destZ);
+	SetEndPosition(dest);
+
+	G3D::Vector3 start(srcX, srcY, srcZ);
+	SetStartPosition(start);
+
+	_forceDestination = forceDest;
+	_straightLine = straightLine;
+
+	TC_LOG_DEBUG("maps", "++ PathGenerator::CalculatePath() for %s", _sourceUnit->GetGUID().ToString().c_str());
+
+	// make sure navMesh works - we can run on map w/o mmap
+	// check if the start and end point have a .mmtile loaded (can we pass via not loaded tile on the way?)
+	if (!_navMesh || !_navMeshQuery || _sourceUnit->HasUnitState(UNIT_STATE_IGNORE_PATHFINDING) ||
+		!HaveTile(start) || !HaveTile(dest))
+	{
+		BuildShortcut();
+		_type = PathType(PATHFIND_NORMAL | PATHFIND_NOT_USING_PATH);
+		return true;
+	}
+
+	UpdateFilter();
+
+	BuildPolyPath(start, dest);
+	return true;
+}
+
 bool PathGenerator::CalculatePath(float destX, float destY, float destZ, bool forceDest, bool straightLine)
 {
     float x, y, z;

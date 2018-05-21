@@ -29,6 +29,7 @@
 #include "PointMovementGenerator.h"
 #include "TargetedMovementGenerator.h"
 #include "WaypointMovementGenerator.h"
+#include "SmoothPathMovementGenerator.h"
 #include "RandomMovementGenerator.h"
 #include "SplineChainMovementGenerator.h"
 #include "MoveSpline.h"
@@ -860,4 +861,15 @@ void MotionMaster::DelayedDelete(MovementGenerator* curr)
     if (!_expireList)
         _expireList = new ExpireList();
     _expireList->push_back(curr);
+}
+
+void MotionMaster::MoveSmoothGroundPath(uint32 path_id, bool repeatable, bool walk)
+{
+	if (!path_id)
+		return;
+
+	Mutate(new SmoothPathMovementGenerator<Creature>(path_id, repeatable, walk), MOTION_SLOT_ACTIVE);
+
+	TC_LOG_DEBUG("misc", "%s starts moving over path (Id:%u, repeatable: %s).",
+		_owner->GetGUID().ToString().c_str(), path_id, repeatable ? "YES" : "NO");
 }
