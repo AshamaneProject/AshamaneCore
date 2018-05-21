@@ -6963,6 +6963,16 @@ bool Spell::UpdatePointers()
     return true;
 }
 
+SpellPowerCost const* Spell::GetPowerCost(Powers power) const
+{
+    std::vector<SpellPowerCost> const& costs = GetPowerCost();
+    auto c = std::find_if(costs.begin(), costs.end(), [power](SpellPowerCost const& cost) { return cost.Power == power; });
+    if (c != costs.end())
+        return &(*c);
+
+    return nullptr;
+}
+
 CurrentSpellTypes Spell::GetCurrentContainer() const
 {
     if (m_spellInfo->IsNextMeleeSwingSpell())

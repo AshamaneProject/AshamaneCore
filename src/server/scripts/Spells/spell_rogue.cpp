@@ -141,7 +141,6 @@ enum RogueSpells
     SPELL_ROGUE_STRIKE_FROM_THE_SHADOWS             = 196951,
     SPELL_ROGUE_SUBTERFUGE                          = 108208,
     SPELL_ROGUE_SUBTERFUGE_AURA                     = 115192,
-    SPELL_ROGUE_T5_2P_SET_BONUS                     = 37169,
     SPELL_ROGUE_THUGGEE                             = 196861,
     SPELL_ROGUE_TOTAL_PARALYSIS                     = 113953,
     SPELL_ROGUE_TRICKS_OF_THE_TRADE_DMG_BOOST       = 57933,
@@ -880,47 +879,33 @@ class spell_rog_killing_spree : public SpellScriptLoader
 };
 
 // 1943 - Rupture
-class spell_rog_rupture : public SpellScriptLoader
+class spell_rog_rupture : public SpellScript
 {
-public:
-    spell_rog_rupture() : SpellScriptLoader("spell_rog_rupture") { }
+    PrepareSpellScript(spell_rog_rupture);
 
-    class spell_rog_rupture_AuraScript : public AuraScript
+    void HandleAfterHit()
     {
-        PrepareAuraScript(spell_rog_rupture_AuraScript);
-
-        void HandleDamage(AuraEffect const* aurEff, AuraEffectHandleModes /*mode*/)
+        if (Unit* target = GetHitUnit())
         {
-            Unit* caster = GetCaster();
-            WorldObject* target = GetOwner();
-            if (!caster || !target)
-                return;
-
-            if (!target->ToUnit())
-                return;
-
-            int32 defaultDamage = aurEff->GetDamage();
-
-            uint8 _cp = caster->GetPower(POWER_COMBO_POINTS) + 1;
-
-            if (AuraEffect* aurEff = GetAura()->GetEffect(EFFECT_0))
+            if (Aura* ruptureAura = target->GetAura(GetSpellInfo()->Id))
             {
-                aurEff->SetDamage(defaultDamage * _cp);
-                GetAura()->SetNeedClientUpdateForTargets();
+                if (AuraEffect* effect = ruptureAura->GetEffect(EFFECT_0))
+                {
+                    if (SpellPowerCost const* powerCost = GetSpell()->GetPowerCost(POWER_COMBO_POINTS))
+                    {
+                        effect->SetDamage(effect->GetDamage() / 2);
+
+                        int32 duration = 4 + (4 * powerCost->Amount);
+                        ruptureAura->SetDuration(duration * IN_MILLISECONDS);
+                    }
+                }
             }
-
-            caster->SetPower(POWER_COMBO_POINTS, 0);
         }
+    }
 
-        void Register() override
-        {
-            AfterEffectApply += AuraEffectApplyFn(spell_rog_rupture_AuraScript::HandleDamage, EFFECT_0, SPELL_AURA_PERIODIC_DAMAGE, AURA_EFFECT_HANDLE_REAL_OR_REAPPLY_MASK);
-        }
-    };
-
-    AuraScript* GetAuraScript() const override
+    void Register() override
     {
-        return new spell_rog_rupture_AuraScript();
+        AfterHit += SpellHitFn(spell_rog_rupture::HandleAfterHit);
     }
 };
 
@@ -1781,147 +1766,62 @@ public:
 };
 
 // 2098 - Run Through and 196819 - Eviscerate
-class spell_rog_eviscerate : public SpellScriptLoader
+class spell_rog_eviscerate : public SpellScript
 {
-public:
-    spell_rog_eviscerate() : SpellScriptLoader("spell_rog_eviscerate") { }
+    PrepareSpellScript(spell_rog_eviscerate);
 
-    class spell_rog_eviscerate_SpellScript : public SpellScript
+    bool Validate(SpellInfo const* /*spellInfo*/) override
     {
-        PrepareSpellScript(spell_rog_eviscerate_SpellScript);
+        return ValidateSpellInfo({ SPELL_ROGUE_EVISCERATE });
+    }
 
-    public:
-        spell_rog_eviscerate_SpellScript()
-        {
-            _cp = 0;
-        }
-
-    private:
-
-        uint32 _cp;
-
-        bool Validate(SpellInfo const* /*spellInfo*/) override
-        {
-            return ValidateSpellInfo(
-            {
-                SPELL_ROGUE_EVISCERATE
-            });
-        }
-
-        bool Load() override
-        {
-            Unit *caster = GetCaster();
-            if (!caster)
-                return false;
-
-            int32 maxcp = caster->HasAura(SPELL_ROGUE_DEEPER_STRATAGEM) ? 6 : 5;
-            _cp = std::min(caster->GetPower(POWER_COMBO_POINTS) + 1, maxcp);
-            return true;
-        }
-
-        void CalcDamage(SpellEffIndex /*effIndex*/)
-        {
-            uint32 dmg = GetHitDamage();
-            SetHitDamage(dmg*_cp);
-        }
-
-        void RemoveCP()
-        {
-            Unit* caster = GetCaster();
-            if (!caster)
-                return;
-
-            GetCaster()->ModifyPower(POWER_COMBO_POINTS, -1 * (_cp - 1));
-            if (caster->HasAura(SPELL_ROGUE_RELENTLESS_STRIKES) && roll_chance_i(20*_cp))
-                caster->CastSpell(caster, SPELL_ROGUE_RELENTLESS_STRIKES_POWER, true);
-            if (GetCaster()->HasAura(SPELL_ROGUE_ALACRITY) && roll_chance_i(20 * _cp))
-                GetCaster()->CastSpell(GetCaster(), SPELL_ROGUE_ALACRITY_BUFF, true);
-        }
-
-        void Register() override
-        {
-            OnEffectHitTarget += SpellEffectFn(spell_rog_eviscerate_SpellScript::CalcDamage, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
-            AfterHit += SpellHitFn(spell_rog_eviscerate_SpellScript::RemoveCP);
-        }
-    };
-
-    SpellScript* GetSpellScript() const override
+    void CalcDamage(SpellEffIndex /*effIndex*/)
     {
-        return new spell_rog_eviscerate_SpellScript();
+        int32 finalDamage = GetHitDamage();
+
+        if (SpellPowerCost const* powerCost = GetSpell()->GetPowerCost(POWER_COMBO_POINTS))
+            finalDamage *= powerCost->Amount;
+
+        SetHitDamage(finalDamage);
+    }
+
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_rog_eviscerate::CalcDamage, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
     }
 };
 
 // 32645 - Envenom
-class spell_rog_envenom : public SpellScriptLoader
+class spell_rog_envenom : public SpellScript
 {
-public:
-    spell_rog_envenom() : SpellScriptLoader("spell_rog_envenom") { }
+    PrepareSpellScript(spell_rog_envenom);
 
-    class spell_rog_envenom_SpellScript : public SpellScript
+    bool Validate(SpellInfo const* /*spellInfo*/) override
     {
-        PrepareSpellScript(spell_rog_envenom_SpellScript);
-
-    public:
-        spell_rog_envenom_SpellScript()
-        {
-            _cp = 0;
-        }
-
-    private:
-
-        uint32 _cp;
-
-        bool Validate(SpellInfo const* /*spellInfo*/) override
-        {
-            return ValidateSpellInfo(
-            {
-                SPELL_ROGUE_ENVENOM
-            });
-        }
-
-        bool Load() override
-        {
-            _cp = GetCaster()->GetPower(POWER_COMBO_POINTS);
-            return true;
-        }
-
-        void CalcDamage(SpellEffIndex /*effIndex*/)
-        {
-            uint32 dmg = GetHitDamage();
-            SetHitDamage(dmg*_cp);
-        }
-
-        void Register() override
-        {
-            OnEffectHitTarget += SpellEffectFn(spell_rog_envenom_SpellScript::CalcDamage, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
-        }
-    };
-
-    class spell_rog_envenom_AuraScript : public AuraScript
-    {
-        PrepareAuraScript(spell_rog_envenom_AuraScript);
-
-        void HandleApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
-        {
-            Unit* caster = GetCaster();
-
-            caster->SetPower(POWER_COMBO_POINTS, 0);
-        }
-
-        void Register() override
-        {
-            AfterEffectApply += AuraEffectApplyFn(spell_rog_envenom_AuraScript::HandleApply, EFFECT_4, SPELL_AURA_ADD_FLAT_MODIFIER, AURA_EFFECT_HANDLE_REAL);
-        }
-    };
-
-    AuraScript* GetAuraScript() const override
-    {
-        return new spell_rog_envenom_AuraScript();
+        return ValidateSpellInfo({ SPELL_ROGUE_ENVENOM });
     }
 
-    SpellScript* GetSpellScript() const override
+    void CalculateDamage(SpellEffIndex /*effIndex*/)
     {
-        return new spell_rog_envenom_SpellScript();
+        int32 finalDamage = GetHitDamage();
+
+        if (SpellPowerCost const* powerCost = GetSpell()->GetPowerCost(POWER_COMBO_POINTS))
+            finalDamage *= powerCost->Amount;
+
+        SetHitDamage(finalDamage);
+    }
+
+    void HandleAfterHit()
+    {
+        if (Aura* envenomAura = GetCaster()->GetAura(GetSpellInfo()->Id))
+            if (SpellPowerCost const* powerCost = GetSpell()->GetPowerCost(POWER_COMBO_POINTS))
+                envenomAura->SetDuration((powerCost->Amount + 1) * IN_MILLISECONDS);
+    }
+
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_rog_envenom::CalculateDamage, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
+        AfterHit += SpellHitFn(spell_rog_envenom::HandleAfterHit);
     }
 };
 
@@ -2870,8 +2770,8 @@ void AddSC_rogue_spell_scripts()
     new spell_rog_deepening_shadows();
     new spell_rog_dirty_tricks();
     new spell_rog_enveloping_shadows();
-    new spell_rog_envenom();
-    new spell_rog_eviscerate();
+    RegisterSpellScript(spell_rog_envenom);
+    RegisterSpellScript(spell_rog_eviscerate);
     new spell_rog_fan_of_knives();
     new spell_rog_garrote();
     new spell_rog_grappling_hook();
@@ -2888,7 +2788,7 @@ void AddSC_rogue_spell_scripts()
     new spell_rog_roll_the_bones_duration();
     new spell_rog_roll_the_bones_visual();
     new spell_rog_ruthlessness();
-    new spell_rog_rupture();
+    RegisterSpellScript(spell_rog_rupture);
     new spell_rog_saber_slash();
     new spell_rog_serrated_blades();
     new spell_rog_shadowstrike();
