@@ -2289,8 +2289,7 @@ class spell_pal_consecration : public AuraScript
     {
         if (Unit* caster = GetCaster())
         {
-            std::list<AreaTrigger*> ATList;
-            caster->GetAreaTriggerListWithSpellIDInRange(ATList, GetSpellInfo()->Id, caster->GetVisibilityRange());
+            std::vector<AreaTrigger*> ATList = caster->GetAreaTriggers(GetSpellInfo()->Id);
             for (AreaTrigger* at : ATList)
             {
                 caster->CastSpell(at->GetPosition(), SPELL_PALADIN_CONSECRATION_DAMAGE, true);
