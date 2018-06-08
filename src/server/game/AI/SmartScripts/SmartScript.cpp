@@ -2703,6 +2703,29 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             delete targets;
             break;
         }
+        case SMART_ACTION_CIRCLE_PATH:
+        {
+            if (ObjectList* targets = GetTargets(e, unit))
+            {
+                for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
+                {
+                    if (!IsUnit(*itr))
+                        continue;
+
+                    if (!(e.event.event_flags & SMART_EVENT_FLAG_WHILE_CHARMED) && !IsCreatureInControlOfSelf(*itr))
+                        continue;
+					
+					if (e.action.moveCirclePath.clockWise)
+					    me->GetMotionMaster()->MoveCirclePath((*itr)->ToUnit()->GetPositionX(), (*itr)->ToUnit()->GetPositionY(), (*itr)->ToUnit()->GetPositionZ(), (float)e.action.moveCirclePath.radius, true, uint8(e.action.moveCirclePath.stepCount));
+					else
+						me->GetMotionMaster()->MoveCirclePath((*itr)->ToUnit()->GetPositionX(), (*itr)->ToUnit()->GetPositionY(), (*itr)->ToUnit()->GetPositionZ(), (float)e.action.moveCirclePath.radius, false, uint8(e.action.moveCirclePath.stepCount));						
+                }
+
+                delete targets;
+            }
+
+            break;
+        }
         default:
             TC_LOG_ERROR("sql.sql", "SmartScript::ProcessAction: Entry " SI64FMTD " SourceType %u, Event %u, Unhandled Action type %u", e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType());
             break;
