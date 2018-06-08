@@ -2711,10 +2711,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
                 {
                     if (!IsUnit(*itr))
                         continue;
-
-                    if (!(e.event.event_flags & SMART_EVENT_FLAG_WHILE_CHARMED) && !IsCreatureInControlOfSelf(*itr))
-                        continue;
-					
+                    
 					if (e.action.moveCirclePath.clockWise)
 					    me->GetMotionMaster()->MoveCirclePath((*itr)->ToUnit()->GetPositionX(), (*itr)->ToUnit()->GetPositionY(), (*itr)->ToUnit()->GetPositionZ(), (float)e.action.moveCirclePath.radius, true, uint8(e.action.moveCirclePath.stepCount));
 					else
