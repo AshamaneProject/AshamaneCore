@@ -1141,7 +1141,7 @@ struct SmartAction
         {
             uint32 radius;
             uint32 clockWise;
-			unit32 stepCount;
+			uint32 stepCount;
         } moveCirclePath;
         
         //! Note for any new future actions
