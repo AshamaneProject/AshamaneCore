@@ -2711,11 +2711,8 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
                 {
                     if (!IsUnit(*itr))
                         continue;
-                    
-					if (e.action.moveCirclePath.clockWise)
-					    me->GetMotionMaster()->MoveCirclePath((*itr)->ToUnit()->GetPositionX(), (*itr)->ToUnit()->GetPositionY(), (*itr)->ToUnit()->GetPositionZ(), (float)e.action.moveCirclePath.radius, true, uint8(e.action.moveCirclePath.stepCount));
-					else
-						me->GetMotionMaster()->MoveCirclePath((*itr)->ToUnit()->GetPositionX(), (*itr)->ToUnit()->GetPositionY(), (*itr)->ToUnit()->GetPositionZ(), (float)e.action.moveCirclePath.radius, false, uint8(e.action.moveCirclePath.stepCount));						
+
+                    me->GetMotionMaster()->MoveCirclePath((*itr)->ToUnit()->GetPositionX(), (*itr)->ToUnit()->GetPositionY(), (*itr)->ToUnit()->GetPositionZ(), (float)e.action.moveCirclePath.radius, e.action.moveCirclePath.clockWise, uint8(e.action.moveCirclePath.stepCount));						
                 }
 
                 delete targets;
