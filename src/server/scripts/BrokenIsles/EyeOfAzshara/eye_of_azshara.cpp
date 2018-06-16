@@ -15,10 +15,179 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "AreaTrigger.h"
+#include "AreaTriggerAI.h"
+#include "SpellAuras.h"
 #include "ScriptMgr.h"
 #include "eye_of_azshara.h"
 
+// 97171
+struct npc_hatecoil_arcanist : public ScriptedAI
+{
+    npc_hatecoil_arcanist(Creature* creature) : ScriptedAI(creature) { }
+
+    void JustDied(Unit* /*killer*/) override
+    {
+        me->GetInstanceScript()->SetData(DATA_ARCANIST_DIED, 0);
+    }
+};
+
+// 196027
+class spell_hatecoil_arcanist_aqua_spout : public SpellScript
+{
+    PrepareSpellScript(spell_hatecoil_arcanist_aqua_spout);
+
+    void HandleDummy(SpellEffIndex /*effIndex*/)
+    {
+        Unit* target = GetHitUnit();
+        Unit* caster = GetCaster();
+
+        if (caster && target && target->ToPlayer())
+            caster->CastSpell(target, SPELL_AQUA_SPOUT_MISSILE);
+    }
+
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_hatecoil_arcanist_aqua_spout::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
+    }
+};
+
+// 196031
+class aura_hatecoil_wavebinder_bubble_shield : public AuraScript
+{
+    PrepareAuraScript(aura_hatecoil_wavebinder_bubble_shield);
+
+    void OnRemove(AuraEffect const* /*auraEff*/, AuraEffectHandleModes /*modes*/)
+    {
+        if (GetTargetApplication()->GetRemoveMode() == AURA_REMOVE_BY_ENEMY_SPELL)
+        {
+            Unit* target = GetTarget();
+            target->CastSpell(target, SPELL_FEEDBACK, true);
+        }
+    }
+
+    void Register() override
+    {
+        OnEffectRemove += AuraEffectRemoveFn(aura_hatecoil_wavebinder_bubble_shield::OnRemove, EFFECT_0, SPELL_AURA_SCHOOL_ABSORB, AURA_EFFECT_HANDLE_REAL);
+    }
+};
+
+// 195528
+class spell_animated_storm_water_spout : public SpellScript
+{
+    PrepareSpellScript(spell_animated_storm_water_spout);
+
+    void HandleDummy(SpellEffIndex /*effIndex*/)
+    {
+        Unit* caster = GetCaster();
+        Unit* target = GetHitUnit();
+
+        if (caster && target)
+        {
+            float x, y, z;
+            target->GetNearPoint(target, x, y, z, 1, 3.0f, frand(0.f, 2.f * float(M_PI)));
+            if (Creature* waterSpout = caster->SummonCreature(NPC_WATER_SPOUT, x, y, z, 1.0f, TEMPSUMMON_MANUAL_DESPAWN))
+            {
+                waterSpout->setFaction(caster->getFaction());
+                waterSpout->CastSpell(waterSpout, SPELL_WATER_SPOUT_AT, false);
+                waterSpout->GetMotionMaster()->MoveRandom(25.0f);
+            }
+        }
+    }
+
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_animated_storm_water_spout::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
+    }
+};
+
+// Spell: 195539
+// AT: 100100
+struct at_animated_storm_water_spout : AreaTriggerAI
+{
+    at_animated_storm_water_spout(AreaTrigger* areatrigger) : AreaTriggerAI(areatrigger) { }
+
+    void OnUnitEnter(Unit* unit) override
+    {
+        Unit* caster = at->GetCaster();
+        if (caster && unit && caster->IsValidAttackTarget(unit))
+            caster->CastSpell(unit, SPELL_WATER_SPOUT_DAMAGE, true);
+    }
+};
+
+// 195827
+class spell_skrog_tidestomper_massive_quake : public SpellScript
+{
+    PrepareSpellScript(spell_skrog_tidestomper_massive_quake);
+
+    void HandleDummy(SpellEffIndex /*effIndex*/)
+    {
+        Unit* target = GetHitUnit();
+        Unit* caster = GetCaster();
+
+        if (caster && target)
+            caster->CastSpell(target, SPELL_MASSIVE_QUAKE_AT, true);
+    }
+
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_skrog_tidestomper_massive_quake::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
+    }
+};
+
+// Spell: 195828
+// AT: 10655
+struct at_skrog_tidestomper_massive_quake : AreaTriggerAI
+{
+    at_skrog_tidestomper_massive_quake(AreaTrigger* areatrigger) : AreaTriggerAI(areatrigger) { }
+
+    void OnRemove() override
+    {
+        if (Unit* caster = at->GetCaster())
+        {
+            for (ObjectGuid guid : at->GetInsideUnits())
+            {
+                if (Unit* unit = ObjectAccessor::GetUnit(*caster, guid))
+                {
+                    if (caster->IsValidAttackTarget(unit))
+                        caster->CastSpell(unit, SPELL_MASSIVE_QUAKE_DAMAGE, true);
+                }
+            }
+        }
+    }
+};
+
+// 196175
+class aura_makrana_hardshell_armorshell : public AuraScript
+{
+    PrepareAuraScript(aura_makrana_hardshell_armorshell);
+
+    void OnRemove(AuraEffect const* /*auraEff*/, AuraEffectHandleModes /*modes*/)
+    {
+        if (GetTargetApplication()->GetRemoveMode() == AURA_REMOVE_BY_ENEMY_SPELL)
+        {
+            Unit* target = GetTarget();
+            target->CastSpell(target, SPELL_ARMORSHELL_SHRAPNEL, true);
+        }
+    }
+
+    void Register() override
+    {
+        OnEffectRemove += AuraEffectRemoveFn(aura_makrana_hardshell_armorshell::OnRemove, EFFECT_0, SPELL_AURA_SCHOOL_ABSORB, AURA_EFFECT_HANDLE_REAL);
+    }
+};
+
 void AddSC_eye_of_azshara()
 {
+    RegisterCreatureAI(npc_hatecoil_arcanist);
 
+    RegisterSpellScript(spell_hatecoil_arcanist_aqua_spout);
+    RegisterSpellScript(spell_animated_storm_water_spout);
+    RegisterSpellScript(spell_skrog_tidestomper_massive_quake);
+
+    RegisterAuraScript(aura_hatecoil_wavebinder_bubble_shield);
+    RegisterAuraScript(aura_makrana_hardshell_armorshell);
+
+    RegisterAreaTriggerAI(at_animated_storm_water_spout);
+    RegisterAreaTriggerAI(at_skrog_tidestomper_massive_quake);
 }

@@ -49,6 +49,13 @@ struct boss_warlord_parjesh : public BossAI
         events.ScheduleEvent(SPELL_CALL_REINFORCEMENTS_SHELLBREAKER, 3000);
     }
 
+    void JustDied(Unit* killer) override
+    {
+        BossAI::JustDied(killer);
+
+        me->GetInstanceScript()->SetData(DATA_REMOVE_BUBBLE, 0);
+    }
+
     void ExecuteEvent(uint32 eventId) override
     {
         switch (eventId)
