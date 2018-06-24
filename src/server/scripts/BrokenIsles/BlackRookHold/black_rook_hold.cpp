@@ -19,6 +19,7 @@
 #include "AreaTriggerAI.h"
 #include "ScriptMgr.h"
 #include "black_rook_hold.h"
+#include "ScriptedCreature.h"
 
 enum Spells
 {
