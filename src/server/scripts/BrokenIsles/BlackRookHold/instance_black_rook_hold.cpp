@@ -15,15 +15,8 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "InstanceScript.h"
-#include "ObjectAccessor.h"
 #include "black_rook_hold.h"
-#include "ScriptedCreature.h"
-#include "ScriptMgr.h"
-#include "Map.h"
-#include "MotionMaster.h"
-#include "Player.h"
-#include "TemporarySummon.h"
+#include "ScriptPCH.h"
 
 DoorData const doorData[] =
 {
