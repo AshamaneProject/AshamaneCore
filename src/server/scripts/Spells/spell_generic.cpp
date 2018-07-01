@@ -4874,58 +4874,6 @@ class spell_gen_maiden_of_virtue_holy_wrath : public AuraScript
     }
 };
 
-//8812
-class at_maiden_of_virtue_sacred_ground : public AreaTriggerEntityScript
-{
-public:
-    at_maiden_of_virtue_sacred_ground() : AreaTriggerEntityScript("at_maiden_of_virtue_sacred_ground") { }
-
-    struct at_maiden_of_virtue_sacred_groundAI : AreaTriggerAI
-    {
-        at_maiden_of_virtue_sacred_groundAI(AreaTrigger* areatrigger) : AreaTriggerAI(areatrigger)
-        {
-            timeInterval = 0;
-        }
-
-        int32 timeInterval;
-
-        void OnCreate() override
-        {
-            Unit* caster = at->GetCaster();
-
-            if (!caster)
-                return;
-
-            at->SetUInt32Value(AREATRIGGER_DECAL_PROPERTIES_ID, 86);
-
-            for (auto guid : at->GetInsideUnits())
-                if (Unit* unit = ObjectAccessor::GetUnit(*caster, guid))
-                    if (unit->GetTypeId() == TYPEID_PLAYER)
-                        unit->CastSpell(unit, SPELL_GEN_SACRED_GROUND, true);
-
-        }
-
-        void OnUnitEnter(Unit* unit) override
-        {
-            Unit* caster = at->GetCaster();
-
-            if (!caster)
-                return;
-
-            if (!unit)
-                return;
-
-            if (unit->GetTypeId() == TYPEID_PLAYER)
-                unit->CastSpell(unit, SPELL_GEN_SACRED_GROUND, true);
-        }
-    };
-
-    AreaTriggerAI* GetAI(AreaTrigger* areatrigger) const override
-    {
-        return new at_maiden_of_virtue_sacred_groundAI(areatrigger);
-    }
-};
-
 void AddSC_generic_spell_scripts()
 {
     new spell_gen_absorb0_hitlimit1();
@@ -5042,5 +4990,4 @@ void AddSC_generic_spell_scripts()
     RegisterAuraScript(spell_gen_maiden_of_virtue_mass_repentance);
     RegisterAuraScript(spell_gen_maiden_of_virtue_holy_bulwark);
     RegisterAuraScript(spell_gen_maiden_of_virtue_holy_wrath);
-    new at_maiden_of_virtue_sacred_ground();
 }
