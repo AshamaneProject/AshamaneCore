@@ -53,7 +53,7 @@ struct boss_warlord_parjesh : public BossAI
     {
         BossAI::JustDied(killer);
 
-        me->GetInstanceScript()->SetData(DATA_REMOVE_BUBBLE, 0);
+        me->GetInstanceScript()->SetData(DATA_BOSS_DIED, 0);
     }
 
     void ExecuteEvent(uint32 eventId) override

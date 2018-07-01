@@ -48,24 +48,32 @@ struct instance_eye_of_azshara : public InstanceScript
                     creature->AI()->DoAction(1);
                 if (creature->isDead() && ++_deadBossCount >= 4)
                     releaseWrath();
+
+                tryEnableViolentWinds();
                 break;
             }
             case NPC_SERPENTRIX:
             {
                 if (creature->isDead() && ++_deadBossCount >= 4)
                     releaseWrath();
+
+                tryEnableViolentWinds();
                 break;
             }
             case NPC_WARLORD_PARJESH:
             {
                 if (creature->isDead() && ++_deadBossCount >= 4)
                     releaseWrath();
+
+                tryEnableViolentWinds();
                 break;
             }
             case NPC_KING_DEEPBEARD:
             {
                 if (creature->isDead() && ++_deadBossCount >= 4)
                     releaseWrath();
+
+                tryEnableViolentWinds();
                 break;
             }
             case NPC_WRATH_OF_AZSHARA:
@@ -94,6 +102,11 @@ struct instance_eye_of_azshara : public InstanceScript
                 _sandDuneGUIDs.push_back(creature->GetGUID());
                 break;
             }
+            case NPC_WEATHERMAN:
+            {
+                _weathermanGUID = creature->GetGUID();
+                break;
+            }
         }
     }
 
@@ -113,7 +126,7 @@ struct instance_eye_of_azshara : public InstanceScript
         }
     }
 
-    void SetData(uint32 type, uint32 /*data*/) override
+    void SetData(uint32 type, uint32 data) override
     {
         if (type == DATA_ARCANIST_DIED) // A Hatecoil Arcanist died
             incrementDeadArcanistCount();
@@ -124,10 +137,38 @@ struct instance_eye_of_azshara : public InstanceScript
                     sandDune->Respawn();
             }
         }
-        else if (type == DATA_REMOVE_BUBBLE && ++_deadBossCount >= 4)
-            releaseWrath();
+        else if (type == DATA_BOSS_DIED)
+        {
+            ++_deadBossCount;
+
+            if (_deadBossCount >= 4)
+                releaseWrath();
+
+            tryEnableViolentWinds();
+        }
         else if (type == DATA_NAGA_DIED && ++_deadNagasCount >= 4)
             removeNonAttackableFromWrath();
+        else if (type == DATA_CRY_OF_WRATH)
+        {
+            if (Creature* weatherman = instance->GetCreature(_weathermanGUID))
+            {
+                if (data == 0)
+                {
+                    weatherman->RemoveAurasDueToSpell(SPELL_VIOLENT_WINDS_90S);
+                    weatherman->CastSpell(weatherman, SPELL_VIOLENT_WINDS_10S, true);
+                }
+                else if (data == 1)
+                {
+                    weatherman->RemoveAurasDueToSpell(SPELL_VIOLENT_WINDS_10S);
+                    weatherman->CastSpell(weatherman, SPELL_VIOLENT_WINDS_90S, true);
+                }
+                else if (data == 2)
+                {
+                    weatherman->RemoveAurasDueToSpell(SPELL_VIOLENT_WINDS_10S);
+                    weatherman->RemoveAurasDueToSpell(SPELL_VIOLENT_WINDS_90S);
+                }
+            }
+        }
     }
 
 private:
@@ -138,6 +179,7 @@ private:
     ObjectGuid _ladyHatecoilGUID;
     ObjectGuid _wrathGUID;
     ObjectGuid _bubbleGUID;
+    ObjectGuid _weathermanGUID;
 
     GuidVector _sandDuneGUIDs;
     GuidVector _nagasGUIDs; // The 4 nagas around Wrath of Azshara
@@ -186,6 +228,20 @@ private:
     {
         if (Creature* wrath = instance->GetCreature(_wrathGUID))
             wrath->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+    }
+
+    void tryEnableViolentWinds()
+    {
+        if (_deadBossCount >= 4)
+        {
+            if (Creature* weatherman = instance->GetCreature(_weathermanGUID))
+                weatherman->CastSpell(weatherman, SPELL_VIOLENT_WINDS_30S, true);
+        }
+        else if (_deadBossCount >= 2)
+        {
+            if (Creature* weatherman = instance->GetCreature(_weathermanGUID))
+                weatherman->CastSpell(weatherman, SPELL_VIOLENT_WINDS_90S, true);
+        }
     }
 };
 

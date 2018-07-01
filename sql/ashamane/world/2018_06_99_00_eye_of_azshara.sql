@@ -1,20 +1,20 @@
 SET @GUID = 210118260;
 
--- Missing bosses
-DELETE FROM `creature` WHERE `id` IN(91784, 91789, 91797, 100248);
+-- Missing creatures
+DELETE FROM `creature` WHERE `id` IN(91784, 91789, 91797, 100248, 97063);
 INSERT INTO `creature` (`guid`,`id`,`map`,`zoneId`,`areaId`,`spawnMask`,`phaseUseFlags`,`PhaseId`,`PhaseGroup`,`terrainSwapMap`,`modelid`,`equipment_id`,`position_x`,`position_y`,`position_z`,`orientation`,`spawntimesecs`,`spawndist`,`currentwaypoint`,`curhealth`,`curmana`,`MovementType`,`npcflag`,`unit_flags`,`unit_flags2`,`unit_flags3`,`dynamicflags`,`ScriptName`,`VerifiedBuild`) VALUES
 (@GUID, 91784, 1456, 8040, 8081, 8388870, 0, 0, 0, -1, 0, 0, -3682.653, 4417.024, 32.44474, 8.969724, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, 22810),
 (@GUID + 1, 91789, 1456, 8040, 8081, 8388870, 0, 0, 0, -1, 0, 0, -3436.209961, 4573.152832, -0.437313, 1.887289, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, 22810),
 (@GUID + 2, 91797, 1456, 8040, 8081, 8388870, 0, 0, 0, -1, 0, 0, -3432.059082, 4199.836914, 29.184990, 4.172674, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, 22810),
-(@GUID + 3, 100248, 1456, 8040, 8081, 8388870, 0, 0, 0, -1, 0, 0, -3473.757, 4280.27, 1.937165, 1.719073, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, 22810);
+(@GUID + 3, 100248, 1456, 8040, 8081, 8388870, 0, 0, 0, -1, 0, 0, -3473.757, 4280.27, 1.937165, 1.719073, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, 22810),
+(@GUID + 4, 97063, 1456, 8040, 8081, 8388870, 0, 0, 0, -1, 0, 0, -3486.264, 4386.87, -3.580416, 1.719073, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, 22810);
 
 UPDATE `creature_template` SET `ScriptName` = 'boss_king_deepbeard' WHERE `entry` = 91797;
 
 -- King Deepbeard - Call the Seas
 DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId` = 13 AND `SourceEntry` = 193051;
 INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES
-(13, 1, 193051, 0, 0, 29, 0, 97844, 0, 0, 0, 0, 0, '', 'Call of Seas can implicitly hit only invisible bunnies around King Deepbeard'),
-(13, 1, 193051, 0, 0, 29, 0, 91797, 0, 0, 1, 0, 0, '', 'Call of Seas cannot implicitly hit King Deepbeard');
+(13, 1, 193051, 0, 0, 31, 0, 3, 97844, 0, 0, 0, 0, '', 'Call of Seas can implicitly hit only invisible bunnies around King Deepbeard');
 
 UPDATE `areatrigger_template` SET `ScriptName` = 'at_king_deepbeard_call_the_seas' WHERE `id` = 9683;
 
@@ -468,7 +468,7 @@ UPDATE `creature_template_scaling` SET `LevelScalingMin`=98, `LevelScalingMax`=1
 -- Wrath of Azshara nagas - Storm Conduit
 DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId` = 13 AND `SourceEntry` = 193196;
 INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES
-(13, 1, 193196, 0, 0, 29, 0, 96028, 0, 0, 0, 0, 0, '', 'Storm Conduit can implicitly hit only Wrath of Azshara');
+(13, 1, 193196, 0, 0, 31, 0, 3, 96028, 0, 0, 0, 0, '', 'Storm Conduit can implicitly hit only Wrath of Azshara');
 
 -- Extra NPC under Wrath of Azshara
 DELETE FROM `creature` WHERE `id` IN (111936, 111374, 106780);
@@ -477,3 +477,18 @@ DELETE FROM `creature` WHERE `id` IN (111936, 111374, 106780);
 UPDATE `creature_template_addon` SET `auras` = '211850' WHERE `entry` = 106780;
 
 UPDATE `creature_template` SET `ScriptName` = 'npc_wrath_of_azshara_naga' WHERE `entry` IN (98173, 100248, 100249, 100250);
+
+-- Violent Winds - Weatherman part
+DELETE FROM `spell_script_names` WHERE `spell_id` IN (191792, 191805, 192649);
+INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES
+(191792, 'aura_eoa_violent_winds_broadcast'),
+(191805, 'aura_eoa_violent_winds_broadcast'),
+(192649, 'aura_eoa_violent_winds_broadcast');
+
+-- Violent Winds - Player part
+DELETE FROM `spell_script_names` WHERE `spell_id` = 191797;
+INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES
+(191797, 'aura_eoa_violent_winds_force_move');
+
+-- No Violent Winds at the beginning (it starts when 2 bosses are killed)
+UPDATE `creature_template_addon` SET `auras` = '' WHERE `entry` = 97063;

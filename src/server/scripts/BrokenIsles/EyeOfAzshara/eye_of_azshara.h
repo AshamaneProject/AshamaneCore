@@ -33,8 +33,9 @@ enum EOADataTypes
 
     DATA_ARCANIST_DIED    = 5,
     DATA_RESPAWN_DUNES    = 6,
-    DATA_REMOVE_BUBBLE    = 7,
-    DATA_NAGA_DIED        = 8
+    DATA_BOSS_DIED        = 7,
+    DATA_NAGA_DIED        = 8,
+    DATA_CRY_OF_WRATH     = 9
 };
 
 enum EOACreatureIds
@@ -53,7 +54,9 @@ enum EOACreatureIds
     NPC_BINDER_ASHIOI       = 100250,
     NPC_MYSTIC_SSAVEH       = 98173,
 
-    NPC_WATER_SPOUT         = 103674 // Not sure
+    NPC_WATER_SPOUT         = 103674, // Not sure
+
+    NPC_WEATHERMAN          = 97063
 };
 
 enum EOAGameObjectIds
@@ -71,7 +74,12 @@ enum EOASpellIds
     SPELL_WATER_SPOUT_DAMAGE    = 195541,
     SPELL_MASSIVE_QUAKE_AT      = 195828,
     SPELL_MASSIVE_QUAKE_DAMAGE  = 195832,
-    SPELL_ARMORSHELL_SHRAPNEL   = 196183
+    SPELL_ARMORSHELL_SHRAPNEL   = 196183,
+
+    SPELL_VIOLENT_WINDS_90S     = 191792,
+    SPELL_VIOLENT_WINDS_30S     = 191805,
+    SPELL_VIOLENT_WINDS_10S     = 192649,
+    SPELL_VIOLENT_WINDS_DUMMY   = 191797
 };
 
 #endif // EYE_OF_AZSHARA_H_

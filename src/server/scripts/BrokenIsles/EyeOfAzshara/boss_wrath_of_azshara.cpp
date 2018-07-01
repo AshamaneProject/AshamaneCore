@@ -94,6 +94,8 @@ struct boss_wrath_of_azshara : public BossAI
 
         instance->DoRemoveAurasDueToSpellOnPlayers(SPELL_FROST_RESONANCE);
         instance->DoRemoveAurasDueToSpellOnPlayers(SPELL_MAGIC_RESONANCE);
+
+        me->GetInstanceScript()->SetData(DATA_CRY_OF_WRATH, 1); // Trigger Violent Winds every 90s
     }
 
     void EnterCombat(Unit* who) override
@@ -110,6 +112,7 @@ struct boss_wrath_of_azshara : public BossAI
             me->InterruptNonMeleeSpells(true);
             DoCastSelf(SPELL_CRY_OF_WRATH, false);
             _cryOfWrath = true;
+            me->GetInstanceScript()->SetData(DATA_CRY_OF_WRATH, 0); // Trigger Violent Winds every 10s
         }
     }
 
@@ -121,6 +124,8 @@ struct boss_wrath_of_azshara : public BossAI
 
         instance->DoRemoveAurasDueToSpellOnPlayers(SPELL_FROST_RESONANCE);
         instance->DoRemoveAurasDueToSpellOnPlayers(SPELL_MAGIC_RESONANCE);
+
+        me->GetInstanceScript()->SetData(DATA_CRY_OF_WRATH, 2); // Remove Violent Winds
     }
 
     void ScheduleTasks() override
