@@ -4805,6 +4805,127 @@ public:
     }
 };
 
+enum MaidenOfVirtueSpells
+{
+    SPELL_GEN_MASS_REPENTANCE       = 227508,
+    SPELL_GEN_HOLY_BULWARK          = 227817,
+	SPELL_GEN_HOLY_WRATH            = 227823,
+    SPELL_GEN_SACRED_GROUND         = 227848
+};
+
+// 227508
+class spell_gen_maiden_of_virtue_mass_repentance : public AuraScript
+{
+    PrepareAuraScript(spell_gen_maiden_of_virtue_mass_repentance);
+
+    void HandleApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+    {
+        Unit* caster = GetCaster();
+        if (!caster)
+            return;
+		
+        caster->CastSpell(caster, SPELL_GEN_HOLY_BULWARK, false);
+    }
+
+    void Register() override
+    {
+        OnEffectApply += AuraEffectApplyFn(spell_gen_maiden_of_virtue_mass_repentance_AuraScript::HandleApply, EFFECT_0, SPELL_AURA_MOD_STUN, AURA_EFFECT_HANDLE_REAL);
+    }
+};
+
+// 227817
+class spell_gen_maiden_of_virtue_holy_bulwark : public AuraScript
+{
+    PrepareAuraScript(spell_gen_maiden_of_virtue_holy_bulwark);
+
+    void HandleApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+    {
+        Unit* caster = GetCaster();
+        if (!caster)
+            return;
+		
+        caster->CastSpell(caster, SPELL_GEN_HOLY_WRATH, false);
+    }
+
+    void Register() override
+    {
+        OnEffectApply += AuraEffectApplyFn(spell_gen_maiden_of_virtue_holy_bulwark_AuraScript::HandleApply, EFFECT_0, SPELL_AURA_SCHOOL_ABSORB, AURA_EFFECT_HANDLE_REAL);
+    }
+};
+
+// 227823
+// After hit target, cast again and again, if not interrupt.
+class spell_gen_maiden_of_virtue_holy_wrath : public AuraScript
+{
+    PrepareAuraScript(spell_gen_maiden_of_virtue_holy_wrath);
+
+    void HandleApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+    {
+        Unit* caster = GetCaster();
+        if (!caster)
+            return;
+		
+        caster->CastSpell(caster, SPELL_GEN_HOLY_WRATH, false);
+    }
+
+    void Register() override
+    {
+        OnEffectApply += AuraEffectApplyFn(spell_gen_maiden_of_virtue_holy_wrath_AuraScript::HandleApply, EFFECT_1, SPELL_AURA_MOD_DAMAGE_PERCENT_TAKEN, AURA_EFFECT_HANDLE_REAL);
+    }
+};
+
+//8812
+class at_maiden_of_virtue_sacred_ground : public AreaTriggerEntityScript
+{
+public:
+    at_maiden_of_virtue_sacred_ground() : AreaTriggerEntityScript("at_maiden_of_virtue_sacred_ground") { }
+
+    struct at_maiden_of_virtue_sacred_groundAI : AreaTriggerAI
+    {
+        at_maiden_of_virtue_sacred_groundAI(AreaTrigger* areatrigger) : AreaTriggerAI(areatrigger)
+        {
+            timeInterval = 0;
+        }
+
+        int32 timeInterval;
+
+        void OnCreate() override
+        {
+            Unit* caster = at->GetCaster();
+
+            if (!caster)
+                return;
+
+            at->SetUInt32Value(AREATRIGGER_DECAL_PROPERTIES_ID, 86);
+
+            for (auto guid : at->GetInsideUnits())
+                if (Unit* unit = ObjectAccessor::GetUnit(*caster, guid))
+                    if (unit->GetTypeId() == TYPEID_PLAYER)
+                        unit->CastSpell(unit, SPELL_GEN_SACRED_GROUND, true);
+
+        }
+
+        void OnUnitEnter(Unit* unit) override
+        {
+            Unit* caster = at->GetCaster();
+
+            if (!caster)
+                return;
+
+            if (!unit)
+                return;
+
+            if (unit->GetTypeId() == TYPEID_PLAYER)
+                unit->CastSpell(unit, SPELL_GEN_SACRED_GROUND, true);
+        }
+    };
+
+    AreaTriggerAI* GetAI(AreaTrigger* areatrigger) const override
+    {
+        return new at_maiden_of_virtue_sacred_groundAI(areatrigger);
+    }
+};
+
 void AddSC_generic_spell_scripts()
 {
     new spell_gen_absorb0_hitlimit1();
@@ -4918,4 +5039,8 @@ void AddSC_generic_spell_scripts()
     RegisterSpellScript(spell_spatial_rift_despawn);
     RegisterSpellScript(spell_light_judgement);
     new playerscript_light_reckoning();
+    RegisterAuraScript(spell_gen_maiden_of_virtue_mass_repentance);
+    RegisterAuraScript(spell_gen_maiden_of_virtue_holy_bulwark);
+    RegisterAuraScript(spell_gen_maiden_of_virtue_holy_wrath);
+    new at_maiden_of_virtue_sacred_ground();
 }
