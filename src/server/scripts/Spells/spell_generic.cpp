@@ -4809,7 +4809,7 @@ enum MaidenOfVirtueSpells
 {
     SPELL_GEN_MASS_REPENTANCE       = 227508,
     SPELL_GEN_HOLY_BULWARK          = 227817,
-	SPELL_GEN_HOLY_WRATH            = 227823,
+    SPELL_GEN_HOLY_WRATH            = 227823,
     SPELL_GEN_SACRED_GROUND         = 227848
 };
 
@@ -4829,7 +4829,7 @@ class spell_gen_maiden_of_virtue_mass_repentance : public AuraScript
 
     void Register() override
     {
-        OnEffectApply += AuraEffectApplyFn(spell_gen_maiden_of_virtue_mass_repentance_AuraScript::HandleApply, EFFECT_0, SPELL_AURA_MOD_STUN, AURA_EFFECT_HANDLE_REAL);
+        OnEffectApply += AuraEffectApplyFn(spell_gen_maiden_of_virtue_mass_repentance::HandleApply, EFFECT_0, SPELL_AURA_MOD_STUN, AURA_EFFECT_HANDLE_REAL);
     }
 };
 
@@ -4849,7 +4849,7 @@ class spell_gen_maiden_of_virtue_holy_bulwark : public AuraScript
 
     void Register() override
     {
-        OnEffectApply += AuraEffectApplyFn(spell_gen_maiden_of_virtue_holy_bulwark_AuraScript::HandleApply, EFFECT_0, SPELL_AURA_SCHOOL_ABSORB, AURA_EFFECT_HANDLE_REAL);
+        OnEffectApply += AuraEffectApplyFn(spell_gen_maiden_of_virtue_holy_bulwark::HandleApply, EFFECT_0, SPELL_AURA_SCHOOL_ABSORB, AURA_EFFECT_HANDLE_REAL);
     }
 };
 
@@ -4870,7 +4870,7 @@ class spell_gen_maiden_of_virtue_holy_wrath : public AuraScript
 
     void Register() override
     {
-        OnEffectApply += AuraEffectApplyFn(spell_gen_maiden_of_virtue_holy_wrath_AuraScript::HandleApply, EFFECT_1, SPELL_AURA_MOD_DAMAGE_PERCENT_TAKEN, AURA_EFFECT_HANDLE_REAL);
+        OnEffectApply += AuraEffectApplyFn(spell_gen_maiden_of_virtue_holy_wrath::HandleApply, EFFECT_1, SPELL_AURA_MOD_DAMAGE_PERCENT_TAKEN, AURA_EFFECT_HANDLE_REAL);
     }
 };
 
