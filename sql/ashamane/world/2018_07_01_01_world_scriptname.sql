@@ -1,4 +1,6 @@
-UPDATE areatrigger_template SET ScriptName = 'at_maiden_of_virtue_sacred_ground' WHERE Id IN (12880);
+DELETE FROM `areatrigger_template_actions` WHERE `AreaTriggerId` = 12880;
+INSERT INTO `areatrigger_template_actions` (`AreaTriggerId`, `ActionType`, `ActionParam`, `TargetType`) VALUES
+('12880','0','227848','2');
 
 DELETE FROM spell_script_names WHERE scriptname = "spell_gen_maiden_of_virtue_mass_repentance";
 DELETE FROM spell_script_names WHERE scriptname = "spell_gen_maiden_of_virtue_holy_bulwark";
