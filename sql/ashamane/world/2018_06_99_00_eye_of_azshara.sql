@@ -1,13 +1,14 @@
 SET @GUID = 210118260;
 
 -- Missing creatures
-DELETE FROM `creature` WHERE `id` IN(91784, 91789, 91797, 100248, 97063);
+DELETE FROM `creature` WHERE `id` IN(91784, 91789, 91797, 100248, 97063, 97713);
 INSERT INTO `creature` (`guid`,`id`,`map`,`zoneId`,`areaId`,`spawnMask`,`phaseUseFlags`,`PhaseId`,`PhaseGroup`,`terrainSwapMap`,`modelid`,`equipment_id`,`position_x`,`position_y`,`position_z`,`orientation`,`spawntimesecs`,`spawndist`,`currentwaypoint`,`curhealth`,`curmana`,`MovementType`,`npcflag`,`unit_flags`,`unit_flags2`,`unit_flags3`,`dynamicflags`,`ScriptName`,`VerifiedBuild`) VALUES
 (@GUID, 91784, 1456, 8040, 8081, 8388870, 0, 0, 0, -1, 0, 0, -3682.653, 4417.024, 32.44474, 8.969724, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, 22810),
 (@GUID + 1, 91789, 1456, 8040, 8081, 8388870, 0, 0, 0, -1, 0, 0, -3436.209961, 4573.152832, -0.437313, 1.887289, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, 22810),
 (@GUID + 2, 91797, 1456, 8040, 8081, 8388870, 0, 0, 0, -1, 0, 0, -3432.059082, 4199.836914, 29.184990, 4.172674, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, 22810),
 (@GUID + 3, 100248, 1456, 8040, 8081, 8388870, 0, 0, 0, -1, 0, 0, -3473.757, 4280.27, 1.937165, 1.719073, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, 22810),
-(@GUID + 4, 97063, 1456, 8040, 8081, 8388870, 0, 0, 0, -1, 0, 0, -3486.264, 4386.87, -3.580416, 1.719073, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, 22810);
+(@GUID + 4, 97063, 1456, 8040, 8081, 8388870, 0, 0, 0, -1, 0, 0, -3486.264, 4386.87, -3.580416, 1.719073, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, 22810),
+(@GUID + 5, 97713, 1456, 8040, 8081, 8388870, 0, 0, 0, -1, 0, 0, -3486.264, 4386.87, -3.580416, 1.719073, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, 22810);
 
 UPDATE `creature_template` SET `ScriptName` = 'boss_king_deepbeard' WHERE `entry` = 91797;
 
@@ -492,3 +493,8 @@ INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES
 
 -- No Violent Winds at the beginning (it starts when 2 bosses are killed)
 UPDATE `creature_template_addon` SET `auras` = '' WHERE `entry` = 97063;
+
+-- Lightning Strikes
+DELETE FROM `spell_script_names` WHERE `spell_id` = 192737;
+INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES
+(192737, 'aura_eoa_lightning_strikes');

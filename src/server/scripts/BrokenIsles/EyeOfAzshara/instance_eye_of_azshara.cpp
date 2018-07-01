@@ -171,6 +171,17 @@ struct instance_eye_of_azshara : public InstanceScript
         }
     }
 
+    uint32 GetData(uint32 data) const override
+    {
+        switch (data)
+        {
+            case DATA_BOSS_DIED:
+                return _deadBossCount;
+            default:
+                return 0;
+        }
+    }
+
 private:
     uint8 _deadArcanistCount;
     uint8 _deadBossCount;

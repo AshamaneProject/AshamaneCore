@@ -79,7 +79,11 @@ enum EOASpellIds
     SPELL_VIOLENT_WINDS_90S     = 191792,
     SPELL_VIOLENT_WINDS_30S     = 191805,
     SPELL_VIOLENT_WINDS_10S     = 192649,
-    SPELL_VIOLENT_WINDS_DUMMY   = 191797
+    SPELL_VIOLENT_WINDS_DUMMY   = 191797,
+
+    SPELL_LIGHTNING_STRIKES         = 192796, // Cast on a player
+    SPELL_LIGHTNING_STRIKES_5S      = 192737, // Triggers 192796 every 5 sec
+    SPELL_LIGHTNING_STRIKES_AMBIENT = 192728, // Visual only, launched every 250ms (on what? seems to be random coordinates)
 };
 
 #endif // EYE_OF_AZSHARA_H_

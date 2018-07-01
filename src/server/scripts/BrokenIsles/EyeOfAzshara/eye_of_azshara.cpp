@@ -18,6 +18,7 @@
 #include "AreaTrigger.h"
 #include "AreaTriggerAI.h"
 #include "SpellAuras.h"
+#include "SpellAuraEffects.h"
 #include "ScriptMgr.h"
 #include "eye_of_azshara.h"
 
@@ -222,6 +223,38 @@ class aura_eoa_violent_winds_force_move : public AuraScript
     }
 };
 
+// 192737
+class aura_eoa_lightning_strikes : public AuraScript
+{
+    PrepareAuraScript(aura_eoa_lightning_strikes);
+
+    void OnPeriodic(AuraEffect const* aurEff)
+    {
+        Unit* caster = GetCaster();
+
+        if (caster->GetInstanceScript()->GetData(DATA_BOSS_DIED) >= 3)
+        {
+            Map::PlayerList const& playerList = caster->GetInstanceScript()->instance->GetPlayers();
+            std::vector<Player*> playerVec;
+            // Is there a better way to select a random player without a threat list?
+            for (auto itr = playerList.begin(); itr != playerList.end(); ++itr)
+                playerVec.push_back(itr->GetSource());
+            Trinity::Containers::RandomResize(playerVec, 1);
+
+            if (playerVec.size() > 0)
+            {
+                Unit* target = playerVec[0];
+                caster->CastSpell(target, GetSpellInfo()->GetEffect(aurEff->GetEffIndex())->TriggerSpell, false);
+            }
+        }
+    }
+
+    void Register() override
+    {
+        OnEffectPeriodic += AuraEffectPeriodicFn(aura_eoa_lightning_strikes ::OnPeriodic, EFFECT_0, SPELL_AURA_PERIODIC_DUMMY);
+    }
+};
+
 void AddSC_eye_of_azshara()
 {
     RegisterCreatureAI(npc_hatecoil_arcanist);
@@ -234,6 +267,7 @@ void AddSC_eye_of_azshara()
     RegisterAuraScript(aura_makrana_hardshell_armorshell);
     RegisterAuraScript(aura_eoa_violent_winds_broadcast);
     RegisterAuraScript(aura_eoa_violent_winds_force_move);
+    RegisterAuraScript(aura_eoa_lightning_strikes);
 
     RegisterAreaTriggerAI(at_animated_storm_water_spout);
     RegisterAreaTriggerAI(at_skrog_tidestomper_massive_quake);
