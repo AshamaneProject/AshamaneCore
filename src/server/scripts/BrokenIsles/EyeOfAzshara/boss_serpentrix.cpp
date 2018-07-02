@@ -90,11 +90,13 @@ struct boss_serpentrix : public BossAI
     {
         if (me->HealthWillBeBelowPctDamaged(66, damage))
         {
+            Talk(0);
             me->CastSpell(me, SPELL_SUBMERGE, true);
             events.RescheduleEvent(SPELL_RAMPAGE, 5s);
         }
         else if (me->HealthWillBeBelowPctDamaged(33, damage))
         {
+            Talk(0);
             me->CastSpell(me, SPELL_SUBMERGE, true);
             events.RescheduleEvent(SPELL_RAMPAGE, 5s);
         }

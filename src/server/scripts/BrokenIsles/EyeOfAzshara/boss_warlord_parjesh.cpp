@@ -87,7 +87,10 @@ struct boss_warlord_parjesh : public BossAI
     void DamageTaken(Unit* /*attacker*/, uint32& damage) override
     {
         if (me->HealthWillBeBelowPctDamaged(30, damage))
+        {
+            Talk(1);
             me->CastSpell(me, SPELL_ENRAGE, false);
+        }
     }
 };
 

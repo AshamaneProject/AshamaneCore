@@ -109,6 +109,7 @@ struct boss_wrath_of_azshara : public BossAI
     {
         if (me->HealthWillBeBelowPctDamaged(10, damage))
         {
+            Talk(1);
             me->InterruptNonMeleeSpells(true);
             DoCastSelf(SPELL_CRY_OF_WRATH, false);
             _cryOfWrath = true;
@@ -126,6 +127,8 @@ struct boss_wrath_of_azshara : public BossAI
         instance->DoRemoveAurasDueToSpellOnPlayers(SPELL_MAGIC_RESONANCE);
 
         me->GetInstanceScript()->SetData(DATA_CRY_OF_WRATH, 2); // Remove Violent Winds
+
+        me->RemoveAllAreaTriggers();
     }
 
     void ScheduleTasks() override
@@ -176,6 +179,7 @@ struct boss_wrath_of_azshara : public BossAI
             }
             case SPELL_MYSTIC_TORNADO:
             {
+                Talk(2);
                 DoCastSelf(SPELL_MYSTIC_TORNADO, false);
                 events.Repeat(20s, 30s);
                 break;
@@ -340,6 +344,7 @@ class spell_wrath_of_azshara_arcane_bomb_target : public SpellScript
 
         if (caster && target)
         {
+            caster->ToCreature()->AI()->Talk(3, target);
             caster->CastSpell(target, SPELL_ARCANE_BOMB_VEHICLE, true);
             Position pos = target->GetPosition();
             if (Creature* bomb = caster->SummonCreature(NPC_ARCANE_BOMB, pos))
@@ -379,6 +384,7 @@ struct npc_wrath_of_azshara_naga : public ScriptedAI
 
     void EnterCombat(Unit* /*who*/) override
     {
+        Talk(0);
         me->GetScheduler().Schedule(Seconds(5), Seconds(8), [this](TaskContext context)
         {
             if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM))

@@ -80,7 +80,10 @@ struct boss_king_deepbeard : public BossAI
     void DamageTaken(Unit* /*attacker*/, uint32& damage) override
     {
         if (me->HealthWillBeBelowPctDamaged(30, damage))
+        {
+            Talk(4);
             me->CastSpell(me, SPELL_FRENZY, true);
+        }
     }
 
     void ExecuteEvent(uint32 eventId) override
@@ -89,6 +92,7 @@ struct boss_king_deepbeard : public BossAI
         {
             case SPELL_CALL_THE_SEAS:
             {
+                Talk(3);
                 me->CastSpell(me, SPELL_CALL_THE_SEAS, false);
                 events.Repeat(30s);
                 break;
@@ -97,6 +101,7 @@ struct boss_king_deepbeard : public BossAI
             {
                 if (me->GetPower(POWER_ENERGY) == 100)
                 {
+                    Talk(2);
                     me->CastSpell(me, SPELL_QUAKE, false);
 
                     if (_firstQuake)
@@ -112,6 +117,7 @@ struct boss_king_deepbeard : public BossAI
             }
             case SPELL_GASEOUS_BUBBLES:
             {
+                Talk(1);
                 me->CastSpell(me, SPELL_GASEOUS_BUBBLES, false);
                 events.Repeat(33s);
                 break;

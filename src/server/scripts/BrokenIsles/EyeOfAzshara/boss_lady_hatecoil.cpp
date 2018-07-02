@@ -100,6 +100,7 @@ struct boss_lady_hatecoil : public BossAI
         {
             case SPELL_BECKON_STORM:
             {
+                Talk(3);
                 me->CastSpell(me, SPELL_BECKON_STORM, false);
                 events.Repeat(45s);
                 break;
@@ -113,6 +114,7 @@ struct boss_lady_hatecoil : public BossAI
             }
             case SPELL_STATIC_NOVA:
             {
+                Talk(2);
                 me->CastSpell(me, SPELL_STATIC_NOVA, false);
                 events.Repeat(35s);
                 break;
@@ -131,6 +133,7 @@ struct boss_lady_hatecoil : public BossAI
             }
             case SPELL_MONSOON_TARGET:
             {
+                Talk(6);
                 me->CastSpell(me, SPELL_MONSOON_TARGET, true);
                 events.Repeat(25s, 35s);
                 break;

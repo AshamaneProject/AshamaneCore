@@ -229,7 +229,8 @@ DELETE FROM `smart_scripts` WHERE `entryorguid`=@ENTRY AND `source_type`=0;
 INSERT INTO `smart_scripts` (`entryorguid`,`source_type`,`id`,`link`,`event_type`,`event_phase_mask`,`event_chance`,`event_flags`,`event_param1`,`event_param2`,`event_param3`,`event_param4`,`action_type`,`action_param1`,`action_param2`,`action_param3`,`action_param4`,`action_param5`,`action_param6`,`target_type`,`target_param1`,`target_param2`,`target_param3`,`target_x`,`target_y`,`target_z`,`target_o`,`comment`) VALUES
 (@ENTRY,0,0,0,0,0,100,0,1000,2000,3000,6000,11,197137,0,0,0,0,0,2,0,0,0,0,0,0,0,"Hatecoil Wrangler - In Combat - Cast 'Throw Spear'"),
 (@ENTRY,0,1,0,0,0,100,0,3000,4500,8000,15000,11,197144,0,0,0,0,0,5,0,0,0,0,0,0,0,"Hatecoil Wrangler - In Combat - Cast 'Hooked Net'"),
-(@ENTRY,0,2,0,0,0,100,0,5000,6000,15000,20000,11,197141,0,0,0,0,0,2,0,0,0,0,0,0,0,"Hatecoil Wrangler - In Combat - Cast 'Lightning Prod'");
+(@ENTRY,0,2,0,0,0,100,0,5000,6000,15000,20000,11,197141,0,0,0,0,0,2,0,0,0,0,0,0,0,"Hatecoil Wrangler - In Combat - Cast 'Lightning Prod'"),
+(@ENTRY,0,3,0,4,0,100,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,"Hatecoil Wrangler - On Aggro - Say Line 0");
 
 -- Hatecoil Wrangler - Lightning Prod
 DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId` = 13 AND `SourceEntry` = 197141;
@@ -301,7 +302,8 @@ INSERT INTO `smart_scripts` (`entryorguid`,`source_type`,`id`,`link`,`event_type
 (@ENTRY,0,0,0,0,0,100,0,5000,8000,12000,16000,11,196027,0,0,0,0,0,1,0,0,0,0,0,0,0,"Hatecoil Arcanist - In Combat - Cast 'Aqua Spout'"),
 (@ENTRY,0,1,0,0,0,100,0,500,500,8000,16000,11,196028,0,0,0,0,0,2,0,0,0,0,0,0,0,"Hatecoil Arcanist - In Combat - Cast 'Arcane Rebound'"),
 (@ENTRY,0,2,0,0,0,100,0,10000,15000,12000,16000,11,197105,0,0,0,0,0,6,0,0,0,0,0,0,0,"Hatecoil Arcanist - In Combat - Cast 'Polymorph: Fish'"),
-(@ENTRY,0,3,0,6,0,100,0,0,0,0,0,34,5,0,0,0,0,0,1,0,0,0,0,0,0,0,"Hatecoil Arcanist - On Just Died - Set Instance Data 5 to 0");
+(@ENTRY,0,3,0,6,0,100,0,0,0,0,0,34,5,0,0,0,0,0,1,0,0,0,0,0,0,0,"Hatecoil Arcanist - On Just Died - Set Instance Data 5 to 0"),
+(@ENTRY,0,4,0,6,0,100,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,"Hatecoil Arcanist - On Just Died - Say Line 0");
 
 -- Restless Tides SAI
 SET @ENTRY := 97173;
@@ -498,3 +500,60 @@ UPDATE `creature_template_addon` SET `auras` = '' WHERE `entry` = 97063;
 DELETE FROM `spell_script_names` WHERE `spell_id` = 192737;
 INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES
 (192737, 'aura_eoa_lightning_strikes');
+
+-- Creature texts
+DELETE FROM `creature_text` WHERE `CreatureID`=91784;
+INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `comment`) VALUES
+(91784, 0, 0, 'Hmph. Intruders. They will not get far.', 14, 0, 100, 0, 0, 54193, 0, 'Warlord Parjesh on line of sight'),
+(91784, 200, 0, 'Ah, we meet again, weakling. Now it''s just you and me... and my guards!', 14, 0, 100, 0, 0, 54181, 0, 'Warlord Parjesh on EnterCombat'),
+(91784, 1, 0, '|TInterface\\Icons\\Spell_Shadow_UnholyFrenzy:20|tWarlord Parjesh |cFFFF0000|Hspell:197064|h[Enrages]|h|r!', 41, 0, 100, 0, 0, 0, 0, 'Warlord Parjesh on Enrage'),
+(91784, 201, 0, 'Get my point?', 14, 0, 100, 0, 0, 54186, 0, 'Warlord Parjesh to Warlord Parjesh'),
+(91784, 202, 0, 'You can''t stop.... the storm...', 14, 0, 100, 0, 0, 54182, 0, 'Warlord Parjesh on death');
+
+DELETE FROM `creature_text` WHERE `CreatureID`=91789;
+INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `comment`) VALUES
+(91789, 0, 0, 'It seems we have pests...', 14, 0, 100, 0, 0, 56655, 0, 'Lady Hatecoil on line of sight'),
+(91789, 200, 0, 'Continue the ritual! I will handle these fools!', 14, 0, 100, 0, 0, 54194, 0, 'Lady Hatecoil on EnterCombat'),
+(91789, 1, 0, 'Just you wait...', 14, 0, 100, 0, 0, 54201, 0, 'Lady Hatecoil'),
+(91789, 2, 0, '|TInterface\\Icons\\Spell_Shaman_StaticShock:20|t%s starts to invoke a |cFFFF0000|Hspell:193597|h[Static Nova]|h|r. Get out of the water!', 41, 0, 100, 0, 0, 54201, 0, 'Lady Hatecoil'),
+(91789, 3, 0, '|TInterface\\Icons\\Spell_Frost_SummonWaterElemental:20|t%s begins to cast |cFFFF0000|Hspell:193682|h[Beckon Storm]|h|r!', 41, 0, 100, 0, 0, 0, 0, 'Lady Hatecoil'),
+(91789, 4, 0, 'The waters rise...', 14, 0, 100, 0, 0, 54204, 0, 'Lady Hatecoil'),
+(91789, 5, 0, 'A storm is gathering...', 14, 0, 100, 0, 0, 54203, 0, 'Lady Hatecoil'),
+(91789, 6, 0, 'Can you feel the winds? They come for you...', 14, 0, 100, 0, 0, 54195, 0, 'Lady Hatecoil to Player');
+
+DELETE FROM `creature_text` WHERE `CreatureID`=91797;
+INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `comment`) VALUES
+(91797, 200, 0, 'You weaklings will drown beneath these waves!', 14, 0, 100, 0, 0, 54316, 0, 'King Deepbeard to Player'),
+(91797, 1, 0, 'How long can you hold your breath, I wonder?', 14, 0, 100, 0, 0, 54312, 0, 'King Deepbeard'),
+(91797, 1, 1, 'Pity you cannot survive without air!', 14, 0, 100, 0, 0, 54313, 0, 'King Deepbeard'),
+(91797, 2, 0, 'The earth trembles before the rising tide!', 14, 0, 100, 0, 0, 54315, 0, 'King Deepbeard'),
+(91797, 3, 0, '|TInterface\\Icons\\spell_frost_summonwaterelemental:20|t%s begins to cast |cFFFF0000|Hspell:193051|h[Call the Seas]|h|r!', 41, 0, 100, 0, 0, 54310, 0, 'King Deepbeard'),
+(91797, 3, 1, 'Seas! Obey my command!', 14, 0, 100, 0, 0, 54310, 0, 'King Deepbeard'),
+(91797, 4, 0, '%s goes into a frenzy!', 16, 0, 100, 0, 0, 0, 0, 'King Deepbeard'),
+(91797, 202, 0, 'You haven''t won. She is almost here...', 14, 0, 100, 0, 0, 54318, 0, 'King Deepbeard to Player');
+
+DELETE FROM `creature_text` WHERE `CreatureID`=91808;
+INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `comment`) VALUES
+(91808, 0, 0, '|TInterface\\Icons\\inv_misc_volatilewater:20|t%s begins to |cFFFF0000|Hspell:191873|h[Submerge]|h|r!', 41, 0, 100, 0, 0, 0, 0, 'Serpentrix');
+
+DELETE FROM `creature_text` WHERE `CreatureID`=96028;
+INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `comment`) VALUES
+(96028, 0, 0, 'THE STORM AWAKENS.', 14, 0, 100, 0, 0, 54318, 0, 'Wrath of Azshara'),
+(96028, 200, 0, 'THE TIDES RISE!', 14, 0, 100, 0, 0, 54207, 0, 'Wrath of Azshara to Player'),
+(96028, 201, 0, 'ALL WILL BE ERADICATED!', 14, 0, 100, 0, 0, 54205, 0, 'Wrath of Azshara to Player'),
+(96028, 201, 1, 'CRUSH!', 14, 0, 100, 0, 0, 54213, 0, 'Wrath of Azshara'),
+(96028, 1, 0, '|TInterface\\Icons\\inv_misc_herb_stormvine:20|t%s begins to emit a |cFFFF0000|Hspell:192985|h[Cry of Wrath]|h|r!', 41, 0, 100, 0, 0, 54208, 0, 'Wrath of Azshara'),
+(96028, 2, 0, 'TEMPEST!', 14, 0, 100, 0, 0, 54208, 0, 'Wrath of Azshara'),
+(96028, 3, 0, '|TInterface\\Icons\\INV_Enchant_EssenceArcaneSmall:20|t%s targets |cFFFF0000$n|r with a massive |cFFFF0000|Hspell:192708|h[Arcane Bomb]|h|r!', 41, 0, 100, 0, 0, 54215, 0, 'Wrath of Azshara to Player'),
+(96028, 202, 0, 'SEEK... MAGIC...', 14, 0, 100, 0, 0, 54215, 0, 'Wrath of Azshara to Player'),
+(96028, 202, 1, 'WATER... ETERNAL...', 14, 0, 100, 0, 0, 54206, 0, 'Wrath of Azshara to Player');
+
+DELETE FROM `creature_text` WHERE `CreatureID` IN (97171, 98173, 100216, 100248, 100249, 100250);
+INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `comment`) VALUES
+(97171, 0, 0, 'The shielding weakens!', 14, 0, 100, 0, 0, 0, 0, 'Hatecoil Arcanist to Player'),
+(97171, 0, 1, 'Lady Hatecoil is vulnerable! She must not fall!', 14, 0, 100, 0, 0, 0, 0, 'Hatecoil Arcanist to Player'),
+(98173, 0, 0, 'We need more time!', 14, 0, 100, 0, 0, 54207, 0, 'Mystic Ssa''veh to Player'),
+(100216, 0, 0, 'The landwalkers are here! We will drive them back by salt and scale!', 14, 0, 100, 0, 0, 0, 0, 'Hatecoil Wrangler to Player'),
+(100248, 0, 0, 'No! The ritual is not yet complete!', 14, 0, 100, 0, 0, 0, 0, 'Ritualist Lesha to Player'),
+(100249, 0, 0, 'The bindings weaken...', 14, 0, 100, 0, 0, 0, 0, 'Channeler Varisz to Player'),
+(100250, 0, 0, 'It is still forming!', 14, 0, 100, 0, 0, 0, 0, 'Binder Ashioi to Player');
