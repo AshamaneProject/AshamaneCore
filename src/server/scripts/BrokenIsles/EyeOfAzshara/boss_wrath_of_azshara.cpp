@@ -139,8 +139,7 @@ struct boss_wrath_of_azshara : public BossAI
         events.ScheduleEvent(SPELL_MYSTIC_TORNADO, 20s);
         events.ScheduleEvent(SPELL_ARCANE_BOMB, 30s, 40s);
 
-        Difficulty instanceDifficulty = instance->instance->GetDifficultyID();
-        if (instanceDifficulty == DIFFICULTY_HEROIC || instanceDifficulty == DIFFICULTY_MYTHIC)
+        if (IsHeroic())
             events.ScheduleEvent(SPELL_CRUSHING_DEPTHS, 25s, 45s);
     }
 
@@ -151,7 +150,7 @@ struct boss_wrath_of_azshara : public BossAI
             case SPELL_MASSIVE_DELUGE:
             {
                 if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
-                    me->CastSpell(target, SPELL_MASSIVE_DELUGE, false);
+                    DoCast(target, SPELL_MASSIVE_DELUGE, false);
                 events.Repeat(25s);
                 break;
             }
@@ -198,8 +197,8 @@ struct boss_wrath_of_azshara : public BossAI
                 events.Repeat(55s, 60s);
                 break;
             case SPELL_CRUSHING_DEPTHS:
-                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 1))
-                    me->CastSpell(target, SPELL_CRUSHING_DEPTHS, false);
+                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 1, 0.0f, true))
+                    DoCast(target, SPELL_CRUSHING_DEPTHS, false);
                 events.Repeat(35s, 45s);
                 break;
         }

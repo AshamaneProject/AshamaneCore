@@ -91,13 +91,13 @@ struct boss_serpentrix : public BossAI
         if (me->HealthWillBeBelowPctDamaged(66, damage))
         {
             Talk(0);
-            me->CastSpell(me, SPELL_SUBMERGE, true);
+            DoCastSelf(SPELL_SUBMERGE, true);
             events.RescheduleEvent(SPELL_RAMPAGE, 5s);
         }
         else if (me->HealthWillBeBelowPctDamaged(33, damage))
         {
             Talk(0);
-            me->CastSpell(me, SPELL_SUBMERGE, true);
+            DoCastSelf(SPELL_SUBMERGE, true);
             events.RescheduleEvent(SPELL_RAMPAGE, 5s);
         }
     }
@@ -108,13 +108,13 @@ struct boss_serpentrix : public BossAI
         {
             case SPELL_POISON_SPIT:
             {
-                me->CastSpell(me, SPELL_POISON_SPIT, false);
+                DoCastSelf(SPELL_POISON_SPIT, false);
                 events.Repeat(10s);
                 break;
             }
             case SPELL_TOXIC_WOUND:
             {
-                me->CastSpell(me, SPELL_TOXIC_WOUND, false);
+                DoCastSelf(SPELL_TOXIC_WOUND, false);
                 events.Repeat(25s);
                 break;
             }
@@ -134,7 +134,7 @@ struct boss_serpentrix : public BossAI
                     }
 
                     if (!hasPlayerInRange)
-                        me->CastSpell(me, SPELL_RAMPAGE, true);
+                        DoCastSelf(SPELL_RAMPAGE, true);
                 }
 
                 events.Repeat(2s);
@@ -229,8 +229,7 @@ class spell_serpentrix_submerge : public SpellScript
             if (Creature* hydra = caster->SummonCreature(NPC_BLAZING_HYDRA_SPAWN, _coords[1][0], _coords[1][1], _coords[1][2], _coords[1][3], TEMPSUMMON_CORPSE_DESPAWN, 0))
                 hydra->AI()->DoZoneInCombat();
 
-            Difficulty instanceDifficulty = caster->GetInstanceScript()->instance->GetDifficultyID();
-            if (instanceDifficulty == DIFFICULTY_HEROIC || instanceDifficulty == DIFFICULTY_MYTHIC)
+            if (caster->GetMap()->IsHeroic())
             {
                 if (Creature* hydra = caster->SummonCreature(NPC_ARCANE_HYDRA_SPAWN, _coords[2][0], _coords[2][1], _coords[2][2], _coords[2][3], TEMPSUMMON_CORPSE_DESPAWN, 0))
                     hydra->AI()->DoZoneInCombat();

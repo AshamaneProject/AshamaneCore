@@ -17,6 +17,7 @@
 
 #include "AreaTrigger.h"
 #include "AreaTriggerAI.h"
+#include "GridNotifiers.h"
 #include "SpellAuras.h"
 #include "SpellAuraEffects.h"
 #include "ScriptMgr.h"
@@ -236,14 +237,12 @@ class aura_eoa_lightning_strikes : public AuraScript
         {
             Map::PlayerList const& playerList = caster->GetInstanceScript()->instance->GetPlayers();
             std::vector<Player*> playerVec;
-            // Is there a better way to select a random player without a threat list?
             for (auto itr = playerList.begin(); itr != playerList.end(); ++itr)
                 playerVec.push_back(itr->GetSource());
-            Trinity::Containers::RandomResize(playerVec, 1);
 
             if (playerVec.size() > 0)
             {
-                Unit* target = playerVec[0];
+                Unit* target = Trinity::Containers::SelectRandomContainerElement(playerVec);
                 caster->CastSpell(target, GetSpellInfo()->GetEffect(aurEff->GetEffIndex())->TriggerSpell, false);
             }
         }
@@ -255,6 +254,23 @@ class aura_eoa_lightning_strikes : public AuraScript
     }
 };
 
+// 192794
+class spell_eoa_lightning_strikes_damage : public SpellScript
+{
+    PrepareSpellScript(spell_eoa_lightning_strikes_damage);
+
+    void FilterTargets(std::list<WorldObject*>& targets)
+    {
+        targets.remove_if(Trinity::ObjectTypeIdCheck(TYPEID_PLAYER, false));
+    }
+
+    void Register() override
+    {
+        OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_eoa_lightning_strikes_damage::FilterTargets, EFFECT_0, TARGET_UNIT_DEST_AREA_ENEMY);
+        OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_eoa_lightning_strikes_damage::FilterTargets, EFFECT_1, TARGET_UNIT_DEST_AREA_ENTRY);
+    }
+};
+
 void AddSC_eye_of_azshara()
 {
     RegisterCreatureAI(npc_hatecoil_arcanist);
@@ -262,6 +278,7 @@ void AddSC_eye_of_azshara()
     RegisterSpellScript(spell_hatecoil_arcanist_aqua_spout);
     RegisterSpellScript(spell_animated_storm_water_spout);
     RegisterSpellScript(spell_skrog_tidestomper_massive_quake);
+    RegisterSpellScript(spell_eoa_lightning_strikes_damage);
 
     RegisterAuraScript(aura_hatecoil_wavebinder_bubble_shield);
     RegisterAuraScript(aura_makrana_hardshell_armorshell);

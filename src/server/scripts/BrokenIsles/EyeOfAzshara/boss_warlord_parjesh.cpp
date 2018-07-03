@@ -61,24 +61,24 @@ struct boss_warlord_parjesh : public BossAI
         switch (eventId)
         {
             case SPELL_CRASHING_WAVE:
-                me->CastSpell(me, SPELL_CRASHING_WAVE, false);
+                DoCastSelf(SPELL_CRASHING_WAVE, false);
                 events.Repeat(20000, 24000);
                 break;
             case SPELL_IMPALING_SPEAR_CAST:
                 if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 1))
                 {
-                    me->CastSpell(target, SPELL_IMPALING_SPEAR_CAST, false);
-                    me->CastSpell(target, SPELL_IMPALING_SPEAR_TARGET, true);
+                    DoCast(target, SPELL_IMPALING_SPEAR_CAST, false);
+                    DoCast(target, SPELL_IMPALING_SPEAR_TARGET, true);
                 }
                 events.Repeat(28000, 32000);
                 break;
             case SPELL_THROW_SPEAR:
                 if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 1))
-                    me->CastSpell(target, SPELL_THROW_SPEAR, false);
+                    DoCast(target, SPELL_THROW_SPEAR, false);
                 events.Repeat(8000, 12000);
                 break;
             case SPELL_CALL_REINFORCEMENTS_SHELLBREAKER:
-                me->CastSpell(me, RAND(SPELL_CALL_REINFORCEMENTS_SHELLBREAKER, SPELL_CALL_REINFORCEMENTS_CRESTRIDER), false);
+                DoCastSelf(RAND(SPELL_CALL_REINFORCEMENTS_SHELLBREAKER, SPELL_CALL_REINFORCEMENTS_CRESTRIDER), false);
                 events.Repeat(28000, 32000);
                 break;
         }
@@ -89,7 +89,7 @@ struct boss_warlord_parjesh : public BossAI
         if (me->HealthWillBeBelowPctDamaged(30, damage))
         {
             Talk(1);
-            me->CastSpell(me, SPELL_ENRAGE, false);
+            DoCastSelf(SPELL_ENRAGE, false);
         }
     }
 };

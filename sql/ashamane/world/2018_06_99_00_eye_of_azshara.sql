@@ -562,3 +562,7 @@ INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Lan
 DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId` = 13 AND `SourceEntry` = 192794;
 INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES
 (13, 3, 192794, 0, 0, 31, 0, 4, 0, 0, 0, 0, 0, '', 'Lightning Strikes can implicitly hit only players');
+
+DELETE FROM `spell_script_names` WHERE `spell_id` = 192794;
+INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES
+(192794, 'spell_eoa_lightning_strikes_damage');

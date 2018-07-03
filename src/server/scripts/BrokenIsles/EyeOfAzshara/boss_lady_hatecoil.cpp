@@ -58,7 +58,7 @@ struct boss_lady_hatecoil : public BossAI
         BossAI::Reset();
 
         if (!_arcanistsDead)
-            me->CastSpell(me, SPELL_ARCANE_SHIELDING, true);
+            DoCastSelf(SPELL_ARCANE_SHIELDING, true);
 
         me->GetInstanceScript()->SetData(DATA_RESPAWN_DUNES, 0);
     }
@@ -78,8 +78,7 @@ struct boss_lady_hatecoil : public BossAI
         events.ScheduleEvent(SPELL_FOCUSED_LIGHTING, 29s);
         events.ScheduleEvent(SPELL_CRACKLING_THUNDER_CHECK, 1s);
 
-        Difficulty instanceDifficulty = instance->instance->GetDifficultyID();
-        if (instanceDifficulty == DIFFICULTY_HEROIC || instanceDifficulty == DIFFICULTY_MYTHIC)
+        if (IsHeroic())
             events.ScheduleEvent(SPELL_MONSOON_TARGET, 15s);
     }
 
@@ -101,40 +100,40 @@ struct boss_lady_hatecoil : public BossAI
             case SPELL_BECKON_STORM:
             {
                 Talk(3);
-                me->CastSpell(me, SPELL_BECKON_STORM, false);
+                DoCastSelf(SPELL_BECKON_STORM, false);
                 events.Repeat(45s);
                 break;
             }
             case SPELL_CURSE_OF_THE_WITCH_DEBUFF:
             {
-                uint32 spellId = (rand() % 2 == 0) ? SPELL_CURSE_OF_THE_WITCH_1_TARGET : SPELL_CURSE_OF_THE_WITCH_3_TARGETS;
-                me->CastSpell(me, spellId, false);
+                uint32 spellId = urand(0, 1) ? SPELL_CURSE_OF_THE_WITCH_1_TARGET : SPELL_CURSE_OF_THE_WITCH_3_TARGETS;
+                DoCastSelf(spellId, false);
                 events.Repeat(40s);
                 break;
             }
             case SPELL_STATIC_NOVA:
             {
                 Talk(2);
-                me->CastSpell(me, SPELL_STATIC_NOVA, false);
+                DoCastSelf(SPELL_STATIC_NOVA, false);
                 events.Repeat(35s);
                 break;
             }
             case SPELL_FOCUSED_LIGHTING:
             {
-                me->CastSpell(me, SPELL_FOCUSED_LIGHTING, false);
+                DoCastSelf(SPELL_FOCUSED_LIGHTING, false);
                 events.Repeat(35s);
                 break;
             }
             case SPELL_CRACKLING_THUNDER_CHECK:
             {
-                me->CastSpell(me, SPELL_CRACKLING_THUNDER_CHECK, true);
+                DoCastSelf(SPELL_CRACKLING_THUNDER_CHECK, true);
                 events.Repeat(1s);
                 break;
             }
             case SPELL_MONSOON_TARGET:
             {
                 Talk(6);
-                me->CastSpell(me, SPELL_MONSOON_TARGET, true);
+                DoCastSelf(SPELL_MONSOON_TARGET, true);
                 events.Repeat(25s, 35s);
                 break;
             }
@@ -274,7 +273,7 @@ struct npc_lady_hatecoil_monsoon : public ScriptedAI
 
     void Reset() override
     {
-        me->CastSpell(me, SPELL_MONSOON_VISUAL, true);
+        DoCastSelf(SPELL_MONSOON_VISUAL, true);
         me->setFaction(16); // Same faction as Lady Hatecoil
 
         me->SetSpeed(MOVE_RUN, 2.0f);

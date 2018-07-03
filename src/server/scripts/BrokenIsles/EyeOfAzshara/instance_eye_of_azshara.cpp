@@ -132,7 +132,8 @@ struct instance_eye_of_azshara : public InstanceScript
             incrementDeadArcanistCount();
         else if (type == DATA_RESPAWN_DUNES) // Called by Lady Hatecoil when she resets
         {
-            for (auto guid : _sandDuneGUIDs) {
+            for (auto guid : _sandDuneGUIDs)
+            {
                 if (Creature* sandDune = instance->GetCreature(guid))
                     sandDune->Respawn();
             }
@@ -197,7 +198,7 @@ private:
 
     void incrementDeadArcanistCount()
     {
-        if (++_deadArcanistCount >= 2 && !_ladyHatecoilGUID.IsEmpty()) // If 2 arcanists are dead, remove Lady Hatecoil's shield
+        if (++_deadArcanistCount >= 2) // If 2 arcanists are dead, remove Lady Hatecoil's shield
         {
             if (Creature* ladyHatecoil = instance->GetCreature(_ladyHatecoilGUID))
                 ladyHatecoil->AI()->DoAction(1);

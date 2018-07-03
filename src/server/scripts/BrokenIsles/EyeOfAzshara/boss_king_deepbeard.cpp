@@ -54,7 +54,7 @@ struct boss_king_deepbeard : public BossAI
     {
         BossAI::EnterCombat(who);
 
-        me->CastSpell(me, SPELL_GAIN_ENERGY, true);
+        DoCastSelf(SPELL_GAIN_ENERGY, true);
     }
 
     void JustDied(Unit* killer) override
@@ -77,12 +77,12 @@ struct boss_king_deepbeard : public BossAI
         events.ScheduleEvent(SPELL_GROUND_SLAM, 6s);
     }
 
-    void DamageTaken(Unit* /*attacker*/, uint32& damage) override
+    void DamageTaken(Unit* attacker, uint32& damage) override
     {
         if (me->HealthWillBeBelowPctDamaged(30, damage))
         {
             Talk(4);
-            me->CastSpell(me, SPELL_FRENZY, true);
+            DoCastSelf(SPELL_FRENZY, true);
         }
     }
 
@@ -93,7 +93,7 @@ struct boss_king_deepbeard : public BossAI
             case SPELL_CALL_THE_SEAS:
             {
                 Talk(3);
-                me->CastSpell(me, SPELL_CALL_THE_SEAS, false);
+                DoCastSelf(SPELL_CALL_THE_SEAS, false);
                 events.Repeat(30s);
                 break;
             }
@@ -102,7 +102,7 @@ struct boss_king_deepbeard : public BossAI
                 if (me->GetPower(POWER_ENERGY) == 100)
                 {
                     Talk(2);
-                    me->CastSpell(me, SPELL_QUAKE, false);
+                    DoCastSelf(SPELL_QUAKE, false);
 
                     if (_firstQuake)
                     {
@@ -118,7 +118,7 @@ struct boss_king_deepbeard : public BossAI
             case SPELL_GASEOUS_BUBBLES:
             {
                 Talk(1);
-                me->CastSpell(me, SPELL_GASEOUS_BUBBLES, false);
+                DoCastSelf(SPELL_GASEOUS_BUBBLES, false);
                 events.Repeat(33s);
                 break;
             }
@@ -126,11 +126,11 @@ struct boss_king_deepbeard : public BossAI
             {
                 if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
                 {
-                    me->CastSpell(target, SPELL_GROUND_SLAM, false);
-                    me->CastSpell(me, SPELL_GROUND_SLAM_DAMAGE, true);
-                    events.Repeat(20s);
+                    DoCast(target, SPELL_GROUND_SLAM, false);
+                    DoCastSelf(SPELL_GROUND_SLAM_DAMAGE, true);
                 }
-                
+
+                events.Repeat(20s);
                 break;
             }
         }
@@ -154,8 +154,7 @@ class aura_king_deepbeard_gaseous_bubbles : public AuraScript
 
             if (caster)
             {
-                Difficulty instanceDifficulty = caster->GetInstanceScript()->instance->GetDifficultyID();
-                if (instanceDifficulty == DIFFICULTY_HEROIC || instanceDifficulty == DIFFICULTY_MYTHIC)
+                if (caster->GetMap()->IsHeroic())
                 {
                     int32 damage = GetAura()->GetEffect(EFFECT_0)->GetAmount();
                     target->CastCustomSpell(target, SPELL_GASEOUS_EXPLOSION, &damage, nullptr, nullptr, true);
@@ -180,7 +179,7 @@ struct npc_king_deepbeard_quake : public ScriptedAI
     void Reset() override
     {
         me->setFaction(16);
-        me->CastSpell(me, SPELL_AFTERSHOCK, false);
+        DoCastSelf(SPELL_AFTERSHOCK, false);
     }
 };
 
