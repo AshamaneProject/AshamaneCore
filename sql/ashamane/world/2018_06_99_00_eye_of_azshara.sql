@@ -557,3 +557,8 @@ INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Lan
 (100248, 0, 0, 'No! The ritual is not yet complete!', 14, 0, 100, 0, 0, 0, 0, 'Ritualist Lesha to Player'),
 (100249, 0, 0, 'The bindings weaken...', 14, 0, 100, 0, 0, 0, 0, 'Channeler Varisz to Player'),
 (100250, 0, 0, 'It is still forming!', 14, 0, 100, 0, 0, 0, 0, 'Binder Ashioi to Player');
+
+-- Lightning Strikes
+DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId` = 13 AND `SourceEntry` = 192794;
+INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES
+(13, 3, 192794, 0, 0, 31, 0, 4, 0, 0, 0, 0, 0, '', 'Lightning Strikes can implicitly hit only players');
