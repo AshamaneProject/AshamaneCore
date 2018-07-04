@@ -566,3 +566,9 @@ INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry
 DELETE FROM `spell_script_names` WHERE `spell_id` = 192794;
 INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES
 (192794, 'spell_eoa_lightning_strikes_damage');
+
+-- Disable non-implemented achievements
+DELETE FROM `criteria_data` WHERE `criteria_id` IN (29398, 29404);
+INSERT INTO `criteria_data` (`criteria_id`, `type`, `value1`, `value2`, `ScriptName`) VALUES
+(29398, 11, 0, 0, 'achievement_but_you_say_hes_just_a_friend'),
+(29404, 11, 0, 0, 'achievement_stay_salty');

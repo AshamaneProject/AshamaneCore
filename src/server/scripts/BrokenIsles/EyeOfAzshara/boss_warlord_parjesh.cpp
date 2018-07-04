@@ -145,6 +145,7 @@ struct npc_hatecoil_shellbreaker : public ScriptedAI
         });
     }
 };
+
 // 97269
 struct npc_hatecoil_crestrider : public ScriptedAI
 {
@@ -162,6 +163,19 @@ struct npc_hatecoil_crestrider : public ScriptedAI
     }
 };
 
+// Criteria ID: 29398
+class achievement_but_you_say_hes_just_a_friend : public AchievementCriteriaScript
+{
+   public:
+       achievement_but_you_say_hes_just_a_friend() : AchievementCriteriaScript("achievement_but_you_say_hes_just_a_friend") { }
+
+       bool OnCheck(Player* /*player*/, Unit* /*target*/) override
+       {
+           // TODO
+           return false;
+       }
+};
+
 void AddSC_boss_warlord_parjesh()
 {
     RegisterCreatureAI(boss_warlord_parjesh);
@@ -170,4 +184,6 @@ void AddSC_boss_warlord_parjesh()
 
     RegisterCreatureAI(npc_hatecoil_shellbreaker);
     RegisterCreatureAI(npc_hatecoil_crestrider);
+
+    new achievement_but_you_say_hes_just_a_friend();
 }

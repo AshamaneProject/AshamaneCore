@@ -314,6 +314,19 @@ struct at_lady_hatecoil_monsoon : AreaTriggerAI
     }
 };
 
+// Criteria ID: 29404
+class achievement_stay_salty : public AchievementCriteriaScript
+{
+   public:
+       achievement_stay_salty() : AchievementCriteriaScript("achievement_stay_salty") { }
+
+       bool OnCheck(Player* /*player*/, Unit* /*target*/) override
+       {
+           // TODO
+           return false;
+       }
+};
+
 void AddSC_boss_lady_hatecoil()
 {
     RegisterCreatureAI(boss_lady_hatecoil);
@@ -328,4 +341,6 @@ void AddSC_boss_lady_hatecoil()
     RegisterAuraScript(aura_lady_hatecoil_curse_of_the_witch);
 
     RegisterAreaTriggerAI(at_lady_hatecoil_monsoon);
+
+    new achievement_stay_salty();
 }
