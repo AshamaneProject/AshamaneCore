@@ -2074,7 +2074,11 @@ CREATE TABLE `realmlist` (
   `timezone` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `allowedSecurityLevel` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `population` float unsigned NOT NULL DEFAULT '0',
+<<<<<<< HEAD
   `gamebuild` int(10) unsigned NOT NULL DEFAULT '26899',
+=======
+  `gamebuild` int(10) unsigned NOT NULL DEFAULT '26972',
+>>>>>>> be6bb6153b89a1fbdb8e108fb191430db9742903
   `Region` tinyint(3) unsigned NOT NULL DEFAULT '1',
   `Battlegroup` tinyint(3) unsigned NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
@@ -2089,7 +2093,11 @@ CREATE TABLE `realmlist` (
 LOCK TABLES `realmlist` WRITE;
 /*!40000 ALTER TABLE `realmlist` DISABLE KEYS */;
 INSERT INTO `realmlist` VALUES
+<<<<<<< HEAD
 (1,'Trinity','127.0.0.1','127.0.0.1','255.255.255.0',8085,0,0,1,0,0,26899,1,1);
+=======
+(1,'Ashamane','127.0.0.1','127.0.0.1','255.255.255.0',8085,0,0,1,0,0,26972,1,1);
+>>>>>>> be6bb6153b89a1fbdb8e108fb191430db9742903
 /*!40000 ALTER TABLE `realmlist` ENABLE KEYS */;
 UNLOCK TABLES;
 

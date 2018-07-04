@@ -79,15 +79,10 @@ struct boss_god_king_kovald : public BossAI
     }
 
     Position aegisSpawn;
-    bool startCombat;
-    bool startEvent;
 
     void Reset() override
     {
         _Reset();
-
-        startCombat = false;
-        startEvent = false;
 
         me->SetReactState(REACT_DEFENSIVE);
     }
@@ -95,7 +90,6 @@ struct boss_god_king_kovald : public BossAI
     void EnterCombat(Unit* /*who*/) override
     {
         _EnterCombat();
-        instance->SendEncounterUnit(ENCOUNTER_FRAME_ENGAGE, me, 1);
 
         if (Unit* target = me->GetVictim())
             me->AddAura(SPELL_AEGIS_SHIELD_PLAYER, target);
@@ -106,22 +100,6 @@ struct boss_god_king_kovald : public BossAI
         events.ScheduleEvent(EVENT_FELBLAZE_RUSH, 10000);
         events.ScheduleEvent(EVENT_RAGNAROK, 14000);
         events.ScheduleEvent(EVENT_SAVAGE_BLADE, 22000);
-    }
-
-    void JustDied(Unit* /*killer*/) override
-    {
-        _JustDied();
-
-        if (instance)
-            instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
-    }
-
-    void JustReachedHome() override
-    {
-        _JustReachedHome();
-
-        if (instance)
-            instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
     }
 
     bool PlayerHasAegisAura()
@@ -147,13 +125,11 @@ struct boss_god_king_kovald : public BossAI
             me->SetWalk(false);
             me->GetMotionMaster()->MovePoint(0, 2402.76f, 528.64f, 748.99f, true);
             events.ScheduleEvent(EVENT_START_TALK, 25 * IN_MILLISECONDS);
-            startEvent = true;
         }
     }
 
     void UpdateAI(uint32 diff) override
     {
-
         if (!UpdateVictim() && me->IsInCombat())
             return;
 
@@ -231,8 +207,6 @@ struct boss_god_king_kovald : public BossAI
                 case EVENT_START_COMBAT:
                     me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                     me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-                    startCombat = true;
-
                     break;
 
                 default:
