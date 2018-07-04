@@ -15,10 +15,8 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ScriptMgr.h"
-#include "InstanceScript.h"
-#include "ObjectAccessor.h"
 #include "black_rook_hold.h"
+#include "ScriptPCH.h"
 
 DoorData const doorData[] =
 {
