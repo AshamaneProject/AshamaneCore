@@ -51,7 +51,9 @@ enum DeathKnightSpells
     SPELL_DK_DEATH_COIL_DAMAGE                  = 47632,
     SPELL_DK_DEATH_COIL_HEAL                    = 47633,
     SPELL_DK_DEATH_GRIP                         = 49576,
-    SPELL_DK_DEATH_GRIP_PULL                    = 64431,
+    SPELL_DK_DEATH_GRIP_PULL                    = 49575,
+    SPELL_DK_DEATH_GRIP_VISUAL                  = 55719,
+    SPELL_DK_DEATH_GRIP_TAUNT                   = 57603,
     SPELL_DK_DEATH_STRIKE_HEAL                  = 45470,
     SPELL_DK_ENHANCED_DEATH_COIL                = 157343,
     SPELL_DK_FROST_FEVER                        = 55095,
@@ -105,8 +107,6 @@ enum DeathKnightSpells
     SPELL_DK_BLOOD_CHARGE                       = 114851,
     SPELL_DK_BOOD_TAP                           = 45529,
     SPELL_DK_PILLAR_OF_FROST                    = 51271,
-    SPELL_DK_REMORSELESS_WINTER_STUN            = 115001,
-    SPELL_DK_REMORSELESS_WINTER                 = 115000,
     SPELL_DK_CONVERSION                         = 119975,
     SPELL_DK_WEAKENED_BLOWS                     = 115798,
     SPELL_DK_SCARLET_FEVER                      = 81132,
@@ -144,6 +144,8 @@ enum DeathKnightSpells
     SPELL_DK_HOWLING_BLAST_AOE                  = 237680,
     SPELL_DK_RIME_BUFF                          = 59052,
     SPELL_DK_NORTHREND_WINDS                    = 204088,
+    SPELL_DK_KILLING_MACHINE                    = 51128,
+    SPELL_DK_REMORSELESS_WINTER_SLOW_DOWN       = 211793,
 };
 
 // 70656 - Advantage (T10 4P Melee Bonus)
@@ -1124,58 +1126,54 @@ class spell_dk_will_of_the_necropolis : public SpellScriptLoader
 };
 
 // 49576 - Death Grip
-class spell_dk_death_grip_initial : public SpellScriptLoader
+class spell_dk_death_grip_initial : public SpellScript
 {
-public:
-    spell_dk_death_grip_initial() : SpellScriptLoader("spell_dk_death_grip_initial") { }
+    PrepareSpellScript(spell_dk_death_grip_initial);
 
-    class spell_dk_death_grip_initial_SpellScript : public SpellScript
+    bool Validate(SpellInfo const* /*spellinfo*/) override
     {
-        PrepareSpellScript(spell_dk_death_grip_initial_SpellScript);
+        return ValidateSpellInfo({  SPELL_DK_DEATH_GRIP,
+                                    SPELL_DK_DEATH_GRIP_PULL,
+                                    SPELL_DK_DEATH_GRIP_VISUAL,
+                                    SPELL_DK_DEATH_GRIP_TAUNT });
+    }
 
-        bool Validate(SpellInfo const* /*spellinfo*/) override
-        {
-            if (!sSpellMgr->GetSpellInfo(SPELL_DK_DEATH_GRIP) ||
-                !sSpellMgr->GetSpellInfo(SPELL_DK_DEATH_GRIP_PULL))
-                return false;
-            return true;
-        }
-
-        SpellCastResult CheckCast()
-        {
-            Unit* caster = GetCaster();
-            // Death Grip should not be castable while jumping/falling
-            if (caster->HasUnitState(UNIT_STATE_JUMPING) || caster->HasUnitMovementFlag(MOVEMENTFLAG_FALLING))
-                return SPELL_FAILED_MOVING;
-
-            // Patch 3.3.3 (2010-03-23): Minimum range has been changed to 8 yards in PvP.
-            Unit* target = GetExplTargetUnit();
-            if (target && target->GetTypeId() == TYPEID_PLAYER)
-                if (caster->GetDistance(target) < 8.f)
-                    return SPELL_FAILED_TOO_CLOSE;
-
-            return SPELL_CAST_OK;
-        }
-
-        void HandleOnCast()
-        {
-            Unit* caster = GetCaster();
-            Unit* target = GetExplTargetUnit();
-
-            if (!target->HasAuraType(SPELL_AURA_DEFLECT_SPELLS))
-                target->CastSpell(caster, SPELL_DK_DEATH_GRIP_PULL, true);
-        }
-
-        void Register() override
-        {
-            OnCheckCast += SpellCheckCastFn(spell_dk_death_grip_initial_SpellScript::CheckCast);
-            OnCast += SpellCastFn(spell_dk_death_grip_initial_SpellScript::HandleOnCast);
-        }
-    };
-
-    SpellScript* GetSpellScript() const override
+    SpellCastResult CheckCast()
     {
-        return new spell_dk_death_grip_initial_SpellScript();
+        Unit* caster = GetCaster();
+
+        // Death Grip should not be castable while jumping/falling
+        if (caster->HasUnitState(UNIT_STATE_JUMPING) || caster->HasUnitMovementFlag(MOVEMENTFLAG_FALLING))
+            return SPELL_FAILED_MOVING;
+
+        // Patch 3.3.3 (2010-03-23): Minimum range has been changed to 8 yards in PvP.
+        Unit* target = GetExplTargetUnit();
+        if (target && target->IsPlayer())
+            if (caster->GetDistance(target) < 8.f)
+                return SPELL_FAILED_TOO_CLOSE;
+
+        return SPELL_CAST_OK;
+    }
+
+    void HandleOnCast()
+    {
+        Unit* caster = GetCaster();
+        Unit* target = GetExplTargetUnit();
+
+        if (!target->HasAuraType(SPELL_AURA_DEFLECT_SPELLS))
+        {
+            caster->CastSpell(target, SPELL_DK_DEATH_GRIP_VISUAL, true);
+            target->CastSpell(caster, SPELL_DK_DEATH_GRIP_PULL, true);
+
+            if (caster->IsPlayer() && caster->ToPlayer()->GetSpecializationId() == TALENT_SPEC_DEATHKNIGHT_BLOOD)
+                caster->CastSpell(target, SPELL_DK_DEATH_GRIP_TAUNT, true);
+        }
+    }
+
+    void Register() override
+    {
+        OnCheckCast += SpellCheckCastFn(spell_dk_death_grip_initial::CheckCast);
+        OnCast += SpellCastFn(spell_dk_death_grip_initial::HandleOnCast);
     }
 };
 
@@ -1315,34 +1313,20 @@ class spell_dk_howling_blast_aoe : public SpellScript
     }
 };
 
-// Remorseless Winter - 115000
-class spell_dk_remorseless_winter : public SpellScriptLoader
+// Remorseless Winter - 196771
+class spell_dk_remorseless_winter_damage : public SpellScript
 {
-public:
-    spell_dk_remorseless_winter() : SpellScriptLoader("spell_dk_remorseless_winter") { }
+    PrepareSpellScript(spell_dk_remorseless_winter_damage);
 
-    class spell_dk_remorseless_winter_SpellScript : public SpellScript
+    void HandleOnHit(SpellEffIndex /*effIndex*/)
     {
-        PrepareSpellScript(spell_dk_remorseless_winter_SpellScript);
+        if (Unit* unit = GetHitUnit())
+            GetCaster()->CastSpell(unit, SPELL_DK_REMORSELESS_WINTER_SLOW_DOWN, true);
+    }
 
-        void HandleOnHit()
-        {
-            if (Player* _player = GetCaster()->ToPlayer())
-                if (Unit* target = GetHitUnit())
-                    if (Aura* remorselessWinter = target->GetAura(SPELL_DK_REMORSELESS_WINTER))
-                        if (remorselessWinter->GetStackAmount() == 5 && !target->HasAura(SPELL_DK_REMORSELESS_WINTER_STUN))
-                            _player->CastSpell(target, SPELL_DK_REMORSELESS_WINTER_STUN, true);
-        }
-
-        void Register() override
-        {
-            OnHit += SpellHitFn(spell_dk_remorseless_winter_SpellScript::HandleOnHit);
-        }
-    };
-
-    SpellScript* GetSpellScript() const override
+    void Register() override
     {
-        return new spell_dk_remorseless_winter_SpellScript();
+        OnEffectHit += SpellEffectFn(spell_dk_remorseless_winter_damage::HandleOnHit, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
     }
 };
 
@@ -2495,6 +2479,22 @@ class spell_dk_glacial_advance : public SpellScript
     }
 };
 
+// 49020 - Obliterate
+class spell_dk_obliterate : public SpellScript
+{
+    PrepareSpellScript(spell_dk_obliterate);
+
+    void HandleHit(SpellEffIndex /*effIndex*/)
+    {
+        GetCaster()->RemoveAurasDueToSpell(SPELL_DK_KILLING_MACHINE);
+    }
+
+    void Register() override
+    {
+        OnEffectHit += SpellEffectFn(spell_dk_obliterate::HandleHit, EFFECT_0, SPELL_EFFECT_DUMMY);
+    }
+};
+
 void AddSC_deathknight_spell_scripts()
 {
     new spell_dk_advantage_t10_4p();
@@ -2516,7 +2516,7 @@ void AddSC_deathknight_spell_scripts()
     new spell_dk_death_and_decay();
     new spell_dk_death_coil();
     new spell_dk_death_gate();
-    new spell_dk_death_grip_initial();
+    RegisterSpellScript(spell_dk_death_grip_initial);
     new spell_dk_death_pact();
     new spell_dk_death_siphon();
     new spell_dk_death_strike();
@@ -2543,11 +2543,12 @@ void AddSC_deathknight_spell_scripts()
     new spell_dk_purgatory();
     new spell_dk_purgatory_absorb();
     new spell_dk_raise_dead();
-    new spell_dk_remorseless_winter();
+    RegisterSpellScript(spell_dk_remorseless_winter_damage);
     new spell_dk_runic_empowerment(); //NOT WORKING - Need implementation on PlayerScript :)
     new spell_dk_soul_reaper();
     new spell_dk_unholy_blight();
     new spell_dk_vampiric_blood();
     new spell_dk_will_of_the_necropolis();
     RegisterSpellScript(spell_dk_glacial_advance);
+    RegisterSpellScript(spell_dk_obliterate);
 }
