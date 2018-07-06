@@ -77,7 +77,7 @@ struct boss_king_deepbeard : public BossAI
         events.ScheduleEvent(SPELL_GROUND_SLAM, 6s);
     }
 
-    void DamageTaken(Unit* attacker, uint32& damage) override
+    void DamageTaken(Unit* /*attacker*/, uint32& damage) override
     {
         if (me->HealthWillBeBelowPctDamaged(30, damage))
         {
