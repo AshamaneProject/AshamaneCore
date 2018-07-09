@@ -3,7 +3,7 @@ SET @PHASE_170  = 59073;
 SET @PHASE_171  = 59074;
 
 -- Sylvanas ( apparently it does not have the same spawn mask as proudmore it should ) --
-UPDATE creature SET spawnMask = 6, PhaseId = 170, position_x = 4899.977, position_y = 2208.158, position_z = 638.8166, orientation = 0.3490658, VerifiedBuild = 26972 WHERE guid = 20548883;
+UPDATE creature SET spawnMask = 6, spawntimesecs = 7200, PhaseId = 170, position_x = 4899.977, position_y = 2208.158, position_z = 638.8166, orientation = 0.3490658, VerifiedBuild = 26972 WHERE guid = 20548883;
 
 -- Lady Proudmore --
 UPDATE creature SET PhaseId = 171, position_x = 4901.254, position_y = 2206.861, position_z = 638.8166, orientation = 5.88176, VerifiedBuild = 26972 WHERE guid = 351792;
