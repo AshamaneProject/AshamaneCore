@@ -16,3 +16,4 @@ INSERT INTO spell_area (`spell`, `area`, `teamid`, `flags`) VALUES
 (@PHASE_169, 4809, 0, 3);
 
 -- QuestLine Fixes --
+DELETE FROM creature_queststarter WHERE id=37596 AND quest=24506; -- THIS NPC IS NOT SUPPOSED TO GIVE THIS QUEST
