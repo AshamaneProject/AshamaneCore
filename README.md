@@ -15,6 +15,7 @@ It is fully based on *TrinityCore*, with upgrades like :
 - World Quests
 - Challenge Mode (Mythic+)
 - Legion scripts (WIP)
+	- Eye of Azshara
     - BlackRookHold
     - Darkheart Thicket
     - Mardum (DH start zone)
