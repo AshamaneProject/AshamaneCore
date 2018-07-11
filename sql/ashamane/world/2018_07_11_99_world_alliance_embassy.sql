@@ -1,0 +1,88 @@
+
+/*
+          ALLIANCE EMBASSY SPAWNS v1
+		  
+		  
+*/
+DELETE FROM `gossip_menu_option` WHERE MenuId IN(22081,22082);
+INSERT INTO `gossip_menu_option` (`MenuId`, `OptionIndex`, `OptionIcon`, `OptionText`, `OptionBroadcastTextId`) VALUES
+(22081, 0, 0, 'What can you tell me about the Lightforged draenei?', 0),
+(22082, 0, 0, 'What do we know about the void elves?', 0);
+
+
+
+DELETE FROM `gossip_menu` WHERE (`MenuId`=22202 AND `TextId`=34012) OR (`MenuId`=22081 AND `TextId`=34010) OR (`MenuId`=22082 AND `TextId`=34006) OR (`MenuId`=22201 AND `TextId`=34011) OR (`MenuId`=22203 AND `TextId`=34013) OR (`MenuId`=22198 AND `TextId`=34007) OR (`MenuId`=22199 AND `TextId`=34008) OR (`MenuId`=22200 AND `TextId`=34009);
+INSERT INTO `gossip_menu` (`MenuId`, `TextId`) VALUES
+(22202, 34012), -- 126323
+(22081, 34010), -- 126319
+(22082, 34006), -- 126321
+(22201, 34011), -- 133197
+(22203, 34013), -- 126328
+(22198, 34007), -- 126332
+(22199, 34008), -- 126326
+(22200, 34009); -- 126324
+
+UPDATE creature_template SET gossip_menu_id = 22202 WHERE entry = 126323;
+UPDATE creature_template SET gossip_menu_id = 22081 WHERE entry = 126319;
+UPDATE creature_template SET gossip_menu_id = 22082 WHERE entry = 126321;
+UPDATE creature_template SET gossip_menu_id = 22201 WHERE entry = 133197;
+UPDATE creature_template SET gossip_menu_id = 22203 WHERE entry = 126328;
+UPDATE creature_template SET gossip_menu_id = 22198 WHERE entry = 126332;
+UPDATE creature_template SET gossip_menu_id = 22199 WHERE entry = 126326;
+UPDATE creature_template SET gossip_menu_id = 22200 WHERE entry = 126324;
+
+DELETE FROM npc_text WHERE ID IN (34011, 34013, 34007, 34008, 34006, 34010, 34009, 34012);
+INSERT INTO `npc_text` (`ID`, `Probability0`, `Probability1`, `Probability2`, `Probability3`, `Probability4`, `Probability5`, `Probability6`, `Probability7`, `BroadcastTextId0`, `BroadcastTextId1`, `BroadcastTextId2`, `BroadcastTextId3`, `BroadcastTextId4`, `BroadcastTextId5`, `BroadcastTextId6`, `BroadcastTextId7`, `VerifiedBuild`) VALUES
+(34011, 1, 0, 0, 0, 0, 0, 0, 0, 147222, 0, 0, 0, 0, 0, 0, 0, 26972), -- 34011
+(34013, 1, 0, 0, 0, 0, 0, 0, 0, 147231, 0, 0, 0, 0, 0, 0, 0, 26972), -- 34013
+(34007, 1, 0, 0, 0, 0, 0, 0, 0, 147229, 0, 0, 0, 0, 0, 0, 0, 26972), -- 34007
+(34008, 1, 0, 0, 0, 0, 0, 0, 0, 147228, 0, 0, 0, 0, 0, 0, 0, 26972), -- 34008
+(34006, 1, 0, 0, 0, 0, 0, 0, 0, 147223, 0, 0, 0, 0, 0, 0, 0, 26972), -- 34006
+(34010, 1, 0, 0, 0, 0, 0, 0, 0, 147224, 0, 0, 0, 0, 0, 0, 0, 26972), -- 34010
+(34009, 1, 0, 0, 0, 0, 0, 0, 0, 147226, 0, 0, 0, 0, 0, 0, 0, 26972), -- 34009
+(34012, 1, 0, 0, 0, 0, 0, 0, 0, 147233, 0, 0, 0, 0, 0, 0, 0, 26972); -- 34012
+
+DELETE FROM `gameobject_template` WHERE entry IN (273855, 273853, 278328, 278326, 278331, 278329);
+INSERT INTO `gameobject_template` (`entry`, `type`, `displayId`, `name`, `IconName`, `castBarCaption`, `unk1`, `size`, `Data0`, `Data1`, `Data2`, `Data3`, `Data4`, `Data5`, `Data6`, `Data7`, `Data8`, `Data9`, `Data10`, `Data11`, `Data12`, `Data13`, `Data14`, `Data15`, `Data16`, `Data17`, `Data18`, `Data19`, `Data20`, `Data21`, `Data22`, `Data23`, `Data24`, `Data25`, `Data26`, `Data27`, `Data28`, `Data29`, `Data30`, `Data31`, `Data32`, `RequiredLevel`, `ScriptName`, `VerifiedBuild`)VALUES
+(273855, 22, 47677, 'Lightforged Draenei', 'inspect', '', '', 0.85, 257990, -1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'go_allied_race_infos_draenei', 26972), -- 273855
+(273853, 22, 47680, 'Void Elf', 'inspect', '', '', 1.3, 257989, -1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'go_allied_race_infos_voidelf', 26972), -- 273853
+(278328, 5, 15617, 'Chair', '', '', '', 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 26972), -- 278328
+(278326, 7, 15618, 'Bench', '', '', '', 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 26972), -- 278326
+(278331, 7, 15617, 'Chair', '', '', '', 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 26972), -- 278331
+(278329, 7, 15617, 'Chair', '', '', '', 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 26972); -- 278329
+
+SET @OGUID= 210120122;
+
+INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `PhaseId`, `PhaseGroup`, `position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, `spawntimesecs`, `animprogress`, `state`, `VerifiedBuild`) VALUES
+(@OGUID+1, 273855, 0, 1519, 5314, 1, 0, 0, -8154.518, 822.092, 75.52975, 3.899293, 0, 0, -0.9290905, 0.3698525, 120, 255, 1, 26972), -- 273855 (Area: 5314 - Difficulty: 0)
+(@OGUID+2, 273853, 0, 1519, 9171, 1, 0, 0, -8148.156, 815.2274, 75.41902, 3.899293, 0, 0, -0.9290905, 0.3698525, 120, 255, 1, 26972), -- 273853 (Area: 9171 - Difficulty: 0)
+(@OGUID+3, 278326, 0, 1519, 5314, 1, 0, 0, -8155.223, 811.3687, 75.71727, 5.497789, 0, 0, -0.3826828, 0.9238798, 120, 255, 1, 26972), -- 278326 (Area: 5314 - Difficulty: 0)
+(@OGUID+4, 278328, 0, 1519, 9171, 1, 0, 0, -8150.182, 823.9144, 75.71727, 4.363327, 0, 0, -0.8191509, 0.5735781, 120, 255, 1, 26972), -- 278328 (Area: 9171 - Difficulty: 0)
+(@OGUID+5, 278331, 0, 1519, 9171, 1, 0, 0, -8148.206, 821.507, 75.71727, 3.918267, 0, 0, -0.92554, 0.3786499, 120, 255, 1, 26972), -- 278331 (Area: 9171 - Difficulty: 0)
+(@OGUID+6, 278329, 0, 1519, 9171, 1, 0, 0, -8145.367, 819.0809, 75.71727, 3.447027, 0, 0, -0.9883614, 0.1521243, 120, 255, 1, 26972); -- 278329
+
+-- forgot to make him have gossip --
+UPDATE creature_template SET npcflag=1 WHERE entry = 126323;
+UPDATE creature_template SET npcflag=1 WHERE entry = 126319;
+UPDATE creature_template SET npcflag=1 WHERE entry = 126321;
+UPDATE creature_template SET npcflag=1 WHERE entry = 133197;
+UPDATE creature_template SET npcflag=1 WHERE entry = 126328;
+UPDATE creature_template SET npcflag=1 WHERE entry = 126332;
+UPDATE creature_template SET npcflag=1 WHERE entry = 126324;
+UPDATE creature_template SET npcflag=1 WHERE entry = 126326;
+
+SET @CGUID = 210119255;
+
+INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `PhaseId`, `PhaseGroup`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`, `VerifiedBuild`) VALUES
+(@CGUID+1, 126323, 0, 1519, 9171, 1, 0, 0, 0, 0, -8150.293, 823.7083, 75.54014, 4.244734, 120, 0, 0, 0, 0, 0, 0, 0, 0, 26972), -- 126323 (Area: 9171 - Difficulty: 0)
+(@CGUID+2, 126319, 0, 1519, 9171, 1, 0, 0, 0, 0, -8154.516, 817.3472, 75.8006, 0.3642006, 120, 0, 0, 0, 0, 0, 0, 0, 0, 26972), -- 126319 (Area: 9171 - Difficulty: 0)
+(@CGUID+3, 126321, 0, 1519, 9171, 1, 0, 0, 0, 0, -8152.319, 815.2361, 75.8006, 1.220403, 120, 0, 0, 0, 0, 0, 0, 0, 0, 26972), -- 126321 (Area: 9171 - Difficulty: 0)
+(@CGUID+4, 133197, 0, 1519, 9171, 1, 0, 0, 0, 0, -8151.033, 810.7239, 76.08612, 1.637619, 120, 0, 0, 0, 0, 0, 0, 0, 0, 26972), -- 133197 (Area: 9171 - Difficulty: 0)
+(@CGUID+5, 126328, 0, 1519, 9171, 1, 0, 0, 0, 0, -8154.658, 812.3073, 75.68986, 0.9916472, 120, 0, 0, 0, 0, 0, 0, 0, 0, 26972), -- 126328 (Area: 9171 - Difficulty: 0)
+(@CGUID+6, 126332, 0, 1519, 9171, 1, 0, 0, 0, 0, -8153.974, 807.1337, 76.08612, 1.374631, 120, 0, 0, 0, 0, 0, 0, 0, 0, 26972), -- 126332 (Area: 9171 - Difficulty: 0)
+(@CGUID+7, 126324, 0, 1519, 9171, 1, 0, 0, 0, 0, -8159.022, 819.6614, 76.08612, 6.089644, 120, 0, 0, 0, 0, 0, 0, 0, 0, 26972), -- 126324 (Area: 9171 - Difficulty: 0)
+(@CGUID+8, 126326, 0, 1519, 9171, 1, 0, 0, 0, 0, -8162.304, 813.2205, 76.08612, 0.480675, 120, 0, 0, 0, 0, 0, 0, 0, 0, 26972); -- 126326 (Area: 9171 - Difficulty: 0) (Auras: )
+
+INSERT INTO creature_addon (`guid`, `bytes1`, `bytes2`)VALUES
+(@CGUID+5, 5, 0),
+(@CGUID+1, 4, 0);
