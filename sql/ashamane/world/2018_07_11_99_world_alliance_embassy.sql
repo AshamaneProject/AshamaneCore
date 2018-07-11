@@ -104,5 +104,10 @@ UPDATE creature_template SET VehicleId = 5078 WHERE entry = 126326;
 
 DELETE FROM vehicle_template_accessory WHERE entry = 126326;
 INSERT INTO `vehicle_template_accessory` (`entry`, `accessory_entry`, `seat_id`, `minion`, `description`, `summontype`, `summontimer`) VALUES
-(126326, 116312, 0, 0, 'gelbin in his suit', 6, 30000):
+(126326, 116312, 0, 0, 'gelbin in his suit', 6, 30000);
 
+INSERT INTO `vehicle_accessory` (`guid`, `accessory_entry`, `seat_id`, `minion`, `description`, `summontype`, `summontimer`)VALUES
+(210119263, 116312, 0, 0, 'gelbin in his suit', 6, 30000);
+
+UPDATE creature_template SET minlevel = 110, maxlevel = 110, VehicleId = 5547, type = 7, faction = 1733 WHERE entry = 126326;
+UPDATE creature_template SET minlevel = 98, maxlevel = 110, VehicleId = 5078, type = 7, faction = 1733 WHERE entry = 116312;
