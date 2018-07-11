@@ -97,4 +97,12 @@ INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `P
 
 INSERT INTO creature_addon (`guid`, `bytes1`, `bytes2`)VALUES
 (@CGUID+5, 5, 0),
-(@CGUID+1, 4, 0);
+(@CGUID+1, 4, 0); 
+
+ -- Vehicle fix -- 
+UPDATE creature_template SET VehicleId = 5078 WHERE entry = 126326; 
+
+DELETE FROM vehicle_template_accessory WHERE entry = 126326;
+INSERT INTO `vehicle_template_accessory` (`entry`, `accessory_entry`, `seat_id`, `minion`, `description`, `summontype`, `summontimer`) VALUES
+(126326, 116312, 0, 0, 'gelbin in his suit', 6, 30000):
+
