@@ -249,6 +249,9 @@ UPDATE gossip_menu_option SET OptionType = 5, OptionNpcFlag = 81 WHERE MenuId = 
 UPDATE creature_template SET gossip_menu_id = 341 WHERE entry = 129679;
 UPDATE gossip_menu_option SET OptionType = 8, OptionNpcFlag = 65537 WHERE MenuId = 341 AND OptionIndex = 0;
 
+UPDATE creature_template SET gossip_menu_id = 22173 WHERE entry = 133326;
+UPDATE gossip_menu_option SET OptionType = 5, OptionNpcFlag = 81 WHERE MenuId = 22173 AND OptionIndex = 0;
+
 
 
 GAME OBJECT_TEMPLATE
