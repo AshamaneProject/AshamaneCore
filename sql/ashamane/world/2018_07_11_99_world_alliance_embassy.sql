@@ -1,6 +1,6 @@
 
 /*
-          ALLIANCE EMBASSY SPAWNS v1
+          ALLIANCE EMBASSY SPAWNS v1.01
 		  
 		  
 */
