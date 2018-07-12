@@ -148,6 +148,40 @@ UPDATE creature_template SET minlevel = 100, maxlevel = 100, faction = 35, npcfl
 UPDATE creature_addon SET auras = 0 WHERE guid = 210119268;
 
 
+DELETE FROM `npc_vendor` WHERE (`entry`=133332 AND `item`=39354 AND `ExtendedCost`=0 AND `type`=1) OR (`entry`=133332 AND `item`=4364 AND `ExtendedCost`=0 AND `type`=1) OR (`entry`=133332 AND `item`=4357 AND `ExtendedCost`=0 AND `type`=1) OR (`entry`=133332 AND `item`=4371 AND `ExtendedCost`=0 AND `type`=1) OR (`entry`=133332 AND `item`=4361 AND `ExtendedCost`=0 AND `type`=1) OR (`entry`=133332 AND `item`=4404 AND `ExtendedCost`=0 AND `type`=1) OR (`entry`=133332 AND `item`=10647 AND `ExtendedCost`=0 AND `type`=1) OR (`entry`=133332 AND `item`=3466 AND `ExtendedCost`=0 AND `type`=1) OR (`entry`=133332 AND `item`=2880 AND `ExtendedCost`=0 AND `type`=1) OR (`entry`=133332 AND `item`=39684 AND `ExtendedCost`=0 AND `type`=1) OR (`entry`=133332 AND `item`=40533 AND `ExtendedCost`=0 AND `type`=1) OR (`entry`=133332 AND `item`=4400 AND `ExtendedCost`=0 AND `type`=1) OR (`entry`=133332 AND `item`=4399 AND `ExtendedCost`=0 AND `type`=1) OR (`entry`=133332 AND `item`=90146 AND `ExtendedCost`=0 AND `type`=1) OR (`entry`=133332 AND `item`=2901 AND `ExtendedCost`=0 AND `type`=1) OR (`entry`=133332 AND `item`=5956 AND `ExtendedCost`=0 AND `type`=1) OR (`entry`=133332 AND `item`=68660 AND `ExtendedCost`=6003 AND `type`=1) OR (`entry`=133332 AND `item`=59489 AND `ExtendedCost`=3310 AND `type`=1) OR (`entry`=133332 AND `item`=59477 AND `ExtendedCost`=3392 AND `type`=1) OR (`entry`=133332 AND `item`=59478 AND `ExtendedCost`=3311 AND `type`=1) OR (`entry`=133332 AND `item`=59479 AND `ExtendedCost`=3311 AND `type`=1) OR (`entry`=133332 AND `item`=59480 AND `ExtendedCost`=3308 AND `type`=1) OR (`entry`=133332 AND `item`=59491 AND `ExtendedCost`=3305 AND `type`=1) OR (`entry`=133332 AND `item`=59493 AND `ExtendedCost`=3307 AND `type`=1) OR (`entry`=133332 AND `item`=59496 AND `ExtendedCost`=3306 AND `type`=1) OR (`entry`=133411 AND `item`=21219 AND `ExtendedCost`=0 AND `type`=1) OR (`entry`=133411 AND `item`=21099 AND `ExtendedCost`=0 AND `type`=1) OR (`entry`=133411 AND `item`=2678 AND `ExtendedCost`=0 AND `type`=1) OR (`entry`=133411 AND `item`=30817 AND `ExtendedCost`=0 AND `type`=1) OR (`entry`=133411 AND `item`=159 AND `ExtendedCost`=0 AND `type`=1);
+INSERT INTO `npc_vendor` (`entry`, `slot`, `item`, `maxcount`, `ExtendedCost`, `type`, `PlayerConditionID`, `IgnoreFiltering`, `VerifiedBuild`) VALUES
+(133332, 165, 39354, 0, 0, 1, 0, 0, 26972), -- 39354
+(133332, 164, 4364, 3, 0, 1, 0, 0, 26972), -- 4364
+(133332, 163, 4357, 4, 0, 1, 0, 0, 26972), -- 4357
+(133332, 162, 4371, 1, 0, 1, 0, 0, 26972), -- 4371
+(133332, 161, 4361, 2, 0, 1, 0, 0, 26972), -- 4361
+(133332, 160, 4404, 1, 0, 1, 0, 0, 26972), -- 4404
+(133332, 159, 10647, 0, 0, 1, 0, 0, 26972), -- 10647
+(133332, 158, 3466, 0, 0, 1, 0, 0, 26972), -- 3466
+(133332, 157, 2880, 0, 0, 1, 0, 0, 26972), -- 2880
+(133332, 156, 39684, 0, 0, 1, 0, 0, 26972), -- 39684
+(133332, 155, 40533, 0, 0, 1, 0, 0, 26972), -- 40533
+(133332, 154, 4400, 0, 0, 1, 0, 0, 26972), -- 4400
+(133332, 153, 4399, 0, 0, 1, 0, 0, 26972), -- 4399
+(133332, 152, 90146, 0, 0, 1, 0, 0, 26972), -- 90146
+(133332, 151, 2901, 0, 0, 1, 0, 0, 26972), -- 2901
+(133332, 150, 5956, 0, 0, 1, 0, 0, 26972), -- 5956
+(133332, 22, 68660, 0, 6003, 1, 0, 0, 26972), -- 68660
+(133332, 21, 59489, 0, 3310, 1, 0, 0, 26972), -- 59489
+(133332, 20, 59477, 0, 3392, 1, 0, 0, 26972), -- 59477
+(133332, 19, 59478, 0, 3311, 1, 0, 0, 26972), -- 59478
+(133332, 18, 59479, 0, 3311, 1, 0, 0, 26972), -- 59479
+(133332, 17, 59480, 0, 3308, 1, 0, 0, 26972), -- 59480
+(133332, 16, 59491, 0, 3305, 1, 0, 0, 26972), -- 59491
+(133332, 15, 59493, 0, 3307, 1, 0, 0, 26972), -- 59493
+(133332, 14, 59496, 0, 3306, 1, 0, 0, 26972), -- 59496
+(133411, 5, 21219, 0, 0, 1, 0, 0, 26972), -- 21219
+(133411, 4, 21099, 0, 0, 1, 0, 0, 26972), -- 21099
+(133411, 3, 2678, 0, 0, 1, 0, 0, 26972), -- 2678
+(133411, 2, 30817, 0, 0, 1, 0, 0, 26972), -- 30817
+(133411, 1, 159, 0, 0, 1, 0, 0, 26972); -- 159
+
+
 GAME OBJECT_TEMPLATE
 INSERT INTO `gameobject_template` (`entry`, `type`, `displayId`, `name`, `IconName`, `castBarCaption`, `unk1`, `size`, `Data0`, `Data1`, `Data2`, `Data3`, `Data4`, `Data5`, `Data6`, `Data7`, `Data8`, `Data9`, `Data10`, `Data11`, `Data12`, `Data13`, `Data14`, `Data15`, `Data16`, `Data17`, `Data18`, `Data19`, `Data20`, `Data21`, `Data22`, `Data23`, `Data24`, `Data25`, `Data26`, `Data27`, `Data28`, `Data29`, `Data30`, `Data31`, `Data32`, `RequiredLevel`, `VerifiedBuild`) VALUES
 (278311, 8, 23396, 'Bonfire', '', '', '', 1, 4, 10, 215916, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 26972),
