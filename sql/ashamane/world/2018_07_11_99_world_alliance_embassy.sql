@@ -141,7 +141,7 @@ INSERT INTO `creature_template` (`entry`, `KillCredit1`, `KillCredit2`, `modelid
 (133326, 0, 0, 82847, 0, 0, 0, 'Artificer Farud', NULL, 'Engineering Trainer', NULL, NULL, 6, 0, 0, 0, 0, 7, 134217728, 0, 1, 10, 0, 0, 26972); -- 133326
 
 
-(133332, 22172, 30, 30, 875, 4225, 1, 1.142857, 2000, 2000, 1, 512, 2048, 0, UNKNOWN, 0, 1), -- 133332
+
 
 UPDATE creature_template SET minlevel = 110, maxlevel = 110, faction = 84, npcflag = 81, speed_walk = 1, speed_run = 1.142857, unit_class = 1, unit_flags = 32768, unit_flags2 = 2048 WHERE entry = 133326;
 UPDATE creature_template SET minlevel = 30, maxlevel = 30, faction = 875, npcflag = 4225, speed_walk = 1, speed_run = 1.142857, unit_class = 1, unit_flags = 512, unit_flags2 = 2048 WHERE entry = 133332;
