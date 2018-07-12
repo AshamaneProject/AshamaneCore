@@ -124,7 +124,7 @@ INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `P
 
 
 Creature_Template
-DELETE FROM creature_template WHERE entry IN (133433, 133441, 133509, 133672, 133396, 133363, 133431, 133411, 112698);
+DELETE FROM creature_template WHERE entry IN (133433, 133441, 133509, 133672, 133396, 133363, 133431, 133411, 112698, 129679);
 INSERT INTO `creature_template` (`entry`, `KillCredit1`, `KillCredit2`, `modelid1`, `modelid2`, `modelid3`, `modelid4`, `name`, `femaleName`, `subname`, `TitleAlt`, `IconName`, `HealthScalingExpansion`, `RequiredExpansion`, `VignetteID`, `rank`, `family`, `type`, `type_flags`, `type_flags2`, `HealthModifier`, `ManaModifier`, `RacialLeader`, `movementId`, `VerifiedBuild`) VALUES
 (133433, 0, 0, 83231, 83232, 82918, 82919, 'Ghostblade Scout', NULL, NULL, NULL, NULL, -1, 0, 0, 0, 0, 7, 0, 0, 1, 1, 0, 0, 26972), -- 133433  ONE
 (133441, 0, 0, 82925, 82928, 83233, 83234, 'Trained Brightlance', NULL, NULL, NULL, NULL, 6, 0, 0, 0, 0, 7, 4096, 0, 1, 1, 0, 0, 26972), -- 133441 ONE
@@ -134,7 +134,8 @@ INSERT INTO `creature_template` (`entry`, `KillCredit1`, `KillCredit2`, `modelid
 (133363, 0, 0, 82875, 0, 0, 0, 'Aevedos', NULL, 'Tailoring Trainer', NULL, NULL, -1, 0, 0, 0, 0, 7, 134217728, 0, 1, 1, 0, 0, 26972), -- 133363 ONE
 (133431, 0, 0, 80978, 82914, 83229, 83230, 'Lightforged Sunshield', NULL, NULL, NULL, NULL, 6, 0, 0, 0, 0, 7, 0, 0, 1, 10, 0, 0, 26972), -- 133431 ONE
 (133411, 0, 0, 82899, 0, 0, 0, 'Dalia Skyblossom', NULL, 'Cooking Trainer', NULL, NULL, 0, 0, 0, 0, 0, 7, 134217728, 0, 1.05, 1, 0, 0, 26972), -- 133411 ONE
-(112698, 0, 0, 63716, 72180, 72181, 72183, 'Cat', NULL, NULL, NULL, 'openhandglow', 0, 0, 0, 0, 52, 1, 0, 0, 1, 1, 0, 0, 26972); -- 112698 ONE
+(112698, 0, 0, 63716, 72180, 72181, 72183, 'Cat', NULL, NULL, NULL, 'openhandglow', 0, 0, 0, 0, 52, 1, 0, 0, 1, 1, 0, 0, 26972), -- 112698 ONE
+(129679, 0, 0, 82867, 0, 0, 0, 'Shani Ward', NULL, 'Innkeeper', NULL, NULL, -1, 0, 0, 0, 0, 7, 134217728, 0, 5, 1, 0, 0, 26972); -- 129679
 
 UPDATE creature_template SET minlevel = 90, maxlevel = 90, faction = 1733, npcflag = 0, speed_walk = 1, speed_run = 1.142857, unit_class = 8, unit_flags = 32768, unit_flags2 = 2048 WHERE entry = 133672;
 UPDATE creature_template SET minlevel = 110, maxlevel = 110, faction = 84, npcflag = 0, speed_walk = 1, speed_run = 1.142857, unit_class = 1, unit_flags = 32768, unit_flags2 = 2048 WHERE entry = 133431;
@@ -145,6 +146,7 @@ UPDATE creature_template SET minlevel = 110, maxlevel = 110, faction = 84, npcfl
 UPDATE creature_template SET minlevel = 110, maxlevel = 110, faction = 84, npcflag = 81, speed_walk = 1, speed_run = 1.142857, unit_class = 2, unit_flags = 32768, unit_flags2 = 2048 WHERE entry = 133363;
 UPDATE creature_template SET minlevel = 30, maxlevel = 30, faction = 84, npcflag = 209, speed_walk = 1, speed_run = 1.142857, unit_class = 1, unit_flags = 512, unit_flags2 = 2048 WHERE entry = 133411;
 UPDATE creature_template SET minlevel = 100, maxlevel = 100, faction = 35, npcflag = 16777216, speed_walk = 1, speed_run = 1.142857, unit_class = 1, unit_flags = 32768, unit_flags2 = 2048 WHERE entry = 112698;
+UPDATE creature_template SET gossip_menu_id = 341, minlevel = 110, maxlevel = 110, faction = 84, npcflag = 65537, speed_walk = 1, speed_run = 1.142857, unit_class = 8, unit_flags = 32768, unit_flags2 = 2048 WHERE entry = 129679;
 UPDATE creature_addon SET auras = 0 WHERE guid = 210119268;
 
 
