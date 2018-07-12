@@ -606,14 +606,14 @@ public:
 
         void RewardPlayers(Unit* killer)
         {
-            if (Player* player = killer->GetCharmerOrOwnerPlayerOrPlayerItself())
-                player->RewardPlayerAndGroupAtEvent(NPC_HOGGER, me);
+            for (auto itr : me->getThreatManager().getThreatList())
+                if (Player* player = ObjectAccessor::GetPlayer(*me, itr->getUnitGuid()))
+                    player->RewardPlayerAndGroupAtEvent(NPC_HOGGER, me);
         }
 
         void SummonGeneralHammondClay()
         {
-            TempSummon* hammond = me->SummonCreature(NPC_GENERAL_HAMMOND_CLAY, generalHammondClayPositions[0]);
-            if (hammond)
+            if (TempSummon* hammond = me->SummonCreature(NPC_GENERAL_HAMMOND_CLAY, generalHammondClayPositions[0]))
             {
                 _generalHammondGUID = hammond->GetGUID();
                 hammond->CastSpell(hammond, SPELL_TELEPORT_VISUAL_ONLY_1, true);
@@ -621,13 +621,11 @@ public:
                 hammond->AI()->Talk(YELL_OPENING);
             }
             // summon ragamuffins and do text
-            TempSummon* ragamuffin1 = me->SummonCreature(NPC_RAGAMUFFIN, ragamuffinPositions[0], TEMPSUMMON_TIMED_DESPAWN, 5000);
-            if (ragamuffin1)
+            if (TempSummon* ragamuffin1 = me->SummonCreature(NPC_RAGAMUFFIN, ragamuffinPositions[0], TEMPSUMMON_TIMED_DESPAWN, 5000))
             {
                 ragamuffin1->AI()->Talk(SAY_CLAY);
             }
-            TempSummon* ragamuffin2 = me->SummonCreature(NPC_RAGAMUFFIN, ragamuffinPositions[1], TEMPSUMMON_TIMED_DESPAWN, 5000);
-            if (ragamuffin2)
+            if (TempSummon* ragamuffin2 = me->SummonCreature(NPC_RAGAMUFFIN, ragamuffinPositions[1], TEMPSUMMON_TIMED_DESPAWN, 5000))
             {
                 ragamuffin2->AI()->Talk(SAY_WOW);
             }
@@ -686,23 +684,14 @@ public:
             me->CastStop();
             Talk(SAY_HOGGER_SUMMON_MINIONS);
             //DoCastSelf(SPELL_SUMMON_MINIONS, true); This works, but the minions just sit there, and then despawn
-            Position hogPos1 = me->GetPosition();
-            Position hogPos2 = me->GetPosition();
-            Position hogPos3 = me->GetPosition();
-            GetPositionWithDistInFront(me, 2.5f, hogPos1);
-            GetPositionWithDistInFront(me, 1.5f, hogPos2);
-            GetPositionWithDistInFront(me, 0.5f, hogPos3);
-
-            float z1 = me->GetMap()->GetHeight(me->GetPhaseShift(), hogPos1.GetPositionX(), hogPos1.GetPositionY(), hogPos1.GetPositionZ());
-            hogPos1.m_positionZ = z1;
-            float z2 = me->GetMap()->GetHeight(me->GetPhaseShift(), hogPos2.GetPositionX(), hogPos2.GetPositionY(), hogPos2.GetPositionZ());
-            hogPos2.m_positionZ = z2;
-            float z3 = me->GetMap()->GetHeight(me->GetPhaseShift(), hogPos3.GetPositionX(), hogPos3.GetPositionY(), hogPos3.GetPositionZ());
-            hogPos3.m_positionZ = z3;
-
-            me->SummonCreature(NPC_HOGGER_MINION, hogPos1);
-            me->SummonCreature(NPC_HOGGER_MINION, hogPos2);
-            me->SummonCreature(NPC_HOGGER_MINION, hogPos3);
+            for (float distance : { 0.5f, 1.5f, 2.5f })
+            {
+                Position hogPos = me->GetPosition();
+                GetPositionWithDistInFront(me, distance, hogPos);
+                float z = me->GetMap()->GetHeight(me->GetPhaseShift(), hogPos.GetPositionX(), hogPos.GetPositionY(), hogPos.GetPositionZ());
+                hogPos.m_positionZ = z;
+                me->SummonCreature(NPC_HOGGER_MINION, hogPos);
+            }
             _minionsSummoned = true;
         }
 
