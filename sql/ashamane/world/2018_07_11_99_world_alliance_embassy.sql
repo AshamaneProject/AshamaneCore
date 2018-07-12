@@ -111,3 +111,42 @@ INSERT INTO `vehicle_accessory` (`guid`, `accessory_entry`, `seat_id`, `minion`,
 
 UPDATE creature_template SET minlevel = 110, maxlevel = 110, VehicleId = 5547, type = 7, faction = 1733 WHERE entry = 126326;
 UPDATE creature_template SET minlevel = 98, maxlevel = 110, VehicleId = 5078, type = 7, faction = 1733 WHERE entry = 116312;
+
+SET @CGUID = 210119255;
+
+(@CGUID+9, 133433, 0, 1519, 5314, 1, 0, 0, 0, 0, -8209.656, 822.6614, 70.65031, 1.365126, 120, 0, 0, 0, 0, 0, 0, 0, 0, 26972), -- 133433 (Area: 5314 - Difficulty: 0) @cguid+202
+(@CGUID+10, 133441, 0, 1519, 5314, 1, 0, 0, 0, 0, -8209.288, 825.3958, 70.63021, 4.271554, 120, 0, 0, 0, 0, 0, 0, 0, 0, 26972), -- 133441 (Area: 5314 - Difficulty: 0) @cguid+194
+(@CGUID+186, 133396, 0, 1519, 5314, 1, 0, 0, 0, 0, -8221.839, 815.5121, 70.12801, 1.3472, 120, 0, 0, 0, 0, 0, 0, 0, 0, 26972), -- 133396 (Area: 5314 - Difficulty: 0)
+(@CGUID+187, 133363, 0, 1519, 5314, 1, 0, 0, 0, 0, -8221.989, 819.3559, 70.12801, 5.204322, 120, 0, 0, 0, 0, 0, 0, 0, 0, 26972), -- 133363 (Area: 5314 - Difficulty: 0)
+(@CGUID+197, 133411, 0, 1519, 5314, 1, 0, 0, 0, 0, -8195.146, 842.9149, 70.16967, 4.479193, 120, 0, 0, 0, 0, 0, 0, 0, 0, 26972), -- 133411 (Area: 5314 - Difficulty: 0) (Auras: 262246 - 262246)
+(@CGUID+208, 133431, 0, 1519, 5314, 1, 0, 0, 0, 0, -8197.111, 844.3472, 70.12801, 0.5417498, 120, 0, 0, 0, 0, 0, 0, 0, 0, 26972), -- 133431 (Area: 5314 - Difficulty: 0)
+(@CGUID+189, 133509, 0, 1519, 5314, 1, 0, 0, 0, 0, -8215.795, 833.7986, 70.12801, 0.2234989, 120, 0, 0, 0, 0, 0, 0, 0, 0, 26972), -- 133509 (Area: 5314 - Difficulty: 0)
+(@CGUID+190, 133672, 0, 1519, 5314, 1, 0, 0, 58463, 0, -8213.988, 835.2205, 70.12801, 3.843382, 120, 0, 0, 0, 0, 0, 0, 0, 0, 26972), -- 133672 (Area: 5314 - Difficulty: 0)
+(@CGUID+205, 133672, 0, 1519, 5314, 1, 0, 0, 58463, 0, -8212.514, 833.743, 70.12801, 3.133652, 120, 0, 0, 0, 0, 0, 0, 0, 0, 26972), -- 133672 (Area: 5314 - Difficulty: 0)
+
+
+
+Creature_Template
+INSERT INTO `creature_template` (`entry`, `KillCredit1`, `KillCredit2`, `modelid1`, `modelid2`, `modelid3`, `modelid4`, `name`, `femaleName`, `subname`, `TitleAlt`, `IconName`, `HealthScalingExpansion`, `RequiredExpansion`, `VignetteID`, `rank`, `family`, `type`, `type_flags`, `type_flags2`, `HealthModifier`, `ManaModifier`, `RacialLeader`, `movementId`, `VerifiedBuild`) VALUES
+(133433, 0, 0, 83231, 83232, 82918, 82919, 'Ghostblade Scout', NULL, NULL, NULL, NULL, -1, 0, 0, 0, 0, 7, 0, 0, 1, 1, 0, 0, 26972), -- 133433  ONE
+(133441, 0, 0, 82925, 82928, 83233, 83234, 'Trained Brightlance', NULL, NULL, NULL, NULL, 6, 0, 0, 0, 0, 7, 4096, 0, 1, 1, 0, 0, 26972), -- 133441 ONE
+(133509, 0, 0, 82973, 83108, 83235, 83236, 'Riftwarden Acolyte', NULL, NULL, NULL, NULL, 6, 0, 0, 0, 0, 7, 0, 0, 1, 1, 0, 0, 26972), -- 133509 ONE
+(133672, 0, 0, 15813, 47034, 58463, 37884, 'Master Arcanist', NULL, NULL, NULL, NULL, 5, 0, 0, 0, 0, 7, 0, 0, 1, 1, 0, 0, 26972), -- 133672  NEED TWO OF THESE
+(133396, 0, 0, 82895, 0, 0, 0, 'Jandros Terres', NULL, 'First Aid Trainer', NULL, NULL, 6, 0, 0, 0, 0, 7, 134217728, 0, 1, 1, 0, 0, 26972), -- 133396 ONE
+(133363, 0, 0, 82875, 0, 0, 0, 'Aevedos', NULL, 'Tailoring Trainer', NULL, NULL, -1, 0, 0, 0, 0, 7, 134217728, 0, 1, 1, 0, 0, 26972), -- 133363 ONE
+(133431, 0, 0, 80978, 82914, 83229, 83230, 'Lightforged Sunshield', NULL, NULL, NULL, NULL, 6, 0, 0, 0, 0, 7, 0, 0, 1, 10, 0, 0, 26972), -- 133431 ONE
+(133411, 0, 0, 82899, 0, 0, 0, 'Dalia Skyblossom', NULL, 'Cooking Trainer', NULL, NULL, 0, 0, 0, 0, 0, 7, 134217728, 0, 1.05, 1, 0, 0, 26972), -- 133411 ONE
+(112698, 0, 0, 63716, 72180, 72181, 72183, 'Cat', NULL, NULL, NULL, 'openhandglow', 0, 0, 0, 0, 52, 1, 0, 0, 1, 1, 0, 0, 26972); -- 112698 ONE
+
+
+GAME OBJECT_TEMPLATE
+INSERT INTO `gameobject_template` (`entry`, `type`, `displayId`, `name`, `IconName`, `castBarCaption`, `unk1`, `size`, `Data0`, `Data1`, `Data2`, `Data3`, `Data4`, `Data5`, `Data6`, `Data7`, `Data8`, `Data9`, `Data10`, `Data11`, `Data12`, `Data13`, `Data14`, `Data15`, `Data16`, `Data17`, `Data18`, `Data19`, `Data20`, `Data21`, `Data22`, `Data23`, `Data24`, `Data25`, `Data26`, `Data27`, `Data28`, `Data29`, `Data30`, `Data31`, `Data32`, `RequiredLevel`, `VerifiedBuild`) VALUES
+(278311, 8, 23396, 'Bonfire', '', '', '', 1, 4, 10, 215916, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 26972),
+(281204, 5, 14839, 'Cooking Table', '', '', '', 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 26972); -- 281204
+
+
+SET @OGUID= 210120122;
+
+Gameobjects
+(@OGUID+7, 278311, 0, 1519, 5314, 1, '1139 - 1231 - 1706 - 4064 - 4070 - 6483 - 6690 - 7434 - 7510 - 8389 - 8658 - 10335 - 10336 - 10347 - 10547', 0, -8205.127, 824.0174, 70.47892, 5.576327, 0, 0, -0.346117, 0.9381914, 120, 255, 1, 26972), -- 278311 (Area: 5314 - Difficulty: 0)
+
