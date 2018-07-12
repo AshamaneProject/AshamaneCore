@@ -226,6 +226,16 @@ INSERT INTO `npc_text` (`ID`, `Probability0`, `Probability1`, `Probability2`, `P
 (33973, 1, 0, 0, 0, 0, 0, 0, 0, 147187, 0, 0, 0, 0, 0, 0, 0, 26972), -- 33973
 (33971, 1, 0, 0, 0, 0, 0, 0, 0, 147183, 0, 0, 0, 0, 0, 0, 0, 26972); -- 33971
 
+UPDATE creature_template SET gossip_menu_id = 22124 WHERE entry = 133411;
+UPDATE gossip_menu_option SET OptionType = 3, OptionNpcFlag = 209 WHERE MenuId = 22124 AND OptionIndex = 1;
+UPDATE gossip_menu_option SET OptionType = 5, OptionNpcFlag = 209 WHERE MenuId = 22124 AND OptionIndex = 0;
+
+UPDATE creature_template SET gossip_menu_id = 22169 WHERE entry = 133396;
+UPDATE gossip_menu_option SET OptionType = 5, OptionNpcFlag = 81 WHERE MenuId = 22169 AND OptionIndex = 0;
+
+UPDATE creature_template SET gossip_menu_id = 22171 WHERE entry = 133363;
+UPDATE gossip_menu_option SET OptionType = 5, OptionNpcFlag = 81 WHERE MenuId = 22171 AND OptionIndex = 0;
+
 
 
 GAME OBJECT_TEMPLATE
