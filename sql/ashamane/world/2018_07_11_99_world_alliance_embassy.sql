@@ -95,19 +95,15 @@ INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `P
 (@CGUID+7, 126324, 0, 1519, 9171, 1, 0, 0, 0, 0, -8159.022, 819.6614, 76.08612, 6.089644, 120, 0, 0, 0, 0, 0, 0, 0, 0, 26972), -- 126324 (Area: 9171 - Difficulty: 0)
 (@CGUID+8, 126326, 0, 1519, 9171, 1, 0, 0, 0, 0, -8162.304, 813.2205, 76.08612, 0.480675, 120, 0, 0, 0, 0, 0, 0, 0, 0, 26972); -- 126326 (Area: 9171 - Difficulty: 0) (Auras: )
 
-INSERT INTO creature_addon (`guid`, `bytes1`, `bytes2`)VALUES
-(@CGUID+5, 5, 0),
-(@CGUID+1, 4, 0); 
+INSERT INTO creature_addon (`guid`, `bytes1`, `bytes2`, `emote`)VALUES
+(@CGUID+5, 6, 0, 426),
+(@CGUID+1, 4, 0, 0); 
 
  -- Vehicle fix -- 
-UPDATE creature_template SET VehicleId = 5078 WHERE entry = 126326; 
 
 DELETE FROM vehicle_template_accessory WHERE entry = 126326;
 INSERT INTO `vehicle_template_accessory` (`entry`, `accessory_entry`, `seat_id`, `minion`, `description`, `summontype`, `summontimer`) VALUES
 (126326, 116312, 0, 0, 'gelbin in his suit', 6, 30000);
-
-INSERT INTO `vehicle_accessory` (`guid`, `accessory_entry`, `seat_id`, `minion`, `description`, `summontype`, `summontimer`)VALUES
-(210119263, 116312, 0, 0, 'gelbin in his suit', 6, 30000);
 
 UPDATE creature_template SET minlevel = 110, maxlevel = 110, VehicleId = 5547, type = 7, faction = 1733 WHERE entry = 126326;
 UPDATE creature_template SET minlevel = 98, maxlevel = 110, VehicleId = 5078, type = 7, faction = 1733 WHERE entry = 116312;
