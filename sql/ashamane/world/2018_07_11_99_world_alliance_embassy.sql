@@ -134,6 +134,17 @@ INSERT INTO `creature_template` (`entry`, `KillCredit1`, `KillCredit2`, `modelid
 (133411, 0, 0, 82899, 0, 0, 0, 'Dalia Skyblossom', NULL, 'Cooking Trainer', NULL, NULL, 0, 0, 0, 0, 0, 7, 134217728, 0, 1.05, 1, 0, 0, 26972), -- 133411 ONE
 (112698, 0, 0, 63716, 72180, 72181, 72183, 'Cat', NULL, NULL, NULL, 'openhandglow', 0, 0, 0, 0, 52, 1, 0, 0, 1, 1, 0, 0, 26972); -- 112698 ONE
 
+UPDATE creature_template SET minlevel = 90, maxlevel = 90, faction = 1733, npcflag = 0, speed_walk = 1, speed_run = 1.142857, unit_class = 8, unit_flags = 32768, unit_flags2 = 2048 WHERE entry = 133672;
+UPDATE creature_template SET minlevel = 110, maxlevel = 110, faction = 84, npcflag = 0, speed_walk = 1, speed_run = 1.142857, unit_class = 1, unit_flags = 32768, unit_flags2 = 2048 WHERE entry = 133431;
+UPDATE creature_template SET minlevel = 110, maxlevel = 110, faction = 84, npcflag = 0, speed_walk = 1, speed_run = 1.142857, unit_class = 1, unit_flags = 32768, unit_flags2 = 2048 WHERE entry = 133433;
+UPDATE creature_template SET minlevel = 110, maxlevel = 110, faction = 84, npcflag = 0, speed_walk = 1, speed_run = 1.142857, unit_class = 1, unit_flags = 32768, unit_flags2 = 2048 WHERE entry = 133441;
+UPDATE creature_template SET minlevel = 110, maxlevel = 110, faction = 84, npcflag = 0, speed_walk = 1, speed_run = 1.142857, unit_class = 1, unit_flags = 32768, unit_flags2 = 2048 WHERE entry = 133509;
+UPDATE creature_template SET minlevel = 110, maxlevel = 110, faction = 84, npcflag = 81, speed_walk = 1, speed_run = 1.142857, unit_class = 1, unit_flags = 512, unit_flags2 = 2048 WHERE entry = 133396;
+UPDATE creature_template SET minlevel = 110, maxlevel = 110, faction = 84, npcflag = 81, speed_walk = 1, speed_run = 1.142857, unit_class = 2, unit_flags = 32768, unit_flags2 = 2048 WHERE entry = 133363;
+UPDATE creature_template SET minlevel = 30, maxlevel = 30, faction = 84, npcflag = 209, speed_walk = 1, speed_run = 1.142857, unit_class = 1, unit_flags = 512, unit_flags2 = 2048 WHERE entry = 133411;
+UPDATE creature_template SET minlevel = 100, maxlevel = 100, faction = 35, npcflag = 16777216, speed_walk = 1, speed_run = 1.142857, unit_class = 1, unit_flags = 32768, unit_flags2 = 2048 WHERE entry = 112698;
+
+
 
 GAME OBJECT_TEMPLATE
 INSERT INTO `gameobject_template` (`entry`, `type`, `displayId`, `name`, `IconName`, `castBarCaption`, `unk1`, `size`, `Data0`, `Data1`, `Data2`, `Data3`, `Data4`, `Data5`, `Data6`, `Data7`, `Data8`, `Data9`, `Data10`, `Data11`, `Data12`, `Data13`, `Data14`, `Data15`, `Data16`, `Data17`, `Data18`, `Data19`, `Data20`, `Data21`, `Data22`, `Data23`, `Data24`, `Data25`, `Data26`, `Data27`, `Data28`, `Data29`, `Data30`, `Data31`, `Data32`, `RequiredLevel`, `VerifiedBuild`) VALUES
