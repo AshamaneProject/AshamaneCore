@@ -110,6 +110,7 @@ UPDATE creature_template SET minlevel = 98, maxlevel = 110, VehicleId = 5078, ty
 
 SET @CGUID = 210119255;
 
+INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `PhaseId`, `PhaseGroup`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`, `VerifiedBuild`) VALUES
 (@CGUID+9, 133433, 0, 1519, 5314, 1, 0, 0, 0, 0, -8209.656, 822.6614, 70.65031, 1.365126, 120, 0, 0, 0, 0, 0, 0, 0, 0, 26972), -- 133433 (Area: 5314 - Difficulty: 0) @cguid+202
 (@CGUID+10, 133441, 0, 1519, 5314, 1, 0, 0, 0, 0, -8209.288, 825.3958, 70.63021, 4.271554, 120, 0, 0, 0, 0, 0, 0, 0, 0, 26972), -- 133441 (Area: 5314 - Difficulty: 0) @cguid+194
 (@CGUID+186, 133396, 0, 1519, 5314, 1, 0, 0, 0, 0, -8221.839, 815.5121, 70.12801, 1.3472, 120, 0, 0, 0, 0, 0, 0, 0, 0, 26972), -- 133396 (Area: 5314 - Difficulty: 0)
@@ -118,11 +119,12 @@ SET @CGUID = 210119255;
 (@CGUID+208, 133431, 0, 1519, 5314, 1, 0, 0, 0, 0, -8197.111, 844.3472, 70.12801, 0.5417498, 120, 0, 0, 0, 0, 0, 0, 0, 0, 26972), -- 133431 (Area: 5314 - Difficulty: 0)
 (@CGUID+189, 133509, 0, 1519, 5314, 1, 0, 0, 0, 0, -8215.795, 833.7986, 70.12801, 0.2234989, 120, 0, 0, 0, 0, 0, 0, 0, 0, 26972), -- 133509 (Area: 5314 - Difficulty: 0)
 (@CGUID+190, 133672, 0, 1519, 5314, 1, 0, 0, 58463, 0, -8213.988, 835.2205, 70.12801, 3.843382, 120, 0, 0, 0, 0, 0, 0, 0, 0, 26972), -- 133672 (Area: 5314 - Difficulty: 0)
-(@CGUID+205, 133672, 0, 1519, 5314, 1, 0, 0, 58463, 0, -8212.514, 833.743, 70.12801, 3.133652, 120, 0, 0, 0, 0, 0, 0, 0, 0, 26972), -- 133672 (Area: 5314 - Difficulty: 0)
+(@CGUID+205, 133672, 0, 1519, 5314, 1, 0, 0, 58463, 0, -8212.514, 833.743, 70.12801, 3.133652, 120, 0, 0, 0, 0, 0, 0, 0, 0, 26972); -- 133672 (Area: 5314 - Difficulty: 0)
 
 
 
 Creature_Template
+DELETE FROM creature_template WHERE entry IN (133433, 133441, 133509, 133672, 133396, 133363, 133431, 133411, 112698);
 INSERT INTO `creature_template` (`entry`, `KillCredit1`, `KillCredit2`, `modelid1`, `modelid2`, `modelid3`, `modelid4`, `name`, `femaleName`, `subname`, `TitleAlt`, `IconName`, `HealthScalingExpansion`, `RequiredExpansion`, `VignetteID`, `rank`, `family`, `type`, `type_flags`, `type_flags2`, `HealthModifier`, `ManaModifier`, `RacialLeader`, `movementId`, `VerifiedBuild`) VALUES
 (133433, 0, 0, 83231, 83232, 82918, 82919, 'Ghostblade Scout', NULL, NULL, NULL, NULL, -1, 0, 0, 0, 0, 7, 0, 0, 1, 1, 0, 0, 26972), -- 133433  ONE
 (133441, 0, 0, 82925, 82928, 83233, 83234, 'Trained Brightlance', NULL, NULL, NULL, NULL, 6, 0, 0, 0, 0, 7, 4096, 0, 1, 1, 0, 0, 26972), -- 133441 ONE
