@@ -156,7 +156,7 @@ INSERT INTO `gameobject_template` (`entry`, `type`, `displayId`, `name`, `IconNa
 
 SET @OGUID= 210120122;
 
-Gameobjects
+
 INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `PhaseId`, `PhaseGroup`, `position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, `spawntimesecs`, `animprogress`, `state`, `VerifiedBuild`) VALUES
 (@OGUID+7, 278311, 0, 1519, 5314, 1, '1139 - 1231 - 1706 - 4064 - 4070 - 6483 - 6690 - 7434 - 7510 - 8389 - 8658 - 10335 - 10336 - 10347 - 10547', 0, -8205.127, 824.0174, 70.47892, 5.576327, 0, 0, -0.346117, 0.9381914, 120, 255, 1, 26972), -- 278311 (Area: 5314 - Difficulty: 0)
 (@OGUID+259, 281205, 0, 1519, 5314, 1, '1139 - 1231 - 1706 - 4064 - 4070 - 6483 - 6690 - 7434 - 7510 - 8389 - 8658 - 10335 - 10336 - 10347 - 10547', 0, -8195.908, 845.1146, 70.04467, 0, 0, 0, 0, 1, 120, 255, 1, 26972), -- 281205 (Area: 5314 - Difficulty: 0)
