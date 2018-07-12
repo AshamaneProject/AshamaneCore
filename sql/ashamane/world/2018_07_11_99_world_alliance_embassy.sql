@@ -181,6 +181,52 @@ INSERT INTO `npc_vendor` (`entry`, `slot`, `item`, `maxcount`, `ExtendedCost`, `
 (133411, 2, 30817, 0, 0, 1, 0, 0, 26972), -- 30817
 (133411, 1, 159, 0, 0, 1, 0, 0, 26972); -- 159
 
+DELETE FROM `gossip_menu` WHERE (`MenuId`=22176 AND `TextId`=33978) OR (`MenuId`=22177 AND `TextId`=33979) OR (`MenuId`=22173 AND `TextId`=33975) OR (`MenuId`=22172 AND `TextId`=33974) OR (`MenuId`=341 AND `TextId`=820) OR (`MenuId`=22124 AND `TextId`=18046) OR (`MenuId`=22171 AND `TextId`=33973) OR (`MenuId`=22169 AND `TextId`=33971);
+INSERT INTO `gossip_menu` (`MenuId`, `TextId`) VALUES
+(22176, 33978), -- 133322
+(22177, 33979), -- 133369
+(22173, 33975), -- 133326
+(22172, 33974), -- 133332
+(341, 820), -- 129679
+(22124, 18046), -- 133411
+(22171, 33973), -- 133363
+(22169, 33971); -- 133396
+
+DELETE FROM `gossip_menu_option` WHERE (`MenuId`=22176 AND `OptionIndex`=0) OR (`MenuId`=22177 AND `OptionIndex`=0) OR (`MenuId`=22173 AND `OptionIndex`=0) OR (`MenuId`=22172 AND `OptionIndex`=0) OR (`MenuId`=341 AND `OptionIndex`=0) OR (`MenuId`=22124 AND `OptionIndex`=1) OR (`MenuId`=22124 AND `OptionIndex`=0) OR (`MenuId`=22171 AND `OptionIndex`=0) OR (`MenuId`=22169 AND `OptionIndex`=0);
+INSERT INTO `gossip_menu_option` (`MenuId`, `OptionIndex`, `OptionIcon`, `OptionText`, `OptionBroadcastTextId`) VALUES
+(22176, 0, 3, 'I want to become a blacksmith.', 0),
+(22177, 0, 3, 'Tell me about Mining.', 0),
+(22173, 0, 3, 'Train me in Engineering.', 0),
+(22172, 0, 1, 'Let me browse your goods.', 0),
+(341, 0, 5, 'Make this inn your home.', 0),
+(22124, 1, 1, 'Let me browse your goods.', 0),
+(22124, 0, 3, 'I''m here for cooking training.', 0),
+(22171, 0, 3, 'Train me in Tailoring.', 0),
+(22169, 0, 3, 'Train me in First Aid.', 0);
+
+
+
+DELETE FROM `gossip_menu_option_trainer` WHERE (`MenuId`=22176 AND `OptionIndex`=0) OR (`MenuId`=22177 AND `OptionIndex`=0) OR (`MenuId`=22173 AND `OptionIndex`=0) OR (`MenuId`=22124 AND `OptionIndex`=0) OR (`MenuId`=22171 AND `OptionIndex`=0) OR (`MenuId`=22169 AND `OptionIndex`=0);
+INSERT INTO `gossip_menu_option_trainer` (`MenuId`, `OptionIndex`, `TrainerId`) VALUES
+(22176, 0, 27),
+(22177, 0, 91),
+(22173, 0, 407),
+(22124, 0, 136),
+(22171, 0, 163),
+(22169, 0, 160);
+
+DELETE FROM `npc_text` WHERE `ID` IN (33978 /*33978*/, 33979 /*33979*/, 33975 /*33975*/, 33974 /*33974*/, 820 /*820*/, 18046 /*18046*/, 33973 /*33973*/, 33971 /*33971*/);
+INSERT INTO `npc_text` (`ID`, `Probability0`, `Probability1`, `Probability2`, `Probability3`, `Probability4`, `Probability5`, `Probability6`, `Probability7`, `BroadcastTextId0`, `BroadcastTextId1`, `BroadcastTextId2`, `BroadcastTextId3`, `BroadcastTextId4`, `BroadcastTextId5`, `BroadcastTextId6`, `BroadcastTextId7`, `VerifiedBuild`) VALUES
+(33978, 1, 0, 0, 0, 0, 0, 0, 0, 147196, 0, 0, 0, 0, 0, 0, 0, 26972), -- 33978
+(33979, 1, 0, 0, 0, 0, 0, 0, 0, 147197, 0, 0, 0, 0, 0, 0, 0, 26972), -- 33979
+(33975, 1, 0, 0, 0, 0, 0, 0, 0, 147191, 0, 0, 0, 0, 0, 0, 0, 26972), -- 33975
+(33974, 1, 0, 0, 0, 0, 0, 0, 0, 147188, 0, 0, 0, 0, 0, 0, 0, 26972), -- 33974
+(820, 100, 0, 0, 0, 0, 0, 0, 0, 2821, 0, 0, 0, 0, 0, 0, 0, 26972), -- 820
+(18046, 1, 0, 0, 0, 0, 0, 0, 0, 51896, 0, 0, 0, 0, 0, 0, 0, 26972), -- 18046
+(33973, 1, 0, 0, 0, 0, 0, 0, 0, 147187, 0, 0, 0, 0, 0, 0, 0, 26972), -- 33973
+(33971, 1, 0, 0, 0, 0, 0, 0, 0, 147183, 0, 0, 0, 0, 0, 0, 0, 26972); -- 33971
+
+
 
 GAME OBJECT_TEMPLATE
 INSERT INTO `gameobject_template` (`entry`, `type`, `displayId`, `name`, `IconName`, `castBarCaption`, `unk1`, `size`, `Data0`, `Data1`, `Data2`, `Data3`, `Data4`, `Data5`, `Data6`, `Data7`, `Data8`, `Data9`, `Data10`, `Data11`, `Data12`, `Data13`, `Data14`, `Data15`, `Data16`, `Data17`, `Data18`, `Data19`, `Data20`, `Data21`, `Data22`, `Data23`, `Data24`, `Data25`, `Data26`, `Data27`, `Data28`, `Data29`, `Data30`, `Data31`, `Data32`, `RequiredLevel`, `VerifiedBuild`) VALUES
