@@ -145,7 +145,7 @@ UPDATE creature_template SET minlevel = 110, maxlevel = 110, faction = 84, npcfl
 UPDATE creature_template SET minlevel = 110, maxlevel = 110, faction = 84, npcflag = 81, speed_walk = 1, speed_run = 1.142857, unit_class = 2, unit_flags = 32768, unit_flags2 = 2048 WHERE entry = 133363;
 UPDATE creature_template SET minlevel = 30, maxlevel = 30, faction = 84, npcflag = 209, speed_walk = 1, speed_run = 1.142857, unit_class = 1, unit_flags = 512, unit_flags2 = 2048 WHERE entry = 133411;
 UPDATE creature_template SET minlevel = 100, maxlevel = 100, faction = 35, npcflag = 16777216, speed_walk = 1, speed_run = 1.142857, unit_class = 1, unit_flags = 32768, unit_flags2 = 2048 WHERE entry = 112698;
-
+UPDATE creature_addon SET auras = 0 WHERE guid = 210119268;
 
 
 GAME OBJECT_TEMPLATE
