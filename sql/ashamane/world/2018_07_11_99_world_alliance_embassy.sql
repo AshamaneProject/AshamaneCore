@@ -151,11 +151,13 @@ UPDATE creature_addon SET auras = 0 WHERE guid = 210119268;
 GAME OBJECT_TEMPLATE
 INSERT INTO `gameobject_template` (`entry`, `type`, `displayId`, `name`, `IconName`, `castBarCaption`, `unk1`, `size`, `Data0`, `Data1`, `Data2`, `Data3`, `Data4`, `Data5`, `Data6`, `Data7`, `Data8`, `Data9`, `Data10`, `Data11`, `Data12`, `Data13`, `Data14`, `Data15`, `Data16`, `Data17`, `Data18`, `Data19`, `Data20`, `Data21`, `Data22`, `Data23`, `Data24`, `Data25`, `Data26`, `Data27`, `Data28`, `Data29`, `Data30`, `Data31`, `Data32`, `RequiredLevel`, `VerifiedBuild`) VALUES
 (278311, 8, 23396, 'Bonfire', '', '', '', 1, 4, 10, 215916, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 26972),
-(281204, 5, 14839, 'Cooking Table', '', '', '', 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 26972); -- 281204
-
+(281204, 5, 14839, 'Cooking Table', '', '', '', 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 26972), -- 281204
+(281205, 5, 7409, 'Simmering Stew', '', '', '', 2, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 26972); -- 281205
 
 SET @OGUID= 210120122;
 
 Gameobjects
+INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `PhaseId`, `PhaseGroup`, `position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, `spawntimesecs`, `animprogress`, `state`, `VerifiedBuild`) VALUES
 (@OGUID+7, 278311, 0, 1519, 5314, 1, '1139 - 1231 - 1706 - 4064 - 4070 - 6483 - 6690 - 7434 - 7510 - 8389 - 8658 - 10335 - 10336 - 10347 - 10547', 0, -8205.127, 824.0174, 70.47892, 5.576327, 0, 0, -0.346117, 0.9381914, 120, 255, 1, 26972), -- 278311 (Area: 5314 - Difficulty: 0)
-
+(@OGUID+259, 281205, 0, 1519, 5314, 1, '1139 - 1231 - 1706 - 4064 - 4070 - 6483 - 6690 - 7434 - 7510 - 8389 - 8658 - 10335 - 10336 - 10347 - 10547', 0, -8195.908, 845.1146, 70.04467, 0, 0, 0, 0, 1, 120, 255, 1, 26972), -- 281205 (Area: 5314 - Difficulty: 0)
+(@OGUID+258, 281204, 0, 1519, 5314, 1, '1139 - 1231 - 1706 - 4064 - 4070 - 6483 - 6690 - 7434 - 7510 - 8389 - 8658 - 10335 - 10336 - 10347 - 10547', 0, -8200.955, 838.6163, 70.04467, 5.068156, 0, 0, -0.5708284, 0.8210694, 120, 255, 1, 26972); -- 281204 (Area: 5314 - Difficulty: 0)
