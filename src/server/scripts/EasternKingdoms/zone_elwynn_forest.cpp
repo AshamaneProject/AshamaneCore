@@ -557,7 +557,7 @@ public:
                 damage = 0;
                 me->SetHealth(1);
                 StartEndingScene();
-                RewardPlayers(attacker);
+                RewardPlayers();
             }
 
             if (_isEating)
@@ -604,7 +604,7 @@ public:
             _events.ScheduleEvent(EVENT_HAMMOND_GROUP_START_WALKING, 1000);
         }
 
-        void RewardPlayers(Unit* killer)
+        void RewardPlayers()
         {
             for (auto itr : me->getThreatManager().getThreatList())
                 if (Player* player = ObjectAccessor::GetPlayer(*me, itr->getUnitGuid()))
