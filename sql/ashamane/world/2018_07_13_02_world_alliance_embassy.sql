@@ -1,9 +1,3 @@
-
-/*
-          ALLIANCE EMBASSY SPAWNS v1.01
-		  
-		  
-*/
 DELETE FROM `gossip_menu_option` WHERE MenuId IN(22081,22082);
 INSERT INTO `gossip_menu_option` (`MenuId`, `OptionIndex`, `OptionIcon`, `OptionText`, `OptionBroadcastTextId`) VALUES
 (22081, 0, 0, 'What can you tell me about the Lightforged draenei?', 0),
