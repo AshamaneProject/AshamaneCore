@@ -498,94 +498,83 @@ public:
 static const Position entryPosition = { -97.6376f, -690.562f, 24.3914f };
 static const Position leavePosition = { -19.5636f, -377.193f, 60.8038f };
 
-Position const visionWaypoints[] = {
+Position const visionWaypoints[] =
+{
     { -96.52084f, -701.3229f, 26.23725f },
-{ -72.3125f, -732.9184f, 34.70948f },
-{ -40.28125f, -763.783f, 43.5428f },
-{ -2.125f, -818.7014f, 57.0428f },
-{ -27.65799f, -850.7101f, 57.0428f },
-{ -63.17188f, -829.3177f, 47.68164f },
+    { -72.3125f,  -732.9184f, 34.70948f },
+    { -40.28125f, -763.783f,  43.5428f  },
+    { -2.125f,    -818.7014f, 57.0428f  },
+    { -27.65799f, -850.7101f, 57.0428f  },
+    { -63.17188f, -829.3177f, 47.68164f },
 };
 
 enum VisionData
 {
-    EVENT_START_MOVEMENT = 1,
-    EVENT_DMGROUP_START_COMBAT = 2,
-    EVENT_REWARD_PASSENGER_PLR = 3,
-    EVENT_EXIT_VISION = 4,
+    EVENT_START_MOVEMENT        = 1,
+    EVENT_DMGROUP_START_COMBAT  = 2,
+    EVENT_REWARD_PASSENGER_PLR  = 3,
+    EVENT_EXIT_VISION           = 4,
 
-    NPC_VISION_OF_THE_PAST = 42693,
+    NPC_VISION_OF_THE_PAST      = 42693,
 
-    ACTION_START_FIGHT = 1,
-    ACTION_VANCLEEF_DEAD = 2,
+    ACTION_START_FIGHT          = 1,
+    ACTION_VANCLEEF_DEAD        = 2,
 
-    SAY_VISION_INTRO = 0,
+    SAY_VISION_INTRO            = 0,
 
-    SPELL_QUEST_CREDIT = 79620,
+    SPELL_QUEST_CREDIT          = 79620,
 };
 
-class npc_vision_of_the_past : public CreatureScript
+struct npc_vision_of_the_past : public ScriptedAI
 {
-public:
-    npc_vision_of_the_past() : CreatureScript("npc_vision_of_the_past") { }
+    npc_vision_of_the_past(Creature* creature) : ScriptedAI(creature) { }
 
-    struct npc_vision_of_the_pastAI : public ScriptedAI
+    void MovementInform(uint32 /*type*/, uint32 pointId) override
     {
-        npc_vision_of_the_pastAI(Creature* creature) : ScriptedAI(creature)
+        if (pointId == 0)
+            if (InstanceScript* instance = me->GetInstanceScript())
+                instance->SetData(EVENT_VISION_OF_THE_PAST, IN_PROGRESS);
+    }
+
+    void DoAction(int32 action) override
+    {
+        if (action == ACTION_VANCLEEF_DEAD)
+            _events.ScheduleEvent(EVENT_REWARD_PASSENGER_PLR, 3000);
+    }
+
+    void PassengerBoarded(Unit* who, int8 /*seatId*/, bool apply) override
+    {
+        if (apply)
         {
+            who->SetCanFly(true);
+            who->SetDisableGravity(true);
+
+            me->SetCanFly(true);
+            me->NearTeleportTo(entryPosition, false);
+
+            Talk(SAY_VISION_INTRO, who);
+
+            _events.ScheduleEvent(EVENT_START_MOVEMENT, 3000);
         }
-
-        void MovementInform(uint32 type, uint32 pointId) override
+        else
         {
-            if (pointId == 0)
-            {
-                if (InstanceScript* instance = me->GetInstanceScript())
-                {
-                    instance->SetData(EVENT_VISION_OF_THE_PAST, IN_PROGRESS);
-                }
-            }
+            who->SetCanFly(false);
+            who->SetDisableGravity(false);
+            who->NearTeleportTo(leavePosition, false);
         }
+    }
 
-        void DoAction(int32 action) override
+    void UpdateAI(uint32 diff) override
+    {
+        _events.Update(diff);
+
+        while (uint32 id = _events.ExecuteEvent())
         {
-            if (action == ACTION_VANCLEEF_DEAD)
-                _events.ScheduleEvent(EVENT_REWARD_PASSENGER_PLR, 3000);
-        }
-
-        void PassengerBoarded(Unit* who, int8 /*seatId*/, bool apply) override
-        {
-            if (apply)
+            switch (id)
             {
-                who->SetCanFly(true);
-                who->SetDisableGravity(true);
-
-                me->SetCanFly(true);
-                me->NearTeleportTo(entryPosition, false);
-
-                Talk(SAY_VISION_INTRO, who);
-
-                _events.ScheduleEvent(EVENT_START_MOVEMENT, 3000);
-            }
-            else
-            {
-                who->SetCanFly(false);
-                who->SetDisableGravity(false);
-                who->NearTeleportTo(leavePosition, false);
-            }
-        }
-
-        void UpdateAI(uint32 diff) override
-        {
-            _events.Update(diff);
-
-            while (uint32 id = _events.ExecuteEvent())
-            {
-                switch (id)
-                {
                 case EVENT_START_MOVEMENT:
                     me->GetMotionMaster()->MoveSmoothPath(0, visionWaypoints, 6, false, true);
                     break;
-
                 case EVENT_REWARD_PASSENGER_PLR:
                     _events.ScheduleEvent(EVENT_EXIT_VISION, 1000);
                     if (Unit* passenger = me->GetCharmerOrOwnerPlayerOrPlayerItself())
@@ -594,226 +583,196 @@ public:
                         passenger->CastSpell(passenger, SPELL_QUEST_CREDIT, true);
                     }
                     break;
-
                 case EVENT_EXIT_VISION:
                     me->GetCharmerOrOwnerPlayerOrPlayerItself()->ExitVehicle();
                     me->DespawnOrUnsummon(1000);
                     break;
-                }
             }
         }
-
-    private:
-        EventMap _events;
-    };
-
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new npc_vision_of_the_pastAI(creature);
     }
+
+private:
+    EventMap _events;
 };
 
 enum VanCleefData
 {
-    SAY_VANCLEEF_INTRO = 0,
-    SAY_VANCLEEF_COMBAT_1 = 1,
-    SAY_VANCLEEF_COMBAT_2 = 3,
-    SAY_VANCLEEF_COMBAT_3 = 4,
+    SAY_VANCLEEF_INTRO              = 0,
+    SAY_VANCLEEF_COMBAT_1           = 1,
+    SAY_VANCLEEF_COMBAT_2           = 3,
+    SAY_VANCLEEF_COMBAT_3           = 4,
 
-    ACTION_VANESSA_RUNS_TO_EDWIN = 1,
-    ACTION_COMBAT_END = 2,
+    ACTION_VANESSA_RUNS_TO_EDWIN    = 1,
+    ACTION_COMBAT_END               = 2,
 
-    EVENT_LET_VANESSA_RUN = 1,
+    EVENT_LET_VANESSA_RUN           = 1,
 };
 
-class npc_dm_edwin_vancleef : public CreatureScript
+struct npc_dm_edwin_vancleef : public ScriptedAI
 {
-public:
-    npc_dm_edwin_vancleef() : CreatureScript("npc_dm_edwin_vancleef") { }
+    npc_dm_edwin_vancleef(Creature* creature) : ScriptedAI(creature) { }
 
-    struct npc_dm_edwin_vancleefAI : public ScriptedAI
+    void Reset() override
     {
-        npc_dm_edwin_vancleefAI(Creature* creature) : ScriptedAI(creature)
+        me->SetReactState(REACT_PASSIVE);
+        _phase = 0;
+    }
+
+    void DamageTaken(Unit* /*done_by*/, uint32& damage) override
+    {
+        if (_phase == 0 && me->HealthBelowPctDamaged(75, damage))
         {
+            _phase = 1;
+            Talk(SAY_VANCLEEF_COMBAT_1);
+            return;
         }
 
-        void Reset() override
+        if (_phase == 1 && me->HealthBelowPctDamaged(50, damage))
         {
-            me->SetReactState(REACT_PASSIVE);
-            _phase = 0;
+            _phase = 2;
+            Talk(SAY_VANCLEEF_COMBAT_2);
+            return;
         }
 
-        void DamageTaken(Unit* /*done_by*/, uint32 &damage) override
+        if (_phase == 2 && me->HealthBelowPctDamaged(25, damage))
         {
-            if (_phase == 0 && me->HealthBelowPctDamaged(75, damage))
-            {
-                _phase = 1;
-                Talk(SAY_VANCLEEF_COMBAT_1);
-                return;
-            }
-
-            if (_phase == 1 && me->HealthBelowPctDamaged(50, damage))
-            {
-                _phase = 2;
-                Talk(SAY_VANCLEEF_COMBAT_2);
-                return;
-            }
-
-            if (_phase == 2 && me->HealthBelowPctDamaged(25, damage))
-            {
-                _phase = 3;
-                Talk(SAY_VANCLEEF_COMBAT_3);
-                return;
-            }
+            _phase = 3;
+            Talk(SAY_VANCLEEF_COMBAT_3);
+            return;
         }
+    }
 
-        void DoAction(int32 action) override
+    void DoAction(int32 action) override
+    {
+        switch (action)
         {
-            switch (action)
-            {
             case ACTION_START_FIGHT:
                 _events.ScheduleEvent(EVENT_DMGROUP_START_COMBAT, 8000);
                 break;
-            }
         }
+    }
 
-        void JustDied(Unit* /*killer*/) override
+    void JustDied(Unit* /*killer*/) override
+    {
+        if (GetAllianceWarrior())
+            GetAllianceWarrior()->AI()->DoAction(ACTION_COMBAT_END);
+
+        if (GetVanessa())
+            GetVanessa()->AI()->DoAction(ACTION_VANESSA_RUNS_TO_EDWIN);
+    }
+
+    Creature* GetAllianceWarrior()
+    {
+        if (InstanceScript* instance = me->GetInstanceScript())
+            return me->GetMap()->GetCreature(instance->GetGuidData(DATA_ALLIANCE_WARRIOR));
+        return nullptr;
+    }
+
+    Creature* GetVanessa()
+    {
+        if (InstanceScript* instance = me->GetInstanceScript())
+            return me->GetMap()->GetCreature(instance->GetGuidData(DATA_VANESSA_VANCLEEF));
+        return nullptr;
+    }
+
+    void AttackAllianceWarrior()
+    {
+        if (Creature* warrior = GetAllianceWarrior())
         {
-            if (GetAllianceWarrior())
-                GetAllianceWarrior()->AI()->DoAction(ACTION_COMBAT_END);
-
-            if (GetVanessa())
-                GetVanessa()->AI()->DoAction(ACTION_VANESSA_RUNS_TO_EDWIN);
+            Talk(SAY_VANCLEEF_INTRO);
+            me->SetReactState(REACT_AGGRESSIVE);
+            AttackStart(warrior);
         }
+    }
 
-        Creature* GetAllianceWarrior()
-        {
-            if (InstanceScript* instance = me->GetInstanceScript())
-                return me->GetMap()->GetCreature(instance->GetGuidData(DATA_ALLIANCE_WARRIOR));
-            return nullptr;
-        }
+    void UpdateAI(uint32 diff) override
+    {
+        _events.Update(diff);
 
-        Creature* GetVanessa()
+        while (uint32 id = _events.ExecuteEvent())
         {
-            if (InstanceScript* instance = me->GetInstanceScript())
-                return me->GetMap()->GetCreature(instance->GetGuidData(DATA_VANESSA_VANCLEEF));
-            return nullptr;
-        }
-
-        void AttackAllianceWarrior()
-        {
-            if (Creature* warrior = GetAllianceWarrior())
+            switch (id)
             {
-                Talk(SAY_VANCLEEF_INTRO);
-                me->SetReactState(REACT_AGGRESSIVE);
-                AttackStart(warrior);
-            }
-        }
-
-        void UpdateAI(uint32 diff) override
-        {
-            _events.Update(diff);
-
-            while (uint32 id = _events.ExecuteEvent())
-            {
-                switch (id)
-                {
                 case EVENT_DMGROUP_START_COMBAT:
                     AttackAllianceWarrior();
                     break;
-
-                default: break;
-                }
+                default:
+                    break;
             }
         }
-
-    private:
-        EventMap _events;
-        uint8 _phase;
-    };
-
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new npc_dm_edwin_vancleefAI(creature);
     }
+
+private:
+    EventMap _events;
+    uint8 _phase;
 };
 
 enum DMAllianceWarriorData
 {
-    SAY_WARRIOR_INTRO = 0,
-    SAY_WARRIOR_COMBAT_START = 1,
-    SAY_VICTORY = 2,
-    SAY_BACK_TO_SENTINEL_HILL = 3,
+    SAY_WARRIOR_INTRO           = 0,
+    SAY_WARRIOR_COMBAT_START    = 1,
+    SAY_VICTORY                 = 2,
+    SAY_BACK_TO_SENTINEL_HILL   = 3,
 
-    EVENT_SAY_COMBAT_START = 10,
-    EVENT_SAY_OUTRO = 20,
+    EVENT_SAY_COMBAT_START      = 10,
+    EVENT_SAY_OUTRO             = 20,
 };
 
-class npc_dm_alliance_warrior : public CreatureScript
+struct npc_dm_alliance_warrior : public ScriptedAI
 {
-public:
-    npc_dm_alliance_warrior() : CreatureScript("npc_dm_alliance_warrior") { }
+    npc_dm_alliance_warrior(Creature* creature) : ScriptedAI(creature) { }
 
-    struct npc_dm_alliance_warriorAI : public ScriptedAI
+    void Reset() override
     {
-        npc_dm_alliance_warriorAI(Creature* creature) : ScriptedAI(creature)
-        {
-        }
+        me->SetReactState(REACT_PASSIVE);
+    }
 
-        void Reset() override
+    void DoAction(int32 action) override
+    {
+        switch (action)
         {
-            me->SetReactState(REACT_PASSIVE);
-        }
-
-        void DoAction(int32 action) override
-        {
-            switch (action)
-            {
             case ACTION_START_FIGHT:
                 Talk(SAY_WARRIOR_INTRO);
                 _events.ScheduleEvent(EVENT_SAY_COMBAT_START, 4000);
                 break;
-
             case ACTION_COMBAT_END:
                 Talk(SAY_VICTORY);
                 _events.ScheduleEvent(EVENT_SAY_OUTRO, 3000);
                 break;
-            }
         }
+    }
 
-        Creature* GetEdwinVanCleef()
+    Creature* GetEdwinVanCleef()
+    {
+        if (InstanceScript* instance = me->GetInstanceScript())
+            return me->GetMap()->GetCreature(instance->GetGuidData(DATA_EDWIN_VANCLEEF));
+        return nullptr;
+    }
+
+    void AttackEdwinVanCleef()
+    {
+        if (Creature* edwin = GetEdwinVanCleef())
         {
-            if (InstanceScript* instance = me->GetInstanceScript())
-                return me->GetMap()->GetCreature(instance->GetGuidData(DATA_EDWIN_VANCLEEF));
-            return nullptr;
+            me->SetReactState(REACT_AGGRESSIVE);
+            AttackStart(edwin);
         }
+    }
 
-        void AttackEdwinVanCleef()
+    void UpdateAI(uint32 diff) override
+    {
+        _events.Update(diff);
+
+        while (uint32 id = _events.ExecuteEvent())
         {
-            if (Creature* edwin = GetEdwinVanCleef())
+            switch (id)
             {
-                me->SetReactState(REACT_AGGRESSIVE);
-                AttackStart(edwin);
-            }
-        }
-
-        void UpdateAI(uint32 diff) override
-        {
-            _events.Update(diff);
-
-            while (uint32 id = _events.ExecuteEvent())
-            {
-                switch (id)
-                {
                 case EVENT_DMGROUP_START_COMBAT:
                     AttackEdwinVanCleef();
                     break;
-
                 case EVENT_SAY_COMBAT_START:
                     _events.ScheduleEvent(EVENT_DMGROUP_START_COMBAT, 5000);
                     Talk(SAY_WARRIOR_COMBAT_START);
                     break;
-
                 case EVENT_SAY_OUTRO:
                     Talk(SAY_BACK_TO_SENTINEL_HILL);
                     // despawn creatures
@@ -825,423 +784,345 @@ public:
                     me->DespawnCreaturesInArea(42698); // Defias Blackguard
                     me->DespawnOrUnsummon();
                     break;
-
-                default: break;
-                }
+                default:
+                    break;
             }
-
-            if (!UpdateVictim())
-                return;
-
-            DoMeleeAttackIfReady();
         }
 
-    private:
-        EventMap _events;
-    };
+        if (!UpdateVictim())
+            return;
 
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new npc_dm_alliance_warriorAI(creature);
+        DoMeleeAttackIfReady();
     }
+
+private:
+    EventMap _events;
 };
 
-class npc_dm_alliance_rogue : public CreatureScript
+struct npc_dm_alliance_rogue : public ScriptedAI
 {
-public:
-    npc_dm_alliance_rogue() : CreatureScript("npc_dm_alliance_rogue") { }
+    npc_dm_alliance_rogue(Creature* creature) : ScriptedAI(creature){ }
 
-    struct npc_dm_alliance_rogueAI : public ScriptedAI
+    void Reset() override
     {
-        npc_dm_alliance_rogueAI(Creature* creature) : ScriptedAI(creature)
-        {
-        }
+        me->SetReactState(REACT_PASSIVE);
+    }
 
-        void Reset() override
+    void DoAction(int32 action) override
+    {
+        switch (action)
         {
-            me->SetReactState(REACT_PASSIVE);
-        }
-
-        void DoAction(int32 action) override
-        {
-            switch (action)
-            {
             case ACTION_START_FIGHT:
                 _events.ScheduleEvent(EVENT_DMGROUP_START_COMBAT, 10000);
                 break;
-            }
         }
+    }
 
-        Creature* GetEdwinVanCleef()
+    Creature* GetEdwinVanCleef()
+    {
+        if (InstanceScript* instance = me->GetInstanceScript())
+            return me->GetMap()->GetCreature(instance->GetGuidData(DATA_EDWIN_VANCLEEF));
+        return nullptr;
+    }
+
+    void AttackEdwinVanCleef()
+    {
+        if (Creature* edwin = GetEdwinVanCleef())
         {
-            if (InstanceScript* instance = me->GetInstanceScript())
-                return me->GetMap()->GetCreature(instance->GetGuidData(DATA_EDWIN_VANCLEEF));
-            return nullptr;
+            me->SetReactState(REACT_AGGRESSIVE);
+            AttackStart(edwin);
         }
+    }
 
-        void AttackEdwinVanCleef()
+    void UpdateAI(uint32 diff) override
+    {
+        _events.Update(diff);
+
+        while (uint32 id = _events.ExecuteEvent())
         {
-            if (Creature* edwin = GetEdwinVanCleef())
+            switch (id)
             {
-                me->SetReactState(REACT_AGGRESSIVE);
-                AttackStart(edwin);
-            }
-        }
-
-        void UpdateAI(uint32 diff) override
-        {
-            _events.Update(diff);
-
-            while (uint32 id = _events.ExecuteEvent())
-            {
-                switch (id)
-                {
                 case EVENT_DMGROUP_START_COMBAT:
                     AttackEdwinVanCleef();
                     break;
-
-                default: break;
-                }
+                default:
+                    break;
             }
-
-            if (!UpdateVictim())
-                return;
-
-            DoMeleeAttackIfReady();
         }
 
-    private:
-        EventMap _events;
-    };
+        if (!UpdateVictim())
+            return;
 
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new npc_dm_alliance_rogueAI(creature);
+        DoMeleeAttackIfReady();
     }
+
+private:
+    EventMap _events;
 };
 
 enum AllianceMageData
 {
-    SPELL_DM_FIREBALL = 11921,
-    SPELL_DM_FROSTBOLT = 12675,
+    SPELL_DM_FIREBALL       = 11921,
+    SPELL_DM_FROSTBOLT      = 12675,
 
-    EVENT_CAST_MAGE_SPELL = 10,
+    EVENT_CAST_MAGE_SPELL   = 10,
 };
 
-class npc_dm_alliance_mage : public CreatureScript
+struct npc_dm_alliance_mage : public ScriptedAI
 {
-public:
-    npc_dm_alliance_mage() : CreatureScript("npc_dm_alliance_mage") { }
+    npc_dm_alliance_mage(Creature* creature) : ScriptedAI(creature) { }
 
-    struct npc_dm_alliance_mageAI : public ScriptedAI
+    void Reset() override
     {
-        npc_dm_alliance_mageAI(Creature* creature) : ScriptedAI(creature)
-        {
-        }
+        me->SetReactState(REACT_PASSIVE);
+        _inCombat = false;
+    }
 
-        void Reset() override
+    void DoAction(int32 action) override
+    {
+        switch (action)
         {
-            me->SetReactState(REACT_PASSIVE);
-            _inCombat = false;
-        }
-
-        void DoAction(int32 action) override
-        {
-            switch (action)
-            {
             case ACTION_START_FIGHT:
                 _events.ScheduleEvent(EVENT_DMGROUP_START_COMBAT, 10000);
                 break;
-            }
         }
+    }
 
-        Creature* GetEdwinVanCleef()
+    Creature* GetEdwinVanCleef()
+    {
+        if (InstanceScript* instance = me->GetInstanceScript())
+            return me->GetMap()->GetCreature(instance->GetGuidData(DATA_EDWIN_VANCLEEF));
+        return nullptr;
+    }
+
+    void AttackEdwinVanCleef()
+    {
+        if (!_inCombat)
+            return;
+
+        if (Creature* target = GetEdwinVanCleef())
         {
-            if (InstanceScript* instance = me->GetInstanceScript())
-                return me->GetMap()->GetCreature(instance->GetGuidData(DATA_EDWIN_VANCLEEF));
-            return nullptr;
-        }
-
-        void AttackEdwinVanCleef()
-        {
-            if (!_inCombat)
-                return;
-
-            if (Creature* target = GetEdwinVanCleef())
+            if (target->isDead())
             {
-                if (target->isDead())
-                {
-                    _inCombat = false;
-                    return;
-                }
-
-                me->SetTarget(target->GetGUID());
-                DoCast(target, urand(0, 1) ? SPELL_DM_FIREBALL : SPELL_DM_FROSTBOLT);
-                _events.ScheduleEvent(EVENT_CAST_MAGE_SPELL, 1000);
-            }
-        }
-
-        void UpdateAI(uint32 diff) override
-        {
-            _events.Update(diff);
-
-            if (me->HasUnitState(UNIT_STATE_CASTING))
+                _inCombat = false;
                 return;
+            }
 
-            while (uint32 id = _events.ExecuteEvent())
+            me->SetTarget(target->GetGUID());
+            DoCast(target, urand(0, 1) ? SPELL_DM_FIREBALL : SPELL_DM_FROSTBOLT);
+            _events.ScheduleEvent(EVENT_CAST_MAGE_SPELL, 1000);
+        }
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        _events.Update(diff);
+
+        if (me->HasUnitState(UNIT_STATE_CASTING))
+            return;
+
+        while (uint32 id = _events.ExecuteEvent())
+        {
+            switch (id)
             {
-                switch (id)
-                {
                 case EVENT_DMGROUP_START_COMBAT:
                     _inCombat = true;
                     _events.ScheduleEvent(EVENT_CAST_MAGE_SPELL, 1000);
                     break;
-
                 case EVENT_CAST_MAGE_SPELL:
                     AttackEdwinVanCleef();
                     break;
-
-                default: break;
-                }
+                default:
+                    break;
             }
         }
-
-    private:
-        EventMap _events;
-        bool _inCombat;
-    };
-
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new npc_dm_alliance_mageAI(creature);
     }
+
+private:
+    EventMap _events;
+    bool _inCombat;
 };
 
-enum AlliancePriestData
+struct npc_dm_alliance_priest : public ScriptedAI
 {
-};
+    npc_dm_alliance_priest(Creature* creature) : ScriptedAI(creature) { }
 
-class npc_dm_alliance_priest : public CreatureScript
-{
-public:
-    npc_dm_alliance_priest() : CreatureScript("npc_dm_alliance_priest") { }
-
-    struct npc_dm_alliance_priestAI : public ScriptedAI
+    void Reset() override
     {
-        npc_dm_alliance_priestAI(Creature* creature) : ScriptedAI(creature)
-        {
-        }
+        me->SetReactState(REACT_PASSIVE);
+    }
 
-        void Reset() override
-        {
-            me->SetReactState(REACT_PASSIVE);
-        }
+    Creature* GetAllianceWarrior()
+    {
+        if (InstanceScript* instance = me->GetInstanceScript())
+            return me->GetMap()->GetCreature(instance->GetGuidData(DATA_ALLIANCE_WARRIOR));
+        return nullptr;
+    }
 
-        Creature* GetAllianceWarrior()
-        {
-            if (InstanceScript* instance = me->GetInstanceScript())
-                return me->GetMap()->GetCreature(instance->GetGuidData(DATA_ALLIANCE_WARRIOR));
-            return nullptr;
-        }
+    void UpdateAI(uint32 diff) override
+    {
+        _events.Update(diff);
 
-        void UpdateAI(uint32 diff) override
+        /*while (uint32 id = _events.ExecuteEvent())
         {
-            _events.Update(diff);
-
-            while (uint32 id = _events.ExecuteEvent())
+            switch (id)
             {
-                switch (id)
-                {
-                default: break;
-                }
+                default:
+                    break;
             }
-        }
-
-    private:
-        EventMap _events;
-    };
-
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new npc_dm_alliance_priestAI(creature);
+        }*/
     }
+
+private:
+    EventMap _events;
 };
 
 enum AllianceHunterData
 {
     EVENT_CAST_HUNTER_SPELL = 10,
-    SPELL_DM_ARCANE_SHOT = 78754
+    SPELL_DM_ARCANE_SHOT    = 78754
 };
 
-class npc_dm_alliance_hunter : public CreatureScript
+struct npc_dm_alliance_hunter : public ScriptedAI
 {
-public:
-    npc_dm_alliance_hunter() : CreatureScript("npc_dm_alliance_hunter") { }
+    npc_dm_alliance_hunter(Creature* creature) : ScriptedAI(creature) { }
 
-    struct npc_dm_alliance_hunterAI : public ScriptedAI
+    void Reset() override
     {
-        npc_dm_alliance_hunterAI(Creature* creature) : ScriptedAI(creature)
-        {
-        }
+        me->SetReactState(REACT_PASSIVE);
+        _inCombat = false;
+    }
 
-        void Reset() override
+    void DoAction(int32 action) override
+    {
+        switch (action)
         {
-            me->SetReactState(REACT_PASSIVE);
-            _inCombat = false;
-        }
-
-        void DoAction(int32 action) override
-        {
-            switch (action)
-            {
             case ACTION_START_FIGHT:
                 _events.ScheduleEvent(EVENT_DMGROUP_START_COMBAT, 10000);
                 break;
-            }
         }
+    }
 
-        Creature* GetEdwinVanCleef()
+    Creature* GetEdwinVanCleef()
+    {
+        if (InstanceScript* instance = me->GetInstanceScript())
+            return me->GetMap()->GetCreature(instance->GetGuidData(DATA_EDWIN_VANCLEEF));
+        return nullptr;
+    }
+
+    void AttackEdwinVanCleef()
+    {
+        if (!_inCombat)
+            return;
+
+        if (Creature* target = GetEdwinVanCleef())
         {
-            if (InstanceScript* instance = me->GetInstanceScript())
-                return me->GetMap()->GetCreature(instance->GetGuidData(DATA_EDWIN_VANCLEEF));
-            return nullptr;
-        }
-
-        void AttackEdwinVanCleef()
-        {
-            if (!_inCombat)
-                return;
-
-            if (Creature* target = GetEdwinVanCleef())
+            if (target->isDead())
             {
-                if (target->isDead())
-                {
-                    _inCombat = false;
-                    return;
-                }
-
-                DoCast(target, SPELL_DM_ARCANE_SHOT);
-                _events.ScheduleEvent(EVENT_CAST_HUNTER_SPELL, 1000);
-            }
-        }
-
-        void UpdateAI(uint32 diff) override
-        {
-            _events.Update(diff);
-
-            if (me->HasUnitState(UNIT_STATE_CASTING))
+                _inCombat = false;
                 return;
+            }
 
-            while (uint32 id = _events.ExecuteEvent())
+            DoCast(target, SPELL_DM_ARCANE_SHOT);
+            _events.ScheduleEvent(EVENT_CAST_HUNTER_SPELL, 1000);
+        }
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        _events.Update(diff);
+
+        if (me->HasUnitState(UNIT_STATE_CASTING))
+            return;
+
+        while (uint32 id = _events.ExecuteEvent())
+        {
+            switch (id)
             {
-                switch (id)
-                {
                 case EVENT_DMGROUP_START_COMBAT:
                     _inCombat = true;
                     _events.ScheduleEvent(EVENT_CAST_HUNTER_SPELL, 1000);
                     break;
-
                 case EVENT_CAST_MAGE_SPELL:
                     AttackEdwinVanCleef();
                     break;
-
-                default: break;
-                }
+                default:
+                    break;
             }
         }
-
-    private:
-        EventMap _events;
-        bool _inCombat;
-    };
-
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new npc_dm_alliance_hunterAI(creature);
     }
+
+private:
+    EventMap _events;
+    bool _inCombat;
 };
 
 enum VenessaVanCleefData
 {
-    SAY_DADDY = 0,
-    EVENT_SAY_DADDY = 1,
-    EVENT_RUN_TO_DADDY = 2,
+    SAY_DADDY           = 0,
+    EVENT_SAY_DADDY     = 1,
+    EVENT_RUN_TO_DADDY  = 2,
 };
 
-class npc_dm_vanessa_vancleef : public CreatureScript
+struct npc_dm_vanessa_vancleef : public ScriptedAI
 {
-public:
-    npc_dm_vanessa_vancleef() : CreatureScript("npc_dm_vanessa_vancleef") { }
+    npc_dm_vanessa_vancleef(Creature* creature) : ScriptedAI(creature) { }
 
-    struct npc_dm_vanessa_vancleefAI : public ScriptedAI
+    void Reset() override
     {
-        npc_dm_vanessa_vancleefAI(Creature* creature) : ScriptedAI(creature)
-        {
-        }
+        me->SetReactState(REACT_PASSIVE);
+    }
 
-        void Reset() override
-        {
-            me->SetReactState(REACT_PASSIVE);
-        }
+    Creature* GetEdwinVanCleef()
+    {
+        if (InstanceScript* instance = me->GetInstanceScript())
+            return me->GetMap()->GetCreature(instance->GetGuidData(DATA_EDWIN_VANCLEEF));
+        return nullptr;
+    }
 
-        Creature* GetEdwinVanCleef()
+    void DoAction(int32 action) override
+    {
+        switch (action)
         {
-            if (InstanceScript* instance = me->GetInstanceScript())
-                return me->GetMap()->GetCreature(instance->GetGuidData(DATA_EDWIN_VANCLEEF));
-            return nullptr;
-        }
-
-        void DoAction(int32 action) override
-        {
-            switch (action)
-            {
             case ACTION_VANESSA_RUNS_TO_EDWIN:
                 _events.ScheduleEvent(EVENT_RUN_TO_DADDY, 9000);
                 _events.ScheduleEvent(EVENT_SAY_DADDY, 15000);
                 break;
-            }
         }
+    }
 
-        void FinishEvent()
+    void FinishEvent()
+    {
+        std::list<Creature*> creatures;
+        GetCreatureListWithEntryInGrid(creatures, me, NPC_VISION_OF_THE_PAST, 240);
+    
+        for (auto vision : creatures)
+            vision->AI()->DoAction(ACTION_VANCLEEF_DEAD);
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        _events.Update(diff);
+
+        while (uint32 id = _events.ExecuteEvent())
         {
-            std::list<Creature*> creatures;
-            GetCreatureListWithEntryInGrid(creatures, me, NPC_VISION_OF_THE_PAST, 240);
-            for (auto vision : creatures)
+            switch (id)
             {
-                vision->AI()->DoAction(ACTION_VANCLEEF_DEAD);
-            }
-        }
-
-        void UpdateAI(uint32 diff) override
-        {
-            _events.Update(diff);
-
-            while (uint32 id = _events.ExecuteEvent())
-            {
-                switch (id)
-                {
                 case EVENT_SAY_DADDY:
                     Talk(SAY_DADDY);
                     FinishEvent();
                     break;
-
                 case EVENT_RUN_TO_DADDY:
                     me->GetMotionMaster()->MoveCloserAndStop(0, GetEdwinVanCleef(), 0.7f);
                     break;
-
-                default: break;
-                }
+                default:
+                    break;
             }
         }
-
-    private:
-        EventMap _events;
-    };
-
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new npc_dm_vanessa_vancleefAI(creature);
     }
+
+private:
+    EventMap _events;
 };
 
 void AddSC_deadmines()
@@ -1254,12 +1135,13 @@ void AddSC_deadmines()
     new npc_goblin_engineer();
     new go_deadmines_tp();
     new npc_mining_powder();
-    new npc_vision_of_the_past();
-    new npc_dm_alliance_warrior();
-    new npc_dm_alliance_rogue();
-    new npc_dm_alliance_priest();
-    new npc_dm_alliance_hunter();
-    new npc_dm_alliance_mage();
-    new npc_dm_edwin_vancleef();
-    new npc_dm_vanessa_vancleef();
+
+    RegisterCreatureAI(npc_vision_of_the_past);
+    RegisterCreatureAI(npc_dm_alliance_warrior);
+    RegisterCreatureAI(npc_dm_alliance_rogue);
+    RegisterCreatureAI(npc_dm_alliance_priest);
+    RegisterCreatureAI(npc_dm_alliance_hunter);
+    RegisterCreatureAI(npc_dm_alliance_mage);
+    RegisterCreatureAI(npc_dm_edwin_vancleef);
+    RegisterCreatureAI(npc_dm_vanessa_vancleef);
 }
