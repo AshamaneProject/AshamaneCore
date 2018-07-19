@@ -59,7 +59,7 @@ enum Creatures
     NPC_KILJAEDEN                   = 117269,
 };
 
-enum Spells
+enum CosmeticSpells
 {
     SPELL_COSMETIC_TELEPORT         = 240923,   // Used by Kil'jaeden after Fallen Avatar activation
     SPELL_AWAKEN                    = 240897,   // Kil'jaeden activate Fallen Avatar spell.
