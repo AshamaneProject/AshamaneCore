@@ -262,7 +262,7 @@ INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `P
 (@CGUID+60, 130758, 0, 1519, 9171, 1, 0, 0, 0, 0, -8163.132, 777.2292, 76.84772, 6.195094, 120, 0, 0, 0, 0, 0, 0, 0, 0, 26972), -- 130758 (Area: 9171 - Difficulty: 0)
 (@CGUID+61, 133362, 0, 1519, 9171, 1, 0, 0, 0, 0, -8172.592, 801.0712, 74.05038, 3.948032, 120, 0, 0, 0, 0, 0, 0, 0, 0, 26972); -- 133362 (Area: 9171 - Difficulty: 0) (Auras: 262182 - 262182)
 
-
+UPDATE creature_template SET npcflag = 16777216 WHERE entry = 130758;
 UPDATE creature_template SET gossip_menu_id = 21910 WHERE entry = 130986; 
 
 SET @OGUID=20000100;
