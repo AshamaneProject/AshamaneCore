@@ -81,6 +81,16 @@ INSERT INTO `gossip_menu` (`MenuId`, `TextId`) VALUES
 (22017, 33725), -- 132334
 (22014, 33721); -- 132215
 
+UPDATE creature_template SET gossip_menu_id = 22014 WHERE entry = 132215; 
+UPDATE creature_template SET gossip_menu_id = 21910 WHERE entry = 130986; 
+UPDATE creature_template SET gossip_menu_id = 22019 WHERE entry = 130993;
+UPDATE creature_template SET gossip_menu_id = 21454 WHERE entry = 126390;
+UPDATE creature_template SET gossip_menu_id = 22008 WHERE entry = 130560;
+UPDATE creature_template SET gossip_menu_id = 22018 WHERE entry = 132358;
+UPDATE creature_template SET gossip_menu_id = 21423 WHERE entry = 132224;
+UPDATE creature_template SET gossip_menu_id = 21451 WHERE entry = 126389;
+ 
+
 DELETE FROM `gossip_menu_option` WHERE (`MenuId`=21910 AND `OptionIndex`=5) OR (`MenuId`=21910 AND `OptionIndex`=4) OR (`MenuId`=21910 AND `OptionIndex`=3) OR (`MenuId`=21910 AND `OptionIndex`=2) OR (`MenuId`=21910 AND `OptionIndex`=1) OR (`MenuId`=21910 AND `OptionIndex`=0) OR (`MenuId`=21423 AND `OptionIndex`=0) OR (`MenuId`=8522 AND `OptionIndex`=0) OR (`MenuId`=21462 AND `OptionIndex`=2) OR (`MenuId`=21462 AND `OptionIndex`=0) OR (`MenuId`=9821 AND `OptionIndex`=3) OR (`MenuId`=9821 AND `OptionIndex`=1);
 INSERT INTO `gossip_menu_option` (`MenuId`, `OptionIndex`, `OptionIcon`, `OptionText`, `OptionBroadcastTextId`) VALUES
 (21910, 5, 0, 'Can you teleport me back up to the bridge?', 0),
