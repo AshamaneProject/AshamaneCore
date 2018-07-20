@@ -22,7 +22,7 @@ UPDATE playercreateinfo SET map = 1860, zone = 9359, position_x = 458.823, posit
 DELETE FROM `conversation_actors` WHERE (`ConversationId`=6793 AND `ConversationActorId`=60390 AND `Idx`=0) OR (`ConversationId`=6481 AND `Idx`=0);
 INSERT INTO `conversation_actors` (`ConversationId`, `ConversationActorId`, `Idx`, `VerifiedBuild`) VALUES
 (6793, 60390, 0, 26972),
-(6481, UNKNOWN, 0, 26972); -- Full: 0x20313CE8807FEC4000217F0000C65E90 Creature/0 R3151/S8575 Map: 1860 Entry: 130993 Low: 13000336
+(6481, 0, 0, 26972); -- Full: 0x20313CE8807FEC4000217F0000C65E90 Creature/0 R3151/S8575 Map: 1860 Entry: 130993 Low: 13000336
 
 
 DELETE FROM `conversation_actor_template` WHERE `Id`=60390;
@@ -89,6 +89,8 @@ UPDATE creature_template SET gossip_menu_id = 22008 WHERE entry = 130560;
 UPDATE creature_template SET gossip_menu_id = 22018 WHERE entry = 132358;
 UPDATE creature_template SET gossip_menu_id = 21423 WHERE entry = 132224;
 UPDATE creature_template SET gossip_menu_id = 21451 WHERE entry = 126389;
+UPDATE creature_template SET gossip_menu_id = 22017 WHERE entry = 132334;
+UPDATE creature_template SET gossip_menu_id = 21462 WHERE entry = 123395;
  
 
 DELETE FROM `gossip_menu_option` WHERE (`MenuId`=21910 AND `OptionIndex`=5) OR (`MenuId`=21910 AND `OptionIndex`=4) OR (`MenuId`=21910 AND `OptionIndex`=3) OR (`MenuId`=21910 AND `OptionIndex`=2) OR (`MenuId`=21910 AND `OptionIndex`=1) OR (`MenuId`=21910 AND `OptionIndex`=0) OR (`MenuId`=21423 AND `OptionIndex`=0) OR (`MenuId`=8522 AND `OptionIndex`=0) OR (`MenuId`=21462 AND `OptionIndex`=2) OR (`MenuId`=21462 AND `OptionIndex`=0) OR (`MenuId`=9821 AND `OptionIndex`=3) OR (`MenuId`=9821 AND `OptionIndex`=1);
@@ -145,6 +147,32 @@ INSERT INTO `quest_objectives` (`ID`, `QuestID`, `Type`, `Order`, `StorageIndex`
 (289535, 46735, 4, 0, -1, 1342, 100, 0, 0, 0, '', 26972), -- 289535
 (289167, 46277, 4, 0, -1, 1342, 100, 0, 0, 0, '', 26972); -- 289167
 
+ -- Ambassador Moorguard SAI
+SET @AMBASSADOR_MOORGUARD := -1100562;
+UPDATE `creature_template` SET `AIName`="SmartAI" WHERE `entry`=@AMBASSADOR_MOORGUARD;
+DELETE FROM `smart_scripts` WHERE (`entryorguid`=@AMBASSADOR_MOORGUARD AND `event_param1`=49772);
+INSERT INTO `smart_scripts` (`entryorguid`,`source_type`,`id`,`link`,`event_type`,`event_phase_mask`,`event_chance`,`event_flags`,`event_param1`,`event_param2`,`event_param3`,`event_param4`,`action_type`,`action_param1`,`action_param2`,`action_param3`,`action_param4`,`action_param5`,`action_param6`,`target_type`,`target_param1`,`target_param2`,`target_param3`,`target_x`,`target_y`,`target_z`,`target_o`,`comment`) VALUES
+(@AMBASSADOR_MOORGUARD,0,0,0,20,0,100,0,49772,0,0,0,206,6793,0,0,0,0,0,7,0,0,0,0,0,0,0,"AMBASSADOR_MOORGUARD - On Quest 'For the Alliance' Return - conversation");
+
+-- Captain Fareeya SAI THANKS ÐϴVΞΓϺΛΠ - 930®#4327
+SET @CAPT_FAREEYA := 130993;
+UPDATE `creature_template` SET `AIName`="SmartAI" WHERE `entry`=@CAPT_FAREEYA;
+DELETE FROM `smart_scripts` WHERE `entryorguid`=@CAPT_FAREEYA AND `source_type`=0;
+INSERT INTO `smart_scripts` (`entryorguid`,`source_type`,`id`,`link`,`event_type`,`event_phase_mask`,`event_chance`,`event_flags`,`event_param1`,`event_param2`,`event_param3`,`event_param4`,`action_type`,`action_param1`,`action_param2`,`action_param3`,`action_param4`,`action_param5`,`action_param6`,`target_type`,`target_param1`,`target_param2`,`target_param3`,`target_x`,`target_y`,`target_z`,`target_o`,`comment`) VALUES
+(@CAPT_FAREEYA,0,0,0,19,0,100,0,49772,0,0,0,1,0,7000,0,0,0,0,1,0,0,0,0,0,0,0,"Captain Fareeya - On Quest 'For the Horde' Taken - Say Line 0"),
+(@CAPT_FAREEYA,0,1,0,52,0,100,0,0,@CAPT_FAREEYA,0,0,1,1,11000,0,0,0,0,1,0,0,0,0,0,0,0,"Captain Fareeya - On Text 0 Over - Say Line 1"),
+(@CAPT_FAREEYA,0,2,0,52,0,100,0,1,@CAPT_FAREEYA,0,0,1,2,11000,0,0,0,0,1,0,0,0,0,0,0,0,"Captain Fareeya - On Text 1 Over - Say Line 2"),
+(@CAPT_FAREEYA,0,3,0,52,0,100,0,2,@CAPT_FAREEYA,0,0,1,3,11000,0,0,0,0,1,0,0,0,0,0,0,0,"Captain Fareeya - On Text 2 Over - Say Line 3"),
+(@CAPT_FAREEYA,0,4,0,52,0,100,0,3,@CAPT_FAREEYA,0,0,1,4,11000,0,0,0,0,1,0,0,0,0,0,0,0,"Captain Fareeya - On Text 3 Over - Say Line 4");
+
+DELETE FROM creature_text WHERE CreatureID=@CAPT_FAREEYA;
+INSERT INTO creature_text (CreatureID, GroupID, ID, Text, Type, Language, Probability, Emote, Duration, Sound, BroadcastTextId, TextRange, comment)VALUES
+(@CAPT_FAREEYA, 0, 0, 'For thousands of years, the Lightforged fought demons in the Twisting Nether. The Xenedar was the only home we knew.', 12, 0, 100, 1, 0, 0, 141912, 0, ''),
+(@CAPT_FAREEYA, 1, 1, 'Now, for the first time in ages, we can walk beneath a sky not befouled by the Legion''s madness... and feel the earth under our hooves again.', 12, 0, 100, 1, 0, 0, 141913, 0, ''),
+(@CAPT_FAREEYA, 2, 2, 'But we must not grow complacent. One war ends, the next begins. Such is the life of a soldier.', 12, 0, 100, 1, 0, 0, 141914, 0, ''),
+(@CAPT_FAREEYA, 3, 3, 'Your duty begins in Stormwind. Explore this world of Azeroth. Get to know the people and places we have sworn to defend.', 12, 0, 100, 1, 0, 0, 141915, 0, ''),
+(@CAPT_FAREEYA, 4, 4, 'And always walk in the Light, $p.', 12, 0, 100, 1, 0, 0, 141916, 0, '');
+
 
 DELETE FROM `quest_visual_effect` WHERE (`ID`=312152 AND `Index`=0);
 INSERT INTO `quest_visual_effect` (`ID`, `Index`, `VisualEffect`, `VerifiedBuild`) VALUES
@@ -169,7 +197,7 @@ INSERT INTO `gameobject_questitem` (`GameObjectEntry`, `Idx`, `ItemId`, `Verifie
 
 -- Spawn Range 1100501 to 1101000 ? --
 SET @CGUID := 1100501;
-DELETE FROM `creature` WHERE `guid` BETWEEN @CGUID+0 AND @CGUID+60;
+DELETE FROM `creature` WHERE `guid` BETWEEN @CGUID+0 AND @CGUID+61;
 INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `PhaseId`, `PhaseGroup`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`, `VerifiedBuild`) VALUES
 (@CGUID+0, 132266, 1860, 9359, 9359, 3, 0, 0, 0, 0, 470.3177, 1434.354, 757.5344, 2.293528, 7200, 0, 0, 0, 0, 0, 0, 0, 0, 26972), -- 132266 (Area: 9359 - Difficulty: 0) (Auras: 79968 - 79968)
 (@CGUID+1, 130993, 1860, 9359, 9359, 3, 0, 0, 0, 0, 463.7621, 1452.3, 757.6564, 3.580927, 7200, 0, 0, 0, 0, 0, 0, 0, 0, 26972), -- 130993 (Area: 9359 - Difficulty: 0)
@@ -231,7 +259,9 @@ INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `P
 (@CGUID+57, 132215, 1860, 9359, 9359, 3, 0, 0, 0, 0, 401.2326, 1428.83, 772.9761, 0.2619283, 7200, 0, 0, 0, 0, 0, 0, 0, 0, 26972), -- 132215 (Area: 9359 - Difficulty: 0)
 (@CGUID+58, 126022, 1860, 9359, 9359, 3, 0, 0, 0, 0, 473.3629, 1388.507, 772.6664, 1.595955, 7200, 0, 0, 0, 0, 0, 0, 0, 0, 26972), -- 126022 (Area: 9359 - Difficulty: 0)
 (@CGUID+59, 132215, 1860, 9359, 9359, 3, 0, 0, 0, 0, 417.5729, 1402.941, 772.7399, 5.881432, 7200, 0, 0, 0, 0, 0, 0, 0, 0, 26972), -- 132215 (Area: 9359 - Difficulty: 0) (Auras: 260861 - 260861)
-(@CGUID+60, 130758, 0, 1519, 9171, 1, 0, 0, 0, 0, -8163.132, 777.2292, 76.84772, 6.195094, 120, 0, 0, 0, 0, 0, 0, 0, 0, 26972); -- 130758 (Area: 9171 - Difficulty: 0)
+(@CGUID+60, 130758, 0, 1519, 9171, 1, 0, 0, 0, 0, -8163.132, 777.2292, 76.84772, 6.195094, 120, 0, 0, 0, 0, 0, 0, 0, 0, 26972), -- 130758 (Area: 9171 - Difficulty: 0)
+(@CGUID+61, 133362, 0, 1519, 9171, 1, 0, 0, 0, 0, -8172.592, 801.0712, 74.05038, 3.948032, 120, 0, 0, 0, 0, 0, 0, 0, 0, 26972); -- 133362 (Area: 9171 - Difficulty: 0) (Auras: 262182 - 262182)
+
 
 UPDATE creature_template SET gossip_menu_id = 21910 WHERE entry = 130986; 
 
@@ -297,13 +327,17 @@ INSERT INTO `npc_vendor` (`entry`, `slot`, `item`, `maxcount`, `ExtendedCost`, `
 SET @PHASE_169  = 172329; -- default phase?
 SET @PHASE_170  = 59073; -- alliance
 SET @PHASE_171  = 59074; -- horde?
+SET @PHASE_172  = 59087; -- MEH
 
-UPDATE creature SET PhaseId = 171 WHERE guid = @CGUID+60;
+UPDATE creature SET PhaseId = 172 WHERE guid = @CGUID+60;
+UPDATE creature SET PhaseId = 172 WHERE guid = @CGUID+61;
+UPDATE gameobject SET PhaseId = 172 WHERE guid = @OGUID+19;
 SET @CGUID := 1100501;
-DELETE FROM spell_area WHERE (spell = @PHASE_171 AND racemask = 67108864) OR (spell = @PHASE_169 AND racemask = 67108864);
+SET @OGUID=20000100;
+DELETE FROM spell_area WHERE (spell = @PHASE_172 AND racemask = 536870912) OR (spell = @PHASE_169 AND racemask = 536870912);
 INSERT INTO spell_area (`spell`, `area`, `teamid`, `racemask`, `flags`) VALUES 
-(@PHASE_171, 5332, 0, 536870912, 3),
-(@PHASE_169, 5332, 0, 536870912, 3);
+(@PHASE_172, 9171, 0, 536870912, 3),
+(@PHASE_169, 9171, 0, 536870912, 3);
 
 
 
