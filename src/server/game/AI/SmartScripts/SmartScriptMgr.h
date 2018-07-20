@@ -583,7 +583,7 @@ enum SMART_ACTION
 	SMART_ACTION_SET_POWER_TYPE                     = 211,    // Power Type. See enum in Unit.h
 	SMART_ACTION_SET_MAX_POWER                      = 212,    // Power Type, value
 	SMART_ACTION_ADD_FLYING_MOVEMENT_FLAG           = 213,    // Variation
-	SMART_ACTION_ADD_FLYING_MOVEMENT_FLAG           = 214,    // Variation
+    SMART_ACTION_REMOVE_FLYING_MOVEMENT_FLAG        = 214,    // Variation
 
     SMART_ACTION_END
 };
