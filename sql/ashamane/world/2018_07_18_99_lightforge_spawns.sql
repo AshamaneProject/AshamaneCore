@@ -150,6 +150,15 @@ DELETE FROM `quest_visual_effect` WHERE (`ID`=312152 AND `Index`=0);
 INSERT INTO `quest_visual_effect` (`ID`, `Index`, `VisualEffect`, `VerifiedBuild`) VALUES
 (312152, 0, 8537, 26972);
 
+DELETE FROM creature_queststarter WHERE (`id` = 130993 AND `quest` = 49772) OR (`id` = 133362 AND `quest` = 50313);
+INSERT INTO creature_queststarter (`id`, `quest`) VALUES
+(130993, 49772),
+(133362, 50313);
+
+DELETE FROM creature_questender WHERE (`id` = 133362 AND `quest` = 49772);
+INSERT INTO creature_questender (`id`, `quest`)VALUES
+(133362, 49772);
+
 DELETE FROM `gameobject_questitem` WHERE (`GameObjectEntry`=203800 AND `Idx`=0) OR (`GameObjectEntry`=203801 AND `Idx`=0) OR (`GameObjectEntry`=203762 AND `Idx`=0) OR (`GameObjectEntry`=203751 AND `Idx`=0) OR (`GameObjectEntry`=204281 AND `Idx`=0);
 INSERT INTO `gameobject_questitem` (`GameObjectEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES
 (203800, 0, 57245, 26972), -- 203800
