@@ -70,6 +70,8 @@ enum MonkSpells
     SPELL_MONK_FLYING_SERPENT_KICK_NEW                  = 115057,
     SPELL_MONK_FORTIFYING_BREW                          = 120954,
     SPELL_MONK_GIFT_OF_THE_OX_AURA                      = 124502,
+    SPELL_MONK_GIFT_OF_THE_OX_AT_RIGHT                  = 124503,
+    SPELL_MONK_GIFT_OF_THE_OX_AT_LEFT                   = 124506,
     SPELL_MONK_GLYPH_OF_BLACKOUT_KICK                   = 132005,
     SPELL_MONK_GLYPH_OF_RENEWING_MIST                   = 123334,
     SPELL_MONK_GLYPH_OF_ZEN_FLIGHT                      = 125893,
@@ -1132,71 +1134,51 @@ public:
 };
 
 // Disable - 116095
-class spell_monk_disable : public SpellScriptLoader
+class spell_monk_disable : public SpellScript
 {
-public:
-    spell_monk_disable() : SpellScriptLoader("spell_monk_disable") {}
+    PrepareSpellScript(spell_monk_disable);
 
-    class spell_monk_disable_SpellScript : public SpellScript
+    bool Validate(SpellInfo const* /*spellInfo*/) override
     {
-        PrepareSpellScript(spell_monk_disable_SpellScript);
+        return ValidateSpellInfo({ SPELL_MONK_DISABLE, SPELL_MONK_DISABLE_ROOT });
+    }
 
-        bool Validate(SpellInfo const* /*spellInfo*/) override
-        {
-            if (!sSpellMgr->GetSpellInfo(SPELL_MONK_DISABLE) ||
-                !sSpellMgr->GetSpellInfo(SPELL_MONK_DISABLE_ROOT))
-                return false;
-            return true;
-        }
-
-        void HandleOnEffectHitTarget(SpellEffIndex /*effectIndex*/)
-        {
-            Unit* caster = GetCaster();
-            Unit* target = GetExplTargetUnit();
-            if (!caster || !target)
-                return;
+    void HandleOnEffectHitTarget(SpellEffIndex /*effectIndex*/)
+    {
+        if (Unit* target = GetExplTargetUnit())
             if (target->HasAuraType(SPELL_AURA_MOD_DECREASE_SPEED))
-            {
-                caster->CastSpell(target, SPELL_MONK_DISABLE_ROOT, true);
-            }
-        }
+                GetCaster()->CastSpell(target, SPELL_MONK_DISABLE_ROOT, true);
+    }
 
-        void Register() override
-        {
-            OnEffectHitTarget += SpellEffectFn(spell_monk_disable_SpellScript::HandleOnEffectHitTarget, EFFECT_0, SPELL_EFFECT_APPLY_AURA);
-        }
-    };
-
-    class spell_monk_disable_AuraScript : public AuraScript
+    void Register() override
     {
-        PrepareAuraScript(spell_monk_disable_AuraScript);
+        OnEffectHitTarget += SpellEffectFn(spell_monk_disable::HandleOnEffectHitTarget, EFFECT_0, SPELL_EFFECT_APPLY_AURA);
+    }
+};
 
-        bool CheckProc(ProcEventInfo& eventInfo)
+// Disable - 116095
+class aura_monk_disable : public AuraScript
+{
+    PrepareAuraScript(aura_monk_disable);
+
+    bool CheckProc(ProcEventInfo& eventInfo)
+    {
+        if (DamageInfo* damageInfo = eventInfo.GetDamageInfo())
         {
-            if ((eventInfo.GetDamageInfo()->GetAttackType() == BASE_ATTACK ||
-                eventInfo.GetDamageInfo()->GetAttackType() == OFF_ATTACK) &&
-                eventInfo.GetDamageInfo()->GetAttacker() == GetCaster())
+            if ((damageInfo->GetAttackType() == BASE_ATTACK ||
+                 damageInfo->GetAttackType() == OFF_ATTACK) &&
+                damageInfo->GetAttacker() == GetCaster())
             {
                 GetAura()->RefreshDuration();
                 return true;
             }
-            return false;
         }
-
-        void Register() override
-        {
-            DoCheckProc += AuraCheckProcFn(spell_monk_disable_AuraScript::CheckProc);
-        }
-    };
-
-    AuraScript* GetAuraScript() const override
-    {
-        return new spell_monk_disable_AuraScript();
+        return false;
     }
 
-    SpellScript* GetSpellScript() const override
+    void Register() override
     {
-        return new spell_monk_disable_SpellScript();
+        DoCheckProc += AuraCheckProcFn(aura_monk_disable::CheckProc);
     }
 };
 
@@ -3102,10 +3084,11 @@ struct at_monk_windwalking : AreaTriggerAI
     }
 };
 
-//AT ID : 373
+// Spell 124503
+// AT ID : 3282
 struct at_monk_gift_of_the_ox_sphere : AreaTriggerAI
 {
-    int32 pickupDelay;
+    uint32 pickupDelay;
 
     at_monk_gift_of_the_ox_sphere(AreaTrigger* areatrigger) : AreaTriggerAI(areatrigger)
     {
@@ -3120,62 +3103,30 @@ struct at_monk_gift_of_the_ox_sphere : AreaTriggerAI
 
     void OnUpdate(uint32 diff)  override
     {
-        if(pickupDelay >= 0)
+        if (pickupDelay >= diff)
             pickupDelay -= diff;
-
-        if(pickupDelay < 0)
+        else
             pickupDelay = 0;
-    }
-
-    void OnCreate() override
-    {
-        Unit* caster = at->GetCaster();
-
-        if (!caster)
-            return;
-
-        if (!caster->ToPlayer())
-            return;
-
-        for (ObjectGuid guid : at->GetInsideUnits())
-            if (Unit* unit = ObjectAccessor::GetUnit(*caster, guid))
-                if(unit == caster && !pickupDelay)
-                {
-                    caster->CastSpell(caster, SPELL_MONK_GIFT_OF_THE_OX_HEAL, true);
-                    at->Remove();
-                }
     }
 
     void OnUnitEnter(Unit* unit) override
     {
-        Unit* caster = at->GetCaster();
-
-        if (!caster || !unit)
-            return;
-
-        if (!caster->ToPlayer())
-            return;
-
-        if (unit == caster && pickupDelay == 0)
+        if (Unit* caster = at->GetCaster())
         {
-            caster->CastSpell(caster, SPELL_MONK_GIFT_OF_THE_OX_HEAL, true);
-            at->Remove();
+            if (unit == caster && !pickupDelay)
+            {
+                caster->CastSpell(caster, SPELL_MONK_GIFT_OF_THE_OX_HEAL, true);
+                at->Remove();
+            }
         }
     }
 
     void OnRemove() override
     {
-        Unit* caster = at->GetCaster();
-
-        if (!caster)
-            return;
-
-        if (!caster->ToPlayer())
-            return;
-
         //Todo : Remove cooldown
-        if(caster->HasAura(SPELL_MONK_HEALING_SPHERE_COOLDOWN))
-            caster->RemoveAura(SPELL_MONK_HEALING_SPHERE_COOLDOWN);
+        if (Unit* caster = at->GetCaster())
+            if(caster->HasAura(SPELL_MONK_HEALING_SPHERE_COOLDOWN))
+                caster->RemoveAura(SPELL_MONK_HEALING_SPHERE_COOLDOWN);
     }
 };
 
@@ -3187,17 +3138,13 @@ public:
 
     enum UsedSpells
     {
-        SPELL_MONK_HEALING_SPHERE_1         = 128822,
-        SPELL_MONK_HEALING_SPHERE_2         = 128825,
-        SPELL_MONK_HEALING_SPHERE_3         = 128826,
         SPELL_MONK_HEALING_SPHERE_COOLDOWN  = 224863
     };
 
     std::vector<uint32> spellsToCast
     {
-        SPELL_MONK_HEALING_SPHERE_1,
-        SPELL_MONK_HEALING_SPHERE_2,
-        SPELL_MONK_HEALING_SPHERE_3
+        SPELL_MONK_GIFT_OF_THE_OX_AT_RIGHT,
+        SPELL_MONK_GIFT_OF_THE_OX_AT_LEFT,
     };
 
     void OnTakeDamage(Player* victim, uint32 damage, SpellSchoolMask /*school*/) override
@@ -3717,7 +3664,7 @@ void AddSC_monk_spell_scripts()
     new spell_monk_crackling_jade_lightning();
     new spell_monk_crackling_jade_lightning_knockback_proc_aura();
     new spell_monk_dampen_harm();
-    new spell_monk_disable();
+    RegisterSpellAndAuraScriptPair(spell_monk_disable, aura_monk_disable);
     RegisterAuraScript(spell_monk_elusive_brawler_mastery);
     RegisterAuraScript(spell_monk_elusive_brawler_stacks);
     new spell_monk_energizing_brew();

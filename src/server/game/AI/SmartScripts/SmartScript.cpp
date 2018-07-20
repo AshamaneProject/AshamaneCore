@@ -1423,7 +1423,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
                     y += e.target.y;
                     z += e.target.z;
                     o += e.target.o;
-                    if (Creature* summon = summoner->SummonCreature(e.action.summonCreature.creature, x, y, z, o, (TempSummonType)e.action.summonCreature.type, e.action.summonCreature.duration))
+                    if (Creature* summon = summoner->SummonCreature(e.action.summonCreature.creature, x, y, z, o, (TempSummonType)e.action.summonCreature.type, e.action.summonCreature.duration, e.action.summonCreature.isPersonnal))
                         if (e.action.summonCreature.attackInvoker)
                             summon->AI()->AttackStart((*itr)->ToUnit());
                 }
@@ -2740,6 +2740,60 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             delete targets;
             break;
         }
+        case SMART_ACTION_MODIFY_THREAT:
+        {
+            ObjectList* targets = GetTargets(e, unit);
+            if (!targets)
+                break;
+
+            if (me)
+            {
+                for (WorldObject* target : *targets)
+                {
+                    if (Unit* unitTarget = target->ToUnit())
+                    {
+                        float threat = e.action.modifyThreat.increase ? e.action.modifyThreat.increase: -e.action.modifyThreat.decrease;
+                        me->getThreatManager().addThreat(unitTarget, threat);
+                    }
+                }
+            }
+
+            delete targets;
+            break;
+        }
+        case SMART_ACTION_SET_SPEED:
+        {
+            ObjectList* targets = GetTargets(e, unit);
+            if (!targets)
+                break;
+
+            for (WorldObject* target : *targets)
+                if (Unit* unitTarget = target->ToUnit())
+                    unitTarget->SetSpeed(UnitMoveType(e.action.setSpeed.type), e.action.setSpeed.speed);
+
+            delete targets;
+            break;
+        }
+        case SMART_ACTION_IGNORE_PATHFINDING:
+        {
+            ObjectList* targets = GetTargets(e, unit);
+            if (!targets)
+                break;
+
+            for (WorldObject* target : *targets)
+            {
+                if (Unit* unitTarget = target->ToUnit())
+                {
+                    if (e.action.ignorePathfinding.ignore)
+                        unitTarget->AddUnitState(UNIT_STATE_IGNORE_PATHFINDING);
+                    else
+                        unitTarget->ClearUnitState(UNIT_STATE_IGNORE_PATHFINDING);
+                }
+            }
+
+            delete targets;
+            break;
+        }
         default:
             TC_LOG_ERROR("sql.sql", "SmartScript::ProcessAction: Entry " SI64FMTD " SourceType %u, Event %u, Unhandled Action type %u", e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType());
             break;
@@ -3165,6 +3219,14 @@ ObjectList* SmartScript::GetTargets(SmartScriptHolder const& e, Unit* invoker /*
                 if (Unit* target = me->GetVehicleKit()->GetPassenger(e.target.vehicle.seat))
                     l->push_back(target);
             }
+            break;
+        }
+        case SMART_TARGET_INVOKER_SUMMON:
+        {
+            if (me)
+                if (Unit* target = me->GetSummonedCreatureByEntry(e.target.invokerSummon.entry))
+                    l->push_back(target);
+
             break;
         }
         case SMART_TARGET_POSITION:
