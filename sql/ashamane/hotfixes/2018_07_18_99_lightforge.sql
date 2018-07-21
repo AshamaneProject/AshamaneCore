@@ -7,7 +7,7 @@
 
 */
 
-DELETE FROM `broadcast_text` WHERE `ID` IN (143583, 143590, 143586, 143585, 143584, 144924, 144925, 141912, 141914, 141916, 141913, 141915, 142628, 136300, 144923, 144770, 144921, 135889, 136247, 9701, 16966, 49490, 30361, 144908, 144864);
+DELETE FROM `broadcast_text` WHERE `ID` IN (144772, 143583, 143590, 143586, 143585, 143584, 144924, 144925, 141912, 141914, 141916, 141913, 141915, 142628, 136300, 144923, 144770, 144921, 135889, 136247, 9701, 16966, 49490, 30361, 144908, 144864);
 INSERT INTO broadcast_text (ID, Text, Text1, EmoteID1, EmoteID2, EmoteID3, EmoteDelay1, EmoteDelay2, EmoteDelay3, EmotesID, LanguageID, Flags, ConditionID, SoundEntriesID1, SoundEntriesID2, VerifiedBuild) VALUES
 (143583, 'Welcome, friend $p. I am King Anduin Wrynn. As a new member of the Alliance, I wished to greet you personally.', '', 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 94909, 0, 26972),
 (143590, 'Safe travels, $p. May the Light be with you always.', '', 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 94914, 0, 26972),
@@ -25,6 +25,7 @@ INSERT INTO broadcast_text (ID, Text, Text1, EmoteID1, EmoteID2, EmoteID3, Emote
 (136300, 'This place is full of magic and mystery.', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 26972),
 (144923, 'If it is Maela you''re looking for, she is assisting on the front lines.$B$BStormwind is home to various competent tailors that can teach you a thing or two.', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 26972),
 (144770, 'I am fresh out of materials for the moment. My apologies.', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 26972),
+(144772, 'It is good to rest once in a while.$B$BEspecially after a profitable venture!', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 26972),
 (144921, '', 'Light take this table! I may never be able to use this workshop again.$B$BThe taint of those beast hides from Argus lingers, no matter how many times I scrub the surface.', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 26972),
 (135889, 'I can assist you, $c, with any repairs your equipment may need.', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 26972),
 (136247, '', 'Greetings.', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 26972),
