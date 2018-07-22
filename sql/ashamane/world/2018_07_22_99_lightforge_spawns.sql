@@ -151,7 +151,7 @@ INSERT INTO `quest_objectives` (`ID`, `QuestID`, `Type`, `Order`, `StorageIndex`
 -- Creating a new SmartAI script for [Creature] ENTRY 130758 (name: Lightforged Beacon)
 
 -- Table creature_template
-UPDATE `creature_template` SET `AIName` = 'SmartAI' WHERE `entry` = 130758;
+UPDATE `creature_template` SET `AIName` = 'SmartAI', `npcflag` = 1 WHERE `entry` = 130758;
 
 -- Table smart_scripts
 DELETE FROM `smart_scripts` WHERE (source_type = 0 AND entryorguid = 130758);
