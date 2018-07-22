@@ -94,7 +94,7 @@ enum PaladinSpells
     SPELL_PALADIN_GREATER_BLESSING_OF_KINGS     = 203538,
     SPELL_PALADIN_HAMMER_OF_JUSTICE             = 853,
     SPELL_HAMMER_OF_RIGHTEOUS                   = 53595,
-    SPELL_HAMMER_OF_RIGHTEOUS_LIGHT_WAVE        = 150627,
+    SPELL_HAMMER_OF_RIGHTEOUS_LIGHT_WAVE        = 88263,
     SPELL_PALADIN_HAND_OF_SACRIFICE             = 6940,
     SPELL_PALADIN_HAND_OF_THE_PROTECTOR         = 213652,
     SPELL_PALADIN_HOLY_LIGHT                    = 82326,
@@ -636,21 +636,11 @@ class spell_pal_grand_crusader : public SpellScript
         Unit* caster = GetCaster();
         if (!caster)
             return;
-        if (Player* player = GetCaster()->ToPlayer())
-        {
-            Spell * spell = GetSpell();
-            if(SPELL_HAMMER_OF_RIGHTEOUS == spell->m_spellInfo->Id)
-            {
-                //if player is standing in his consecration create a "wave of light"
-                if (player->FindNearestCreature(43499, 8) && player->HasAura(SPELL_PALADIN_CONSECRATION))
-                {
-                    uint32 dmg = GetSpellInfo()->GetEffect(EFFECT_0)->BasePoints;
-                    dmg = dmg * 2;
-                    dmg = dmg / 3;
-                    player->CastCustomSpell(SPELL_HAMMER_OF_RIGHTEOUS_LIGHT_WAVE, SPELLVALUE_BASE_POINT0, dmg, nullptr, TRIGGERED_FULL_MASK, NULL);
-                }
-            }
-        }
+
+        //if caster is standing in his consecration create a "wave of light"
+        if (GetSpellInfo()->Id == SPELL_HAMMER_OF_RIGHTEOUS)
+            if (caster->FindNearestCreature(43499, 8) && caster->HasAura(SPELL_PALADIN_CONSECRATION))
+                player->CastSpell(player, SPELL_HAMMER_OF_RIGHTEOUS_LIGHT_WAVE, true);
 
         int32 grandCrusaderProcChance = 15;
 
