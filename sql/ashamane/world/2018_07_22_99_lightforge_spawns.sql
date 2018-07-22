@@ -354,6 +354,13 @@ INSERT INTO spell_area (`spell`, `area`, `teamid`, `racemask`, `flags`) VALUES
 (@PHASE_172, 9171, 0, 536870912, 3),
 (@PHASE_169, 9171, 0, 536870912, 3);
 
+--  fix the dberrors ?
+UPDATE creature SET spawnMask = 1 WHERE guid BETWEEN 1100225 AND 1100600;
+
+UPDATE gameobject SET spawnMask = 1 WHERE guid BETWEEN 20000050 AND 20000118;
+
+
+
 
 
 

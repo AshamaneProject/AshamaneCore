@@ -261,8 +261,10 @@ INSERT INTO `creature_template` (`entry`, `KillCredit1`, `KillCredit2`, `modelid
 
 -- add this or the conversation wont work --
 DELETE FROM creature_template WHERE entry = 126306;
-INSERT INTO `creature_template` (`entry`, `modelid1`, `name`, `minlevel`, `maxlevel`)VALUES
-(126306, 65199, 'Anduin Wrynn', 110, 110);
+INSERT INTO `creature_template` (`entry`, `modelid1`, `name`, `minlevel`, `maxlevel`, `faction`, `unit_class`)VALUES
+(126306, 65199, 'Anduin Wrynn', 110, 110, 35, 1);
+
+
 
 
 UPDATE creature_template SET gossip_menu_id = 0, minlevel = 3, maxlevel = 3, faction = 12, npcflag = 0, speed_walk = 1, speed_run = 1.142857, BaseAttackTime = 2000, RangeAttackTime = 2000, unit_class = 1, unit_flags = 33536, unit_flags2 = 2048, unit_flags3 = 0, dynamicflags = 0, VehicleId = 0, HoverHeight = 1 WHERE entry = 43451;
