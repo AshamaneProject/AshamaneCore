@@ -147,6 +147,21 @@ INSERT INTO `quest_objectives` (`ID`, `QuestID`, `Type`, `Order`, `StorageIndex`
 (289535, 46735, 4, 0, -1, 1342, 100, 0, 0, 0, '', 26972), -- 289535
 (289167, 46277, 4, 0, -1, 1342, 100, 0, 0, 0, '', 26972); -- 289167
 
+
+-- Creating a new SmartAI script for [Creature] ENTRY 130758 (name: Lightforged Beacon)
+
+-- Table creature_template
+UPDATE `creature_template` SET `AIName` = 'SmartAI' WHERE `entry` = 130758;
+
+-- Table smart_scripts
+DELETE FROM `smart_scripts` WHERE (source_type = 0 AND entryorguid = 130758);
+INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES
+(130758, 0, 0, 0, 64, 0, 100, 0, 0, 0, 0, 0, 62, 1860, 0, 0, 0, 0, 0, 7, 0, 0, 0, 458.823, 1449.61, 757.573, 0.4664253, 'hackfix teleport from sw to lfd area');
+
+
+
+
+
  -- Ambassador Moorguard SAI
 SET @AMBASSADOR_MOORGUARD := -1100562;
 UPDATE `creature_template` SET `AIName`="SmartAI" WHERE `entry`=@AMBASSADOR_MOORGUARD;
