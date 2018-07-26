@@ -1428,7 +1428,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
                         if (e.action.summonCreature.attackInvoker)
                             summon->AI()->AttackStart((*itr)->ToUnit());
                         else if (e.action.summonCreature.data > 0)
-							summon->AI()->SetData(500, e.action.summonCreature.data);
+                            summon->AI()->SetData(500, e.action.summonCreature.data);
                     }
                 }
 
@@ -1439,8 +1439,12 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
                 break;
 
             if (Creature* summon = summoner->SummonCreature(e.action.summonCreature.creature, e.target.x, e.target.y, e.target.z, e.target.o, (TempSummonType)e.action.summonCreature.type, e.action.summonCreature.duration))
+            {
                 if (unit && e.action.summonCreature.attackInvoker)
-                    summon->AI()->AttackStart(unit);
+                    summon->AI()->AttackStart((*itr)->ToUnit());
+                else if (unit && e.action.summonCreature.data > 0)
+                         summon->AI()->SetData(500, e.action.summonCreature.data);
+            }
             break;
         }
         case SMART_ACTION_SUMMON_GO:
