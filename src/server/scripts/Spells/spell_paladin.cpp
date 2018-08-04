@@ -1740,7 +1740,8 @@ public:
     }
 };
 
-//203538 - Greater Blessing of Kings
+//Greater Blessing of Kings
+// 7.3.5
 class spell_pal_greater_blessing_of_kings : public SpellScriptLoader
 {
 public:
@@ -1750,54 +1751,55 @@ public:
     {
         PrepareAuraScript(spell_pal_greater_blessing_of_kings_AuraScript);
 
-    public:
-        spell_pal_greater_blessing_of_kings_AuraScript() : leftAbsorbAmount(0), maxAbsorbAmount(0) { }
-
-        bool Validate(SpellInfo const* /*spellInfo*/) override
+        void Periodic(AuraEffect const* aurEff)
         {
-            return ValidateSpellInfo({ SPELL_PALADIN_GREATER_BLESSING_OF_KINGS });
+            PreventDefaultAction();
+            Unit* caster = GetCaster();
+            if (AuraEffect* aura = caster->GetAuraEffect(203538, EFFECT_1, caster->GetGUID()))
+                aura->ChangeAmount(GetCaster()->SpellBaseDamageBonusDone(GetSpellInfo()->GetSchoolMask()) * 2.7f + 1);
         }
 
-        bool Load() override
+        void CalculateAmount(AuraEffect const* /*aurEff*/, int32& amount, bool& canBeRecalculated)
         {
-            maxAbsorbAmount = 2.7f * GetCaster()->GetTotalSpellPowerValue(SPELL_SCHOOL_MASK_ALL, true);
-            leftAbsorbAmount = maxAbsorbAmount;
-            return GetUnitOwner()->IsPlayer();
+            amount = GetCaster()->SpellBaseDamageBonusDone(GetSpellInfo()->GetSchoolMask()) * 2.7f + 1;
         }
 
-        void OnTick(AuraEffect const* /*aurEff*/)
+        void Absorb(AuraEffect* aurEff, DamageInfo& dmgInfo, uint32& absorbAmount)
         {
-            leftAbsorbAmount = maxAbsorbAmount;
+            Unit* target = GetTarget();
+
+            int32 bp = aurEff->GetDamage();
+            int32 damage = dmgInfo.GetDamage();
+            if (bp <= 1)
+                bp = 0;
+
+            if (damage < bp)
+            {
+                aurEff->ChangeAmount(bp - damage);
+                bp = damage;
+            }
+            else
+                aurEff->ChangeAmount(1);
+
+            absorbAmount = bp;
+
+            PreventDefaultAction();
         }
 
-        void CalculateAmount(AuraEffect const* /*aurEff*/, int32& amount, bool& /*canBeRecalculated*/)
+        void Register()
         {
-            amount = -1;
-        }
-
-        void Absorb(AuraEffect* /*aurEff*/, DamageInfo& dmgInfo, uint32& absorbAmount)
-        {
-            absorbAmount = std::min(dmgInfo.GetDamage(), leftAbsorbAmount);
-            leftAbsorbAmount -= absorbAmount;
-        }
-
-        void Register() override
-        {
-            OnEffectPeriodic += AuraEffectPeriodicFn(spell_pal_greater_blessing_of_kings_AuraScript::OnTick, EFFECT_0, SPELL_AURA_PERIODIC_DUMMY);
+            OnEffectPeriodic += AuraEffectPeriodicFn(spell_pal_greater_blessing_of_kings_AuraScript::Periodic, EFFECT_0, SPELL_AURA_PERIODIC_DUMMY);
             DoEffectCalcAmount += AuraEffectCalcAmountFn(spell_pal_greater_blessing_of_kings_AuraScript::CalculateAmount, EFFECT_1, SPELL_AURA_SCHOOL_ABSORB);
             OnEffectAbsorb += AuraEffectAbsorbFn(spell_pal_greater_blessing_of_kings_AuraScript::Absorb, EFFECT_1);
         }
-
-    private:
-        uint32 leftAbsorbAmount;
-        uint32 maxAbsorbAmount;
     };
 
-    AuraScript* GetAuraScript() const override
+    AuraScript* GetAuraScript() const
     {
         return new spell_pal_greater_blessing_of_kings_AuraScript();
     }
 };
+
 
 // 185984 - Light of Dawn aoe heal
 class spell_pal_light_of_dawn_trigger : public SpellScriptLoader
