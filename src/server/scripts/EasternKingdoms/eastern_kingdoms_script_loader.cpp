@@ -479,7 +479,7 @@ void AddEasternKingdomsScripts()
     AddSC_zone_gnomeregan();
     AddSC_ghostlands();
     AddSC_hinterlands();
-	AddSC_ironforge();
+    AddSC_ironforge();
     AddSC_isle_of_queldanas();
     AddSC_redridge_mountains();
     AddSC_silverpine_forest();
