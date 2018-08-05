@@ -3,11 +3,6 @@ SET @NPC_MOUNTAINEER_DUNSTAN             := 40991;
 SET @NPC_MOUNTAINEER_LEWAN               := 40994;
 SET @NPC_MOUNTAINEER_VALGRUM             := 41056;
 
--- quest 25724 cannot be handed in to 40950 (capt tharran)
-UPDATE `quest_template`
-SET `QuestPackageID` = 0
-WHERE `ID` = @QUEST_FROSTMANE_AGGRESSION;
-
 -- fix up quest pushing forward (25792)
 SET @SPELL_BURN_CONSTRICTION_TOTEM          := 77314;
 DELETE FROM `spell_script_names` WHERE `spell_id` IN (@SPELL_BURN_CONSTRICTION_TOTEM);
