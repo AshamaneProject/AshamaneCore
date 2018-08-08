@@ -90,7 +90,7 @@ function OnDiscordMessage() {
         if (message.channel.type === "dm") return;
         
         // SEND TO WORLD CHANNEL
-		// showGMlogo bollean
+	    // showGMlogo bollean
         if(message.channel.id === config.channel_id){
             if(message.member.roles.find("name", role_1) || message.member.roles.find("name", role_2)) {var gmLOGO = '1'} else { gmLOGO = "0"};
 
