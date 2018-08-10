@@ -4634,6 +4634,51 @@ class spell_item_brutal_kinship : public SpellScriptLoader
         }
 };
 
+enum DruidFlamesSpells
+{
+    MODEL_DRUID_OF_THE_FLAMES            = 38150
+};
+
+// 99245  - Druid of the Flames
+//          used by Fandral's Flamescythe (http://www.wowhead.com/item=71466)
+// 138927 - Burning Essence
+//          used by Burning Seed (http://www.wowhead.com/item=94604) and Fandral's Seed Pouch (http://www.wowhead.com/item=122304)
+class spell_item_burning_essence : public SpellScriptLoader
+{
+public:
+    spell_item_burning_essence() : SpellScriptLoader("spell_item_burning_essence") { }
+
+    class spell_item_burning_essence_AuraScript : public AuraScript
+    {
+        PrepareAuraScript(spell_item_burning_essence_AuraScript);
+
+        void OnApply(const AuraEffect* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+        {
+            if (Player* player = GetTarget()->ToPlayer())
+                if (player->GetShapeshiftForm() == FORM_CAT_FORM)
+                    player->SetDisplayId(MODEL_DRUID_OF_THE_FLAMES);
+        }
+
+        void OnRemove(const AuraEffect* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+        {
+            if (Player* player = GetTarget()->ToPlayer())
+                if (player->GetShapeshiftForm() == FORM_CAT_FORM)
+                    player->RestoreDisplayId();
+        }
+
+        void Register() override
+        {
+            OnEffectApply += AuraEffectApplyFn(spell_item_burning_essence_AuraScript::OnApply, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+            OnEffectRemove += AuraEffectRemoveFn(spell_item_burning_essence_AuraScript::OnRemove, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+        }
+    };
+
+    AuraScript* GetAuraScript() const override
+    {
+        return new spell_item_burning_essence_AuraScript();
+    }
+};
+
 void AddSC_item_spell_scripts()
 {
     // 23074 Arcanite Dragonling
@@ -4750,4 +4795,5 @@ void AddSC_item_spell_scripts()
     new spell_item_world_queller_focus();
     new spell_item_water_strider();
     new spell_item_brutal_kinship();
+    new spell_item_burning_essence();
 }
