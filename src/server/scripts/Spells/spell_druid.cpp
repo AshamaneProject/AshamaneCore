@@ -2269,56 +2269,29 @@ public:
 };
 
 // Charm Woodland Creature - 127757
-// @Version : 7.3.5.26972
-class spell_dru_charm_woodland_creature : public SpellScriptLoader
+class aura_dru_charm_woodland_creature : public AuraScript
 {
-public:
-    spell_dru_charm_woodland_creature() : SpellScriptLoader("spell_dru_charm_woodland_creature") { }
+    PrepareAuraScript(aura_dru_charm_woodland_creature);
 
-    class spell_dru_charm_woodland_creature_SpellScript : public SpellScript
+    void OnApply(const AuraEffect* /*aurEff*/, AuraEffectHandleModes /*mode*/)
     {
-        PrepareSpellScript(spell_dru_charm_woodland_creature_SpellScript);
-
-        void HandleOnCast()
-        {
-            if (Player* caster = GetCaster()->ToPlayer())
-                // Get creature targeted by caster
-                if (Unit* target = caster->GetSelectedUnit())
-                    // Make targeted creature follow the player - Using pet's default dist and angle
-                    target->GetMotionMaster()->MoveFollow(caster, PET_FOLLOW_DIST, PET_FOLLOW_ANGLE);
-        }
-
-        void Register() override
-        {
-            OnCast += SpellCastFn(spell_dru_charm_woodland_creature_SpellScript::HandleOnCast);
-        }
-    };
-
-    SpellScript* GetSpellScript() const override
-    {
-        return new spell_dru_charm_woodland_creature_SpellScript();
+        // Make targeted creature follow the player - Using pet's default dist and angle
+        if (Unit* caster = GetCaster())
+            if (Unit* target = GetTarget())
+                target->GetMotionMaster()->MoveFollow(caster, PET_FOLLOW_DIST, PET_FOLLOW_ANGLE);
     }
 
-    class spell_dru_charm_woodland_creature_AuraScript : public AuraScript
+    void OnRemove(const AuraEffect* /*aurEff*/, AuraEffectHandleModes /*mode*/)
     {
-        PrepareAuraScript(spell_dru_charm_woodland_creature_AuraScript);
+        if (Unit* target = GetTarget())
+            if (target->GetMotionMaster()->GetCurrentMovementGeneratorType() == FOLLOW_MOTION_TYPE)
+                target->GetMotionMaster()->MovementExpired(true); // reset movement
+    }
 
-        void OnRemove(const AuraEffect* /*aurEff*/, AuraEffectHandleModes /*mode*/)
-        {
-            if (Unit* target = GetTarget())
-                if (target->GetMotionMaster()->GetCurrentMovementGeneratorType() == FOLLOW_MOTION_TYPE)
-                    target->GetMotionMaster()->MovementExpired(true); // reset movement
-        }
-
-        void Register() override
-        {
-            OnEffectRemove += AuraEffectRemoveFn(spell_dru_charm_woodland_creature_AuraScript::OnRemove, EFFECT_0, SPELL_AURA_AOE_CHARM, AURA_EFFECT_HANDLE_REAL);
-        }
-    };
-
-    AuraScript* GetAuraScript() const override
+    void Register() override
     {
-        return new spell_dru_charm_woodland_creature_AuraScript();
+        OnEffectApply += AuraEffectApplyFn(aura_dru_charm_woodland_creature::OnApply, EFFECT_0, SPELL_AURA_AOE_CHARM, AURA_EFFECT_HANDLE_REAL);
+        OnEffectRemove += AuraEffectRemoveFn(aura_dru_charm_woodland_creature::OnRemove, EFFECT_0, SPELL_AURA_AOE_CHARM, AURA_EFFECT_HANDLE_REAL);
     }
 };
 
@@ -2363,7 +2336,7 @@ void AddSC_druid_spell_scripts()
     new spell_dru_bloodtalons();
     new spell_dru_travel_form_dummy();
     new spell_dru_travel_form();
-    new spell_dru_charm_woodland_creature();
+    RegisterAuraScript(spell_dru_charm_woodland_creature);
 
     RegisterSpellScript(spell_dru_thrash);
     RegisterAuraScript(spell_dru_thrash_periodic_damage);
