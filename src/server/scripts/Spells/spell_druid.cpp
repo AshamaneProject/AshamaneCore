@@ -2268,6 +2268,60 @@ public:
     }
 };
 
+// Charm Woodland Creature - 127757
+// @Version : 7.3.5.26972
+class spell_dru_charm_woodland_creature : public SpellScriptLoader
+{
+public:
+    spell_dru_charm_woodland_creature() : SpellScriptLoader("spell_dru_charm_woodland_creature") { }
+
+    class spell_dru_charm_woodland_creature_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_dru_charm_woodland_creature_SpellScript);
+
+        void HandleOnCast()
+        {
+            if (Player* caster = GetCaster()->ToPlayer())
+                // Get creature targeted by caster
+                if (Unit* target = caster->GetSelectedUnit())
+                    // Make targeted creature follow the player - Using pet's default dist and angle
+                    target->GetMotionMaster()->MoveFollow(caster, PET_FOLLOW_DIST, PET_FOLLOW_ANGLE);
+        }
+
+        void Register() override
+        {
+            OnCast += SpellCastFn(spell_dru_charm_woodland_creature_SpellScript::HandleOnCast);
+        }
+    };
+
+    SpellScript* GetSpellScript() const override
+    {
+        return new spell_dru_charm_woodland_creature_SpellScript();
+    }
+
+    class spell_dru_charm_woodland_creature_AuraScript : public AuraScript
+    {
+        PrepareAuraScript(spell_dru_charm_woodland_creature_AuraScript);
+
+        void OnRemove(const AuraEffect* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+        {
+            if (Unit* target = GetTarget())
+                if (target->GetMotionMaster()->GetCurrentMovementGeneratorType() == FOLLOW_MOTION_TYPE)
+                    target->GetMotionMaster()->MovementExpired(true); // reset movement
+        }
+
+        void Register() override
+        {
+            OnEffectRemove += AuraEffectRemoveFn(spell_dru_charm_woodland_creature_AuraScript::OnRemove, EFFECT_0, SPELL_AURA_AOE_CHARM, AURA_EFFECT_HANDLE_REAL);
+        }
+    };
+
+    AuraScript* GetAuraScript() const override
+    {
+        return new spell_dru_charm_woodland_creature_AuraScript();
+    }
+};
+
 void AddSC_druid_spell_scripts()
 {
     // Spells Scripts
@@ -2309,6 +2363,7 @@ void AddSC_druid_spell_scripts()
     new spell_dru_bloodtalons();
     new spell_dru_travel_form_dummy();
     new spell_dru_travel_form();
+    new spell_dru_charm_woodland_creature();
 
     RegisterSpellScript(spell_dru_thrash);
     RegisterAuraScript(spell_dru_thrash_periodic_damage);
