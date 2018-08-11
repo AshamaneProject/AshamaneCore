@@ -4634,48 +4634,35 @@ class spell_item_brutal_kinship : public SpellScriptLoader
         }
 };
 
-enum DruidFlamesSpells
+enum BurningEssenceSpell
 {
     MODEL_DRUID_OF_THE_FLAMES            = 38150
 };
 
-// 99245  - Druid of the Flames
-//          used by Fandral's Flamescythe (http://www.wowhead.com/item=71466)
-// 138927 - Burning Essence
-//          used by Burning Seed (http://www.wowhead.com/item=94604) and Fandral's Seed Pouch (http://www.wowhead.com/item=122304)
-class spell_item_burning_essence : public SpellScriptLoader
+// Druid of the Flames - 99245, used by Fandral's Flamescythe
+// Burning Essence - 138927, used by Burning Seed and Fandral's Seed Pouch
+class aura_item_burning_essence : public AuraScript
 {
-public:
-    spell_item_burning_essence() : SpellScriptLoader("spell_item_burning_essence") { }
+    PrepareAuraScript(aura_item_burning_essence);
 
-    class spell_item_burning_essence_AuraScript : public AuraScript
+    void OnApply(const AuraEffect* /*aurEff*/, AuraEffectHandleModes /*mode*/)
     {
-        PrepareAuraScript(spell_item_burning_essence_AuraScript);
+        if (Unit* caster = GetCaster())
+            if (caster->GetShapeshiftForm() == FORM_CAT_FORM)       // Check if the caster is in Cat Form
+                caster->SetDisplayId(MODEL_DRUID_OF_THE_FLAMES);    // Change the caster model to Druid of the Flames (Fire Cat Form)
+    }
 
-        void OnApply(const AuraEffect* /*aurEff*/, AuraEffectHandleModes /*mode*/)
-        {
-            if (Player* player = GetTarget()->ToPlayer())
-                if (player->GetShapeshiftForm() == FORM_CAT_FORM)
-                    player->SetDisplayId(MODEL_DRUID_OF_THE_FLAMES);
-        }
-
-        void OnRemove(const AuraEffect* /*aurEff*/, AuraEffectHandleModes /*mode*/)
-        {
-            if (Player* player = GetTarget()->ToPlayer())
-                if (player->GetShapeshiftForm() == FORM_CAT_FORM)
-                    player->RestoreDisplayId();
-        }
-
-        void Register() override
-        {
-            OnEffectApply += AuraEffectApplyFn(spell_item_burning_essence_AuraScript::OnApply, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
-            OnEffectRemove += AuraEffectRemoveFn(spell_item_burning_essence_AuraScript::OnRemove, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
-        }
-    };
-
-    AuraScript* GetAuraScript() const override
+    void OnRemove(const AuraEffect* /*aurEff*/, AuraEffectHandleModes /*mode*/)
     {
-        return new spell_item_burning_essence_AuraScript();
+        if (Unit* target = GetTarget())
+            if (target->GetShapeshiftForm() == FORM_CAT_FORM)       // Check if the target is in Cat Form
+                target->RestoreDisplayId();                         // Restore the target model
+    }
+
+    void Register() override
+    {
+        OnEffectApply += AuraEffectApplyFn(aura_item_burning_essence::OnApply, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+        OnEffectRemove += AuraEffectRemoveFn(aura_item_burning_essence::OnRemove, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
     }
 };
 
@@ -4795,5 +4782,5 @@ void AddSC_item_spell_scripts()
     new spell_item_world_queller_focus();
     new spell_item_water_strider();
     new spell_item_brutal_kinship();
-    new spell_item_burning_essence();
+    RegisterAuraScript(aura_item_burning_essence);
 }

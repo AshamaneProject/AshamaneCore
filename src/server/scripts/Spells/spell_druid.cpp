@@ -1256,11 +1256,11 @@ public:
 
         void AfterApply(const AuraEffect* /*p_AurEff*/, AuraEffectHandleModes /*p_Mode*/)
         {
-            if (Player* player = GetCaster()->ToPlayer())
-            {
-                if (player->HasAura(SPELL_DRUID_BURNING_ESSENCE) || player->HasAura(SPELL_DRUID_DRUID_OF_THE_FLAMES))
-                    player->SetDisplayId(MODEL_DRUID_OF_THE_FLAMES);
-            }
+            if (Unit* caster = GetCaster())
+                // Check if the caster have Burning Essence or Druid of the Flames aura
+                if (caster->HasAura(SPELL_DRUID_BURNING_ESSENCE) || caster->HasAura(SPELL_DRUID_DRUID_OF_THE_FLAMES))
+                    // Change the caster model to Druid of the Flames (Fire Cat Form)
+                    caster->SetDisplayId(MODEL_DRUID_OF_THE_FLAMES);
         }
 
         void OnRemove(const AuraEffect* /* aurEff */, AuraEffectHandleModes /*mode*/)
