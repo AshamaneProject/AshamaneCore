@@ -39,7 +39,7 @@ enum GarrisonSite
     GARRISON_SITE_CLASS_HALL_HORDE      = 163,
 };
 
-enum GarrisonType
+enum GarrisonType : int32
 {
     GARRISON_TYPE_NONE          = 0,
     GARRISON_TYPE_GARRISON      = 2,
@@ -212,10 +212,13 @@ namespace GarrisonMission
 {
     enum State
     {
-        Available       = 0,
-        InProgress      = 1,
-        CompleteSuccess = 2,
-        CompleteFailed  = 5
+        Offered = 0,
+        InProgress = 1,
+        Completed = 2,
+        OvermaxRewardPending = 3,
+        Reward1Claimed = 4,
+        Reward2Claimed = 5,
+        Reward3Claimed = 6,
     };
 
     enum Type
@@ -284,9 +287,11 @@ namespace GarrisonMission
 
     enum Flags
     {
-        Rare        = 0x01,
-        Unk2        = 0x02,
-        Exhausting  = 0x04
+        isRare = 0x01,
+        isElite = 0x02,
+        appliesFatigue = 0x04,
+        alwaysFail = 0x08,
+        isZoneSupport = 0x10,
     };
 
     enum BonusRollResults
