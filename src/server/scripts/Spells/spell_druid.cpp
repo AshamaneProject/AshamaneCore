@@ -764,7 +764,7 @@ public:
             if (!caster)
                 return;
 
-            int32 bonusDuration = m_ComboPoint * 8 * IN_MILLISECONDS;
+            int32 bonusDuration = m_ComboPoint * 6 * IN_MILLISECONDS;
             int32 maxDuration = GetSpellInfo()->GetMaxDuration();
             int32 newDuration = m_OldDuration + GetSpellInfo()->GetDuration() + bonusDuration;
 
