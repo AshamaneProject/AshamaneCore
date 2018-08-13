@@ -988,9 +988,9 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
                 {
                     switch (pCurrChar->getRace())
                     {
-//                      case RACE_HIGHMOUNTAIN_TAUREN:
-//                          pCurrChar->GetSceneMgr().PlayScene(1901);
-//                          break;
+                      case RACE_HIGHMOUNTAIN_TAUREN:
+                            pCurrChar->GetSceneMgr().PlayScene(1901);
+                            break;
                         case RACE_NIGHTBORNE:
                             pCurrChar->GetSceneMgr().PlayScene(1900);
                             break;
