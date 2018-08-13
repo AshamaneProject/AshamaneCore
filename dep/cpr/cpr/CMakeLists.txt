@@ -40,6 +40,7 @@ add_library(${CPR_LIBRARIES} STATIC
     "${CPR_INCLUDE_DIRS}/cpr/ssl_options.h")
 
 message(STATUS "Using CURL_LIBRARIES: ${CURL_LIBRARIES}.")
+set_property(TARGET ${CPR_LIBRARIES} PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_link_libraries(${CPR_LIBRARIES}
     ${CURL_LIBRARIES})
 

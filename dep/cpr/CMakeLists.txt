@@ -66,7 +66,7 @@ set(GENERATE_COVERAGE OFF)
 cpr_option(CPR_CURL_NOSIGNAL "Set to ON to disable use of signals in libcurl." OFF)
 cpr_option(USE_SYSTEM_GTEST
     "If ON, this project will look in the system paths for an installed gtest library" OFF)
-cpr_option(CMAKE_USE_OPENSSL "Use OpenSSL code. Experimental" ON)
+cpr_option(CMAKE_USE_OPENSSL "Use OpenSSL code. Experimental" OFF)
 message(STATUS "=======================================================")
 
 add_subdirectory(opt)
