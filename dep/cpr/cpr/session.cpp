@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <functional>
 #include <string>
-
+#define CURL_STATICLIB
 #include <curl/curl.h>
 
 #include "cpr/curlholder.h"
