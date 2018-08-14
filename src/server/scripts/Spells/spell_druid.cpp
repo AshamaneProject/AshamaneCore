@@ -642,10 +642,10 @@ class spell_dru_ferocious_bite : public SpellScript
 {
     PrepareSpellScript(spell_dru_ferocious_bite);
 
-    void HandleOnTakePower(Powers& power, int32& powerCount)
+    void HandleOnTakePower(SpellPowerCost& powerCost)
     {
-        if (power == POWER_COMBO_POINTS)
-            m_comboPoints = powerCount;
+        if (powerCost.Power == POWER_COMBO_POINTS)
+            m_comboPoints = powerCost.Amount;
     }
 
     void CalcDmg(SpellEffIndex /*effIndex*/)
