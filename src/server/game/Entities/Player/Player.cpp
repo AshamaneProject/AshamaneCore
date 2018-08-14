@@ -26540,7 +26540,7 @@ void Player::StoreLootItem(uint8 lootSlot, Loot* loot, AELootResult* aeResult/* 
                 if (Guild* guild = GetGuild())
                     guild->AddGuildNews(GUILD_NEWS_ITEM_LOOTED, GetGUID(), 0, item->itemid);
 
-                TC_LOG_INFO("metric", "%s(%u) looted item %u count %u",
+                TC_LOG_INFO("metric", "%s(%lu) looted item %u count %u",
                     GetName().c_str(), GetGUID().GetCounter(),
                     item->itemid, item->count);
             }

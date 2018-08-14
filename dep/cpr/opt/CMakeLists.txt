@@ -58,6 +58,7 @@ if(NOT USE_SYSTEM_CURL OR NOT CURL_FOUND)
     endif()
         
     set_property(TARGET libcurl PROPERTY FOLDER "external")
+    set_property(TARGET libcurl PROPERTY POSITION_INDEPENDENT_CODE ON)
 endif()
 
 set_cache_variable(CURL_FOUND "Set if libcurl is found or built")
