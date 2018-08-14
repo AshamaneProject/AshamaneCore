@@ -1,8 +1,10 @@
-update npc_spellclick_spells set cast_flags = 1 where npc_entry = 100545
+UPDATE npc_spellclick_spells SET cast_flags = 1 WHERE npc_entry = 100545;
+
 -- Demon Hunter SAI
 SET @ENTRY := 100545;
 UPDATE `creature_template` SET `AIName`="SmartAI" WHERE `entry`=@ENTRY;
 DELETE FROM `smart_scripts` WHERE `entryorguid`=@ENTRY AND `source_type`=0;
+
 -- Demon Hunter SAI
 SET @ENTRY := 100545;
 UPDATE `creature_template` SET `AIName`="SmartAI" WHERE `entry`=@ENTRY;
@@ -11,7 +13,9 @@ INSERT INTO `smart_scripts` (`entryorguid`,`source_type`,`id`,`link`,`event_type
 (@ENTRY,0,0,0,8,0,100,0,192262,0,0,0,33,97395,0,0,0,0,0,7,0,0,0,0,0,0,0,"Demon Hunter - On Spellhit '<Spell not found!>' - Quest Credit ''"),
 (@ENTRY,0,1,0,8,0,100,0,192262,0,0,0,41,5000,0,0,0,0,0,1,0,0,0,0,0,0,0,"Demon Hunter - On Spellhit '<Spell not found!>' - Despawn In 5000 ms"),
 (@ENTRY,0,2,0,8,0,100,0,192262,0,0,0,83,16777216,0,0,0,0,0,1,0,0,0,0,0,0,0,"Demon Hunter - On Spellhit '<Spell not found!>' - Remove Npc Flag Spellclick");
-update npc_spellclick_spells set cast_flags = 1 where npc_entry = 97382
+
+UPDATE npc_spellclick_spells SET cast_flags = 1 WHERE npc_entry = 97382;
+
 -- Soul Harvester SAI
 SET @ENTRY := 97382;
 UPDATE `creature_template` SET `AIName`="SmartAI" WHERE `entry`=@ENTRY;
@@ -20,6 +24,7 @@ INSERT INTO `smart_scripts` (`entryorguid`,`source_type`,`id`,`link`,`event_type
 (@ENTRY,0,0,0,73,0,100,0,0,0,0,0,33,97382,0,0,0,0,0,7,0,0,0,0,0,0,0,"Soul Harvester - On Spellclick - Quest Credit ''"),
 (@ENTRY,0,1,0,73,0,100,0,0,0,0,0,83,16777216,0,0,0,0,0,1,0,0,0,0,0,0,0,"Soul Harvester - On Spellclick - Remove Npc Flag Spellclick"),
 (@ENTRY,0,2,0,73,0,100,0,0,0,0,0,41,2000,0,0,0,0,0,1,0,0,0,0,0,0,0,"Soul Harvester - On Spellclick - Despawn In 2000 ms");
+
 -- Mardum Executioner SAI
 SET @ENTRY := 96279;
 UPDATE `creature_template` SET `AIName`="SmartAI" WHERE `entry`=@ENTRY;
