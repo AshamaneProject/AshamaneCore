@@ -667,7 +667,7 @@ class spell_dru_ferocious_bite : public SpellScript
             // If caster's target is below 25% health or the caster have Sabertooth talent,
             // refresh the duration of caster's Rip on the target
             if (Unit* target = GetHitUnit())
-                if (target->GetHealthPct() < 25 || caster->HasAura(SPELL_DRUID_SABERTOOTH))
+                if (target->HasAuraState(AURA_STATE_HEALTHLESS_25_PERCENT) || caster->HasAura(SPELL_DRUID_SABERTOOTH))
                     if (Aura* rip = target->GetAura(SPELL_DRUID_RIP, caster->GetGUID()))
                         rip->RefreshDuration();
         }
