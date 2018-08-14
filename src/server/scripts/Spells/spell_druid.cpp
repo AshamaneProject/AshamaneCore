@@ -658,7 +658,7 @@ class spell_dru_ferocious_bite : public SpellScript
             float multiplier = (float) m_comboPoints / (float) caster->GetMaxPower(POWER_COMBO_POINTS);
             int32 newdmg = CalculatePct(dmg, multiplier * 100.f);
 
-            // Consumes up to 25 additional Energy to increase damage by up to 100%
+            // Calculate additional consumed Energy (up to 25 Energy) and increase damage based on Energy consumed (up to 100%)
             int32 energyConsumed = caster->GetPower(POWER_ENERGY) > 25 ? 25 : caster->GetPower(POWER_ENERGY);
             AddPct(newdmg, energyConsumed * (100.0f / 25.0f));
 
