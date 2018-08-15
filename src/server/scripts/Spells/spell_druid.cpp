@@ -638,54 +638,49 @@ public:
 };
 
 // Ferocious Bite - 22568
-// @Edit : Sabertooth - 202031
-// @Version : 7.1.0.22908
-class spell_dru_ferocious_bite : public SpellScriptLoader
+class spell_dru_ferocious_bite : public SpellScript
 {
-public:
-    spell_dru_ferocious_bite() : SpellScriptLoader("spell_dru_ferocious_bite") { }
+    PrepareSpellScript(spell_dru_ferocious_bite);
 
-    class spell_dru_ferocious_bite_SpellScript : public SpellScript
+    void HandleOnTakePower(SpellPowerCost& powerCost)
     {
-        PrepareSpellScript(spell_dru_ferocious_bite_SpellScript);
+        if (powerCost.Power == POWER_COMBO_POINTS)
+            m_comboPoints = powerCost.Amount;
+    }
 
-        void CalcDmg(SpellEffIndex /*effIndex*/)
+    void CalcDmg(SpellEffIndex /*effIndex*/)
+    {
+        if (Unit* caster = GetCaster())
         {
-            Unit* caster = GetCaster();
             int32 dmg = GetHitDamage();
-            uint32 cp = caster->GetPower(POWER_COMBO_POINTS) + 1;
-            float multiplier = (float)cp / (float)caster->GetMaxPower(POWER_COMBO_POINTS);
+
+            // Calculate damage per Combo Points
+            float multiplier = (float) m_comboPoints / (float) caster->GetMaxPower(POWER_COMBO_POINTS);
             int32 newdmg = CalculatePct(dmg, multiplier * 100.f);
+
+            // Calculate additional consumed Energy (up to 25 Energy) and increase damage based on Energy consumed (up to 100%)
+            int32 energyConsumed = caster->GetPower(POWER_ENERGY) > 25 ? 25 : caster->GetPower(POWER_ENERGY);
+            AddPct(newdmg, energyConsumed * (100.0f / 25.0f));
 
             SetHitDamage(newdmg);
 
+            // If caster's target is below 25% health or the caster have Sabertooth talent,
+            // refresh the duration of caster's Rip on the target
             if (Unit* target = GetHitUnit())
-            {
-                if (target->GetHealthPct() < 25 || caster->HasAura(SPELL_DRUID_SABERTOOTH))
-                {
+                if (target->HasAuraState(AURA_STATE_HEALTHLESS_25_PERCENT) || caster->HasAura(SPELL_DRUID_SABERTOOTH))
                     if (Aura* rip = target->GetAura(SPELL_DRUID_RIP, caster->GetGUID()))
                         rip->RefreshDuration();
-                }
-            }
         }
-
-        void RemoveCP()
-        {
-            Unit* caster = GetCaster();
-            caster->SetPower(POWER_COMBO_POINTS, 0);
-        }
-
-        void Register() override
-        {
-            OnEffectHitTarget += SpellEffectFn(spell_dru_ferocious_bite_SpellScript::CalcDmg, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
-            AfterHit += SpellHitFn(spell_dru_ferocious_bite_SpellScript::RemoveCP);
-        }
-    };
-
-    SpellScript* GetSpellScript() const override
-    {
-        return new spell_dru_ferocious_bite_SpellScript();
     }
+
+    void Register() override
+    {
+        OnTakePower += SpellOnTakePowerFn(spell_dru_ferocious_bite::HandleOnTakePower);
+        OnEffectHitTarget += SpellEffectFn(spell_dru_ferocious_bite::CalcDmg, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
+    }
+
+private:
+    int32 m_comboPoints = 0;
 };
 
 // Dash - 1850
@@ -2326,7 +2321,7 @@ void AddSC_druid_spell_scripts()
     new spell_dru_sunfire();
     new spell_dru_balance_affinity_dps();
     new spell_dru_balance_affinity_resto();
-    new spell_dru_ferocious_bite();
+    RegisterSpellScript(spell_dru_ferocious_bite);
     new spell_dru_dash();
     new spell_dru_savage_roar();
     new spell_dru_survival_instincts();
