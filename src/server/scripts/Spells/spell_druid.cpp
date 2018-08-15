@@ -2345,6 +2345,35 @@ private:
     bool m_awardComboPoint = true;
 };
 
+// Brutal Slash - 202028
+class spell_dru_brutal_slash : public SpellScript
+{
+    PrepareSpellScript(spell_dru_brutal_slash);
+
+    void HandleOnHit(SpellEffIndex /*effIndex*/)
+    {
+        Unit* caster = GetCaster();
+        Unit* target = GetHitUnit();
+        if (!caster || !target)
+            return;
+
+        // This prevent awarding multiple Combo Points when multiple targets hit with Brutal Slash AoE
+        if(m_awardComboPoint)
+            // Awards the caster 1 Combo Point (get value from the spell data)
+            caster->ModifyPower(POWER_COMBO_POINTS, sSpellMgr->GetSpellInfo(SPELL_DRUID_SWIPE_CAT)->GetEffect(EFFECT_0)->BasePoints);
+
+        m_awardComboPoint = false;
+    }
+
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_dru_brutal_slash::HandleOnHit, EFFECT_0, SPELL_EFFECT_DUMMY);
+    }
+
+private:
+    bool m_awardComboPoint = true;
+};
+
 void AddSC_druid_spell_scripts()
 {
     // Spells Scripts
@@ -2388,6 +2417,7 @@ void AddSC_druid_spell_scripts()
     new spell_dru_travel_form();
     RegisterAuraScript(aura_dru_charm_woodland_creature);
     RegisterSpellScript(spell_dru_swipe);
+    RegisterSpellScript(spell_dru_brutal_slash);
 
     RegisterSpellScript(spell_dru_thrash);
     RegisterAuraScript(spell_dru_thrash_periodic_damage);
