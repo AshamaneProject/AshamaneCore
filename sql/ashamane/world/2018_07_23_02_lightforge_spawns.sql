@@ -108,14 +108,38 @@ INSERT INTO `gossip_menu_option` (`MenuId`, `OptionIndex`, `OptionIcon`, `Option
 (9821, 3, 0, 'I''d like to heal and revive my battle pets.', 0),
 (9821, 1, 1, 'I''m looking for a lost companion.', 0);
 
-/*  Needs Scripting?
+UPDATE `gossip_menu_option` SET `OptionType`='1', `OptionNpcFlag`='1' WHERE (`MenuId`='21910') AND (`OptionIndex`='0');
+UPDATE `gossip_menu_option` SET `OptionType`='1', `OptionNpcFlag`='1' WHERE (`MenuId`='21910') AND (`OptionIndex`='1');
+UPDATE `gossip_menu_option` SET `OptionType`='1', `OptionNpcFlag`='1' WHERE (`MenuId`='21910') AND (`OptionIndex`='2');
+UPDATE `gossip_menu_option` SET `OptionType`='1', `OptionNpcFlag`='1' WHERE (`MenuId`='21910') AND (`OptionIndex`='3');
+UPDATE `gossip_menu_option` SET `OptionType`='1', `OptionNpcFlag`='1' WHERE (`MenuId`='21910') AND (`OptionIndex`='4');
+UPDATE `gossip_menu_option` SET `OptionType`='1', `OptionNpcFlag`='1' WHERE (`MenuId`='21910') AND (`OptionIndex`='5');
+
+
+DELETE FROM creature_text WHERE CreatureID = 130986 AND GroupID = 0 OR 
+CreatureID = 130986 AND GroupID = 1 OR
+CreatureID = 130986 AND GroupID = 2 OR
+CreatureID = 130986 AND GroupID = 3 OR
+CreatureID = 130986 AND GroupID = 4 OR
+CreatureID = 130986 AND GroupID = 5;
+
 INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `comment`) VALUES
-(130986, @GROUP_ID+0, @ID+, 'I am afraid I cannot allow that.', 12, 0, 100, 0, 0, 96050, UNKNOWN, 'Vigilant Quoram to Player'),
-(130986, @GROUP_ID+1, @ID+, 'Fine.', 12, 0, 100, 0, 0, 96049, UNKNOWN, 'Vigilant Quoram to Player'),
-(130986, @GROUP_ID+2, @ID+, 'For now.', 12, 0, 100, 0, 0, 96047, UNKNOWN, 'Vigilant Quoram to Player'),
-(130986, @GROUP_ID+3, @ID+, 'Congratulations.', 12, 0, 100, 0, 0, 96043, UNKNOWN, 'Vigilant Quoram to Player'),
-(130986, @GROUP_ID+4, @ID+, 'Why have you returned?', 12, 0, 100, 0, 0, 96042, UNKNOWN, 'Vigilant Quoram to Player'),
-(130986, @GROUP_ID+5, @ID+, 'It is designed to kill you.', 12, 0, 100, 0, 0, 96044, UNKNOWN, 'Vigilant Quoram to Player'),
+(130986, 0, 0, 'I am afraid I cannot allow that.', 12, 0, 100, 0, 0, 96050, 0, 'Vigilant Quoram to Player'),
+(130986, 1, 0, 'Fine.', 12, 0, 100, 0, 0, 96049, 0, 'Vigilant Quoram to Player'),
+(130986, 2, 0, 'For now.', 12, 0, 100, 0, 0, 96047, 0, 'Vigilant Quoram to Player'),
+(130986, 3, 0, 'Congratulations.', 12, 0, 100, 0, 0, 96043, 0, 'Vigilant Quoram to Player'),
+(130986, 4, 0, 'Why have you returned?', 12, 0, 100, 0, 0, 96042, 0, 'Vigilant Quoram to Player'),
+(130986, 5, 0, 'It is designed to kill you.', 12, 0, 100, 0, 0, 96044, 0, 'Vigilant Quoram to Player');
+
+DELETE FROM smart_scripts WHERE entryorguid = 130986 AND id = 0 OR entryorguid = 130986 AND id = 1 OR entryorguid = 130986 AND id = 2 OR entryorguid = 130986 AND id = 3 OR entryorguid = 130986 AND id = 4 OR entryorguid = 130986 AND id = 5;
+INSERT INTO smart_scripts (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param_string`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES ('130986', '0', '0', '0', '62', '0', '100', '0', '21910', '0', '0', '0', '', '84', '4', '0', '0', '0', '0', '0', '1', '0', '0', '0', '0', '0', '0', '0', 'Vigilant Quoram - On Gossip Option 4 Selected - Say Line 2');
+INSERT INTO smart_scripts (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param_string`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES ('130986', '0', '1', '0', '62', '0', '100', '0', '21910', '1', '0', '0', '', '84', '3', '0', '0', '0', '0', '0', '1', '0', '0', '0', '0', '0', '0', '0', 'Vigilant Quoram - On Gossip Option 4 Selected - Say Line 2');
+INSERT INTO smart_scripts (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param_string`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES ('130986', '0', '2', '0', '62', '0', '100', '0', '21910', '2', '0', '0', '', '84', '5', '0', '0', '0', '0', '0', '1', '0', '0', '0', '0', '0', '0', '0', 'Vigilant Quoram - On Gossip Option 4 Selected - Say Line 2');
+INSERT INTO smart_scripts (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param_string`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES ('130986', '0', '3', '0', '62', '0', '100', '0', '21910', '3', '0', '0', '', '84', '2', '0', '0', '0', '0', '0', '1', '0', '0', '0', '0', '0', '0', '0', 'Vigilant Quoram - On Gossip Option 4 Selected - Say Line 2');
+INSERT INTO smart_scripts (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param_string`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES ('130986', '0', '4', '0', '62', '0', '100', '0', '21910', '4', '0', '0', '', '84', '1', '0', '0', '0', '0', '0', '1', '0', '0', '0', '0', '0', '0', '0', 'Vigilant Quoram - On Gossip Option 4 Selected - Say Line 2');
+INSERT INTO smart_scripts (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param_string`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES ('130986', '0', '5', '0', '62', '0', '100', '0', '21910', '5', '0', '0', '', '84', '0', '0', '0', '0', '0', '0', '1', '0', '0', '0', '0', '0', '0', '0', 'Vigilant Quoram - On Gossip Option 4 Selected - Say Line 2');
+
+/*
 (131334, @GROUP_ID+0, @ID+, 'Light be with you, $n. I plan to  seek the Legion upon Azeroth to continue our eternal battle.', 12, 0, 100, 1, 0, 0, UNKNOWN, 'Vindicator Minkey to Player');
 */
 

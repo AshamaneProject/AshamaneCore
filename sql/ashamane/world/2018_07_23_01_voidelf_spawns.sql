@@ -535,6 +535,8 @@ INSERT INTO `gossip_menu_option` (`MenuId`, `OptionIndex`, `OptionIcon`, `Option
 (7288, 0, 5, 'Make this inn your home.', 0),
 (22068, 0, 0, 'What do you know of Telogrus?', 0);
 
+UPDATE `gossip_menu_option` SET `OptionType`='1', `OptionNpcFlag`='1' WHERE (`MenuId`='22068') AND (`OptionIndex`='0');
+
 DELETE FROM `gossip_menu_option_action` WHERE (`MenuId`=22068 AND `OptionIndex`=0);
 INSERT INTO `gossip_menu_option_action` (`MenuId`, `OptionIndex`, `ActionMenuId`, `ActionPoiId`) VALUES
 (22068, 0, 22156, 0);
