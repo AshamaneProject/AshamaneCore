@@ -798,7 +798,7 @@ class spell_mage_blazing_barrier : public AuraScript
     void Register() override
     {
         DoEffectCalcAmount += AuraEffectCalcAmountFn(spell_mage_blazing_barrier::CalculateAmount, EFFECT_0, SPELL_AURA_SCHOOL_ABSORB);
-        OnEffectAbsorb += AuraEffectAbsorbFn(spell_mage_blazing_barrier::Absorb, EFFECT_0);
+        AfterEffectAbsorb += AuraEffectAbsorbFn(spell_mage_blazing_barrier::Absorb, EFFECT_0);
     }
 };
 
