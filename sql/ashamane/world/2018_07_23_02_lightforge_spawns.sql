@@ -10,7 +10,7 @@
  -- TELE LOCATION --
 DELETE FROM game_tele WHERE id = 1799;
 INSERT INTO game_tele (`id`, `position_x`, `position_y`, `position_z`, `orientation`, `map`, `name`)VALUES
-(1799, 458.823, 1449.61, 757.573, 0.4664253, 1860, 'LifghtforgeSpawn');
+(1799, 458.823, 1449.61, 757.573, 0.4664253, 1860, 'LightforgeSpawn');
 
 
  -- UPDATE SPAWN LOCATION IN PLAYERCREATEINFO --
@@ -91,6 +91,7 @@ UPDATE creature_template SET gossip_menu_id = 21423 WHERE entry = 132224;
 UPDATE creature_template SET gossip_menu_id = 21451 WHERE entry = 126389;
 UPDATE creature_template SET gossip_menu_id = 22017 WHERE entry = 132334;
 UPDATE creature_template SET gossip_menu_id = 21462 WHERE entry = 123395;
+UPDATE creature_template SET npcflag = 4227 WHERE entry = 132224;
  
 
 DELETE FROM `gossip_menu_option` WHERE (`MenuId`=21910 AND `OptionIndex`=5) OR (`MenuId`=21910 AND `OptionIndex`=4) OR (`MenuId`=21910 AND `OptionIndex`=3) OR (`MenuId`=21910 AND `OptionIndex`=2) OR (`MenuId`=21910 AND `OptionIndex`=1) OR (`MenuId`=21910 AND `OptionIndex`=0) OR (`MenuId`=21423 AND `OptionIndex`=0) OR (`MenuId`=8522 AND `OptionIndex`=0) OR (`MenuId`=21462 AND `OptionIndex`=2) OR (`MenuId`=21462 AND `OptionIndex`=0) OR (`MenuId`=9821 AND `OptionIndex`=3) OR (`MenuId`=9821 AND `OptionIndex`=1);
@@ -181,9 +182,6 @@ UPDATE `creature_template` SET `AIName` = 'SmartAI', `npcflag` = 1 WHERE `entry`
 DELETE FROM `smart_scripts` WHERE (source_type = 0 AND entryorguid = 130758);
 INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES
 (130758, 0, 0, 0, 64, 0, 100, 0, 0, 0, 0, 0, 62, 1860, 0, 0, 0, 0, 0, 7, 0, 0, 0, 458.823, 1449.61, 757.573, 0.4664253, 'hackfix teleport from sw to lfd area');
-
-
-
 
 
  -- Ambassador Moorguard SAI
@@ -383,12 +381,5 @@ UPDATE creature SET spawnMask = 1 WHERE guid BETWEEN 1100225 AND 1100600;
 
 UPDATE gameobject SET spawnMask = 1 WHERE guid BETWEEN 20000050 AND 20000118;
 
-
-
-
-
-
-
-
-
-
+UPDATE creature_template_addon SET emote = 173 WHERE entry = 132224;
+UPDATE creature_template SET gossip_menu_id = 0 WHERE entry = 132224;
