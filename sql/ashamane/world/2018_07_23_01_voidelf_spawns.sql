@@ -259,6 +259,9 @@ INSERT INTO `creature_template` (`entry`, `KillCredit1`, `KillCredit2`, `modelid
 (133362, 0, 0, 82874, 0, 0, 0, 'Ambassador Moorgard', NULL, NULL, NULL, NULL, 6, 0, 0, 0, 0, 7, 0, 32768, 5, 10, 0, 0, 26972), -- 133362
 (132659, 0, 0, 82548, 82549, 0, 0, 'Veiled Riftblade', NULL, NULL, NULL, NULL, -1, 0, 0, 1, 0, 7, 0, 0, 1.5, 1, 0, 0, 26972); -- 132659
 
+-- Void Suppression bunny fix
+UPDATE creature_template SET flags_extra = 128 WHERE entry = 132397; 
+
 -- add this or the conversation wont work --
 DELETE FROM creature_template WHERE entry = 126306;
 INSERT INTO `creature_template` (`entry`, `modelid1`, `name`, `minlevel`, `maxlevel`, `faction`, `unit_class`)VALUES

@@ -3621,6 +3621,12 @@ void SpellMgr::LoadSpellInfoCorrections()
     {
         spellInfo->AuraInterruptFlags[AuraInterruptFlagIndex<SpellAuraInterruptFlags>::value] &= ~CHANNEL_FLAG_DELAY;
     });
+	
+	    // Void Suppression
+    ApplySpellFix({ 260888 }, [](SpellInfo* spellInfo)
+    {
+        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_1))->Effect = 0;
+    });
 
     SpellInfo* spellInfo = NULL;
     for (uint32 i = 0; i < GetSpellInfoStoreSize(); ++i)
