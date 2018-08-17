@@ -30,7 +30,7 @@
 
 enum DruidSpells
 {
-    SPELL_DRUID_THRASH_PERIODIC_DAMAGE              = 192090,
+    SPELL_DRUID_THRASH_BEAR_PERIODIC_DAMAGE         = 192090,
     SPELL_DRUID_BLESSING_OF_THE_ANCIENTS            = 202360,
     SPELL_DRUID_BLESSING_OF_ELUNE                   = 202737,
     SPELL_DRUID_BLESSING_OF_ANSHE                   = 202739,
@@ -105,11 +105,10 @@ enum GoreSpells
     }
  };
 
-//7.3.2.25549
-// 77758 - Thrash
-class spell_dru_thrash : public SpellScript
+// Thrash (Bear Form) - 77758
+class spell_dru_thrash_bear : public SpellScript
 {
-    PrepareSpellScript(spell_dru_thrash);
+    PrepareSpellScript(spell_dru_thrash_bear);
 
     void OnHit(SpellEffIndex /*effIndex*/)
     {
@@ -118,19 +117,19 @@ class spell_dru_thrash : public SpellScript
         if (!caster || !target)
             return;
 
-        caster->CastSpell(target, SPELL_DRUID_THRASH_PERIODIC_DAMAGE, true);
+        caster->CastSpell(target, SPELL_DRUID_THRASH_BEAR_PERIODIC_DAMAGE, true);
     }
 
     void Register() override
     {
-        OnEffectHitTarget += SpellEffectFn(spell_dru_thrash::OnHit, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
+        OnEffectHitTarget += SpellEffectFn(spell_dru_thrash_bear::OnHit, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
     }
 };
 
-// Thrash periodic damage - 192090
-class spell_dru_thrash_periodic_damage : public AuraScript
+// Thrash (Bear Form) periodic damage aura - 192090
+class aura_dru_thrash_bear : public AuraScript
 {
-    PrepareAuraScript(spell_dru_thrash_periodic_damage);
+    PrepareAuraScript(aura_dru_thrash_bear);
 
     void OnTick(AuraEffect const* auraEff)
     {
@@ -150,7 +149,7 @@ class spell_dru_thrash_periodic_damage : public AuraScript
 
     void Register() override
     {
-        OnEffectPeriodic += AuraEffectPeriodicFn(spell_dru_thrash_periodic_damage::OnTick, EFFECT_0, SPELL_AURA_PERIODIC_DAMAGE);
+        OnEffectPeriodic += AuraEffectPeriodicFn(aura_dru_thrash_bear::OnTick, EFFECT_0, SPELL_AURA_PERIODIC_DAMAGE);
     }
 };
 
@@ -2307,6 +2306,102 @@ class aura_dru_charm_woodland_creature : public AuraScript
     }
 };
 
+// Swipe - 106785
+class spell_dru_swipe : public SpellScript
+{
+    PrepareSpellScript(spell_dru_swipe);
+
+    void HandleOnHit(SpellEffIndex /*effIndex*/)
+    {
+        Unit* caster = GetCaster();
+        Unit* target = GetHitUnit();
+        if (!caster || !target)
+            return;
+
+        int32 damage = GetHitDamage();
+        int32 casterLevel = caster->GetLevelForTarget(caster);
+
+        // This prevent awarding multiple Combo Points when multiple targets hit with Swipe AoE
+        if(m_awardComboPoint)
+            // Awards the caster 1 Combo Point (get value from the spell data)
+            caster->ModifyPower(POWER_COMBO_POINTS, sSpellMgr->GetSpellInfo(SPELL_DRUID_SWIPE_CAT)->GetEffect(EFFECT_0)->BasePoints);
+
+        // If caster is level >= 44 and the target is bleeding, deals 20% increased damage (get value from the spell data)
+        if ((casterLevel >= 44) && target->HasAuraState(AURA_STATE_BLEEDING))
+            AddPct(damage, sSpellMgr->GetSpellInfo(SPELL_DRUID_SWIPE_CAT)->GetEffect(EFFECT_1)->BasePoints);
+
+        SetHitDamage(damage);
+
+        m_awardComboPoint = false;
+    }
+
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_dru_swipe::HandleOnHit, EFFECT_1, SPELL_EFFECT_DUMMY);
+    }
+
+private:
+    bool m_awardComboPoint = true;
+};
+
+// Brutal Slash - 202028
+class spell_dru_brutal_slash : public SpellScript
+{
+    PrepareSpellScript(spell_dru_brutal_slash);
+
+    void HandleOnHit(SpellEffIndex /*effIndex*/)
+    {
+        Unit* caster = GetCaster();
+        Unit* target = GetHitUnit();
+        if (!caster || !target)
+            return;
+
+        // This prevent awarding multiple Combo Points when multiple targets hit with Brutal Slash AoE
+        if(m_awardComboPoint)
+            // Awards the caster 1 Combo Point (get value from the spell data)
+            caster->ModifyPower(POWER_COMBO_POINTS, sSpellMgr->GetSpellInfo(SPELL_DRUID_SWIPE_CAT)->GetEffect(EFFECT_0)->BasePoints);
+
+        m_awardComboPoint = false;
+    }
+
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_dru_brutal_slash::HandleOnHit, EFFECT_0, SPELL_EFFECT_DUMMY);
+    }
+
+private:
+    bool m_awardComboPoint = true;
+};
+
+// Thrash (Cat Form) - 106830
+class spell_dru_thrash_cat : public SpellScript
+{
+    PrepareSpellScript(spell_dru_thrash_cat);
+
+    void HandleOnEffectHitTarget(SpellEffIndex /*effIndex*/)
+    {
+        Unit* caster = GetCaster();
+        Unit* target = GetHitUnit();
+        if (!caster || !target)
+            return;
+
+        // This prevent awarding multiple Combo Points when multiple targets hit with Thrash AoE
+        if(m_awardComboPoint)
+            // Awards the caster 1 Combo Point
+            caster->ModifyPower(POWER_COMBO_POINTS, 1);
+
+        m_awardComboPoint = false;
+    }
+
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_dru_thrash_cat::HandleOnEffectHitTarget, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
+    }
+
+private:
+    bool m_awardComboPoint = true;
+};
+
 void AddSC_druid_spell_scripts()
 {
     // Spells Scripts
@@ -2349,9 +2444,12 @@ void AddSC_druid_spell_scripts()
     new spell_dru_travel_form_dummy();
     new spell_dru_travel_form();
     RegisterAuraScript(aura_dru_charm_woodland_creature);
+    RegisterSpellScript(spell_dru_swipe);
+    RegisterSpellScript(spell_dru_brutal_slash);
+    RegisterSpellScript(spell_dru_thrash_cat);
 
-    RegisterSpellScript(spell_dru_thrash);
-    RegisterAuraScript(spell_dru_thrash_periodic_damage);
+    RegisterSpellScript(spell_dru_thrash_bear);
+    RegisterAuraScript(aura_dru_thrash_bear);
     RegisterSpellScript(spell_dru_blessing_of_the_ancients);
     RegisterAuraScript(spell_dru_gore);
     RegisterAuraScript(aura_dru_solar_empowerment);
