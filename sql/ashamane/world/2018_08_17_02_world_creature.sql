@@ -1,0 +1,3 @@
+delete from creature where guid = 210219126;
+insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values
+('210219126','119486','1220','0','0','1','0','0','0','-1','0','1','-739.555','4405.19','748.609','5.946','300','0','0','5196335','0','0','0','0','0','0','0','','0');
