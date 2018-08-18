@@ -473,6 +473,7 @@ typedef std::unordered_map<uint32/*(mapid, spawnMode) pair*/, CellObjectGuidsMap
 
 // Trinity Trainer Reference start range
 #define TRINITY_TRAINER_START_REF      200000
+#define TRINITY_TRAINER_END_REF        1000000
 
 struct TrinityString
 {

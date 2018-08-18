@@ -8676,7 +8676,7 @@ void ObjectMgr::LoadTrainerSpell()
 
 void ObjectMgr::AddSpellToTrainer(uint32 ID, uint32 SpellID, uint32 MoneyCost, uint32 ReqSkillLine, uint32 ReqSkillRank, uint32 ReqLevel, uint32 Index)
 {
-    if (ID >= TRINITY_TRAINER_START_REF)
+    if (ID >= TRINITY_TRAINER_START_REF && ID < TRINITY_TRAINER_END_REF)
         return;
 
     CreatureTemplate const* cInfo = GetCreatureTemplate(ID);
