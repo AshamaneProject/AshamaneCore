@@ -7467,7 +7467,7 @@ bool Unit::IsImmunedToSpell(SpellInfo const* spellInfo, Unit* caster) const
     {
         SpellInfo const* immuneSpellInfo = sSpellMgr->GetSpellInfo(itr->second);
         if ((itr->first & spellInfo->GetSchoolMask())
-            && !(immuneSpellInfo && immuneSpellInfo->IsPositive() && spellInfo->IsPositive() && IsFriendlyTo(caster))
+            && !(immuneSpellInfo && immuneSpellInfo->IsPositive() && spellInfo->IsPositive() && (caster && IsFriendlyTo(caster)))
             && !spellInfo->CanPierceImmuneAura(immuneSpellInfo))
             return true;
     }
