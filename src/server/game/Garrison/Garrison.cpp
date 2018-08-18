@@ -555,7 +555,7 @@ std::pair<std::vector<GarrMissionEntry const*>, std::vector<double>> Garrison::G
 
     uint32 const maxFollowerlevel       = GetMaxFollowerLevel();
     uint32 const activeFolowerCount     = GetActiveFollowersCount();
-    uint32 const averageFollowerILevel  = GetAverageFollowerILevel();
+    //uint32 const averageFollowerILevel  = GetAverageFollowerILevel();
 
     for (uint32 i = 0; i < sGarrMissionStore.GetNumRows(); ++i)
     {
