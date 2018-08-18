@@ -87,8 +87,80 @@ public:
     }
 };
 
+class questnpc_soul_gem : public CreatureScript
+{
+public:
+    questnpc_soul_gem() : CreatureScript("questnpc_soul_gem") { }
+
+
+
+    struct questnpc_soul_gemAI : public ScriptedAI
+    {
+        questnpc_soul_gemAI(Creature* creature) : ScriptedAI(creature) { }
+        bool check = false;
+
+        virtual void UpdateAI(uint32 diff) override
+        {
+            if(check == false)
+            { 
+            me->CastSpell(me, 186465);
+            checkfordeaddemons(me);
+            check = true;
+            }
+        }
+
+        void RemoveCorpses(Creature* Creature, Player* Player)
+        {
+                Creature->DespawnOrUnsummon();
+                Player->KilledMonsterCredit(90298);
+        }
+
+        void checkfordeaddemons(Creature* creature)
+        {
+            std::list<Creature*> targets = creature->FindAllCreaturesInRange(15.0f);
+            Player* Owner = creature->GetOwner()->ToPlayer();
+
+            for (auto itr : targets)
+            {
+                if(itr->IsAlive() == false)
+                { 
+                switch (itr->GetEntry())
+                {
+                case 93619:
+                    RemoveCorpses(itr, Owner);
+                    break;
+                case 90241:
+                    RemoveCorpses(itr, Owner);
+                    break;
+                case 101943:
+                    RemoveCorpses(itr, Owner);
+                    break;
+                case 90230:
+                    RemoveCorpses(itr, Owner);
+                    break;
+                case 93556:
+                    RemoveCorpses(itr, Owner);
+                    break;
+                case 103180:
+                    RemoveCorpses(itr, Owner);
+                    break;
+                default:
+                    break;
+                }
+                }
+            }
+        }
+    };
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new questnpc_soul_gemAI(creature);
+    }
+};
+
 
 void AddSC_azsuna()
 {
     new scene_azsuna_runes();
+    new questnpc_soul_gem();
 }
