@@ -649,6 +649,8 @@ void Garrison::StartMission(uint32 garrMissionId, std::vector<uint64 /*DbID*/> F
     if (missionEntry->CurrencyCost && !_owner->HasCurrency(missionEntry->CurrencyID, missionEntry->CurrencyCost))
         return SendStartMissionResult(false); // GARRISON_ERROR_NOT_ENOUGH_CURRENCY
 
+    mission->PacketInfo.TravelDuration = missionEntry->TravelTime;
+    mission->PacketInfo.MissionDuration = missionEntry->Duration;
     mission->PacketInfo.StartTime = time(nullptr);
     mission->PacketInfo.MissionState = GarrisonMission::State::InProgress;
     mission->PacketInfo.SuccessChance = sGarrisonMgr.GetMissionSuccessChance(this, mission->PacketInfo.MissionRecID);
