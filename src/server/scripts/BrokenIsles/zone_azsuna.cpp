@@ -103,7 +103,6 @@ public:
         {
             if(check == false)
             { 
-            me->CastSpell(me, 186465);
             checkfordeaddemons(me);
             check = true;
             }
