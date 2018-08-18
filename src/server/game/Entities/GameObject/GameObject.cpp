@@ -531,6 +531,7 @@ void GameObject::Update(uint32 diff)
                             udata.BuildPacket(&packet);
                             caster->ToPlayer()->SendDirectMessage(&packet);
 
+                            SetGoAnimProgress(0);
                             SendCustomAnim(GetGoAnimProgress());
                         }
 
