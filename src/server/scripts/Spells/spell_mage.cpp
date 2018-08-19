@@ -754,12 +754,7 @@ class spell_mage_conflagration : public AuraScript
 
     bool CheckProc(ProcEventInfo& eventInfo)
     {
-        bool _spellCanProc = (eventInfo.GetSpellInfo()->Id == SPELL_MAGE_FIREBALL);
-
-        if (_spellCanProc)
-            return true;
-
-        return false;
+        return eventInfo.GetSpellInfo()->Id == SPELL_MAGE_FIREBALL;
     }
 
     void Register() override

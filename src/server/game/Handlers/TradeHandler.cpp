@@ -493,33 +493,36 @@ void WorldSession::HandleAcceptTradeOpcode(WorldPackets::Trade::AcceptTrade& acc
         moveItems(myItems, hisItems);
 
         // logging money
-        if (HasPermission(rbac::RBAC_PERM_LOG_GM_TRADE))
+        if (my_trade->GetMoney() > 0)
         {
-            if (my_trade->GetMoney() > 0)
+            if (HasPermission(rbac::RBAC_PERM_LOG_GM_TRADE))
             {
                 sLog->outCommand(_player->GetSession()->GetAccountId(), "GM %s (Account: %u) give money (Amount: " UI64FMTD ") to player: %s (Account: %u)",
                     _player->GetName().c_str(), _player->GetSession()->GetAccountId(),
                     my_trade->GetMoney(),
                     trader->GetName().c_str(), trader->GetSession()->GetAccountId());
-
-                TC_LOG_INFO("metric", "%s (Account: %u) give money (Amount: " UI64FMTD ") to %s (Account: %u)",
-                    _player->GetName().c_str(), _player->GetSession()->GetAccountId(),
-                    my_trade->GetMoney(),
-                    trader->GetName().c_str(), trader->GetSession()->GetAccountId());
             }
 
-            if (his_trade->GetMoney() > 0)
+            TC_LOG_INFO("metric", "%s (Account: %u) give money (Amount: " UI64FMTD ") to %s (Account: %u)",
+                _player->GetName().c_str(), _player->GetSession()->GetAccountId(),
+                my_trade->GetMoney(),
+                trader->GetName().c_str(), trader->GetSession()->GetAccountId());
+        }
+
+        if (his_trade->GetMoney() > 0)
+        {
+            if (HasPermission(rbac::RBAC_PERM_LOG_GM_TRADE))
             {
                 sLog->outCommand(trader->GetSession()->GetAccountId(), "GM %s (Account: %u) give money (Amount: " UI64FMTD ") to player: %s (Account: %u)",
                     trader->GetName().c_str(), trader->GetSession()->GetAccountId(),
                     his_trade->GetMoney(),
                     _player->GetName().c_str(), _player->GetSession()->GetAccountId());
-
-                TC_LOG_INFO("metric", "%s (Account: %u) give money (Amount: " UI64FMTD ") to %s (Account: %u)",
-                    trader->GetName().c_str(), trader->GetSession()->GetAccountId(),
-                    my_trade->GetMoney(),
-                    _player->GetName().c_str(), _player->GetSession()->GetAccountId());
             }
+
+            TC_LOG_INFO("metric", "%s (Account: %u) give money (Amount: " UI64FMTD ") to %s (Account: %u)",
+                trader->GetName().c_str(), trader->GetSession()->GetAccountId(),
+                my_trade->GetMoney(),
+                _player->GetName().c_str(), _player->GetSession()->GetAccountId());
         }
 
         // update money
