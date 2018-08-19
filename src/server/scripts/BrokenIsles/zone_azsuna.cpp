@@ -93,19 +93,13 @@ public:
     questnpc_soul_gem() : CreatureScript("questnpc_soul_gem") { }
 
 
-
     struct questnpc_soul_gemAI : public ScriptedAI
     {
         questnpc_soul_gemAI(Creature* creature) : ScriptedAI(creature) { }
-        bool check = false;
 
-        virtual void UpdateAI(uint32 diff) override
+        void Reset() override
         {
-            if(check == false)
-            { 
             checkfordeaddemons(me);
-            check = true;
-            }
         }
 
         void checkfordeaddemons(Creature* creature)
