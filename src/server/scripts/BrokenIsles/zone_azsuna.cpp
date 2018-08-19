@@ -108,12 +108,6 @@ public:
             }
         }
 
-        void RemoveCorpses(Creature* Creature, Player* Player)
-        {
-                Creature->DespawnOrUnsummon();
-                Player->KilledMonsterCredit(90298);
-        }
-
         void checkfordeaddemons(Creature* creature)
         {
             std::list<Creature*> targets = creature->FindAllCreaturesInRange(15.0f);
@@ -126,22 +120,13 @@ public:
                 switch (itr->GetEntry())
                 {
                 case 93619:
-                    RemoveCorpses(itr, Owner);
-                    break;
                 case 90241:
-                    RemoveCorpses(itr, Owner);
-                    break;
                 case 101943:
-                    RemoveCorpses(itr, Owner);
-                    break;
                 case 90230:
-                    RemoveCorpses(itr, Owner);
-                    break;
                 case 93556:
-                    RemoveCorpses(itr, Owner);
-                    break;
                 case 103180:
-                    RemoveCorpses(itr, Owner);
+                    itr->DespawnOrUnsummon();
+                    Owner->KilledMonsterCredit(90298);
                     break;
                 default:
                     break;
