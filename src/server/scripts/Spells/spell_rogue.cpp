@@ -2586,6 +2586,9 @@ public:
             if (!roll_chance_i(6))
                 return false;
 
+            if (!eventInfo.GetDamageInfo())
+                return false;
+
             SpellNonMeleeDamage damageLog(caster, target, triggerSpell->Id, triggerSpell->GetSpellXSpellVisualId(), triggerSpell->SchoolMask);
             damageLog.damage = eventInfo.GetDamageInfo()->GetDamage();
             damageLog.cleanDamage = damageLog.damage;
