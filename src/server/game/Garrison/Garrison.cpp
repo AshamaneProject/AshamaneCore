@@ -32,9 +32,9 @@
 #include "ScriptMgr.h"
 #include "VehicleDefines.h"
 
-Garrison::Garrison(Player* owner) : _owner(owner), _siteLevel(nullptr), _followerActivationsRemainingToday(1)
+Garrison::Garrison(Player* owner) : _garrisonType(), _owner(owner), _siteLevel(nullptr), _followerActivationsRemainingToday(1)
 {
-    _timers[GUPDATE_MISSIONS_DISTRIBUTION].SetInterval(MINUTE*IN_MILLISECONDS);
+    _timers[GUPDATE_MISSIONS_DISTRIBUTION].SetInterval(MINUTE * IN_MILLISECONDS);
 }
 
 bool Garrison::Create(uint32 garrSiteId)
@@ -56,12 +56,12 @@ bool Garrison::Create(uint32 garrSiteId)
 void Garrison::Update(uint32 const diff)
 {
     // Update the different timers
-    for (uint8 i = 0; i < GUPDATE_COUNT; ++i)
+    for (auto& _timer : _timers)
     {
-        if (_timers[i].GetCurrent() >= 0)
-            _timers[i].Update(diff);
+        if (_timer.GetCurrent() >= 0)
+            _timer.Update(diff);
         else
-            _timers[i].SetCurrent(0);
+            _timer.SetCurrent(0);
     }
 
     if (_timers[GUPDATE_MISSIONS_DISTRIBUTION].Passed())
@@ -314,7 +314,7 @@ void Garrison::SaveToDB(SQLTransaction& trans)
 
 void Garrison::DeleteFromDB(SQLTransaction& trans)
 {
-    Garrison::DeleteFromDB(trans, _owner->GetGUID().GetCounter(), GetType());
+    DeleteFromDB(trans, _owner->GetGUID().GetCounter(), GetType());
 }
 
 void Garrison::DeleteFromDB(SQLTransaction& trans, ObjectGuid::LowType guid, GarrisonType garrType)
@@ -391,7 +391,7 @@ void Garrison::AI_Destroy()
 void Garrison::AddFollower(uint32 garrFollowerId)
 {
     WorldPackets::Garrison::GarrisonAddFollowerResult addFollowerResult;
-    addFollowerResult.GarrTypeID = (int32)_garrisonType;
+    addFollowerResult.GarrTypeID = _garrisonType;
     GarrFollowerEntry const* followerEntry = sGarrFollowerStore.LookupEntry(garrFollowerId);
     if (_followerIds.count(garrFollowerId) || !followerEntry)
     {
@@ -409,12 +409,7 @@ void Garrison::AddFollower(uint32 garrFollowerId)
     follower.PacketInfo.FollowerLevel = followerEntry->FollowerLevel;
     follower.PacketInfo.ItemLevelWeapon = followerEntry->ItemLevelWeapon;
     follower.PacketInfo.ItemLevelArmor = followerEntry->ItemLevelArmor;
-    follower.PacketInfo.Xp = 0;
-    follower.PacketInfo.CurrentBuildingID = 0;
-    follower.PacketInfo.CurrentMissionID = 0;
     follower.PacketInfo.AbilityID = sGarrisonMgr.RollFollowerAbilities(garrFollowerId, followerEntry, follower.PacketInfo.Quality, GetFaction(), true);
-    follower.PacketInfo.FollowerStatus = 0;
-
     addFollowerResult.Follower = follower.PacketInfo;
     _owner->SendDirectMessage(addFollowerResult.Write());
 
@@ -483,11 +478,7 @@ void Garrison::AddMission(uint32 garrMissionId)
     mission.PacketInfo.MissionRecID = garrMissionId;
     mission.PacketInfo.OfferTime = time(nullptr);
     mission.PacketInfo.OfferDuration = missionEntry->OfferTime;
-    mission.PacketInfo.StartTime = time_t(2254525440);
-    mission.PacketInfo.TravelDuration = missionEntry->TravelTime;
-    mission.PacketInfo.MissionDuration = missionEntry->Duration;
-    mission.PacketInfo.MissionState = 0;
-    mission.PacketInfo.SuccessChance = 0;
+    mission.PacketInfo.MissionState = GarrisonMission::State::Offered;
     mission.PacketInfo.Unknown2 = 1;
 
     // TODO : Generate rewards for mission
@@ -504,7 +495,7 @@ void Garrison::AddMission(uint32 garrMissionId)
     WorldPackets::Garrison::GarrisonAddMissionResult garrisonAddMissionResult;
     garrisonAddMissionResult.GarrType       = GetType();
     garrisonAddMissionResult.Result         = GarrisonMission::Result::Success;
-    garrisonAddMissionResult.State          = GarrisonMission::State::Available;
+    garrisonAddMissionResult.State          = GarrisonMission::State::Offered;
     garrisonAddMissionResult.Mission        = mission.PacketInfo;
     garrisonAddMissionResult.Rewards        = mission.Rewards;
     garrisonAddMissionResult.BonusRewards   = mission.BonusRewards;
@@ -541,7 +532,7 @@ void Garrison::DeleteMission(uint64 dbId)
 
 std::vector<Garrison::Follower*> Garrison::GetMissionFollowers(uint32 garrMissionId)
 {
-    std::vector<Garrison::Follower*> missionFollowers;
+    std::vector<Follower*> missionFollowers;
     for (auto followerItr : _followers)
         if (followerItr.second.PacketInfo.CurrentMissionID == garrMissionId)
             missionFollowers.push_back(&followerItr.second);
@@ -564,7 +555,7 @@ std::pair<std::vector<GarrMissionEntry const*>, std::vector<double>> Garrison::G
 
     uint32 const maxFollowerlevel       = GetMaxFollowerLevel();
     uint32 const activeFolowerCount     = GetActiveFollowersCount();
-    uint32 const averageFollowerILevel  = GetAverageFollowerILevel();
+    //uint32 const averageFollowerILevel  = GetAverageFollowerILevel();
 
     for (uint32 i = 0; i < sGarrMissionStore.GetNumRows(); ++i)
     {
@@ -589,8 +580,8 @@ std::pair<std::vector<GarrMissionEntry const*>, std::vector<double>> Garrison::G
         if (missionEntry->RequiredFollowersCount > activeFolowerCount)
             continue;
 
-        if (missionEntry->RequiredItemLevel > averageFollowerILevel)
-            continue;
+        //if (missionEntry->RequiredItemLevel > averageFollowerILevel)
+        //    continue;
 
         uint32 requiredClass = sGarrisonMgr.GetClassByMissionType(missionEntry->MissionType);
         if (requiredClass != CLASS_NONE && requiredClass != _owner->getClass())
@@ -601,7 +592,7 @@ std::pair<std::vector<GarrMissionEntry const*>, std::vector<double>> Garrison::G
             continue;
 
         double weight = 100.0;
-        if (missionEntry->Flags & GarrisonMission::Flags::Rare)
+        if (missionEntry->Flags & GarrisonMission::Flags::isRare)
             weight = 25.0;
 
         availableMissions.push_back(missionEntry);
@@ -614,12 +605,10 @@ std::pair<std::vector<GarrMissionEntry const*>, std::vector<double>> Garrison::G
 void Garrison::GenerateMissions()
 {
     uint32 maxMissionCount = ceil(GetActiveFollowersCount() * GARRISON_MISSION_DISTRIB_FOLLOWER_COEFF);
-
     if (GetMissions().size() >= maxMissionCount)
         return;
 
     uint32 missionToAddCount = urand(0, maxMissionCount - GetMissions().size());
-
     if (!missionToAddCount)
         return;
 
@@ -653,31 +642,40 @@ void Garrison::StartMission(uint32 garrMissionId, std::vector<uint64 /*DbID*/> F
     if (!missionEntry)
         return SendStartMissionResult(false);
 
-    Garrison::Mission* mission = GetMissionByID(missionEntry->ID);
+    Mission* mission = GetMissionByID(missionEntry->ID);
     if (!mission)
         return SendStartMissionResult(false);
 
+    if (missionEntry->CurrencyCost && !_owner->HasCurrency(missionEntry->CurrencyID, missionEntry->CurrencyCost))
+        return SendStartMissionResult(false); // GARRISON_ERROR_NOT_ENOUGH_CURRENCY
+
+    mission->PacketInfo.TravelDuration = missionEntry->TravelTime;
+    mission->PacketInfo.MissionDuration = missionEntry->Duration;
     mission->PacketInfo.StartTime = time(nullptr);
     mission->PacketInfo.MissionState = GarrisonMission::State::InProgress;
     mission->PacketInfo.SuccessChance = sGarrisonMgr.GetMissionSuccessChance(this, mission->PacketInfo.MissionRecID);
 
     for (uint64 followerDbID : Followers)
     {
-        Garrison::Follower* follower = GetFollower(followerDbID);
-
+        Follower* follower = GetFollower(followerDbID);
         if (!follower)
             return SendStartMissionResult(false);
 
         if (follower->PacketInfo.CurrentMissionID != 0 || follower->PacketInfo.CurrentBuildingID != 0)
             return SendStartMissionResult(false);
 
+        if (follower->PacketInfo.FollowerStatus == FOLLOWER_STATUS_INACTIVE)
+            return SendStartMissionResult(false);
+
         follower->PacketInfo.CurrentMissionID = missionEntry->ID;
     }
+
+    _owner->ModifyCurrency(missionEntry->CurrencyID, -static_cast<int32>(missionEntry->CurrencyCost));
 
     SendStartMissionResult(true, mission, &Followers);
 }
 
-void Garrison::SendStartMissionResult(bool success, Garrison::Mission* mission /*= nullptr*/, std::vector<uint64 /*DbID*/>* Followers /*= nullptr*/)
+void Garrison::SendStartMissionResult(bool success, Mission* mission /*= nullptr*/, std::vector<uint64 /*DbID*/>* Followers /*= nullptr*/)
 {
     WorldPackets::Garrison::GarrisonStartMissionResult garrisonStartMissionResult;
 
@@ -701,7 +699,7 @@ void Garrison::CompleteMission(uint32 garrMissionId)
     if (!missionEntry)
         return;
 
-    Garrison::Mission* mission = GetMissionByID(missionEntry->ID);
+    Mission* mission = GetMissionByID(missionEntry->ID);
     if (!mission)
         return;
 
@@ -710,12 +708,11 @@ void Garrison::CompleteMission(uint32 garrMissionId)
 
     if (canComplete)
     {
-        std::vector<Garrison::Follower*> followers = GetMissionFollowers(missionEntry->ID);
-        if (followers.empty())
+        if (GetMissionFollowers(missionEntry->ID).empty())
             return;
 
         success = roll_chance_i(mission->PacketInfo.SuccessChance);
-        mission->PacketInfo.MissionState = success ? GarrisonMission::State::CompleteSuccess : GarrisonMission::State::CompleteFailed;
+        mission->PacketInfo.MissionState = success ? GarrisonMission::State::Completed : GarrisonMission::State::Reward2Claimed;
     }
 
     WorldPackets::Garrison::GarrisonCompleteMissionResult garrisonCompleteMissionResult;
@@ -731,7 +728,7 @@ void Garrison::CalculateMissonBonusRoll(uint32 garrMissionId)
     if (!missionEntry)
         return;
 
-    Garrison::Mission* mission = GetMissionByID(missionEntry->ID);
+    Mission* mission = GetMissionByID(missionEntry->ID);
     if (!mission)
         return;
 
@@ -767,8 +764,8 @@ void Garrison::RewardMission(Mission* mission, bool withOvermaxReward)
 
             if (reward.FollowerXP)
             {
-                std::vector<Garrison::Follower*> followers = GetMissionFollowers(mission->PacketInfo.MissionRecID);
-                for (Garrison::Follower* follower : followers)
+                std::vector<Follower*> followers = GetMissionFollowers(mission->PacketInfo.MissionRecID);
+                for (Follower* follower : followers)
                     follower->EarnXP(GetOwner(), reward.FollowerXP);
             }
 

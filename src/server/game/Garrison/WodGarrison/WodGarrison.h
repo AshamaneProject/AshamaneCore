@@ -103,7 +103,7 @@ public:
     void PlaceBuilding(uint32 garrPlotInstanceId, uint32 garrBuildingId);
     void CancelBuildingConstruction(uint32 garrPlotInstanceId);
     void ActivateBuilding(uint32 garrPlotInstanceId);
-    std::unordered_set<uint32 /*garrBuildingId*/> const& GetKnownBuildings() const { return _knownBuildings; }
+    std::unordered_set<uint32 /*garrBuildingId*/> const& GetKnownBuildings() const;
 
     void SendBuildingLandmarks(Player* receiver) const;
 
