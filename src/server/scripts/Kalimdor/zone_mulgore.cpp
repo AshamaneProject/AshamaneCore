@@ -186,7 +186,7 @@ struct npc_kyle_the_frenzied : public ScriptedAI
 
             Talk(0);
 
-            me->GetScheduler().Schedule(4s, [this](TaskContext context)
+            me->GetScheduler().Schedule(4s, [this](TaskContext /*context*/)
             {
                 Talk(1);
             });
