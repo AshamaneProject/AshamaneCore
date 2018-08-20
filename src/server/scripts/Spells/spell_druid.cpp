@@ -2426,7 +2426,7 @@ class spell_dru_shred : public SpellScript
         int32 damage = GetHitDamage();
         int32 casterLevel = caster->GetLevelForTarget(caster);
 
-        // If caster is level >= 56, While stealthed or have Incarnation: King of the Jungle active,
+        // If caster is level >= 56, While stealthed or have Incarnation: King of the Jungle aura,
         // deals 50% increased damage (get value from the spell data), and has double the chance to critically strike
         // FIXME: Find a way to temporary modify critical strike change
         if ((casterLevel >= 56) && (m_stealthed || caster->HasAura(SPELL_DRUID_INCARNATION_KING_OF_JUNGLE)))
