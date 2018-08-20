@@ -2402,6 +2402,54 @@ private:
     bool m_awardComboPoint = true;
 };
 
+// Shred - 5221
+class spell_dru_shred : public SpellScript
+{
+    PrepareSpellScript(spell_dru_shred);
+
+    bool Load() override
+    {
+        Unit* caster = GetCaster();
+        if (caster->HasAuraType(SPELL_AURA_MOD_STEALTH))
+            m_stealthed = true;
+
+        return true;
+    }
+
+    void HandleOnEffectHitTarget(SpellEffIndex /*effIndex*/)
+    {
+        Unit* caster = GetCaster();
+        Unit* target = GetHitUnit();
+        if (!caster || !target)
+            return;
+
+        int32 damage = GetHitDamage();
+        int32 casterLevel = caster->GetLevelForTarget(caster);
+
+        // If caster is level >= 44 and the target is bleeding, deals 20% increased damage (get value from the spell data)
+        if ((casterLevel >= 44) && target->HasAuraState(AURA_STATE_BLEEDING))
+            AddPct(damage, sSpellMgr->GetSpellInfo(SPELL_DRUID_SHRED)->GetEffect(EFFECT_4)->BasePoints);
+
+        // If caster is level >= 56, While stealthed or have Incarnation: King of the Jungle active,
+        // deals 50% increased damage (get value from the spell data), and has double the chance to critically strike
+        // FIXME: Find a way to temporary modify critical strike change
+        if ((casterLevel >= 56) && (m_stealthed || caster->HasAura(SPELL_DRUID_INCARNATION_KING_OF_JUNGLE)))
+        {
+            AddPct(damage, sSpellMgr->GetSpellInfo(SPELL_DRUID_SHRED)->GetEffect(EFFECT_3)->BasePoints);
+        }
+
+        SetHitDamage(damage);
+    }
+
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_dru_shred::HandleOnEffectHitTarget, EFFECT_4, SPELL_EFFECT_DUMMY);
+    }
+
+private:
+    bool m_stealthed = false;
+};
+
 void AddSC_druid_spell_scripts()
 {
     // Spells Scripts
@@ -2447,6 +2495,7 @@ void AddSC_druid_spell_scripts()
     RegisterSpellScript(spell_dru_swipe);
     RegisterSpellScript(spell_dru_brutal_slash);
     RegisterSpellScript(spell_dru_thrash_cat);
+    RegisterSpellScript(spell_dru_shred);
 
     RegisterSpellScript(spell_dru_thrash_bear);
     RegisterAuraScript(aura_dru_thrash_bear);
