@@ -436,10 +436,10 @@ WorldPacket const* WorldPackets::Garrison::GarrisonAddMissionResult::Write()
     _worldPacket << uint32(Rewards.size());
     _worldPacket << uint32(BonusRewards.size());
 
-    for (WorldPackets::Garrison::GarrisonMissionReward const& missionRewardItem : Rewards)
+    for (GarrisonMissionReward const& missionRewardItem : Rewards)
         _worldPacket << missionRewardItem;
 
-    for (WorldPackets::Garrison::GarrisonMissionReward const& missionRewardItem : BonusRewards)
+    for (GarrisonMissionReward const& missionRewardItem : BonusRewards)
         _worldPacket << missionRewardItem;
 
     _worldPacket.WriteBit(Success);

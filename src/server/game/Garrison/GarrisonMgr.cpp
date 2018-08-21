@@ -762,9 +762,9 @@ uint32 GarrisonMgr::GetClassByMissionType(uint32 missionType)
         case GarrisonMission::Type::ArtifactPriest:         return CLASS_PRIEST;
         case GarrisonMission::Type::ArtifactDeathKnight:    return CLASS_DEATH_KNIGHT;
         case GarrisonMission::Type::ArtifactWarrior:        return CLASS_WARRIOR;
+        default:
+            return CLASS_NONE;
     }
-
-    return CLASS_NONE;
 }
 
 uint32 GarrisonMgr::GetFactionByMissionType(uint32 missionType)
@@ -773,9 +773,9 @@ uint32 GarrisonMgr::GetFactionByMissionType(uint32 missionType)
     {
         case GarrisonMission::Type::ZoneSupportAlliance:    return TEAM_ALLIANCE;
         case GarrisonMission::Type::ZoneSupportHorde:       return TEAM_HORDE;
+        default:
+            return TEAM_OTHER;
     }
-
-    return TEAM_OTHER;
 }
 
 void GarrisonMgr::InitializeDbIdSequences()
