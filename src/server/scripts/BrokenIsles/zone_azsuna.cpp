@@ -87,8 +87,48 @@ public:
     }
 };
 
+struct questnpc_soul_gem : public ScriptedAI
+{
+    questnpc_soul_gem(Creature* creature) : ScriptedAI(creature) { }
+
+    void Reset() override
+    {
+        CheckForDeadDemons(me);
+    }
+
+    void CheckForDeadDemons(Creature* creature)
+    {
+        if (!creature->GetOwner() || !creature->GetOwner()->IsPlayer())
+            return;
+
+        std::list<Creature*> targets = creature->FindAllCreaturesInRange(15.0f);
+        Player* owner = creature->GetOwner()->ToPlayer();
+
+        for (Creature* target : targets)
+        {
+            if(!target->IsAlive())
+            { 
+                switch (target->GetEntry())
+                {
+                    case 90230:
+                    case 90241:
+                    case 93556:
+                    case 93619:
+                    case 101943:
+                    case 103180:
+                        target->DespawnOrUnsummon();
+                        owner->KilledMonsterCredit(90298);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+};
 
 void AddSC_azsuna()
 {
     new scene_azsuna_runes();
+    RegisterCreatureAI(questnpc_soul_gem);
 }
