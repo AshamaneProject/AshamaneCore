@@ -16,7 +16,7 @@ UPDATE `npc_vendor` SET `maxcount`='0' WHERE  `entry`=111903 AND `item`=138295 A
 DELETE FROM `creature_formations` WHERE  `leaderGUID` IN (370509,370570);
 DELETE FROM `creature_formations` WHERE  `memberGUID` IN (370510,370571);
 UPDATE `creature_template` SET `AIName`='SmartAI' WHERE  `entry`=42175;
-UPDATE `areatrigger` SET `spawn_mask`='1' WHERE  `guid` IN (4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,33,35,45,47);
+UPDATE `areatrigger` SET `spawn_mask` = 8388870 WHERE  `guid` IN (4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,33,35,45,47);
 DELETE FROM `spell_linked_spell` WHERE  `spell_trigger`=108936 AND `spell_effect`=108943 AND `type`=0;
 DELETE FROM `areatrigger_scripts` WHERE  `entry` IN (1520,149959);
 UPDATE `creature_template` SET `ScriptName`='' WHERE  `entry` IN (26401,26520,121247,49481);
