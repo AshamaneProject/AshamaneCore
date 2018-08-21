@@ -87,58 +87,48 @@ public:
     }
 };
 
-class questnpc_soul_gem : public CreatureScript
+struct questnpc_soul_gem : public ScriptedAI
 {
-public:
-    questnpc_soul_gem() : CreatureScript("questnpc_soul_gem") { }
+    questnpc_soul_gem(Creature* creature) : ScriptedAI(creature) { }
 
-
-    struct questnpc_soul_gemAI : public ScriptedAI
+    void Reset() override
     {
-        questnpc_soul_gemAI(Creature* creature) : ScriptedAI(creature) { }
+        CheckForDeadDemons(me);
+    }
 
-        void Reset() override
+    void CheckForDeadDemons(Creature* creature)
+    {
+        if (!creature->GetOwner() || !creature->GetOwner()->IsPlayer())
+            return;
+
+        std::list<Creature*> targets = creature->FindAllCreaturesInRange(15.0f);
+        Player* owner = creature->GetOwner()->ToPlayer();
+
+        for (Creature* target : targets)
         {
-            checkfordeaddemons(me);
-        }
-
-        void checkfordeaddemons(Creature* creature)
-        {
-            std::list<Creature*> targets = creature->FindAllCreaturesInRange(15.0f);
-            Player* Owner = creature->GetOwner()->ToPlayer();
-
-            for (auto itr : targets)
-            {
-                if(itr->IsAlive() == false)
-                { 
-                switch (itr->GetEntry())
+            if(!target->IsAlive())
+            { 
+                switch (target->GetEntry())
                 {
-                case 93619:
-                case 90241:
-                case 101943:
-                case 90230:
-                case 93556:
-                case 103180:
-                    itr->DespawnOrUnsummon();
-                    Owner->KilledMonsterCredit(90298);
-                    break;
-                default:
-                    break;
-                }
+                    case 90230:
+                    case 90241:
+                    case 93556:
+                    case 93619:
+                    case 101943:
+                    case 103180:
+                        target->DespawnOrUnsummon();
+                        owner->KilledMonsterCredit(90298);
+                        break;
+                    default:
+                        break;
                 }
             }
         }
-    };
-
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new questnpc_soul_gemAI(creature);
     }
 };
-
 
 void AddSC_azsuna()
 {
     new scene_azsuna_runes();
-    new questnpc_soul_gem();
+    RegisterCreatureAI(questnpc_soul_gem);
 }
