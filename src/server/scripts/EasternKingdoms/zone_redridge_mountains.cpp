@@ -31,8 +31,6 @@ Script Data End */
 #include "SpellScript.h"
 #include "TemporarySummon.h"
 
-
-
 enum DumpyKeeshan
 {
     NPC_BIGEARL                    = 43248,
@@ -388,98 +386,52 @@ public:
 uint32 const pathSize2 = 2;
 Position const BoatPath[pathSize2] =
 {
-{ -9356.31f, -2414.29f, 69.637f },
-{ -9425.49f, -2836.49f, 69.9875f }
+    { -9356.31f, -2414.29f, 69.6370f },
+    { -9425.49f, -2836.49f, 69.9875f },
 };
 
-class npc_keeshan_riverboat : public CreatureScript
+struct npc_keeshan_riverboat : public VehicleAI
 {
-public:
-    npc_keeshan_riverboat() : CreatureScript("npc_keeshan_riverboat") { }
+    npc_keeshan_riverboat(Creature* creature) : VehicleAI(creature) { }
 
-    struct npc_keeshan_riverboatAI : public VehicleAI
+    void Reset() override
     {
-        npc_keeshan_riverboatAI(Creature* creature) : VehicleAI(creature)
-        {
-        }
-
-        void UpdateAI(uint32 diff) override
-        {
-            me->GetMotionMaster()->MoveSmoothPath(pathSize2, BoatPath, pathSize2, false, true);
-            me->DespawnOrUnsummon(Seconds(22), Seconds(60));
-        }
-
-    };
-
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new npc_keeshan_riverboatAI(creature);
+        me->GetMotionMaster()->MoveSmoothPath(pathSize2, BoatPath, pathSize2, false, true);
+        me->DespawnOrUnsummon(Seconds(22), Seconds(60));
     }
 };
 
 enum BlackrockTower
 {
-    QUEST_TO_WIN_A_WAR = 26651,
+    QUEST_TO_WIN_A_WAR  = 26651,
     NPC_BLACKROCK_TOWER = 43590,
-    NPC_MUNITIONS_DUMP = 43589
+    NPC_MUNITIONS_DUMP  = 43589,
 };
 
-class npc_blackrock_tower : public CreatureScript
+struct npc_blackrock_tower : public ScriptedAI
 {
-public:
-    npc_blackrock_tower() : CreatureScript("npc_blackrock_tower") { }
+    npc_blackrock_tower(Creature* creature) : ScriptedAI(creature) {}
 
-    CreatureAI* GetAI(Creature* creature) const override
+    void MoveInLineOfSight(Unit* who) override
     {
-        return new npc_blackrock_towerAI(creature);
+        ScriptedAI::MoveInLineOfSight(who);
+
+        if (who->IsPlayer() && who->ToPlayer()->GetQuestStatus(QUEST_TO_WIN_A_WAR) == QUEST_STATUS_INCOMPLETE)
+            who->ToPlayer()->KilledMonsterCredit(NPC_BLACKROCK_TOWER);
     }
-
-    struct npc_blackrock_towerAI : public ScriptedAI
-    {
-        npc_blackrock_towerAI(Creature* creature) : ScriptedAI(creature) {}
-
-        void MoveInLineOfSight(Unit* who) override
-        {
-            ScriptedAI::MoveInLineOfSight(who);
-
-            if (who->GetTypeId() != TYPEID_PLAYER)
-                return;
-
-            if (who->ToPlayer()->GetQuestStatus(QUEST_TO_WIN_A_WAR) == QUEST_STATUS_INCOMPLETE)
-            {
-                who->ToPlayer()->KilledMonsterCredit(NPC_BLACKROCK_TOWER);
-            }
-        }
-    };
 };
 
-class npc_munitions_dump : public CreatureScript
+struct npc_munitions_dump : public ScriptedAI
 {
-public:
-    npc_munitions_dump() : CreatureScript("npc_munitions_dump") { }
+    npc_munitions_dump(Creature* creature) : ScriptedAI(creature) {}
 
-    CreatureAI* GetAI(Creature* creature) const override
+    void MoveInLineOfSight(Unit* who) override
     {
-        return new npc_munitions_dumpAI(creature);
+        ScriptedAI::MoveInLineOfSight(who);
+
+        if (who->IsPlayer() && who->ToPlayer()->GetQuestStatus(QUEST_TO_WIN_A_WAR) == QUEST_STATUS_INCOMPLETE)
+            who->ToPlayer()->KilledMonsterCredit(NPC_MUNITIONS_DUMP);
     }
-
-    struct npc_munitions_dumpAI : public ScriptedAI
-    {
-        npc_munitions_dumpAI(Creature* creature) : ScriptedAI(creature) {}
-
-        void MoveInLineOfSight(Unit* who) override
-        {
-            ScriptedAI::MoveInLineOfSight(who);
-
-            if (who->GetTypeId() != TYPEID_PLAYER)
-                return;
-
-            if (who->ToPlayer()->GetQuestStatus(QUEST_TO_WIN_A_WAR) == QUEST_STATUS_INCOMPLETE)
-            {
-                who->ToPlayer()->KilledMonsterCredit(NPC_MUNITIONS_DUMP);
-            }
-        }
-    };
 };
 
 void AddSC_redridge_mountains()
@@ -488,7 +440,7 @@ void AddSC_redridge_mountains()
     new npc_dumpy_and_keeshan();
     new npc_bridge_worker_alex();
     new npc_redridge_citizen();
-    new npc_keeshan_riverboat();
-    new npc_blackrock_tower();
-    new npc_munitions_dump();
+    RegisterCreatureAI(npc_keeshan_riverboat);
+    RegisterCreatureAI(npc_blackrock_tower);
+    RegisterCreatureAI(npc_munitions_dump);
 }
