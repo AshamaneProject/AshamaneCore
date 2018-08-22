@@ -3086,6 +3086,72 @@ struct ItemXBonusTreeLoadInfo
     }
 };
 
+struct JournalEncounterLoadInfo
+{
+    static DB2LoadInfo const* Instance()
+    {
+        static DB2FieldMeta const fields[] =
+        {
+            { false, FT_INT, "ID" },
+            { false, FT_STRING, "Name" },
+            { false, FT_STRING, "Description" },
+            { false, FT_FLOAT, "Map_1" },
+            { false, FT_FLOAT, "Map_2" },
+            { false, FT_SHORT, "DungeonMapID" },
+            { false, FT_SHORT, "WorldMapAreaID" },
+            { false, FT_SHORT, "FirstSectionID" },
+            { false, FT_SHORT, "JournalInstanceID" },
+            { false, FT_BYTE, "DifficultyMask" },
+            { false, FT_BYTE, "Flags" },
+            { false, FT_INT, "OrderIndex" },
+            { false, FT_INT, "MapDisplayConditionID" },
+        };
+        static DB2LoadInfo const loadInfo(&fields[0], std::extent<decltype(fields)>::value, JournalEncounterMeta::Instance(), HOTFIX_SEL_JOURNAL_ENCOUNTER);
+        return &loadInfo;
+    }
+};
+
+struct JournalEncounterItemLoadInfo
+{
+    static DB2LoadInfo const* Instance()
+    {
+        static DB2FieldMeta const fields[] =
+        {
+            { false, FT_INT, "ItemID" },
+            { false, FT_SHORT, "JournalEncounterID" },
+            { false, FT_BYTE, "DifficultyMask" },
+            { false, FT_BYTE, "FactionMask" },
+            { false, FT_BYTE, "Flags" },
+            { false, FT_INT, "ID" },
+        };
+        static DB2LoadInfo const loadInfo(&fields[0], std::extent<decltype(fields)>::value, JournalEncounterItemMeta::Instance(), HOTFIX_SEL_JOURNAL_ENCOUNTER_ITEM);
+        return &loadInfo;
+    }
+};
+
+struct JournalInstanceLoadInfo
+{
+    static DB2LoadInfo const* Instance()
+    {
+        static DB2FieldMeta const fields[] =
+        {
+            { false, FT_STRING, "Name" },
+            { false, FT_STRING, "Description" },
+            { false, FT_INT, "ButtonFileDataID" },
+            { false, FT_INT, "ButtonSmallFileDataID" },
+            { false, FT_INT, "BackgroundFileDataID" },
+            { false, FT_INT, "LoreFileDataID" },
+            { false, FT_SHORT, "MapID" },
+            { false, FT_SHORT, "AreaID" },
+            { false, FT_BYTE, "OrderIndex" },
+            { false, FT_BYTE, "Flags" },
+            { false, FT_INT, "ID" },
+        };
+        static DB2LoadInfo const loadInfo(&fields[0], std::extent<decltype(fields)>::value, JournalInstanceMeta::Instance(), HOTFIX_SEL_JOURNAL_INSTANCE);
+        return &loadInfo;
+    }
+};
+
 struct KeychainLoadInfo
 {
     static DB2LoadInfo const* Instance()
