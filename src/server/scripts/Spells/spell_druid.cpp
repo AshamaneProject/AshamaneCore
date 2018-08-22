@@ -2424,8 +2424,6 @@ class spell_dru_shred : public SpellScript
 
     void HandleCritChance(Unit* /*victim*/, float& chance)
     {
-        Unit* caster = GetCaster();
-
         // If caster is level >= 56, While stealthed or have Incarnation: King of the Jungle aura,
         // Double the chance to critically strike
         if ((m_casterLevel >= 56) && (m_stealthed || m_incarnation))
