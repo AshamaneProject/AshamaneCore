@@ -2410,10 +2410,26 @@ class spell_dru_shred : public SpellScript
     bool Load() override
     {
         Unit* caster = GetCaster();
+
         if (caster->HasAuraType(SPELL_AURA_MOD_STEALTH))
             m_stealthed = true;
 
+        if (caster->HasAura(SPELL_DRUID_INCARNATION_KING_OF_JUNGLE))
+            m_incarnation = true;
+
+        m_casterLevel = caster->GetLevelForTarget(caster);
+
         return true;
+    }
+
+    void HandleCritChance(Unit* /*victim*/, float& chance)
+    {
+        Unit* caster = GetCaster();
+
+        // If caster is level >= 56, While stealthed or have Incarnation: King of the Jungle aura,
+        // Double the chance to critically strike
+        if ((m_casterLevel >= 56) && (m_stealthed || m_incarnation))
+            chance *= 2.0f;
     }
 
     void HandleOnEffectHitTarget(SpellEffIndex /*effIndex*/)
@@ -2424,16 +2440,14 @@ class spell_dru_shred : public SpellScript
             return;
 
         int32 damage = GetHitDamage();
-        int32 casterLevel = caster->GetLevelForTarget(caster);
 
         // If caster is level >= 56, While stealthed or have Incarnation: King of the Jungle aura,
-        // deals 50% increased damage (get value from the spell data), and has double the chance to critically strike
-        // FIXME: Find a way to temporary modify critical strike change
-        if ((casterLevel >= 56) && (m_stealthed || caster->HasAura(SPELL_DRUID_INCARNATION_KING_OF_JUNGLE)))
+        // deals 50% increased damage (get value from the spell data)
+        if ((m_casterLevel >= 56) && (m_stealthed || m_incarnation))
             AddPct(damage, sSpellMgr->GetSpellInfo(SPELL_DRUID_SHRED)->GetEffect(EFFECT_3)->BasePoints);
 
         // If caster is level >= 44 and the target is bleeding, deals 20% increased damage (get value from the spell data)
-        if ((casterLevel >= 44) && target->HasAuraState(AURA_STATE_BLEEDING))
+        if ((m_casterLevel >= 44) && target->HasAuraState(AURA_STATE_BLEEDING))
             AddPct(damage, sSpellMgr->GetSpellInfo(SPELL_DRUID_SHRED)->GetEffect(EFFECT_4)->BasePoints);
 
         SetHitDamage(damage);
@@ -2441,11 +2455,14 @@ class spell_dru_shred : public SpellScript
 
     void Register() override
     {
+        OnCalcCritChance += SpellOnCalcCritChanceFn(spell_dru_shred::HandleCritChance);
         OnEffectHitTarget += SpellEffectFn(spell_dru_shred::HandleOnEffectHitTarget, EFFECT_4, SPELL_EFFECT_DUMMY);
     }
 
 private:
     bool m_stealthed = false;
+    bool m_incarnation = false;
+    int32 m_casterLevel;
 };
 
 void AddSC_druid_spell_scripts()
