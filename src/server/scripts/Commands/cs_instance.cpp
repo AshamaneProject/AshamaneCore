@@ -327,7 +327,7 @@ public:
         return true;
     }
 
-    static bool HandleInstanceCompleteChallengeModeCommand(ChatHandler* handler, char const* args)
+    static bool HandleInstanceCompleteChallengeModeCommand(ChatHandler* handler, char const* /*args*/)
     {
         Player* player = handler->getSelectedPlayerOrSelf();
 
