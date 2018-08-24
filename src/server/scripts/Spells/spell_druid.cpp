@@ -1549,9 +1549,9 @@ public:
 };
 
 // Ysera's Gift - 145108
-class spell_dru_ysera_gift : public AuraScript
+class aura_dru_ysera_gift : public AuraScript
 {
-    PrepareAuraScript(spell_dru_ysera_gift);
+    PrepareAuraScript(aura_dru_ysera_gift);
 
     void HandleEffectPeriodic(AuraEffect const* aurEff)
     {
@@ -1572,7 +1572,7 @@ class spell_dru_ysera_gift : public AuraScript
 
     void Register() override
     {
-        OnEffectPeriodic += AuraEffectPeriodicFn(spell_dru_ysera_gift::HandleEffectPeriodic, EFFECT_0, SPELL_AURA_PERIODIC_DUMMY);
+        OnEffectPeriodic += AuraEffectPeriodicFn(aura_dru_ysera_gift::HandleEffectPeriodic, EFFECT_0, SPELL_AURA_PERIODIC_DUMMY);
     }
 };
 
@@ -2577,7 +2577,7 @@ void AddSC_druid_spell_scripts()
     new spell_dru_killer_instinct();
     new spell_dru_living_seed();
     new spell_dru_infected_wound();
-    RegisterAuraScript(spell_dru_ysera_gift);
+    RegisterAuraScript(aura_dru_ysera_gift);
     new spell_dru_rake();
     RegisterSpellScript(spell_dru_maim);
     new spell_dru_rip();
