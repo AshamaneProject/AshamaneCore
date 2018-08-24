@@ -31,6 +31,9 @@ public:
     uint32 GetHealthMultiplier(uint8 challengeLevel);
 
     uint32 GetRandomChallengeId(uint32 flags = 4);
+
+    std::vector<int32> GetBonusListIdsForRewards(uint32 baseItemIlevel, uint8 challengeLevel);
+    void Reward(Player* player, uint8 challengeLevel);
 };
 
 #define sChallengeModeMgr ChallengeModeMgr::instance()
