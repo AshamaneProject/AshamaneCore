@@ -105,7 +105,7 @@ enum GoreSpells
     }
  };
 
-// Thrash (Bear Form) - 77758
+// Thrash (Bear Form) - 77758, 106832
 class spell_dru_thrash_bear : public SpellScript
 {
     PrepareSpellScript(spell_dru_thrash_bear);
@@ -522,11 +522,12 @@ public:
 
 enum BalanceAffinitySpells
 {
-    SPELL_DRUID_STARSURGE           = 78674,
-    SPELL_DRUID_SUNFIRE             = 93402,
-    SPELL_DRUID_LUNAR_STRIKE        = 194153,
-    SPELL_DRUID_SOLAR_WRATH         = 190984,
-    SPELL_DRUID_ASTRAL_INFLUENCE    = 197524
+    SPELL_DRUID_ASTRAL_INFLUENCE    = 197524,
+    SPELL_DRUID_MOONKIN_FORM_TALENT = 197625,
+    SPELL_DRUID_STARSURGE           = 197626,
+    SPELL_DRUID_LUNAR_STRIKE        = 197628,
+    SPELL_DRUID_SOLAR_WRATH         = 197629,
+    SPELL_DRUID_SUNFIRE             = 197630
 };
 
 // Balance Affinity (Feral, Guardian) - 197488
@@ -537,7 +538,7 @@ class aura_dru_balance_affinity_dps : public AuraScript
     const std::vector<uint32> LearnedSpells =
     {
         SPELL_DRUID_ASTRAL_INFLUENCE,
-        SPELL_DRUID_MOONKIN_FORM,
+        SPELL_DRUID_MOONKIN_FORM_TALENT,
         SPELL_DRUID_STARSURGE,
         SPELL_DRUID_LUNAR_STRIKE,
         SPELL_DRUID_SOLAR_WRATH,
@@ -573,7 +574,7 @@ class aura_dru_balance_affinity_resto : public AuraScript
     const std::vector<uint32> LearnedSpells =
     {
         SPELL_DRUID_ASTRAL_INFLUENCE,
-        SPELL_DRUID_MOONKIN_FORM,
+        SPELL_DRUID_MOONKIN_FORM_TALENT,
         SPELL_DRUID_STARSURGE,
         SPELL_DRUID_LUNAR_STRIKE
     };
@@ -2032,7 +2033,6 @@ class aura_dru_feral_affinity_resto : public AuraScript
     const std::vector<uint32> LearnedSpells =
     {
         SPELL_DRUID_FELINE_SWIFTNESS,
-        SPELL_DRUID_SHRED,
         SPELL_DRUID_RAKE,
         SPELL_DRUID_RIP,
         SPELL_DRUID_FEROCIOUS_BITE,
@@ -2068,7 +2068,6 @@ class aura_dru_feral_affinity_tank : public AuraScript
     const std::vector<uint32> LearnedSpells =
     {
         SPELL_DRUID_FELINE_SWIFTNESS,
-        SPELL_DRUID_SHRED,
         SPELL_DRUID_RAKE,
         SPELL_DRUID_RIP,
         SPELL_DRUID_FEROCIOUS_BITE
@@ -2463,8 +2462,12 @@ private:
 
 enum GuardianAffinitySpells
 {
+    SPELL_DRUID_GUARDIAN_AFFINITY_RESTO = 197491,
+    SPELL_DRUID_GUARDIAN_AFFINITY_DPS   = 217615,
+
     SPELL_DRUID_THICK_HIDE              = 16931,
-    SPELL_DRUID_THRASH_BEAR             = 77758,
+    SPELL_DRUID_MANGLE                  = 33917,
+    SPELL_DRUID_THRASH_BEAR             = 106832,
     SPELL_DRUID_IRON_FUR                = 192081,
     SPELL_DRUID_FRENZIED_REGENERATION   = 22842
 };
@@ -2476,7 +2479,9 @@ class aura_dru_guardian_affinity_resto : public AuraScript
 
     const std::vector<uint32> LearnedSpells =
     {
+        SPELL_DRUID_GUARDIAN_AFFINITY_RESTO,
         SPELL_DRUID_THICK_HIDE,
+        SPELL_DRUID_MANGLE,
         SPELL_DRUID_THRASH_BEAR,
         SPELL_DRUID_IRON_FUR,
         SPELL_DRUID_FRENZIED_REGENERATION
@@ -2510,7 +2515,9 @@ class aura_dru_guardian_affinity_dps : public AuraScript
 
     const std::vector<uint32> LearnedSpells =
     {
+        SPELL_DRUID_GUARDIAN_AFFINITY_DPS,
         SPELL_DRUID_THICK_HIDE,
+        SPELL_DRUID_MANGLE,
         SPELL_DRUID_IRON_FUR,
         SPELL_DRUID_FRENZIED_REGENERATION
     };

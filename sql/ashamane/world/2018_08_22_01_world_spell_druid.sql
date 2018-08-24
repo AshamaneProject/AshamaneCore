@@ -1,5 +1,6 @@
-DELETE FROM `spell_script_names` WHERE `spell_id` IN (197488, 197490, 197491, 197632, 202155, 202157, 217615);
+DELETE FROM `spell_script_names` WHERE `spell_id` IN (106832, 197488, 197490, 197491, 197632, 202155, 202157, 217615);
 INSERT INTO `spell_script_names` VALUE
+(106832, "spell_dru_thrash_bear"),
 (197488, "aura_dru_balance_affinity_dps"),
 (197490, "aura_dru_feral_affinity_resto"),
 (197491, "aura_dru_guardian_affinity_resto"),
