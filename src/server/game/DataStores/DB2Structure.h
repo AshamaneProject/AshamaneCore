@@ -1876,6 +1876,47 @@ struct ItemXBonusTreeEntry
     int32 ItemID;
 };
 
+struct JournalEncounterEntry
+{
+    uint32 ID;
+    LocalizedString* Name;
+    LocalizedString* Description;
+    float Map[2];
+    uint16 DungeonMapID;
+    uint16 WorldMapAreaID;
+    uint16 FirstSectionID;
+    uint16 JournalInstanceID;
+    uint8 DifficultyMask;
+    uint8 Flags;
+    uint32 OrderIndex;
+    uint32 MapDisplayConditionID;
+};
+
+struct JournalEncounterItemEntry
+{
+    uint32 ItemID;
+    uint16 JournalEncounterID;
+    uint8 DifficultyMask;
+    uint8 FactionMask;
+    uint8 Flags;
+    uint32 ID;
+};
+
+struct JournalInstanceEntry
+{
+    LocalizedString* Name;
+    LocalizedString* Description;
+    uint32 ButtonFileDataID;
+    uint32 ButtonSmallFileDataID;
+    uint32 BackgroundFileDataID;
+    uint32 LoreFileDataID;
+    uint16 MapID;
+    uint16 AreaID;
+    uint8 OrderIndex;
+    uint8 Flags;
+    uint32 ID;
+};
+
 #define KEYCHAIN_SIZE   32
 
 struct KeychainEntry

@@ -1235,6 +1235,9 @@ void InstanceScript::CompleteChallengeMode()
     }
 
     SpawnChallengeModeRewardChest();
+
+    for (Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
+        sChallengeModeMgr->Reward(itr->GetSource(), _challengeModeLevel);
 }
 
 uint32 InstanceScript::GetChallengeModeCurrentDuration() const

@@ -1315,7 +1315,15 @@ public:
         {
             Tokenizer tokens(bonuses, ';');
             for (char const* token : tokens)
-                bonusListIDs.push_back(atoul(token));
+                if (token != 0)
+                    bonusListIDs.push_back(atoul(token));
+        }
+
+        char const* context = strtok(NULL, " ");
+        if (context)
+        {
+            std::set<uint32> bonusListIDset = sDB2Manager.GetItemBonusTree(itemId, atoi(context));
+            bonusListIDs.insert(bonusListIDs.end(), bonusListIDset.begin(), bonusListIDset.end());
         }
 
         Player* player = handler->GetSession()->GetPlayer();
