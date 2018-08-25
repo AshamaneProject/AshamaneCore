@@ -88,6 +88,43 @@ enum GoreSpells
     SPELL_DRUID_SWIPE = 213764
 };
 
+enum BalanceAffinitySpells
+{
+    SPELL_DRUID_BALANCE_AFFINITY_DPS    = 197488,
+    SPELL_DRUID_BALANCE_AFFINITY_RESTO  = 197632,
+
+    SPELL_DRUID_ASTRAL_INFLUENCE        = 197524,
+    SPELL_DRUID_MOONKIN_FORM_TALENT     = 197625,
+    SPELL_DRUID_STARSURGE               = 197626,
+    SPELL_DRUID_LUNAR_STRIKE            = 197628,
+    SPELL_DRUID_SOLAR_WRATH             = 197629,
+    SPELL_DRUID_SUNFIRE                 = 197630
+};
+
+enum FeralAffinitySpells
+{
+    SPELL_DRUID_FERAL_AFFINITY_BALANCE  = 202157,
+    SPELL_DRUID_FERAL_AFFINITY_RESTO    = 197490,
+    SPELL_DRUID_FERAL_AFFINITY_TANK     = 202155
+};
+
+enum GuardianAffinitySpells
+{
+    SPELL_DRUID_GUARDIAN_AFFINITY_RESTO = 197491,
+    SPELL_DRUID_GUARDIAN_AFFINITY_DPS   = 217615,
+
+    SPELL_DRUID_THICK_HIDE              = 16931,
+    SPELL_DRUID_MANGLE                  = 33917,
+    SPELL_DRUID_THRASH_BEAR             = 106832,
+    SPELL_DRUID_IRON_FUR                = 192081,
+    SPELL_DRUID_FRENZIED_REGENERATION   = 22842
+};
+
+enum RestorationAffinitySpells
+{
+    SPELL_DRUID_RESTORATION_AFFINITY    = 197492
+};
+
 // 210706 - Gore 7.3.5
  class spell_dru_gore : public AuraScript
  {
@@ -520,16 +557,6 @@ public:
     }
 };
 
-enum BalanceAffinitySpells
-{
-    SPELL_DRUID_ASTRAL_INFLUENCE    = 197524,
-    SPELL_DRUID_MOONKIN_FORM_TALENT = 197625,
-    SPELL_DRUID_STARSURGE           = 197626,
-    SPELL_DRUID_LUNAR_STRIKE        = 197628,
-    SPELL_DRUID_SOLAR_WRATH         = 197629,
-    SPELL_DRUID_SUNFIRE             = 197630
-};
-
 // Balance Affinity (Feral, Guardian) - 197488
 class aura_dru_balance_affinity_dps : public AuraScript
 {
@@ -548,15 +575,29 @@ class aura_dru_balance_affinity_dps : public AuraScript
     void AfterApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
     {
         if (Player* target = GetTarget()->ToPlayer())
-            for (uint32 spellId : LearnedSpells)
-                target->LearnSpell(spellId, false);
+            // Check if the target was really in Feral or Guardian specialization
+            if (target->HasAura(SPELL_DRUID_FELINE_SWIFTNESS) || target->HasAura(SPELL_DRUID_THICK_HIDE))
+                for (uint32 spellId : LearnedSpells)
+                    target->LearnSpell(spellId, false);
     }
 
     void AfterRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
     {
         if (Player* target = GetTarget()->ToPlayer())
-            for (uint32 spellId : LearnedSpells)
-                target->RemoveSpell(spellId);
+        {
+            // Check if the target was really in Feral or Guardian specialization
+            if (target->HasAura(SPELL_DRUID_FELINE_SWIFTNESS) || target->HasAura(SPELL_DRUID_THICK_HIDE))
+            {
+                // Workaround for other affinity spell not removed when changing specialization
+                if (target->HasAura(SPELL_DRUID_THICK_HIDE))            // Guardian specialization
+                    target->RemoveSpell(SPELL_DRUID_FELINE_SWIFTNESS);
+                if (target->HasAura(SPELL_DRUID_FELINE_SWIFTNESS))      // Feral specialization
+                    target->RemoveSpell(SPELL_DRUID_THICK_HIDE);
+
+                for (uint32 spellId : LearnedSpells)
+                    target->RemoveSpell(spellId);
+            }
+        }
     }
 
     void Register() override
@@ -582,15 +623,27 @@ class aura_dru_balance_affinity_resto : public AuraScript
     void AfterApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
     {
         if (Player* target = GetTarget()->ToPlayer())
-            for (uint32 spellId : LearnedSpells)
-                target->LearnSpell(spellId, false);
+            // Check if the target was really in Restoration specialization
+            if (target->HasAura(SPELL_DRUID_YSERA_GIFT))
+                for (uint32 spellId : LearnedSpells)
+                    target->LearnSpell(spellId, false);
     }
 
     void AfterRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
     {
         if (Player* target = GetTarget()->ToPlayer())
-            for (uint32 spellId : LearnedSpells)
-                target->RemoveSpell(spellId);
+        {
+            // Check if the target was really in Restoration specialization
+            if (target->HasAura(SPELL_DRUID_YSERA_GIFT))
+            {
+                // Workaround for other affinity spell not removed when changing specialization
+                target->RemoveSpell(SPELL_DRUID_FELINE_SWIFTNESS);
+                target->RemoveSpell(SPELL_DRUID_THICK_HIDE);
+
+                for (uint32 spellId : LearnedSpells)
+                    target->RemoveSpell(spellId);
+            }
+        }
     }
 
     void Register() override
@@ -2042,15 +2095,29 @@ class aura_dru_feral_affinity_resto : public AuraScript
     void AfterApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
     {
         if (Player* target = GetTarget()->ToPlayer())
-            for (uint32 spellId : LearnedSpells)
-                target->LearnSpell(spellId, false);
+            // Check if the target was really in Balance or Restoration specialization
+            if (target->HasAura(SPELL_DRUID_ASTRAL_INFLUENCE) || target->HasAura(SPELL_DRUID_YSERA_GIFT))
+                for (uint32 spellId : LearnedSpells)
+                    target->LearnSpell(spellId, false);
     }
 
     void AfterRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
     {
         if (Player* target = GetTarget()->ToPlayer())
-            for (uint32 spellId : LearnedSpells)
-                target->RemoveSpell(spellId);
+        {
+            // Check if the target was really in Balance or Restoration specialization
+            if (target->HasAura(SPELL_DRUID_ASTRAL_INFLUENCE) || target->HasAura(SPELL_DRUID_YSERA_GIFT))
+            {
+                // Workaround for other affinity spell not removed when changing specialization
+                if (target->HasAura(SPELL_DRUID_ASTRAL_INFLUENCE))  // Balance specialization
+                    target->RemoveSpell(SPELL_DRUID_THICK_HIDE);
+                if (target->HasAura(SPELL_DRUID_YSERA_GIFT))        // Restoration specialization
+                    target->RemoveSpell(SPELL_DRUID_ASTRAL_INFLUENCE);
+
+                for (uint32 spellId : LearnedSpells)
+                    target->RemoveSpell(spellId);
+            }
+        }
     }
 
     void Register() override
@@ -2076,15 +2143,26 @@ class aura_dru_feral_affinity_tank : public AuraScript
     void AfterApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
     {
         if (Player* target = GetTarget()->ToPlayer())
-            for (uint32 spellId : LearnedSpells)
-                target->LearnSpell(spellId, false);
+            // Check if the target was really in Guardian specialization
+            if (target->HasAura(SPELL_DRUID_THICK_HIDE))
+                for (uint32 spellId : LearnedSpells)
+                    target->LearnSpell(spellId, false);
     }
 
     void AfterRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
     {
         if (Player* target = GetTarget()->ToPlayer())
-            for (uint32 spellId : LearnedSpells)
-                target->RemoveSpell(spellId);
+        {
+            // Check if the target was really in Guardian specialization
+            if (target->HasAura(SPELL_DRUID_THICK_HIDE))
+            {
+                // Workaround for other affinity spell not removed when changing specialization
+                target->RemoveSpell(SPELL_DRUID_ASTRAL_INFLUENCE);
+
+                for (uint32 spellId : LearnedSpells)
+                    target->RemoveSpell(spellId);
+            }
+        }
     }
 
     void Register() override
@@ -2460,18 +2538,6 @@ private:
     int32 m_casterLevel;
 };
 
-enum GuardianAffinitySpells
-{
-    SPELL_DRUID_GUARDIAN_AFFINITY_RESTO = 197491,
-    SPELL_DRUID_GUARDIAN_AFFINITY_DPS   = 217615,
-
-    SPELL_DRUID_THICK_HIDE              = 16931,
-    SPELL_DRUID_MANGLE                  = 33917,
-    SPELL_DRUID_THRASH_BEAR             = 106832,
-    SPELL_DRUID_IRON_FUR                = 192081,
-    SPELL_DRUID_FRENZIED_REGENERATION   = 22842
-};
-
 // Guardian Affinity (Balance, Restoration) - 197491
 class aura_dru_guardian_affinity_resto : public AuraScript
 {
@@ -2479,7 +2545,6 @@ class aura_dru_guardian_affinity_resto : public AuraScript
 
     const std::vector<uint32> LearnedSpells =
     {
-        SPELL_DRUID_GUARDIAN_AFFINITY_RESTO,
         SPELL_DRUID_THICK_HIDE,
         SPELL_DRUID_MANGLE,
         SPELL_DRUID_THRASH_BEAR,
@@ -2490,15 +2555,26 @@ class aura_dru_guardian_affinity_resto : public AuraScript
     void AfterApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
     {
         if (Player* target = GetTarget()->ToPlayer())
-            for (uint32 spellId : LearnedSpells)
-                target->LearnSpell(spellId, false);
+            // Check if the target was really in Balance or Restoration specialization
+            if (target->HasAura(SPELL_DRUID_ASTRAL_INFLUENCE) || target->HasAura(SPELL_DRUID_YSERA_GIFT))
+                for (uint32 spellId : LearnedSpells)
+                    target->LearnSpell(spellId, false);
     }
 
     void AfterRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
     {
         if (Player* target = GetTarget()->ToPlayer())
-            for (uint32 spellId : LearnedSpells)
-                target->RemoveSpell(spellId);
+        {
+            // Check if the target was really in Balance or Restoration specialization
+            if (target->HasAura(SPELL_DRUID_ASTRAL_INFLUENCE) || target->HasAura(SPELL_DRUID_YSERA_GIFT))
+            {
+                // Workaround for other affinity spell not removed when changing specialization
+                target->RemoveSpell(SPELL_DRUID_FELINE_SWIFTNESS);
+
+                for (uint32 spellId : LearnedSpells)
+                    target->RemoveSpell(spellId);
+            }
+        }
     }
 
     void Register() override
@@ -2515,7 +2591,6 @@ class aura_dru_guardian_affinity_dps : public AuraScript
 
     const std::vector<uint32> LearnedSpells =
     {
-        SPELL_DRUID_GUARDIAN_AFFINITY_DPS,
         SPELL_DRUID_THICK_HIDE,
         SPELL_DRUID_MANGLE,
         SPELL_DRUID_IRON_FUR,
@@ -2525,15 +2600,26 @@ class aura_dru_guardian_affinity_dps : public AuraScript
     void AfterApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
     {
         if (Player* target = GetTarget()->ToPlayer())
-            for (uint32 spellId : LearnedSpells)
-                target->LearnSpell(spellId, false);
+            // Check if the target was really in Feral specialization
+            if (target->HasAura(SPELL_DRUID_FELINE_SWIFTNESS))
+                for (uint32 spellId : LearnedSpells)
+                    target->LearnSpell(spellId, false);
     }
 
     void AfterRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
     {
         if (Player* target = GetTarget()->ToPlayer())
-            for (uint32 spellId : LearnedSpells)
-                target->RemoveSpell(spellId);
+        {
+            // Check if the target was really in Feral specialization
+            if (target->HasAura(SPELL_DRUID_FELINE_SWIFTNESS))
+            {
+                // Workaround for other affinity spell not removed when changing specialization
+                target->RemoveSpell(SPELL_DRUID_ASTRAL_INFLUENCE);
+
+                for (uint32 spellId : LearnedSpells)
+                    target->RemoveSpell(spellId);
+            }
+        }
     }
 
     void Register() override
