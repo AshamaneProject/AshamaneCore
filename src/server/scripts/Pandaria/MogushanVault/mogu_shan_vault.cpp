@@ -340,13 +340,16 @@ class spell_ghost_essence : public SpellScriptLoader
             {
                 if (Unit* target = GetHitUnit())
                 {
-                    target->ToCreature()->SetReactState(REACT_AGGRESSIVE);
-                    target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_NOT_SELECTABLE);
-                    target->RemoveAurasDueToSpell(SPELL_BRONZE);
-                    target->RemoveAurasDueToSpell(SPELL_POSE_2);
-                    target->RemoveAurasDueToSpell(SPELL_POSE_1);
-                    target->RemoveAurasDueToSpell(SPELL_STONE);
-                    target->GetAI()->DoAction(ACTION_CURSED_MOGU_ATTACK_PLAYER);
+                    if (target->IsCreature() && target->IsAIEnabled)
+                    {
+                        target->ToCreature()->SetReactState(REACT_AGGRESSIVE);
+                        target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                        target->RemoveAurasDueToSpell(SPELL_BRONZE);
+                        target->RemoveAurasDueToSpell(SPELL_POSE_2);
+                        target->RemoveAurasDueToSpell(SPELL_POSE_1);
+                        target->RemoveAurasDueToSpell(SPELL_STONE);
+                        target->GetAI()->DoAction(ACTION_CURSED_MOGU_ATTACK_PLAYER);
+                    }
                 }
             }
 
