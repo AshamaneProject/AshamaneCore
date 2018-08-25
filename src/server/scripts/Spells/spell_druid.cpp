@@ -2110,7 +2110,15 @@ class aura_dru_feral_affinity_resto : public AuraScript
             {
                 // Workaround for other affinity spell not removed when changing specialization
                 if (target->HasAura(SPELL_DRUID_ASTRAL_INFLUENCE))  // Balance specialization
+                {
                     target->RemoveSpell(SPELL_DRUID_THICK_HIDE);
+                    target->RemoveSpell(SPELL_DRUID_MOONKIN_FORM_TALENT);
+                    target->RemoveSpell(SPELL_DRUID_STARSURGE);
+                    target->RemoveSpell(SPELL_DRUID_LUNAR_STRIKE);
+                    target->RemoveSpell(SPELL_DRUID_SOLAR_WRATH);
+                    target->RemoveSpell(SPELL_DRUID_SUNFIRE);
+                }
+
                 if (target->HasAura(SPELL_DRUID_YSERA_GIFT))        // Restoration specialization
                     target->RemoveSpell(SPELL_DRUID_ASTRAL_INFLUENCE);
 
@@ -2570,6 +2578,11 @@ class aura_dru_guardian_affinity_resto : public AuraScript
             {
                 // Workaround for other affinity spell not removed when changing specialization
                 target->RemoveSpell(SPELL_DRUID_FELINE_SWIFTNESS);
+                target->RemoveSpell(SPELL_DRUID_MOONKIN_FORM_TALENT);
+                target->RemoveSpell(SPELL_DRUID_STARSURGE);
+                target->RemoveSpell(SPELL_DRUID_LUNAR_STRIKE);
+                target->RemoveSpell(SPELL_DRUID_SOLAR_WRATH);
+                target->RemoveSpell(SPELL_DRUID_SUNFIRE);
 
                 for (uint32 spellId : LearnedSpells)
                     target->RemoveSpell(spellId);
