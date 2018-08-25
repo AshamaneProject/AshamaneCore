@@ -290,7 +290,13 @@ UPDATE `gameobject_template`
 SET `Data1` = 207472
 WHERE `entry` IN (207466,207482,207481,207483,212909);
 
--- fix up skystrider, still cannot mount it
+-- fix up skystrider
+UPDATE creature_template
+SET speed_walk = 1.5,
+speed_run = 1.5,
+VehicleId = 1067,
+npcflag = 16777216
+WHERE entry = 44572; 
 
 DELETE FROM npc_spellclick_spells
 WHERE npc_entry = 44572;

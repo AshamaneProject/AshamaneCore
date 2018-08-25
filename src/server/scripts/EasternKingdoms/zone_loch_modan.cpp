@@ -270,7 +270,34 @@ enum AndoBlastenheimer
     QUEST_WINDS_LOCH_MODAN  = 27116,
     SPELL_SUMMON_SKYSTRIDER = 83980,
     NPC_SKYSTRIDER          = 44572,
-    SPELL_SKYSTRIDER_FLAMES = 83984
+    SPELL_SKYSTRIDER_FLAMES = 83984,
+    SPELL_RIDE_VEHICLE      = 46598
+};
+
+Position const striderWaypoints[] =
+{
+    { -5027.062f, -3609.341f, 298.3368f },
+    { -5022.421f, -3608.176f, 298.2664f },
+    { -5017.780f, -3607.010f, 298.196f },
+    { -5012.820f, -3612.410f, 298.175f },
+    { -5003.470f, -3618.950f, 298.419f },
+    { -5005.520f, -3633.210f, 301.351f },
+    { -5005.900f, -3651.180f, 304.547f }, // last ground position
+    { -4977.370f, -3649.060f, 305.986f },
+    { -4875.530f, -3641.770f, 312.875f },
+    { -4804.860f, -3594.520f, 309.681f },
+    { -4786.060f, -3543.530f, 311.514f },
+    { -4765.980f, -3421.280f, 317.070f },
+    { -4710.740f, -3246.950f, 325.014f },
+    { -4565.150f, -3138.970f, 312.098f },
+    { -4510.380f, -3213.140f, 307.681f },
+    { -4561.530f, -3298.220f, 297.820f },
+    { -4795.280f, -3304.000f, 305.320f },
+    { -4785.830f, -3106.710f, 323.709f },
+    { -4725.100f, -2932.050f, 340.654f },
+    { -4755.760f, -2804.530f, 336.070f },
+    { -4807.600f, -2701.550f, 332.376f },
+    { -4815.010f, -2707.960f, 334.449f }
 };
 
 class npc_ando_blastenheimer : public CreatureScript
@@ -319,7 +346,8 @@ public:
                     if (Unit* skystrider = me->FindNearestCreature(NPC_SKYSTRIDER, 10.0f, true))
                     {
                         StriderGUID = skystrider->GetGUID();
-                        player->EnterVehicle(skystrider, 0);
+                        player->CastSpell(skystrider, SPELL_RIDE_VEHICLE, true);
+                        skystrider->GetMotionMaster()->MoveSmoothPath(0, striderWaypoints, 22, false, true);
                     }
                 }
                 break;
