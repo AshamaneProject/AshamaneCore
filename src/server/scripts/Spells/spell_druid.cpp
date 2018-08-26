@@ -1618,57 +1618,42 @@ enum RakeSpells
 };
 
 // Rake - 1822
-// @Version : 7.1.0.22908
-class spell_dru_rake : public SpellScriptLoader
+class spell_dru_rake : public SpellScript
 {
-public:
-    spell_dru_rake() : SpellScriptLoader("spell_dru_rake") { }
+    PrepareSpellScript(spell_dru_rake);
 
-    class spell_dru_rake_SpellScript : public SpellScript
+    bool Load() override
     {
-        PrepareSpellScript(spell_dru_rake_SpellScript);
+        Unit* caster = GetCaster();
+        if (caster->HasAuraType(SPELL_AURA_MOD_STEALTH))
+            m_stealthed = true;
 
-    public:
-        spell_dru_rake_SpellScript()
-        {
-            _stealthed = false;
-        }
-
-    private:
-        bool _stealthed;
-
-        bool Load() override
-        {
-            Unit* caster = GetCaster();
-            if (caster->HasAuraType(SPELL_AURA_MOD_STEALTH))
-                _stealthed = true;
-            return true;
-        }
-
-        void HandleOnHit(SpellEffIndex /*effIndex*/)
-        {
-            Unit* caster = GetCaster();
-            Unit* target = GetExplTargetUnit();
-            if (!caster || !target)
-                return;
-
-            if (this->_stealthed || caster->HasAura(SPELL_DRUID_INCARNATION_KING_OF_JUNGLE))
-            {
-                SetHitDamage(GetHitDamage() * 2);
-                caster->CastSpell(target, SPELL_DRUID_RAKE_STUN, true);
-            }
-        }
-
-        void Register() override
-        {
-            OnEffectHitTarget += SpellEffectFn(spell_dru_rake_SpellScript::HandleOnHit, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
-        }
-    };
-
-    SpellScript* GetSpellScript() const override
-    {
-        return new spell_dru_rake_SpellScript();
+        return true;
     }
+
+    void HandleOnHit(SpellEffIndex /*effIndex*/)
+    {
+        Unit* caster = GetCaster();
+        Unit* target = GetExplTargetUnit();
+        if (!caster || !target)
+            return;
+
+        // While stealthed or have Incarnation: King of the Jungle aura, deal 100% increased damage
+        if (m_stealthed || caster->HasAura(SPELL_DRUID_INCARNATION_KING_OF_JUNGLE))
+            SetHitDamage(GetHitDamage() * 2);
+
+        // Only stun if the caster was in stealth
+        if (m_stealthed)
+            caster->CastSpell(target, SPELL_DRUID_RAKE_STUN, true);
+    }
+
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_dru_rake::HandleOnHit, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
+    }
+
+private:
+    bool m_stealthed = false;
 };
 
 enum MaimSpells
@@ -2498,7 +2483,7 @@ void AddSC_druid_spell_scripts()
     new spell_dru_living_seed();
     new spell_dru_infected_wound();
     RegisterAuraScript(spell_dru_ysera_gift);
-    new spell_dru_rake();
+    RegisterSpellScript(spell_dru_rake);
     RegisterSpellScript(spell_dru_maim);
     new spell_dru_rip();
     new spell_dru_bloodtalons();
