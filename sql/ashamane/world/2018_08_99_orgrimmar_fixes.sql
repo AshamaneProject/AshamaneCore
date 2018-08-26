@@ -1143,7 +1143,7 @@ DELETE FROM gossip_menu_option WHERE MenuId = 1951 AND OptionIndex = 1; -- REMOV
 
 -- start fixing the actual gossip actions now
 
-DELETE FROM gossip_menu_option_action WHERE MenuId IN (1951, 12638, 12639, 1949, 12637);
+DELETE FROM gossip_menu_option_action WHERE MenuId IN (1951, 12638, 12639, 1949, 12637, 12245, 9727);
 INSERT INTO gossip_menu_option_action (`MenuId`, `OptionIndex`, `ActionMenuId`)VALUES
 (1951, 0, 1845),
 (1951, 2, 12246),
@@ -1173,5 +1173,19 @@ INSERT INTO gossip_menu_option_action (`MenuId`, `OptionIndex`, `ActionMenuId`)V
 (12637, 1, 12626),
 (12637, 0, 1904),
 (1951, 12, 0), -- officers lounge
-(1951, 13, 12245); -- other continents
+(1951, 13, 12245), -- other continents
+(12245, 0, 20929),
+(12245, 1, 20930),
+(12245, 2, 20934),
+(12245, 3, 20933),
+(12245, 4, 20931),
+(12245, 5, 17203),
+(12245, 6, 20932),
+(12245, 7, 20927),
+(12245, 8, 20935),
+(1951, 14, 1942),
+(1951, 15, 12654),
+(1951, 16, 9727),
+(9727, 1, 9727),
+(9727, 0, 9727);
 
