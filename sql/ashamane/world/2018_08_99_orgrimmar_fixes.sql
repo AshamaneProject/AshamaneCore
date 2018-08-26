@@ -1172,7 +1172,7 @@ INSERT INTO gossip_menu_option_action (`MenuId`, `OptionIndex`, `ActionMenuId`)V
 (1951, 11, 12637),
 (12637, 1, 12626),
 (12637, 0, 1904),
-(1951, 12, 0), -- officers lounge  sniff it
+(1951, 12, 5882), -- officers lounge  sniff it
 (1951, 13, 12245), -- other continents
 (12245, 0, 20929),
 (12245, 1, 20930),
@@ -1190,9 +1190,9 @@ INSERT INTO gossip_menu_option_action (`MenuId`, `OptionIndex`, `ActionMenuId`)V
 (9727, 0, 12654),
 (1942, 0, 1845),
 (1942, 1, 12308),
-(1942, 2, 0),   -- sniff it
+(1942, 2, 1846),   
 (1942, 3, 12654),
-(1942, 4, 0), -- sniff it
+(1942, 4, 1862), 
 (1942, 5, 12654),
 (1942, 6, 12654),
 (1942, 7, 1864),
