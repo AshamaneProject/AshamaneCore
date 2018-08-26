@@ -1206,3 +1206,26 @@ INSERT INTO gossip_menu_option_action (`MenuId`, `OptionIndex`, `ActionMenuId`)V
 (1942, 15, 1869),
 (1942, 16, 1871);
 
+
+-- missing creature_templates
+DELETE FROM `creature_template` WHERE `entry` IN (135201, 141707, 139093, 134711, 140210, 137762, 135202, 140462);
+INSERT INTO `creature_template` (`entry`, `KillCredit1`, `KillCredit2`, `modelid1`, `modelid2`, `modelid3`, `modelid4`, `name`, `femaleName`, `subname`, `TitleAlt`, `IconName`, `HealthScalingExpansion`, `RequiredExpansion`, `VignetteID`, `rank`, `family`, `type`, `type_flags`, `type_flags2`, `HealthModifier`, `ManaModifier`, `RacialLeader`, `movementId`, `VerifiedBuild`) VALUES
+(135201, 0, 0, 11686, 0, 0, 0, 'Talk to Sylvanas', '', NULL, NULL, NULL, 7, 0, 0, 0, 0, 7, 1611661328, 6, 1, 1, 0, 0, 27404), -- 135201
+(140462, 0, 0, 86688, 'Hermf', '', NULL, NULL, NULL, 7, 0, 0, 0, 0, 7, 4096, 0, 1, 1, 0, 0, 27404), -- 140462
+(141707, 0, 0, 34207, 34208, 34209, 34211, 'Darkspear Bat Rider', '', NULL, NULL, NULL, 7, 0, 0, 0, 0, 7, 0, 0, 1.5, 1, 0, 0, 27404), -- 141707
+(139093, 0, 0, 1592, 0, 0, 0, 'Isabella', '', 'Mage Trainer', NULL, NULL, 0, 0, 0, 0, 0, 7, 0, 32768, 1, 1, 0, 0, 27404), -- 139093
+(134711, 0, 0, 81857, 0, 0, 0, 'Lady Sylvanas Windrunner', '', 'Warchief', NULL, NULL, -1, 0, 0, 1, 0, 7, 76, 0, 1200, 20, 1, 0, 27404), -- 134711
+(140210, 0, 0, 10906, 27823, 34252, 0, 'Portal to Undercity', '', NULL, NULL, NULL, 7, 0, 0, 1, 0, 10, 1611661392, 6, 1, 1, 0, 0, 27404), -- 140210
+(137762, 0, 0, 11686, 0, 0, 0, 'Take a potion', '', NULL, NULL, NULL, 7, 0, 0, 0, 0, 7, 1611661328, 6, 1, 1, 0, 0, 27404), -- 137762
+-- (141119, 0, 0, 27588, 27589, 27590, 27591, 27596, 27597, 27598, 27599, 1029, 1027, 2656, 3883, 2657, 4109, 4108, 4056, 4122, 7994, 7995, 15781, 15783, 3860, 2660, 2662, 2811, 4012, 2663, 4123, 4059, 4052, 2666, 4053, 2668, 4009, 16009, 3861, 2670, 3130, 2673, 2674, 2611, 3859, 4110, 2612, 2613, 15782, 2615, 2616, 4008, 2619, 7597, 9353, 2621, 10619, 2622, 2625, 2627, 2628, 2629, 6065, 5449, 2632, 2633, 2635, 4006, 4121, 2636, 2640, 2641, 2643, 10197, 6228, 4011, 3863, 2649, 8054, 11756, 2652, 2653, 10580, 2654, 2655, 'Forsaken Refugee', '', NULL, NULL, NULL, 7, 0, 0, 0, 0, 7, 0, 0, 1, 1, 0, 0, 27404), -- 141119
+(135202, 0, 0, 11686, 0, 0, 0, 'Meet your team', '', NULL, NULL, NULL, 7, 0, 0, 0, 0, 7, 1611661328, 6, 1, 1, 0, 0, 27404); -- 135202
+
+UPDATE creature_template SET unit_class = 1, faction = 35 WHERE entry = 135201;
+UPDATE creature_template SET unit_class = 1, faction = 1835 WHERE entry = 141707;
+UPDATE creature_template SET unit_class = 1, faction = 68 WHERE entry = 139093;
+UPDATE creature_template SET unit_class = 1, faction = 118 WHERE entry = 134711;
+UPDATE creature_template SET unit_class = 1, faction = 35 WHERE entry = 140210;
+UPDATE creature_template SET unit_class = 1, faction = 35 WHERE entry = 137762;
+UPDATE creature_template SET unit_class = 1, faction = 35 WHERE entry = 135202;
+UPDATE creature_template SET unit_class = 1, faction = 2159 WHERE entry = 140462;
+
