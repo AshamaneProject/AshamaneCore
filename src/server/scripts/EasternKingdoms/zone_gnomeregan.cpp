@@ -32,6 +32,7 @@ EndScriptData */
 #include "Vehicle.h"
 #include "MotionMaster.h"
 #include "TemporarySummon.h"
+#include "GameObject.h"
 
 enum GnomeCreatureIds
 {
@@ -319,11 +320,58 @@ public:
     }
 };
 
+class npc_multi_bot : public CreatureScript
+{
+public:
+    npc_multi_bot() : CreatureScript("npc_multi_bot") { }
+
+    struct npc_multi_botAI : public CreatureAI
+    {
+        npc_multi_botAI(Creature* creature) : CreatureAI(creature)
+        {
+            m_CheckTimer = 2000;       
+        }
+
+        uint32 m_CheckTimer;
+
+        
+
+        void UpdateAI(uint32 diff) override
+        {
+            if (m_CheckTimer)
+            {
+                if (m_CheckTimer <= diff)
+                {
+                    m_CheckTimer = 2000;
+                    if (GameObject* gobject = me->FindNearestGameObject(203975, 5))
+                    {                    
+                 if (Player* owner = me->GetOwner()->ToPlayer())
+                    {
+                     gobject->SetGoState(GO_STATE_ACTIVE);
+                        Talk(0);
+                        me->CastSpell(me, 79424, true);
+                        me->CastSpell(me, 79422, true);
+                    }
+                    }
+                }
+                else
+                    m_CheckTimer -= diff;
+            }
+        }
+    };
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_multi_botAI(creature);
+    }
+};
+
 void AddSC_zone_gnomeregan()
 {
     new npc_nevin_twistwrench();
     new npc_carvo_blastbolt();
     new npc_sanitron_5000();
     new npc_gnomeregan_torben();
+    new npc_multi_bot();
 }
 
