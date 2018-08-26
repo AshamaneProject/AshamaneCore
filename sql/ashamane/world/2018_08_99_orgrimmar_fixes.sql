@@ -825,7 +825,7 @@ INSERT INTO `creature_equip_template` (`CreatureID`, `ID`, `ItemID1`, `Appearanc
 (74228, 1, 13631, 0, 0, 0, 0, 0, 5870, 0, 0), -- 74228
 (3323, 1, 2200, 0, 0, 0, 0, 0, 0, 0, 0); -- 3323
 
-DELETE FROM creature WHERE guid IN (265853, 196179, 1100123, 265876, 1100124, 266137, 265875, 265878, 265877, 265780, 265803, 265801, 1100027, 265855, 65868, 266269, 265960, 318111, 266146, 266029, 266028,
+DELETE FROM creature WHERE guid IN (45551, 265853, 196179, 1100123, 265876, 1100124, 266137, 265875, 265878, 265877, 265780, 265803, 265801, 1100027, 265855, 65868, 266269, 265960, 318111, 266146, 266029, 266028,
  266135, 266030, 265957, 266117, 266070, 266097, 265776, 265856, 302643, 265844, 265803);
 INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `PhaseId`, `PhaseGroup`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`, `VerifiedBuild`) VALUES
 (265853, 133271, 1, 1637, 5332, 1, 0, 0, 0, 0, 1503.049, -4187.526, 52.63043, 3.595378, 120, 10, 0, 0, 0, 1, 0, 0, 0, 27404), -- 133271 (Area: 5332 - Difficulty: 0) (possible waypoints or random movement)
@@ -1012,10 +1012,10 @@ INSERT INTO `gossip_menu_option` (`MenuId`, `OptionIndex`, `OptionIcon`, `Option
 (22125, 1, 1, 'Let me browse your goods.', 0, 3, 209, 27404),
 (22125, 0, 3, 'Train me in Tailoring.', 0, 5, 209, 27404),
 (22121, 0, 1, 'I would like to buy from you.', 0, 3, 4225, 27404),
-(22114, 0, 3, 'Train me in the ways of herbalism.', 0, 1, 1, 27404),
+(22114, 0, 3, 'Train me in the ways of herbalism.', 0, 5, 17, 27404),
 (12040, 1, 1, 'Let me browse your goods.', 0, 1, 1, 27404),
 (12040, 0, 5, 'Make this inn your home.', 0, 1, 1, 27404),
-(22124, 1, 1, 'Let me browse your goods.', 0, 1, 209, 27404),
+(22124, 1, 1, 'Let me browse your goods.', 0, 3, 209, 27404),
 (22124, 0, 3, 'I\'m here for cooking training.', 0, 5, 209, 27404),
 (1942, 16, 0, 'Tailoring', 0, 1, 1, 27404),
 (1942, 15, 0, 'Skinning', 0, 1, 1, 27404),
