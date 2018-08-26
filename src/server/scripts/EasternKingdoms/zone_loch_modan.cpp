@@ -1,19 +1,19 @@
 /*
-* Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
-*
-* This program is free software; you can redistribute it and/or modify it
-* under the terms of the GNU General Public License as published by the
-* Free Software Foundation; either version 2 of the License, or (at your
-* option) any later version.
-*
-* This program is distributed in the hope that it will be useful, but WITHOUT
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
-* more details.
-*
-* You should have received a copy of the GNU General Public License along
-* with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #include "ScriptMgr.h"
 #include "Player.h"
@@ -30,23 +30,21 @@ enum MosshideRep
     NPC_MOSSHIDE_REP        = 44262
 };
 
-
 class spell_murloc_pheromone : public SpellScript
 {
     PrepareSpellScript(spell_murloc_pheromone);
 
+    SpellCastResult CheckRequirement()
+    {
+        if (!GetCaster()->FindNearestCreature(NPC_MOSSHIDE_REP, 25.0f, true))
+            return SPELL_FAILED_INCORRECT_AREA;
+
+        return SPELL_CAST_OK;
+    }
+
     void SelectTarget(WorldObject*& target)
     {
         target = GetCaster()->FindNearestCreature(NPC_MOSSHIDE_REP, 25.0f, true);
-    }
-
-    SpellCastResult CheckRequirement()
-    {
-        Creature* moss = GetCaster()->FindNearestCreature(NPC_MOSSHIDE_REP, 25.0f, true);
-
-        if (!moss)
-            return SPELL_FAILED_INCORRECT_AREA;
-        return SPELL_CAST_OK;
     }
 
     void HandleDummy(SpellEffIndex /*effIndex*/)
@@ -59,11 +57,11 @@ class spell_murloc_pheromone : public SpellScript
         {
             switch (target->GetEntry())
             {
-            case NPC_MOSSHIDE_REP:
-                GetCaster()->ToPlayer()->RewardPlayerAndGroupAtEvent(NPC_MOSSHIDE_CREDIT, GetCaster());
-                break;
-            default:
-                break;
+                case NPC_MOSSHIDE_REP:
+                    GetCaster()->ToPlayer()->RewardPlayerAndGroupAtEvent(NPC_MOSSHIDE_CREDIT, GetCaster());
+                    break;
+                default:
+                    break;
             }
         }
     }
@@ -85,15 +83,11 @@ struct npc_mosshide_representative : public ScriptedAI
         if (spell->Id != SPELL_MURLOC_PHEROMONE)
             return;
 
-        Player* player = caster->ToPlayer();
-        if (player && player->GetQuestStatus(QUEST_AXISOFAWFUL) == QUEST_STATUS_INCOMPLETE)
-        {
-            player->KilledMonsterCredit(NPC_MOSSHIDE_CREDIT, ObjectGuid::Empty);
-        }
+        if (Player* player = caster->ToPlayer())
+            if (player->GetQuestStatus(QUEST_AXISOFAWFUL) == QUEST_STATUS_INCOMPLETE)
+                player->KilledMonsterCredit(NPC_MOSSHIDE_CREDIT);
     }
-
 };
-
 
 enum eHuldar
 {
@@ -106,68 +100,33 @@ enum eHuldar
     SPELL_SHIPMENT_CREDIT     = 62980
 };
 
-class npc_huldar : public CreatureScript
+struct npc_huldar : public ScriptedAI
 {
-public:
-    npc_huldar() : CreatureScript("npc_huldar") {}
+    npc_huldar(Creature* creature) : ScriptedAI(creature) {}
 
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new npc_huldarAI(creature);
-    }
-
-    bool OnQuestAccept(Player* player, Creature* creature, Quest const* quest) override
+    void sQuestAccept(Player* player, Quest const* quest) override
     {
         switch (quest->GetQuestId())
         {
-        case QUEST_PROTECT_SHIPMENT:
-            creature->AI()->SetGUID(player->GetGUID());
-            creature->AI()->DoAction(ACTION_START_EVENT);
-            break;
-        }
-
-        return true;
-    }
-
-    struct npc_huldarAI : public ScriptedAI
-    {
-        ObjectGuid PlayerGUID;
-        npc_huldarAI(Creature* creature) : ScriptedAI(creature) {}
-
-        void SetGUID(ObjectGuid guid, int32 /*id*/) override
-        {
-            PlayerGUID = guid;
-        }
-
-        void DoAction(int32 action) override
-        {
-            switch (action)
+            case QUEST_PROTECT_SHIPMENT:
             {
-            case ACTION_START_EVENT:
                 me->SummonCreature(NPC_DARK_IRON_AMBUSHER, -5699.78f, -3565.10f, 308.514f, 1.67945f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 90000, true);
                 me->SummonCreature(NPC_DARK_IRON_AMBUSHER, -5694.87f, -3559.27f, 307.216f, 2.15854f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 90000, true);
                 me->SummonCreature(NPC_SAEAN, -5697.07f, -3562.87f, 307.883f, 1.93863f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 90000, true);
-                if (Player* player = ObjectAccessor::GetPlayer(*me, PlayerGUID))
-                {
-                    player->CastSpell(player, SPELL_SHIPMENT_CREDIT, true);
-                }
-                break;
+
+                player->CastSpell(player, SPELL_SHIPMENT_CREDIT, true);
             }
         }
+    }
 
-        void MoveInLineOfSight(Unit* who) override
-        {
-            ScriptedAI::MoveInLineOfSight(who);
+    void MoveInLineOfSight(Unit* who) override
+    {
+        ScriptedAI::MoveInLineOfSight(who);
 
-            if (who->GetTypeId() != TYPEID_PLAYER)
-                return;
-
-            if (who->ToPlayer()->GetQuestStatus(QUEST_RESUPPLY_EXCAVATION) == QUEST_STATUS_INCOMPLETE)
-            {
-                who->ToPlayer()->KilledMonsterCredit(NPC_HULDAR, ObjectGuid::Empty);
-            }
-        }
-    };
+        if (Player* player = who->ToPlayer())
+            if (player->GetQuestStatus(QUEST_RESUPPLY_EXCAVATION) == QUEST_STATUS_INCOMPLETE)
+                player->KilledMonsterCredit(NPC_HULDAR);
+    }
 };
 
 enum DwarvenArtifacts
@@ -178,91 +137,46 @@ enum DwarvenArtifacts
     QUEST_HAND_OFF_THE_GOODS = 13650
 };
 
-class npc_ironband_tablet : public CreatureScript
+struct npc_ironband_tablet : public ScriptedAI
 {
-public:
-    npc_ironband_tablet() : CreatureScript("npc_ironband_tablet") {}
+    npc_ironband_tablet(Creature* creature) : ScriptedAI(creature) {}
 
-    CreatureAI* GetAI(Creature* creature) const override
+    void MoveInLineOfSight(Unit* who) override
     {
-        return new npc_ironband_tabletAI(creature);
+        ScriptedAI::MoveInLineOfSight(who);
+
+        if (Player* player = who->ToPlayer())
+            if (player->GetQuestStatus(QUEST_HAND_OFF_THE_GOODS) == QUEST_STATUS_INCOMPLETE)
+                player->KilledMonsterCredit(NPC_IRONBAND_TABLET);
     }
-
-    struct npc_ironband_tabletAI : public ScriptedAI
-    {
-        npc_ironband_tabletAI(Creature* creature) : ScriptedAI(creature) {}
-
-        void MoveInLineOfSight(Unit* who) override
-        {
-            ScriptedAI::MoveInLineOfSight(who);
-
-            if (who->GetTypeId() != TYPEID_PLAYER)
-                return;
-
-            if (who->ToPlayer()->GetQuestStatus(QUEST_HAND_OFF_THE_GOODS) == QUEST_STATUS_INCOMPLETE)
-            {
-                who->ToPlayer()->KilledMonsterCredit(NPC_IRONBAND_TABLET, ObjectGuid::Empty);
-            }
-        }
-    };
 };
 
-class npc_ironband_sandal : public CreatureScript
+struct npc_ironband_sandal : public ScriptedAI
 {
-public:
-    npc_ironband_sandal() : CreatureScript("npc_ironband_sandal") {}
+    npc_ironband_sandal(Creature* creature) : ScriptedAI(creature) {}
 
-    CreatureAI* GetAI(Creature* creature) const override
+    void MoveInLineOfSight(Unit* who) override
     {
-        return new npc_ironband_sandalAI(creature);
+        ScriptedAI::MoveInLineOfSight(who);
+
+        if (Player* player = who->ToPlayer())
+            if (player->GetQuestStatus(QUEST_HAND_OFF_THE_GOODS) == QUEST_STATUS_INCOMPLETE)
+                player->KilledMonsterCredit(NPC_IRONBAND_SANDAL);
     }
-
-    struct npc_ironband_sandalAI : public ScriptedAI
-    {
-        npc_ironband_sandalAI(Creature* creature) : ScriptedAI(creature) {}
-
-        void MoveInLineOfSight(Unit* who) override
-        {
-            ScriptedAI::MoveInLineOfSight(who);
-
-            if (who->GetTypeId() != TYPEID_PLAYER)
-                return;
-
-            if (who->ToPlayer()->GetQuestStatus(QUEST_HAND_OFF_THE_GOODS) == QUEST_STATUS_INCOMPLETE)
-            {
-                who->ToPlayer()->KilledMonsterCredit(NPC_IRONBAND_SANDAL, ObjectGuid::Empty);
-            }
-        }
-    };
 };
 
-class npc_ironband_liberty : public CreatureScript
+struct npc_ironband_liberty : public ScriptedAI
 {
-public:
-    npc_ironband_liberty() : CreatureScript("npc_ironband_liberty") {}
+    npc_ironband_liberty(Creature* creature) : ScriptedAI(creature) {}
 
-    CreatureAI* GetAI(Creature* creature) const override
+    void MoveInLineOfSight(Unit* who) override
     {
-        return new npc_ironband_libertyAI(creature);
+        ScriptedAI::MoveInLineOfSight(who);
+
+        if (Player* player = who->ToPlayer())
+            if (player->GetQuestStatus(QUEST_HAND_OFF_THE_GOODS) == QUEST_STATUS_INCOMPLETE)
+                player->KilledMonsterCredit(NPC_IRONBAND_LIBERTY);
     }
-
-    struct npc_ironband_libertyAI : public ScriptedAI
-    {
-        npc_ironband_libertyAI(Creature* creature) : ScriptedAI(creature) {}
-
-        void MoveInLineOfSight(Unit* who) override
-        {
-            ScriptedAI::MoveInLineOfSight(who);
-
-            if (who->GetTypeId() != TYPEID_PLAYER)
-                return;
-
-            if (who->ToPlayer()->GetQuestStatus(QUEST_HAND_OFF_THE_GOODS) == QUEST_STATUS_INCOMPLETE)
-            {
-                who->ToPlayer()->KilledMonsterCredit(NPC_IRONBAND_LIBERTY, ObjectGuid::Empty);
-            }
-        }
-    };
 };
 
 enum AndoBlastenheimer
@@ -300,69 +214,34 @@ Position const striderWaypoints[] =
     { -4815.010f, -2707.960f, 334.449f }
 };
 
-class npc_ando_blastenheimer : public CreatureScript
+struct npc_ando_blastenheimer : public ScriptedAI
 {
-public:
-    npc_ando_blastenheimer() : CreatureScript("npc_ando_blastenheimer") {}
+    npc_ando_blastenheimer(Creature* creature) : ScriptedAI(creature) {}
 
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new npc_ando_blastenheimerAI(creature);
-    }
-
-    bool OnQuestAccept(Player* player, Creature* creature, Quest const* quest) override
+    void sQuestAccept(Player* player, Quest const* quest) override
     {
         switch (quest->GetQuestId())
         {
-        case QUEST_WINDS_LOCH_MODAN:
-            creature->AI()->SetGUID(player->GetGUID());
-            creature->AI()->DoAction(ACTION_START_EVENT);
-            break;
-        }
-
-        return true;
-    }
-
-    struct npc_ando_blastenheimerAI : public ScriptedAI
-    {
-        ObjectGuid PlayerGUID;
-        ObjectGuid StriderGUID;
-
-        npc_ando_blastenheimerAI(Creature* creature) : ScriptedAI(creature) {}
-
-        void SetGUID(ObjectGuid guid, int32 /*id*/) override
-        {
-            PlayerGUID = guid;
-        }
-
-        void DoAction(int32 action) override
-        {
-            switch (action)
+            case QUEST_WINDS_LOCH_MODAN:
             {
-            case ACTION_START_EVENT:
-                if (Player* player = ObjectAccessor::GetPlayer(*me, PlayerGUID))
+                player->CastSpell(player, SPELL_SUMMON_SKYSTRIDER, true);
+                if (Unit* skystrider = me->FindNearestCreature(NPC_SKYSTRIDER, 10.0f, true))
                 {
-                    player->CastSpell(player, SPELL_SUMMON_SKYSTRIDER, true);
-                    if (Unit* skystrider = me->FindNearestCreature(NPC_SKYSTRIDER, 10.0f, true))
-                    {
-                        StriderGUID = skystrider->GetGUID();
-                        player->CastSpell(skystrider, SPELL_RIDE_VEHICLE, true);
-                        skystrider->GetMotionMaster()->MoveSmoothPath(0, striderWaypoints, 22, false, true);
-                    }
+                    player->CastSpell(skystrider, SPELL_RIDE_VEHICLE, true);
+                    skystrider->GetMotionMaster()->MoveSmoothPath(0, striderWaypoints, 22, false, true);
                 }
-                break;
             }
         }
-    };
+    }
 };
 
 void AddSC_loch_modan()
 {
     RegisterSpellScript(spell_murloc_pheromone);
     RegisterCreatureAI(npc_mosshide_representative);
-    new npc_huldar();
-    new npc_ironband_tablet();
-    new npc_ironband_sandal();
-    new npc_ironband_liberty();
-    new npc_ando_blastenheimer();
+    RegisterCreatureAI(npc_huldar);
+    RegisterCreatureAI(npc_ironband_tablet);
+    RegisterCreatureAI(npc_ironband_sandal);
+    RegisterCreatureAI(npc_ironband_liberty);
+    RegisterCreatureAI(npc_ando_blastenheimer);
 }
