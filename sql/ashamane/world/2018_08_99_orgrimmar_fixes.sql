@@ -1140,3 +1140,20 @@ INSERT INTO `npc_text` (`ID`, `Probability0`, `Probability1`, `Probability2`, `P
 (2593, 100, 0, 0, 0, 0, 0, 0, 0, 4857, 0, 0, 0, 0, 0, 0, 0, 27404); -- 2593
 
 DELETE FROM gossip_menu_option WHERE MenuId = 1951 AND OptionIndex = 1; -- REMOVE THIS USELESS SHIT! should be the extra wierd transmog entry
+
+-- start fixing the actual gossip actions now
+
+DELETE FROM gossip_menu_option_action WHERE MenuId IN (1951, 12638, 12639);
+INSERT INTO gossip_menu_option_action (`MenuId`, `OptionIndex`, `ActionMenuId`)VALUES
+(1951, 0, 1845),
+(1951, 2, 12246),
+(1951, 3, 12246),
+(1951, 4, 12638),
+(12638, 1, 17754),
+(12638, 0, 2403),
+(12639, 1, 2403),
+(12639, 0, 2403),
+(1951, 5, 12639),
+(1951, 6, 10018),
+(1951, 7, 0);
+
