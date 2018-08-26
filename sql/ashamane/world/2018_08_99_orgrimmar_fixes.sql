@@ -1206,6 +1206,8 @@ INSERT INTO gossip_menu_option_action (`MenuId`, `OptionIndex`, `ActionMenuId`)V
 (1942, 15, 1869),
 (1942, 16, 1871);
 
+INSERT INTO `gossip_menu_option_trainer` (`MenuId`, `TrainerId`) VALUES ('22125', '163');
+INSERT INTO `gossip_menu_option_trainer` (`MenuId`, `TrainerId`) VALUES ('22114', '424');
 
 -- missing creature_templates
 DELETE FROM `creature_template` WHERE `entry` IN (141119, 135201, 141707, 139093, 134711, 140210, 137762, 135202, 140462);
