@@ -1,7 +1,7 @@
 -- HORDE
 
 DELETE FROM `world`.`creature_questender` WHERE `id` = 42985
-INSERT INTO world.creature_questender (id, quest) VALUES ('10181', '42985'); 
+INSERT INTO `world.creature_questender` (id, quest) VALUES ('10181', '42985'); 
 
 DELETE FROM `world`.`creature_questender` WHERE `id` = 42987
 INSERT INTO `world.creature_queststarter` (id, quest) VALUES ('10181', '42987');
