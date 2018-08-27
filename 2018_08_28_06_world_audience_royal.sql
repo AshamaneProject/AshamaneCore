@@ -1,14 +1,14 @@
 -- HORDE
 
-DELETE FROM `world`.`creature_questender` WHERE `id` = 42985
+DELETE FROM `world`.`creature_questender` WHERE `id` = `42985`
 INSERT INTO `world.creature_questender` (id, quest) VALUES ('10181', '42985'); 
 
-DELETE FROM `world`.`creature_questender` WHERE `id` = 42987
+DELETE FROM `world`.`creature_questender` WHERE `id` = `42987`
 INSERT INTO `world.creature_queststarter` (id, quest) VALUES ('10181', '42987');
 
 UPDATE `world.quest_template_addon` SET `PrevQuestID` = '42985' WHERE ID = '42987'; 
 
-DELETE FROM `world`.`creature_questender` WHERE `id` = 42987
+DELETE FROM `world`.`creature_questender` WHERE `id` = `42987`
 INSERT INTO `world.creature_questender` (id, quest) VALUES ('10181', '42987');
 
 UPDATE `world`.`quest_template` SET `QuestType` = '0' WHERE `ID` = '42987';
@@ -19,16 +19,16 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 
 -- ALLIANCE
 
-DELETE FROM `world`.`creature_questender` WHERE `id` = 42978
+DELETE FROM `world`.`creature_questender` WHERE `id` = `42978`
 INSERT INTO `world`.`creature_questender` (`id`, `quest`) VALUES ('107574', '42978');
  
-DELETE FROM `world`.`creature_questender` WHERE `id` = 42982
+DELETE FROM `world`.`creature_questender` WHERE `id` = `42982`
 INSERT INTO `world`.`creature_questender` (`id`, `quest`) VALUES ('107574', '42982');
 
 UPDATE `world`.`quest_template` SET `QuestType` = '0' WHERE `ID` = '42982';
 UPDATE `world`.`quest_template_addon` SET `PrevQuestID` = '42978' WHERE `ID` = '42982';
 
-DELETE FROM `world`.`creature_questender` WHERE `id` = 42982
+DELETE FROM `world`.`creature_questender` WHERE `id` = `42982`
 INSERT INTO `world`.`creature_queststarter` (`id`, `quest`) VALUES ('107574', '42982');
 
 UPDATE `creature_template` SET `AIName` = 'SmartAI' WHERE `entry` = 107574; 
