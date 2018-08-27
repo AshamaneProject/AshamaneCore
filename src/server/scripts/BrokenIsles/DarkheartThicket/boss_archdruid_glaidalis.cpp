@@ -462,7 +462,7 @@ class spell_archdruid_glaidalis_primal_rage_charge : public AuraScript
     }
 };
 
-//AT : 5443
+//AT : 10152
 //Spell : 198379
 struct at_archdruid_glaidalis_primal_rage : AreaTriggerAI
 {
@@ -471,7 +471,7 @@ struct at_archdruid_glaidalis_primal_rage : AreaTriggerAI
     void OnUnitEnter(Unit* unit) override
     {
         if (Unit* caster = at->GetCaster())
-            caster->CastSpell(unit, SPELL_PR_DAMAGE_1, true);
+            caster->CastSpell(unit, SPELL_PR_CHARGE_DAMAGE, true);
     }
 };
 
