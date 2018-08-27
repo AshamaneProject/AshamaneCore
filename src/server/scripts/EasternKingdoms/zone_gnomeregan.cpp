@@ -320,9 +320,9 @@ public:
     }
 };
 
-struct npc_multi_bot : public CreatureAI
+struct npc_multi_bot : public ScriptedAI
 {
-    npc_multi_bot(Creature* creature) : CreatureAI(creature) { }
+    npc_multi_bot(Creature* creature) : ScriptedAI(creature) { }
 
     void Reset() override
     {
