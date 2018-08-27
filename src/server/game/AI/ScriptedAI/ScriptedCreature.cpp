@@ -462,6 +462,7 @@ void BossAI::_Reset()
     me->ResetLootMode();
     events.Reset();
     summons.DespawnAll();
+    me->RemoveAllAreaTriggers();
     me->GetScheduler().CancelAll();
     if (instance)
         instance->SetBossState(_bossId, NOT_STARTED);
