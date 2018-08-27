@@ -4,12 +4,12 @@ DELETE FROM `world`.`creature_questender` WHERE `id` = 42985
 INSERT INTO world.creature_questender (id, quest) VALUES ('10181', '42985'); 
 
 DELETE FROM `world`.`creature_questender` WHERE `id` = 42987
-INSERT INTO world.creature_queststarter (id, quest) VALUES ('10181', '42987');
+INSERT INTO `world.creature_queststarter` (id, quest) VALUES ('10181', '42987');
 
-UPDATE world.quest_template_addon SET PrevQuestID = '42985' WHERE ID = '42987'; 
+UPDATE `world.quest_template_addon` SET `PrevQuestID` = '42985' WHERE ID = '42987'; 
 
 DELETE FROM `world`.`creature_questender` WHERE `id` = 42987
-INSERT INTO world.creature_questender (id, quest) VALUES ('10181', '42987');
+INSERT INTO `world.creature_questender` (id, quest) VALUES ('10181', '42987');
 
 UPDATE `world`.`quest_template` SET `QuestType` = '0' WHERE `ID` = '42987';
 UPDATE `creature_template` SET `AIName` = 'SmartAI' WHERE `entry` = 10181;
