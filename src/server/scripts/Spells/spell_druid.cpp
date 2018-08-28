@@ -1987,8 +1987,9 @@ public:
     }
 };
 
-// 24858  Moonkin Form
-// 102560 Chosen of Elune
+// Moonkin Form - 24858
+// Chosen of Elune - 102560
+// Moonkin Form (Balance Affinity talent) - 197625
 class aura_dru_astral_form : public AuraScript
 {
     PrepareAuraScript(aura_dru_astral_form);
@@ -2001,6 +2002,10 @@ class aura_dru_astral_form : public AuraScript
     void AfterApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
     {
         Unit* target = GetTarget();
+
+        if (target->HasAura(SPELL_DRUID_MOONKIN_FORM) || target->HasAura(SPELL_DRUID_MOONKIN_FORM_TALENT))
+            target->SetDisplayId(target->GetModelForForm(FORM_MOONKIN_FORM));
+
         if (target->HasAura(SPELL_DRUID_GLYPH_OF_STARS))
         {
             target->SetDisplayId(target->GetNativeDisplayId());
@@ -2016,6 +2021,7 @@ class aura_dru_astral_form : public AuraScript
         if (target->HasAura(SPELL_DRUID_MOONKIN_FORM) || target->HasAura(SPELL_DRUID_CHOSEN_OF_ELUNE))
             return;
 
+        target->SetDisplayId(target->GetNativeDisplayId());
         target->RemoveAura(sSpellMgr->GetSpellInfo(SPELL_DRUID_GLYPH_OF_STARS)->GetEffect(EFFECT_0)->BasePoints);
         target->RemoveAura(SPELL_DRUID_BLUE_COLOR);
         target->RemoveAura(SPELL_DRUID_SHADOWY_GHOST);
@@ -2026,6 +2032,7 @@ class aura_dru_astral_form : public AuraScript
         switch (m_scriptSpellId)
         {
             case SPELL_DRUID_MOONKIN_FORM:
+            case SPELL_DRUID_MOONKIN_FORM_TALENT:
                 AfterEffectApply += AuraEffectApplyFn(aura_dru_astral_form::AfterApply, EFFECT_1, SPELL_AURA_MOD_SHAPESHIFT, AURA_EFFECT_HANDLE_REAL);
                 AfterEffectRemove += AuraEffectRemoveFn(aura_dru_astral_form::AfterRemove, EFFECT_1, SPELL_AURA_MOD_SHAPESHIFT, AURA_EFFECT_HANDLE_REAL);
                 break;
