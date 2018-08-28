@@ -2087,6 +2087,7 @@ class aura_dru_feral_affinity_resto : public AuraScript
     const std::vector<uint32> LearnedSpells =
     {
         SPELL_DRUID_FELINE_SWIFTNESS,
+        SPELL_DRUID_SHRED,
         SPELL_DRUID_RAKE,
         SPELL_DRUID_RIP,
         SPELL_DRUID_FEROCIOUS_BITE,
@@ -2150,6 +2151,7 @@ class aura_dru_feral_affinity_tank : public AuraScript
     const std::vector<uint32> LearnedSpells =
     {
         SPELL_DRUID_FELINE_SWIFTNESS,
+        SPELL_DRUID_SHRED,
         SPELL_DRUID_RAKE,
         SPELL_DRUID_RIP,
         SPELL_DRUID_FEROCIOUS_BITE
