@@ -72,3 +72,6 @@ UPDATE `smart_scripts` SET `action_type`='11', `action_param1`='43094' WHERE  `e
 UPDATE `smart_scripts` SET `action_type`='11', `action_param1`='43094' WHERE  `entryorguid`=2409000 AND `source_type`=9 AND `id`=0 AND `link`=0;
 UPDATE `smart_scripts` SET `action_type`='11', `action_param1`='43387', `action_param2`='0', `action_param3`='0' WHERE  `entryorguid`=18666000 AND `source_type`=9 AND `id`=0 AND `link`=0;
 
+DELETE FROM `spell_script_names` WHERE  `spell_id`=120764 AND `ScriptName`='spell_ghost_essence';
+UPDATE `creature_template` SET `ScriptName`='npc_multi_bot' WHERE  `entry`=42598;
+
