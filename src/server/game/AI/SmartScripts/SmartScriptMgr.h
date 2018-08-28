@@ -584,6 +584,7 @@ enum SMART_ACTION
 	SMART_ACTION_SET_MAX_POWER                      = 212,    // Power Type, value
 	SMART_ACTION_ADD_FLYING_MOVEMENT_FLAG           = 213,    // Variation
     SMART_ACTION_REMOVE_FLYING_MOVEMENT_FLAG        = 214,    // Variation
+    SMART_ACTION_CAST_SPELL_OFFSET                  = 215,    // SpellId, triggered if value = 1.
 
     SMART_ACTION_END
 };
@@ -1196,6 +1197,12 @@ struct SmartAction
         {
             uint32 variationMovementFlags;
         } SetMovementFlags;
+        
+        struct
+        {
+            uint32 spellId;
+            uint32 triggered;
+        } castOffSet;
         //! Note for any new future actions
         //! All parameters must have type uint32
 
