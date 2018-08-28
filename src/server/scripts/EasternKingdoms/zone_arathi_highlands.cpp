@@ -31,6 +31,10 @@ EndContentData */
 #include "ScriptedCreature.h"
 #include "ScriptedEscortAI.h"
 #include "Player.h"
+#include "Spell.h"
+#include "SpellInfo.h"
+#include "ScriptedGossip.h"
+#include "SpellScript.h"
 
 /*######
 ## npc_professor_phizzlethorpe
@@ -156,7 +160,66 @@ class npc_professor_phizzlethorpe : public CreatureScript
     }
 };
 
+enum Myzrael
+{
+    NPC_MYZRAEL              = 2755,
+    QUEST_PRINCESS_UNLEASHED = 26049
+};
+
+class npc_myzrael_bunny : public CreatureScript
+{
+public:
+    npc_myzrael_bunny() : CreatureScript("npc_myzrael_bunny") { }
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_myzrael_bunnyAI(creature);
+    }
+
+    struct npc_myzrael_bunnyAI : public ScriptedAI
+    {
+        npc_myzrael_bunnyAI(Creature* creature) : ScriptedAI(creature) {}
+
+        bool bSummoned = false;
+
+        void Reset() override
+        {
+            bSummoned = false;
+        }
+
+        void MoveInLineOfSight(Unit* who) override
+        {
+            ScriptedAI::MoveInLineOfSight(who);
+
+            if (who->GetTypeId() != TYPEID_PLAYER)
+                return;
+
+            if (who->ToPlayer()->GetQuestStatus(QUEST_PRINCESS_UNLEASHED) == QUEST_STATUS_INCOMPLETE)
+            {
+                if (who->IsWithinDistInMap(me, 10.0f) && !bSummoned)
+                {
+                    StartEvent();
+                }
+            }
+        }
+
+        void StartEvent()
+        {
+            if (!bSummoned)
+            {
+                Creature* myzrael = me->SummonCreature(NPC_MYZRAEL, -948.493f, -3113.98f, 50.4207f, 3.14159f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 90000);
+                myzrael->SetReactState(REACT_AGGRESSIVE);
+                myzrael->setFaction(14);
+                myzrael->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PVP_ATTACKABLE);
+                bSummoned = true;
+            }
+        }
+
+    };
+};
+
 void AddSC_arathi_highlands()
 {
     new npc_professor_phizzlethorpe();
+    new npc_myzrael_bunny();
 }
