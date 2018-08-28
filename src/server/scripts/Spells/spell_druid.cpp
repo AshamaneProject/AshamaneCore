@@ -594,16 +594,8 @@ class aura_dru_balance_affinity_dps : public AuraScript
         // Check if the target was in Feral or Guardian specialization
         if ((target->GetSpecializationId() == TALENT_SPEC_DRUID_CAT) ||
             (target->GetSpecializationId() == TALENT_SPEC_DRUID_BEAR))
-        {
-            // Remove spells added by Affinity talent, just incase it not removed when changing specialization
-            if (target->GetSpecializationId() == TALENT_SPEC_DRUID_BEAR)
-                target->RemoveSpell(SPELL_DRUID_FELINE_SWIFTNESS);
-            if (target->GetSpecializationId() == TALENT_SPEC_DRUID_CAT)
-                target->RemoveSpell(SPELL_DRUID_THICK_HIDE);
-
             for (uint32 spellId : LearnedSpells)
                 target->RemoveSpell(spellId);
-        }
     }
 
     void Register() override
@@ -646,14 +638,8 @@ class aura_dru_balance_affinity_resto : public AuraScript
 
         // Check if the target was in Restoration specialization
         if (target->GetSpecializationId() == TALENT_SPEC_DRUID_RESTORATION)
-        {
-            // Remove spells added by Affinity talent, just incase it not removed when changing specialization
-            target->RemoveSpell(SPELL_DRUID_FELINE_SWIFTNESS);
-            target->RemoveSpell(SPELL_DRUID_THICK_HIDE);
-
             for (uint32 spellId : LearnedSpells)
                 target->RemoveSpell(spellId);
-        }
     }
 
     void Register() override
@@ -2123,24 +2109,8 @@ class aura_dru_feral_affinity_resto : public AuraScript
         // Check if the target was in Balance or Restoration specialization
         if ((target->GetSpecializationId() == TALENT_SPEC_DRUID_BALANCE) ||
             (target->GetSpecializationId() == TALENT_SPEC_DRUID_RESTORATION))
-        {
-            // Remove spells added by Affinity talent, just incase it not removed when changing specialization
-            if (target->GetSpecializationId() == TALENT_SPEC_DRUID_BALANCE)
-            {
-                target->RemoveSpell(SPELL_DRUID_THICK_HIDE);
-                target->RemoveSpell(SPELL_DRUID_MOONKIN_FORM_TALENT);
-                target->RemoveSpell(SPELL_DRUID_STARSURGE);
-                target->RemoveSpell(SPELL_DRUID_LUNAR_STRIKE);
-                target->RemoveSpell(SPELL_DRUID_SOLAR_WRATH);
-                target->RemoveSpell(SPELL_DRUID_SUNFIRE);
-            }
-
-            if (target->GetSpecializationId() == TALENT_SPEC_DRUID_RESTORATION)
-                target->RemoveSpell(SPELL_DRUID_ASTRAL_INFLUENCE);
-
             for (uint32 spellId : LearnedSpells)
                 target->RemoveSpell(spellId);
-        }
     }
 
     void Register() override
@@ -2184,13 +2154,8 @@ class aura_dru_feral_affinity_tank : public AuraScript
 
         // Check if the target was really in Guardian specialization
         if (target->GetSpecializationId() == TALENT_SPEC_DRUID_BEAR)
-        {
-            // Remove spells added by Affinity talent, just incase it not removed when changing specialization
-            target->RemoveSpell(SPELL_DRUID_ASTRAL_INFLUENCE);
-
             for (uint32 spellId : LearnedSpells)
                 target->RemoveSpell(spellId);
-        }
     }
 
     void Register() override
@@ -2602,18 +2567,8 @@ class aura_dru_guardian_affinity_resto : public AuraScript
         // Check if the target was really in Balance or Restoration specialization
         if ((target->GetSpecializationId() == TALENT_SPEC_DRUID_BALANCE) ||
             (target->GetSpecializationId() == TALENT_SPEC_DRUID_RESTORATION))
-        {
-            // Remove spells added by Affinity talent, just incase it not removed when changing specialization
-            target->RemoveSpell(SPELL_DRUID_FELINE_SWIFTNESS);
-            target->RemoveSpell(SPELL_DRUID_MOONKIN_FORM_TALENT);
-            target->RemoveSpell(SPELL_DRUID_STARSURGE);
-            target->RemoveSpell(SPELL_DRUID_LUNAR_STRIKE);
-            target->RemoveSpell(SPELL_DRUID_SOLAR_WRATH);
-            target->RemoveSpell(SPELL_DRUID_SUNFIRE);
-
             for (uint32 spellId : LearnedSpells)
                 target->RemoveSpell(spellId);
-        }
     }
 
     void Register() override
@@ -2656,13 +2611,8 @@ class aura_dru_guardian_affinity_dps : public AuraScript
 
         // Check if the target was in Feral specialization
         if (target->GetSpecializationId() == TALENT_SPEC_DRUID_CAT)
-        {
-            // Remove spells added by Affinity talent, just incase it not removed when changing specialization
-            target->RemoveSpell(SPELL_DRUID_ASTRAL_INFLUENCE);
-
             for (uint32 spellId : LearnedSpells)
                 target->RemoveSpell(spellId);
-        }
     }
 
     void Register() override
