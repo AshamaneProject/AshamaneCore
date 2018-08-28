@@ -1269,11 +1269,11 @@ void Creature::SelectLevel()
     // level
     uint8 minlevel = std::min(cInfo->maxlevel, cInfo->minlevel);
     uint8 maxlevel = std::max(cInfo->maxlevel, cInfo->minlevel);
-    uint8 level = minlevel == maxlevel ? minlevel : urand(minlevel, maxlevel);
-    SetLevel(level);
 
     if (HasScalableLevels())
     {
+        SetLevel(maxlevel);
+
         SetUInt32Value(UNIT_FIELD_SCALING_LEVEL_MIN, cInfo->levelScaling->MinLevel);
         SetUInt32Value(UNIT_FIELD_SCALING_LEVEL_MAX, cInfo->levelScaling->MaxLevel);
 
@@ -1282,6 +1282,11 @@ void Creature::SelectLevel()
         int8 delta = mindelta == maxdelta ? mindelta : irand(mindelta, maxdelta);
 
         SetInt32Value(UNIT_FIELD_SCALING_LEVEL_DELTA, delta);
+    }
+    else
+    {
+        uint8 level = minlevel == maxlevel ? minlevel : urand(minlevel, maxlevel);
+        SetLevel(level);
     }
 
     UpdateLevelDependantStats();

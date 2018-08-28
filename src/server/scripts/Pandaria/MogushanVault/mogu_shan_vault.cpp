@@ -327,42 +327,30 @@ class mob_cursed_mogu_sculpture : public CreatureScript
 };
 
 // Ghost Essence - 120764
-class spell_ghost_essence : public SpellScriptLoader
+class spell_ghost_essence : public SpellScript
 {
-    public:
-        spell_ghost_essence() : SpellScriptLoader("spell_ghost_essence") { }
+    PrepareSpellScript(spell_ghost_essence);
 
-        class spell_ghost_essence_SpellScript : public SpellScript
+    void HandleHitTarget(SpellEffIndex /*effIndex*/)
+    {
+        if (Creature* target = GetHitCreature())
         {
-            PrepareSpellScript(spell_ghost_essence_SpellScript);
+            target->SetReactState(REACT_AGGRESSIVE);
+            target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+            target->RemoveAurasDueToSpell(SPELL_BRONZE);
+            target->RemoveAurasDueToSpell(SPELL_POSE_2);
+            target->RemoveAurasDueToSpell(SPELL_POSE_1);
+            target->RemoveAurasDueToSpell(SPELL_STONE);
 
-            void HandleOnHit()
-            {
-                if (Unit* target = GetHitUnit())
-                {
-                    if (target->IsCreature() && target->IsAIEnabled)
-                    {
-                        target->ToCreature()->SetReactState(REACT_AGGRESSIVE);
-                        target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
-                        target->RemoveAurasDueToSpell(SPELL_BRONZE);
-                        target->RemoveAurasDueToSpell(SPELL_POSE_2);
-                        target->RemoveAurasDueToSpell(SPELL_POSE_1);
-                        target->RemoveAurasDueToSpell(SPELL_STONE);
-                        target->GetAI()->DoAction(ACTION_CURSED_MOGU_ATTACK_PLAYER);
-                    }
-                }
-            }
-
-            void Register() override
-            {
-                OnHit += SpellHitFn(spell_ghost_essence_SpellScript::HandleOnHit);
-            }
-        };
-
-        SpellScript* GetSpellScript() const override
-        {
-            return new spell_ghost_essence_SpellScript();
+            if (target->IsAIEnabled)
+                target->GetAI()->DoAction(ACTION_CURSED_MOGU_ATTACK_PLAYER);
         }
+    }
+
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_ghost_essence::HandleHitTarget, EFFECT_0, SPELL_EFFECT_APPLY_AURA);
+    }
 };
 
 float quilenNewY[2] = { 1170.0f, 1240.0f };

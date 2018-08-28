@@ -32,6 +32,7 @@ EndScriptData */
 #include "Vehicle.h"
 #include "MotionMaster.h"
 #include "TemporarySummon.h"
+#include "GameObject.h"
 
 enum GnomeCreatureIds
 {
@@ -319,11 +320,36 @@ public:
     }
 };
 
+struct npc_multi_bot : public ScriptedAI
+{
+    npc_multi_bot(Creature* creature) : ScriptedAI(creature) { }
+
+    void Reset() override
+    {
+        me->GetScheduler().Schedule(2s, [this](TaskContext context)
+        {
+            if (GameObject* gobject = me->FindNearestGameObject(203975, 5))
+            {
+                if (Player* owner = me->GetOwner()->ToPlayer())
+                {
+                    Talk(0);
+                    gobject->SetGoState(GO_STATE_ACTIVE);
+                    me->CastSpell(me, 79424, true);
+                    me->CastSpell(me, 79422, true);
+                }
+            }
+            
+            context.Repeat();
+        });
+    }
+};
+
 void AddSC_zone_gnomeregan()
 {
     new npc_nevin_twistwrench();
     new npc_carvo_blastbolt();
     new npc_sanitron_5000();
     new npc_gnomeregan_torben();
+    RegisterCreatureAI(npc_multi_bot);
 }
 
