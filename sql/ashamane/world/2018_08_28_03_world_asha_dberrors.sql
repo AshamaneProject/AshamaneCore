@@ -16,6 +16,7 @@ DELETE FROM `script_waypoint` WHERE `entry` IN (3849,3850,17238);
 UPDATE `creature_template` SET `lootid`='0' WHERE  `entry`=43341;
 DELETE FROM `creature_formations` WHERE  `memberGUID`=334713;
 DELETE FROM `smart_scripts` WHERE  `entryorguid`=-334923 AND `source_type`=0 AND `id`=0 AND `link`=0;
+UPDATE `creature_template` SET `unit_class`='1' WHERE  `entry`=1000003;
 UPDATE `smart_scripts` SET `action_type`='85', `action_param1`='130805' WHERE  `entryorguid`=1750 AND `source_type`=0 AND `id`=0 AND `link`=0;
 UPDATE `smart_scripts` SET `action_type`='11', `action_param1`='82453' WHERE  `entryorguid`=3679 AND `source_type`=0 AND `id`=0 AND `link`=0;
 UPDATE `smart_scripts` SET `action_type`='11', `action_param1`='42404', `action_param2`='0', `action_param3`='0' WHERE  `entryorguid`=23777 AND `source_type`=0 AND `id`=0 AND `link`=0;
