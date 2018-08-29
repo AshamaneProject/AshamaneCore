@@ -1511,7 +1511,7 @@ class gob_hozen_cage : public GameObjectScript
                 if (player->HasItemCount(74260, 1))
                 {
                     player->KilledMonsterCredit(55201);
-                    player->DestroyItemCount(74260, 1, false);
+                    player->DestroyItemCount(74260, 1, true);
                     go->DestroyForPlayer(player);
                 }
             }
