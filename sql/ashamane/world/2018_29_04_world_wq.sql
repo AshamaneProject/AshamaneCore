@@ -168,7 +168,7 @@ DELETE FROM spell_loot_template WHERE Entry = 263149;
 INSERT INTO spell_loot_template (Entry, reference, Chance, MinCount, MaxCount) VALUES
 (263149, 263149, 100, 1, 1);
 
-DELETE FROM reference_loot_template WHERE Entry = 263148;
+DELETE FROM reference_loot_template WHERE Entry = 263149;
 INSERT INTO reference_loot_template (Entry, Item, Chance, MinCount, MaxCount) VALUES
 (263149, 124124, 30, 1, 1),
 (263149, 139101, 2.5, 1, 1),
@@ -327,7 +327,7 @@ DELETE FROM spell_loot_template WHERE Entry = 263150;
 INSERT INTO spell_loot_template (Entry, reference, Chance, MinCount, MaxCount) VALUES
 (263150, 263150, 100, 1, 1);
 
-DELETE FROM reference_loot_template WHERE Entry = 263148;
+DELETE FROM reference_loot_template WHERE Entry = 263150;
 INSERT INTO reference_loot_template (Entry, Item, Chance, MinCount, MaxCount) VALUES
 (263150, 124124, 29, 1, 1),
 (263150, 134191, 2.1, 1, 1),
@@ -479,7 +479,7 @@ DELETE FROM spell_loot_template WHERE Entry = 263151;
 INSERT INTO spell_loot_template (Entry, reference, Chance, MinCount, MaxCount) VALUES
 (263151, 263151, 100, 1, 1);
 
-DELETE FROM reference_loot_template WHERE Entry = 263148;
+DELETE FROM reference_loot_template WHERE Entry = 263151;
 INSERT INTO reference_loot_template (Entry, Item, Chance, MinCount, MaxCount) VALUES
 (263151, 124124, 29, 1, 1),
 (263151, 134319, 3, 1, 1),
@@ -595,7 +595,7 @@ DELETE FROM spell_loot_template WHERE Entry = 263152;
 INSERT INTO spell_loot_template (Entry, reference, Chance, MinCount, MaxCount) VALUES
 (263152, 263152, 100, 1, 1);
 
-DELETE FROM reference_loot_template WHERE Entry = 263148;
+DELETE FROM reference_loot_template WHERE Entry = 263152;
 INSERT INTO reference_loot_template (Entry, Item, Chance, MinCount, MaxCount) VALUES
 (263152, 124124, 29, 1, 1),
 (263152, 121796, 1.5, 1, 1),
@@ -790,7 +790,7 @@ DELETE FROM spell_loot_template WHERE Entry = 263153;
 INSERT INTO spell_loot_template (Entry, reference, Chance, MinCount, MaxCount) VALUES
 (263153, 263153, 100, 1, 1);
 
-DELETE FROM reference_loot_template WHERE Entry = 263148;
+DELETE FROM reference_loot_template WHERE Entry = 263153;
 INSERT INTO reference_loot_template (Entry, Item, Chance, MinCount, MaxCount) VALUES
 (263153, 124124, 30, 1, 1),
 (263153, 136748, 2.7, 1, 1),
@@ -925,7 +925,7 @@ DELETE FROM spell_loot_template WHERE Entry = 263154;
 INSERT INTO spell_loot_template (Entry, reference, Chance, MinCount, MaxCount) VALUES
 (263154, 263154, 100, 1, 1);
 
-DELETE FROM reference_loot_template WHERE Entry = 263148;
+DELETE FROM reference_loot_template WHERE Entry = 263154;
 INSERT INTO reference_loot_template (Entry, Item, Chance, MinCount, MaxCount) VALUES
 (263154, 124124, 30, 1, 1),
 (263154, 141349, 0.8, 1, 1),
@@ -1326,5 +1326,3 @@ INSERT INTO reference_loot_template (Entry, Item, Chance, MinCount, MaxCount) VA
 
 UPDATE reference_loot_template SET GroupId = 1 WHERE entry BETWEEN 263148 AND 263154;
 UPDATE reference_loot_template SET Chance = 0 WHERE entry BETWEEN 263148 AND 263154 AND item = 124124;
-
-SELECT * FROM reference_loot_template WHERE entry BETWEEN 263148 AND 263154;
