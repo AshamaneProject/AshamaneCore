@@ -864,15 +864,15 @@ void Spell::SelectSpellTargets()
         {
             float speed = m_targets.GetSpeedXY();
             if (speed > 0.0f)
-                m_delayMoment = uint64(std::floor(m_targets.GetDist2d() / speed * 1000.0f));
+                m_delayMoment = uint64(std::floor(m_targets.GetDist2d() / speed * 1000.0f) + (m_spellInfo->LaunchDelay * 1000.0f));
         }
         else if (m_spellInfo->Speed > 0.0f)
         {
             float dist = m_caster->GetDistance(*m_targets.GetDstPos());
             if (!m_spellInfo->HasAttribute(SPELL_ATTR9_SPECIAL_DELAY_CALCULATION))
-                m_delayMoment = uint64(std::floor(dist / m_spellInfo->Speed * 1000.0f));
+                m_delayMoment = uint64(std::floor(dist / m_spellInfo->Speed * 1000.0f) + (m_spellInfo->LaunchDelay * 1000.0f));
             else
-                m_delayMoment = uint64(m_spellInfo->Speed * 1000.0f);
+                m_delayMoment = uint64((m_spellInfo->Speed * 1000.0f) + (m_spellInfo->LaunchDelay * 1000.0f));
         }
     }
 }
@@ -2297,9 +2297,9 @@ void Spell::AddUnitTarget(Unit* target, uint32 effectMask, bool checkIfValid /*=
             dist = 5.0f;
 
         if (!m_spellInfo->HasAttribute(SPELL_ATTR9_SPECIAL_DELAY_CALCULATION))
-            targetInfo.timeDelay = uint64(std::floor(dist / m_spellInfo->Speed * 1000.0f));
+            targetInfo.timeDelay = uint64(std::floor(dist / m_spellInfo->Speed * 1000.0f) + (m_spellInfo->LaunchDelay * 1000.0f));
         else
-            targetInfo.timeDelay = uint64(m_spellInfo->Speed * 1000.0f);
+            targetInfo.timeDelay = uint64((m_spellInfo->Speed * 1000.0f) + (m_spellInfo->LaunchDelay * 1000.0f));
     }
     else
         targetInfo.timeDelay = 0ULL;
@@ -2368,9 +2368,9 @@ void Spell::AddGOTarget(GameObject* go, uint32 effectMask)
             dist = 5.0f;
 
         if (!m_spellInfo->HasAttribute(SPELL_ATTR9_SPECIAL_DELAY_CALCULATION))
-            target.timeDelay = uint64(floor(dist / m_spellInfo->Speed * 1000.0f));
+            target.timeDelay = uint64(floor(dist / m_spellInfo->Speed * 1000.0f) + (m_spellInfo->LaunchDelay * 1000.0f));
         else
-            target.timeDelay = uint64(m_spellInfo->Speed * 1000.0f);
+            target.timeDelay = uint64((m_spellInfo->Speed * 1000.0f) + (m_spellInfo->LaunchDelay * 1000.0f));
 
         if (!m_delayMoment || m_delayMoment > target.timeDelay)
             m_delayMoment = target.timeDelay;
