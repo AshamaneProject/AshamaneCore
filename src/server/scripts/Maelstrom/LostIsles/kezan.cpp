@@ -57,7 +57,7 @@ struct npc_defiant_troll : public ScriptedAI
         auraTimer = 0;
     }
 
-    void MovementInform(uint32 /*type*/, uint32 id) override
+    void MovementInform(uint32 /*type*/, uint32 /*id*/) override
     {
         me->HandleEmoteCommand(EMOTE_STATE_WORK_MINING);
         me->LoadEquipment(3, true);
@@ -317,7 +317,7 @@ struct npc_homies_summon : public ScriptedAI
         }
     }
 
-    void DoAction(int32 action) override
+    void DoAction(int32 /*action*/) override
     {
         if (me->IsSummon())
         {
@@ -656,7 +656,7 @@ struct npc_first_bank_of_kezan_vault : public ScriptedAI
         });
     }
 
-    void SpellHit(Unit* caster, const SpellInfo* spell) override
+    void SpellHit(Unit* /*caster*/, const SpellInfo* spell) override
     {
         if (spell->Id == SPELL_TIMER)
             return;
@@ -1140,7 +1140,7 @@ struct npc_end_hot_rod : public ScriptedAI
         if (type != WAYPOINT_MOTION_TYPE)
             return;
 
-        switch(id)
+        switch (id)
         {
             case 4:
                 SassyTalk(0);
