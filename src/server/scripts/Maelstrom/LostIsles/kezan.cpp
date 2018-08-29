@@ -54,7 +54,6 @@ struct npc_defiant_troll : public ScriptedAI
     void Reset() override
     {
         rebuffTimer = 5000;
-        auraTimer = 0;
     }
 
     void MovementInform(uint32 /*type*/, uint32 /*id*/) override
@@ -115,8 +114,6 @@ struct npc_defiant_troll : public ScriptedAI
 
 private:
     uint32 rebuffTimer;
-    uint32 auraTimer;
-    bool work;
 };
 
 enum QuestRollingMyHomies
