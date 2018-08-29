@@ -64,6 +64,12 @@ Player* npc_escortAI::GetPlayerForEscort()
     return ObjectAccessor::GetPlayer(*me, m_uiPlayerGUID);
 }
 
+void npc_escortAI::TalkToEscortPlayer(uint8 id)
+{
+    if (Player* player = GetPlayerForEscort())
+        Talk(id, player);
+}
+
 //see followerAI
 bool npc_escortAI::AssistPlayerInCombatAgainst(Unit* who)
 {

@@ -85,6 +85,7 @@ struct TC_GAME_API npc_escortAI : public ScriptedAI
 
     protected:
         Player* GetPlayerForEscort();
+        void TalkToEscortPlayer(uint8 id);
 
     private:
         bool AssistPlayerInCombatAgainst(Unit* who);
