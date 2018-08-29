@@ -4168,7 +4168,14 @@ void Unit::RemoveAurasOnEvade()
 
     // don't remove vehicle auras, passengers aren't supposed to drop off the vehicle
     // don't remove clone caster on evade (to be verified)
-    RemoveAllAurasExceptType(SPELL_AURA_CONTROL_VEHICLE, SPELL_AURA_CLONE_CASTER);
+    // don't remove positive auras with SPELL_ATTR3_DEATH_PERSISTENT
+    RemoveAppliedAuras([](AuraApplication const* aurApp)
+    {
+        Aura const* aura = aurApp->GetBase();
+        return aura->GetType() != SPELL_AURA_CONTROL_VEHICLE
+            && aura->GetType() != SPELL_AURA_CLONE_CASTER
+            && (!aurApp->IsPositive() || !aura->GetSpellInfo()->HasAttribute(SPELL_ATTR3_DEATH_PERSISTENT));
+    });
 }
 
 void Unit::RemoveAllAurasOnDeath()
