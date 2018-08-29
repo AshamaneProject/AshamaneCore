@@ -995,7 +995,7 @@ struct npc_boucanier_gob : public ScriptedAI
         {
             player->CastSpell(player, SPELL_GENERIC_INVISIBILITY_DETECTION_4, true);
             me->CastSpell(nullptr, SPELL_DESPAWN_SHARKS, true);
-            me->GetScheduler().Schedule(1s, [this, player](TaskContext /*context*/)
+            me->GetScheduler().Schedule(1s, [this](TaskContext /*context*/)
             {
                 me->DespawnOrUnsummon();
             });
