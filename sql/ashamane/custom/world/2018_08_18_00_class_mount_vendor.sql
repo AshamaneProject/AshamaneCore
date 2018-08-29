@@ -5,7 +5,7 @@ INSERT INTO creature_template (entry, modelid1, NAME, subname, minlevel, maxleve
 DELETE FROM `npc_trainer` WHERE `ID` = 1000002;
 INSERT INTO `npc_trainer` (`ID`, `SpellID`, `MoneyCost`, `ReqSkillLine`, `ReqSkillRank`, `ReqLevel`, `Index`) VALUES
 (1000002,229387,10000000,0,0,110,0),
-(1000002,241856,10000000,0,0,110,0),
+(1000002,229417,10000000,0,0,110,0),
 (1000002,229376,10000000,0,0,110,0),
 (1000002,231437,10000000,0,0,110,0),
 (1000002,229385,10000000,0,0,110,0),
