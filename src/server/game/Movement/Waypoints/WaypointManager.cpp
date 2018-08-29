@@ -26,6 +26,7 @@ WaypointMgr::WaypointMgr() { }
 
 void WaypointMgr::Load()
 {
+    _waypointStore.clear();
     uint32 oldMSTime = getMSTime();
 
     //                                                0    1         2           3          4            5           6        7      8           9
