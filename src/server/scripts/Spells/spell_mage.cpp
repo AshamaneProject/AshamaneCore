@@ -787,6 +787,9 @@ class spell_mage_blazing_barrier : public AuraScript
         if (!caster || !target || caster == target)
             return;
 
+        if (target->HasAura(GetId()))
+            return;
+
         caster->CastSpell(target, SPELL_BLAZING_BARRIER_TRIGGER, true);
     }
 
