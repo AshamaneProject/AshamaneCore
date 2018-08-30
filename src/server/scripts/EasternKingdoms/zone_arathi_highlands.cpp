@@ -177,5 +177,5 @@ class spell_summon_myzrael : public SpellScript
 void AddSC_arathi_highlands()
 {
     RegisterCreatureAI(npc_professor_phizzlethorpe);
-    RegisterSpellScript(npc_myzrael_bunny);
+    RegisterSpellScript(spell_summon_myzrael);
 }
