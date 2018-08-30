@@ -127,8 +127,42 @@ struct questnpc_soul_gem : public ScriptedAI
     }
 };
 
+enum eManaDrainedWhelpling
+{
+    NPC_AZUREWING_WHELPLING = 90336
+};
+
+// 90167
+struct questnpc_mana_drained_whelpling : public ScriptedAI
+{
+    questnpc_mana_drained_whelpling(Creature* creature) : ScriptedAI(creature) { }
+
+    void OnSpellClick(Unit* /*clicker*/, bool& /*result*/) override
+    {
+        me->GetScheduler().Schedule(1s, [this](TaskContext context)
+        {
+            Creature* crea = GetContextCreature();
+            crea->UpdateEntry(NPC_AZUREWING_WHELPLING);
+            crea->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+            crea->SetByteValue(UNIT_FIELD_BYTES_1, UNIT_BYTES_1_OFFSET_STAND_STATE, 0);
+        });
+
+        me->GetScheduler().Schedule(3s, [this](TaskContext context)
+        {
+            GetContextCreature()->SetCanFly(true);
+            GetContextCreature()->GetMotionMaster()->MoveTakeoff(0, Position(1162.338135f, 6816.301270f, 236.106567f));
+        });
+
+        me->GetScheduler().Schedule(10s, [this](TaskContext context)
+        {
+            GetContextCreature()->DisappearAndDie();
+        });
+    }
+};
+
 void AddSC_azsuna()
 {
     new scene_azsuna_runes();
     RegisterCreatureAI(questnpc_soul_gem);
+    RegisterCreatureAI(questnpc_mana_drained_whelpling);
 }
