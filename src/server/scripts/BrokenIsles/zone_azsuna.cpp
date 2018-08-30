@@ -139,7 +139,7 @@ struct questnpc_mana_drained_whelpling : public ScriptedAI
 
     void OnSpellClick(Unit* /*clicker*/, bool& /*result*/) override
     {
-        me->GetScheduler().Schedule(1s, [this](TaskContext context)
+        me->GetScheduler().Schedule(1s, [](TaskContext context)
         {
             Creature* crea = GetContextCreature();
             crea->UpdateEntry(NPC_AZUREWING_WHELPLING);
@@ -147,13 +147,13 @@ struct questnpc_mana_drained_whelpling : public ScriptedAI
             crea->SetByteValue(UNIT_FIELD_BYTES_1, UNIT_BYTES_1_OFFSET_STAND_STATE, 0);
         });
 
-        me->GetScheduler().Schedule(3s, [this](TaskContext context)
+        me->GetScheduler().Schedule(3s, [](TaskContext context)
         {
             GetContextCreature()->SetCanFly(true);
             GetContextCreature()->GetMotionMaster()->MoveTakeoff(0, Position(1162.338135f, 6816.301270f, 236.106567f));
         });
 
-        me->GetScheduler().Schedule(10s, [this](TaskContext context)
+        me->GetScheduler().Schedule(10s, [](TaskContext context)
         {
             GetContextCreature()->DisappearAndDie();
         });
