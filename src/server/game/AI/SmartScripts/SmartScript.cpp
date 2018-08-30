@@ -2635,7 +2635,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             if (targets)
                 for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
                     if (IsUnit(*itr))
-					{
+                    {
                         switch (e.action.playSpellVisual.variations)
                         {
                             case 0:
@@ -2645,7 +2645,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
                                 me->SendPlaySpellVisual((*itr)->GetGUID(), e.action.playSpellVisual.playVisualId, (float)e.action.playSpellVisual.travelSpeed);
                                 break;
                             case 2:
-								(*itr)->ToUnit()->SendPlaySpellVisual(me->GetGUID(), e.action.playSpellVisual.playVisualId, (float)e.action.playSpellVisual.travelSpeed);
+                                (*itr)->ToUnit()->SendPlaySpellVisual(me->GetGUID(), e.action.playSpellVisual.playVisualId, (float)e.action.playSpellVisual.travelSpeed);
                                 break;
                             case 3:
                                 (*itr)->ToUnit()->SendPlaySpellVisual((*itr)->GetGUID(), e.action.playSpellVisual.playVisualId);
@@ -2654,11 +2654,11 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
                                 me->SendPlaySpellVisual((*itr)->GetGUID(), e.action.playSpellVisual.playVisualId);
                                 break;
                             case 5:
-								(*itr)->ToUnit()->SendPlaySpellVisual(me->GetGUID(), e.action.playSpellVisual.playVisualId);
+                                (*itr)->ToUnit()->SendPlaySpellVisual(me->GetGUID(), e.action.playSpellVisual.playVisualId);
                                 break;
                         }
-					}
-					
+                    }
+                    
             delete targets;
             break;
         }
@@ -2669,8 +2669,8 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             if (targets)
                 for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
                     if (IsUnit(*itr))
-					{
-					    switch (e.action.playOrphanSpellVisual.variations)
+                    {
+                        switch (e.action.playOrphanSpellVisual.variations)
                         {
                             case 0:
                                 (*itr)->ToUnit()->SendPlayOrphanSpellVisual((*itr)->GetGUID(), e.action.playOrphanSpellVisual.playOrphanVisualId, (float)e.action.playOrphanSpellVisual.travelSpeed);
@@ -2679,10 +2679,10 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
                                 me->SendPlayOrphanSpellVisual((*itr)->GetGUID(), e.action.playOrphanSpellVisual.playOrphanVisualId, (float)e.action.playOrphanSpellVisual.travelSpeed);
                                 break;
                             case 2:
-								(*itr)->ToUnit()->SendPlayOrphanSpellVisual(me->GetGUID(), e.action.playOrphanSpellVisual.playOrphanVisualId, (float)e.action.playOrphanSpellVisual.travelSpeed);
+                                (*itr)->ToUnit()->SendPlayOrphanSpellVisual(me->GetGUID(), e.action.playOrphanSpellVisual.playOrphanVisualId, (float)e.action.playOrphanSpellVisual.travelSpeed);
                                 break;
                         }
-					}
+                    }
 
             delete targets;
             break;
@@ -2721,7 +2721,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
                     if (!IsUnit(*itr))
                         continue;
 
-                    me->GetMotionMaster()->MoveCirclePath((*itr)->ToUnit()->GetPositionX(), (*itr)->ToUnit()->GetPositionY(), (*itr)->ToUnit()->GetPositionZ(), (float)e.action.moveCirclePath.radius, e.action.moveCirclePath.clockWise, uint8(e.action.moveCirclePath.stepCount));						
+                    me->GetMotionMaster()->MoveCirclePath((*itr)->ToUnit()->GetPositionX(), (*itr)->ToUnit()->GetPositionY(), (*itr)->ToUnit()->GetPositionZ(), (float)e.action.moveCirclePath.radius, e.action.moveCirclePath.clockWise, uint8(e.action.moveCirclePath.stepCount));                        
                 }
 
                 delete targets;
@@ -2732,7 +2732,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         case SMART_ACTION_SET_OVERRIDE_ZONE_LIGHT:
         {
             if (me)
-			    me->GetMap()->SetZoneOverrideLight(e.action.setOverrideZoneLight.zoneId, e.action.setOverrideZoneLight.lightId, e.action.setOverrideZoneLight.fadeTime);
+                me->GetMap()->SetZoneOverrideLight(e.action.setOverrideZoneLight.zoneId, e.action.setOverrideZoneLight.lightId, e.action.setOverrideZoneLight.fadeTime);
             break;
         }
         case SMART_ACTION_START_CONVERSATION:
@@ -2805,10 +2805,10 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         case SMART_ACTION_SET_OVERRIDE_ZONE_MUSIC:
         {
             if (me)
-			    me->GetMap()->SetZoneMusic(e.action.setOverrideZoneMusic.zoneId, e.action.setOverrideZoneMusic.musicId);
+                me->GetMap()->SetZoneMusic(e.action.setOverrideZoneMusic.zoneId, e.action.setOverrideZoneMusic.musicId);
             break;
         }
-		case SMART_ACTION_SET_POWER_TYPE:
+        case SMART_ACTION_SET_POWER_TYPE:
         {
             ObjectList* targets = GetTargets(e, unit);
 
@@ -2820,7 +2820,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             delete targets;
             break;
         }
-		case SMART_ACTION_SET_MAX_POWER:
+        case SMART_ACTION_SET_MAX_POWER:
         {
             ObjectList* targets = GetTargets(e, unit);
 
@@ -2832,7 +2832,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             delete targets;
             break;
         }
-		case SMART_ACTION_ADD_FLYING_MOVEMENT_FLAG:
+        case SMART_ACTION_ADD_FLYING_MOVEMENT_FLAG:
         {
             ObjectList* targets = GetTargets(e, unit);
 
@@ -2857,7 +2857,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             delete targets;
             break;
         }
-		case SMART_ACTION_REMOVE_FLYING_MOVEMENT_FLAG:
+        case SMART_ACTION_REMOVE_FLYING_MOVEMENT_FLAG:
         {
             ObjectList* targets = GetTargets(e, unit);
 
@@ -2880,6 +2880,35 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
                 }
 
             delete targets;
+            break;
+        }
+        case SMART_ACTION_CAST_SPELL_OFFSET:
+        {
+            if (ObjectList* targets = GetTargets(e, unit))
+            {
+                for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
+                {
+                    if (!IsUnit(*itr))
+                        continue;
+
+                    Position pos = (*itr)->GetPosition();
+
+                    // Use forward/backward/left/right cartesian plane movement
+                    float x, y, z, o;
+                    o = pos.GetOrientation();
+                    x = pos.GetPositionX() + (std::cos(o - (M_PI / 2))*e.target.x) + (std::cos(o)*e.target.y);
+                    y = pos.GetPositionY() + (std::sin(o - (M_PI / 2))*e.target.x) + (std::sin(o)*e.target.y);
+                    z = pos.GetPositionZ() + e.target.z;
+                    
+                    if (e.action.castOffSet.triggered)
+                       (*itr)->ToUnit()->CastSpell(x, y, z, e.action.castOffSet.spellId, true);
+                   else
+                       (*itr)->ToUnit()->CastSpell(x, y, z, e.action.castOffSet.spellId, false);
+                }
+
+                delete targets;
+            }
+
             break;
         }
         default:

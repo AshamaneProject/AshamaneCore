@@ -580,10 +580,11 @@ enum SMART_ACTION
     SMART_ACTION_SET_SPEED                          = 208,    // speedType, speed
     SMART_ACTION_IGNORE_PATHFINDING                 = 209,    // 0/1 (1 = ignored, 0 = enabled)
     SMART_ACTION_SET_OVERRIDE_ZONE_MUSIC            = 210,    // zone Id, music Id.
-	SMART_ACTION_SET_POWER_TYPE                     = 211,    // Power Type. See enum in Unit.h
-	SMART_ACTION_SET_MAX_POWER                      = 212,    // Power Type, value
-	SMART_ACTION_ADD_FLYING_MOVEMENT_FLAG           = 213,    // Variation
+    SMART_ACTION_SET_POWER_TYPE                     = 211,    // Power Type. See enum in Unit.h
+    SMART_ACTION_SET_MAX_POWER                      = 212,    // Power Type, value
+    SMART_ACTION_ADD_FLYING_MOVEMENT_FLAG           = 213,    // Variation
     SMART_ACTION_REMOVE_FLYING_MOVEMENT_FLAG        = 214,    // Variation
+    SMART_ACTION_CAST_SPELL_OFFSET                  = 215,    // SpellId, triggered if value = 1.
 
     SMART_ACTION_END
 };
@@ -1126,7 +1127,7 @@ struct SmartAction
         {
             uint32 visualId;
             uint32 visualType;
-	        uint32 visualDuration;
+            uint32 visualDuration;
         } spellVisualKit;
         
         struct
@@ -1153,14 +1154,14 @@ struct SmartAction
         {
             uint32 radius;
             uint32 clockWise;
-			uint32 stepCount;
+            uint32 stepCount;
         } moveCirclePath;
         
         struct
         {
             uint32 zoneId;
             uint32 lightId;
-			uint32 fadeTime;
+            uint32 fadeTime;
         } setOverrideZoneLight;
 
         struct {
@@ -1186,16 +1187,22 @@ struct SmartAction
             uint32 zoneId;
             uint32 musicId;
         } setOverrideZoneMusic;
-		
-		struct
+        
+        struct
         {
             uint32 powerType;
         } powerType;
-		
-		struct
+        
+        struct
         {
             uint32 variationMovementFlags;
         } SetMovementFlags;
+        
+        struct
+        {
+            uint32 spellId;
+            uint32 triggered;
+        } castOffSet;
         //! Note for any new future actions
         //! All parameters must have type uint32
 

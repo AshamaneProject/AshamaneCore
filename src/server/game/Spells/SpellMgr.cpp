@@ -3621,11 +3621,19 @@ void SpellMgr::LoadSpellInfoCorrections()
     {
         spellInfo->AuraInterruptFlags[AuraInterruptFlagIndex<SpellAuraInterruptFlags>::value] &= ~CHANNEL_FLAG_DELAY;
     });
-	
-	    // Void Suppression
+
+    // Void Suppression
     ApplySpellFix({ 260888 }, [](SpellInfo* spellInfo)
     {
         const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_1))->Effect = 0;
+    });
+
+    // Horde / Alliance
+    ApplySpellFix({ 195838, 195843 }, [](SpellInfo* spellInfo)
+    {
+        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->Effect = SPELL_EFFECT_APPLY_AURA;
+        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_1))->Effect = SPELL_EFFECT_APPLY_AURA;
+        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_2))->Effect = SPELL_EFFECT_APPLY_AURA;
     });
 
     SpellInfo* spellInfo = NULL;

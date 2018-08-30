@@ -355,13 +355,13 @@ public:
 ## npc_sully_kneecapper // npc_trog_drakeflayer
 ####*/
 
-enum SpecialSpells
+enum SullySpells
 {
     SPELL_CHARGE             = 88288,
     SPELL_UPPERCUT           = 80182
 };
 
-enum SpecialEvents
+enum SullyEvents
 {
     EVENT_S_CHARGE           = 1,
     EVENT_UPPERCUT,

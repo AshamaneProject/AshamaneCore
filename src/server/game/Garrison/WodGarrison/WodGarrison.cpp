@@ -192,7 +192,11 @@ void WodGarrison::TeleportOwnerAndPlayMovie() const
         }
     };
 
-    _owner->AddMovieDelayedTeleport(_siteLevel->UpgradeMovieID, _siteLevel->MapID, WodGarrisonEntrancePositions[GetFaction()][_siteLevel->GarrLevel - 1]);
+    _owner->AddMovieDelayedAction(_siteLevel->UpgradeMovieID, [this, WodGarrisonEntrancePositions]
+    {
+        _owner->TeleportTo(_siteLevel->MapID, WodGarrisonEntrancePositions[GetFaction()][_siteLevel->GarrLevel - 1]);
+    });
+
     _owner->SendMovieStart(_siteLevel->UpgradeMovieID);
 }
 

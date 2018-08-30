@@ -555,8 +555,8 @@ pAuraEffectHandler AuraEffectHandler[TOTAL_AURAS]=
     &AuraEffect::HandleNULL,                                      //486
     &AuraEffect::HandleNULL,                                      //487
     &AuraEffect::HandleNULL,                                      //488
-    &AuraEffect::HandleNULL,                                      //489
-    &AuraEffect::HandleNULL,                                      //490
+    &AuraEffect::HandleNULL,                                      //489 SPELL_AURA_FORGET_LANGUAGE
+    &AuraEffect::HandleSwitchTeam,                                //490 SPELL_AURA_SWITCH_TEAM
     &AuraEffect::HandleNoImmediateEffect,                         //491 SPELL_AURA_MOD_HONOR_GAIN_PCT_2 implemented in Player::RewardHonor
 };
 
@@ -6501,7 +6501,6 @@ void AuraEffect::HandleLinkedSummon(AuraApplication const* aurApp, uint8 mode, b
     }
 }
 
-
 void AuraEffect::HandleModMovementforcesSpeedPercent(AuraApplication const* aurApp, uint8 mode, bool apply) const
 {
     if (!(mode & AURA_EFFECT_HANDLE_CHANGE_AMOUNT_MASK))
@@ -6514,4 +6513,15 @@ void AuraEffect::HandleModMovementforcesSpeedPercent(AuraApplication const* aurA
             ApplyPercentModFloatVar(forces.second.Magnitude, GetAmount(), apply);
 
     target->ReApplyAllMovementForces();
+}
+
+void AuraEffect::HandleSwitchTeam(AuraApplication const* aurApp, uint8 mode, bool apply) const
+{
+    if (!(mode & AURA_EFFECT_HANDLE_REAL))
+        return;
+
+    Unit* target = aurApp->GetTarget();
+
+    if (Player* player = target->ToPlayer())
+        player->SwitchToOppositeTeam(apply);
 }

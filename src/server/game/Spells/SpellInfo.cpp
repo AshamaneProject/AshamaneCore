@@ -1033,6 +1033,7 @@ SpellInfo::SpellInfo(SpellInfoLoadHelper const& data, SpellEffectEntryMap const&
     RangeIndex = _misc ? _misc->RangeIndex : 0;
     RangeEntry = _misc ? (_misc->RangeIndex ? sSpellRangeStore.LookupEntry(_misc->RangeIndex) : NULL) : NULL;
     Speed = _misc ? _misc->Speed : 0;
+    LaunchDelay = _misc ? _misc->LaunchDelay : 0;
     SchoolMask = _misc ? _misc->SchoolMask : 0;
     AttributesCu = 0;
     IconFileDataId = _misc ? _misc->SpellIconFileDataID : 0;

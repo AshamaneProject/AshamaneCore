@@ -670,20 +670,16 @@ void WorldSession::HandleCompleteMovie(WorldPackets::Misc::CompleteMovie& /*pack
     if (!movie)
         return;
 
-    auto itr = std::find_if(_player->MovieDelayedTeleports.begin(), _player->MovieDelayedTeleports.end(), [movie](const Player::MovieDelayedTeleport & elem) -> bool
+    auto itr = std::find_if(_player->MovieDelayedActions.begin(), _player->MovieDelayedActions.end(), [movie](const std::pair<uint32, std::function<void()>>& elem) -> bool
     {
-        return elem.movieId == movie;
+        return elem.first == movie;
     });
 
-    if (itr != _player->MovieDelayedTeleports.end())
+    if (itr != _player->MovieDelayedActions.end())
     {
-        Player::MovieDelayedTeleport delayedTeleportData = *itr;
-        _player->MovieDelayedTeleports.erase(itr);
-
-        if (delayedTeleportData.loc.GetMapId() == _player->GetMapId())
-            _player->NearTeleportTo(delayedTeleportData.loc, false);
-        else
-            _player->TeleportTo(delayedTeleportData.loc);
+        (*itr).second();
+        (*itr).second = nullptr;
+        _player->MovieDelayedActions.erase(itr);
     }
 
     _player->SetMovie(0);

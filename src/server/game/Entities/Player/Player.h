@@ -2020,10 +2020,15 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         static uint32 TeamForRace(uint8 race);
         static TeamId TeamIdForRace(uint8 race);
         uint32 GetTeam() const { return m_team; }
+        void SwitchToOppositeTeam(bool apply);
+        uint32 GetBgQueueTeam() const;
         bool IsInAlliance() const { return m_team == ALLIANCE; }
         bool IsInHorde() const { return m_team == HORDE; }
         TeamId GetTeamId() const { return m_team == ALLIANCE ? TEAM_ALLIANCE : TEAM_HORDE; }
         void setFactionForRace(uint8 race);
+
+        uint32 GetNativeTeam() const { return TeamForRace(getRace()); }
+        TeamId GetNativeTeamId() const { return TeamIdForRace(getRace()); }
 
         void InitDisplayIds();
 
@@ -2499,26 +2504,10 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         SceneMgr const& GetSceneMgr() const { return m_sceneMgr; }
         RestMgr& GetRestMgr() const { return *_restMgr; }
 
-        struct MovieDelayedTeleport
+        std::vector<std::pair<uint32, std::function<void()>>> MovieDelayedActions;
+        void AddMovieDelayedAction(uint32 movieId, std::function<void()> && function)
         {
-            uint32 movieId;
-            WorldLocation loc;
-        };
-
-        std::vector<MovieDelayedTeleport> MovieDelayedTeleports;
-
-        void AddMovieDelayedTeleport(uint32 movieId, uint32 mapID, float x, float y, float z, float o)
-        {
-            MovieDelayedTeleport data;
-            data.movieId = movieId;
-            data.loc = WorldLocation(mapID);
-            data.loc.Relocate(x, y, z, o);
-
-            MovieDelayedTeleports.push_back(data);
-        }
-        void AddMovieDelayedTeleport(uint32 movieId, uint32 mapID, Position pos)
-        {
-            AddMovieDelayedTeleport(movieId, mapID, pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ(), pos.GetOrientation());
+            MovieDelayedActions.push_back(std::pair<uint32, std::function<void()>>(movieId, function));
         }
 
         void SendPlayerChoice(ObjectGuid sender, int32 choiceId);

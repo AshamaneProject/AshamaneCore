@@ -207,7 +207,10 @@ class npc_archmage_khadgar_gossip : public CreatureScript
 
             if (player->GetQuestStatus(QuestStartDraenor) == QUEST_STATUS_INCOMPLETE)
             {
-                player->AddMovieDelayedTeleport(199, 1265, 4066.7370f, -2381.9917f, 94.858f, 2.90f);
+                player->AddMovieDelayedAction(199, [player]
+                {
+                    player->TeleportTo(1265, 4066.7370f, -2381.9917f, 94.858f, 2.90f);
+                });
                 player->SendMovieStart(199);
                 player->KilledMonsterCredit(78419);
                 return true;
