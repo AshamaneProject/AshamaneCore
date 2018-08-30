@@ -6331,4 +6331,10 @@ enum Maps : uint32
     MAP_DALARAN_UNDERBELLY      = 1502,
 };
 
+enum SpecialSpells : uint32
+{
+    SPELL_MERCENARY_CONTRACT_HORDE      = 193472,
+    SPELL_MERCENARY_CONTRACT_ALLIANCE   = 193475,
+};
+
 #endif

@@ -565,8 +565,8 @@ enum AuraType : uint32
     SPELL_AURA_486                                          = 486,
     SPELL_AURA_487                                          = 487,  // Not used in 7.3.5
     SPELL_AURA_488                                          = 488,
-    SPELL_AURA_489                                          = 489,
-    SPELL_AURA_490                                          = 490,
+    SPELL_AURA_FORGET_LANGUAGE                              = 489,
+    SPELL_AURA_SWITCH_TEAM                                  = 490,
     SPELL_AURA_MOD_HONOR_GAIN_PCT_2                         = 491,
     TOTAL_AURAS                                             = 492
 };
