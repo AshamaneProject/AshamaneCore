@@ -2311,8 +2311,7 @@ INSERT INTO `creature_template_addon`
  VALUES
 (2755, 0, 0, 0, 1, 0, 0, 0, 0, ''); 
 
--- set bunny for summoning as spell not able to be made to work
-UPDATE `creature_template`
-SET `ScriptName` = 'npc_myzrael_bunny',
-`flags_extra` = 0
-WHERE `entry` = 24230;
+UPDATE gameobject SET spawntimesecs = 120 WHERE guid = 36786;
+DELETE FROM spell_script_names WHERE scriptname = "spell_summon_myzrael";
+INSERT INTO spell_script_names VALUES
+(4141, "spell_summon_myzrael");
