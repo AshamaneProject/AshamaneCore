@@ -1229,72 +1229,8 @@ void CommandArgs::Initialize(std::initializer_list<CommandArgsType> argsType)
         }
 
         std::vector<std::string> argsVector;
-
-        std::ostringstream arg;
-        uint32 argsLength = strlen(_charArgs);
-
-        for (size_t i = 0; i < argsLength; i++)
-        {
-            char c = _charArgs[i];
-            if (c == ' ')
-            {
-                argsVector.push_back(arg.str());
-                arg.str("");
-                arg.clear();
-            }
-            else if (c == '\"')
-            {
-                ++i;
-                while (i < argsLength && _charArgs[i] != '\"')
-                    arg << _charArgs[i++];
-            }
-            else if (c == '|')
-            {
-                while (i < argsLength && (i <= 1 || _charArgs[i - 1] != '|' || _charArgs[i] != 'r'))
-                    arg << _charArgs[i++];
-
-                arg << 'r';
-            }
-            else
-                arg << _charArgs[i];
-        }
-
-        if (arg.str().size() != 0)
-            argsVector.push_back(arg.str());
-
-        uint8 argsVectorSize = argsVector.size();
-        uint8 argsTypeVectorSize = argsTypeVector.size();
-
-        // Check if any parameter is optionnal
-        if (argsVectorSize != argsTypeVectorSize)
-        {
-            if (argsVectorSize > argsTypeVectorSize)
-                throw std::invalid_argument("");
-
-            uint8 optionalCount = uint8(std::count_if(argsTypeVector.begin(), argsTypeVector.end(), [](CommandArgsType const& type)
-            {
-                return type > ARG_OPTIONAL_BEGIN;
-            }));
-
-            int8 argsDiff = argsTypeVectorSize - argsVectorSize;
-
-            if (optionalCount < argsDiff)
-                throw std::invalid_argument("");
-
-            for (uint8 i = argsTypeVectorSize; i != 0; --i)
-            {
-                auto itr = argsTypeVector.begin();
-                std::advance(itr, i - 1);
-
-                if (*itr > ARG_OPTIONAL_BEGIN)
-                {
-                    argsTypeVector.erase(itr);
-
-                    if (--argsDiff <= 0)
-                        break;
-                }
-            }
-        }
+        InitializeArgsVector(argsVector);
+        CheckOptionalArgs(argsTypeVector, argsVector.size());
 
         // Finally, we cast all our args to their types
         for (uint8 i = 0; i < argsTypeVector.size(); ++i)
@@ -1331,6 +1267,8 @@ void CommandArgs::Initialize(std::initializer_list<CommandArgsType> argsType)
                     _args.push_back(result);
                     break;
                 }
+                case ARG_OPTIONAL_BEGIN:
+                    ASSERT(false, "Cannot use ARG_OPTIONAL_BEGIN as arg type");
                 default:
                     break;
             }
@@ -1342,5 +1280,79 @@ void CommandArgs::Initialize(std::initializer_list<CommandArgsType> argsType)
     catch (std::exception e)
     {
         _validArgs = false;
+    }
+}
+
+// Split args by spaces, expect for quoted args
+void CommandArgs::InitializeArgsVector(std::vector<std::string>& argsVector)
+{
+    std::ostringstream arg;
+    uint32 argsLength = strlen(_charArgs);
+
+    for (size_t i = 0; i < argsLength; i++)
+    {
+        char c = _charArgs[i];
+        if (c == ' ')
+        {
+            argsVector.push_back(arg.str());
+            arg.str("");
+            arg.clear();
+        }
+        else if (c == '\"')
+        {
+            ++i;
+            while (i < argsLength && _charArgs[i] != '\"')
+                arg << _charArgs[i++];
+        }
+        else if (c == '|')
+        {
+            while (i < argsLength && (i <= 1 || _charArgs[i - 1] != '|' || _charArgs[i] != 'r'))
+                arg << _charArgs[i++];
+
+            arg << 'r';
+        }
+        else
+            arg << _charArgs[i];
+    }
+
+    if (arg.str().size() != 0)
+        argsVector.push_back(arg.str());
+}
+
+// If we have less parameter than expected, check if any of them is optional
+// and reduce argsTypeVector accordingly
+void CommandArgs::CheckOptionalArgs(std::vector<CommandArgsType>& argsTypeVector, uint8 argsVectorSize)
+{
+    uint8 argsTypeVectorSize = argsTypeVector.size();
+
+    // Check if any parameter is optionnal
+    if (argsVectorSize == argsTypeVectorSize)
+        return;
+
+    if (argsVectorSize > argsTypeVectorSize)
+        throw std::invalid_argument("");
+
+    uint8 optionalCount = uint8(std::count_if(argsTypeVector.begin(), argsTypeVector.end(), [](CommandArgsType const& type)
+    {
+        return type > ARG_OPTIONAL_BEGIN;
+    }));
+
+    int8 argsDiff = argsTypeVectorSize - argsVectorSize;
+
+    if (optionalCount < argsDiff)
+        throw std::invalid_argument("");
+
+    for (uint8 i = argsTypeVectorSize; i != 0; --i)
+    {
+        auto itr = argsTypeVector.begin();
+        std::advance(itr, i - 1);
+
+        if (*itr > ARG_OPTIONAL_BEGIN)
+        {
+            argsTypeVector.erase(itr);
+
+            if (--argsDiff <= 0)
+                break;
+        }
     }
 }
