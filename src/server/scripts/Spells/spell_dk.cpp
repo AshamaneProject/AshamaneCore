@@ -1285,7 +1285,7 @@ class spell_dk_howling_blast_aoe : public SpellScript
         tar = GetOrigUnitTargetGUID();
     }
 
-    void HandleOnHit(SpellEffIndex effIndex)
+    void HandleOnHit(SpellEffIndex /*effIndex*/)
     {
         if (Unit* target = GetHitUnit())
             if (target->GetGUID() == tar)
