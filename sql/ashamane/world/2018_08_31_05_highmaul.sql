@@ -408,6 +408,8 @@ INSERT INTO `npc_text` (`ID`, `Probability0`, `Probability1`, `Probability2`, `P
 UPDATE `gameobject` SET `spawntimesecs` = -7200 WHERE `guid` IN (1530127, 19801444); 
 UPDATE `creature_template` SET `gossip_menu_id` = 16899 WHERE `entry` = 84971; 
 
+UPDATE `gossip_menu_option` SET `OptionType` = '1' , `OptionNpcFlag` = '1' WHERE `MenuId` = '16899' AND `OptionIndex` = '0';
+
 UPDATE creature_template SET lootid = 77428 WHERE entry = 77428 AND lootid = 0;
 DELETE FROM `creature_loot_template` WHERE `entry` = '77428';
 INSERT INTO `creature_loot_template` (`entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES

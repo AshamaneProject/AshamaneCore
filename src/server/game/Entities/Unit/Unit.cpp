@@ -13222,7 +13222,7 @@ void Unit::NearTeleportTo(Position const& pos, bool casting /*= false*/)
     }
 }
 
-void Unit::NearTeleportTo(uint32 worldSafeLocId, bool casting = false)
+void Unit::NearTeleportTo(uint32 worldSafeLocId, bool casting /*= false*/)
 {
     WorldSafeLocsEntry const* safeLoc = sWorldSafeLocsStore.LookupEntry(worldSafeLocId);
     if (safeLoc == nullptr)
