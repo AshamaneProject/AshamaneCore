@@ -1,4 +1,4 @@
-GRANT USAGE ON * . * TO 'trinity'@'localhost' IDENTIFIED BY 'trinity' WITH MAX_QUERIES_PER_HOUR 0 MAX_CONNECTIONS_PER_HOUR 0 MAX_UPDATES_PER_HOUR 0 ;
+GRANT USAGE ON * . * TO 'ashamane'@'localhost' IDENTIFIED BY 'ashamane' WITH MAX_QUERIES_PER_HOUR 0 MAX_CONNECTIONS_PER_HOUR 0 MAX_UPDATES_PER_HOUR 0 ;
 
 CREATE DATABASE `world` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 
@@ -8,10 +8,10 @@ CREATE DATABASE `auth` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE DATABASE `hotfixes` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 
-GRANT ALL PRIVILEGES ON `world` . * TO 'trinity'@'localhost' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON `world` . * TO 'ashamane'@'localhost' WITH GRANT OPTION;
 
-GRANT ALL PRIVILEGES ON `characters` . * TO 'trinity'@'localhost' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON `characters` . * TO 'ashamane'@'localhost' WITH GRANT OPTION;
 
-GRANT ALL PRIVILEGES ON `auth` . * TO 'trinity'@'localhost' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON `auth` . * TO 'ashamane'@'localhost' WITH GRANT OPTION;
 
-GRANT ALL PRIVILEGES ON `hotfixes` . * TO 'trinity'@'localhost' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON `hotfixes` . * TO 'ashamane'@'localhost' WITH GRANT OPTION;
