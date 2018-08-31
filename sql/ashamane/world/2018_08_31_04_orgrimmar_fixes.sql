@@ -1206,6 +1206,8 @@ INSERT INTO gossip_menu_option_action (`MenuId`, `OptionIndex`, `ActionMenuId`)V
 (1942, 15, 1869),
 (1942, 16, 1871);
 
+DELETE FROM gossip_menu_option_trainer WHERE MenuId = 22125 AND TrainerId = 163;
+DELETE FROM gossip_menu_option_trainer WHERE MenuId = 22114 AND TrainerId = 424;
 INSERT INTO `gossip_menu_option_trainer` (`MenuId`, `TrainerId`) VALUES ('22125', '163');
 INSERT INTO `gossip_menu_option_trainer` (`MenuId`, `TrainerId`) VALUES ('22114', '424');
 
