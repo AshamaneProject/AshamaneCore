@@ -13222,6 +13222,15 @@ void Unit::NearTeleportTo(Position const& pos, bool casting /*= false*/)
     }
 }
 
+void Unit::NearTeleportTo(uint32 worldSafeLocId, bool casting = false)
+{
+    WorldSafeLocsEntry const* safeLoc = sWorldSafeLocsStore.LookupEntry(worldSafeLocId);
+    if (safeLoc == nullptr)
+        return;
+
+    NearTeleportTo(safeLoc->Loc.X, safeLoc->Loc.Y, safeLoc->Loc.Z, safeLoc->Facing, casting);
+}
+
 void Unit::SendTeleportPacket(Position const& pos)
 {
     // SMSG_MOVE_UPDATE_TELEPORT is sent to nearby players to signal the teleport

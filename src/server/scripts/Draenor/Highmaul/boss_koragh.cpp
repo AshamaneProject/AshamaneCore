@@ -2279,7 +2279,6 @@ void AddSC_boss_koragh()
     new spell_highmaul_nullification_barrier_player();
     new spell_highmaul_expel_magic_frost_aura();
     new spell_highmaul_suppression_field_aura();
-    new spell_highmaul_frozen_core();
     new spell_highmaul_expel_magic_fel();
 
     /// AreaTriggers

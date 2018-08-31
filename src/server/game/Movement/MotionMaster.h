@@ -170,6 +170,7 @@ class TC_GAME_API MotionMaster
             MoveJump(pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ(), pos.GetOrientation(), speedXY, speedZ, id, hasOrientation, arrivalCast, spellEffectExtraData);
         }
         void MoveJump(float x, float y, float z, float o, float speedXY, float speedZ, uint32 id = EVENT_JUMP, bool hasOrientation = false, JumpArrivalCastArgs const* arrivalCast = nullptr, Movement::SpellEffectExtraData const* spellEffectExtraData = nullptr);
+        void MoveJump(uint32 locEntry, float speedXY, float speedZ, uint32 id = EVENT_JUMP);
         void MoveCirclePath(float x, float y, float z, float radius, bool clockwise, uint8 stepCount);
         void MoveSmoothPath(uint32 pointId, Position const* pathPoints, size_t pathSize, bool walk = false, bool fly = false);
         // Walk along spline chain stored in DB (script_spline_chain_meta and script_spline_chain_waypoints)
