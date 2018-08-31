@@ -209,6 +209,9 @@ public:
     bool ValidArgs() const { return _validArgs; }
     void Initialize(std::initializer_list<CommandArgsType> argsType);
 
+    void InitializeArgsVector(std::vector<std::string>& argsVector);
+    void CheckOptionalArgs(std::vector<CommandArgsType>& argsTypeVector, uint8 argsVectorSize);
+
     uint32 Count() { return _args.size(); }
 
     template<typename T>

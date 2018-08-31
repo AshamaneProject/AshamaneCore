@@ -509,6 +509,8 @@ class TC_GAME_API SpellScript : public _SpellScript
         // returns: Item which was selected as an explicit spell target or NULL if there's no target
         Item* GetExplTargetItem() const;
 
+        ObjectGuid GetOrigUnitTargetGUID() const;
+
         // methods useable only during spell hit on target, or during spell launch on target:
         // returns: target of current effect if it was Unit otherwise NULL
         Unit* GetHitUnit() const;
