@@ -1282,21 +1282,20 @@ class spell_dk_howling_blast_aoe : public SpellScript
 
     void HandleBeforeCast()
     {
-        if (Unit* target = GetExplTargetUnit())
-            tar = target->GetGUID();
+        tar = GetOrigUnitTargetGUID();
     }
 
     void HandleOnHit(SpellEffIndex effIndex)
     {
         if (Unit* target = GetHitUnit())
             if (target->GetGUID() == tar)
-                PreventHitDefaultEffect(effIndex);
+                PreventHitDamage();
     }
 
     void Register() override
     {
         BeforeCast += SpellCastFn(spell_dk_howling_blast_aoe::HandleBeforeCast);
-        OnEffectHit += SpellEffectFn(spell_dk_howling_blast_aoe::HandleOnHit, EFFECT_1, SPELL_EFFECT_SCHOOL_DAMAGE);
+        OnEffectHitTarget += SpellEffectFn(spell_dk_howling_blast_aoe::HandleOnHit, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
     }
 };
 

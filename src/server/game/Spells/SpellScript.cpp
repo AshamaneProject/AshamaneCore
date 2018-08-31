@@ -525,6 +525,11 @@ Item* SpellScript::GetExplTargetItem() const
     return m_spell->m_targets.GetItemTarget();
 }
 
+ObjectGuid SpellScript::GetOrigUnitTargetGUID() const
+{
+    return m_spell->m_targets.GetOrigUnitTargetGUID();
+}
+
 Unit* SpellScript::GetHitUnit() const
 {
     if (!IsInTargetHook())
