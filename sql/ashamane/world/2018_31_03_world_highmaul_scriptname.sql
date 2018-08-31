@@ -1,4 +1,4 @@
-UPDATE instance_template SET scriptname = "instance_highmaul" WHERE map = 1228;
+UPDATE instance_template SET script = "instance_highmaul" WHERE map = 1228;
 
 UPDATE creature_template SET scriptname = "boss_the_butcher" WHERE entry = 77404;
 UPDATE creature_template SET scriptname = "boss_imperator_margok" WHERE entry = 77428;
