@@ -850,7 +850,7 @@ INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `P
 (266028, 133218, 1, 1637, 5170, 1, 0, 0, 0, 0, 1533.663, -4201.191, 53.23538, 5.878166, 120, 0, 0, 0, 0, 0, 0, 0, 0, 27404); -- 133218 (Area: 5170 - Difficulty: 0)
 
 UPDATE creature_template SET gossip_menu_id = 21958 WHERE entry = 126065;
-UPDATE creature_template SET gossip_menu_id = 1951 WHERE entry = 3298; -- Orgrimmar Grunt
+UPDATE creature_template SET gossip_menu_id = 1951 WHERE entry = 3296; -- Orgrimmar Grunt
 
 UPDATE creature_template SET unit_flags = 33024, unit_flags2 = 2048, faction = 83, minlevel = 110, maxlevel = 110, HealthScalingExpansion = 6 WHERE entry = 133271;
 UPDATE creature_template SET unit_flags = 33024, unit_flags2 = 2048, faction = 83, minlevel = 110, maxlevel = 110, HealthScalingExpansion = 6 WHERE entry = 133270;
