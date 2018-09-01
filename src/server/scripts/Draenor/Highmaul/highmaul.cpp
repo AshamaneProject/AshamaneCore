@@ -99,13 +99,13 @@ class npc_highmaul_gharg_arena_master : public CreatureScript
                     return;
 
                 /// Teleport player
-                if (m_Instance->GetData(eHighmaulDatas::ElevatorActivated))
+                //if (m_Instance->GetData(eHighmaulDatas::ElevatorActivated))
                     player->NearTeleportTo(g_GhargTeleportPos);
-                else
-                {
+                //else
+                //{
                     me->GetMotionMaster()->MovePoint(eMove::MoveSecondPos, g_GhargSecondPos);
                     m_Instance->SetData(eHighmaulDatas::ElevatorActivated, true);
-                }
+                //}
 
                 CloseGossipMenuFor(player);
             }

@@ -231,6 +231,7 @@ UPDATE creature_template SET scriptname = "npc_highmaul_breaker_of_fire" WHERE e
 UPDATE creature_template SET scriptname = "npc_highmaul_iron_warmaster" WHERE entry = 1686609;
 UPDATE creature_template SET scriptname = "npc_highmaul_night_twisted_ritualist" WHERE entry = 1585245;
 UPDATE creature_template SET scriptname = "npc_highmaul_ravenous_bloodmaw" WHERE entry = 1579296;
+UPDATE creature_template SET scriptname = "npc_highmauareaTrigger_for_crowd" WHERE entry = 79260;
 
 UPDATE gameobject_template SET scriptname = "go_highmaul_arena_elevator" WHERE entry = 233098;
 UPDATE gameobject_template SET scriptname = "go_highmaul_portal" WHERE entry = 231776;

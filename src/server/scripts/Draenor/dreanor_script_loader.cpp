@@ -61,6 +61,17 @@ void AddSC_sadana();
 void AddSC_shadowmoon_burial_grounds();
 void AddSC_instance_shadowmoon_burial_grounds();
 
+// Highmaul
+void AddSC_boss_twin_ogron();
+void AddSC_boss_the_butcher();
+void AddSC_boss_koragh();
+void AddSC_boss_kargath_bladefist();
+void AddSC_boss_imperator_margok();
+void AddSC_boss_brackenspore();
+void AddSC_boss_tectus();
+void AddSC_highmaul();
+void AddSC_instance_highmaul();
+
 // The name of this function should match:
 // void Add${NameOfDirectory}Scripts()
 void AddDraenorScripts()
@@ -108,4 +119,15 @@ void AddDraenorScripts()
     AddSC_sadana();
     AddSC_shadowmoon_burial_grounds();
     AddSC_instance_shadowmoon_burial_grounds();
+
+    // Highmaul
+    AddSC_boss_twin_ogron();
+    AddSC_boss_the_butcher();
+    AddSC_boss_koragh();
+    AddSC_boss_kargath_bladefist();
+    AddSC_boss_imperator_margok();
+    AddSC_boss_brackenspore();
+    AddSC_boss_tectus();
+    AddSC_highmaul();
+    AddSC_instance_highmaul();
 }

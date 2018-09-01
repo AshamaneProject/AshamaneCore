@@ -464,6 +464,15 @@ void MotionMaster::MoveJumpTo(float angle, float speedXY, float speedZ)
     MoveJump(x, y, z, 0.0f, speedXY, speedZ);
 }
 
+void MotionMaster::MoveJump(uint32 locEntry, float speedXY, float speedZ, uint32 id /*= EVENT_JUMP*/)
+{
+    WorldSafeLocsEntry const* safeLoc = sWorldSafeLocsStore.LookupEntry(locEntry);
+    if (safeLoc == nullptr)
+        return;
+
+    MoveJump(safeLoc->Loc.X, safeLoc->Loc.Y, safeLoc->Loc.Z, speedXY, speedZ, safeLoc->Facing, id);
+}
+
 void MotionMaster::MoveJump(float x, float y, float z, float o, float speedXY, float speedZ, uint32 id /*= EVENT_JUMP*/, bool hasOrientation /* = false*/,
     JumpArrivalCastArgs const* arrivalCast /*= nullptr*/, Movement::SpellEffectExtraData const* spellEffectExtraData /*= nullptr*/)
 {
