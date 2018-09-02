@@ -240,8 +240,133 @@ public:
     }
 };
 
+enum TrainedRazorbeak
+{
+    QUEST_RAZORBEAKFRIENDS  = 26546,
+    SPELL_FEED_RAZORBEAK    = 80782,
+    NPC_RAZORBEAK_CREDIT    = 43236
+};
+
+struct npc_trained_razorbeak : public ScriptedAI
+{
+    npc_trained_razorbeak(Creature* creature) : ScriptedAI(creature) {}
+
+    void SpellHit(Unit* caster, const SpellInfo* spell) override
+    {
+        if (spell->Id != SPELL_FEED_RAZORBEAK)
+            return;
+
+        Player* player = caster->ToPlayer();
+        if (player && player->GetQuestStatus(QUEST_RAZORBEAKFRIENDS) == QUEST_STATUS_INCOMPLETE)
+        {
+            player->KilledMonsterCredit(NPC_RAZORBEAK_CREDIT, ObjectGuid::Empty);
+        }
+    }
+
+};
+
+enum FacesEvil
+{
+    NPC_MASK_BURNT_CREDIT     = 42704
+};
+
+class spell_tiki_torch : public SpellScript
+{
+    PrepareSpellScript(spell_tiki_torch);
+
+    void HandleScript(SpellEffIndex /*effIndex*/)
+    {
+        if (!GetHitUnit())
+            return;
+        GetCaster()->ToPlayer()->RewardPlayerAndGroupAtEvent(NPC_MASK_BURNT_CREDIT, GetCaster());
+        GetHitUnit()->ToCreature()->DisappearAndDie();
+    }
+
+    void SelectTarget(WorldObject*& target)
+    {
+        target = GetCaster()->FindNearestCreature(NPC_MASK_BURNT_CREDIT, 15.0f, true);
+    }
+
+    void Register() override
+    {
+        OnObjectTargetSelect += SpellObjectTargetSelectFn(spell_tiki_torch::SelectTarget, EFFECT_0, TARGET_UNIT_NEARBY_ENTRY);
+        OnEffectHitTarget += SpellEffectFn(spell_tiki_torch::HandleScript, EFFECT_0, SPELL_EFFECT_DUMMY);
+    }
+};
+
+enum RitualShadra
+{
+    NPC_SHADRA_NW_ALTAR_BUNNY   = 43067,
+    NPC_SHADRA_SW_ALTAR_BUNNY   = 43068,
+    NPC_SHADRA_E_ALTAR_BUNNY    = 43069
+};
+
+class spell_ritual_of_shadra : public SpellScript
+{
+    PrepareSpellScript(spell_ritual_of_shadra);
+
+    void SelectTarget(WorldObject*& target)
+    {
+        target = GetCaster()->FindNearestCreature(NPC_SHADRA_NW_ALTAR_BUNNY, 15.0f, true);
+        if (!target)
+            target = GetCaster()->FindNearestCreature(NPC_SHADRA_SW_ALTAR_BUNNY, 15.0f, true);
+        if (!target)
+            target = GetCaster()->FindNearestCreature(NPC_SHADRA_E_ALTAR_BUNNY, 15.0f, true);
+    }
+
+    SpellCastResult CheckRequirement()
+    {
+        Creature* northwest = GetCaster()->FindNearestCreature(NPC_SHADRA_NW_ALTAR_BUNNY, 15.0f, true);
+        Creature* southwest = GetCaster()->FindNearestCreature(NPC_SHADRA_SW_ALTAR_BUNNY, 15.0f, true);
+        Creature* east = GetCaster()->FindNearestCreature(NPC_SHADRA_E_ALTAR_BUNNY, 15.0f, true);
+
+        if (!northwest && !southwest && !east)
+            return SPELL_FAILED_INCORRECT_AREA;
+        return SPELL_CAST_OK;
+    }
+
+    void HandleDummy(SpellEffIndex /*effIndex*/)
+    {
+        Unit* hitUnit = GetHitUnit();
+        if (!hitUnit || !GetCaster()->IsPlayer())
+            return;
+
+        if (Creature* target = hitUnit->ToCreature())
+        {
+            switch (target->GetEntry())
+            {
+            case NPC_SHADRA_NW_ALTAR_BUNNY:
+                GetCaster()->ToPlayer()->RewardPlayerAndGroupAtEvent(target->GetEntry(), GetCaster());
+                break;
+
+            case NPC_SHADRA_SW_ALTAR_BUNNY:
+                GetCaster()->ToPlayer()->RewardPlayerAndGroupAtEvent(target->GetEntry(), GetCaster());
+                break;
+
+            case NPC_SHADRA_E_ALTAR_BUNNY:
+                GetCaster()->ToPlayer()->RewardPlayerAndGroupAtEvent(target->GetEntry(), GetCaster());
+                break;
+
+            default:
+                break;
+            }
+
+        }
+    }
+
+    void Register() override
+    {
+        OnObjectTargetSelect += SpellObjectTargetSelectFn(spell_ritual_of_shadra::SelectTarget, EFFECT_0, TARGET_UNIT_NEARBY_ENTRY);
+        OnEffectHitTarget += SpellEffectFn(spell_ritual_of_shadra::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
+        OnCheckCast += SpellCheckCastFn(spell_ritual_of_shadra::CheckRequirement);
+    }
+};
+
 void AddSC_hinterlands()
 {
     new npc_oox09hl();
     new npc_sharpbeak();
+    RegisterCreatureAI(npc_trained_razorbeak);
+    RegisterSpellScript(spell_tiki_torch);
+    RegisterSpellScript(spell_ritual_of_shadra);
 }
