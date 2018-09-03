@@ -3511,6 +3511,9 @@ class spell_highmaul_destructive_resonance : public SpellScriptLoader
             {
                 PreventDefaultAction();
 
+                if (!p_EventInfo.GetDamageInfo())
+                    return;
+
                 SpellInfo const* l_ProcSpell = p_EventInfo.GetDamageInfo()->GetSpellInfo();
                 if (l_ProcSpell == nullptr)
                     return;
