@@ -3631,9 +3631,18 @@ void SpellMgr::LoadSpellInfoCorrections()
     // Horde / Alliance
     ApplySpellFix({ 195838, 195843 }, [](SpellInfo* spellInfo)
     {
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->Effect = SPELL_EFFECT_APPLY_AURA;
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_1))->Effect = SPELL_EFFECT_APPLY_AURA;
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_2))->Effect = SPELL_EFFECT_APPLY_AURA;
+        for (uint8 effectIndex = 0; effectIndex <= EFFECT_2; ++effectIndex)
+            const_cast<SpellEffectInfo*>(spellInfo->GetEffect(effectIndex))->Effect = SPELL_EFFECT_APPLY_AURA;
+    });
+
+    // Devour
+    ApplySpellFix({ 211543 }, [](SpellInfo* spellInfo)
+    {
+        for (uint8 effectIndex = 0; effectIndex <= EFFECT_1; ++effectIndex)
+        {
+            const_cast<SpellEffectInfo*>(spellInfo->GetEffect(effectIndex))->TargetA = SpellImplicitTargetInfo(TARGET_UNIT_TARGET_ENEMY);
+            const_cast<SpellEffectInfo*>(spellInfo->GetEffect(effectIndex))->TargetB = SpellImplicitTargetInfo();
+        }
     });
 
     SpellInfo* spellInfo = NULL;
