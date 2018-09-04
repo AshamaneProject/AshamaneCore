@@ -449,7 +449,7 @@ void Object::BuildMovementUpdate(ByteBuffer* data, uint32 flags) const
         *data << float(unit->GetSpeed(MOVE_TURN_RATE));
         *data << float(unit->GetSpeed(MOVE_PITCH_RATE));
 
-        *data << uint32(0);                                                   // unit->m_movementInfo.forces.size()
+        *data << uint32(unit->GetMovementForces().size());
 
         data->WriteBit(HasSpline);
         data->FlushBits();
