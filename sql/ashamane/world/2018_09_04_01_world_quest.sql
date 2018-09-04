@@ -24,7 +24,7 @@ insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `p
 (280000009,109518,0,0,0,1,0,0,0,-1,0,0,1290.89,319.171,-57.3211,1.28455,300,0,0,87,0,0,0,33554432,0,0,0,'',0);
 
 -- smart_script
-UPDATE `creature_template` SET `AIName` = 'SmartAI' WHERE `entry` = 10181;
+UPDATE `creature_template` SET `AIName` = 'SmartAI', `ScriptName` = '' WHERE `entry` = 10181;
 DELETE FROM `smart_scripts` WHERE (source_type = 0 AND entryorguid = 10181);
 INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES
 (10181, 0, 0, 0, 19, 0, 100, 0, 42987, 0, 0, 0, 85, 218029, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'Lady Sylvanas Windrunner - On Quest Accepted - Invoker Cast \'218029\''),
