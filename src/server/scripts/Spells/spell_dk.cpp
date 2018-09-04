@@ -1511,7 +1511,7 @@ class aura_dk_outbreak_periodic : public AuraScript
 {
     PrepareAuraScript(aura_dk_outbreak_periodic);
 
-    void HandleDummyTick(AuraEffect const* aurEff)
+    void HandleDummyTick(AuraEffect const* /*aurEff*/)
     {
         if (Unit* caster = GetCaster())
         {
@@ -1551,12 +1551,12 @@ public:
             amount = GetUnitOwner()->CountPctFromMaxHealth(40);
         }
 
-        void Absorb(AuraEffect* /*aurEff*/, DamageInfo & dmgInfo, uint32 & absorbAmount)
+        void Absorb(AuraEffect* /*aurEff*/, DamageInfo& dmgInfo, uint32& absorbAmount)
         {
             absorbAmount = CalculatePct(dmgInfo.GetDamage(), absorbPct);
         }
 
-        void Trigger(AuraEffect* aurEff, DamageInfo & /*dmgInfo*/, uint32 & absorbAmount)
+        void Trigger(AuraEffect* aurEff, DamageInfo& /*dmgInfo*/, uint32& absorbAmount)
         {
             Unit* target = GetTarget();
             // Patch 6.0.2 (October 14, 2014): Anti-Magic Shell now restores 2 Runic Power per 1% of max health absorbed.
@@ -2489,7 +2489,7 @@ class aura_dk_virulent_plague : public AuraScript
             GetAura()->Remove(AURA_REMOVE_BY_DEATH);
     }
 
-    void HandleEffectRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes mode)
+    void HandleEffectRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
     {
         AuraRemoveMode removeMode = GetTargetApplication()->GetRemoveMode();
         if (removeMode == AURA_REMOVE_BY_DEATH)
@@ -2597,7 +2597,7 @@ class spell_dk_blighted_rune_weapon : public SpellScript
         return ValidateSpellInfo({ SPELL_DK_FESTERING_WOUND });
     }
 
-    void HandleHit(SpellEffIndex effIndex)
+    void HandleHit(SpellEffIndex /*effIndex*/)
     {
         if (Unit* target = GetHitUnit())
             GetCaster()->CastSpell(target, SPELL_DK_FESTERING_WOUND, true);
