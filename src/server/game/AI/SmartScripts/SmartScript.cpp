@@ -1081,7 +1081,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
                 if (!me)
                     break;
 
-                if (Player* player = me->GetLootRecipient())
+                for (Player* player : me->GetLootRecipients())
                 {
                     player->RewardPlayerAndGroupAtEvent(e.action.killedMonster.creature, player);
                     TC_LOG_DEBUG("scripts.ai", "SmartScript::ProcessAction: SMART_ACTION_CALL_KILLEDMONSTER: %s, Killcredit: %u",
@@ -3315,17 +3315,16 @@ ObjectList* SmartScript::GetTargets(SmartScriptHolder const& e, Unit* invoker /*
         {
             if (me)
             {
-                if (Group* lootGroup = me->GetLootRecipientGroup())
+                for (Group* lootGroup : me->GetLootRecipientGroups())
                 {
                     for (GroupReference* it = lootGroup->GetFirstMember(); it != nullptr; it = it->next())
                         if (Player* recipient = it->GetSource())
                             l->push_back(recipient);
                 }
-                else
-                {
-                    if (Player* recipient = me->GetLootRecipient())
-                        l->push_back(recipient);
-                }
+
+                for (Player* player : me->GetLootRecipients())
+                    if (std::find(l->begin(), l->end(), player) == l->end())
+                        l->push_back(player);
             }
             break;
         }

@@ -884,8 +884,9 @@ uint32 Unit::DealDamage(Unit* victim, uint32 damage, CleanDamage const* cleanDam
     {
         if (Creature* victimCreature = victim->ToCreature())
         {
-            if (!victimCreature->hasLootRecipient())
-                victimCreature->SetLootRecipient(this);
+            Player* player = GetCharmerOrOwnerPlayerOrPlayerItself();
+            if (player && !victimCreature->IsTappedBy(player))
+                victimCreature->AddLootRecipient(this);
 
             if (IsControlledByPlayer())
                 victimCreature->LowerPlayerDamageReq(health < damage ? health : damage);
@@ -11248,11 +11249,11 @@ void Unit::Kill(Unit* victim, bool durabilityLoss)
                 isLootRewardAllowed = false;
 
         if (!isLootRewardAllowed)
-            creature->SetLootRecipient(NULL);
+            creature->ResetLootRecipients();
     }
 
-    if (isLootRewardAllowed && creature && creature->GetLootRecipient())
-        player = creature->GetLootRecipient();
+    if (isLootRewardAllowed && creature && creature->HasLootRecipients())
+        player = creature->GetLootRecipients().front();
 
     // Exploit fix
     if (creature && creature->IsPet() && creature->GetOwnerGUID().IsPlayer())
@@ -11283,23 +11284,10 @@ void Unit::Kill(Unit* victim, bool durabilityLoss)
             Player* looter = player;
             bool hasLooterGuid = false;
 
-            if (group)
-            {
-                if (creature)
-                {
-                    group->UpdateLooterGuid(creature, true);
-                    if (!group->GetLooterGuid().IsEmpty())
-                    {
-                        looter = ObjectAccessor::FindPlayer(group->GetLooterGuid());
-                        if (looter)
-                        {
-                            hasLooterGuid = true;
-                            creature->SetLootRecipient(looter);   // update creature loot recipient to the allowed looter.
-                        }
-                    }
-                }
-            }
-            else
+            Loot* loot = &creature->loot;
+            loot->clear();
+
+            for (Player* looter : creature->GetLootRecipients())
             {
                 if (creature)
                 {
@@ -11309,31 +11297,12 @@ void Unit::Kill(Unit* victim, bool durabilityLoss)
 
                     player->SendMessageToSet(lootList.Write(), true);
                 }
-            }
 
-            // Generate loot before updating looter
-            if (creature)
-            {
-                Loot* loot = &creature->loot;
-
-                loot->clear();
                 if (uint32 lootid = creature->GetCreatureTemplate()->lootid)
                     loot->FillLoot(lootid, LootTemplates_Creature, looter, false, false, creature->GetLootMode());
-
-                loot->generateMoneyLoot(creature->GetCreatureTemplate()->mingold, creature->GetCreatureTemplate()->maxgold);
-
-                if (group)
-                {
-                    if (hasLooterGuid)
-                        group->SendLooter(creature, looter);
-                    else
-                        group->SendLooter(creature, NULL);
-
-                    // Update round robin looter only if the creature had loot
-                    if (!loot->empty())
-                        group->UpdateLooterGuid(creature);
-                }
             }
+
+            loot->GenerateMoneyLoot(creature->GetCreatureTemplate()->mingold, creature->GetCreatureTemplate()->maxgold);
         }
     }
 
@@ -14210,7 +14179,7 @@ void Unit::BuildValuesUpdate(uint8 updateType, ByteBuffer* data, Player* target)
 
                 if (creature)
                 {
-                    if (creature->hasLootRecipient() && !creature->isTappedBy(target))
+                    if (creature->HasLootRecipients() && !creature->IsTappedBy(target))
                         dynamicFlags |= UNIT_DYNFLAG_TAPPED;
 
                     if (!target->isAllowedToLoot(creature))

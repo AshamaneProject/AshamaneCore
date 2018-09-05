@@ -524,9 +524,20 @@ public:
         if (!target)
             return false;
 
-        handler->PSendSysMessage("Loot recipient for creature %s (%s, DB GUID %s) is %s",
-            target->GetName().c_str(), target->GetGUID().ToString().c_str(), std::to_string(target->GetSpawnId()).c_str(),
-            target->hasLootRecipient() ? (target->GetLootRecipient() ? target->GetLootRecipient()->GetName().c_str() : "offline") : "no loot recipient");
+        if (target->HasLootRecipients())
+        {
+            handler->PSendSysMessage("Creature %s (%s, DB GUID %s) no loot recipient",
+                target->GetName().c_str(), target->GetGUID().ToString().c_str(), std::to_string(target->GetSpawnId()).c_str());
+            return true;
+        }
+
+        for (Player* player : target->GetLootRecipients())
+        {
+            handler->PSendSysMessage("Loot recipient for creature %s (%s, DB GUID %s) is %s",
+                target->GetName().c_str(), target->GetGUID().ToString().c_str(), std::to_string(target->GetSpawnId()).c_str(),
+                player->GetName().c_str());
+        }
+
         return true;
     }
 

@@ -238,18 +238,10 @@ public:
 
 struct TC_GAME_API Loot
 {
-    NotNormalLootItemMap const& GetPlayerCurrencies() const { return PlayerCurrencies; }
-    NotNormalLootItemMap const& GetPlayerQuestItems() const { return PlayerQuestItems; }
-    NotNormalLootItemMap const& GetPlayerFFAItems() const { return PlayerFFAItems; }
-    NotNormalLootItemMap const& GetPlayerNonQuestNonFFAConditionalItems() const { return PlayerNonQuestNonFFAConditionalItems; }
-
-    std::vector<LootItem> items;
-    std::vector<LootItem> quest_items;
+    std::unordered_map<ObjectGuid /*playerGuid*/, std::vector<LootItem>> items;
     uint32 gold;
     uint32 unlootedCount;
-    ObjectGuid roundRobinPlayer;                            // GUID of the player having the Round-Robin ownership for the loot. If 0, round robin owner has released.
-    LootType loot_type;                                     // required for achievement system
-    uint8 maxDuplicates;                                    // Max amount of items with the same entry that can drop (default is 1; on 25 man raid mode 3)
+    LootType loot_type;     // required for achievement system
 
     // GUID of container that holds this loot (item_instance.entry)
     //  Only set for inventory items that can be right-click looted
@@ -262,7 +254,7 @@ struct TC_GAME_API Loot
     void SetGUID(ObjectGuid const& guid) { _GUID = guid; }
 
     // For deleting items at loot removal since there is no backward interface to the Item()
-    void DeleteLootItemFromContainerItemDB(uint32 itemID);
+    void DeleteLootItemFromContainerItemDB(Player* player, uint32 itemID);
     void DeleteLootMoneyFromContainerItemDB();
 
     // if loot becomes invalid this reference is used to inform the listener
@@ -274,26 +266,26 @@ struct TC_GAME_API Loot
     void clear();
 
     bool empty() const { return items.empty() && gold == 0; }
-    bool isLooted() const { return gold == 0 && unlootedCount == 0; }
+    bool isLooted(Player* player = nullptr) const { return gold == 0 && GetUnlootedCount(player) == 0; }
+    uint32 GetUnlootedCount(Player* player = nullptr) const;
 
     void NotifyItemRemoved(uint8 lootIndex);
-    void NotifyQuestItemRemoved(uint8 questIndex);
     void NotifyMoneyRemoved();
     void AddLooter(ObjectGuid GUID) { PlayersLooting.insert(GUID); }
     void RemoveLooter(ObjectGuid GUID) { PlayersLooting.erase(GUID); }
 
-    void generateMoneyLoot(uint32 minAmount, uint32 maxAmount);
+    void GenerateMoneyLoot(uint32 minAmount, uint32 maxAmount);
+    void GenerateJournalEncounterLoot(Player* looter, uint32 journalEncounterId);
     bool FillLoot(uint32 lootId, LootStore const& store, Player* lootOwner, bool personal, bool noEmptyError = false, uint16 lootMode = LOOT_MODE_DEFAULT, bool specOnly = false);
 
     // Inserts the item into the loot (called by LootTemplate processors)
     void AddItem(LootStoreItem const & item, Player const* player = nullptr, bool specOnly = false);
 
-    LootItem const* GetItemInSlot(uint32 lootSlot) const;
-    LootItem* LootItemInSlot(uint32 lootslot, Player* player, NotNormalLootItem** qitem = nullptr, NotNormalLootItem** ffaitem = nullptr, NotNormalLootItem** conditem = nullptr, NotNormalLootItem** currency = nullptr);
+    LootItem const* GetItemInSlot(uint32 lootSlot, Player const* player) const;
+    LootItem* LootItemInSlot(uint32 lootslot, Player* player);
     uint32 GetMaxSlotInLootFor(Player* player) const;
     bool hasItemForAll() const;
     bool hasItemFor(Player* player) const;
-    bool hasOverThresholdItem() const;
 
     // Builds data for SMSG_LOOT_RESPONSE
     void BuildLootResponse(WorldPackets::Loot::LootResponse& packet, Player* viewer, PermissionTypes permission = ALL_PERMISSION) const;
@@ -301,17 +293,8 @@ struct TC_GAME_API Loot
 private:
 
     LootSlotType GetUITypeByPermission(LootItem const& item, PermissionTypes permission, LootSlotType slotType) const;
-    void FillNotNormalLootFor(Player* player, bool presentAtLooting);
-    NotNormalLootItemList* FillCurrencyLoot(Player* player);
-    NotNormalLootItemList* FillFFALoot(Player* player);
-    NotNormalLootItemList* FillQuestLoot(Player* player);
-    NotNormalLootItemList* FillNonQuestNonFFAConditionalLoot(Player* player, bool presentAtLooting);
 
     GuidSet PlayersLooting;
-    NotNormalLootItemMap PlayerCurrencies;
-    NotNormalLootItemMap PlayerQuestItems;
-    NotNormalLootItemMap PlayerFFAItems;
-    NotNormalLootItemMap PlayerNonQuestNonFFAConditionalItems;
 
     // All rolls are registered here. They need to know, when the loot is not valid anymore
     LootValidatorRefManager i_LootValidatorRefManager;

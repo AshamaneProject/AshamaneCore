@@ -221,13 +221,12 @@ class TC_GAME_API GameObject : public WorldObject, public GridObject<GameObject>
 
         Loot        loot;
 
-        Player* GetLootRecipient() const;
-        Group* GetLootRecipientGroup() const;
-        void SetLootRecipient(Unit* unit, Group* group = nullptr);
+        std::vector<Player*> GetLootRecipients() const;
+        std::vector<Group*> GetLootRecipientGroups() const;
+        void AddLootRecipient(Unit* unit);
+        void ResetLootRecipients();
         bool IsLootAllowedFor(Player const* player) const;
-        bool HasLootRecipient() const { return !m_lootRecipient.IsEmpty() || !m_lootRecipientGroup.IsEmpty(); }
-        uint32 m_groupLootTimer;                            // (msecs)timer used for group loot
-        ObjectGuid lootingGroupLowGUID;                     // used to find group which is looting
+        bool HasLootRecipients() const { return !m_lootRecipients.empty(); }
 
         GameObject* GetLinkedTrap();
         void SetLinkedTrap(GameObject* linkedTrap) { m_linkedTrap = linkedTrap->GetGUID(); }
@@ -344,8 +343,7 @@ class TC_GAME_API GameObject : public WorldObject, public GridObject<GameObject>
         QuaternionData m_worldRotation;
         Position m_stationaryPosition;
 
-        ObjectGuid m_lootRecipient;
-        ObjectGuid m_lootRecipientGroup;
+        std::vector<ObjectGuid> m_lootRecipients;
         uint16 m_LootMode;                                  // bitmask, default LOOT_MODE_DEFAULT, determines what loot will be lootable
 
         bool m_shouldIntersectWithAllPhases;

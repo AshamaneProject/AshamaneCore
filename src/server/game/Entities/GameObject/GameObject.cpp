@@ -81,8 +81,6 @@ GameObject::GameObject() : WorldObject(false), MapObject(),
 
     m_spawnId = UI64LIT(0);
 
-    m_groupLootTimer = 0;
-
     ResetLootMode(); // restore default loot mode
     m_stationaryPosition.Relocate(0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -390,10 +388,6 @@ bool GameObject::Create(uint32 entry, Map* map, Position const& pos, QuaternionD
     LastUsedScriptID = GetGOInfo()->ScriptId;
     AIM_Initialize();
 
-    // Initialize loot duplicate count depending on raid difficulty
-    if (map->Is25ManRaid())
-        loot.maxDuplicates = 3;
-
     if (uint32 linkedEntry = GetGOInfo()->GetLinkedGameObjectEntry())
     {
         if (GameObject* linkedGo = GameObject::CreateGameObject(linkedEntry, map, pos, rotation, 255, GO_STATE_READY))
@@ -700,21 +694,6 @@ void GameObject::Update(uint32 diff)
 
                         SetLootState(GO_JUST_DEACTIVATED);
                         m_cooldownTime = 0;
-                    }
-                    break;
-                case GAMEOBJECT_TYPE_CHEST:
-                    if (m_groupLootTimer)
-                    {
-                        if (m_groupLootTimer <= diff)
-                        {
-                            if (Group* group = sGroupMgr->GetGroupByGUID(lootingGroupLowGUID))
-                                group->EndRoll(&loot);
-
-                            m_groupLootTimer = 0;
-                            lootingGroupLowGUID.Clear();
-                        }
-                        else
-                            m_groupLootTimer -= diff;
                     }
                     break;
                 case GAMEOBJECT_TYPE_TRAP:
@@ -2436,62 +2415,64 @@ void GameObject::UpdateModel()
     ApplyModFlag(GAMEOBJECT_FLAGS, GO_FLAG_MAP_OBJECT, m_model && m_model->isMapObject());
 }
 
-Player* GameObject::GetLootRecipient() const
+std::vector<Player*> GameObject::GetLootRecipients() const
 {
-    if (!m_lootRecipient)
-        return nullptr;
-    return ObjectAccessor::FindConnectedPlayer(m_lootRecipient);
+    std::vector<Player*> recipients;
+    for (ObjectGuid guid : m_lootRecipients)
+        if (guid.IsPlayer())
+            recipients.push_back(ObjectAccessor::FindConnectedPlayer(guid));
+
+    return recipients;
 }
 
-Group* GameObject::GetLootRecipientGroup() const
+std::vector<Group*> GameObject::GetLootRecipientGroups() const
 {
-    if (!m_lootRecipientGroup)
-        return nullptr;
-    return sGroupMgr->GetGroupByGUID(m_lootRecipientGroup);
+    std::vector<Group*> recipients;
+    for (ObjectGuid guid : m_lootRecipients)
+        if (guid.IsParty())
+            recipients.push_back(sGroupMgr->GetGroupByGUID(guid));
+
+    return recipients;
 }
 
-void GameObject::SetLootRecipient(Unit* unit, Group* group)
+void GameObject::AddLootRecipient(Unit* unit)
 {
     // set the player whose group should receive the right
     // to loot the creature after it dies
     // should be set to nullptr after the loot disappears
 
-    if (!unit)
-    {
-        m_lootRecipient.Clear();
-        m_lootRecipientGroup = group ? group->GetGUID() : ObjectGuid::Empty;
-        return;
-    }
-
-    if (unit->GetTypeId() != TYPEID_PLAYER && !unit->IsVehicle())
+    if (!unit || !unit->IsPlayer() && !unit->IsVehicle())
         return;
 
     Player* player = unit->GetCharmerOrOwnerPlayerOrPlayerItself();
     if (!player)                                             // normal creature, no player involved
         return;
 
-    m_lootRecipient = player->GetGUID();
+    m_lootRecipients.push_back(player->GetGUID());
+    if (Group* group = player->GetGroup())
+        m_lootRecipients.push_back(group->GetGUID());
 
-    // either get the group from the passed parameter or from unit's one
-    if (group)
-        m_lootRecipientGroup = group->GetGUID();
-    else if (Group* unitGroup = player->GetGroup())
-        m_lootRecipientGroup = unitGroup->GetGUID();
+    SetFlag(OBJECT_DYNAMIC_FLAGS, UNIT_DYNFLAG_TAPPED);
+}
+
+void GameObject::ResetLootRecipients()
+{
+    m_lootRecipients.clear();
+    RemoveFlag(OBJECT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE | UNIT_DYNFLAG_TAPPED);
 }
 
 bool GameObject::IsLootAllowedFor(Player const* player) const
 {
-    if (!m_lootRecipient && !m_lootRecipientGroup)
+    if (std::find(m_lootRecipients.begin(), m_lootRecipients.end(), player->GetGUID()) != m_lootRecipients.end())
         return true;
 
-    if (player->GetGUID() == m_lootRecipient)
-        return true;
+    if (Group const* playerGroup = player->GetGroup())
+        if (std::find(m_lootRecipients.begin(), m_lootRecipients.end(), player->GetGUID()) != m_lootRecipients.end())
+            return true;
 
-    Group const* playerGroup = player->GetGroup();
-    if (!playerGroup || playerGroup != GetLootRecipientGroup()) // if we dont have a group we arent the recipient
-        return false;                                           // if go doesnt have group bound it means it was solo killed by someone else
+    // Todo : Check player team
 
-    return true;
+    return false;
 }
 
 GameObject* GameObject::GetLinkedTrap()
@@ -2505,7 +2486,7 @@ void GameObject::BuildValuesUpdate(uint8 updateType, ByteBuffer* data, Player* t
         return;
 
     bool isStoppableTransport = GetGoType() == GAMEOBJECT_TYPE_TRANSPORT && !m_goValue.Transport.StopFrames->empty();
-    bool forcedFlags = GetGoType() == GAMEOBJECT_TYPE_CHEST && GetGOInfo()->chest.usegrouplootrules && HasLootRecipient();
+    bool forcedFlags = GetGoType() == GAMEOBJECT_TYPE_CHEST && GetGOInfo()->chest.usegrouplootrules && HasLootRecipients();
     bool targetIsGM = target->IsGameMaster();
 
     std::size_t blockCount = UpdateMask::GetBlockCount(m_valuesCount);
