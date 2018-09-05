@@ -2064,7 +2064,6 @@ class aura_dru_restoration_affinity : public AuraScript
         for (uint32 spellId : LearnedSpells)
         {
             // This prevent Rejuvenation gones missing if the target was a low level character and in Restoration specialization
-            // I think there is a way to prevent this properly by check for conditions like level or specialization before apply auras...
             if(target->GetSpecializationId() == TALENT_SPEC_DRUID_RESTORATION)
                 if(spellId == SPELL_DRUID_REJUVENATION)
                     continue;
