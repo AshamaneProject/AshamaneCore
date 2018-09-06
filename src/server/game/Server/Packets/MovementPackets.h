@@ -633,4 +633,6 @@ ByteBuffer& operator>>(ByteBuffer& data, MovementInfo::TransportInfo& transportI
 ByteBuffer& operator<<(ByteBuffer& data, MovementInfo::TransportInfo const& transportInfo);
 ByteBuffer& operator>>(ByteBuffer& data, WorldPackets::Movement::MovementAck& movementAck);
 
+ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Movement::MovementForce const& movementForce);
+
 #endif // MovementPackets_h__
