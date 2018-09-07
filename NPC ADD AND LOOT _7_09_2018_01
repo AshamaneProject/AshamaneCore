@@ -1,62 +1,46 @@
-1 Sorata Filefeu 
+-- 1 Sorata Filefeu 
 
-/*
-SQLyog Community v13.0.1 (64 bit)
-MySQL - 10.1.26-MariaDB-0+deb9u1 
-*********************************************************************
-*/
-/*!40101 SET NAMES utf8 */;
-DELETE FROM `creature` WHERE (entry = 244276);
-insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values('244276','36210','1','16','4825','1','0','0','0','-1','30087','0','4457.96','-5728.01','106.318','3.38594','300','0','0','307','856','0','0','0','0','0','0','','0');
+DELETE FROM creature WHERE entry = 244276;
+INSERT INTO creature (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) VALUES
+('244276','36210','1','16','4825','1','0','0','0','-1','30087','0','4457.96','-5728.01','106.318','3.38594','300','0','0','307','856','0','0','0','0','0','0','','0');
 
-2 Zappeur Gobelin
+-- 2 Zappeur Gobelin
 
-/*
-SQLyog Community v13.0.1 (64 bit)
-MySQL - 10.1.26-MariaDB-0+deb9u1 
-*********************************************************************
-*/
-/*!40101 SET NAMES utf8 */;
 
-DELETE FROM `creature` WHERE (entry in 280000015, 280000016, 280000017, 280000018, 280000019, 280000020, 280000021, 280000022, 280000023, 280000024, 280000025, 280000026, 280000027, 280000028, 280000029, 280000030, 280000031, 280000032, 280000033, 280000034, 280000035, 280000036, 280000037, 280000038, 243720, 243721, 243770, 243772, 243774);
-insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values('280000033','36384','1','0','0','1','0','0','0','-1','0','1','2317.32','-5568.98','35.2','0.29226','300','0','0','564','0','0','0','0','0','0','0','','0');
-insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values('280000034','36384','1','0','0','1','0','0','0','-1','0','1','2332.36','-5569.14','44.5452','0.307968','300','0','0','564','0','0','0','0','0','0','0','','0');
-insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values('280000027','36384','1','0','0','1','0','0','0','-1','0','1','2281.75','-5615.55','20.4743','5.21906','300','0','0','564','0','0','0','0','0','0','0','','0');
-insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values('280000026','36384','1','0','0','1','0','0','0','-1','0','1','2276.73','-5581.16','21.2101','5.48582','300','0','0','564','0','0','0','0','0','0','0','','0');
-insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values('280000025','36384','1','0','0','1','0','0','0','-1','0','1','2271.44','-5583.2','21.0515','5.43498','300','0','0','564','0','0','0','0','0','0','0','','0');
-insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values('280000024','36384','1','0','0','1','0','0','0','-1','0','1','2300.02','-5602','24.66','3.65212','300','0','0','564','0','0','0','0','0','0','0','','0');
-insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values('280000023','36384','1','0','0','1','0','0','0','-1','0','1','2307.81','-5630.69','33.7147','4.25845','300','0','0','564','0','0','0','0','0','0','0','','0');
-insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values('280000022','36384','1','0','0','1','0','0','0','-1','0','1','2307.2','-5631.99','34.0242','1.01082','300','0','0','564','0','0','0','0','0','0','0','','0');
-insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values('280000032','36384','1','0','0','1','0','0','0','-1','0','1','2293.09','-5585.53','23.7923','0.33153','300','0','0','564','0','0','0','0','0','0','0','','0');
-insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values('280000038','36384','1','0','0','1','0','0','0','-1','0','1','2389.22','-5547.41','96.448','0.241208','300','0','0','564','0','0','0','0','0','0','0','','0');
-insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values('280000037','36384','1','0','0','1','0','0','0','-1','0','1','2376.28','-5564.47','85.6837','1.41538','300','0','0','564','0','0','0','0','0','0','0','','0');
-insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values('280000036','36384','1','0','0','1','0','0','0','-1','0','1','2370.24','-5587.56','75.4789','0.111618','300','0','0','564','0','0','0','0','0','0','0','','0');
-insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values('280000035','36384','1','0','0','1','0','0','0','-1','0','1','2346.26','-5562.08','57.3639','0.0605675','300','0','0','564','0','0','0','0','0','0','0','','0');
-insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values('243720','36384','1','16','1234','1','0','0','0','-1','30099','0','2396.91','-5520','113.399','5.06145','300','3','0','273','0','1','0','0','0','0','0','','0');
-insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values('243721','36384','1','16','1234','1','0','0','0','-1','30099','0','2399.22','-5554.15','100.379','0.645772','300','3','0','273','0','1','0','0','0','0','0','','0');
-insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values('243770','36384','1','16','1256','1','0','0','0','-1','30099','0','2319.52','-5730.97','82.5207','1.94265','300','3','0','273','0','1','0','0','0','0','0','','0');
-insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values('243772','36384','1','16','1256','1','0','0','0','-1','30099','0','2350.88','-5800.85','106.489','0.349066','300','3','0','273','0','1','0','0','0','0','0','','0');
-insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values('243774','36384','1','16','1256','1','0','0','0','-1','30099','0','2346.14','-5769.35','102.543','1.74636','300','3','0','273','0','1','0','0','0','0','0','','0');
-insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values('280000021','36384','1','0','0','1','0','0','0','-1','0','1','2301.34','-5666.05','48.6977','1.79857','300','0','0','564','0','0','0','0','0','0','0','','0');
-insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values('280000020','36384','1','0','0','1','0','0','0','-1','0','1','2315.28','-5692.32','63.0044','1.47263','300','0','0','564','0','0','0','0','0','0','0','','0');
-insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values('280000019','36384','1','0','0','1','0','0','0','-1','0','1','2311.32','-5709.5','70.7978','1.68469','300','0','0','564','0','0','0','0','0','0','0','','0');
-insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values('280000018','36384','1','0','0','1','0','0','0','-1','0','1','2316.35','-5746.6','90.2505','1.74752','300','0','0','564','0','0','0','0','0','0','0','','0');
-insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values('280000017','36384','1','0','0','1','0','0','0','-1','0','1','2328.96','-5752.61','94.5822','1.75145','300','0','0','564','0','0','0','0','0','0','0','','0');
-insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values('280000028','36384','1','0','0','1','0','0','0','-1','0','1','2265.24','-5610.24','14.0061','3.28306','300','0','0','564','0','0','0','0','0','0','0','','0');
-insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values('280000016','36384','1','0','0','1','0','0','0','-1','0','1','2326.55','-5765.31','99.2945','1.59044','300','0','0','564','0','0','0','0','0','0','0','','0');
-insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values('280000015','36384','1','0','0','1','0','0','0','-1','0','1','2332.43','-5776.38','102.525','0.269404','300','0','0','564','0','0','0','0','0','0','0','','0');
-insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values('280000031','36384','1','0','0','1','0','0','0','-1','0','1','2251.31','-5654.53','0.222922','0.411641','300','0','0','564','0','0','0','0','0','0','0','','0');
-insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values('280000030','36384','1','0','0','1','0','0','0','-1','0','1','2251.95','-5623.51','5.37856','5.11303','300','0','0','564','0','0','0','0','0','0','0','','0');
-insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values('280000029','36384','1','0','0','1','0','0','0','-1','0','1','2234.55','-5604','6.70917','6.02252','300','0','0','564','0','0','0','0','0','0','0','','0');
+DELETE FROM creature WHERE entry IN (280000015, 280000016, 280000017, 280000018, 280000019, 280000020, 280000021, 280000022, 280000023, 280000024, 280000025, 280000026, 280000027, 280000028, 280000029, 280000030, 280000031, 280000032, 280000033, 280000034, 280000035, 280000036, 280000037, 280000038, 243720, 243721, 243770, 243772, 243774);
+INSERT INTO creature (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) VALUES
+('280000033','36384','1','0','0','1','0','0','0','-1','0','1','2317.32','-5568.98','35.2','0.29226','300','0','0','564','0','0','0','0','0','0','0','','0'),
+('280000034','36384','1','0','0','1','0','0','0','-1','0','1','2332.36','-5569.14','44.5452','0.307968','300','0','0','564','0','0','0','0','0','0','0','','0'),
+('280000027','36384','1','0','0','1','0','0','0','-1','0','1','2281.75','-5615.55','20.4743','5.21906','300','0','0','564','0','0','0','0','0','0','0','','0'),
+('280000026','36384','1','0','0','1','0','0','0','-1','0','1','2276.73','-5581.16','21.2101','5.48582','300','0','0','564','0','0','0','0','0','0','0','','0'),
+('280000025','36384','1','0','0','1','0','0','0','-1','0','1','2271.44','-5583.2','21.0515','5.43498','300','0','0','564','0','0','0','0','0','0','0','','0'),
+('280000024','36384','1','0','0','1','0','0','0','-1','0','1','2300.02','-5602','24.66','3.65212','300','0','0','564','0','0','0','0','0','0','0','','0'),
+('280000023','36384','1','0','0','1','0','0','0','-1','0','1','2307.81','-5630.69','33.7147','4.25845','300','0','0','564','0','0','0','0','0','0','0','','0'),
+('280000022','36384','1','0','0','1','0','0','0','-1','0','1','2307.2','-5631.99','34.0242','1.01082','300','0','0','564','0','0','0','0','0','0','0','','0'),
+('280000032','36384','1','0','0','1','0','0','0','-1','0','1','2293.09','-5585.53','23.7923','0.33153','300','0','0','564','0','0','0','0','0','0','0','','0'),
+('280000038','36384','1','0','0','1','0','0','0','-1','0','1','2389.22','-5547.41','96.448','0.241208','300','0','0','564','0','0','0','0','0','0','0','','0'),
+('280000037','36384','1','0','0','1','0','0','0','-1','0','1','2376.28','-5564.47','85.6837','1.41538','300','0','0','564','0','0','0','0','0','0','0','','0'),
+('280000036','36384','1','0','0','1','0','0','0','-1','0','1','2370.24','-5587.56','75.4789','0.111618','300','0','0','564','0','0','0','0','0','0','0','','0'),
+('280000035','36384','1','0','0','1','0','0','0','-1','0','1','2346.26','-5562.08','57.3639','0.0605675','300','0','0','564','0','0','0','0','0','0','0','','0'),
+('243720','36384','1','16','1234','1','0','0','0','-1','30099','0','2396.91','-5520','113.399','5.06145','300','3','0','273','0','1','0','0','0','0','0','','0'),
+('243721','36384','1','16','1234','1','0','0','0','-1','30099','0','2399.22','-5554.15','100.379','0.645772','300','3','0','273','0','1','0','0','0','0','0','','0'),
+('243770','36384','1','16','1256','1','0','0','0','-1','30099','0','2319.52','-5730.97','82.5207','1.94265','300','3','0','273','0','1','0','0','0','0','0','','0'),
+('243772','36384','1','16','1256','1','0','0','0','-1','30099','0','2350.88','-5800.85','106.489','0.349066','300','3','0','273','0','1','0','0','0','0','0','','0'),
+('243774','36384','1','16','1256','1','0','0','0','-1','30099','0','2346.14','-5769.35','102.543','1.74636','300','3','0','273','0','1','0','0','0','0','0','','0'),
+('280000021','36384','1','0','0','1','0','0','0','-1','0','1','2301.34','-5666.05','48.6977','1.79857','300','0','0','564','0','0','0','0','0','0','0','','0'),
+('280000020','36384','1','0','0','1','0','0','0','-1','0','1','2315.28','-5692.32','63.0044','1.47263','300','0','0','564','0','0','0','0','0','0','0','','0'),
+('280000019','36384','1','0','0','1','0','0','0','-1','0','1','2311.32','-5709.5','70.7978','1.68469','300','0','0','564','0','0','0','0','0','0','0','','0'),
+('280000018','36384','1','0','0','1','0','0','0','-1','0','1','2316.35','-5746.6','90.2505','1.74752','300','0','0','564','0','0','0','0','0','0','0','','0'),
+('280000017','36384','1','0','0','1','0','0','0','-1','0','1','2328.96','-5752.61','94.5822','1.75145','300','0','0','564','0','0','0','0','0','0','0','','0'),
+('280000028','36384','1','0','0','1','0','0','0','-1','0','1','2265.24','-5610.24','14.0061','3.28306','300','0','0','564','0','0','0','0','0','0','0','','0'),
+('280000016','36384','1','0','0','1','0','0','0','-1','0','1','2326.55','-5765.31','99.2945','1.59044','300','0','0','564','0','0','0','0','0','0','0','','0'),
+('280000015','36384','1','0','0','1','0','0','0','-1','0','1','2332.43','-5776.38','102.525','0.269404','300','0','0','564','0','0','0','0','0','0','0','','0'),
+('280000031','36384','1','0','0','1','0','0','0','-1','0','1','2251.31','-5654.53','0.222922','0.411641','300','0','0','564','0','0','0','0','0','0','0','','0'),
+('280000030','36384','1','0','0','1','0','0','0','-1','0','1','2251.95','-5623.51','5.37856','5.11303','300','0','0','564','0','0','0','0','0','0','0','','0'),
+('280000029','36384','1','0','0','1','0','0','0','-1','0','1','2234.55','-5604','6.70917','6.02252','300','0','0','564','0','0','0','0','0','0','0','','0');
 
-3 Lance filet gobelin 
+-- 3 Lance filet gobelin 
 
-/*
-SQLyog Community v13.0.1 (64 bit)
-MySQL - 10.1.26-MariaDB-0+deb9u1 
-*********************************************************************
-*/
-/*!40101 SET NAMES utf8 */;
 
 DELETE FROM `creature` WHERE (entry in 280000039, 280000040, 280000041, 280000042, 280000043, 280000044, 280000045, 280000046, 280000047, 280000048, 280000049, 280000050, 280000051, 280000052, 280000053, 280000054, 280000055, 243769, 243771);
 insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values('280000043','36385','1','0','0','1','0','0','0','-1','0','1','2315.43','-5657.43','47.4485','3.02387','300','0','0','564','0','0','0','0','0','0','0','','0');
@@ -79,41 +63,21 @@ insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `p
 insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values('280000054','36385','1','0','0','1','0','0','0','-1','0','1','2345.89','-5779.88','102.99','5.545','300','0','0','564','0','0','0','0','0','0','0','','0');
 insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values('280000055','36385','1','0','0','1','0','0','0','-1','0','1','2321.55','-5788.88','105.34','3.19666','300','0','0','564','0','0','0','0','0','0','0','','0');
 
-4 Azuregos 
+-- 4 Azuregos 
 
-/*
-SQLyog Community v13.0.1 (64 bit)
-MySQL - 10.1.26-MariaDB-0+deb9u1 
-*********************************************************************
-*/
-/*!40101 SET NAMES utf8 */;
-DELETE FROM `creature` WHERE (entry = 280000084); 
-insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values('280000084','6109','1','0','0','1','0','0','0','-1','0','0','2294.57','-6053.6','108.858','4.74366','300','0','0','5029750','0','0','0','0','0','0','0','','0');
+DELETE FROM `creature` WHERE entry = 280000084; 
+INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) VALUES
+('280000084','6109','1','0','0','1','0','0','0','-1','0','0','2294.57','-6053.6','108.858','4.74366','300','0','0','5029750','0','0','0','0','0','0','0','','0');
 
-5 Azurous 
-
-/*
-SQLyog Community v13.0.1 (64 bit)
-MySQL - 10.1.26-MariaDB-0+deb9u1 
-*********************************************************************
-*/
-/*!40101 SET NAMES utf8 */;
-
+-- 5 Azurous 
 
 DELETE FROM `creature` WHERE (entry = 302670); 
 insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values('302670','10202','1','618','618','1','0','0','0','-1','6373','0','6451.87','-4492.62','734.323','1.7228','28800','3','0','3556','0','1','0','0','0','0','0','','0');
 
 
-5 Envahisseur
+-- 5 Envahisseur
 
-/*
-SQLyog Community v13.0.1 (64 bit)
-MySQL - 10.1.26-MariaDB-0+deb9u1 
-*********************************************************************
-*/
-/*!40101 SET NAMES utf8 */;
-
-DELETE FROM `creature` WHERE (entry in 243139, 243223, 243332, 243576, 243577, 243578, 243614, 280000061, 243704, 243705, 280000058, 280000059, 280000064, 280000065, 280000063, 280000062, 280000060, 280000066); 
+DELETE FROM `creature` WHERE entry IN (243139, 243223, 243332, 243576, 243577, 243578, 243614, 280000061, 243704, 243705, 280000058, 280000059, 280000064, 280000065, 280000063, 280000062, 280000060, 280000066); 
 insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values('243139','36989','1','16','16','1','0','0','0','-1','6764','0','2263.18','-6655.76','-9.99912','0.276662','300','3','0','355','0','1','0','0','0','0','0','','0');
 insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values('243223','36989','1','16','1256','1','0','0','0','-1','6764','0','2172.86','-6554.41','-10.2204','0.95586','300','3','0','355','0','1','0','0','0','0','0','','0');
 insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values('243332','36989','1','16','4827','1','0','0','0','-1','6764','0','2585.08','-6473.2','15.8771','3.84946','300','3','0','355','0','1','0','0','0','0','0','','0');
@@ -133,65 +97,39 @@ insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `p
 insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values('280000060','36989','1','0','0','1','0','0','0','-1','0','1','2247.69','-5780.19','2.16696','5.69257','300','0','0','574','0','0','0','0','0','0','0','','0');
 insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values('280000066','36989','1','0','0','1','0','0','0','-1','0','1','2372.81','-5908.09','74.2644','5.38216','300','0','0','673','0','0','0','0','0','0','0','','0');
 
-6  Vendeur des montures gobelines
+-- 6  Vendeur des montures gobelines
 
 -- FULL `creature_template` of entry 48510
 DELETE FROM `creature_template` WHERE (entry = 48510);
 INSERT INTO `creature_template` (`entry`, `difficulty_entry_1`, `difficulty_entry_2`, `difficulty_entry_3`, `KillCredit1`, `KillCredit2`, `modelid1`, `modelid2`, `modelid3`, `modelid4`, `name`, `femaleName`, `subname`, `TitleAlt`, `IconName`, `gossip_menu_id`, `minlevel`, `maxlevel`, `HealthScalingExpansion`, `RequiredExpansion`, `VignetteID`, `faction`, `npcflag`, `speed_walk`, `speed_run`, `scale`, `rank`, `dmgschool`, `BaseAttackTime`, `RangeAttackTime`, `BaseVariance`, `RangeVariance`, `unit_class`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `family`, `trainer_type`, `trainer_class`, `trainer_race`, `type`, `type_flags`, `type_flags2`, `lootid`, `pickpocketloot`, `skinloot`, `resistance1`, `resistance2`, `resistance3`, `resistance4`, `resistance5`, `resistance6`, `spell1`, `spell2`, `spell3`, `spell4`, `spell5`, `spell6`, `spell7`, `spell8`, `VehicleId`, `mingold`, `maxgold`, `AIName`, `MovementType`, `InhabitType`, `HoverHeight`, `HealthModifier`, `HealthModifierExtra`, `ManaModifier`, `ManaModifierExtra`, `ArmorModifier`, `DamageModifier`, `ExperienceModifier`, `RacialLeader`, `movementId`, `RegenHealth`, `mechanic_immune_mask`, `flags_extra`, `ScriptName`, `VerifiedBuild`) VALUES
 (48510, 0, 0, 0, 0, 0, 36169, 0, 0, 0, 'Kall Worthaton', '', 'Trike Dealer', NULL, '', 12439, 45, 45, 0, 0, 0, 2159, 129, 1, 1.14286, 1, 0, 0, 2000, 2000, 0, 0, 1, 512, 2048, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, 3, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, '', 25549);
 
-Ventes 
-
-/*
-SQLyog Community v13.0.1 (64 bit)
-MySQL - 10.1.26-MariaDB-0+deb9u1 
-*********************************************************************
-*/
-/*!40101 SET NAMES utf8 */;
-
+-- Ventes 
+-- make a delete from query here too
 insert into `npc_vendor` (`entry`, `slot`, `item`, `maxcount`, `incrtime`, `ExtendedCost`, `OverrideGoldCost`, `type`, `BonusListIDs`, `PlayerConditionID`, `IgnoreFiltering`, `VerifiedBuild`) values('48510','0','62461','0','0','0','-1','1',NULL,'0','0','0');
 insert into `npc_vendor` (`entry`, `slot`, `item`, `maxcount`, `incrtime`, `ExtendedCost`, `OverrideGoldCost`, `type`, `BonusListIDs`, `PlayerConditionID`, `IgnoreFiltering`, `VerifiedBuild`) values('48510','0','62462','0','0','0','-1','1',NULL,'0','0','0');
 
-7 Vendeur des montures worgen 
+-- 7 Vendeur des montures worgen 
 
 -- FULL `creature_template` of entry 55285
 DELETE FROM `creature_template` WHERE (entry = 55285);
 INSERT INTO `creature_template` (`entry`, `difficulty_entry_1`, `difficulty_entry_2`, `difficulty_entry_3`, `KillCredit1`, `KillCredit2`, `modelid1`, `modelid2`, `modelid3`, `modelid4`, `name`, `femaleName`, `subname`, `TitleAlt`, `IconName`, `gossip_menu_id`, `minlevel`, `maxlevel`, `HealthScalingExpansion`, `RequiredExpansion`, `VignetteID`, `faction`, `npcflag`, `speed_walk`, `speed_run`, `scale`, `rank`, `dmgschool`, `BaseAttackTime`, `RangeAttackTime`, `BaseVariance`, `RangeVariance`, `unit_class`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `family`, `trainer_type`, `trainer_class`, `trainer_race`, `type`, `type_flags`, `type_flags2`, `lootid`, `pickpocketloot`, `skinloot`, `resistance1`, `resistance2`, `resistance3`, `resistance4`, `resistance5`, `resistance6`, `spell1`, `spell2`, `spell3`, `spell4`, `spell5`, `spell6`, `spell7`, `spell8`, `VehicleId`, `mingold`, `maxgold`, `AIName`, `MovementType`, `InhabitType`, `HoverHeight`, `HealthModifier`, `HealthModifierExtra`, `ManaModifier`, `ManaModifierExtra`, `ArmorModifier`, `DamageModifier`, `ExperienceModifier`, `RacialLeader`, `movementId`, `RegenHealth`, `mechanic_immune_mask`, `flags_extra`, `ScriptName`, `VerifiedBuild`) VALUES
 (55285, 0, 0, 0, 0, 0, 39100, 0, 0, 0, 'Astrid Langstrump', '', 'Mountain Horse Handler', NULL, '', 13111, 8, 8, 0, 0, 0, 2163, 131, 1, 1.14286, 1, 0, 0, 2000, 2000, 0, 0, 1, 768, 2048, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, 3, 1, 1.1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, '', 25549);
 
-Ventes 
-
-/*
-SQLyog Community v13.0.1 (64 bit)
-MySQL - 10.1.26-MariaDB-0+deb9u1 
-*********************************************************************
-*/
-/*!40101 SET NAMES utf8 */;
-
+-- Ventes 
+-- delete from query here needed
 insert into `npc_vendor` (`entry`, `slot`, `item`, `maxcount`, `incrtime`, `ExtendedCost`, `OverrideGoldCost`, `type`, `BonusListIDs`, `PlayerConditionID`, `IgnoreFiltering`, `VerifiedBuild`) values('55285','0','73838','0','0','0','-1','1',NULL,'0','0','0');
 insert into `npc_vendor` (`entry`, `slot`, `item`, `maxcount`, `incrtime`, `ExtendedCost`, `OverrideGoldCost`, `type`, `BonusListIDs`, `PlayerConditionID`, `IgnoreFiltering`, `VerifiedBuild`) values('55285','0','73839','0','0','0','-1','1',NULL,'0','0','0');
 
 
-8 Kravos le Dompteur
+-- 8 Kravos le Dompteur
 
-/*
-SQLyog Community v13.0.1 (64 bit)
-MySQL - 10.1.26-MariaDB-0+deb9u1 
-*********************************************************************
-*/
-/*!40101 SET NAMES utf8 */;
 DELETE FROM `creature` WHERE (entry = 28000079);
 insert into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values('280000079','126852','1669','0','0','1','0','0','0','-1','0','0','5314.29','9727.22','-94.5117','0.810436','300','0','0','98564320','0','0','0','0','0','0','0','','0');
 
-Season 5, 6, 7, Captain Roberts 119484
+-- Season 5, 6, 7, Captain Roberts 119484
 
-/*
-SQLyog Community v13.0.1 (64 bit)
-MySQL - 10.1.26-MariaDB-0+deb9u1 
-*********************************************************************
-*/
-/*!40101 SET NAMES utf8 */;
-
+-- make a delete from query here too
 insert into `npc_vendor` (`entry`, `slot`, `item`, `maxcount`, `incrtime`, `ExtendedCost`, `OverrideGoldCost`, `type`, `BonusListIDs`, `PlayerConditionID`, `IgnoreFiltering`, `VerifiedBuild`) values('119484','0','139775','0','0','0','-1','1',NULL,'0','0','0');
 insert into `npc_vendor` (`entry`, `slot`, `item`, `maxcount`, `incrtime`, `ExtendedCost`, `OverrideGoldCost`, `type`, `BonusListIDs`, `PlayerConditionID`, `IgnoreFiltering`, `VerifiedBuild`) values('119484','0','142379','0','0','0','-1','1',NULL,'0','0','0');
 insert into `npc_vendor` (`entry`, `slot`, `item`, `maxcount`, `incrtime`, `ExtendedCost`, `OverrideGoldCost`, `type`, `BonusListIDs`, `PlayerConditionID`, `IgnoreFiltering`, `VerifiedBuild`) values('119484','0','146218','0','0','5973','-1','1',NULL,'0','0','0');
@@ -261,15 +199,9 @@ insert into `npc_vendor` (`entry`, `slot`, `item`, `maxcount`, `incrtime`, `Exte
 insert into `npc_vendor` (`entry`, `slot`, `item`, `maxcount`, `incrtime`, `ExtendedCost`, `OverrideGoldCost`, `type`, `BonusListIDs`, `PlayerConditionID`, `IgnoreFiltering`, `VerifiedBuild`) values('119484','0','150271','0','0','5973','-1','1',NULL,'0','0','0');
 
 
-Season 5, 6, 7, Sarah la Sauvage 119272
+-- Season 5, 6, 7, Sarah la Sauvage 119272
 
-/*
-SQLyog Community v13.0.1 (64 bit)
-MySQL - 10.1.26-MariaDB-0+deb9u1 
-*********************************************************************
-*/
-/*!40101 SET NAMES utf8 */;
-
+-- make a DELETE FROM query here or it wont run the 2nd time
 insert into `npc_vendor` (`entry`, `slot`, `item`, `maxcount`, `incrtime`, `ExtendedCost`, `OverrideGoldCost`, `type`, `BonusListIDs`, `PlayerConditionID`, `IgnoreFiltering`, `VerifiedBuild`) values('119272','0','139776','0','0','0','-1','1',NULL,'0','0','0');
 insert into `npc_vendor` (`entry`, `slot`, `item`, `maxcount`, `incrtime`, `ExtendedCost`, `OverrideGoldCost`, `type`, `BonusListIDs`, `PlayerConditionID`, `IgnoreFiltering`, `VerifiedBuild`) values('119272','0','142380','0','0','0','-1','1',NULL,'0','0','0');
 insert into `npc_vendor` (`entry`, `slot`, `item`, `maxcount`, `incrtime`, `ExtendedCost`, `OverrideGoldCost`, `type`, `BonusListIDs`, `PlayerConditionID`, `IgnoreFiltering`, `VerifiedBuild`) values('119272','0','146219','0','0','5973','-1','1',NULL,'0','0','0');
