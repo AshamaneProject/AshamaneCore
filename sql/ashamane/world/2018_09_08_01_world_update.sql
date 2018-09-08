@@ -1,9 +1,9 @@
 -- Disable deprecated Alchemy quests
-DELETE FROM creature_queststarter WHERE quest IN (29481, 29482);
-DELETE FROM disables WHERE sourceType=1 AND entry IN (29481, 29482);
+DELETE FROM creature_queststarter WHERE quest IN (10907, 10902);
+DELETE FROM disables WHERE sourceType=1 AND entry IN (10907, 10902);
 INSERT INTO disables (sourceType, entry, flags, comment) VALUES
-(1, 29481, 0, "Deprecated quest: Transmutation Master"),
-(1, 29482 ,0, "Deprecated quest: Elixir master");
+(1, 10907, 0, "Deprecated quest: Transmutation Master"),
+(1, 10902 ,0, "Deprecated quest: Elixir master");
 
 -- More duplicate
 DELETE FROM creature WHERE guid IN (158646,158651,158652,158837,158838,158596,158543,185032,158545,185031,185033,158517,158516,185030);
