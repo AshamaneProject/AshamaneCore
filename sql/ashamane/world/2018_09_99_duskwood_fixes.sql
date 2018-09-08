@@ -1672,6 +1672,15 @@ UPDATE `creature_template`
 SET `faction` = 21
 WHERE `entry` = 43762;
 
+-- spawn mistmantle spell focus for quest 26674
+DELETE FROM `gameobject`
+WHERE `guid` = 18;
+
+INSERT INTO `gameobject`
+(`guid`,`id`,`map`,`zoneId`,`areaId`,`position_x`,`position_y`,`position_z`,`rotation3`,`spawntimesecs`,`animprogress`,`state`)
+VALUES
+(18,301070,0,10,0,-10368.3,-1256.38,35.9093,1,180,0,1);
+
 -- allow the script to take over
 UPDATE `creature_template`
 SET `AIName` = '',

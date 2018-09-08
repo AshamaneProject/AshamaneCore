@@ -3636,12 +3636,6 @@ void SpellMgr::LoadSpellInfoCorrections()
         const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_2))->Effect = SPELL_EFFECT_APPLY_AURA;
     });
 
-    // Call Stalvan
-    ApplySpellFix({ 82029 }, [](SpellInfo* spellInfo)
-    {
-        spellInfo->RequiredAreasID = 0; // cannot get this to work in mistmantle manor
-    });
-
     SpellInfo* spellInfo = NULL;
     for (uint32 i = 0; i < GetSpellInfoStoreSize(); ++i)
     {
