@@ -3145,111 +3145,57 @@ public:
 };
 
 /// Bursting Shot --  186387
-class spell_bursting_shot : public SpellScriptLoader
+class spell_bursting_shot : public SpellScript
 {
-public:
-    spell_bursting_shot() : SpellScriptLoader("spell_bursting_shot") { }
+    PrepareSpellScript(spell_bursting_shot);
 
-    class spell_bursting_shot_SpellScript : public SpellScript
+    enum eSpells
     {
-        PrepareSpellScript(spell_bursting_shot_SpellScript);
-
-        enum eSpells
-        {
-            AURA_SHOTING = 224729
-        };
-
-        void HandleAfterHit()
-        {
-            Unit* l_Caster = GetCaster();
-            Unit* l_Target = GetHitUnit();
-
-            if (l_Caster == nullptr || l_Target == nullptr)
-                return;
-
-            l_Caster->CastSpell(l_Target, AURA_SHOTING, true);
-        }
-
-        void Register()
-        {
-            AfterHit += SpellHitFn(spell_bursting_shot_SpellScript::HandleAfterHit);
-        }
+        AURA_SHOTING = 224729
     };
 
-    SpellScript* GetSpellScript() const
+    void HandleAfterHit()
     {
-        return new spell_bursting_shot_SpellScript();
+        GetCaster()->CastSpell(nullptr, AURA_SHOTING, true);
+    }
+
+    void Register()
+    {
+        AfterHit += SpellHitFn(spell_bursting_shot::HandleAfterHit);
     }
 };
 
 // Sentinel - 206817
 // AreaTriggerID - 9769
-class at_hun_sentinel : public AreaTriggerEntityScript
+struct at_hun_sentinel : AreaTriggerAI
 {
-public:
-    at_hun_sentinel() : AreaTriggerEntityScript("at_hun_sentinel") {}
+    at_hun_sentinel(AreaTrigger* areatrigger) : AreaTriggerAI(areatrigger) { }
 
-    struct at_hun_sentinelAI : AreaTriggerAI
+    int32 baseTimeInterval;
+    int32 timeInterval;
+
+    void OnCreate() override
     {
-        at_hun_sentinelAI(AreaTrigger* areatrigger) : AreaTriggerAI(areatrigger) { }
+        baseTimeInterval = sSpellMgr->GetSpellInfo(SPELL_HUNTER_SENTINEL)->GetEffect(EFFECT_1)->BasePoints * IN_MILLISECONDS;
+        timeInterval = baseTimeInterval;
+    }
 
-        void OnCreate() override
-        {
-            timeInterval =6000;
-        }
+    void OnUpdate(uint32 diff) override
+    {
+        timeInterval += diff;
+        if (timeInterval < baseTimeInterval)
+            return;
 
-        int32 timeInterval;
-
-        void OnUpdate(uint32 diff) override
-        {
-            timeInterval += diff;
-            if (timeInterval < 6000)
-                return;
-
-            if (Unit* caster = at->GetCaster())
-            {
-                std::list<Unit*> targetList;
-                float radius = sSpellMgr->GetSpellInfo(SPELL_HUNTER_SENTINEL)->GetEffect(0)->CalcRadius(caster);
-
-                Trinity::AnyUnitInObjectRangeCheck l_Check(at, radius);
-                Trinity::UnitListSearcher<Trinity::AnyUnitInObjectRangeCheck> l_Searcher(at, targetList, l_Check);
-                Cell::VisitAllObjects(at, l_Searcher, radius);
-
-                for (Unit* l_Unit : targetList)
-
-                {
-                    caster->CastSpell(l_Unit, SPELL_HUNTER_HUNTERS_MARK_AURA, true);
-                    caster->CastSpell(caster, SPELL_HUNTER_HUNTERS_MARK_AURA_2, true);
-
-                    timeInterval -= 6000;
-                }
-            }
-        }
-
-        void OnRemove() override
-        {
-            if (Unit* caster = at->GetCaster())
-            {
-                std::list<Unit*> targetList;
-                float radius = sSpellMgr->GetSpellInfo(SPELL_HUNTER_SENTINEL)->GetEffect(0)->CalcRadius(caster);
-
-                Trinity::AnyUnitInObjectRangeCheck l_Check(at, radius);
-                Trinity::UnitListSearcher<Trinity::AnyUnitInObjectRangeCheck> l_Searcher(at, targetList, l_Check);
-                Cell::VisitAllObjects(at, l_Searcher, radius);
-
-                for (Unit* l_Unit : targetList)
-                    if (l_Unit != caster && caster->IsValidAttackTarget(l_Unit))
+        if (Unit* caster = at->GetCaster())
+            for (ObjectGuid guid : GetInsideUnits())
+                if (Unit* target = ObjectAccessor::GetUnit(*caster, guid))
+                    if (caster->IsValidAttackTarget(target))
                     {
-                        caster->CastSpell(l_Unit, SPELL_HUNTER_HUNTERS_MARK_AURA, true);
+                        caster->CastSpell(target, SPELL_HUNTER_HUNTERS_MARK_AURA, true);
                         caster->CastSpell(caster, SPELL_HUNTER_HUNTERS_MARK_AURA_2, true);
-                    }
-            }
-        }
-    };
+                    )
 
-    AreaTriggerAI* GetAI(AreaTrigger* areatrigger) const override
-    {
-        return new at_hun_sentinelAI(areatrigger);
+        timeInterval -= baseTimeInterval;
     }
 };
 
@@ -3303,7 +3249,7 @@ void AddSC_hunter_spell_scripts()
     new spell_hun_raptor_strike();
     new spell_hun_carve();
     new spell_hun_true_aim();
-	new spell_bursting_shot();
+	RegisterSpellScript(spell_bursting_shot);
     RegisterSpellScript(spell_hun_explosive_shot_detonate);
     RegisterSpellScript(spell_hun_exhilaration);
     RegisterAuraScript(aura_hun_volley);
@@ -3325,7 +3271,7 @@ void AddSC_hunter_spell_scripts()
     new at_hun_tar_trap_not_activated();
     new at_hun_binding_shot();
     new at_hun_caltrops();
-	new at_hun_sentinel();
+	RegisterAreaTriggerAI(at_hun_sentinel);
 
     // Playerscripts
     new PlayerScript_black_arrow();
