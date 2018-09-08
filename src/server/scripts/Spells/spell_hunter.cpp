@@ -48,6 +48,7 @@ enum HunterSpells
     SPELL_HUNTER_A_MURDER_OF_CROWS_1                = 131894,
     SPELL_HUNTER_A_MURDER_OF_CROWS_2                = 206505,
     SPELL_HUNTER_A_MURDER_OF_CROWS_DAMAGE           = 131900,
+	SPELL_HUNTER_AIMED_SHOT                         = 19434,
     SPELL_HUNTER_ANIMAL_INSTINCTS                   = 204315,
     SPELL_HUNTER_ANIMAL_INSTINCTS_CHEETAH           = 204324,
     SPELL_HUNTER_ANIMAL_INSTINCTS_MONGOOSE          = 204333,
@@ -1112,9 +1113,9 @@ class spell_hun_piercing_shot : public SpellScript
         return true;
     }
 
-    void HandleTakePower(SpellPowerCost& powerCost)
+    void HandleTakePower(Powers& /*power*/, int32& powerCount)
     {
-        powerCost.Amount += m_ExtraSpellCost;
+        powerCount += m_ExtraSpellCost;
     }
 
     void CalcDamage(SpellEffIndex /*effIndex*/)
@@ -2234,7 +2235,7 @@ public:
 
         bool CheckProc(ProcEventInfo& eventInfo)
         {
-            if (eventInfo.GetSpellInfo()->Id == SPELL_HUNTER_MULTISHOT || eventInfo.GetSpellInfo()->Id == SPELL_HUNTER_ARCANE_SHOT)
+            if (eventInfo.GetSpellInfo()->Id == SPELL_AIMED_SHOT || eventInfo.GetSpellInfo()->Id == SPELL_HUNTER_ARCANE_SHOT)
                 return true;
 
             return false;
@@ -3143,6 +3144,115 @@ public:
     }
 };
 
+/// Bursting Shot --  186387
+class spell_bursting_shot : public SpellScriptLoader
+{
+public:
+    spell_bursting_shot() : SpellScriptLoader("spell_bursting_shot") { }
+
+    class spell_bursting_shot_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_bursting_shot_SpellScript);
+
+        enum eSpells
+        {
+            AURA_SHOTING = 224729
+        };
+
+        void HandleAfterHit()
+        {
+            Unit* l_Caster = GetCaster();
+            Unit* l_Target = GetHitUnit();
+
+            if (l_Caster == nullptr || l_Target == nullptr)
+                return;
+
+            l_Caster->CastSpell(l_Target, AURA_SHOTING, true);
+        }
+
+        void Register()
+        {
+            AfterHit += SpellHitFn(spell_bursting_shot_SpellScript::HandleAfterHit);
+        }
+    };
+
+    SpellScript* GetSpellScript() const
+    {
+        return new spell_bursting_shot_SpellScript();
+    }
+};
+
+// Sentinel - 206817
+// AreaTriggerID - 9769
+class at_hun_sentinel : public AreaTriggerEntityScript
+{
+public:
+    at_hun_sentinel() : AreaTriggerEntityScript("at_hun_sentinel") {}
+
+    struct at_hun_sentinelAI : AreaTriggerAI
+    {
+        at_hun_sentinelAI(AreaTrigger* areatrigger) : AreaTriggerAI(areatrigger) { }
+
+        void OnCreate() override
+        {
+            timeInterval =6000;
+        }
+
+        int32 timeInterval;
+
+        void OnUpdate(uint32 diff) override
+        {
+            timeInterval += diff;
+            if (timeInterval < 6000)
+                return;
+
+            if (Unit* caster = at->GetCaster())
+            {
+                std::list<Unit*> targetList;
+                float radius = sSpellMgr->GetSpellInfo(SPELL_HUNTER_SENTINEL)->GetEffect(0)->CalcRadius(caster);
+
+                Trinity::AnyUnitInObjectRangeCheck l_Check(at, radius);
+                Trinity::UnitListSearcher<Trinity::AnyUnitInObjectRangeCheck> l_Searcher(at, targetList, l_Check);
+                Cell::VisitAllObjects(at, l_Searcher, radius);
+
+                for (Unit* l_Unit : targetList)
+
+                {
+                    caster->CastSpell(l_Unit, SPELL_HUNTER_HUNTERS_MARK_AURA, true);
+                    caster->CastSpell(caster, SPELL_HUNTER_HUNTERS_MARK_AURA_2, true);
+
+                    timeInterval -= 6000;
+                }
+            }
+        }
+
+        void OnRemove() override
+        {
+            if (Unit* caster = at->GetCaster())
+            {
+                std::list<Unit*> targetList;
+                float radius = sSpellMgr->GetSpellInfo(SPELL_HUNTER_SENTINEL)->GetEffect(0)->CalcRadius(caster);
+
+                Trinity::AnyUnitInObjectRangeCheck l_Check(at, radius);
+                Trinity::UnitListSearcher<Trinity::AnyUnitInObjectRangeCheck> l_Searcher(at, targetList, l_Check);
+                Cell::VisitAllObjects(at, l_Searcher, radius);
+
+                for (Unit* l_Unit : targetList)
+                    if (l_Unit != caster && caster->IsValidAttackTarget(l_Unit))
+                    {
+                        caster->CastSpell(l_Unit, SPELL_HUNTER_HUNTERS_MARK_AURA, true);
+                        caster->CastSpell(caster, SPELL_HUNTER_HUNTERS_MARK_AURA_2, true);
+                    }
+            }
+        }
+    };
+
+    AreaTriggerAI* GetAI(AreaTrigger* areatrigger) const override
+    {
+        return new at_hun_sentinelAI(areatrigger);
+    }
+};
+
 void AddSC_hunter_spell_scripts()
 {
     new spell_hun_harpoon();
@@ -3193,6 +3303,7 @@ void AddSC_hunter_spell_scripts()
     new spell_hun_raptor_strike();
     new spell_hun_carve();
     new spell_hun_true_aim();
+	new spell_bursting_shot();
     RegisterSpellScript(spell_hun_explosive_shot_detonate);
     RegisterSpellScript(spell_hun_exhilaration);
     RegisterAuraScript(aura_hun_volley);
@@ -3214,6 +3325,7 @@ void AddSC_hunter_spell_scripts()
     new at_hun_tar_trap_not_activated();
     new at_hun_binding_shot();
     new at_hun_caltrops();
+	new at_hun_sentinel();
 
     // Playerscripts
     new PlayerScript_black_arrow();
