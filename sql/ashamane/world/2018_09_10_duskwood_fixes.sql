@@ -1640,22 +1640,19 @@ AND `guid` NOT IN (171202,171452,171523,171568,171570,171729,171745,171450,17150
 171861,172458,171823,171831,171815,171832,171527,171502,172288,172543,171494,172170,172326,172152,171509,171452,171465,171469,171510,171520,172115,172117,
 171468,172116,171235,171453,171499,171944,172107,172141);
 
--- major issue, 26760 will not be offered, NO idea why
-
 -- fix quest 26760 cry for the moon
 UPDATE `quest_template`
 SET `QuestType` = 2,
 `Flags` = 8
 WHERE ID = 26760;
 
--- UPDATE `quest_template_addon`
--- SET `PrevQuestID` = 26760
--- WHERE `ID` = 26723;
+-- some ^&*@^#$&*^#@&*$ put this in here, may they rot in hell
+DELETE FROM `disables`
+WHERE `entry` = 26760;
 
--- quest 26760 broken, so need to change this
-UPDATE quest_template_addon
-SET PrevQuestID = 0
-WHERE ID = 26778;
+UPDATE `quest_template_addon`
+SET `PrevQuestID` = 26760
+WHERE `ID` = 26723;
 
 -- incorrect queststarter
 DELETE FROM creature_queststarter
