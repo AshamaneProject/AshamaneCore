@@ -13632,6 +13632,17 @@ bool Unit::SetWalk(bool enable)
     return true;
 }
 
+bool Unit::SetFlying(bool enable)
+{
+    if (enable == IsFlying())
+        return false;
+
+    if (enable)
+        AddUnitMovementFlag(MOVEMENTFLAG_FLYING);
+    else
+        RemoveUnitMovementFlag(MOVEMENTFLAG_FLYING);
+}
+
 bool Unit::SetDisableGravity(bool disable)
 {
     if (disable == IsLevitating())
