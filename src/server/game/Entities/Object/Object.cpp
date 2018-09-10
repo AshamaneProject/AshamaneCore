@@ -455,14 +455,7 @@ void Object::BuildMovementUpdate(ByteBuffer* data, uint32 flags) const
         data->FlushBits();
 
         for (auto const& itr : unit->GetMovementForces())
-        {
-            *data << itr.first;
-            *data << itr.second.Origin;
-            *data << itr.second.Direction;
-            *data << uint32(itr.second.TransportID);
-            *data << float(itr.second.Magnitude);
-            data->WriteBits(itr.second.Type, 2);
-        }
+            *data << itr.second;
 
         if (HasSpline)
             WorldPackets::Movement::CommonMovement::WriteCreateObjectSplineDataBlock(*unit->movespline, *data);
