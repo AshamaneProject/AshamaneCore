@@ -14,7 +14,7 @@ DELETE FROM pool_template WHERE entry=348;
 INSERT INTO pool_template (entry, max_limit,description) VALUES
 (348, 1, "Jewelcrafting daily quest pool Alliance");
 
-DELETE FROM pool_quest WHERE pool_entry=348;
+DELETE FROM pool_quest WHERE pool_entry = 348 OR entry IN (25105, 25154, 25155, 25156, 25157);
 INSERT INTO pool_quest (entry, pool_entry, description) VALUES
 (25105, 348, "Nibbler! No!"),
 (25154, 348, "A Present for Lila"),
@@ -52,7 +52,7 @@ DELETE FROM pool_template WHERE entry=349;
 INSERT INTO pool_template (entry, max_limit,description) VALUES
 (349, 1, "Jewelcrafting daily quest pool Horde");
 
-DELETE FROM pool_quest WHERE pool_entry=349;
+DELETE FROM pool_quest WHERE pool_entry = 349 OR entry IN (25158, 25160, 25161, 25162, 25159);
 INSERT INTO pool_quest (entry, pool_entry, description) VALUES
 (25158, 349, "Nibbler! No!"),
 (25160, 349, "A Present for Lila"),

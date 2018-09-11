@@ -125,7 +125,7 @@ struct npc_zapnozzle : public ScriptedAI
             }).
             Schedule(21s, [this](TaskContext /*context*/)
             {
-                me->CastSpell(GetSummoner(), SPELL_DGITL_JUMP_CABLES, true);
+                me->CastSpell(GetSummoner(), SPELL_DGITL_JUMP_CABLES, false);
             }).
             Schedule(27s, [this](TaskContext /*context*/)
             {
@@ -133,7 +133,7 @@ struct npc_zapnozzle : public ScriptedAI
             }).
             Schedule(31s, [this](TaskContext /*context*/)
             {
-                me->CastSpell(GetSummoner(), SPELL_DGITL_JUMP_CABLES, true);
+                me->CastSpell(GetSummoner(), SPELL_DGITL_JUMP_CABLES, false);
             }).
             Schedule(37s, [this](TaskContext /*context*/)
             {
@@ -330,17 +330,13 @@ struct npc_foreman_dampwick : public ScriptedAI
             {
                 miner->CastSpell(nullptr, SPELL_SUMMON_ORE_CART, true);
                 if (Creature* oreCart = miner->GetSummonedCreatureByEntry(NPC_ORE_CART))
+                {
                     oreCart->CastSpell(miner, SPELL_MINER_TROUBLES_CHAINS, true);
+                    oreCart->GetMotionMaster()->MoveFollow(miner, 1.f, float(M_PI));
+                }
 
-                CAST_AI(npc_escortAI, (miner->AI()))->Start(true, false, player->GetGUID(), quest);
+                CAST_AI(npc_escortAI, (miner->AI()))->Start(false, false, player->GetGUID(), quest);
             }
-        }
-        else if (quest->GetQuestId() == QUEST_CAPTURING_THE_UNKNOWN)
-        {
-            player->CastSpell(player, SPELL_CTU_SEE_INVIS_1, true);
-            player->CastSpell(player, SPELL_CTU_SEE_INVIS_2, true);
-            player->CastSpell(player, SPELL_CTU_SEE_INVIS_3, true);
-            player->CastSpell(player, SPELL_CTU_SEE_INVIS_4, true);
         }
     }
 };
@@ -356,34 +352,44 @@ struct npc_frightened_miner_escort : public npc_escortAI
     void JustDied(Unit* /*killer*/) override {}
     void OnCharmed(bool /*apply*/) override {}
 
-    void Reset() override
+    void WaypointReached(uint32 pointId) override
     {
-        Talk(0);
+        switch(pointId)
+        {
+            case 3:
+                TalkToEscortPlayer(1);
+                break;
+            case 4:
+            case 7:
+            case 10:
+            case 12:
+                me->HandleEmoteCommand(467);
+                break;
+            default:
+                break;
+        }
     }
 
-    void WaypointReached(uint32 i) override
+    void WaypointStart(uint32 pointId) override
     {
-        switch(i)
+        me->HandleEmoteCommand(0);
+
+        switch(pointId)
         {
-            case 6:
-                TalkToEscortPlayer(1);
-                me->HandleEmoteCommand(467);
+            case 0:
+                TalkToEscortPlayer(0);
                 break;
-            case 9:
+            case 4:
                 TalkToEscortPlayer(2);
-                me->HandleEmoteCommand(467);
                 break;
-            case 12:
+            case 8:
                 TalkToEscortPlayer(3);
-                me->HandleEmoteCommand(467);
                 break;
-            case 13:
+            case 10:
                 TalkToEscortPlayer(4);
                 break;
-            case 17:
-                me->HandleEmoteCommand(467);
-                break;
-            case 18:
+            case 13:
+                SetRun(true);
                 TalkToEscortPlayer(5);
                 if (Player *player = GetPlayerForEscort())
                     player->KilledMonsterCredit(35816);
@@ -395,24 +401,6 @@ struct npc_frightened_miner_escort : public npc_escortAI
                 break;
         }
     }
-
-    void UpdateEscortAI(const uint32 diff) override
-    {
-        if (m_ui_attack <= diff)
-        {
-            if (me->FindNearestCreature(35812, 10, true))
-                SetEscortPaused(true);
-            else
-                SetEscortPaused(false);
-            m_ui_attack = 1000;
-        }
-        else m_ui_attack -= diff;
-
-        DoMeleeAttackIfReady();
-    }
-
-    private :
-        uint32 m_ui_attack;
 };
 
 std::map<uint32, uint32> const ctuSpellByBunny
@@ -471,271 +459,199 @@ class spell_ctu_bind_sight : public SpellScript
     }
 };
 
-class spell_weed_whacker : public SpellScriptLoader
+enum LostIslesWeed
 {
-public:
-    spell_weed_whacker() : SpellScriptLoader("spell_weed_whacker") { }
-
-    class spell_weed_whacker_SpellScript : public SpellScript
-    {
-        PrepareSpellScript(spell_weed_whacker_SpellScript);
-
-        void HandleDummy(SpellEffIndex /*effIndex*/)
-        {
-            if (GetCastItem())
-                if (Unit* caster = GetCastItem()->GetOwner())
-                    if (caster->GetTypeId() == TYPEID_PLAYER)
-                    {
-                        Player *player = caster->ToPlayer();
-                        if (player->HasAura(68212))
-                            player->RemoveAura(68212);
-                        else if (player->GetQuestStatus(14236) == QUEST_STATUS_INCOMPLETE)
-                            player->CastSpell(player, 68212, true);
-                    }
-        }
-
-        void Register() override
-        {
-            OnEffectHitTarget += SpellEffectFn(spell_weed_whacker_SpellScript::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
-        }
-    };
-
-    SpellScript* GetSpellScript() const override
-    {
-        return new spell_weed_whacker_SpellScript();
-    }
+    QUEST_WEED_WHAKER       = 14236,
+    SPELL_WEED_WHACKER_AURA = 68212
 };
 
-class npc_lianne_gobelin : public CreatureScript
+struct npc_lost_isles_weed : public ScriptedAI
 {
-public:
-    npc_lianne_gobelin() : CreatureScript("npc_lianne_gobelin") { }
+    npc_lost_isles_weed(Creature* creature) : ScriptedAI(creature) {}
 
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new npc_lianne_gobelinAI(creature);
-    }
-
-    struct npc_lianne_gobelinAI : public ScriptedAI
-    {
-        npc_lianne_gobelinAI(Creature* creature) : ScriptedAI(creature)
-        {
-        }
-
-        void Reset() override
-        {
-            if (me->GetVehicleKit())
-                if (Creature *c = me->FindNearestCreature(36042, 10))
-                    c->CastCustomSpell(VEHICLE_SPELL_RIDE_HARDCODED, SPELLVALUE_BASE_POINT0, 1, me, false);
-        }
-
-        void JustDied(Unit* /*killer*/) override
-        {
-            if (Creature *c = me->FindNearestCreature(36042, 100))
-                c->ToCreature()->AI()->Talk(irand(0, 7));
-        }
-
-        void UpdateAI(uint32 /*diff*/) override
-        {
-        }
-    };
+    void AttackStart(Unit* /*who*/) override {}
+    void EnterCombat(Unit* /*who*/) override {}
 };
 
-class npc_killag_sangrecroc : public CreatureScript
+class spell_weed_whacker : public SpellScript
 {
-public:
-    npc_killag_sangrecroc() : CreatureScript("npc_killag_sangrecroc") { }
+    PrepareSpellScript(spell_weed_whacker);
 
-    bool OnQuestAccept(Player* player, Creature* /*creature*/, const Quest *quest) override
+    void HandleDummy(SpellEffIndex /*effIndex*/)
     {
-        if (quest->GetQuestId() == 14240)
+        if (GetCastItem())
         {
-            if (Creature *t = player->SummonCreature(36585, player->GetPositionX(), player->GetPositionY(),  player->GetPositionZ(),
-                                                     player->GetOrientation(), TEMPSUMMON_CORPSE_TIMED_DESPAWN, 300*IN_MILLISECONDS))
+            if (Unit* caster = GetCastItem()->GetOwner())
             {
-                player->CastCustomSpell(VEHICLE_SPELL_RIDE_HARDCODED, SPELLVALUE_BASE_POINT0, 1, t, false);
-                CAST_AI(npc_escortAI, (t->AI()))->Start(false, true, player->GetGUID(), quest);
+                if (Player* player = caster->ToPlayer())
+                {
+                    if (player->HasAura(SPELL_WEED_WHACKER_AURA))
+                        player->RemoveAura(SPELL_WEED_WHACKER_AURA);
+                    else if (player->GetQuestStatus(QUEST_WEED_WHAKER) == QUEST_STATUS_INCOMPLETE)
+                        player->CastSpell(player, SPELL_WEED_WHACKER_AURA, true);
+                }
             }
         }
-        if (quest->GetQuestId() == 14238)
-        {
-            player->RemoveAura(68338);
-            player->RemoveAura(69303);
-            for (Unit::ControlList::iterator itr = player->m_Controlled.begin(); itr != player->m_Controlled.end(); ++itr)
-                if ((*itr)->GetTypeId() == TYPEID_UNIT && (*itr)->GetEntry() == 36100)
-                    (*itr)->ToCreature()->DespawnOrUnsummon();
-        }
-        return true;
     }
 
-    bool OnQuestReward(Player* player, Creature* /*creature*/, const Quest *quest, uint32 ) override
+    void Register() override
     {
-        if (quest->GetQuestId() == 14238)
-        {
-            player->RemoveAura(68338);
-            player->RemoveAura(69303);
-            for (Unit::ControlList::iterator itr = player->m_Controlled.begin(); itr != player->m_Controlled.end(); ++itr)
-                if ((*itr)->GetTypeId() == TYPEID_UNIT && (*itr)->GetEntry() == 36100)
-                    (*itr)->ToCreature()->DespawnOrUnsummon();
-        }
-        return true;
+        OnEffectHitTarget += SpellEffectFn(spell_weed_whacker::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
     }
 };
 
-class npc_pant_gob : public CreatureScript
+enum Infrared
 {
-public:
-    npc_pant_gob() : CreatureScript("npc_pant_gob") { }
+    QUEST_INFRARED_INFRADEAD        = 14238,
+    QUEST_TO_THE_CLIFFS             = 14240,
 
-    struct npc_pant_gobAI : public npc_escortAI
+    NPC_ORC_SCOUT                   = 36100,
+    NPC_CLIFF_BASTIA                = 36585,
+
+    SPELL_INFRARED_QUEST_ACCEPT     = 68344,
+    SPELL_INFRARED_ORC_SCOUT_AURA   = 68338,
+    SPELL_CLIFF_SUMMON_BASTIA       = 68973,
+};
+
+// 35917
+struct npc_killag_sangrecroc : public ScriptedAI
+{
+    npc_killag_sangrecroc(Creature* creature) : ScriptedAI(creature) {}
+
+    void sQuestAccept(Player* player, const Quest* quest) override
     {
-        npc_pant_gobAI(Creature* creature) : npc_escortAI(creature) {}
+        if (quest->GetQuestId() == QUEST_INFRARED_INFRADEAD)
+            me->CastSpell(player, SPELL_INFRARED_QUEST_ACCEPT, true);
 
-        void AttackStart(Unit* /*who*/) override {}
-        void EnterCombat(Unit* /*who*/) override {}
-        void EnterEvadeMode(EvadeReason /*why*/) override {}
-
-        void Reset() override
+        if (quest->GetQuestId() == QUEST_TO_THE_CLIFFS)
         {
-        }
+            player->CastSpell(player, SPELL_CLIFF_SUMMON_BASTIA, true);
 
-        void PassengerBoarded(Unit* who, int8 /*seatId*/, bool /*apply*/) override
-        {
-            if (who->GetTypeId() == TYPEID_PLAYER)
-                Start(false, true, who->GetGUID());
+            if (Creature* bastia = player->GetSummonedCreatureByEntry(NPC_CLIFF_BASTIA))
+                CAST_AI(npc_escortAI, bastia->AI())->Start(false, true, player->GetGUID(), quest);
         }
+    }
 
-        void WaypointReached(uint32 i) override
-        {
-            SetRun(true);
-            switch(i)
-            {
-            case 17:
-                me->DespawnOrUnsummon();
-                break;
-            default:
-                break;
-            }
-        }
-
-        void JustDied(Unit* /*killer*/) override
-        {
-        }
-
-        void OnCharmed(bool /*apply*/) override
-        {
-        }
-
-        void UpdateAI(uint32 diff) override
-        {
-            npc_escortAI::UpdateAI(diff);
-        }
-    };
-
-    CreatureAI* GetAI(Creature* creature) const override
+    void sQuestReward(Player* player, const Quest *quest, uint32 ) override
     {
-        return new npc_pant_gobAI (creature);
+        if (quest->GetQuestId() == QUEST_INFRARED_INFRADEAD)
+            player->RemoveAurasDueToSpell(SPELL_INFRARED_ORC_SCOUT_AURA);
     }
 };
 
-class npc_gyrocopterequest_giver : public CreatureScript
+// 68338
+class aura_infrared_orc_scout : public AuraScript
 {
-public:
-    npc_gyrocopterequest_giver() : CreatureScript("npc_gyrocopterequest_giver") { }
+    PrepareAuraScript(aura_infrared_orc_scout);
 
-    bool OnQuestAccept(Player* player, Creature* creature, const Quest *quest) override
+    void OnRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
     {
-        if (quest->GetQuestId() == 14242)
-        {
-            if (Creature *t = player->SummonCreature(39074, creature->GetPositionX(), creature->GetPositionY(),  creature->GetPositionZ(),
-                                                     creature->GetOrientation(), TEMPSUMMON_CORPSE_TIMED_DESPAWN, 300*IN_MILLISECONDS))
-            {
-                player->CastCustomSpell(VEHICLE_SPELL_RIDE_HARDCODED, SPELLVALUE_BASE_POINT0, 1, t, false);
-                CAST_AI(npc_escortAI, (t->AI()))->Start(false, true, player->GetGUID(), quest);
-                t->AI()->Talk(0, player);
-            }
-        }
-        return true;
+        if (Creature* orcScout = GetTarget()->GetSummonedCreatureByEntry(NPC_ORC_SCOUT))
+            orcScout->DespawnOrUnsummon();
     }
 
-    bool OnGossipHello(Player* player, Creature* creature) override
+    void Register() override
     {
-        if (player->GetQuestStatus(14242) != QUEST_STATUS_NONE)
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Would you take a gyrocopter?", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-        else if (creature->IsQuestGiver())
-            player->PrepareQuestMenu(creature->GetGUID());
-        SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
-        return true;
+        AfterEffectRemove += AuraEffectRemoveFn(aura_infrared_orc_scout::OnRemove, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
     }
-
 };
 
-class npc_girocoptere : public CreatureScript
+// 36578
+struct npc_cliff_bastia : public npc_escortAI
 {
-public:
-    npc_girocoptere() : CreatureScript("npc_girocoptere") { }
+    npc_cliff_bastia(Creature* creature) : npc_escortAI(creature) {}
 
-    struct npc_girocoptereAI : public npc_escortAI
+    void AttackStart(Unit* /*who*/) override {}
+    void EnterCombat(Unit* /*who*/) override {}
+    void EnterEvadeMode(EvadeReason /*why*/) override {}
+    void OnCharmed(bool /*apply*/) override {}
+
+    void WaypointReached(uint32 pointId) override
     {
-        npc_girocoptereAI(Creature* creature) : npc_escortAI(creature) {}
+        if (pointId == 20)
+            me->DespawnOrUnsummon();
+    }
+};
 
-        void AttackStart(Unit* /*who*/) override {}
-        void EnterCombat(Unit* /*who*/) override {}
-        void EnterEvadeMode(EvadeReason /*why*/) override {}
+enum PreciousCargo
+{
+    QUEST_PRECIOUS_CARO                 = 14242,
+    QUEST_MEET_ME_UP_TOP                = 14326,
 
-        void Reset() override
-        {
-            _checkQuest = 1000;
-            isBoarded = false;
-        }
+    SPELL_PRECIOUS_CARGO_QUEST_ACCEPT   = 68386,
+    SPELL_PRECIOUS_CARGO_KILL_CREDIT    = 69081,
 
-        void PassengerBoarded(Unit* /*who*/, int8 /*seatId*/, bool /*apply*/) override
-        {
-            me->SetCanFly(true);
-            me->SetSpeed(MOVE_FLIGHT, 3.0f);
-        }
+    NPC_GYROCOPTER                      = 36143,
 
-        void WaypointReached(uint32 i) override
-        {
-            me->SetCanFly(true);
-            switch(i)
-            {
-                case 19:
-                    me->GetVehicleKit()->RemoveAllPassengers();
-                    me->DespawnOrUnsummon();
-                    break;
-                default:
-                    break;
-            }
-        }
+    GOB_ARCANE_CAGE                     = 195704,
+};
 
-        void JustDied(Unit* /*killer*/) override
-        {
+// 36127
+struct npc_gyrocopterequest_giver : public ScriptedAI
+{
+    npc_gyrocopterequest_giver(Creature* creature) : ScriptedAI(creature) {}
 
-        }
-
-        void OnCharmed(bool /*apply*/) override
-        {
-        }
-
-        void UpdateAI(uint32 diff) override
-        {
-            npc_escortAI::UpdateAI(diff);
-        }
-
-        void UpdateEscortAI(const uint32 /*diff*/) override
-        {
-        }
-
-    private :
-        uint32 _checkQuest;
-        bool isBoarded;
-
-    };
-
-    CreatureAI* GetAI(Creature* creature) const override
+    void sQuestAccept(Player* player, const Quest *quest) override
     {
-        return new npc_girocoptereAI (creature);
+        if (quest->GetQuestId() == QUEST_PRECIOUS_CARO)
+        {
+            player->CastSpell(player, SPELL_PRECIOUS_CARGO_QUEST_ACCEPT, true);
+
+            if (Creature* gyrocopter = player->GetSummonedCreatureByEntry(NPC_GYROCOPTER))
+                CAST_AI(npc_escortAI, gyrocopter->AI())->Start(false, true, player->GetGUID(), quest);
+        }
+    }
+};
+
+// 36143
+struct npc_precious_cargo_gyrocopter : public npc_escortAI
+{
+    npc_precious_cargo_gyrocopter(Creature* creature) : npc_escortAI(creature) {}
+
+    void AttackStart(Unit* /*who*/) override {}
+    void EnterCombat(Unit* /*who*/) override {}
+    void EnterEvadeMode(EvadeReason /*why*/) override {}
+    void OnCharmed(bool /*apply*/) override {}
+
+    void Reset() override
+    {
+        me->SetCanFly(true);
+        me->SetSpeed(MOVE_FLIGHT, 21.0f);
+    }
+
+    void WaypointReached(uint32 pointId) override
+    {
+        if (pointId == 2)
+        {
+            if (Player* player = GetPlayerForEscort())
+                me->CastSpell(player, SPELL_PRECIOUS_CARGO_KILL_CREDIT, true);
+
+            me->DespawnOrUnsummon();
+        }
+    }
+};
+
+// 36145
+struct npc_lost_isles_thrall_prisonner : public ScriptedAI
+{
+    npc_lost_isles_thrall_prisonner(Creature* creature) : ScriptedAI(creature) {}
+
+    void MoveInLineOfSight(Unit* who) override
+    {
+        if (Player* player = who->ToPlayer())
+            if (player->GetQuestStatus(QUEST_PRECIOUS_CARO) == QUEST_STATUS_INCOMPLETE)
+                if (player->GetDistance(me) < 5.f)
+                    player->KilledMonsterCredit(me->GetEntry());
+    }
+
+
+    void sQuestAccept(Player* player, const Quest *quest) override
+    {
+        if (quest->GetQuestId() == QUEST_MEET_ME_UP_TOP)
+        {
+            if (GameObject* arcaneCage = me->FindNearestGameObject(GOB_ARCANE_CAGE, 5.f))
+                arcaneCage->UseDoorOrButton(10000);
+        }
     }
 };
 
@@ -2360,12 +2276,13 @@ void AddSC_lost_isle()
     RegisterCreatureAI(npc_frightened_miner_escort);
     RegisterSpellScript(spell_ctu_snapflash);
     RegisterSpellScript(spell_ctu_bind_sight);
-    new spell_weed_whacker();
-    new npc_lianne_gobelin();
-    new npc_killag_sangrecroc();
-    new npc_pant_gob();
-    new npc_gyrocopterequest_giver();
-    new npc_girocoptere();
+    RegisterCreatureAI(npc_lost_isles_weed);
+    RegisterSpellScript(spell_weed_whacker);
+    RegisterCreatureAI(npc_killag_sangrecroc);
+    RegisterAuraScript(aura_infrared_orc_scout);
+    RegisterCreatureAI(npc_cliff_bastia);
+    RegisterCreatureAI(npc_gyrocopterequest_giver);
+    RegisterCreatureAI(npc_precious_cargo_gyrocopter);
     new npc_tornade_gob();
     new gob_fronde_gobelin();
     new npc_fusee_gob();

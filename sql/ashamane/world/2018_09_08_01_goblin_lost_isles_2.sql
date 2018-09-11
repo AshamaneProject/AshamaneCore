@@ -11,11 +11,20 @@ UPDATE creature_template SET scriptname = "npc_bomb_monkey" WHERE entry IN (3469
 DELETE FROM phase_area WHERE AreaId IN (4720);
 INSERT INTO phase_area VALUE
 (4720, 169, "Lost Isles default phase"),
-(4720, 170, "Lost Isles - Part 1");
+(4720, 170, "Lost Isles - First Isles - Part 1"),
+(4720, 171, "Lost Isles - First Isles - Part 2"),
+(4720, 172, "Lost Isles - First Isles - Part 3"),
+(4720, 179, "Lost Isles - First Isles - Part 4 Final");
 
 DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId` = 26 AND `SourceEntry` IN (4720);
--- INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionValue1`, `ConditionValue2`, `NegativeCondition`) VALUES
--- (26, 170, 4720, 0, 47, 14113, 10, 0);
+INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionValue1`, `ConditionValue2`, `NegativeCondition`) VALUES
+(26, 170, 4720, 0, 47, 14237, 1, 0),
+(26, 171, 4720, 0, 47, 14237, 1, 1),
+
+(26, 172, 4720, 0, 47, 14240, 1, 1),
+(26, 172, 4720, 0, 47, 14326, 1, 0),
+
+(26, 179, 4720, 0, 47, 14326, 1, 1);
 
 DELETE FROM `creature_text` WHERE `CreatureID` IN (36600, 36608);
 INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `comment`) VALUES
@@ -29,9 +38,19 @@ INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Lan
 (36608, 5, 0, 'You made the right choice. We all owe you a great deal, $n. Try not to get yourself killed out here.', 12, 0, 100, 396, 0, 0, 36548, 'Doc Zapnozzle to Player'),
 (36608, 6, 0, 'There are more survivors to tend to. I\'ll see you on the shore.', 12, 0, 100, 397, 0, 0, 36549, 'Doc Zapnozzle to Player');
 
-DELETE FROM `spell_area` WHERE `spell` = 69010;
-INSERT INTO `spell_area` (`spell`, `area`, `quest_end`, `quest_end_status`) VALUES
-(69010, 4721, 14239, 64);
+DELETE FROM `spell_area` WHERE `spell` IN (69010, 70661, 70678, 70680, 70681, 68212, 69303);
+INSERT INTO `spell_area` (`spell`, `area`, `flags`, `quest_end`, `quest_end_status`) VALUES
+(69010, 4721, 3, 14239, 64),
+(70661, 4778, 3, 14021, 66),
+(70661, 4780, 3, 14021, 66),
+(70678, 4778, 3, 14021, 66),
+(70678, 4780, 3, 14021, 66),
+(70680, 4778, 3, 14021, 66),
+(70680, 4780, 3, 14021, 66),
+(70681, 4778, 3, 14021, 66),
+(70681, 4780, 3, 14021, 66),
+(68212, 4780, 2, 14303, 64),
+(69303, 4782, 2, 14238, 64);
 
 DELETE FROM spell_script_names WHERE scriptname IN ("spell_lost_isles_near_death", "spell_ctu_snapflash", "spell_ctu_bind_sight");
 INSERT INTO spell_script_names VALUES
@@ -57,6 +76,7 @@ UPDATE creature_template SET AIName = '', scriptname = "npc_foreman_dampwick" WH
 UPDATE creature_template SET scriptname = "npc_frightened_miner_escort" WHERE entry IN (35813);
 UPDATE `creature_template_addon` SET `bytes2` = 0, `auras` = '' WHERE `entry` = 35810; 
 DELETE FROM creature_addon WHERE guid IN (40000244, 40000245);
+UPDATE `creature_template` SET `unit_flags` = 0, scriptname = '', unit_flags2 = 2048, unit_flags3 = 0 WHERE (entry = 35810);
 
 DELETE FROM `smart_scripts` WHERE (source_type = 0 AND entryorguid = 36600);
 INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param_string`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES
@@ -65,4 +85,79 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (36600, 0, 2, 0, 19, 0, 100, 0, 14474, 0, 0, 0, '', 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'Say Text on Quest Add');
 
 UPDATE `gameobject_questitem` SET `VerifiedBuild`=27481 WHERE (`GameObjectEntry`=195201 AND `Idx`=0); -- Crate of Tools
-DELETE FROM creature WHERE guid IN (40000011, 40000108, 40000298, 40000339, 40000351, 40000615, 40000712, 40000713, 40000720, 40000169, 40000269);
+DELETE FROM creature WHERE guid IN (40000011, 40000108, 40000298, 40000339, 40000351, 40000615, 40000712, 40000713, 40000720, 40000169, 40000269, 40000288);
+
+DELETE FROM `creature_template_addon` WHERE `entry` = 35814;
+INSERT INTO `creature_template_addon` (`entry`, `auras`) VALUES
+(35814, 68065);
+
+DELETE FROM `script_waypoint` WHERE entry IN (35813, 36585, 36143);
+INSERT INTO `script_waypoint` (`entry`, `pointid`, `location_x`, `location_y`, `location_z`, `waittime`, `point_comment`) VALUES
+-- Miner
+(35813, 1,  498.656, 2974.73,  7.58185,   0, ''),
+(35813, 2,  513.852, 2973.64,  8.12042,   0, ''),
+(35813, 3,  529.972, 2957.91,  6.77907,   0, ''),
+(35813, 4,  558.182, 2933.34,  0.843215,  0, ''),
+(35813, 5,  588.137, 2964.54, -2.433,     10000, 'Kaja\'mite 1'),
+(35813, 6,  598.471, 2952.82, -5.86114,   0, ''),
+(35813, 7,  576.819, 2916.44, -7.28581,   0, ''),
+(35813, 8,  576.566, 2907.31, -7.1668,    10000, 'Kaja\'mite 2'),
+(35813, 9,  573.927, 2904.92, -7.54599,   0, ''),
+(35813, 10, 577.658, 2878.72, -8.62971,   0, ''),
+(35813, 11, 608.599, 2857.32, -7.12896,   10000, 'Kaja\'mite 3'),
+(35813, 12, 633.022, 2920.86, -0.868127,  0, ''),
+(35813, 13, 665.740, 2948.91, -0.0379976, 10000, 'Kaja\'mite 4'),
+(35813, 14, 640.430, 2932.24, 0.413035,   0, 'escape'),
+
+-- Bastia
+(36585, 1,  868.362, 2830.14, 105.524, 0, ''), 
+(36585, 2,  868.498, 2865.06, 101.143, 0, ''), 
+(36585, 3,  875.859, 2871.74, 100.686, 0, ''), 
+(36585, 4,  896.847, 2876.02, 99.81,   0, ''), 
+(36585, 5,  910.631, 2884.86, 99.9498, 0, ''), 
+(36585, 6,  919.198, 2903.35, 100.76,  0, ''), 
+(36585, 7,  940.969, 2918.34, 105.378, 0, ''), 
+(36585, 8,  951.992, 2945.99, 109.54,  0, ''), 
+(36585, 9,  1040.47, 2952.25, 110.763, 0, ''), 
+(36585, 10, 1049.41, 2977.52, 112.625, 0, ''), 
+(36585, 11, 1074.74, 2997.53, 117.164, 0, ''), 
+(36585, 12, 1074.47, 3022.87, 121.391, 0, ''), 
+(36585, 13, 1088.9,  3041.96, 123.211, 0, ''), 
+(36585, 14, 1087.73, 3061.2,  123.738, 0, ''), 
+(36585, 15, 1070.91, 3099.4,  125.23,  0, ''), 
+(36585, 16, 1047.68, 3119.57, 125.253, 0, ''), 
+(36585, 17, 1026.96, 3127.1,  124.978, 0, ''), 
+(36585, 18, 1023.41, 3168.93, 119.783, 0, ''), 
+(36585, 19, 1054.61, 3192.71, 114.612, 0, ''), 
+(36585, 20, 1062.09, 3224.9,  96.4815, 0, ''), 
+(36585, 21, 1078.86, 3240.03, 81.2089, 0, ''), 
+
+(36143, 1, 671.514,  3468.13, 52.9430, 0, ''),
+(36143, 2, 1040.012, 3759.19, 46.8878, 0, ''),
+(36143, 3, 971.488,  3804.29, 15.0729, 0, '');
+
+UPDATE creature_template SET `unit_flags` = 131072, scriptname = "npc_lost_isles_weed" WHERE entry IN (35896, 35995, 35897);
+UPDATE `creature_template` SET `unit_flags` = 514 WHERE entry IN (36578, 35893, 35894);
+UPDATE creature_template SET scriptname = "npc_killag_sangrecroc" WHERE entry = 35917;
+UPDATE creature_template SET scriptname = "" WHERE entry = 36578;
+UPDATE creature_template SET scriptname = "npc_cliff_bastia" WHERE entry = 36585;
+
+DELETE FROM creature WHERE guid IN (40001288, 40001651, 40001320, 40000731, 40000549, 40000701, 40000734, 40000692, 40000553, 40000551, 40000618, 40000707, 40000501, 40000555, 40000496, 40000494, 40000499, 40000702, 40000730, 40000724, 40000733, 40000729, 40000708, 40000727, 40000704, 40000697, 40000503, 40000696, 40000502, 40000548, 40000700, 40000722, 40000495, 40000486, 40000552, 40000699, 40000641, 40000639, 40000629, 40000541);
+
+-- Table creature_template
+UPDATE `creature_template` SET `AIName` = 'SmartAI' WHERE `entry` IN (36464, 36104, 36117, 36578, 36115, 36104);
+
+-- Table smart_scripts
+DELETE FROM `smart_scripts` WHERE source_type = 0 AND entryorguid IN (-40001258, -40001259, -40001257, -40001268, -40001264, -40001261, -40001251);
+INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES
+(-40001258, 0, 0, 0, 25, 0, 100, 0, 0, 0, 0, 0, 42, 0, 75, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, ''),
+(-40001259, 0, 0, 0, 25, 0, 100, 0, 0, 0, 0, 0, 42, 0, 75, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, ''),
+(-40001257, 0, 0, 0, 25, 0, 100, 0, 0, 0, 0, 0, 42, 0, 75, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, ''),
+(-40001268, 0, 0, 0, 25, 0, 100, 0, 0, 0, 0, 0, 42, 0, 75, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, ''),
+(-40001264, 0, 0, 0, 25, 0, 100, 0, 0, 0, 0, 0, 42, 0, 75, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, ''),
+(-40001261, 0, 0, 0, 25, 0, 100, 0, 0, 0, 0, 0, 42, 0, 75, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, ''),
+(-40001251, 0, 0, 0, 25, 0, 100, 0, 0, 0, 0, 0, 42, 0, 75, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, '');
+
+UPDATE creature_template SET scriptname = "npc_gyrocopterequest_giver" WHERE entry = 36127;
+UPDATE creature_template SET scriptname = "npc_precious_cargo_gyrocopter" WHERE entry = 36143;
+UPDATE creature_template SET scriptname = "npc_lost_isles_thrall_prisonner" WHERE entry = 36145;
