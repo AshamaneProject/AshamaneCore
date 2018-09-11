@@ -1177,7 +1177,7 @@ class spell_life_saving_complete : public SpellScript
             player->AddMovieDelayedAction(22, [player]
             {
                 player->RemoveAurasDueToSpell(91847);
-                player->CastSpell(nullptr, 74100, true);
+                player->CastSpell(nullptr, 74100, true); // Life Savings: Teleport & Bind to the Lost Isles
             });
         }
     }
