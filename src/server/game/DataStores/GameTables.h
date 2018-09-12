@@ -228,34 +228,37 @@ TC_GAME_API void LoadGameTables(std::string const& dataPath);
 template<class T>
 inline float GetGameTableColumnForClass(T const* row, int32 class_)
 {
-    switch (class_)
+    if(row)
     {
-        case CLASS_WARRIOR:
-            return row->Warrior;
-        case CLASS_PALADIN:
-            return row->Paladin;
-        case CLASS_HUNTER:
-            return row->Hunter;
-        case CLASS_ROGUE:
-            return row->Rogue;
-        case CLASS_PRIEST:
-            return row->Priest;
-        case CLASS_DEATH_KNIGHT:
-            return row->DeathKnight;
-        case CLASS_SHAMAN:
-            return row->Shaman;
-        case CLASS_MAGE:
-            return row->Mage;
-        case CLASS_WARLOCK:
-            return row->Warlock;
-        case CLASS_MONK:
-            return row->Monk;
-        case CLASS_DRUID:
-            return row->Druid;
-        case CLASS_DEMON_HUNTER:
-            return row->DemonHunter;
-        default:
-            break;
+        switch (class_)
+        {
+            case CLASS_WARRIOR:
+                return row->Warrior;
+            case CLASS_PALADIN:
+                return row->Paladin;
+            case CLASS_HUNTER:
+                return row->Hunter;
+            case CLASS_ROGUE:
+                return row->Rogue;
+            case CLASS_PRIEST:
+                return row->Priest;
+            case CLASS_DEATH_KNIGHT:
+                return row->DeathKnight;
+            case CLASS_SHAMAN:
+                return row->Shaman;
+            case CLASS_MAGE:
+                return row->Mage;
+            case CLASS_WARLOCK:
+                return row->Warlock;
+            case CLASS_MONK:
+                return row->Monk;
+            case CLASS_DRUID:
+                return row->Druid;
+            case CLASS_DEMON_HUNTER:
+                return row->DemonHunter;
+            default:
+                break;
+        }
     }
 
     return 0.0f;
