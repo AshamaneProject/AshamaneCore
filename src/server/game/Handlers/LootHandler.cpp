@@ -355,10 +355,6 @@ void WorldSession::DoLootRelease(ObjectGuid lguid)
         {
             // not fully looted object
             go->SetLootState(GO_ACTIVATED, player);
-
-            // if the round robin player release, reset it.
-            if (player->GetGUID() == loot->roundRobinPlayer)
-                loot->roundRobinPlayer.Clear();
         }
     }
     else if (lguid.IsCorpse())        // ONLY remove insignia at BG
@@ -426,14 +422,6 @@ void WorldSession::DoLootRelease(ObjectGuid lguid)
         }
         else
         {
-            // if the round robin player release, reset it.
-            if (player->GetGUID() == loot->roundRobinPlayer)
-            {
-                loot->roundRobinPlayer.Clear();
-
-                if (Group* group = player->GetGroup())
-                    group->SendLooter(creature, NULL);
-            }
             // force dynflag update to update looter and lootable info
             creature->ForceValuesUpdateAtIndex(OBJECT_DYNAMIC_FLAGS);
         }
@@ -508,14 +496,15 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recvData)
     if (!loot)
         return;
 
-    if (slotid >= loot->items.size() + loot->quest_items.size())
+    if (slotid >= loot->items[GetPlayer()->GetGUID()].size())
     {
         TC_LOG_DEBUG("loot", "MasterLootItem: Player %s might be using a hack! (slot %d, size %lu)",
             GetPlayer()->GetName().c_str(), slotid, (unsigned long)loot->items.size());
         return;
     }
 
-    LootItem& item = slotid >= loot->items.size() ? loot->quest_items[slotid - loot->items.size()] : loot->items[slotid];
+    LootItemList& itemList = loot->items[GetPlayer()->GetGUID()];
+    LootItem& item = itemList[slotid];
 
     ItemPosCountVec dest;
     InventoryResult msg = target->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, item.itemid, item.count);

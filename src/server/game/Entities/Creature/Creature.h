@@ -206,12 +206,14 @@ class TC_GAME_API Creature : public Unit, public GridObject<Creature>, public Ma
         bool CanGeneratePickPocketLoot() const { return _pickpocketLootRestore <= time(NULL); }
         void SetSkinner(ObjectGuid guid) { _skinner = guid; }
         ObjectGuid GetSkinner() const { return _skinner; } // Returns the player who skinned this creature
-        Player* GetLootRecipient() const;
-        Group* GetLootRecipientGroup() const;
-        bool hasLootRecipient() const { return !m_lootRecipient.IsEmpty() || !m_lootRecipientGroup.IsEmpty(); }
-        bool isTappedBy(Player const* player) const;                          // return true if the creature is tapped by the player or a member of his party.
+        std::vector<Player*> GetLootRecipients() const;
+        std::vector<Group*> GetLootRecipientGroups() const;
+        bool HasLootRecipients() const { return !m_lootRecipients.empty(); }
+        bool IsTappedBy(Player const* player) const;                          // return true if the creature is tapped by the player or a member of his party.
 
-        void SetLootRecipient (Unit* unit);
+        void AddLootRecipient(Unit* unit);
+        void ResetLootRecipients();
+
         void AllLootRemovedFromCorpse();
 
         uint16 GetLootMode() const { return m_LootMode; }
@@ -274,9 +276,6 @@ class TC_GAME_API Creature : public Unit, public GridObject<Creature>, public Ma
             if (m_combatPulseTime == 0 || m_combatPulseTime > delay)
                 m_combatPulseTime = delay;
         }
-
-        uint32 m_groupLootTimer;                            // (msecs)timer used for group loot
-        ObjectGuid lootingGroupLowGUID;                     // used to find group which is looting corpse
 
         void SendZoneUnderAttackMessage(Player* attacker);
 
@@ -366,8 +365,7 @@ class TC_GAME_API Creature : public Unit, public GridObject<Creature>, public Ma
 
         static float _GetHealthMod(int32 Rank);
 
-        ObjectGuid m_lootRecipient;
-        ObjectGuid m_lootRecipientGroup;
+        std::vector<ObjectGuid> m_lootRecipients;
         ObjectGuid _skinner;
 
         /// Timers

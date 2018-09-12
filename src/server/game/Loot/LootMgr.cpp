@@ -65,11 +65,11 @@ struct LootGroupInvalidSelector : public std::unary_function<LootStoreItem*, boo
         if (!(item->lootmode & _lootMode))
             return true;
 
-        uint8 foundDuplicates = 0;
+        /*uint8 foundDuplicates = 0;
         for (std::vector<LootItem>::const_iterator itr = _loot.items.begin(); itr != _loot.items.end(); ++itr)
             if (itr->itemid == item->itemid)
                 if (++foundDuplicates == _loot.maxDuplicates)
-                    return true;
+                    return true;*/
 
         return false;
     }
