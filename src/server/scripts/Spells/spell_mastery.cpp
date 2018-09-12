@@ -1,6 +1,19 @@
 /*
-* Ordered alphabetically using scriptname.
-*/
+ * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #include "CellImpl.h"
 #include "GridNotifiers.h"
@@ -550,6 +563,27 @@ class spell_mage_mastery_ignite : public AuraScript
     }
 };
 
+// 77220 - Mastery - Chaotic Energy
+class warlock_mastery_chaotic_energy : public PlayerScript
+{
+public:
+    warlock_mastery_chaotic_energy() : PlayerScript("warlock_mastery_chaotic_energy") {}
+
+    enum UsedSpells
+    {
+        SPELL_WARLOCK_CHAOTIC_ENERGIES_MASTERY  = 77220
+    };
+
+    void OnDamage(Unit* attacker, Unit* /*victim*/, uint32& damage)
+    {
+        if (Aura* aura = attacker->GetAura(SPELL_WARLOCK_CHAOTIC_ENERGIES_MASTERY))
+        {
+            uint32 const maxDamageImprovePercent = uint32(ceil(float(aura->GetEffect(EFFECT_0)->GetAmount()) / 2.f));
+            AddPct(damage, maxDamageImprovePercent + urand(0, maxDamageImprovePercent));
+        }
+    }
+};
+
 void AddSC_mastery_spell_scripts()
 {
     new spell_mastery_ignite();
@@ -560,4 +594,6 @@ void AddSC_mastery_spell_scripts()
     RegisterAuraScript(spell_mage_mastery_ignite);
     
     RegisterSpellScript(spell_mastery_icicles_glacial_spike);
+
+    new warlock_mastery_chaotic_energy();
 }

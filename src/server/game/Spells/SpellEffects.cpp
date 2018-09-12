@@ -4502,6 +4502,9 @@ void Spell::EffectKnockBack(SpellEffIndex /*effIndex*/)
     if (speedxy < 0.1f && speedz < 0.1f)
         return;
 
+    if (!speedxy)
+        speedxy = 1.f;
+
     float x, y;
     if (effectInfo->Effect == SPELL_EFFECT_KNOCK_BACK_DEST)
     {

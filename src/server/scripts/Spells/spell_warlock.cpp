@@ -204,29 +204,29 @@ enum WarlockSpells
 
 enum WarlockSpellIcons
 {
-    WARLOCK_ICON_ID_IMPROVED_LIFE_TAP               = 208,
-    WARLOCK_ICON_ID_MANA_FEED                       = 1982
+    WARLOCK_ICON_ID_IMPROVED_LIFE_TAP   = 208,
+    WARLOCK_ICON_ID_MANA_FEED           = 1982
 };
 
 enum MiscSpells
 {
-    SPELL_GEN_REPLENISHMENT                         = 57669,
-    SPELL_PRIEST_SHADOW_WORD_DEATH                  = 32409
+    SPELL_GEN_REPLENISHMENT         = 57669,
+    SPELL_PRIEST_SHADOW_WORD_DEATH  = 32409
 };
 
 enum eGatewaySpells
 {
-    PortalVisual = 113900,
-    GatewayInteract = 113902,
-    CooldownMarker = 113942,
-	TeleportVisualGreen = 236762,
-    TeleportVisualPurple = 236671
+    PortalVisual            = 113900,
+    GatewayInteract         = 113902,
+    CooldownMarker          = 113942,
+    TeleportVisualGreen     = 236762,
+    TeleportVisualPurple    = 236671
 };
 
 enum eGatewayNpc
 {
-    GreenGate = 59262,
-    PurpleGate = 59271
+    GreenGate   = 59262,
+    PurpleGate  = 59271
 };
 
 // Demonwrath damage - 193439
