@@ -1001,4 +1001,66 @@ INSERT INTO `waypoint_data`(`id`, `point`, `position_x`, `position_y`, `position
 DELETE FROM `creature_formations` WHERE `leaderGUID`=189246;
 INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES 
 (189246, 189246, 0, 0, 2, 0, 0),
-(189246, 189247, 3, 0, 2, 0, 0);
+(189246, 189247, 0, 0, 2, 0, 0);
+
+-- Thomas Molina
+SET @NPC := 188779;
+SET @PATH := @NPC * 10;
+UPDATE `creature` SET `spawndist`=0,`MovementType`=2, `position_x`=-8815.82, `position_y`=581.509, `position_z`=95.6585, `orientation`=0.635725 WHERE `guid`=@NPC;
+DELETE FROM `creature_addon` WHERE `guid`=@NPC;
+INSERT INTO `creature_addon` (`guid`,`path_id`,`mount`,`bytes1`,`bytes2`,`emote`,`auras`) VALUES (@NPC,@PATH,0,0,1,0, '');
+DELETE FROM `waypoint_data` WHERE `id`=@PATH;
+INSERT INTO `waypoint_data`(`id`, `point`, `position_x`, `position_y`, `position_z`, `orientation`, `delay`, `move_type`, `action`, `action_chance`, `wpguid`) VALUES
+(@PATH, 1, -8815.82, 581.509, 95.6585, 0, 0, 0, 0, 100, 0),
+(@PATH, 2, -8821.13, 571.116, 94.3151, 0, 0, 0, 0, 100, 0),
+(@PATH, 3, -8830.8, 559.092, 95.0839, 0, 0, 0, 0, 100, 0),
+(@PATH, 4, -8834.43, 549.628, 96.3309, 0, 0, 0, 0, 100, 0),
+(@PATH, 5, -8831.72, 543.04, 96.8852, 0, 0, 0, 0, 100, 0),
+(@PATH, 6, -8824.97, 553.653, 95.4203, 0, 0, 0, 0, 100, 0),
+(@PATH, 7, -8816.54, 562.648, 94.3624, 0, 0, 0, 0, 100, 0),
+(@PATH, 8, -8812.61, 575.165, 95.0223, 0, 0, 0, 0, 100, 0),
+(@PATH, 9, -8798.55, 587.634, 97.5127, 0, 0, 0, 0, 100, 0),
+(@PATH, 10, -8788.76, 593.309, 97.8092, 0, 0, 0, 0, 100, 0),
+(@PATH, 11, -8776.41, 603.918, 97.4001, 0, 0, 0, 0, 100, 0),
+(@PATH, 12, -8762.69, 617.311, 99.1734, 0, 0, 0, 0, 100, 0),
+(@PATH, 13, -8758.29, 627.458, 102.116, 0, 0, 0, 0, 100, 0),
+(@PATH, 14, -8759.38, 641.92, 103.859, 0, 0, 0, 0, 100, 0),
+(@PATH, 15, -8770.59, 661.321, 103.789, 0, 0, 0, 0, 100, 0),
+(@PATH, 16, -8779.11, 672.498, 103.176, 0, 0, 0, 0, 100, 0),
+(@PATH, 17, -8787.32, 680.436, 102.453, 0, 0, 0, 0, 100, 0),
+(@PATH, 18, -8804.33, 683.759, 101.026, 0, 0, 0, 0, 100, 0),
+(@PATH, 19, -8815.25, 680.689, 98.5599, 0, 0, 0, 0, 100, 0),
+(@PATH, 20, -8831.31, 674.418, 98.5225, 0, 0, 0, 0, 100, 0),
+(@PATH, 21, -8844.65, 666.432, 97.6743, 0, 0, 0, 0, 100, 0),
+(@PATH, 22, -8853.11, 657.971, 96.9886, 0, 0, 0, 0, 100, 0),
+(@PATH, 23, -8848.72, 646.945, 96.5236, 0, 0, 0, 0, 100, 0),
+(@PATH, 24, -8842.51, 637.998, 95.8391, 0, 0, 0, 0, 100, 0),
+(@PATH, 25, -8834.66, 634.193, 94.7602, 0, 0, 0, 0, 100, 0),
+(@PATH, 26, -8823.59, 639.309, 94.6514, 0, 0, 0, 0, 100, 0),
+(@PATH, 27, -8818.34, 641.126, 94.6514, 0, 0, 0, 0, 100, 0),
+(@PATH, 28, -8811.45, 634.478, 94.5264, 0, 0, 0, 0, 100, 0),
+(@PATH, 29, -8813.91, 625.365, 94.3282, 0, 0, 0, 0, 100, 0),
+(@PATH, 30, -8827.42, 620.417, 94.4532, 0, 0, 0, 0, 100, 0),
+(@PATH, 31, -8837.02, 613.516, 93.4709, 0, 0, 0, 0, 100, 0),
+(@PATH, 32, -8845.9, 602.016, 93.1543, 0, 0, 0, 0, 100, 0),
+(@PATH, 33, -8854.5, 591.471, 92.982, 0, 0, 0, 0, 100, 0),
+(@PATH, 34, -8863.73, 582.434, 93.6525, 0, 0, 0, 0, 100, 0),
+(@PATH, 35, -8875.35, 571.854, 93.7725, 0, 0, 0, 0, 100, 0),
+(@PATH, 36, -8883.44, 571.865, 93.1875, 0, 0, 0, 0, 100, 0),
+(@PATH, 37, -8888.38, 578.182, 93.2697, 0, 0, 0, 0, 100, 0),
+(@PATH, 38, -8889.48, 585.276, 93.5129, 0, 0, 0, 0, 100, 0),
+(@PATH, 39, -8880.29, 592.134, 93.5029, 0, 0, 0, 0, 100, 0),
+(@PATH, 40, -8867.21, 597.932, 92.8125, 0, 0, 0, 0, 100, 0),
+(@PATH, 41, -8849.51, 608.005, 92.8503, 0, 0, 0, 0, 100, 0),
+(@PATH, 42, -8835.44, 618.398, 93.4097, 0, 0, 0, 0, 100, 0),
+(@PATH, 43, -8828.32, 620.059, 94.4532, 0, 0, 0, 0, 100, 0),
+(@PATH, 44, -8819.85, 613.238, 95.2064, 0, 0, 0, 0, 100, 0),
+(@PATH, 45, -8809.67, 603.627, 96.4555, 0, 0, 0, 0, 100, 0),
+(@PATH, 46, -8806.91, 593.153, 97.298, 0, 0, 0, 0, 100, 0);
+
+-- Thomas Molina SAI
+SET @ENTRY := 3518;
+UPDATE `creature_template` SET `AIName`="SmartAI" WHERE `entry`=@ENTRY;
+DELETE FROM `smart_scripts` WHERE `entryorguid`=@ENTRY AND `source_type`=0;
+INSERT INTO `smart_scripts` (`entryorguid`,`source_type`,`id`,`link`,`event_type`,`event_phase_mask`,`event_chance`,`event_flags`,`event_param1`,`event_param2`,`event_param3`,`event_param4`,`action_type`,`action_param1`,`action_param2`,`action_param3`,`action_param4`,`action_param5`,`action_param6`,`target_type`,`target_param1`,`target_param2`,`target_param3`,`target_x`,`target_y`,`target_z`,`target_o`,`comment`) VALUES
+(@ENTRY,0,0,0,1,0,100,0,10000,15000,10000,15000,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,"Thomas Molina - Out of Combat - Say Line 0");
