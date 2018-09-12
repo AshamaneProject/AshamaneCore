@@ -55,91 +55,80 @@ enum TwilightCorrupter
 # boss_twilight_corrupter
 ######*/
 
-class boss_twilight_corrupter : public CreatureScript
+struct boss_twilight_corrupter : public ScriptedAI
 {
-public:
-    boss_twilight_corrupter() : CreatureScript("boss_twilight_corrupter") { }
-
-    struct boss_twilight_corrupterAI : public ScriptedAI
+    boss_twilight_corrupter(Creature* creature) : ScriptedAI(creature)
     {
-        boss_twilight_corrupterAI(Creature* creature) : ScriptedAI(creature)
-        {
-            Initialize();
-        }
-
-        void Initialize()
-        {
-            KillCount = 0;
-        }
-
-        void Reset() override
-        {
-            _events.Reset();
-            Initialize();
-        }
-
-        void EnterCombat(Unit* /*who*/) override
-        {
-            Talk(YELL_TWILIGHT_CORRUPTOR_AGGRO);
-            _events.ScheduleEvent(EVENT_SOUL_CORRUPTION, 15000);
-            _events.ScheduleEvent(EVENT_CREATURE_OF_NIGHTMARE, 30000);
-        }
-
-        void KilledUnit(Unit* victim) override
-        {
-            if (victim->GetTypeId() == TYPEID_PLAYER)
-            {
-                ++KillCount;
-                Talk(YELL_TWILIGHT_CORRUPTOR_KILL, victim);
-
-                if (KillCount == 3)
-                {
-                    DoCast(me, SPELL_LEVEL_UP, true);
-                    KillCount = 0;
-                }
-            }
-        }
-
-        void UpdateAI(uint32 diff) override
-        {
-            if (!UpdateVictim())
-                return;
-
-            _events.Update(diff);
-
-            if (me->HasUnitState(UNIT_STATE_CASTING))
-                return;
-
-            while (uint32 eventId = _events.ExecuteEvent())
-            {
-                switch (eventId)
-                {
-                case EVENT_SOUL_CORRUPTION:
-                    DoCastAOE(SPELL_SOUL_CORRUPTION);
-                    _events.ScheduleEvent(EVENT_SOUL_CORRUPTION, urand(15000, 19000));
-                    break;
-                case EVENT_CREATURE_OF_NIGHTMARE:
-                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0.0f, true))
-                        DoCast(target, SPELL_CREATURE_OF_NIGHTMARE);
-                    _events.ScheduleEvent(EVENT_CREATURE_OF_NIGHTMARE, 45000);
-                    break;
-                default:
-                    break;
-                }
-            }
-
-            DoMeleeAttackIfReady();
-        }
-
-    private:
-        EventMap _events;
-        uint8 KillCount;
-    };
-
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new boss_twilight_corrupterAI(creature);
+        Initialize();
     }
+
+    void Initialize()
+    {
+        KillCount = 0;
+    }
+
+    void Reset() override
+    {
+        _events.Reset();
+        Initialize();
+    }
+
+    void EnterCombat(Unit* /*who*/) override
+    {
+        Talk(YELL_TWILIGHT_CORRUPTOR_AGGRO);
+        _events.ScheduleEvent(EVENT_SOUL_CORRUPTION, 15000);
+        _events.ScheduleEvent(EVENT_CREATURE_OF_NIGHTMARE, 30000);
+    }
+
+    void KilledUnit(Unit* victim) override
+    {
+        if (victim->GetTypeId() == TYPEID_PLAYER)
+        {
+            ++KillCount;
+            Talk(YELL_TWILIGHT_CORRUPTOR_KILL, victim);
+
+            if (KillCount == 3)
+            {
+                DoCast(me, SPELL_LEVEL_UP, true);
+                KillCount = 0;
+            }
+        }
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        if (!UpdateVictim())
+            return;
+
+        _events.Update(diff);
+
+        if (me->HasUnitState(UNIT_STATE_CASTING))
+            return;
+
+        while (uint32 eventId = _events.ExecuteEvent())
+        {
+            switch (eventId)
+            {
+            case EVENT_SOUL_CORRUPTION:
+                DoCastAOE(SPELL_SOUL_CORRUPTION);
+                _events.ScheduleEvent(EVENT_SOUL_CORRUPTION, urand(15000, 19000));
+                break;
+            case EVENT_CREATURE_OF_NIGHTMARE:
+                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0.0f, true))
+                    DoCast(target, SPELL_CREATURE_OF_NIGHTMARE);
+                _events.ScheduleEvent(EVENT_CREATURE_OF_NIGHTMARE, 45000);
+                break;
+            default:
+                break;
+            }
+        }
+
+        DoMeleeAttackIfReady();
+    }
+
+private:
+    EventMap _events;
+    uint8 KillCount;
 };
 
 /*######
@@ -174,19 +163,18 @@ enum SpellSummonStalvanData
     QUEST_MISTMANTLES_REVENGE = 26674,
 };
 
-const Position stalvanPosition = { -10371.72f, -1251.92f, 35.99339f };
-const Position stalvanDestination = { -10369.932617f, -1253.7677f, 35.909294f };
-const float stalvanOrientation = 5.532694f;
+const Position stalvanPosition      = { -10371.72f, -1251.92f, 35.99339f };
+const Position stalvanDestination   = { -10369.932617f, -1253.7677f, 35.909294f };
+const float stalvanOrientation      = 5.532694f;
 
 const uint8 tobiasPositionsCount = 4;
-const Position tobiasPositions[tobiasPositionsCount] = {
+const Position tobiasPositions[tobiasPositionsCount] =
+{
     { -10351.5f, -1256.7f, 34.8566f },
-{ -10357.5f, -1256.8f, 35.3863f },
-{ -10363.5f, -1257.0f, 35.9107f },
-{ -10365.8f, -1255.7f, 35.9098f }
+    { -10357.5f, -1256.8f, 35.3863f },
+    { -10363.5f, -1257.0f, 35.9107f },
+    { -10365.8f, -1255.7f, 35.9098f }
 };
-
-const float tobiasOrientation = 3.168259f;
 
 enum StalvanData
 {
@@ -213,56 +201,49 @@ enum StalvanData
     SAY_06 = 6,
 };
 
-class npc_stalvan : public CreatureScript
+struct npc_stalvan : public ScriptedAI
 {
-public:
-    npc_stalvan() : CreatureScript("npc_stalvan") { }
+    npc_stalvan(Creature* creature) : ScriptedAI(creature) {}
 
-    struct npc_stalvanAI : public ScriptedAI
+    void Reset() override
     {
-        npc_stalvanAI(Creature* creature) : ScriptedAI(creature)
+        _events.Reset();
+        _events.ScheduleEvent(EVENT_STALVAN_STEP_1, 3000);
+        _events.ScheduleEvent(EVENT_STALVAN_STEP_2, 8000);
+        _events.ScheduleEvent(EVENT_STALVAN_STEP_3, 15000);
+        _events.ScheduleEvent(EVENT_STALVAN_STEP_4, 23000);
+        _events.ScheduleEvent(EVENT_STALVAN_STEP_5, 26000);
+        _events.ScheduleEvent(EVENT_STALVAN_STEP_6, 32000);
+
+        _events.ScheduleEvent(EVENT_TOBIAS_STEP_1, 5000);
+        _events.ScheduleEvent(EVENT_TOBIAS_STEP_2, 9000);
+        _events.ScheduleEvent(EVENT_TOBIAS_STEP_3, 16000);
+        _events.ScheduleEvent(EVENT_TOBIAS_STEP_4, 27000);
+    }
+
+    void JustDied(Unit* /*killer*/) override
+    {
+        Talk(SAY_06, GetTobias());
+        GetTobias()->AI()->Talk(SAY_04);
+        GetTobias()->DespawnOrUnsummon(4000);
+    }
+
+    Creature* GetTobias()
+    {
+        if (Creature* tobias = me->FindNearestCreature(NPC_TOBIAS, 30, true))
+            return tobias;
+
+        return me->FindNearestCreature(NPC_WORGEN_TOBIAS, 30, true);
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        _events.Update(diff);
+
+        while (uint32 eventId = _events.ExecuteEvent())
         {
-        }
-
-        void Reset() override
-        {
-            _events.Reset();
-            _events.ScheduleEvent(EVENT_STALVAN_STEP_1, 3000);
-            _events.ScheduleEvent(EVENT_STALVAN_STEP_2, 8000);
-            _events.ScheduleEvent(EVENT_STALVAN_STEP_3, 15000);
-            _events.ScheduleEvent(EVENT_STALVAN_STEP_4, 23000);
-            _events.ScheduleEvent(EVENT_STALVAN_STEP_5, 26000);
-            _events.ScheduleEvent(EVENT_STALVAN_STEP_6, 32000);
-
-            _events.ScheduleEvent(EVENT_TOBIAS_STEP_1, 5000);
-            _events.ScheduleEvent(EVENT_TOBIAS_STEP_2, 9000);
-            _events.ScheduleEvent(EVENT_TOBIAS_STEP_3, 16000);
-            _events.ScheduleEvent(EVENT_TOBIAS_STEP_4, 27000);
-        }
-
-        void JustDied(Unit* /*killer*/) override
-        {
-            Talk(SAY_06, GetTobias());
-            GetTobias()->AI()->Talk(SAY_04);
-            GetTobias()->DespawnOrUnsummon(4000);
-        }
-
-        Creature* GetTobias()
-        {
-            if (Creature* tobias = me->FindNearestCreature(NPC_TOBIAS, 30, true))
-                return tobias;
-
-            return me->FindNearestCreature(NPC_WORGEN_TOBIAS, 30, true);
-        }
-
-        void UpdateAI(uint32 diff) override
-        {
-            _events.Update(diff);
-
-            while (uint32 eventId = _events.ExecuteEvent())
+            switch (eventId)
             {
-                switch (eventId)
-                {
                 case EVENT_STALVAN_STEP_1:
                     me->SetWalk(true);
                     me->SetSpeed(MOVE_WALK, 2.5);
@@ -326,23 +307,17 @@ public:
 
                 default:
                     break;
-                }
             }
-
-            if (!UpdateVictim())
-                return;
-
-            DoMeleeAttackIfReady();
         }
 
-    private:
-        EventMap _events;
-    };
+        if (!UpdateVictim())
+            return;
 
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new npc_stalvanAI(creature);
+        DoMeleeAttackIfReady();
     }
+
+private:
+    EventMap _events;
 };
 
 enum SoothingIncenseCloudData
@@ -352,70 +327,57 @@ enum SoothingIncenseCloudData
     NPC_FORLORN_SPIRIT_KILLCREDIT = 43930,
 };
 
-class npc_soothing_incense_cloud : public CreatureScript
+struct npc_soothing_incense_cloud : public ScriptedAI
 {
-public:
-    npc_soothing_incense_cloud() : CreatureScript("npc_soothing_incense_cloud") { }
+    npc_soothing_incense_cloud(Creature* creature) : ScriptedAI(creature) { }
 
-    struct npc_soothing_incense_cloudAI : public ScriptedAI
+    void Reset() override
     {
-        npc_soothing_incense_cloudAI(Creature* creature) : ScriptedAI(creature)
-        {
-        }
-
-        void Reset() override
-        {
-            _events.Reset();
-            _events.ScheduleEvent(EVENT_SELECT_TARGET, 500);
-        }
-
-        Player* GetOwner()
-        {
-            return me->ToTempSummon()->GetSummoner()->ToPlayer();
-        }
-
-        void SelectTargets()
-        {
-            me->GetCreatureListWithEntryInGrid(_selectedTargets, NPC_FORLORN_SPIRIT, 5.f);
-        }
-
-        void KillSelectedCreaturesAndRewardPlayer()
-        {
-            for (auto creature : _selectedTargets)
-            {
-                if (!creature->IsAlive())
-                    continue;
-
-                GetOwner()->RewardPlayerAndGroupAtEvent(NPC_FORLORN_SPIRIT_KILLCREDIT, GetOwner());
-                creature->DisappearAndDie();
-            }
-        }
-
-        void UpdateAI(uint32 diff) override
-        {
-            _events.Update(diff);
-
-            while (uint32 eventId = _events.ExecuteEvent())
-            {
-                switch (eventId)
-                {
-                case EVENT_SELECT_TARGET:
-                    SelectTargets();
-                    KillSelectedCreaturesAndRewardPlayer();
-                    break;
-                }
-            }
-        }
-
-    private:
-        EventMap _events;
-        std::list<Creature*> _selectedTargets;
-    };
-
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new npc_soothing_incense_cloudAI(creature);
+        _events.Reset();
+        _events.ScheduleEvent(EVENT_SELECT_TARGET, 500);
     }
+
+    Player* GetOwner()
+    {
+        return me->ToTempSummon()->GetSummoner()->ToPlayer();
+    }
+
+    void SelectTargets()
+    {
+        me->GetCreatureListWithEntryInGrid(_selectedTargets, NPC_FORLORN_SPIRIT, 5.f);
+    }
+
+    void KillSelectedCreaturesAndRewardPlayer()
+    {
+        for (auto creature : _selectedTargets)
+        {
+            if (!creature->IsAlive())
+                continue;
+
+            GetOwner()->RewardPlayerAndGroupAtEvent(NPC_FORLORN_SPIRIT_KILLCREDIT, GetOwner());
+            creature->DisappearAndDie();
+        }
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        _events.Update(diff);
+
+        while (uint32 eventId = _events.ExecuteEvent())
+        {
+            switch (eventId)
+            {
+            case EVENT_SELECT_TARGET:
+                SelectTargets();
+                KillSelectedCreaturesAndRewardPlayer();
+                break;
+            }
+        }
+    }
+
+private:
+    EventMap _events;
+    std::list<Creature*> _selectedTargets;
 };
 
 enum MorbentFel
@@ -436,11 +398,10 @@ class spell_sacred_cleansing : public SpellScript
 
     SpellCastResult CheckRequirement()
     {
-        Creature* fel = GetCaster()->FindNearestCreature(NPC_MORBENT_FEL, 15.0f, true);
+        if (Creature* fel = GetCaster()->FindNearestCreature(NPC_MORBENT_FEL, 15.0f, true))
+            return SPELL_CAST_OK;
 
-        if (!fel)
-            return SPELL_FAILED_INCORRECT_AREA;
-        return SPELL_CAST_OK;
+        return SPELL_FAILED_INCORRECT_AREA;
     }
 
     void HandleDummy(SpellEffIndex /*effIndex*/)
@@ -451,15 +412,10 @@ class spell_sacred_cleansing : public SpellScript
 
         if (Creature* target = hitUnit->ToCreature())
         {
-            switch (target->GetEntry())
+            if (target->GetEntry() == NPC_MORBENT_FEL)
             {
-            case NPC_MORBENT_FEL:
                 GetCaster()->SummonCreature(NPC_WEAKENED_MORBENT_FEL, target->GetPosition());
                 target->DespawnOrUnsummon();
-                break;
-
-            default:
-                break;
             }
         }
     }
@@ -488,7 +444,7 @@ class spell_summon_stalvan : public SpellScript
 
     void HandleSendEvent(SpellEffIndex /*effIndex*/)
     {
-        if (GetCaster()->GetTypeId() != TYPEID_PLAYER)
+        if (!GetCaster()->IsPlayer())
             return;
 
         if (GetCaster()->ToPlayer()->GetQuestStatus(QUEST_MISTMANTLES_REVENGE) != QUEST_STATUS_INCOMPLETE)
@@ -530,100 +486,35 @@ class spell_summon_stalvan : public SpellScript
 
 };
 
-class npc_ebenlocke : public CreatureScript
+struct npc_ebenlocke : public ScriptedAI
 {
-public:
-    npc_ebenlocke() : CreatureScript("npc_ebenlocke") { }
-
     enum Data
     {
         QUEST_EMBALMERS_REVENGE    = 26727,
-        NPC_STITCHES               = 43862,
-        ACTION_START_EVENT         = 1
+        NPC_STITCHES               = 43862
     };
+    
+    npc_ebenlocke(Creature* creature) : ScriptedAI(creature) { }
 
-    bool OnQuestAccept(Player* player, Creature* creature, Quest const* quest) override
+    void sQuestAccept(Player* player, Quest const* quest) override
     {
-        switch (quest->GetQuestId())
+        if (quest->GetQuestId() == QUEST_EMBALMERS_REVENGE)
         {
-        case QUEST_EMBALMERS_REVENGE:
-            creature->AI()->SetGUID(player->GetGUID());
-            creature->AI()->DoAction(ACTION_START_EVENT);
-            break;
-        }
-
-        return true;
-    }
-
-    struct npc_ebenlockeAI : public ScriptedAI
-    {
-        npc_ebenlockeAI(Creature* creature) : ScriptedAI(creature) { }
-
-        ObjectGuid PlayerGUID;
-        uint32 SummonTimer;
-
-        bool bSummoned;
-
-        void Reset() override
-        {
-            bSummoned = false;
-            SummonTimer = 2000;
-        }
-
-        void SetGUID(ObjectGuid guid, int32 /*id*/) override
-        {
-            PlayerGUID = guid;
-        }
-
-        void DoAction(int32 action) override
-        {
-            switch (action)
+            me->GetScheduler().Schedule(2s, [this](TaskContext /*context*/)
             {
-            case ACTION_START_EVENT:
-                SummonTimer = 2000;
-                break;
-            }
+                me->SummonCreature(NPC_STITCHES, -10553.90f, -1171.27f, 27.8604f, 1.48514f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 90000, true;
+            });
         }
-
-        void SummonSpawns()
-        {
-            if (!bSummoned)
-            {
-                if (Creature* stitches = me->SummonCreature(NPC_STITCHES, -10553.90f, -1171.27f, 27.8604f, 1.48514f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 90000, true))
-                    bSummoned = true;
-            }
-        }
-
-        void UpdateAI(uint32 diff) override
-        {
-            if (SummonTimer < diff)
-            {
-
-                if (Player* player = ObjectAccessor::GetPlayer(*me, PlayerGUID))
-                {
-                    SummonSpawns();
-                }
-            }
-            else SummonTimer -= diff;
-        }
-
-    private:
-    };
-
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new npc_ebenlockeAI(creature);
     }
 };
 
-
 void AddSC_duskwood()
 {
-    new boss_twilight_corrupter();
+    RegisterCreatureAI(boss_twilight_corrupter);
     new at_twilight_grove();
     RegisterSpellScript(spell_summon_stalvan);
-    new npc_stalvan();
-    new npc_soothing_incense_cloud();
+    RegisterCreatureAI(npc_stalvan);
+    RegisterCreatureAI(npc_soothing_incense_cloud);
     RegisterSpellScript(spell_sacred_cleansing);
-    new npc_ebenlocke();
+    RegisterCreatureAI(npc_ebenlocke);
 }
