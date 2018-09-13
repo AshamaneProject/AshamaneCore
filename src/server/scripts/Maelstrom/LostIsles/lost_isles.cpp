@@ -226,7 +226,7 @@ struct npc_goblin_espace_pod : public ScriptedAI
         me->SetFlying(true);
         me->SetSwim(true);
 
-        me->GetScheduler().Schedule(1s, [this](TaskContext context)
+        me->GetScheduler().Schedule(1s, [this](TaskContext /*context*/)
         {
             Player* nearestPlayer = me->SelectNearestPlayer(20.f);
 
@@ -851,6 +851,7 @@ struct npc_sling_rocket : public npc_escortAI
         if (apply)
         {
             me->SetCanFly(true);
+            me->SetFlying(true);
             me->SetSpeed(MOVE_FLIGHT, 21.0f);
             me->CastSpell(me, SPELL_ROCKET_BLAST, true);
             Start(false, true, who->GetGUID());
