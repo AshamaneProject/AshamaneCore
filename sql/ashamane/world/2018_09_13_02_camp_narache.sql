@@ -1,3 +1,5 @@
+-- By LkArthas (RenegadosWow)
+
 -- Our Tribe Imprisoned Quest Fix
 SET @CAPTURED_BRAVE :=38345;
 SET @GO_QUILBOAR_CAGE :=202112;

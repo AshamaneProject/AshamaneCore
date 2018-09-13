@@ -1,3 +1,5 @@
+-- By LkArthas (RenegadosWow)
+
 -- Mulgore Zone Fixes
 -- Added missing quest chaining to Mulgore
 UPDATE `quest_template_addon` SET `PrevQuestID`=24215 WHERE `ID` IN (14438,24459,6361,26188,11129,761,20440,743);
