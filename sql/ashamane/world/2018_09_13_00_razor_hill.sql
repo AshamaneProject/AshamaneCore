@@ -196,7 +196,7 @@ DELETE FROM `creature_template_addon` WHERE `entry` IN (39267);
 INSERT INTO `creature_template_addon` (`entry`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `auras`) VALUES 
 (39267, 0, 0, 0, 1, 0, '');
 
-DELETE FROM `waypoint_data` WHERE `id` IN (@GUID+59*10);
+DELETE FROM `waypoint_data` WHERE `id` IN ((@GUID+59)*10);
 INSERT INTO `waypoint_data` (`id`, `point`, `position_x`, `position_y`, `position_z`, `orientation`, `delay`, `move_type`, `action`, `action_chance`, `wpguid`) VALUES 
 ((@GUID+59)*10, 1, -247.427, -5115.19, 42.7854, 0, 0, 0, 0, 100, 0),
 ((@GUID+59)*10, 2, -247.177, -5112.69, 42.0354, 0, 0, 0, 0, 100, 0),
