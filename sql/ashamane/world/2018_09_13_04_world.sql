@@ -1,3 +1,5 @@
+-- By LkArthas (RenegadosWow)
+
 -- Quest 29109 Morshan Caravan Pick-Up
 DELETE FROM gossip_menu_option WHERE MenuId=12744;
 INSERT INTO `gossip_menu_option` (`MenuId`, `OptionText`, `OptionType`, `OptionNpcFlag`) VALUES ('12744', 'Im ready. Lets go', '1', '1');

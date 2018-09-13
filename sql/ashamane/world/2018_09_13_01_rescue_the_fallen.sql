@@ -1,3 +1,5 @@
+-- By LkArthas (RenegadosWow)
+
 -- Rescue the Fallen improve quest
 SET @WOUNDED_MORSHAN_DEFENDER := 33266;
 SET @DINAH_GUID := (SELECT `guid` FROM `creature` WHERE `id`=33263);

@@ -1,3 +1,5 @@
+-- By LkArthas (RenegadosWow)
+
 -- Razor Hill
 SET @RAZOR_HILL_GUARD_GUID := 100757;
 

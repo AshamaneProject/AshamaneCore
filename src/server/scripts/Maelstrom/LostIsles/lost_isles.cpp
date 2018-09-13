@@ -235,7 +235,7 @@ struct npc_goblin_espace_pod : public ScriptedAI
             else
                 Talk(urand(0, 3), nearestPlayer);
 
-        }).Schedule(2s, [this](TaskContext context)
+        }).Schedule(2s, [this](TaskContext /*context*/)
         {
             me->GetMotionMaster()->MovePoint(1, beachPosition);
             me->DespawnOrUnsummon(3000);
