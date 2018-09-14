@@ -2062,7 +2062,14 @@ class aura_dru_restoration_affinity : public AuraScript
             return;
 
         for (uint32 spellId : LearnedSpells)
+        {
+            // This prevent Rejuvenation gones missing if the target was a low level character and in Restoration specialization
+            if(target->GetSpecializationId() == TALENT_SPEC_DRUID_RESTORATION)
+                if(spellId == SPELL_DRUID_REJUVENATION)
+                    continue;
+
             target->RemoveSpell(spellId);
+        }
     }
 
     void Register() override

@@ -3529,7 +3529,8 @@ void SpellMgr::LoadSpellInfoCorrections()
         120344, // Summon Aysa
         120345, // Summon Jojo
         120749, // Summon Ji
-        120753  // Summon Garrosh
+        120753, // Summon Garrosh
+        68059,  // Miner Troubles : Summon frightened miner
     }, [](SpellInfo* spellInfo)
     {
         spellInfo->RangeEntry = sSpellRangeStore.LookupEntry(7); // 10yd
@@ -3643,6 +3644,17 @@ void SpellMgr::LoadSpellInfoCorrections()
             const_cast<SpellEffectInfo*>(spellInfo->GetEffect(effectIndex))->TargetA = SpellImplicitTargetInfo(TARGET_UNIT_TARGET_ENEMY);
             const_cast<SpellEffectInfo*>(spellInfo->GetEffect(effectIndex))->TargetB = SpellImplicitTargetInfo();
         }
+    });
+
+
+    ApplySpellFix({
+        70661, // See quest invis 1
+        70678, // See quest invis 2
+        70680, // See quest invis 3
+        70681, // See quest invis 4
+    }, [](SpellInfo* spellInfo)
+    {
+        spellInfo->RequiredAreasID = 0;
     });
 
     SpellInfo* spellInfo = NULL;

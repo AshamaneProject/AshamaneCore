@@ -1328,6 +1328,7 @@ class TC_GAME_API Unit : public WorldObject
         bool SetDisableGravity(bool disable);
         bool SetFall(bool enable);
         bool SetSwim(bool enable);
+        bool SetFlying(bool enable);
         bool SetCanFly(bool enable);
         bool SetWaterWalking(bool enable);
         bool SetFeatherFall(bool enable);
