@@ -29692,3 +29692,26 @@ uint8 Player::GetItemLimitCategoryQuantity(ItemLimitCategoryEntry const* limitEn
 
     return limit;
 }
+
+void Player::SendCustomMessage(std::string const& opcode, std::string const& data/* = ""*/)
+{
+    std::ostringstream message;
+    message << opcode << "|" << data << "|";
+    ChatHandler(GetSession()).SendSysMessage(message.str().c_str());
+}
+
+void Player::SendCustomMessage(std::string const& opcode, std::vector<std::string> const& data)
+{
+    std::ostringstream message;
+    message << opcode << "|";
+
+    if (!data.empty())
+    {
+        for (auto const& elem : data)
+            message << elem << "| ";
+    }
+    else
+        message << " " << "|";
+
+    ChatHandler(GetSession()).SendSysMessage(message.str().c_str());
+}

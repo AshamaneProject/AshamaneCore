@@ -1243,6 +1243,9 @@ class TC_GAME_API WorldSession
         void HandleBugReportOpcode(WorldPackets::Ticket::BugReport& bugReport);
         void HandleComplaint(WorldPackets::Ticket::Complaint& packet);
 
+        void OnGMTicketGetTicketEvent();
+        void SendTicketStatusUpdate(uint8 response);
+
         void HandleTogglePvP(WorldPackets::Misc::TogglePvP& packet);
         void HandleSetPvP(WorldPackets::Misc::SetPvP& packet);
 

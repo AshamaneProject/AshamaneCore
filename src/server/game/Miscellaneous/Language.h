@@ -939,7 +939,10 @@ enum TrinityStrings
 
     // 1205-2002 - free
 
-    // Ticket Strings 2003-2028
+    // Ticket Strings 2000-2028
+    LANG_COMMAND_TICKETNEW              = 2000,
+    LANG_COMMAND_TICKETUPDATED          = 2001,
+    LANG_COMMAND_TICKETPLAYERABANDON    = 2002,
     LANG_COMMAND_TICKETCLOSED           = 2003,
     LANG_COMMAND_TICKETDELETED          = 2004,
     LANG_COMMAND_TICKETNOTEXIST         = 2005,

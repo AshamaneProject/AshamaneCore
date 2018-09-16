@@ -2526,6 +2526,10 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
 
         bool MeetPlayerCondition(uint32 conditionId) const;
 
+        // Send custom message with system message (addon, custom interfaces ...etc)
+        void SendCustomMessage(std::string const& opcode, std::string const& data = "");
+        void SendCustomMessage(std::string const& opcode, std::vector<std::string> const& data);
+
     protected:
         // Gamemaster whisper whitelist
         GuidList WhisperList;
