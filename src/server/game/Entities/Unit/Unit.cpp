@@ -737,15 +737,13 @@ void Unit::DealDamageMods(Unit const* victim, uint32 &damage, uint32* absorb) co
 uint32 Unit::DealDamage(Unit* victim, uint32 damage, CleanDamage const* cleanDamage, DamageEffectType damagetype, SpellSchoolMask damageSchoolMask, SpellInfo const* spellProto, bool durabilityLoss)
 {
     if (victim->IsAIEnabled)
-    {
         victim->GetAI()->DamageTaken(this, damage);
-    }
 
     if (IsAIEnabled)
-    {
         GetAI()->DamageDealt(victim, damage, damagetype);
+
+    if (IsAIEnabled)
         GetAI()->DamageDealt(victim, damage, damagetype, spellProto);
-    }
 
     // Hook for OnDamage Event
     sScriptMgr->OnDamage(this, victim, damage);
