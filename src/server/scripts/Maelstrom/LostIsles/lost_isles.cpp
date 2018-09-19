@@ -703,7 +703,7 @@ struct npc_warchief_revenge_cyclone : public npc_escortAI
         me->SetSpeed(MOVE_FLIGHT, 7.0f);
     }
 
-    void DoAction(int32 action) override
+    void DoAction(int32 /*action*/) override
     {
         me->GetMotionMaster()->MovePoint(1001, 1001.373047f, 3832.485840f, 14.062465f);
 
