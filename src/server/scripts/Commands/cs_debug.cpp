@@ -117,6 +117,7 @@ public:
             { "criteria",      rbac::RBAC_PERM_COMMAND_DEBUG,               false, &HandleDebugCriteriaCommand,         "" },
             { "movementforce", rbac::RBAC_PERM_COMMAND_DEBUG_MOVEMENT_FORCE,false, nullptr,                             "", debugMovementForceCommandTable },
             { "playercondition",rbac::RBAC_PERM_COMMAND_DEBUG,              false, &HandleDebugPlayerConditionCommand,  "" },
+            { "maxItemLevel",   rbac::RBAC_PERM_COMMAND_DEBUG,              false, &HandleDebugMaxItemLevelCommand,     "" },
         };
         static std::vector<ChatCommand> commandTable =
         {
@@ -1677,6 +1678,18 @@ public:
         else
             handler->PSendSysMessage("False");
 
+        return true;
+    }
+
+    static bool HandleDebugMaxItemLevelCommand(ChatHandler* handler, char const* args)
+    {
+        CommandArgs commandArgs = CommandArgs(handler, args, { CommandArgs::ARG_UINT, CommandArgs::ARG_UINT });
+        if (!commandArgs.ValidArgs())
+            return false;
+
+        uint32 effectiveLevel = commandArgs.GetNextArg<uint32>();
+        uint32 maxItemLevel = commandArgs.GetNextArg<uint32>();
+        handler->getSelectedPlayerOrSelf()->SetEffectiveLevelAndMaxItemLevel(effectiveLevel, maxItemLevel);
         return true;
     }
 };

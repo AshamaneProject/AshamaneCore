@@ -47,8 +47,9 @@ namespace Trinity
             return CURRENT_EXPANSION;
     }
 
-    inline float GetDamageMultiplierForExpansion(uint32 playerLevel, uint8 expansion)
+    inline float GetDamageMultiplierForExpansion(uint32 playerLevel, uint32 creatureLevel)
     {
+        uint32 expansion = GetExpansionForLevel(creatureLevel);
         if (playerLevel > GetMaxLevelForExpansion(expansion))
         {
             switch (expansion)
