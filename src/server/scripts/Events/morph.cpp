@@ -21,9 +21,9 @@
 #include "Player.h"
 #include "ScriptMgr.h"
 
-#define EVENT_MORPH             100
+#define EVENT_MORPH             200
 #define SPELL_CLONE             69828
-#define MAX_CREATURE_HEALTH     100000
+#define MAX_CREATURE_HEALTH     2000000
 
 class PlayerScript_Event_Morph : public PlayerScript
 {
