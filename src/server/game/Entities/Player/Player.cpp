@@ -29649,6 +29649,33 @@ void Player::UpdateShop(uint32 diff)
     CharacterDatabase.CommitTransaction(trans);
 }
 
+void Player::SetEffectiveLevelAndMaxItemLevel(uint32 effectiveLevel, uint32 maxItemLevel)
+{
+    float healthPct = GetHealthPct();
+    _RemoveAllItemMods();
+
+    SetUInt32Value(UNIT_FIELD_EFFECTIVE_LEVEL, effectiveLevel);
+    SetUInt32Value(UNIT_FIELD_MAXITEMLEVEL, maxItemLevel);
+
+    _ApplyAllItemMods();
+    UpdateAverageItemLevel();
+
+    uint32 basemana = 0;
+    sObjectMgr->GetPlayerClassLevelInfo(getClass(), GetEffectiveLevel(), basemana);
+
+    PlayerLevelInfo info;
+    sObjectMgr->GetPlayerLevelInfo(getRace(), getClass(), GetEffectiveLevel(), &info);
+
+    // save base values (bonuses already included in stored stats
+    for (uint8 i = STAT_STRENGTH; i < MAX_STATS; ++i)
+        SetCreateStat(Stats(i), info.stats[i]);
+
+    SetCreateHealth(0);
+    SetCreateMana(basemana);
+    UpdateAllStats();
+    SetHealth(CalculatePct(GetMaxHealth(), healthPct));
+}
+
 void Player::UpdateItemLevelAreaBasedScaling()
 {
     // @todo Activate pvp item levels during world pvp
@@ -29663,7 +29690,7 @@ void Player::UpdateItemLevelAreaBasedScaling()
         _ApplyAllItemMods();
         SetHealth(CalculatePct(GetMaxHealth(), healthPct));
     }
-    // @todo other types of power scaling such as timewalking
+    // @todo other types of power scaling
 }
 
 void Player::UnlockReagentBank()

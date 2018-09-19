@@ -63,10 +63,11 @@ enum LFGMgrEnum
 
 enum LfgFlags
 {
-    LFG_FLAG_UNK1                                = 0x1,
-    LFG_FLAG_UNK2                                = 0x2,
-    LFG_FLAG_SEASONAL                            = 0x4,
-    LFG_FLAG_UNK3                                = 0x8
+    LFG_FLAG_UNK1                               = 0x1,
+    LFG_FLAG_UNK2                               = 0x2,
+    LFG_FLAG_SEASONAL                           = 0x4,
+    LFG_FLAG_UNK3                               = 0x8,
+    LFG_FLAG_TIMEWALKER                         = 0x2000,
 };
 
 /// Determines the type of instance
@@ -296,7 +297,7 @@ struct LFGDungeonData
     uint32 map;
     uint8 type;
     uint8 expansion;
-    uint8 group;
+    uint8 randomId;
     uint8 minlevel;
     uint8 maxlevel;
     Difficulty difficulty;
@@ -440,6 +441,9 @@ class TC_GAME_API LFGMgr
         static bool HasIgnore(ObjectGuid guid1, ObjectGuid guid2);
         /// Sends queue status to player
         static void SendLfgQueueStatus(ObjectGuid guid, LfgQueueStatusData const& data);
+
+        LFGDungeonData const* GetPlayerLFGDungeon(ObjectGuid guid);
+        LFGDungeonsEntry const* GetPlayerLFGDungeonEntry(ObjectGuid guid);
 
     private:
         uint8 GetTeam(ObjectGuid guid);

@@ -42,14 +42,14 @@
 namespace lfg
 {
 
-LFGDungeonData::LFGDungeonData() : id(0), name(""), map(0), type(0), expansion(0), group(0), minlevel(0),
+LFGDungeonData::LFGDungeonData() : id(0), name(""), map(0), type(0), expansion(0), randomId(0), minlevel(0),
 maxlevel(0), difficulty(DIFFICULTY_NONE), seasonal(false), x(0.0f), y(0.0f), z(0.0f), o(0.0f),
 requiredItemLevel(0)
 {
 }
 
 LFGDungeonData::LFGDungeonData(LFGDungeonsEntry const* dbc) : id(dbc->ID), name(dbc->Name->Str[sWorld->GetDefaultDbcLocale()]), map(dbc->MapID),
-type(uint8(dbc->TypeID)), expansion(uint8(dbc->ExpansionLevel)), group(uint8(dbc->GroupID)),
+type(uint8(dbc->TypeID)), expansion(uint8(dbc->ExpansionLevel)), randomId(uint8(dbc->RandomID)),
 minlevel(uint8(dbc->MinLevel)), maxlevel(uint8(dbc->MaxLevel)), difficulty(Difficulty(dbc->DifficultyID)),
 seasonal((dbc->Flags & LFG_FLAG_SEASONAL) != 0), x(0.0f), y(0.0f), z(0.0f), o(0.0f),
 requiredItemLevel(0)
@@ -268,7 +268,7 @@ void LFGMgr::LoadLFGDungeons(bool reload /* = false */)
         }
 
         if (dungeon.type != LFG_TYPE_RANDOM)
-            CachedDungeonMapStore[dungeon.group].insert(dungeon.id);
+            CachedDungeonMapStore[dungeon.randomId].insert(dungeon.id);
         CachedDungeonMapStore[0].insert(dungeon.id);
     }
 
@@ -1484,8 +1484,8 @@ void LFGMgr::FinishDungeon(ObjectGuid gguid, const uint32 dungeonId)
 LfgDungeonSet const& LFGMgr::GetDungeonsByRandom(uint32 randomdungeon)
 {
     LFGDungeonData const* dungeon = GetLFGDungeon(randomdungeon);
-    uint32 group = dungeon ? dungeon->group : 0;
-    return CachedDungeonMapStore[group];
+    uint32 randomId = dungeon ? dungeon->id : 0;
+    return CachedDungeonMapStore[randomId];
 }
 
 /**
@@ -1983,14 +1983,22 @@ bool LFGMgr::IsSeasonActive(uint32 dungeonId)
 {
     switch (dungeonId)
     {
-        case 285: // The Headless Horseman
+        case 285:   // The Headless Horseman
             return IsHolidayActive(HOLIDAY_HALLOWS_END);
-        case 286: // The Frost Lord Ahune
+        case 286:   // The Frost Lord Ahune
             return IsHolidayActive(HOLIDAY_FIRE_FESTIVAL);
-        case 287: // Coren Direbrew
+        case 287:   // Coren Direbrew
             return IsHolidayActive(HOLIDAY_BREWFEST);
-        case 288: // The Crown Chemical Co.
+        case 288:   // The Crown Chemical Co.
             return IsHolidayActive(HOLIDAY_LOVE_IS_IN_THE_AIR);
+        case 744:   // Timewalker BC
+            return IsHolidayActive(HOLIDAY_TIMEWALKER_BC);
+        case 995:   // Timewalker WotlK
+            return IsHolidayActive(HOLIDAY_TIMEWALKER_WOTLK);
+        case 1146:  // Timewalker Cataclysm
+            return IsHolidayActive(HOLIDAY_TIMEWALKER_CATACLYSM);
+        case 1453:  // Timewalker MoP
+            return IsHolidayActive(HOLIDAY_TIMEWALKER_MOP);
     }
     return false;
 }
@@ -2035,6 +2043,26 @@ bool LFGMgr::selectedRandomLfgDungeon(ObjectGuid guid)
     }
 
     return false;
+}
+
+LFGDungeonData const* LFGMgr::GetPlayerLFGDungeon(ObjectGuid guid)
+{
+    if (GetState(guid) != LFG_STATE_NONE)
+    {
+        LfgDungeonSet const& dungeons = GetSelectedDungeons(guid);
+        if (!dungeons.empty())
+            return GetLFGDungeon(*dungeons.begin());
+    }
+
+    return nullptr;
+}
+
+LFGDungeonsEntry const* LFGMgr::GetPlayerLFGDungeonEntry(ObjectGuid guid)
+{
+    if (LFGDungeonData const* data = GetPlayerLFGDungeon(guid))
+        return sLFGDungeonsStore.LookupEntry(data->id);
+
+    return nullptr;
 }
 
 bool LFGMgr::inLfgDungeonMap(ObjectGuid guid, uint32 map, Difficulty difficulty)
