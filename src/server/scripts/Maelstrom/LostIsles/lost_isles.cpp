@@ -538,7 +538,7 @@ struct npc_killag_sangrecroc : public ScriptedAI
         }
     }
 
-    void sQuestReward(Player* player, const Quest *quest, uint32 ) override
+    void sQuestReward(Player* player, const Quest* quest, uint32 ) override
     {
         if (quest->GetQuestId() == QUEST_INFRARED_INFRADEAD)
             player->RemoveAurasDueToSpell(SPELL_INFRARED_ORC_SCOUT_AURA);
@@ -602,7 +602,7 @@ struct npc_gyrocopterequest_giver : public ScriptedAI
 {
     npc_gyrocopterequest_giver(Creature* creature) : ScriptedAI(creature) {}
 
-    void sQuestAccept(Player* player, const Quest *quest) override
+    void sQuestAccept(Player* player, const Quest* quest) override
     {
         if (quest->GetQuestId() == QUEST_PRECIOUS_CARO)
         {
@@ -655,7 +655,7 @@ struct npc_lost_isles_thrall_prisonner : public ScriptedAI
                     player->KilledMonsterCredit(me->GetEntry());
     }
 
-    void sQuestAccept(Player* player, const Quest *quest) override
+    void sQuestAccept(Player* player, const Quest* /*quest*/) override
     {
         Talk(0, player);
     }
@@ -675,7 +675,7 @@ struct npc_lost_isles_thrall_top_boat : public ScriptedAI
 {
     npc_lost_isles_thrall_top_boat(Creature* creature) : ScriptedAI(creature) {}
 
-    void sQuestAccept(Player* player, const Quest *quest) override
+    void sQuestAccept(Player* player, const Quest* quest) override
     {
         if (quest->GetQuestId() == QUEST_WARCHIEF_REVENGE)
         {
@@ -1208,7 +1208,7 @@ class npc_megs_isle_gob : public CreatureScript
 public:
     npc_megs_isle_gob() : CreatureScript("npc_megs_isle_gob") { }
 
-    bool OnQuestAccept(Player* player, Creature* /*creature*/, const Quest *quest) override
+    bool OnQuestAccept(Player* player, Creature* /*creature*/, const Quest* quest) override
     {
         if (quest->GetQuestId() == 24868)
             player->SummonCreature(NPC_CRACK, player->GetPositionX(), player->GetPositionY(),  player->GetPositionZ(),  player->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN);
@@ -1217,7 +1217,7 @@ public:
         return true;
     }
 
-    bool OnQuestReward(Player* player, Creature* creature, const Quest *quest, uint32 ) override
+    bool OnQuestReward(Player* player, Creature* creature, const Quest* quest, uint32 ) override
     {
         if (quest->GetQuestId() == 24864)
         {
@@ -1484,7 +1484,7 @@ class npc_ceint : public CreatureScript
 public:
     npc_ceint() : CreatureScript("npc_ceint") { }
 
-    bool OnQuestReward(Player* player, Creature* /*creature*/, const Quest *quest, uint32 ) override
+    bool OnQuestReward(Player* player, Creature* /*creature*/, const Quest* quest, uint32 ) override
     {
         if (quest->GetQuestId() == 24942)
         {
@@ -1548,7 +1548,7 @@ class npc_izzy_airplane : public CreatureScript
 public:
     npc_izzy_airplane() : CreatureScript("npc_izzy_airplane") { }
 
-    bool OnQuestAccept(Player* player, Creature* creature, const Quest *quest) override
+    bool OnQuestAccept(Player* player, Creature* creature, const Quest* quest) override
     {
         if (quest->GetQuestId() == 25023)
         {
@@ -1810,7 +1810,7 @@ class npc_killag_2 : public CreatureScript
 public:
     npc_killag_2() : CreatureScript("npc_killag_2") { }
 
-    bool OnQuestAccept(Player* player, Creature* /*creature*/, const Quest *quest) override
+    bool OnQuestAccept(Player* player, Creature* /*creature*/, const Quest* quest) override
     {
         if (quest->GetQuestId() == 25100)
         {
@@ -1827,7 +1827,7 @@ class npc_Chariot : public CreatureScript
 public:
     npc_Chariot() : CreatureScript("npc_Chariot") { }
 
-    bool OnQuestAccept(Player* player, Creature* creature, const Quest *quest) override
+    bool OnQuestAccept(Player* player, Creature* creature, const Quest* quest) override
     {
         if (quest->GetQuestId() == 25184)
         {
@@ -1960,7 +1960,7 @@ class npc_grilly_2 : public CreatureScript
 public:
     npc_grilly_2() : CreatureScript("npc_grilly_2") { }
 
-    bool OnQuestAccept(Player* player, Creature* /*creature*/, const Quest *quest) override
+    bool OnQuestAccept(Player* player, Creature* /*creature*/, const Quest* quest) override
     {
         if (quest->GetQuestId() == 25213)
         {
@@ -2142,7 +2142,7 @@ class npc_boot : public CreatureScript
 public:
   npc_boot() : CreatureScript("npc_boot") { }
 
-  bool OnQuestAccept(Player* player, Creature* /*creature*/, const Quest *quest) override
+  bool OnQuestAccept(Player* player, Creature* /*creature*/, const Quest* quest) override
   {
     if (quest->GetQuestId() == 25265)
     {

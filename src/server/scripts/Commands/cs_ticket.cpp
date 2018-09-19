@@ -224,7 +224,7 @@ public:
         return true;
     }
 
-    static bool AddonHandleGMTicketEnd(ChatHandler* handler, char const* args)
+    static bool AddonHandleGMTicketEnd(ChatHandler* handler, char const* /*args*/)
     {
         // Don't accept tickets if the ticket queue is disabled. (Ticket UI is greyed out but not fully dependable)
         if (sSupportMgr->GetSupportSystemStatus() == GMTICKET_QUEUE_STATUS_DISABLED)
@@ -241,7 +241,7 @@ public:
         return true;
     }
 
-    static bool AddonHandleGMTicketDelete(ChatHandler* handler, char const* args)
+    static bool AddonHandleGMTicketDelete(ChatHandler* handler, char const* /*args*/)
     {
         if (Player* player = handler->GetSession()->GetPlayer())
         {
@@ -259,7 +259,7 @@ public:
         return true;
     }
 
-    static bool AddonHandleGMTicketGet(ChatHandler* handler, char const* args)
+    static bool AddonHandleGMTicketGet(ChatHandler* handler, char const* /*args*/)
     {
         Player* player = handler->GetSession()->GetPlayer();
 
@@ -271,7 +271,7 @@ public:
         return true;
     }
 
-    static bool AddonHandleGMResponseResolve(ChatHandler* handler, char const* args)
+    static bool AddonHandleGMResponseResolve(ChatHandler* handler, char const* /*args*/)
     {
         if (Player* player = handler->GetSession()->GetPlayer())
         {
