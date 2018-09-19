@@ -810,7 +810,7 @@ struct npc_gallywix_sling_rocket : public ScriptedAI
             {
                 me->EnterVehicle(rocket);
 
-                me->GetScheduler().Schedule(2s, [this, rocket](TaskContext /*context*/)
+                me->GetScheduler().Schedule(2s, [rocket](TaskContext /*context*/)
                 {
                     rocket->CastSpell(rocket, SPELL_ROCKET_BLAST, true);
                     rocket->GetMotionMaster()->MovePoint(1, 907.387085f, 2662.028320f, 193.833740f);
