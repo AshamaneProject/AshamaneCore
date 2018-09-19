@@ -27,7 +27,7 @@
 
 enum NPCIDS
 {
-    creature_portal_bunny           = 39834
+    creature_portal_bunny           = 39834,
     creature_burning_exile          = 39829,
     creature_thundering_windfury    = 39831,
     creature_glacial_exile          = 39830,
