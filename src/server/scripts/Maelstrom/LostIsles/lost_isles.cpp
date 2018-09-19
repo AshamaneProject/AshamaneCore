@@ -259,7 +259,7 @@ struct npc_bomb_monkey : public ScriptedAI
 
     void Reset() override
     {
-        me->GetScheduler().Schedule(5s, 30s, [](TaskContext context)
+        me->GetScheduler().Schedule(5s, 30s, [](TaskContext /*context*/)
         {
             GetContextUnit()->CastSpell(nullptr, SPELL_MONKEY_COSMETIC_THROW_BOMB, false);
             context.Repeat(5s, 30s);
@@ -707,7 +707,7 @@ struct npc_warchief_revenge_cyclone : public npc_escortAI
     {
         me->GetMotionMaster()->MovePoint(1001, 1001.373047f, 3832.485840f, 14.062465f);
 
-        me->GetScheduler().Schedule(1s, [this](TaskContext context)
+        me->GetScheduler().Schedule(1s, [this](TaskContext /*context*/)
         {
             if (Vehicle* vehicle = me->GetVehicleKit())
             {
