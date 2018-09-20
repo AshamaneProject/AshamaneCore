@@ -20,6 +20,7 @@
 #include "DB2Stores.h"
 #include "Group.h"
 #include "ItemTemplate.h"
+#include "LFGMgr.h"
 #include "Log.h"
 #include "LootMgr.h"
 #include "LootPackets.h"
@@ -271,6 +272,10 @@ bool Loot::FillLoot(uint32 lootId, LootStore const& store, Player* lootOwner, bo
     }
 
     _itemContext = lootOwner->GetMap()->GetDifficultyLootItemContext();
+
+    if (LFGDungeonsEntry const* dungeonEntry = sLFGMgr->GetPlayerLFGDungeonEntry(lootOwner->GetGUID()))
+        if (dungeonEntry->Flags & lfg::LfgFlags::LFG_FLAG_TIMEWALKER)
+            _itemContext = ItemContext::TimeWalker;
 
     items.reserve(MAX_NR_LOOT_ITEMS);
     quest_items.reserve(MAX_NR_QUEST_ITEMS);

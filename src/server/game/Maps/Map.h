@@ -398,6 +398,7 @@ class TC_GAME_API Map : public GridRefManager<NGridType>
         Difficulty GetDifficultyID() const { return Difficulty(GetSpawnMode()); }
         MapDifficultyEntry const* GetMapDifficulty() const;
         uint8 GetDifficultyLootItemContext() const;
+        uint8 GetEncounterDifficultyMask() const;
 
         uint32 GetId() const;
         bool Instanceable() const;

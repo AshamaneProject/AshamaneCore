@@ -291,6 +291,7 @@ struct TC_GAME_API Loot
     LootItem const* GetItemInSlot(uint32 lootSlot) const;
     LootItem* LootItemInSlot(uint32 lootslot, Player* player, NotNormalLootItem** qitem = nullptr, NotNormalLootItem** ffaitem = nullptr, NotNormalLootItem** conditem = nullptr, NotNormalLootItem** currency = nullptr);
     uint32 GetMaxSlotInLootFor(Player* player) const;
+    uint8 GetItemContext() const { return _itemContext; }
     bool hasItemForAll() const;
     bool hasItemFor(Player* player) const;
     bool hasOverThresholdItem() const;

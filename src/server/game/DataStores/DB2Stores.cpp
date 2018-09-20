@@ -1735,6 +1735,11 @@ std::set<uint32> DB2Manager::GetItemBonusTree(uint32 itemId, uint32 itemContext)
     return bonusListIDs;
 }
 
+bool DB2Manager::HasItemContext(uint32 itemId, uint32 itemContext) const
+{
+    return !GetItemBonusTree(itemId, itemContext).empty();
+}
+
 std::vector<int32> DB2Manager::GetItemBonusTreeVector(uint32 itemId, uint32 itemBonusTreeMod) const
 {
     std::set<uint32> bonusListIDs = GetItemBonusTree(itemId, itemBonusTreeMod);

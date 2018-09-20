@@ -2119,7 +2119,7 @@ MeleeHitOutcome Unit::RollMeleeOutcomeAgainst(Unit const* victim, WeaponAttackTy
     int32    roll = urand(0, 9999);
 
     int32 attackerLevel = GetLevelForTarget(victim);
-    int32 victimLevel = GetLevelForTarget(this);
+    int32 victimLevel = victim->GetLevelForTarget(this);
 
     // check if attack comes from behind, nobody can parry or block if attacker is behind
     bool canParryOrBlock = victim->HasInArc(float(M_PI), this) || victim->HasAuraType(SPELL_AURA_IGNORE_HIT_DIRECTION);
@@ -11317,6 +11317,24 @@ void Unit::Kill(Unit* victim, bool durabilityLoss)
                 loot->clear();
                 if (uint32 lootid = creature->GetCreatureTemplate()->lootid)
                     loot->FillLoot(lootid, LootTemplates_Creature, looter, false, false, creature->GetLootMode());
+
+                if (uint32 journalEncounterId = sObjectMgr->GetCreatureTemplateJournalId(creature->GetCreatureTemplate()->Entry))
+                {
+                    if (auto items = sDB2Manager.GetJournalItemsByEncounter(journalEncounterId))
+                    {
+                        uint8 mapDifficultyMask = GetMap()->GetEncounterDifficultyMask();
+
+                        std::vector<JournalEncounterItemEntry const*> potentialItems;
+                        for (JournalEncounterItemEntry const* item : *items)
+                            if (item->IsValidDifficultyMask(mapDifficultyMask) && sDB2Manager.HasItemContext(item->ItemID, loot->GetItemContext()))
+                                potentialItems.push_back(item);
+
+                        Trinity::Containers::RandomResize(potentialItems, 2);
+
+                        for (JournalEncounterItemEntry const* item : potentialItems)
+                            loot->AddItem(LootStoreItem(item->ItemID, LOOT_ITEM_TYPE_ITEM, 0, 10, 0, LOOT_MODE_DEFAULT, 0, 1, 1));
+                    }
+                }
 
                 loot->generateMoneyLoot(creature->GetCreatureTemplate()->mingold, creature->GetCreatureTemplate()->maxgold);
 
