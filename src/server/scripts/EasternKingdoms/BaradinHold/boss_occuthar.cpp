@@ -241,9 +241,11 @@ class spell_occuthar_focused_fire : public SpellScriptLoader
                     return;
 
                 targets.remove_if(FocusedFireTargetSelector(GetCaster()->ToCreature(), GetCaster()->GetVictim()));
-                WorldObject* target = Trinity::Containers::SelectRandomContainerElement(targets);
-                targets.clear();
-                targets.push_back(target);
+                if (WorldObject* target = Trinity::Containers::SelectRandomContainerElement(targets))
+                {
+                    targets.clear();
+                    targets.push_back(target);
+                }
             }
 
             void Register() override
