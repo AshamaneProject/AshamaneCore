@@ -1992,8 +1992,10 @@ bool LFGMgr::IsSeasonActive(uint32 dungeonId)
         case 288:   // The Crown Chemical Co.
             return IsHolidayActive(HOLIDAY_LOVE_IS_IN_THE_AIR);
         case 744:   // Timewalker BC
+        case 1533:  // Timewalker Raid : Black Temple
             return IsHolidayActive(HOLIDAY_TIMEWALKER_BC);
         case 995:   // Timewalker WotlK
+        case 1677:  // Timewalker Raid : Ulduar
             return IsHolidayActive(HOLIDAY_TIMEWALKER_WOTLK);
         case 1146:  // Timewalker Cataclysm
             return IsHolidayActive(HOLIDAY_TIMEWALKER_CATACLYSM);

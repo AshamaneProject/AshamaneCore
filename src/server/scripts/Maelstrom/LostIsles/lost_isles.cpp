@@ -703,7 +703,7 @@ struct npc_warchief_revenge_cyclone : public npc_escortAI
         me->SetSpeed(MOVE_FLIGHT, 7.0f);
     }
 
-    void DoAction(int32 action) override
+    void DoAction(int32 /*action*/) override
     {
         me->GetMotionMaster()->MovePoint(1001, 1001.373047f, 3832.485840f, 14.062465f);
 
@@ -810,7 +810,7 @@ struct npc_gallywix_sling_rocket : public ScriptedAI
             {
                 me->EnterVehicle(rocket);
 
-                me->GetScheduler().Schedule(2s, [this, rocket](TaskContext /*context*/)
+                me->GetScheduler().Schedule(2s, [rocket](TaskContext /*context*/)
                 {
                     rocket->CastSpell(rocket, SPELL_ROCKET_BLAST, true);
                     rocket->GetMotionMaster()->MovePoint(1, 907.387085f, 2662.028320f, 193.833740f);
