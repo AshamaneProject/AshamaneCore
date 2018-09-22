@@ -378,7 +378,7 @@ class boss_shannox : public CreatureScript
                             events.ScheduleEvent(EVENT_IMMOLATION_TRAP, urand(23000, 30000));
                             break;
                         case EVENT_CRYSTAL_PRISON_TRAP:
-                            if (Unit* pTarget = SelectTarget(SELECT_TARGET_RANDOM, 0, 0.0f, true))
+                            if (Unit* pTarget = SelectTarget(SELECT_TARGET_RANDOM, 1, 0.0f, true))
                                 DoCast(pTarget, SPELL_THROW_CRYSTAL_PRISON_TRAP);
                             events.ScheduleEvent(EVENT_CRYSTAL_PRISON_TRAP, 25500);
                             break;
