@@ -959,7 +959,11 @@ void LFGMgr::MakeNewGroup(LfgProposal const& proposal)
     }
 
     ASSERT(grp);
-    grp->SetDungeonDifficultyID(Difficulty(dungeon->difficulty));
+    if (dungeon->difficulty == DIFFICULTY_TIMEWALKING_RAID)
+        grp->SetRaidDifficultyID(Difficulty(dungeon->difficulty));
+    else
+        grp->SetDungeonDifficultyID(Difficulty(dungeon->difficulty));
+
     ObjectGuid gguid = grp->GetGUID();
     SetDungeon(gguid, dungeon->Entry());
     SetState(gguid, LFG_STATE_DUNGEON);
