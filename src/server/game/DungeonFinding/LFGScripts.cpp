@@ -106,7 +106,7 @@ void LFGPlayerScript::OnMapChanged(Player* player)
     else
     {
         Group* group = player->GetGroup();
-        if (group && group->GetMembersCount() == 1)
+        if (!sLFGMgr->IsTesting() && group && group->GetMembersCount() == 1)
         {
             sLFGMgr->LeaveLfg(group->GetGUID());
             group->Disband();
