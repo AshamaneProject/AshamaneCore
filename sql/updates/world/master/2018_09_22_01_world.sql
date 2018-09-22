@@ -200,3 +200,7 @@ INSERT IGNORE INTO `creature_loot_template` (`entry`, `item`, `ChanceOrQuestChan
 ('95937', '142119', '0.01374885', '1', '0', '1', '1', ''),
 ('115672', '142119', '0.0136612', '1', '0', '1', '1', ''),
 ('96124', '142119', '0.01355748', '1', '0', '1', '1', '');
+
+DELETE FROM `creature_loot_template` WHERE (Item = 142121);
+INSERT INTO `creature_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES
+(110321, 142121, 0, 100, 0, 1, 0, 1, 1, '');
