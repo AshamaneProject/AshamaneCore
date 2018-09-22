@@ -2236,7 +2236,7 @@ public:
 
         bool CheckProc(ProcEventInfo& eventInfo)
         {
-            if (eventInfo.GetSpellInfo()->Id == SPELL_AIMED_SHOT || eventInfo.GetSpellInfo()->Id == SPELL_HUNTER_ARCANE_SHOT)
+            if (eventInfo.GetSpellInfo()->Id == SPELL_HUNTER_AIMED_SHOT || eventInfo.GetSpellInfo()->Id == SPELL_HUNTER_ARCANE_SHOT)
                 return true;
 
             return false;
@@ -3184,13 +3184,13 @@ struct at_hun_sentinel : AreaTriggerAI
             return;
 
         if (Unit* caster = at->GetCaster())
-            for (ObjectGuid guid : GetInsideUnits())
+            for (ObjectGuid guid : at->GetInsideUnits())
                 if (Unit* target = ObjectAccessor::GetUnit(*caster, guid))
                     if (caster->IsValidAttackTarget(target))
                     {
                         caster->CastSpell(target, SPELL_HUNTER_HUNTERS_MARK_AURA, true);
                         caster->CastSpell(caster, SPELL_HUNTER_HUNTERS_MARK_AURA_2, true);
-                    )
+                    }
 
         timeInterval -= baseTimeInterval;
     }
