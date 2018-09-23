@@ -850,6 +850,14 @@ enum ItemContext : uint8
     TimeWalker      = 22,
 };
 
+enum JournalEncounterFlags : uint8
+{
+    JOURNAL_ENCOUNTER_FLAG_UNK2     = 0x02,
+    JOURNAL_ENCOUNTER_FLAG_ALLIANCE = 0x04, // This encounter can be see by alliance only
+    JOURNAL_ENCOUNTER_FLAG_HORDE    = 0x08,
+    JOURNAL_ENCOUNTER_FLAG_LEGION_WB= 0x16,
+};
+
 enum MapDifficultyFlags : uint8
 {
     MAP_DIFFICULTY_FLAG_CANNOT_EXTEND   = 0x10

@@ -48,6 +48,7 @@ enum HunterSpells
     SPELL_HUNTER_A_MURDER_OF_CROWS_1                = 131894,
     SPELL_HUNTER_A_MURDER_OF_CROWS_2                = 206505,
     SPELL_HUNTER_A_MURDER_OF_CROWS_DAMAGE           = 131900,
+    SPELL_HUNTER_AIMED_SHOT                         = 19434,
     SPELL_HUNTER_ANIMAL_INSTINCTS                   = 204315,
     SPELL_HUNTER_ANIMAL_INSTINCTS_CHEETAH           = 204324,
     SPELL_HUNTER_ANIMAL_INSTINCTS_MONGOOSE          = 204333,
@@ -55,6 +56,7 @@ enum HunterSpells
     SPELL_HUNTER_ARCANE_SHOT                        = 185358,
     SPELL_HUNTER_ASPECT_OF_THE_CHEETAH_EFFECT_2     = 186258,
     SPELL_HUNTER_ASPECT_OF_THE_EAGLE                = 186289,
+    SPELL_HUNTER_AURA_SHOOTING                      = 224729,
     SPELL_HUNTER_AUTO_SHOT                          = 75,
     SPELL_HUNTER_BARRAGE                            = 120360,
     SPELL_HUNTER_BASIC_ATTACK_COST_MODIFIER         = 62762,
@@ -2234,7 +2236,7 @@ public:
 
         bool CheckProc(ProcEventInfo& eventInfo)
         {
-            if (eventInfo.GetSpellInfo()->Id == SPELL_HUNTER_MULTISHOT || eventInfo.GetSpellInfo()->Id == SPELL_HUNTER_ARCANE_SHOT)
+            if (eventInfo.GetSpellInfo()->Id == SPELL_HUNTER_AIMED_SHOT || eventInfo.GetSpellInfo()->Id == SPELL_HUNTER_ARCANE_SHOT)
                 return true;
 
             return false;
@@ -3143,6 +3145,57 @@ public:
     }
 };
 
+/// Bursting Shot --  186387
+class spell_bursting_shot : public SpellScript
+{
+    PrepareSpellScript(spell_bursting_shot);
+
+    void HandleAfterHit()
+    {
+        if (Unit* caster = GetCaster())
+            caster->CastSpell(GetHitUnit(), SPELL_HUNTER_AURA_SHOOTING, true);
+    }
+
+    void Register()
+    {
+        AfterHit += SpellHitFn(spell_bursting_shot::HandleAfterHit);
+    }
+};
+
+// Sentinel - 206817
+// AreaTriggerID - 9769
+struct at_hun_sentinel : AreaTriggerAI
+{
+    at_hun_sentinel(AreaTrigger* areatrigger) : AreaTriggerAI(areatrigger) { }
+
+    int32 baseTimeInterval;
+    int32 timeInterval;
+
+    void OnCreate() override
+    {
+        baseTimeInterval = sSpellMgr->GetSpellInfo(SPELL_HUNTER_SENTINEL)->GetEffect(EFFECT_1)->BasePoints * IN_MILLISECONDS;
+        timeInterval = baseTimeInterval;
+    }
+
+    void OnUpdate(uint32 diff) override
+    {
+        timeInterval += diff;
+        if (timeInterval < baseTimeInterval)
+            return;
+
+        if (Unit* caster = at->GetCaster())
+            for (ObjectGuid guid : at->GetInsideUnits())
+                if (Unit* target = ObjectAccessor::GetUnit(*caster, guid))
+                    if (caster->IsValidAttackTarget(target))
+                    {
+                        caster->CastSpell(target, SPELL_HUNTER_HUNTERS_MARK_AURA, true);
+                        caster->CastSpell(caster, SPELL_HUNTER_HUNTERS_MARK_AURA_2, true);
+                    }
+
+        timeInterval -= baseTimeInterval;
+    }
+};
+
 void AddSC_hunter_spell_scripts()
 {
     new spell_hun_harpoon();
@@ -3193,6 +3246,7 @@ void AddSC_hunter_spell_scripts()
     new spell_hun_raptor_strike();
     new spell_hun_carve();
     new spell_hun_true_aim();
+	RegisterSpellScript(spell_bursting_shot);
     RegisterSpellScript(spell_hun_explosive_shot_detonate);
     RegisterSpellScript(spell_hun_exhilaration);
     RegisterAuraScript(aura_hun_volley);
@@ -3214,6 +3268,7 @@ void AddSC_hunter_spell_scripts()
     new at_hun_tar_trap_not_activated();
     new at_hun_binding_shot();
     new at_hun_caltrops();
+    RegisterAreaTriggerAI(at_hun_sentinel);
 
     // Playerscripts
     new PlayerScript_black_arrow();

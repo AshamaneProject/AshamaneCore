@@ -20,6 +20,7 @@
 #include "DB2Stores.h"
 #include "Group.h"
 #include "ItemTemplate.h"
+#include "LFGMgr.h"
 #include "Log.h"
 #include "LootMgr.h"
 #include "LootPackets.h"
@@ -261,6 +262,12 @@ bool Loot::FillLoot(uint32 lootId, LootStore const& store, Player* lootOwner, bo
     if (!lootOwner)
         return false;
 
+    _itemContext = lootOwner->GetMap()->GetDifficultyLootItemContext();
+
+    if (LFGDungeonsEntry const* dungeonEntry = sLFGMgr->GetPlayerLFGDungeonEntry(lootOwner->GetGUID()))
+        if (dungeonEntry->Flags & lfg::LfgFlags::LFG_FLAG_TIMEWALKER)
+            _itemContext = ItemContext::TimeWalker;
+
     LootTemplate const* tab = store.GetLootFor(lootId);
 
     if (!tab)
@@ -269,8 +276,6 @@ bool Loot::FillLoot(uint32 lootId, LootStore const& store, Player* lootOwner, bo
             TC_LOG_ERROR("sql.sql", "Table '%s' loot id #%u used but it doesn't have records.", store.GetName(), lootId);
         return false;
     }
-
-    _itemContext = lootOwner->GetMap()->GetDifficultyLootItemContext();
 
     items.reserve(MAX_NR_LOOT_ITEMS);
     quest_items.reserve(MAX_NR_QUEST_ITEMS);

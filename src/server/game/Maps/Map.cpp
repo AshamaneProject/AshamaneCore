@@ -3747,6 +3747,26 @@ uint8 Map::GetDifficultyLootItemContext() const
     return 0;
 }
 
+uint8 Map::GetEncounterDifficultyMask() const
+{
+    uint32 difficultyId = GetDifficultyID();
+    switch (difficultyId)
+    {
+        case DIFFICULTY_NORMAL:
+        case DIFFICULTY_HEROIC:
+            return 1 << (difficultyId - DIFFICULTY_NORMAL);
+        case DIFFICULTY_10_N:
+        case DIFFICULTY_25_N:
+        case DIFFICULTY_10_HC:
+        case DIFFICULTY_25_HC:
+            return 1 << (difficultyId - DIFFICULTY_10_N);
+        default:
+            break;
+    }
+
+    return 0xFF;
+}
+
 uint32 Map::GetId() const
 {
     return i_mapEntry->ID;

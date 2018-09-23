@@ -1900,6 +1900,11 @@ struct JournalEncounterItemEntry
     uint8 FactionMask;
     uint8 Flags;
     uint32 ID;
+
+    bool IsValidDifficultyMask(uint8 mask) const
+    {
+        return !DifficultyMask || DifficultyMask == 0xFF || DifficultyMask & mask;
+    }
 };
 
 struct JournalInstanceEntry

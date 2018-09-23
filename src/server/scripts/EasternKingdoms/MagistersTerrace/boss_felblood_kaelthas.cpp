@@ -43,7 +43,6 @@ enum Says
     SAY_DEATH                   = 6
 };
 
-
 enum Spells
 {
     // Phase 1 spells
@@ -185,7 +184,6 @@ public:
         }
 
         void MoveInLineOfSight(Unit* who) override
-
         {
             if (!HasTaunted && me->IsWithinDistInMap(who, 40.0f))
             {

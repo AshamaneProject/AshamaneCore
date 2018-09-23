@@ -45,9 +45,6 @@ public:
 
     static bool HandleBMSetAuctionDurationCommand(ChatHandler* handler, const char* args)
     {
-        if (!*args)
-            return false;
-
         CommandArgs cmdArgs = CommandArgs(handler, args, { CommandArgs::ARG_UINT, CommandArgs::ARG_UINT });
 
         if (!cmdArgs.ValidArgs())

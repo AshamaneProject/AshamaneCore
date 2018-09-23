@@ -532,6 +532,45 @@ void ObjectMgr::LoadCreatureTemplate(Field* fields)
     creatureTemplate.ScriptID               = GetScriptId(fields[78].GetString());
 }
 
+void ObjectMgr::LoadCreatureTemplateJournals()
+{
+    uint32 oldMSTime = getMSTime();
+
+    //                                               0      1
+    QueryResult result = WorldDatabase.Query("SELECT entry, JournalEncounterID FROM creature_template_journal");
+
+    if (!result)
+    {
+        TC_LOG_INFO("server.loading", ">> Loaded 0 creature template journal definitions. DB table `creature_template_journal` is empty.");
+        return;
+    }
+
+    _creatureTemplateJournalStore.rehash(result->GetRowCount());
+    do
+    {
+        Field* fields = result->Fetch();
+
+        uint32 entry = fields[0].GetUInt32();
+        if (!sObjectMgr->GetCreatureTemplate(entry))
+        {
+            TC_LOG_ERROR("sql.sql", "Creature template (Entry: %u) does not exist but has a record in `creature_template_journal`", entry);
+            continue;
+        }
+
+        uint32 JournalEncounterID = fields[1].GetUInt32();
+        if (!sDB2Manager.GetJournalItemsByEncounter(JournalEncounterID))
+        {
+            TC_LOG_ERROR("sql.sql", "Journal Encounter (ID: %u) does not exist but has a record in `creature_template_journal`", JournalEncounterID);
+            continue;
+        }
+
+        _creatureTemplateJournalStore[entry] = JournalEncounterID;
+    }
+    while (result->NextRow());
+
+    TC_LOG_INFO("server.loading", ">> Loaded %u creature template journal definitions in %u ms", uint32(_creatureTemplateJournalStore.size()), GetMSTimeDiffToNow(oldMSTime));
+}
+
 void ObjectMgr::LoadCreatureTemplateAddons()
 {
     uint32 oldMSTime = getMSTime();
@@ -9986,6 +10025,15 @@ CreatureTemplate const* ObjectMgr::GetCreatureTemplate(uint32 entry) const
         return &(itr->second);
 
     return nullptr;
+}
+
+uint32 ObjectMgr::GetCreatureTemplateJournalId(uint32 entry) const
+{
+    CreatureTemplateJournalContainer::const_iterator itr = _creatureTemplateJournalStore.find(entry);
+    if (itr != _creatureTemplateJournalStore.end())
+        return itr->second;
+
+    return 0;
 }
 
 VehicleAccessoryList const* ObjectMgr::GetVehicleAccessoryList(Vehicle* veh) const

@@ -56,6 +56,7 @@ public:
             {   "clean", rbac::RBAC_PERM_COMMAND_LFG_CLEAN,   true,  &HandleLfgCleanCommand,      "" },
             { "options", rbac::RBAC_PERM_COMMAND_LFG_OPTIONS, true,  &HandleLfgOptionsCommand,    "" },
             {   "debug", rbac::RBAC_PERM_COMMAND_LFG_DEBUG,   true,  &HandleLfgDebugCommand,      "" },
+            {    "join", rbac::RBAC_PERM_COMMAND_LFG,         false, &HandleLfgJoinCommand,       "" },
         };
 
         static std::vector<ChatCommand> commandTable =
@@ -167,6 +168,26 @@ public:
     {
         sLFGMgr->ToggleTesting();
         handler->PSendSysMessage(sLFGMgr->IsTesting() ? LANG_DEBUG_LFG_ON : LANG_DEBUG_LFG_OFF);
+        return true;
+    }
+
+    static bool HandleLfgJoinCommand(ChatHandler* handler, char const* args)
+    {
+        CommandArgs cmdArgs = CommandArgs(handler, args, { CommandArgs::ARG_UINT, CommandArgs::ARG_UINT_OPTIONAL });
+
+        if (!cmdArgs.ValidArgs())
+            return false;
+
+        lfg::LfgDungeonSet newDungeons;
+        uint32 dungeon = cmdArgs.GetNextArg<uint32>();
+        if (sLFGDungeonsStore.LookupEntry(dungeon))
+            newDungeons.insert(dungeon);
+
+        uint8 role = lfg::PLAYER_ROLE_DAMAGE;
+        if (cmdArgs.Count() > 1)
+            role = uint8(cmdArgs.GetNextArg<uint32>());
+
+        sLFGMgr->JoinLfg(handler->getSelectedPlayerOrSelf(), role, newDungeons);
         return true;
     }
 };
