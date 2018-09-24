@@ -7,8 +7,10 @@ CREATE TABLE `creature_template_journal`(
 
 DELETE FROM creature_loot_template WHERE entry IN (24723, 24744, 20870, 20885, 20886, 20912, 18341, 18343, 22930, 18344, 17941, 17991, 17942, 16807, 16809, 16808, 20923);
 DELETE FROM creature_loot_template WHERE entry IN (22887, 22898, 22841, 22871, 22948, 23418, 23419, 23420, 22947, 22949, 22950, 22951, 22952, 22917);
+DELETE FROM creature_loot_template WHERE entry IN (33113, 33118, 33186, 33293, 32867, 32930, 33515, 32845, 32865, 32906, 33350, 33271, 33288, 32871);
 
 INSERT INTO `creature_template_journal` (entry, JournalEncounterID) VALUES
+-- BC dungeons
 (24723, 530),
 (24744, 531),
 (20870, 548),
@@ -27,6 +29,7 @@ INSERT INTO `creature_template_journal` (entry, JournalEncounterID) VALUES
 (16808, 569),
 (20923, 728),
 
+-- Black Temple
 (22887, 1582),
 (22898, 1583),
 (22841, 1584),
@@ -40,4 +43,20 @@ INSERT INTO `creature_template_journal` (entry, JournalEncounterID) VALUES
 (22950, 1589),
 (22951, 1589),
 (22952, 1589),
-(22917, 1590);
+(22917, 1590),
+
+-- Ulduar
+(33113, 1637),
+(33118, 1638),
+(33186, 1639),
+(33293, 1640),
+(32867, 1641),
+(32930, 1642),
+(33515, 1643),
+(32845, 1644),
+(32865, 1645),
+(32906, 1646),
+(33350, 1647),
+(33271, 1648),
+(33288, 1649),
+(32871, 1650);
