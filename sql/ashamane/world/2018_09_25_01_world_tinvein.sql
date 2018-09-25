@@ -2,7 +2,7 @@
 -- Spawn taken from TDB
 SET @TIN := 17120;
 DELETE FROM gameobject WHERE id IN (1732,2054);
-INSERT INTO `gameobject`(`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, `spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`) VALUES
+INSERT INTO `gameobject`(`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnDifficulties`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, `spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`) VALUES
 (@TIN,1732,36,0,0,6,0,0,0,-1,-127.871,-444.354,57.161,0.349065,0,0,0.173648,0.984808,600,100,1,'',0),
 (@TIN+1,1732,36,0,0,6,0,0,0,-1,-234.677,-492.153,51.5503,2.05949,0,0,0.857168,0.515037,600,100,1,'',0),
 (@TIN+2,1732,36,0,0,6,0,0,0,-1,-134.418,-640.136,16.6032,1.309,0,0,0.608763,0.793352,600,100,1,'',0),

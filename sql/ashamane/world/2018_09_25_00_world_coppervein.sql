@@ -2,7 +2,7 @@
 -- Spawn taken from TDB
 SET @COPPER := 34529;
 DELETE FROM gameobject WHERE id IN (1731,2055);
-INSERT INTO `gameobject`(`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, `spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`) VALUES
+INSERT INTO `gameobject`(`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnDifficulties`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, `spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`) VALUES
 (@COPPER,1731,530,0,0,1,0,0,0,-1,9157.8,-6194.33,28.8475,-0.314159,0,0,-0.156434,0.987688,900,255,1,'',0),
 (@COPPER+1,1731,530,0,0,1,0,0,0,-1,8923.64,-6579.72,40.4971,-0.017453,0,0,-0.00872639,0.999962,900,255,1,'',0),
 (@COPPER+2,1731,530,0,0,1,0,0,0,-1,8757.86,-6306.09,57.1405,-1.0821,0,0,-0.515036,0.857168,900,255,1,'',0),
