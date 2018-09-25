@@ -769,6 +769,7 @@ INSERT INTO `gameobject`(`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnDifficul
 (@COPPER+763,1731,654,4714,4732,1,0,186,0,-1,-1080.82,826.753,36.4083,0,0,0,0,1,7200,255,1,'',0);
 
 -- Pool gameobject
+DELETE FROM `pool_gameobject` WHERE `pool_entry`=2012 AND `chance`=0;
 INSERT INTO `pool_gameobject`(`guid`, `pool_entry`, `chance`, `description`) VALUES 
 (@COPPER,2012,0,'Spawn Point 1 - Copper'),
 (@COPPER+1,2012,0,'Spawn Point 2 - Copper'),
