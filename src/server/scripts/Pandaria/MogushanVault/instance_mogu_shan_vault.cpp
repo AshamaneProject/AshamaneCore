@@ -182,7 +182,7 @@ class instance_mogu_shan_vault : public InstanceMapScript
                             guardianAliveCount++;
                         }
 
-                        uint32 difficulty = instance->GetSpawnMode();
+                        Difficulty difficulty = instance->GetDifficultyID();
                         bool turnOver = (difficulty == DIFFICULTY_10_N || difficulty == DIFFICULTY_10_HC || difficulty == DIFFICULTY_LFR);
 
                         // In 10N, 10H or LFR, there are only 3 guardians

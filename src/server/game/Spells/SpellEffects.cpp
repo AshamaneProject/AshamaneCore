@@ -5682,7 +5682,7 @@ void Spell::EffectUnlockGuildVaultTab(SpellEffIndex /*effIndex*/)
     // Safety checks done in Spell::CheckCast
     Player* caster = m_caster->ToPlayer();
     if (Guild* guild = caster->GetGuild())
-        guild->HandleBuyBankTab(caster->GetSession(), effectInfo->BasePoints - 1); // Bank tabs start at zero internally
+        guild->HandleBuyBankTab(caster->GetSession(), damage - 1); // Bank tabs start at zero internally
 }
 
 void Spell::EffectResurrectWithAura(SpellEffIndex effIndex)
@@ -5747,7 +5747,7 @@ void Spell::EffectRemoveTalent(SpellEffIndex /*effIndex*/)
     player->SendTalentsInfoData();
 }
 
-void Spell::EffectDestroyItem(SpellEffIndex effIndex)
+void Spell::EffectDestroyItem(SpellEffIndex /*effIndex*/)
 {
     if (effectHandleMode != SPELL_EFFECT_HANDLE_HIT_TARGET)
         return;
@@ -5756,13 +5756,11 @@ void Spell::EffectDestroyItem(SpellEffIndex effIndex)
         return;
 
     Player* player = unitTarget->ToPlayer();
-    SpellEffectInfo const* effect = GetEffect(effIndex);
-    uint32 itemId = effect->ItemType;
-    if (Item* item = player->GetItemByEntry(itemId))
+    if (Item* item = player->GetItemByEntry(effectInfo->ItemType))
         player->DestroyItem(item->GetBagSlot(), item->GetSlot(), true);
 }
 
-void Spell::EffectLearnGarrisonBuilding(SpellEffIndex effIndex)
+void Spell::EffectLearnGarrisonBuilding(SpellEffIndex /*effIndex*/)
 {
     if (effectHandleMode != SPELL_EFFECT_HANDLE_HIT_TARGET)
         return;
@@ -5771,7 +5769,7 @@ void Spell::EffectLearnGarrisonBuilding(SpellEffIndex effIndex)
         return;
 
     if (Garrison* garrison = unitTarget->ToPlayer()->GetGarrison(GARRISON_TYPE_GARRISON))
-        garrison->ToWodGarrison()->LearnBlueprint(GetEffect(effIndex)->MiscValue);
+        garrison->ToWodGarrison()->LearnBlueprint(effectInfo->MiscValue);
 }
 
 void Spell::EffectGrip(SpellEffIndex /*effIndex*/)
@@ -5788,7 +5786,7 @@ void Spell::EffectGrip(SpellEffIndex /*effIndex*/)
         m_caster->GetMotionMaster()->MoveJump(target->GetPosition(), 63.0f, 3.75f, m_spellInfo->Id);
 }
 
-void Spell::EffectCreateGarrison(SpellEffIndex effIndex)
+void Spell::EffectCreateGarrison(SpellEffIndex /*effIndex*/)
 {
     if (effectHandleMode != SPELL_EFFECT_HANDLE_HIT_TARGET)
         return;
@@ -5796,7 +5794,7 @@ void Spell::EffectCreateGarrison(SpellEffIndex effIndex)
     if (!unitTarget || !unitTarget->IsPlayer())
         return;
 
-    unitTarget->ToPlayer()->CreateGarrison(GetEffect(effIndex)->MiscValue);
+    unitTarget->ToPlayer()->CreateGarrison(effectInfo->MiscValue);
 }
 
 void Spell::EffectCreateConversation(SpellEffIndex /*effIndex*/)
@@ -5810,7 +5808,7 @@ void Spell::EffectCreateConversation(SpellEffIndex /*effIndex*/)
     Conversation::CreateConversation(effectInfo->MiscValue, GetCaster(), destTarget->GetPosition(), { GetCaster()->GetGUID() }, GetSpellInfo());
 }
 
-void Spell::EffectAddGarrisonFollower(SpellEffIndex effIndex)
+void Spell::EffectAddGarrisonFollower(SpellEffIndex /*effIndex*/)
 {
     if (effectHandleMode != SPELL_EFFECT_HANDLE_HIT_TARGET)
         return;
@@ -5818,7 +5816,7 @@ void Spell::EffectAddGarrisonFollower(SpellEffIndex effIndex)
     if (!unitTarget || unitTarget->GetTypeId() != TYPEID_PLAYER)
         return;
 
-    unitTarget->ToPlayer()->AddGarrisonFollower(GetEffect(effIndex)->MiscValue);
+    unitTarget->ToPlayer()->AddGarrisonFollower(effectInfo->MiscValue);
 }
 
 void Spell::EffectCreateHeirloomItem(SpellEffIndex effIndex)
@@ -5841,7 +5839,7 @@ void Spell::EffectCreateHeirloomItem(SpellEffIndex effIndex)
     ExecuteLogEffectCreateItem(effIndex, m_misc.Raw.Data[0]);
 }
 
-void Spell::EffectActivateGarrisonBuilding(SpellEffIndex effIndex)
+void Spell::EffectActivateGarrisonBuilding(SpellEffIndex /*effIndex*/)
 {
     if (effectHandleMode != SPELL_EFFECT_HANDLE_HIT_TARGET)
         return;
@@ -5850,10 +5848,10 @@ void Spell::EffectActivateGarrisonBuilding(SpellEffIndex effIndex)
         return;
 
     if (Garrison* garrison = unitTarget->ToPlayer()->GetGarrison(GARRISON_TYPE_GARRISON))
-        garrison->ToWodGarrison()->ActivateBuilding(GetEffect(effIndex)->MiscValue);
+        garrison->ToWodGarrison()->ActivateBuilding(effectInfo->MiscValue);
 }
 
-void Spell::EffectHealBattlePetPct(SpellEffIndex effIndex)
+void Spell::EffectHealBattlePetPct(SpellEffIndex /*effIndex*/)
 {
     if (effectHandleMode != SPELL_EFFECT_HANDLE_HIT_TARGET)
         return;
@@ -5862,7 +5860,7 @@ void Spell::EffectHealBattlePetPct(SpellEffIndex effIndex)
         return;
 
     if (BattlePetMgr* battlePetMgr = unitTarget->ToPlayer()->GetSession()->GetBattlePetMgr())
-        battlePetMgr->HealBattlePetsPct(GetEffect(effIndex)->BasePoints);
+        battlePetMgr->HealBattlePetsPct(damage);
 }
 
 void Spell::EffectEnableBattlePets(SpellEffIndex /*effIndex*/)
