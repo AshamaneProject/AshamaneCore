@@ -769,7 +769,7 @@ INSERT INTO `gameobject`(`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnDifficul
 (@COPPER+763,1731,654,4714,4732,1,0,186,0,-1,-1080.82,826.753,36.4083,0,0,0,0,1,7200,255,1,'',0);
 
 -- Pool gameobject
-DELETE FROM `pool_gameobject` WHERE `pool_entry`=2012 AND `chance`=0;
+DELETE FROM `pool_gameobject` WHERE `pool_entry` IN (12012, 2012) AND `chance`=0;
 INSERT INTO `pool_gameobject`(`guid`, `pool_entry`, `chance`, `description`) VALUES 
 (@COPPER,2012,0,'Spawn Point 1 - Copper'),
 (@COPPER+1,2012,0,'Spawn Point 2 - Copper'),
@@ -788,7 +788,7 @@ INSERT INTO `pool_gameobject`(`guid`, `pool_entry`, `chance`, `description`) VAL
 (@COPPER+14,2012,0,'Spawn Point 15 - Copper'),
 (@COPPER+15,2012,0,'Spawn Point 16 - Copper'),
 (@COPPER+16,2012,0,'Spawn Point 17 - Copper'),
-(@COPPER+17,12012,0,'Spawn Point 18 - Copper'),
+(@COPPER+17,2012,0,'Spawn Point 18 - Copper'),
 (@COPPER+18,2012,0,'Spawn Point 19 - Copper'),
 (@COPPER+19,2012,0,'Spawn Point 20 - Copper'),
 (@COPPER+20,2012,0,'Spawn Point 21 - Copper'),

@@ -1,7 +1,7 @@
 -- Silver Deposit
 SET @SILVER := 17501;
 DELETE FROM `gameobject` WHERE `id`=1733;
-INSERT INTO `gameobject`(`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, `spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`) VALUES
+INSERT INTO `gameobject`(`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnDifficulties`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, `spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`) VALUES
 (@SILVER,1733,48,0,0,2,0,0,0,-1,-351.981,402.932,-53.4195,-0.855212,0,0,-0.414694,0.909961,2700,100,1,'',0),
 (@SILVER+1,1733,0,0,0,1,0,0,0,-1,-1246,-2071,50.241,2.284,0,0,0.909467,0.415776,900,255,1,'',0),
 (@SILVER+2,1733,530,0,0,1,0,0,0,-1,7890.42,-6941.48,79.6466,-0.575959,0,0,-0.284016,0.95882,900,255,1,'',0),
