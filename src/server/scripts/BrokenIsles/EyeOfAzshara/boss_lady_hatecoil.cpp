@@ -144,6 +144,30 @@ private:
     bool _arcanistsDead = false;
 };
 
+// 193597
+class spell_lady_hatecoil_static_nova : public SpellScript
+{
+    PrepareSpellScript(spell_lady_hatecoil_static_nova);
+
+    void FilterTargets(std::list<WorldObject*>& targets)
+    {
+        targets.remove_if([](WorldObject* object)
+        {
+            if (Unit* target = object->ToUnit())
+                if (target->FindNearestCreature(NPC_SAND_DUNE, 5.0f, true))
+                    return true;
+
+            return false;
+        });
+    }
+
+    void Register() override
+    {
+        OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_lady_hatecoil_static_nova::FilterTargets, EFFECT_0, TARGET_UNIT_SRC_AREA_ENEMY);
+        OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_lady_hatecoil_static_nova::FilterTargets, EFFECT_1, TARGET_UNIT_SRC_AREA_ENEMY);
+    }
+};
+
 // 193611
 class spell_lady_hatecoil_focused_lightning : public SpellScript
 {
@@ -332,6 +356,7 @@ void AddSC_boss_lady_hatecoil()
     RegisterCreatureAI(boss_lady_hatecoil);
     RegisterCreatureAI(npc_lady_hatecoil_monsoon);
 
+    RegisterSpellScript(spell_lady_hatecoil_static_nova);
     RegisterSpellScript(spell_lady_hatecoil_focused_lightning);
     RegisterSpellScript(spell_lady_hatecoil_beckon_storm);
     RegisterSpellScript(spell_lady_hatecoil_curse_of_the_witch);

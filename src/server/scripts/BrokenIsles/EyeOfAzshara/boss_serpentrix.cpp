@@ -134,7 +134,22 @@ struct boss_serpentrix : public BossAI
                     }
 
                     if (!hasPlayerInRange)
+                    {
                         DoCastSelf(SPELL_RAMPAGE, true);
+
+                        me->GetScheduler().Schedule(2s, [this](TaskContext context)
+                        {
+                            if (me->GetChannelSpellId() == SPELL_RAMPAGE)
+                            {
+                                Map::PlayerList const& playerList = me->GetMap()->GetPlayers();
+                                for (Map::PlayerList::const_iterator itr = playerList.begin(); itr != playerList.end(); ++itr)
+                                    if (me->IsWithinMeleeRange(itr->GetSource()))
+                                        me->InterruptSpell(CURRENT_CHANNELED_SPELL);
+
+                                context.Repeat();
+                            }
+                        });
+                    }
                 }
 
                 events.Repeat(2s);
