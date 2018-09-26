@@ -76,8 +76,18 @@ enum LfgType
     LFG_TYPE_NONE                                = 0,
     LFG_TYPE_DUNGEON                             = 1,
     LFG_TYPE_RAID                                = 2,
-    LFG_TYPE_HEROIC                              = 5,
+    LFG_TYPE_ZONE                                = 4, // Shard related ?
     LFG_TYPE_RANDOM                              = 6
+};
+
+enum LfgSubType
+{
+    LFG_SUBTYPE_DUNGEON                         = 1,
+    LFG_SUBTYPE_LFR                             = 2,
+    LFG_SUBTYPE_SCENARIO                        = 3,
+    LFG_SUBTYPE_TIMEWALKING_RAID                = 4,
+    LFG_SUBTYPE_BATTLEFIELD                     = 5,
+    LFG_SUBTYPE_BATTLEGROUND                    = 6,
 };
 
 /// Proposal states
@@ -157,7 +167,7 @@ struct LfgProposal;
 struct LfgProposalPlayer;
 struct LfgPlayerBoot;
 
-typedef std::map<uint8, LFGQueue> LfgQueueContainer;
+typedef std::map<uint32, LFGQueue> LfgQueueContainer;
 typedef std::multimap<uint32, LfgReward const*> LfgRewardContainer;
 typedef std::pair<LfgRewardContainer::const_iterator, LfgRewardContainer::const_iterator> LfgRewardContainerBounds;
 typedef std::map<uint8, LfgDungeonSet> LfgCachedDungeonContainer;
@@ -296,6 +306,7 @@ struct LFGDungeonData
     std::string name;
     uint32 map;
     uint8 type;
+    uint8 subtype;
     uint8 expansion;
     uint8 randomId;
     uint8 minlevel;
@@ -467,7 +478,7 @@ class TC_GAME_API LFGMgr
         // Generic
         LFGQueue& GetQueue(ObjectGuid guid);
 
-        LfgDungeonSet const& GetDungeonsByRandom(uint32 randomdungeon);
+        LfgDungeonSet const& GetDungeonsByRandom(uint32 randomId);
         LfgType GetDungeonType(uint32 dungeon);
 
         void SendLfgBootProposalUpdate(ObjectGuid guid, LfgPlayerBoot const& boot);

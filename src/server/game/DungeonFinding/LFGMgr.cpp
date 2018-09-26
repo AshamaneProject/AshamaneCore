@@ -42,14 +42,14 @@
 namespace lfg
 {
 
-LFGDungeonData::LFGDungeonData() : id(0), name(""), map(0), type(0), expansion(0), randomId(0), minlevel(0),
+LFGDungeonData::LFGDungeonData() : id(0), name(""), map(0), type(0), subtype(0), expansion(0), randomId(0), minlevel(0),
 maxlevel(0), difficulty(DIFFICULTY_NONE), seasonal(false), x(0.0f), y(0.0f), z(0.0f), o(0.0f),
 requiredItemLevel(0)
 {
 }
 
 LFGDungeonData::LFGDungeonData(LFGDungeonsEntry const* dbc) : id(dbc->ID), name(dbc->Name->Str[sWorld->GetDefaultDbcLocale()]), map(dbc->MapID),
-type(uint8(dbc->TypeID)), expansion(uint8(dbc->ExpansionLevel)), randomId(uint8(dbc->RandomID)),
+type(uint8(dbc->TypeID)), subtype(uint8(dbc->Subtype)), expansion(uint8(dbc->ExpansionLevel)), randomId(uint8(dbc->RandomID)),
 minlevel(uint8(dbc->MinLevel)), maxlevel(uint8(dbc->MaxLevel)), difficulty(Difficulty(dbc->DifficultyID)),
 seasonal((dbc->Flags & LFG_FLAG_SEASONAL) != 0), x(0.0f), y(0.0f), z(0.0f), o(0.0f),
 requiredItemLevel(0)
@@ -203,7 +203,6 @@ void LFGMgr::LoadLFGDungeons(bool reload /* = false */)
         switch (dungeon->TypeID)
         {
             case LFG_TYPE_DUNGEON:
-            case LFG_TYPE_HEROIC:
             case LFG_TYPE_RAID:
             case LFG_TYPE_RANDOM:
                 LfgDungeonStore[dungeon->ID] = LFGDungeonData(dungeon);
@@ -474,26 +473,39 @@ void LFGMgr::JoinLfg(Player* player, uint8 roles, LfgDungeonSet& dungeons)
         bool isDungeon = false;
         for (LfgDungeonSet::const_iterator it = dungeons.begin(); it != dungeons.end() && joinData.result == LFG_JOIN_OK; ++it)
         {
-            LfgType type = GetDungeonType(*it);
-            switch (type)
+            LFGDungeonData const* dungeon = GetLFGDungeon(*it);
+            if (!dungeon)
+            {
+                joinData.result = LFG_JOIN_INVALID_SLOT;
+                break;
+            }
+
+            switch (dungeon->type)
             {
                 case LFG_TYPE_RANDOM:
                     if (dungeons.size() > 1)               // Only allow 1 random dungeon
                         joinData.result = LFG_JOIN_INVALID_SLOT;
                     else
-                        rDungeonId = (*dungeons.begin());
-                    // No break on purpose (Random can only be dungeon or heroic dungeon)
-                case LFG_TYPE_HEROIC:
+                        rDungeonId = dungeon->id;
+                    // No break on purpose
                 case LFG_TYPE_DUNGEON:
-                    if (isRaid)
-                        joinData.result = LFG_JOIN_MISMATCHED_SLOTS;
-                    isDungeon = true;
-                    break;
                 case LFG_TYPE_RAID:
-                    if (isDungeon)
-                        joinData.result = LFG_JOIN_MISMATCHED_SLOTS;
-                    isRaid = true;
+                {
+                    switch (dungeon->subtype)
+                    {
+                        case LFG_SUBTYPE_DUNGEON:
+                            if (isRaid)
+                                joinData.result = LFG_JOIN_MISMATCHED_SLOTS;
+                            isDungeon = true;
+                            break;
+                        case LFG_SUBTYPE_LFR:
+                            if (isDungeon)
+                                joinData.result = LFG_JOIN_MISMATCHED_SLOTS;
+                            isRaid = true;
+                            break;
+                    }
                     break;
+                }
                 default:
                     joinData.result = LFG_JOIN_INVALID_SLOT;
                     break;
@@ -523,12 +535,6 @@ void LFGMgr::JoinLfg(Player* player, uint8 roles, LfgDungeonSet& dungeons)
         if (!dungeons.empty())                             // Only should show lockmap when have no dungeons available
             joinData.lockmap.clear();
         player->GetSession()->SendLfgJoinResult(joinData);
-        return;
-    }
-
-    if (isRaid)
-    {
-        TC_LOG_DEBUG("lfg.join", "%s trying to join raid browser and it's disabled.", guid.ToString().c_str());
         return;
     }
 
@@ -959,7 +965,7 @@ void LFGMgr::MakeNewGroup(LfgProposal const& proposal)
     }
 
     ASSERT(grp);
-    if (dungeon->difficulty == DIFFICULTY_TIMEWALKING_RAID)
+    if (dungeon->subtype == LFG_SUBTYPE_LFR)
         grp->SetRaidDifficultyID(Difficulty(dungeon->difficulty));
     else
         grp->SetDungeonDifficultyID(Difficulty(dungeon->difficulty));
@@ -1485,10 +1491,8 @@ void LFGMgr::FinishDungeon(ObjectGuid gguid, const uint32 dungeonId)
    @param[in]     randomdungeon Random dungeon id (if value = 0 will return all dungeons)
    @returns Set of dungeons that can be done.
 */
-LfgDungeonSet const& LFGMgr::GetDungeonsByRandom(uint32 randomdungeon)
+LfgDungeonSet const& LFGMgr::GetDungeonsByRandom(uint32 randomId)
 {
-    LFGDungeonData const* dungeon = GetLFGDungeon(randomdungeon);
-    uint32 randomId = dungeon ? dungeon->id : 0;
     return CachedDungeonMapStore[randomId];
 }
 
