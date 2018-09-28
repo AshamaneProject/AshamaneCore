@@ -63,7 +63,7 @@ void WorldSession::HandleLfgLeaveOpcode(WorldPackets::LFG::DFLeave& dfLeave)
 
     // Check cheating - only leader can leave the queue
     if (!group || group->GetLeaderGUID() == dfLeave.Ticket.RequesterGuid)
-        sLFGMgr->LeaveLfg(dfLeave.Ticket.RequesterGuid);
+        sLFGMgr->LeaveLfg(dfLeave.Ticket.RequesterGuid, dfLeave.Ticket.Id);
 }
 
 void WorldSession::HandleLfgProposalResultOpcode(WorldPackets::LFG::DFProposalResponse& dfProposalResponse)

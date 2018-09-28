@@ -183,9 +183,12 @@ void LFGQueue::RemoveFromCurrentQueue(ObjectGuid guid)
     currentQueueStore.remove(guid);
 }
 
-void LFGQueue::AddQueueData(ObjectGuid guid, time_t joinTime, LfgDungeonSet const& dungeons, LfgRolesMap const& rolesMap)
+void LFGQueue::AddQueueData(uint32 queueId, ObjectGuid guid, time_t joinTime, LfgDungeonSet const& dungeons, LfgRolesMap const& rolesMap)
 {
-    QueueDataStore[guid] = LfgQueueData(joinTime, dungeons, rolesMap);
+    Id = queueId;
+    roleCount = LFGMgr::GetRoleCountByQueueId(queueId);
+
+    QueueDataStore[guid] = LfgQueueData(joinTime, dungeons, rolesMap, roleCount);
     AddToQueue(guid);
 }
 
@@ -358,13 +361,13 @@ LfgCompatibility LFGQueue::FindNewGroups(GuidList& check, GuidList& all)
 LfgCompatibility LFGQueue::CheckCompatibility(GuidList check)
 {
     std::string strGuids = ConcatenateGuids(check);
-    LfgProposal proposal;
+    LfgProposal proposal(Id);
     LfgDungeonSet proposalDungeons;
     LfgGroupsMap proposalGroups;
     LfgRolesMap proposalRoles;
 
     // Check for correct size
-    if (check.size() > MAX_GROUP_SIZE || check.empty())
+    if (check.size() > roleCount.GetMaxPlayers() || check.empty())
     {
         TC_LOG_DEBUG("lfg.queue.match.compatibility.check", "Guids: (%s): Size wrong - Not compatibles", GetDetailedMatchRoles(check).c_str());
         return LFG_INCOMPATIBLES_WRONG_GROUP_SIZE;
@@ -390,7 +393,7 @@ LfgCompatibility LFGQueue::CheckCompatibility(GuidList check)
     // Check if more than one LFG group and number of players joining
     uint8 numPlayers = 0;
     uint8 numLfgGroups = 0;
-    for (GuidList::const_iterator it = check.begin(); it != check.end() && numLfgGroups < 2 && numPlayers <= MAX_GROUP_SIZE; ++it)
+    for (GuidList::const_iterator it = check.begin(); it != check.end() && numLfgGroups < 2 && numPlayers <= roleCount.GetMaxPlayers(); ++it)
     {
         ObjectGuid guid = *it;
         LfgQueueDataContainer::iterator itQueue = QueueDataStore.find(guid);
@@ -416,14 +419,14 @@ LfgCompatibility LFGQueue::CheckCompatibility(GuidList check)
     }
 
     // Group with less that MAX_GROUP_SIZE members always compatible
-    if (!sLFGMgr->IsTesting() && check.size() == 1 && numPlayers != MAX_GROUP_SIZE)
+    if (!sLFGMgr->IsTesting() && check.size() == 1 && numPlayers != roleCount.GetMaxPlayers())
     {
         TC_LOG_DEBUG("lfg.queue.match.compatibility.check", "Guids: (%s) single group. Compatibles", GetDetailedMatchRoles(check).c_str());
         LfgQueueDataContainer::iterator itQueue = QueueDataStore.find(check.front());
 
         LfgCompatibilityData data(LFG_COMPATIBLES_WITH_LESS_PLAYERS);
         data.roles = itQueue->second.roles;
-        LFGMgr::CheckGroupRoles(data.roles);
+        LFGMgr::CheckGroupRoles(roleCount, data.roles);
 
         UpdateBestCompatibleInQueue(itQueue, strGuids, data.roles);
         SetCompatibilityData(strGuids, data);
@@ -437,7 +440,7 @@ LfgCompatibility LFGQueue::CheckCompatibility(GuidList check)
         return LFG_INCOMPATIBLES_MULTIPLE_LFG_GROUPS;
     }
 
-    if (numPlayers > MAX_GROUP_SIZE)
+    if (numPlayers > roleCount.GetMaxPlayers())
     {
         TC_LOG_DEBUG("lfg.queue.match.compatibility.check", "Guids: (%s) Too many players (%u)", GetDetailedMatchRoles(check).c_str(), numPlayers);
         SetCompatibles(strGuids, LFG_INCOMPATIBLES_TOO_MUCH_PLAYERS);
@@ -473,7 +476,7 @@ LfgCompatibility LFGQueue::CheckCompatibility(GuidList check)
         }
 
         LfgRolesMap debugRoles = proposalRoles;
-        if (!LFGMgr::CheckGroupRoles(proposalRoles))
+        if (!LFGMgr::CheckGroupRoles(roleCount, proposalRoles))
         {
             std::ostringstream o;
             for (LfgRolesMap::const_iterator it = debugRoles.begin(); it != debugRoles.end(); ++it)
@@ -507,14 +510,14 @@ LfgCompatibility LFGQueue::CheckCompatibility(GuidList check)
     else
     {
         ObjectGuid gguid = *check.begin();
-        const LfgQueueData &queue = QueueDataStore[gguid];
+        LfgQueueData const& queue = QueueDataStore[gguid];
         proposalDungeons = queue.dungeons;
         proposalRoles = queue.roles;
-        LFGMgr::CheckGroupRoles(proposalRoles);          // assing new roles
+        LFGMgr::CheckGroupRoles(roleCount,  proposalRoles);          // assing new roles
     }
 
     // Enough players?
-    if (!sLFGMgr->IsTesting() && numPlayers != MAX_GROUP_SIZE)
+    if (!sLFGMgr->IsTesting() && numPlayers < roleCount.GetMinPlayers())
     {
         TC_LOG_DEBUG("lfg.queue.match.compatibility.check", "Guids: (%s) Compatibles but not enough players(%u)", GetDetailedMatchRoles(check).c_str(), numPlayers);
         LfgCompatibilityData data(LFG_COMPATIBLES_WITH_LESS_PLAYERS);
@@ -621,7 +624,7 @@ void LFGQueue::UpdateQueueTimers(uint8 queueId, time_t currTime)
         if (queueinfo.bestCompatible.empty())
             FindBestCompatibleInQueue(itQueue);
 
-        LfgQueueStatusData queueData(queueId, dungeonId, waitTime, wtAvg, wtTank, wtHealer, wtDps, queuedTime, queueinfo.tanks, queueinfo.healers, queueinfo.dps);
+        LfgQueueStatusData queueData(queueId, dungeonId, waitTime, wtAvg, wtTank, wtHealer, wtDps, queuedTime, queueinfo.tanks, queueinfo.healers, queueinfo.damages);
         for (LfgRolesMap::const_iterator itPlayer = queueinfo.roles.begin(); itPlayer != queueinfo.roles.end(); ++itPlayer)
         {
             ObjectGuid pguid = itPlayer->first;
@@ -723,9 +726,9 @@ void LFGQueue::UpdateBestCompatibleInQueue(LfgQueueDataContainer::iterator itrQu
         queueData.bestCompatible.c_str(), key.c_str(), itrQueue->first.ToString().c_str());
 
     queueData.bestCompatible = key;
-    queueData.tanks = LFG_TANKS_NEEDED;
-    queueData.healers = LFG_HEALERS_NEEDED;
-    queueData.dps = LFG_DPS_NEEDED;
+    queueData.tanks = roleCount.minTanks;
+    queueData.healers = roleCount.minHealers;
+    queueData.damages = roleCount.minDamages;
     for (LfgRolesMap::const_iterator it = roles.begin(); it != roles.end(); ++it)
     {
         uint8 role = it->second;
@@ -734,7 +737,7 @@ void LFGQueue::UpdateBestCompatibleInQueue(LfgQueueDataContainer::iterator itrQu
         else if (role & PLAYER_ROLE_HEALER)
             --queueData.healers;
         else
-            --queueData.dps;
+            --queueData.damages;
     }
 }
 

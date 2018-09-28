@@ -44,7 +44,7 @@ void LFGPlayerScript::OnLogout(Player* player)
     if (!player->GetGroup())
         sLFGMgr->LeaveLfg(player->GetGUID());
     else if (player->GetSession()->PlayerDisconnected())
-        sLFGMgr->LeaveLfg(player->GetGUID(), true);
+        sLFGMgr->LeaveLfg(player->GetGUID(), {}, true);
 }
 
 void LFGPlayerScript::OnLogin(Player* player, bool /*loginFirst*/)
@@ -67,7 +67,7 @@ void LFGPlayerScript::OnLogin(Player* player, bool /*loginFirst*/)
         }
     }
 
-    sLFGMgr->SetTeam(player->GetGUID(), player->GetTeam());
+    sLFGMgr->SetTeam(player->GetGUID(), player->GetTeamId());
     /// @todo - Restore LfgPlayerData and send proper status to player if it was in a group
 }
 
