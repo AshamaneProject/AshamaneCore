@@ -447,9 +447,15 @@ void LFGMgr::JoinLfg(Player* player, uint8 roles, LfgDungeonSet& dungeons)
                             joinData.result = LFG_JOIN_MISMATCHED_SLOTS;
                         break;
                     case LFG_SUBTYPE_LFR:
+                    case LFG_SUBTYPE_TIMEWALKING_RAID:
                         if (dungeons.size() > 1)    // Only allow 1 raid
                             joinData.result = LFG_JOIN_MISMATCHED_SLOTS;
                         isRaid = true;
+                        queueId = dungeon->id;
+                        break;
+                    case LFG_SUBTYPE_SCENARIO:
+                        if (dungeons.size() > 1)    // Only allow 1 scenario
+                            joinData.result = LFG_JOIN_MISMATCHED_SLOTS;
                         queueId = dungeon->id;
                         break;
                 }
@@ -879,56 +885,61 @@ bool LFGMgr::CheckGroupRoles(LfgQueueRoleCount roleCount, LfgRolesMap& groles)
     uint8 damage = 0;
     uint8 tank = 0;
     uint8 healer = 0;
+    bool damagesOnly = roleCount.maxDamages == roleCount.GetMaxPlayers();
 
-    for (LfgRolesMap::iterator it = groles.begin(); it != groles.end(); ++it)
+    for (auto& it : groles)
     {
-        uint8 role = it->second & ~PLAYER_ROLE_LEADER;
+        // If LFGDungeons require only damages, we set everyone to damages
+        if (damagesOnly)
+            it.second = PLAYER_ROLE_DAMAGE;
+
+        uint8 role = it.second & ~PLAYER_ROLE_LEADER;
         if (role == PLAYER_ROLE_NONE)
             return false;
 
-        if (role & PLAYER_ROLE_DAMAGE)
+        if (roleCount.maxDamages && (role & PLAYER_ROLE_DAMAGE))
         {
             if (role != PLAYER_ROLE_DAMAGE)
             {
-                it->second -= PLAYER_ROLE_DAMAGE;
+                it.second -= PLAYER_ROLE_DAMAGE;
                 if (CheckGroupRoles(roleCount, groles))
                     return true;
-                it->second += PLAYER_ROLE_DAMAGE;
+                it.second += PLAYER_ROLE_DAMAGE;
             }
             else if (damage == roleCount.maxDamages)
                 return false;
             else
-                damage++;
+                ++damage;
         }
 
-        if (role & PLAYER_ROLE_HEALER)
+        if (roleCount.maxHealers && (role & PLAYER_ROLE_HEALER))
         {
             if (role != PLAYER_ROLE_HEALER)
             {
-                it->second -= PLAYER_ROLE_HEALER;
+                it.second -= PLAYER_ROLE_HEALER;
                 if (CheckGroupRoles(roleCount, groles))
                     return true;
-                it->second += PLAYER_ROLE_HEALER;
+                it.second += PLAYER_ROLE_HEALER;
             }
             else if (healer == roleCount.maxHealers)
                 return false;
             else
-                healer++;
+                ++healer;
         }
 
-        if (role & PLAYER_ROLE_TANK)
+        if (roleCount.maxTanks && (role & PLAYER_ROLE_TANK))
         {
             if (role != PLAYER_ROLE_TANK)
             {
-                it->second -= PLAYER_ROLE_TANK;
+                it.second -= PLAYER_ROLE_TANK;
                 if (CheckGroupRoles(roleCount, groles))
                     return true;
-                it->second += PLAYER_ROLE_TANK;
+                it.second += PLAYER_ROLE_TANK;
             }
             else if (tank == roleCount.maxTanks)
                 return false;
             else
-                tank++;
+                ++tank;
         }
     }
     return (tank + healer + damage) == uint8(groles.size());
@@ -991,7 +1002,7 @@ void LFGMgr::MakeNewGroup(LfgProposal const& proposal)
     }
 
     ASSERT(grp);
-    if (dungeon->subtype == LFG_SUBTYPE_LFR)
+    if (dungeon->subtype == LFG_SUBTYPE_LFR || dungeon->subtype == LFG_SUBTYPE_TIMEWALKING_RAID)
         grp->SetRaidDifficultyID(Difficulty(dungeon->difficulty));
     else
         grp->SetDungeonDifficultyID(Difficulty(dungeon->difficulty));
