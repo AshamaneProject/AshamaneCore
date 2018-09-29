@@ -970,7 +970,13 @@ void LFGMgr::MakeNewGroup(LfgProposal const& proposal)
     LFGDungeonData const* dungeon = GetLFGDungeon(proposal.dungeonId);
     ASSERT(dungeon);
 
-    Group* grp = !proposal.group.IsEmpty() ? sGroupMgr->GetGroupByGUID(proposal.group) : NULL;
+    bool isRaid = dungeon->subtype == LFG_SUBTYPE_LFR || dungeon->subtype == LFG_SUBTYPE_TIMEWALKING_RAID;
+
+    Group* grp = !proposal.group.IsEmpty() ? sGroupMgr->GetGroupByGUID(proposal.group) : nullptr;
+
+    if (isRaid && grp && !grp->isRaidGroup())
+        grp->ConvertToRaid();
+
     for (GuidList::const_iterator it = players.begin(); it != players.end(); ++it)
     {
         ObjectGuid pguid = (*it);
@@ -986,6 +992,10 @@ void LFGMgr::MakeNewGroup(LfgProposal const& proposal)
         {
             grp = new Group();
             grp->ConvertToLFG();
+
+            if (isRaid)
+                grp->ConvertToRaid();
+
             grp->Create(player);
             ObjectGuid gguid = grp->GetGUID();
             SetState(gguid, LFG_STATE_PROPOSAL);
@@ -1002,7 +1012,7 @@ void LFGMgr::MakeNewGroup(LfgProposal const& proposal)
     }
 
     ASSERT(grp);
-    if (dungeon->subtype == LFG_SUBTYPE_LFR || dungeon->subtype == LFG_SUBTYPE_TIMEWALKING_RAID)
+    if (isRaid)
         grp->SetRaidDifficultyID(Difficulty(dungeon->difficulty));
     else
         grp->SetDungeonDifficultyID(Difficulty(dungeon->difficulty));
