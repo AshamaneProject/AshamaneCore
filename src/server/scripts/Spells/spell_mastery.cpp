@@ -574,12 +574,40 @@ public:
         SPELL_WARLOCK_CHAOTIC_ENERGIES_MASTERY  = 77220
     };
 
-    void OnDamage(Unit* attacker, Unit* /*victim*/, uint32& damage)
+    void ModifySpellDamageTaken(Unit* /*target*/, Unit* attacker, int32& damage, SpellInfo const* /*spellInfo*/)
     {
         if (Aura* aura = attacker->GetAura(SPELL_WARLOCK_CHAOTIC_ENERGIES_MASTERY))
         {
             uint32 const maxDamageImprovePercent = uint32(ceil(float(aura->GetEffect(EFFECT_0)->GetAmount()) / 2.f));
             AddPct(damage, maxDamageImprovePercent + urand(0, maxDamageImprovePercent));
+        }
+    }
+};
+
+// 115636 - Mastery - Combo Strike
+class monk_mastery_combo_strike : public PlayerScript
+{
+public:
+    monk_mastery_combo_strike() : PlayerScript("monk_mastery_combo_strike") {}
+
+    enum UsedSpells
+    {
+        SPELL_MONK_MASTERY_COMBO_STRIKE = 115636
+    };
+
+    void ModifySpellDamageTaken(Unit* target, Unit* attacker, int32& damage, SpellInfo const* spellInfo)
+    {
+        if (!spellInfo)
+            return;
+
+        if (Aura* aura = attacker->GetAura(SPELL_MONK_MASTERY_COMBO_STRIKE))
+        {
+            uint32 lastUsedSpellId = attacker->Variables.GetValue<uint32>("monk_mastery_combo_strike", uint32(0));
+            if (lastUsedSpellId != spellInfo->Id)
+            {
+                AddPct(damage, aura->GetEffect(EFFECT_0)->GetAmount());
+                attacker->Variables.Set("monk_mastery_combo_strike", spellInfo->Id);
+            }
         }
     }
 };
@@ -596,4 +624,5 @@ void AddSC_mastery_spell_scripts()
     RegisterSpellScript(spell_mastery_icicles_glacial_spike);
 
     new warlock_mastery_chaotic_energy();
+    new monk_mastery_combo_strike();
 }

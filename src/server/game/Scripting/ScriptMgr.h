@@ -409,7 +409,7 @@ class TC_GAME_API UnitScript : public ScriptObject
         virtual void OnHeal(Unit* /*healer*/, Unit* /*reciever*/, uint32& /*gain*/) { }
 
         // Called when a unit deals damage to another unit
-        virtual void OnDamage(Unit* /*attacker*/, Unit* /*victim*/, uint32& /*damage*/) { }
+        virtual void OnDamage(Unit* /*attacker*/, Unit* /*victim*/, uint32& /*damage*/, SpellInfo const* /*spellProto*/) { }
 
         // Called when DoT's Tick Damage is being Dealt
         virtual void ModifyPeriodicDamageAurasTick(Unit* /*target*/, Unit* /*attacker*/, uint32& /*damage*/) { }
@@ -418,7 +418,7 @@ class TC_GAME_API UnitScript : public ScriptObject
         virtual void ModifyMeleeDamage(Unit* /*target*/, Unit* /*attacker*/, uint32& /*damage*/) { }
 
         // Called when Spell Damage is being Dealt
-        virtual void ModifySpellDamageTaken(Unit* /*target*/, Unit* /*attacker*/, int32& /*damage*/) { }
+        virtual void ModifySpellDamageTaken(Unit* /*target*/, Unit* /*attacker*/, int32& /*damage*/, SpellInfo const* /*spellInfo*/) { }
 };
 
 class TC_GAME_API CreatureScript : public UnitScript, public UpdatableScript<Creature>
@@ -1296,10 +1296,10 @@ class TC_GAME_API ScriptMgr
     public: /* UnitScript */
 
         void OnHeal(Unit* healer, Unit* reciever, uint32& gain);
-        void OnDamage(Unit* attacker, Unit* victim, uint32& damage);
+        void OnDamage(Unit* attacker, Unit* victim, uint32& damage, SpellInfo const* spellProto);
         void ModifyPeriodicDamageAurasTick(Unit* target, Unit* attacker, uint32& damage);
         void ModifyMeleeDamage(Unit* target, Unit* attacker, uint32& damage);
-        void ModifySpellDamageTaken(Unit* target, Unit* attacker, int32& damage);
+        void ModifySpellDamageTaken(Unit* target, Unit* attacker, int32& damage, SpellInfo const* spellInfo);
 
     public: /* AreaTriggerEntityScript */
 
