@@ -216,7 +216,7 @@ public:
                 trons[3] = me->FindNearestCreature(NPC_TOXITRON, 150.0f, true);
 
                 for(uint8 i = 0; i<=3; i++)
-                    if(trons[i] == NULL)
+                    if(trons[i] == nullptr)
                         return;
 
                 me->SetMaxHealth(trons[0]->GetMaxHealth());
@@ -808,7 +808,7 @@ public:
                     trons[3] = me->FindNearestCreature(NPC_TOXITRON, 150.0f, true);
 
                     for(uint8 i = 0; i<=3; i++)
-                        if(trons[i] != me)
+                        if(trons[i] && trons[i] != me)
                             trons[i]->DespawnOrUnsummon(100);
 
                     omnotron->DespawnOrUnsummon(5000);
