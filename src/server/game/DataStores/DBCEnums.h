@@ -858,6 +858,12 @@ enum JournalEncounterFlags : uint8
     JOURNAL_ENCOUNTER_FLAG_LEGION_WB= 0x16,
 };
 
+enum LfgDungeons : uint32
+{
+    LFG_DUNGEON_TIME_WALKING_BLACK_TEMPLE   = 1533,
+    LFG_DUNGEON_TIME_WALKING_ULDUAR         = 1677
+};
+
 enum MapDifficultyFlags : uint8
 {
     MAP_DIFFICULTY_FLAG_CANNOT_EXTEND   = 0x10

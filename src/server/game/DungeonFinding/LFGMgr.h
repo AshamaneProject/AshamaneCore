@@ -426,6 +426,7 @@ class TC_GAME_API LFGMgr
         /// Sets player lfg roles
         void SetRoles(ObjectGuid guid, uint8 roles);
         /// Join Lfg with selected roles, dungeons and comment
+        void JoinLfg(Player* player, uint32 dungeonId, uint8 roles = PLAYER_ROLE_DAMAGE);
         void JoinLfg(Player* player, uint8 roles, LfgDungeonSet& dungeons);
         /// Leaves lfg
         void LeaveLfg(ObjectGuid guid, Optional<uint32> queueId = {}, bool disconnected = false);

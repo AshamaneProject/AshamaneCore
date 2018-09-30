@@ -385,6 +385,13 @@ void LFGMgr::Update(uint32 diff)
         m_QueueTimer += diff;
 }
 
+void LFGMgr::JoinLfg(Player* player, uint32 dungeonId, uint8 roles /*= PLAYER_ROLE_DAMAGE*/)
+{
+    lfg::LfgDungeonSet newDungeons;
+    newDungeons.insert(dungeonId);
+    JoinLfg(player, roles, newDungeons);
+}
+
 /**
     Adds the player/group to lfg queue. If player is in a group then it is the leader
     of the group tying to join the group. Join conditions are checked before adding
