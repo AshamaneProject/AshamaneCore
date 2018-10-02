@@ -33,7 +33,7 @@ INSERT INTO `skill_discovery_template` (`spellId`, `reqSpell`, `reqSkillValue`, 
 ('213252', '188800', '0', '2.1'),
 ('188802', '188801', '0', '2.1');
 
-DELETE FROM `spell_loot_template` WHERE `Entry` IN (188800, 188801, 188802) and `Item` = 128630;
+DELETE FROM `spell_loot_template` WHERE `Entry` IN (188800, 188801, 188802);
 INSERT INTO `spell_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES
 ('188801', '8', '300008', '100', '0', '1', '0', '1', '1', ''),
 ('188801', '1', '300001', '100', '0', '1', '0', '1', '1', 'plants'),
