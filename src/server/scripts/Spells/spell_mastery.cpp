@@ -595,7 +595,7 @@ public:
         SPELL_MONK_MASTERY_COMBO_STRIKE = 115636
     };
 
-    void ModifySpellDamageTaken(Unit* target, Unit* attacker, int32& damage, SpellInfo const* spellInfo)
+    void ModifySpellDamageTaken(Unit* /*target*/, Unit* attacker, int32& damage, SpellInfo const* spellInfo)
     {
         if (!spellInfo)
             return;

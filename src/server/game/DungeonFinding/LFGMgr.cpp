@@ -889,17 +889,15 @@ bool LFGMgr::CheckGroupRoles(LfgQueueRoleCount roleCount, LfgRolesMap& groles)
     if (groles.empty())
         return false;
 
+    if (roleCount.IsDamagesOnly())
+        return roleCount.minDamages <= groles.size() && groles.size() <= roleCount.maxDamages;
+
     uint8 damage = 0;
     uint8 tank = 0;
     uint8 healer = 0;
-    bool damagesOnly = roleCount.maxDamages == roleCount.GetMaxPlayers();
 
     for (auto& it : groles)
     {
-        // If LFGDungeons require only damages, we set everyone to damages
-        if (damagesOnly)
-            it.second = PLAYER_ROLE_DAMAGE;
-
         uint8 role = it.second & ~PLAYER_ROLE_LEADER;
         if (role == PLAYER_ROLE_NONE)
             return false;
@@ -2071,7 +2069,7 @@ std::string LFGMgr::DumpQueueInfo(bool full)
 
     for (auto& factionQueues: QueuesStore)
     {
-        o << "Number of Queues for team " << team++ << ": " << uint32(factionQueues.size()) << "\n";
+        o << "Number of Queues for team " << (team++) << ": " << uint32(factionQueues.size()) << "\n";
         for (auto& queue: factionQueues)
         {
             std::string const& queued = queue.second.DumpQueueInfo();

@@ -486,7 +486,7 @@ struct npc_vormu : public ScriptedAI
 {
     npc_vormu(Creature* creature) : ScriptedAI(creature) { }
 
-    void sGossipSelect(Player* player, uint32 /*sender*/, uint32 action) override
+    void sGossipSelect(Player* player, uint32 /*sender*/, uint32 /*action*/) override
     {
         ClearGossipMenuFor(player);
 

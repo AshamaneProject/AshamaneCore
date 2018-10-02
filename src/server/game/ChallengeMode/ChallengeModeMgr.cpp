@@ -18,6 +18,7 @@
 #include "ChallengeModeMgr.h"
 #include "Containers.h"
 #include "DB2Stores.h"
+#include "GameTables.h"
 #include "Item.h"
 #include "LootPackets.h"
 
@@ -39,100 +40,16 @@ MapChallengeModeEntry const* ChallengeModeMgr::GetMapChallengeModeEntry(uint32 m
 
 uint32 ChallengeModeMgr::GetDamageMultiplier(uint8 challengeLevel)
 {
-    switch (challengeLevel)
-    {
-        case 2: return 10;
-        case 3: return 21;
-        case 4: return 33;
-        case 5: return 46;
-        case 6: return 61;
-        case 7: return 77;
-        case 8: return 95;
-        case 9: return 114;
-        case 10: return 136;
-        case 11: return 159;
-        case 12: return 185;
-        case 13: return 214;
-        case 14: return 245;
-        case 15: return 280;
-        case 16: return 318;
-        case 17: return 359;
-        case 18: return 405;
-        case 19: return 456;
-        case 20: return 512;
-        case 21: return 573;
-        case 22: return 640;
-        case 23: return 714;
-        case 24: return 795;
-        case 25: return 885;
-        case 26: return 983;
-        case 27: return 1092;
-        case 28: return 1211;
-        case 29: return 1342;
-        case 30: return 1486;
-        case 31: return 1645;
-        case 32: return 1819;
-        case 33: return 2011;
-        case 34: return 2223;
-        case 35: return 2455;
-        case 36: return 2710;
-        case 37: return 2991;
-        case 38: return 3300;
-        case 39: return 3640;
-        case 40: return 4014;
-        default:
-            break;
-    }
+    if (GtChallengeModeDamage const* challengeDamage = sChallengeModeDamage.GetRow(challengeLevel))
+        return uint32(100.f * (challengeDamage->Scalar - 1.f));
 
     return 1;
 }
 
 uint32 ChallengeModeMgr::GetHealthMultiplier(uint8 challengeLevel)
 {
-    switch (challengeLevel)
-    {
-        case 2: return 10;
-        case 3: return 21;
-        case 4: return 33;
-        case 5: return 46;
-        case 6: return 61;
-        case 7: return 77;
-        case 8: return 95;
-        case 9: return 114;
-        case 10: return 136;
-        case 11: return 159;
-        case 12: return 185;
-        case 13: return 214;
-        case 14: return 245;
-        case 15: return 280;
-        case 16: return 318;
-        case 17: return 359;
-        case 18: return 405;
-        case 19: return 456;
-        case 20: return 512;
-        case 21: return 573;
-        case 22: return 640;
-        case 23: return 714;
-        case 24: return 795;
-        case 25: return 885;
-        case 26: return 983;
-        case 27: return 1092;
-        case 28: return 1211;
-        case 29: return 1342;
-        case 30: return 1486;
-        case 31: return 1645;
-        case 32: return 1819;
-        case 33: return 2011;
-        case 34: return 2223;
-        case 35: return 2455;
-        case 36: return 2710;
-        case 37: return 2991;
-        case 38: return 3300;
-        case 39: return 3640;
-        case 40: return 4014;
-        default:
-            break;
-    }
+    if (GtChallengeModeHealth const* challengeHealth = sChallengeModeHealth.GetRow(challengeLevel))
+        return uint32(100.f * (challengeHealth->Scalar - 1.f));
 
     return 1;
 }
