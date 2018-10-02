@@ -29,6 +29,8 @@ GameTable<GtBarberShopCostBaseEntry>            sBarberShopCostBaseGameTable;
 GameTable<GtBaseMPEntry>                        sBaseMPGameTable;
 GameTable<GtCombatRatingsEntry>                 sCombatRatingsGameTable;
 GameTable<GtCombatRatingsMultByILvl>            sCombatRatingsMultByILvlGameTable;
+GameTable<GtChallengeModeDamage>                sChallengeModeDamage;
+GameTable<GtChallengeModeHealth>                sChallengeModeHealth;
 GameTable<GtHonorLevelEntry>                    sHonorLevelGameTable;
 GameTable<GtHpPerStaEntry>                      sHpPerStaGameTable;
 GameTable<GtItemSocketCostPerLevelEntry>        sItemSocketCostPerLevelGameTable;
@@ -117,6 +119,8 @@ void LoadGameTables(std::string const& dataPath)
     LOAD_GT(sBaseMPGameTable, "BaseMp.txt");
     LOAD_GT(sCombatRatingsGameTable, "CombatRatings.txt");
     LOAD_GT(sCombatRatingsMultByILvlGameTable, "CombatRatingsMultByILvl.txt");
+    LOAD_GT(sChallengeModeDamage, "ChallengeModeDamage.txt");
+    LOAD_GT(sChallengeModeHealth, "ChallengeModeHealth.txt");
     LOAD_GT(sItemSocketCostPerLevelGameTable, "ItemSocketCostPerLevel.txt");
     LOAD_GT(sHonorLevelGameTable, "HonorLevel.txt");
     LOAD_GT(sHpPerStaGameTable, "HpPerSta.txt");
