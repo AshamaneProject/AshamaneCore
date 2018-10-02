@@ -1,0 +1,6 @@
+INSERT INTO `hotfixes`.`hotfix_data` (`Id`, `TableHash`, `RecordId`, `Deleted`) VALUES ('375', '3689412649', '48624', '0');
+INSERT INTO `hotfixes`.`hotfix_data` (`Id`, `TableHash`, `RecordId`, `Deleted`) VALUES ('376', '3689412649', '48625', '0');
+INSERT INTO `hotfixes`.`hotfix_data` (`Id`, `TableHash`, `RecordId`, `Deleted`) VALUES ('377', '3689412649', '48626', '0');
+INSERT INTO `hotfixes`.`spell_categories` (`ID`, `Category`, `StartRecoveryCategory`, `ChargeCategory`, `DifficultyID`, `DefenseType`, `DispelType`, `Mechanic`, `PreventionType`, `SpellID`, `VerifiedBuild`) VALUES ('48624', '1479', '0', '0', '0', '0', '0', '28', '0', '188800', '0');
+INSERT INTO `hotfixes`.`spell_categories` (`ID`, `Category`, `StartRecoveryCategory`, `ChargeCategory`, `DifficultyID`, `DefenseType`, `DispelType`, `Mechanic`, `PreventionType`, `SpellID`, `VerifiedBuild`) VALUES ('48625', '1479', '0', '0', '0', '0', '0', '28', '0', '188801', '0');
+INSERT INTO `hotfixes`.`spell_categories` (`ID`, `Category`, `StartRecoveryCategory`, `ChargeCategory`, `DifficultyID`, `DefenseType`, `DispelType`, `Mechanic`, `PreventionType`, `SpellID`, `VerifiedBuild`) VALUES ('48626', '1479', '0', '0', '0', '0', '0', '28', '0', '188802', '0');
