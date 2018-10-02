@@ -365,7 +365,7 @@ WHERE `spell` = 82210;
 INSERT INTO `spell_area`
 (`spell`,`area`,`quest_start`,`quest_end`,`aura_spell`,`teamId`,`racemask`,`gender`,`flags`,`quest_start_status`,`quest_end_status`)
 VALUES
-(82210,99,0,26736,0,-1,0,2,3,0,64);
+(82210,99,26736,0,0,-1,0,2,3,64,0);
 
 DELETE FROM `spell_area`
 WHERE `spell` = 82210;
