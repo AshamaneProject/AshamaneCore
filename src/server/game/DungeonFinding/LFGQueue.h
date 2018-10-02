@@ -68,6 +68,8 @@ struct LfgQueueRoleCount
 
     uint8 GetMinPlayers() { return minTanks + minHealers + minDamages; }
     uint8 GetMaxPlayers() { return maxTanks + maxHealers + maxDamages; }
+
+    bool IsDamagesOnly()  { return !maxTanks && !maxHealers &&maxDamages; }
 };
 
 /// Stores player or group queue info
