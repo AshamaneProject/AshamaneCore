@@ -669,7 +669,7 @@ class boss_twin_ogron_phemos : public CreatureScript
                         m_EnfeeblingRoarScheduled = false;
                         m_WhirlwindScheduled = false;
 
-                        float l_O = frand(0.f, 2.f * float(M_PI));
+                        float l_O = frand(0.0f, 2.0f * float(M_PI));
                         Position pos =
                         {
                             (g_CenterPos.m_positionX + (g_CircleToCenterDist * cos(l_O))),
