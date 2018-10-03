@@ -724,6 +724,14 @@ void LFGMgr::LeaveLfg(ObjectGuid guid, Optional<uint32> queueId /*= {}*/, bool d
     }
 }
 
+void LFGMgr::KickPlayer(Player* player)
+{
+    LeaveLfg(player->GetGUID());
+    player->RemoveAurasDueToSpell(LFG_SPELL_LUCK_OF_THE_DRAW);
+    player->SetEffectiveLevelAndMaxItemLevel(0, 0);
+    player->TeleportTo(player->m_homebindMapId, player->m_homebindX, player->m_homebindY, player->m_homebindZ, 0.0f);
+}
+
 WorldPackets::LFG::RideTicket const* LFGMgr::GetTicket(ObjectGuid guid) const
 {
     auto itr = PlayersStore.find(guid);

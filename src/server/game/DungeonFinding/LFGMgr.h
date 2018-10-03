@@ -430,6 +430,8 @@ class TC_GAME_API LFGMgr
         void JoinLfg(Player* player, uint8 roles, LfgDungeonSet& dungeons);
         /// Leaves lfg
         void LeaveLfg(ObjectGuid guid, Optional<uint32> queueId = {}, bool disconnected = false);
+        /// Kick from lfg
+        void KickPlayer(Player* player);
         /// Gets unique join queue data
         WorldPackets::LFG::RideTicket const* GetTicket(ObjectGuid guid) const;
 

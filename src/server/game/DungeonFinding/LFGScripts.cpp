@@ -84,12 +84,16 @@ void LFGPlayerScript::OnMapChanged(Player* player)
         // crashes or other undefined behaviour
         if (!group)
         {
-            sLFGMgr->LeaveLfg(player->GetGUID());
-            player->RemoveAurasDueToSpell(LFG_SPELL_LUCK_OF_THE_DRAW);
-            player->SetEffectiveLevelAndMaxItemLevel(0, 0);
-            player->TeleportTo(player->m_homebindMapId, player->m_homebindX, player->m_homebindY, player->m_homebindZ, 0.0f);
+            sLFGMgr->KickPlayer(player);
             TC_LOG_ERROR("lfg", "LFGPlayerScript::OnMapChanged, Player %s (%s) is in LFG dungeon map but does not have a valid group! "
                 "Teleporting to homebind.", player->GetName().c_str(), player->GetGUID().ToString().c_str());
+            return;
+        }
+
+        LFGDungeonsEntry const* dungeonEntry = sLFGDungeonsStore.LookupEntry(sLFGMgr->GetDungeon(group->GetGUID()));
+        if (!dungeonEntry)
+        {
+            sLFGMgr->KickPlayer(player);
             return;
         }
 
@@ -100,8 +104,7 @@ void LFGPlayerScript::OnMapChanged(Player* player)
         if (sLFGMgr->selectedRandomLfgDungeon(player->GetGUID()))
             player->CastSpell(player, LFG_SPELL_LUCK_OF_THE_DRAW, true);
 
-        if (LFGDungeonsEntry const* dungeonEntry = sLFGMgr->GetPlayerLFGDungeonEntry(player->GetGUID()))
-            player->SetEffectiveLevelAndMaxItemLevel(dungeonEntry->MentorCharLevel, dungeonEntry->MentorItemLevel);
+        player->SetEffectiveLevelAndMaxItemLevel(dungeonEntry->MentorCharLevel, dungeonEntry->MentorItemLevel);
     }
     else
     {
