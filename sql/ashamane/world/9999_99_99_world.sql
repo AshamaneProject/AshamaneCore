@@ -1,4 +1,5 @@
-INSERT INTO `world`.`item_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
+DELETE FROM `item_loot_template` WHERE `Entry` IN (137593, 137590, 137592, 137600, 137594, 137591, 137608);
+INSERT INTO `item_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
  ('137593', '124104', '0', '100', '0', '1', '0', '1', '5'),
  ('137593', '128304', '0', '100', '0', '1', '0', '5', '10'),
  ('137593', '124103', '0', '100', '0', '1', '0', '1', '5'),
@@ -54,7 +55,7 @@ INSERT INTO `world`.`item_loot_template` (`Entry`, `Item`, `Reference`, `Chance`
  ('137608', '29958', '0', '3', '0', '1', '1', '1', '1'),
  ('137608', '48120', '0', '3', '0', '1', '1', '1', '1');
 
-INSERT INTO `world`.`item_script_names` (`Id`, `ScriptName`) VALUES
+DELETE FROM `item_script_names` WHERE `Id` IN (94295, 137599);
+INSERT INTO `item_script_names` (`Id`, `ScriptName`) VALUES
  ('94295', 'item_primal_egg'),
  ('137599', 'item_pulsating_sac');
-
