@@ -7177,6 +7177,20 @@ uint32 Unit::SpellHealingBonusDone(Unit* victim, SpellInfo const* spellProto, ui
         DoneTotal += int32(DoneAdvertisedBenefit * coeff * stack);
     }
 
+    // Healing bonus based on targets hp
+    AuraEffectList const& healingVsHealthTargetLost = GetAuraEffectsByType(SPELL_AURA_MOD_HEALING_VS_HEALTH_TARGET_LOST);
+    for (auto itr : healingVsHealthTargetLost) // Seems SPELL_AURA_MOD_HEALING_VS_HEALTH_TARGET_LOST only used for shaman mastery...
+    {
+        if (Player* modOwner = GetSpellModOwner())
+        {
+            float modifier_heal = (100.0f - (victim->GetHealthPct())) / 100.0f; // Modifier depending on how low on health the target is
+            float mastery_pct = (modOwner->GetFloatValue(PLAYER_MASTERY)*3.0f) / 100.0f; // Gives the percentage value of the shaman mastery
+            TC_LOG_DEBUG("spells", "mastery_pct is %f ", mastery_pct);
+            TC_LOG_DEBUG("spells", "modifier_heal is %f ", modifier_heal);
+            DoneTotal = int32(DoneTotal * (1 + modifier_heal * mastery_pct)); // Heal is increased by modifier_heal*mastery_pct percent
+        }
+    }
+
     for (SpellEffectInfo const* effect : spellProto->GetEffectsForDifficulty(GetMap()->GetDifficultyID()))
     {
         if (!effect)
@@ -7226,11 +7240,20 @@ float Unit::SpellHealingPctDone(Unit* victim, SpellInfo const* spellProto) const
     DoneTotalMod *= GetTotalAuraMultiplier(SPELL_AURA_MOD_HEALING_DONE_PERCENT);
 
     // Healing bonus based on targets hp
-    AuraEffectList const& healingVsHealthTargetLost = GetAuraEffectsByType(SPELL_AURA_MOD_HEALING_VS_HEALTH_TARGET_LOST);
+    AuraEffectList const& healingVsHealthTargetLost = GetAuraEffectsByType(SPELL_AURA_MOD_HEALING_VS_HEALTH_TARGET_LOST); // As it's for restau sham only, don't think it is needed ...
     for (auto itr : healingVsHealthTargetLost)
     {
-        int32 amount = itr->GetAmount() * (1.0f - (victim->GetHealthPct() / 100.0f));
-        AddPct(DoneTotalMod, amount);
+
+        if (Player* modOwner = GetSpellModOwner())
+        {
+            float modifier_heal = (100.0f - (victim->GetHealthPct())) / 100.0f; // Modifier depending on how low on health the target is
+            float mastery_pct = (modOwner->GetFloatValue(PLAYER_MASTERY)*3.0f) / 100.0f; // Gives the percentage value of the shaman mastery
+            TC_LOG_DEBUG("spells", "mastery_pct is %f ", mastery_pct);
+            TC_LOG_DEBUG("spells", "modifier_heal is %f ", modifier_heal);
+            float amount = modifier_heal * mastery_pct;
+            TC_LOG_DEBUG("spells", "amount_for_pct is %f ", amount);
+            AddPct(DoneTotalMod, amount);
+        }
     }
 
     return DoneTotalMod;
