@@ -70,6 +70,7 @@ public:
             return false;
 
         bg->EndBattleground(winner);
+        return true;
     }
 };
 
