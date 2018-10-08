@@ -948,8 +948,8 @@ void BattlegroundQueue::BattlegroundQueueUpdate(uint32 /*diff*/, BattlegroundTyp
             {
                 if (!(*itr3)->IsInvitedToBGInstanceGUID
                     && (((*itr3)->ArenaMatchmakerRating >= arenaMinRating && (*itr3)->ArenaMatchmakerRating <= arenaMaxRating)
-                        || (int32)(*itr3)->JoinTime < discardTime)/*
-                    && (*itr_teams[0])->ArenaGroupId != (*itr3)->ArenaGroupId*/)
+                        || (int32)(*itr3)->JoinTime < discardTime)
+                    && (*itr_teams[0])->m_Group != (*itr3)->m_Group)
                 {
                     itr_teams[found++] = itr3;
                     break;

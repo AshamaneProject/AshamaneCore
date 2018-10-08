@@ -359,6 +359,7 @@ Player::Player(WorldSession* session) : Unit(true), m_sceneMgr(this), m_archaeol
         slotInfo.SeasonWins             = 0;
         slotInfo.WeekGames              = 0;
         slotInfo.SeasonGames            = 0;
+        slotInfo.ProjectedConquestCap   = 0;
     }
 
     _cinematicMgr = new CinematicMgr(this);

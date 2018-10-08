@@ -428,6 +428,7 @@ namespace WorldPackets
             uint32 PrevWeekGames;
             uint32 SeasonWins;
             uint32 SeasonGames;
+            uint32 ProjectedConquestCap;
         };
 
         class RatedBattleFieldInfo final : public ServerPacket

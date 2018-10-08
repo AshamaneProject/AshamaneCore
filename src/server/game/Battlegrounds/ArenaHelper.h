@@ -20,6 +20,7 @@
 #define ARENAHELPER_H
 
 #include "QueryResult.h"
+#include "Util.h"
 #include <list>
 #include <map>
 
@@ -124,12 +125,12 @@ enum ArenaSlots
     SLOT_ARENA_2V2 = 0,
     SLOT_ARENA_3V3 = 1,
     SLOT_ARENA_5V5 = 2,
-    MAX_ARENA_SLOT = 3,
-    SLOT_RBG       = 3,
+    SLOT_RBG_5V5   = 3,
+    SLOT_RBG_10V10 = 4,
+
+    MAX_ARENA_SLOT = SLOT_ARENA_5V5,
     MAX_PVP_SLOT   = 6
 };
-
-#define MAX_ARENA_TYPE 6                                    // type : 2, 3 or 5
 
 namespace ArenaHelper
 {
@@ -139,29 +140,22 @@ namespace ArenaHelper
     const float g_PvpCPBaseCoefficient = 1639.28f;
     const float g_PvpCPExpCoefficient = 0.00412f;
 
-    inline float CalculateRatingFactor(int p_Rating)
+    inline float CalculateRatingFactor(int rating)
     {
-        return g_PvpCPNumerator / (expf(p_Rating * g_PvpCPExpCoefficient * -1.f) * g_PvpCPBaseCoefficient + 1.0f);
+        return g_PvpCPNumerator / (expf(rating * g_PvpCPExpCoefficient * -1.f) * g_PvpCPBaseCoefficient + 1.0f);
     }
 
-    inline uint32 GetConquestCapFromRating(int p_Rating)
+    inline uint32 GetConquestCapFromRating(int rating)
     {
-        float v2;
-        float v3;
-        float v4;
-        float v5;
-
-        if (g_PvpMinCPPerWeek )
-        {
-            v5 = CalculateRatingFactor(1500);
-            v3 = CalculateRatingFactor(3000);
-            v4 = CalculateRatingFactor(p_Rating);
-
-            v2 = v5 <= v4 ? (v4 > v3 ? v3 : v4) : v5;
-            return g_PvpMinCPPerWeek + floor(((v2 - v5) / (v3 - v5)) * (float)(g_PvpMaxCPPerWeek - g_PvpMinCPPerWeek));
-        }
-        else
+        if (!g_PvpMinCPPerWeek)
             return 0;
+
+        float minRatingFactor = CalculateRatingFactor(1500);
+        float maxRatingFactor = CalculateRatingFactor(3000);
+        float currentRatingFactor = CalculateRatingFactor(rating);
+        float normalizedRatingFactor = RoundToInterval(currentRatingFactor, minRatingFactor, maxRatingFactor);
+
+        return g_PvpMinCPPerWeek + floor(((normalizedRatingFactor - minRatingFactor) / (maxRatingFactor - minRatingFactor)) * (g_PvpMaxCPPerWeek - g_PvpMinCPPerWeek));
     }
 
     inline uint8 GetSlotByType(uint32 type)
