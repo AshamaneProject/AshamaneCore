@@ -347,6 +347,20 @@ Player::Player(WorldSession* session) : Unit(true), m_sceneMgr(this), m_archaeol
 
     memset(_voidStorageItems, 0, VOID_STORAGE_MAX_SLOT * sizeof(VoidStorageItem*));
 
+    for (WorldPackets::Battleground::RatedInfo& slotInfo : m_ratedInfos)
+    {
+        slotInfo.ArenaPersonalRating    = sWorld->getIntConfig(CONFIG_ARENA_START_PERSONAL_RATING);
+        slotInfo.BestRatingOfWeek       = 0;
+        slotInfo.BestRatingOfSeason     = 0;
+        slotInfo.ArenaMatchMakerRating  = sWorld->getIntConfig(CONFIG_ARENA_START_MATCHMAKER_RATING);
+        slotInfo.WeekWins               = 0;
+        slotInfo.PrevWeekWins           = 0;
+        slotInfo.PrevWeekGames          = 0;
+        slotInfo.SeasonWins             = 0;
+        slotInfo.WeekGames              = 0;
+        slotInfo.SeasonGames            = 0;
+    }
+
     _cinematicMgr = new CinematicMgr(this);
 
     m_achievementMgr = new PlayerAchievementMgr(this);
@@ -4067,7 +4081,7 @@ void Player::DeleteFromDB(ObjectGuid playerguid, uint32 accountId, bool updateRe
             stmt->setUInt64(0, guid);
             trans->Append(stmt);
 
-            stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_CHARACTER_ARENA_STATS);
+            stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_CHARACTER_ARENA_DATA);
             stmt->setUInt64(0, guid);
             trans->Append(stmt);
 
@@ -17980,6 +17994,39 @@ void Player::_LoadTransmogOutfits(PreparedQueryResult result)
     } while (result->NextRow());
 }
 
+void Player::_LoadArenaData(PreparedQueryResult result)
+{
+    //        0     1       2                 3                   4                 5          6         7              8             9            10
+    // SELECT slot, rating, bestRatingOfWeek, bestRatingOfSeason, matchMakerRating, weekGames, weekWins, prevWeekGames, prevWeekWins, seasonGames, seasonWins FROM character_arena_data WHERE guid = ?
+    if (!result)
+        return;
+
+    do
+    {
+        Field* fields = result->Fetch();
+        uint8 slot = fields[0].GetUInt8();
+
+        if (slot >= MAX_PVP_SLOT)
+        {
+            TC_LOG_ERROR("entities.player", "Player::_LoadArenaData: Player '%s' (%s) has invalid slot %u in table `character_arena_data`", GetName().c_str(), GetGUID().ToString().c_str(), slot);
+            continue;
+        }
+
+        WorldPackets::Battleground::RatedInfo& slotInfo = m_ratedInfos[slot];
+        slotInfo.ArenaPersonalRating    = fields[1].GetUInt32();
+        slotInfo.BestRatingOfWeek       = fields[2].GetUInt32();
+        slotInfo.BestRatingOfSeason     = fields[3].GetUInt32();
+        slotInfo.ArenaMatchMakerRating  = fields[4].GetInt32();
+        slotInfo.WeekGames              = fields[5].GetUInt32();
+        slotInfo.WeekWins               = fields[6].GetUInt32();
+        slotInfo.PrevWeekGames          = fields[7].GetUInt32();
+        slotInfo.PrevWeekWins           = fields[8].GetUInt32();
+        slotInfo.SeasonGames            = fields[9].GetUInt32();
+        slotInfo.SeasonWins             = fields[10].GetUInt32();
+
+    } while (result->NextRow());
+}
+
 void Player::_LoadBGData(PreparedQueryResult result)
 {
     if (!result)
@@ -18261,6 +18308,7 @@ bool Player::LoadFromDB(ObjectGuid guid, SQLQueryHolder *holder)
 
     _LoadBoundInstances(holder->GetPreparedResult(PLAYER_LOGIN_QUERY_LOAD_BOUND_INSTANCES));
     _LoadInstanceTimeRestrictions(holder->GetPreparedResult(PLAYER_LOGIN_QUERY_LOAD_INSTANCE_LOCK_TIMES));
+    _LoadArenaData(holder->GetPreparedResult(PLAYER_LOGIN_QUERY_LOAD_ARENA_DATA));
     _LoadBGData(holder->GetPreparedResult(PLAYER_LOGIN_QUERY_LOAD_BG_DATA));
 
     GetSession()->SetPlayer(this);
@@ -20895,6 +20943,7 @@ void Player::SaveToDB(bool create /*=false*/)
     if (m_mailsUpdated)                                     //save mails only when needed
         _SaveMail(trans);
 
+    _SaveArenaData(trans);
     _SaveBGData(trans);
     _SaveInventory(trans);
     _SaveVoidStorage(trans);
@@ -22725,7 +22774,6 @@ void Player::RemovePetitionsAndSigns(ObjectGuid guid)
 }
 
 // Arena
-
 uint32 Player::GetMaxRating() const
 {
     uint32 max_value = 0;
@@ -22737,18 +22785,21 @@ uint32 Player::GetMaxRating() const
     return max_value;
 }
 
-void Player::SetArenaPersonalRating(uint8 p_Slot, uint32 p_Value)
+void Player::SetArenaPersonalRating(uint8 slot, uint32 value)
 {
-    if (p_Slot >= MAX_PVP_SLOT)
+    if (slot >= MAX_PVP_SLOT)
         return;
 
-    GetAchievementMgr()->UpdateCriteria(CRITERIA_TYPE_HIGHEST_PERSONAL_RATING, p_Value, ArenaHelper::GetTypeBySlot(p_Slot));
+    GetAchievementMgr()->UpdateCriteria(CRITERIA_TYPE_HIGHEST_PERSONAL_RATING, value, ArenaHelper::GetTypeBySlot(slot));
 
-    m_ArenaPersonalRating[p_Slot] = p_Value;
-    if (m_BestRatingOfWeek[p_Slot] < p_Value)
-        m_BestRatingOfWeek[p_Slot] = p_Value;
-    if (m_BestRatingOfSeason[p_Slot] < p_Value)
-        m_BestRatingOfSeason[p_Slot] = p_Value;
+    WorldPackets::Battleground::RatedInfo& slotInfo = m_ratedInfos[slot];
+    slotInfo.ArenaPersonalRating = value;
+
+    if (slotInfo.BestRatingOfWeek < value)
+        slotInfo.BestRatingOfWeek = value;
+
+    if (slotInfo.BestRatingOfSeason < value)
+        slotInfo.BestRatingOfSeason = value;
 }
 
 void Player::SetArenaMatchMakerRating(uint8 slot, uint32 value)
@@ -22756,35 +22807,40 @@ void Player::SetArenaMatchMakerRating(uint8 slot, uint32 value)
     if (slot >= MAX_PVP_SLOT)
         return;
 
-    m_ArenaMatchMakerRating[slot] = value;
+    WorldPackets::Battleground::RatedInfo& slotInfo = m_ratedInfos[slot];
+    slotInfo.ArenaMatchMakerRating = value;
 }
+
 void Player::IncrementWeekGames(uint8 slot)
 {
     if (slot >= MAX_PVP_SLOT)
         return;
 
-    ++m_WeekGames[slot];
+    ++m_ratedInfos[slot].WeekGames;
 }
+
 void Player::IncrementWeekWins(uint8 slot)
 {
     if (slot >= MAX_PVP_SLOT)
         return;
 
-    ++m_WeekWins[slot];
+    ++m_ratedInfos[slot].WeekWins;
 }
+
 void Player::IncrementSeasonGames(uint8 slot)
 {
     if (slot >= MAX_PVP_SLOT)
         return;
 
-    ++m_SeasonGames[slot];
+    ++m_ratedInfos[slot].SeasonGames;
 }
+
 void Player::IncrementSeasonWins(uint8 slot)
 {
     if (slot >= MAX_PVP_SLOT)
         return;
 
-    ++m_SeasonWins[slot];
+    ++m_ratedInfos[slot].SeasonWins;
 }
 
 bool Player::ActivateTaxiPathTo(std::vector<uint32> const& nodes, Creature* npc /*= nullptr*/, uint32 spellid /*= 0*/, uint32 preferredMountDisplay /*= 0*/)
@@ -27521,6 +27577,33 @@ void Player::_SaveEquipmentSets(SQLTransaction& trans)
     }
 }
 
+void Player::_SaveArenaData(SQLTransaction& trans)
+{
+    PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_CHARACTER_ARENA_DATA);
+    stmt->setUInt32(0, GetGUID().GetCounter());
+    trans->Append(stmt);
+
+    uint8 slot = 0;
+    for (WorldPackets::Battleground::RatedInfo const& slotInfo : m_ratedInfos)
+    {
+        stmt = CharacterDatabase.GetPreparedStatement(CHAR_INS_CHARACTER_ARENA_DATA);
+        stmt->setUInt32(0, GetGUID().GetCounter());
+        stmt->setUInt8(1, slot++);
+
+        stmt->setUInt32(2,  slotInfo.ArenaPersonalRating);
+        stmt->setUInt32(3,  slotInfo.BestRatingOfWeek);
+        stmt->setUInt32(4,  slotInfo.BestRatingOfSeason);
+        stmt->setUInt32(5,  slotInfo.ArenaMatchMakerRating);
+        stmt->setUInt32(6,  slotInfo.WeekGames);
+        stmt->setUInt32(7,  slotInfo.WeekWins);
+        stmt->setUInt32(8,  slotInfo.PrevWeekGames);
+        stmt->setUInt32(9,  slotInfo.PrevWeekWins);
+        stmt->setUInt32(10, slotInfo.SeasonGames);
+        stmt->setUInt32(11, slotInfo.SeasonWins);
+        trans->Append(stmt);
+    }
+}
+
 void Player::_SaveBGData(SQLTransaction& trans)
 {
     PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_PLAYER_BGDATA);
@@ -29757,4 +29840,16 @@ void Player::SendCustomMessage(std::string const& opcode, std::vector<std::strin
         message << " " << "|";
 
     ChatHandler(GetSession()).SendSysMessage(message.str().c_str());
+}
+
+void Player::FinishWeek()
+{
+    for (WorldPackets::Battleground::RatedInfo& slotInfo : m_ratedInfos)
+    {
+        slotInfo.BestRatingOfWeek   = 0;
+        slotInfo.PrevWeekWins       = slotInfo.WeekWins;
+        slotInfo.PrevWeekGames      = slotInfo.WeekGames;
+        slotInfo.WeekWins           = 0;
+        slotInfo.WeekGames = 0;
+    }
 }

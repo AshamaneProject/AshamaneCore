@@ -290,3 +290,20 @@ WorldPacket const* WorldPackets::Battleground::DestroyArenaUnit::Write()
     _worldPacket << Guid;
     return &_worldPacket;
 }
+
+WorldPacket const* WorldPackets::Battleground::RatedBattleFieldInfo::Write()
+{
+    for (RatedInfo& info : Infos)
+    {
+        _worldPacket << uint32(info.ArenaPersonalRating);
+        _worldPacket << uint32(0);
+        _worldPacket << uint32(info.SeasonGames);
+        _worldPacket << uint32(info.SeasonWins);
+        _worldPacket << uint32(info.WeekGames);
+        _worldPacket << uint32(info.WeekWins);
+        _worldPacket << uint32(info.BestRatingOfWeek);
+        _worldPacket << uint32(info.BestRatingOfSeason);
+    }
+
+    return &_worldPacket;
+}
