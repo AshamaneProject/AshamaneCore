@@ -427,7 +427,7 @@ class boss_kargath_bladefist : public CreatureScript
                 me->SetDisplayId(eDatas::MorphAmputation);
 
                 /// prevent the "unable to loot" after been killed
-                if(me->GetPositionZ() > 58)
+                if(me->GetPositionZ() > 58.0f)
                     me->NearTeleportTo(me->GetPositionX(), me->GetPositionY(), 55.3f, me->GetOrientation());
 
                 if (m_Instance)

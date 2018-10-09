@@ -605,7 +605,7 @@ class boss_brackenspore : public CreatureScript
                 if (l_Map == nullptr)
                     return;
 
-                float orientation = frand(0.0f, 2 * float(M_PI));
+                float orientation = frand(0.0f, 2.0f * float(M_PI));
 
                 /// Use different spawn radius depending on orientation
                 float radius = GetSpawnRangeByOrientation(orientation);

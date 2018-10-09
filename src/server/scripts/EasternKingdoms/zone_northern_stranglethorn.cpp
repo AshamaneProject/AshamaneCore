@@ -36,7 +36,7 @@ class spell_summon_naias : public SpellScript
     void HandleSendEvent(SpellEffIndex /*effIndex*/)
     {
         if (GetCaster()->IsPlayer())
-            GetCaster()->SummonCreature(NPC_NAIAS, -12130.5000, 958.9940, 4.87148, 5.02655);
+            GetCaster()->SummonCreature(NPC_NAIAS, -12130.5000f, 958.9940f, 4.87148f, 5.02655f);
     }
 
     void Register() override
