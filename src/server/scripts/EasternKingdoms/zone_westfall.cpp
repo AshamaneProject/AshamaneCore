@@ -70,12 +70,12 @@ public:
         std::array<ObjectGuid, 4> ThugGUIDs;
         uint8 Phase;
 
-        std::array<Position, 4> ThugPositions =
+        std::vector<Position> const ThugPositions =
         {
-            Position(-9859.36f, 1332.42f, 41.985f, 2.495f),
-            Position(-9862.51f, 1332.079f, 41.985f, 0.85f),
-            Position(-9863.49f, 1335.489f, 41.985f, 5.63f),
-            Position(-9860.42f, 1335.459f, 41.985f, 4.11f),
+            { -9859.36f, 1332.42f,  41.985f, 2.49f },
+            { -9862.51f, 1332.079f, 41.985f, 0.85f },
+            { -9863.49f, 1335.489f, 41.985f, 5.63f },
+            { -9860.42f, 1335.459f, 41.985f, 4.11f },
         };
 
         bool bSummoned;

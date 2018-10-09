@@ -825,7 +825,7 @@ class spell_summon_gasbot : public SpellScript
     void HandleHit(SpellEffIndex /*effIndex*/)
     {
         GetCaster()->CastSpell(nullptr, SPELL_GASBOT_SUMMON, true);
-        GetCaster()->CastSpell(nullptr, SPELL_GASBOT_SUMMON, true);
+        GetCaster()->CastSpell(nullptr, SPELL_GASBOT_SUMMON_VISUAL, true);
     }
 
     void Register() override
