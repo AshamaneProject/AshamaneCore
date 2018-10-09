@@ -91,7 +91,7 @@ public:
 
             if (who->ToPlayer()->GetQuestStatus(QUEST_LOUS_PARTING_THOUGHTS) == QUEST_STATUS_INCOMPLETE)
             {
-                if (who->IsWithinDistInMap(me, 10.0f) && !bSummoned)
+                if (who->IsWithinDistInMap(me, 20.0f) && !bSummoned)
                 {
                     PlayerGUID = who->GetGUID();
                     StartEvent();
