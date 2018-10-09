@@ -999,7 +999,7 @@ void Group::LostAgainst(uint32 Own_MMRating, uint32 Opponent_MMRating, int32& ra
         if (Player* player = ObjectAccessor::FindPlayer(itr->guid))
         {
             // Change in Team Rating
-            rating_change = ArenaHelper::GetRatingMod(player->GetArenaPersonalRating(slot), Opponent_MMRating, false);
+            rating_change = ArenaHelper::GetRatingMod(player->GetArenaMatchMakerRating(slot), Opponent_MMRating, false);
 
             if (player->GetBattleground())
                 for (auto playerScore : player->GetBattleground()->GetPlayerScores())

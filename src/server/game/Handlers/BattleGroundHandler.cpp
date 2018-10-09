@@ -724,37 +724,16 @@ void WorldSession::HandleReportPvPAFK(WorldPackets::Battleground::ReportPvPPlaye
 
 void WorldSession::HandleRequestRatedBattlefieldInfo(WorldPackets::Battleground::RequestRatedBattlefieldInfo& /*packet*/)
 {
-    /// @Todo: perfome research in this case
-    /// The unk fields are related to arenas
-    WorldPacket data(SMSG_RATED_BATTLEFIELD_INFO, 72);
-    data << uint32(0);      // BgWeeklyWins20vs20
-    data << uint32(0);      // BgWeeklyPlayed20vs20
-    data << uint32(0);      // BgWeeklyPlayed15vs15
-    data << uint32(0);
-    data << uint32(0);      // BgWeeklyWins10vs10
-    data << uint32(0);
-    data << uint32(0);
-    data << uint32(0);
-    data << uint32(0);      // BgWeeklyWins15vs15
-    data << uint32(0);
-    data << uint32(0);
-    data << uint32(0);
-    data << uint32(0);
-    data << uint32(0);
-    data << uint32(0);
-    data << uint32(0);      // BgWeeklyPlayed10vs10
-    data << uint32(0);
-    data << uint32(0);
-
-    SendPacket(&data);
+    WorldPackets::Battleground::RatedBattleFieldInfo ratedBattleFieldInfo;
+    ratedBattleFieldInfo.Infos = _player->GetRatedInfos();
+    SendPacket(ratedBattleFieldInfo.Write());
 }
 
 void WorldSession::HandleGetPVPOptionsEnabled(WorldPackets::Battleground::GetPVPOptionsEnabled& /*getPvPOptionsEnabled*/)
 {
-    // This packet is completely irrelevant, it triggers PVP_TYPES_ENABLED lua event but that is not handled in interface code as of 6.1.2
     WorldPackets::Battleground::PVPOptionsEnabled pvpOptionsEnabled;
     pvpOptionsEnabled.WargameArenas = false;
-    pvpOptionsEnabled.RatedArenas = false;
+    pvpOptionsEnabled.RatedArenas = true;
     pvpOptionsEnabled.WargameBattlegrounds = false;
     pvpOptionsEnabled.ArenaSkirmish = true;
     pvpOptionsEnabled.PugBattlegrounds = true;
