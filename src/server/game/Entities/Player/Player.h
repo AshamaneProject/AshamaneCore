@@ -249,6 +249,7 @@ struct PlayerCurrency
     uint32 Quantity;
     uint32 WeeklyQuantity;
     uint32 TrackedQuantity;
+    uint32 WeekCap;
     uint8 Flags;
 };
 
@@ -1304,6 +1305,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         /// initialize currency count for custom initialization at create character
         void SetCurrency(uint32 id, uint32 count, bool printLog = true);
         void ResetCurrencyWeekCap();
+        uint32 CalculateCurrencyWeekCap(uint32 id) const;
 
         /**
           * @name   ModifyCurrency
