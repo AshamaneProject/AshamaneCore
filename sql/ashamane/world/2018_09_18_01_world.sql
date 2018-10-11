@@ -78,7 +78,7 @@ INSERT INTO `smart_scripts` (`entryorguid`,`source_type`,`id`,`link`,`event_type
 (@ENTRY,9,2,0,0,0,100,0,6000,6000,0,0,12,39853,8,0,0,0,0,8,0,0,0,-4325.04,-259.693,140.515,1.79769,"Ysondre - On Script - Summon Creature 'Taerar'"),
 (@ENTRY,9,3,0,0,0,100,0,5000,5000,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,"Ysondre - On Script - Say Line 1");
 
-update `quest_template_Addon` set `SpecialFlags` = "2" where `id` = "25379";
+update `quest_template_addon` set `SpecialFlags` = "2" where `id` = "25379";
 
 DELETE FROM `creature_text` WHERE `CreatureID`=39853 AND `GroupID`=3 AND `ID`=0;
 INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `TextRange`, `comment`) VALUES (39853, 3, 0, 'My essence...will...persist...', 14, 0, 100, 0, 0, 0, 0, 0, 'Taerar');
