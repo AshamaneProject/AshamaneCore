@@ -3448,7 +3448,7 @@ struct npc_monk_xuen : public ScriptedAI
 {
     npc_monk_xuen(Creature* creature) : ScriptedAI(creature) {}
 
-    void IsSummonedBy(Unit* summoner)
+    void IsSummonedBy(Unit* /*summoner*/)
     {
         me->CastSpell(me, SPELL_MONK_XUEN_AURA, true);
     }
