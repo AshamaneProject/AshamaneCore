@@ -1208,6 +1208,17 @@ bool SpellInfo::HasEffect(SpellEffectName effect) const
     return false;
 }
 
+bool SpellInfo::HasAura(uint32 difficulty) const
+{
+    SpellEffectInfoVector effects = GetEffectsForDifficulty(difficulty);
+    for (SpellEffectInfo const* effect : effects)
+    {
+        if (effect && effect->IsAura())
+            return true;
+    }
+    return false;
+}
+
 bool SpellInfo::HasAura(uint32 difficulty, AuraType aura) const
 {
     SpellEffectInfoVector effects = GetEffectsForDifficulty(difficulty);

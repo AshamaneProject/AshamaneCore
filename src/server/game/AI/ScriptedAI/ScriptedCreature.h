@@ -21,6 +21,7 @@
 
 #include "CreatureAI.h"
 #include "Creature.h" // convenience include for scripts, all uses of ScriptedCreature also need Creature (except ScriptedCreature itself doesn't need Creature)
+#include "DamageEventMap.h"
 #include "DBCEnums.h"
 #include "TaskScheduler.h"
 
@@ -186,6 +187,7 @@ struct TC_GAME_API ScriptedAI : public CreatureAI
 
     SummonList summons;
     EventMap events;
+    DamageEventMap damageEvents;
     InstanceScript* const instance;
 
     // *************
@@ -375,15 +377,17 @@ class TC_GAME_API BossAI : public ScriptedAI
         void JustDied(Unit* /*killer*/) override { _JustDied(); }
         void JustReachedHome() override { _JustReachedHome(); }
         void KilledUnit(Unit* victim) override { _KilledUnit(victim); }
+        void DamageTaken(Unit* attacker, uint32& damage) override { _DamageTaken(attacker, damage); }
 
         bool CanAIAttack(Unit const* target) const override;
 
     protected:
-        void _Reset();
+        virtual void _Reset();
         void _EnterCombat(bool showFrameEngage = true);
         void _JustDied();
         void _JustReachedHome();
         void _KilledUnit(Unit* victim);
+        void _DamageTaken(Unit* attacker, uint32& damage);
         void _DespawnAtEvade(uint32 delayToRespawn = 30, Creature* who = nullptr);
         void _DespawnAtEvade(Seconds const& time, Creature* who = nullptr) { _DespawnAtEvade(uint32(time.count()), who); }
 
@@ -391,6 +395,20 @@ class TC_GAME_API BossAI : public ScriptedAI
 
     private:
         uint32 const _bossId;
+};
+
+class TC_GAME_API StaticBossAI : public BossAI
+{
+public:
+    StaticBossAI(Creature* creature, uint32 bossId, uint32 staticSpell) : BossAI(creature, bossId), _staticSpell(staticSpell) { }
+    virtual ~StaticBossAI() { }
+
+protected:
+    void _Reset() override;
+    void _InitStaticSpellCast();
+
+private:
+    uint32 const _staticSpell;
 };
 
 class TC_GAME_API WorldBossAI : public ScriptedAI
