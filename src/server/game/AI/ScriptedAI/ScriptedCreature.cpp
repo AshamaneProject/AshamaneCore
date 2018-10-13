@@ -642,7 +642,7 @@ void StaticBossAI::_InitStaticSpellCast()
         else
         {
             if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM))
-                me->CastSpell(nullptr, _staticSpell, false);
+                me->CastSpell(target, _staticSpell, false);
         }
 
         context.Repeat();

@@ -37,7 +37,7 @@ class TC_GAME_API DamageEventMap
     typedef std::multimap<uint8, uint64> DamageEventStore;
 
 public:
-    explicit DamageEventMap(Unit* unit) : _target(unit), _phase(0), _lastEvent(0) { }
+    explicit DamageEventMap(Unit* unit) : _phase(0), _lastEvent(0), _target(unit) { }
 
     /**
     * @name Reset

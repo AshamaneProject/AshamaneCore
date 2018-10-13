@@ -149,6 +149,7 @@ enum MonkSpells
     SPELL_MONK_WHIRLING_DRAGON_PUNCH_DAMAGE             = 158221,
     SPELL_MONK_WINDWALKER_AURA                          = 166646,
     SPELL_MONK_WINDWALKING                              = 157411,
+    SPELL_MONK_XUEN_AURA                                = 123999,
     SPELL_MONK_ZEN_FLIGHT                               = 125883,
     SPELL_MONK_ZEN_FOCUS                                = 124488,
     SPELL_MONK_ZEN_PILGRIMAGE                           = 126892,
@@ -3442,6 +3443,17 @@ struct npc_monk_sef_spirit : public ScriptedAI
     }
 };
 
+// 63508
+struct npc_monk_xuen : public ScriptedAI
+{
+    npc_monk_xuen(Creature* creature) : ScriptedAI(creature) {}
+
+    void IsSummonedBy(Unit* /*summoner*/)
+    {
+        me->CastSpell(me, SPELL_MONK_XUEN_AURA, true);
+    }
+};
+
 class playerScript_monk_earth_fire_storm : public PlayerScript
 {
 public:
@@ -3725,4 +3737,5 @@ void AddSC_monk_spell_scripts()
     RegisterSpellScript(spell_monk_tiger_palm);
 
     RegisterCreatureAI(npc_monk_sef_spirit);
+    RegisterCreatureAI(npc_monk_xuen);
 }
