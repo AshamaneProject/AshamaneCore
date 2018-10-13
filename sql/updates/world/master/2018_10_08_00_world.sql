@@ -223,178 +223,178 @@ INSERT INTO `areatrigger_template_polygon_vertices` (`AreaTriggerId`, `Idx`, `Ve
 (12637, 1, -0.75, -4, 0, -6.5, 26365),
 (12637, 0, -0.75, 4, 0, -6.5, 26365);
 
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-1.068115, `VerticeY`=3.443665 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=22.38867, `VerticeY`=-15.60455 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=19.86719, `VerticeY`=-18.70966 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3.5896, `VerticeY`=0.338623 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=1.777344, `VerticeY`=3.137207 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=4.688232, `VerticeY`=-36.9104 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=0.6987305, `VerticeY`=-37.20044 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-2.212158, `VerticeY`=2.847168 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-2.516357, `VerticeY`=2.582275 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=26.78418, `VerticeY`=-3.672913 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=25.94897, `VerticeY`=-7.584778 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=0, `VerticeY`=-1.32959 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-2.046631, `VerticeY`=2.968506 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=13.33716, `VerticeY`=-3.160889 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=11.85645, `VerticeY`=-6.876709 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3.5271, `VerticeY`=-0.7475586 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=0.5588379, `VerticeY`=3.562012 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=3.50293, `VerticeY`=0.8544006 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-19.90674, `VerticeY`=-24.60117 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-22.85083, `VerticeY`=-21.89355 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=2.808716, `VerticeY`=2.260986 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=3.167114, `VerticeY`=-1.7229 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-33.07312, `VerticeY`=-4.984131 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-33.43176, `VerticeY`=-1.000244 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=2.905884, `VerticeY`=2.134521 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=3.087738, `VerticeY`=-1.861572 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-22.26642, `VerticeY`=-3.015625 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-22.4483, `VerticeY`=0.9804688 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-1.715363, `VerticeY`=3.171387 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=20.40811, `VerticeY`=-8.54248 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=18.53641, `VerticeY`=-12.07764 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3.587036, `VerticeY`=-0.3637695 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=0.6105957, `VerticeY`=3.553711 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=14.79004, `VerticeY`=-28.3811 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=11.13428, `VerticeY`=-30.00439 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3.045166, `VerticeY`=1.93042 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=5.302979, `VerticeY`=11.21027 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=8.595459, `VerticeY`=8.939026 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-0.05688477, `VerticeY`=-3.605042 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=0, `VerticeY`=-1.333862 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-1.489624, `VerticeY`=3.283447 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=31.04248, `VerticeY`=-16.97217 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=28.92828, `VerticeY`=-20.36743 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3.60376, `VerticeY`=-0.1120605 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-0.01269531, `VerticeY`=3.60553 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=20.4834, `VerticeY`=-26.90732 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=17.16309, `VerticeY`=-29.13776 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3.333252, `VerticeY`=1.375122 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=1.295044, `VerticeY`=3.36499 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=3.604187, `VerticeY`=0.09863281 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-16.20062, `VerticeY`=-13.90308 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-18.50977, `VerticeY`=-10.63696 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-1.314697, `VerticeY`=3.357178 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=2.593506, `VerticeY`=2.504639 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-2.766357, `VerticeY`=-22.06274 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-6.674561, `VerticeY`=-21.21021 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=2.452087, `VerticeY`=21.53198 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=6.367676, `VerticeY`=20.71436 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=1.344727, `VerticeY`=-3.345459 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-2.570801, `VerticeY`=-2.527832 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-2.039063, `VerticeY`=2.971252 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=25.95947, `VerticeY`=-8.243347 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=24.47241, `VerticeY`=-11.95648 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3.526367, `VerticeY`=-0.7420044 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-1.81604, `VerticeY`=3.114746 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=13.82629, `VerticeY`=-4.537109 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=12.06854, `VerticeY`=-8.130371 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3.57373, `VerticeY`=-0.4782715 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=47.2782, `VerticeY`=2.615479 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=47.3302, `VerticeY`=-1.384521 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-2.973633, `VerticeY`=-2.038818 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3.025635, `VerticeY`=1.961182 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-2.904541, `VerticeY`=2.135986 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=60.04956, `VerticeY`=-0.7653809 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=59.86548, `VerticeY`=-4.760986 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3.088745, `VerticeY`=-1.859863 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=8.354187, `VerticeY`=2.000244 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=8.354065, `VerticeY`=-1.999756 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3, `VerticeY`=-1.999756 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-2.999939, `VerticeY`=2.000244 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=47.18311, `VerticeY`=9.331543 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=47.79553, `VerticeY`=5.378662 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-2.658203, `VerticeY`=-2.435547 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3.270508, `VerticeY`=1.51709 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=59.00134, `VerticeY`=6.36377 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=59.2959, `VerticeY`=2.374512 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-2.84436, `VerticeY`=-2.215576 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3.139038, `VerticeY`=1.773438 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-2.717163, `VerticeY`=2.369873 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=58.72693, `VerticeY`=-5.611328 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=58.21155, `VerticeY`=-9.578125 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3.2323, `VerticeY`=-1.596924 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=54.3866, `VerticeY`=6.466309 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=54.71338, `VerticeY`=2.479492 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-2.826172, `VerticeY`=-2.238525 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3.153198, `VerticeY`=1.748047 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=26.00476, `VerticeY`=10.26172 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=27.203, `VerticeY`=6.445313 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-2.135742, `VerticeY`=-2.766846 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3.333984, `VerticeY`=1.049561 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-2.681396, `VerticeY`=2.075439 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=10.875, `VerticeY`=1.697998 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=10.76367, `VerticeY`=-2.300537 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-2.792725, `VerticeY`=-1.922852 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-23.25073, `VerticeY`=10.75629 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=3.355469, `VerticeY`=0.8887329 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=1.9646, `VerticeY`=-2.861633 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-24.64111, `VerticeY`=7.005981 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-4.106812, `VerticeY`=13.0647 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=3.10791, `VerticeY`=-1.828125 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-0.4918213, `VerticeY`=-3.571777 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-7.706787, `VerticeY`=11.32031 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-18.61194, `VerticeY`=15.81836 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=3.603516, `VerticeY`=-0.1245117 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=1.271362, `VerticeY`=-3.374023 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-20.94409, `VerticeY`=12.5686 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-4.513916, `VerticeY`=14.08887 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=3.0979, `VerticeY`=-1.844971 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-0.5113525, `VerticeY`=-3.569092 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-8.123169, `VerticeY`=12.36475 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-2.413574, `VerticeY`=2.678467 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=17.49951, `VerticeY`=-2.392822 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=16.51221, `VerticeY`=-6.268799 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3.400757, `VerticeY`=-1.197754 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-2.68277, `VerticeY`=2.408691 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=33.56143, `VerticeY`=-2.83374 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=32.98883, `VerticeY`=-6.79248 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3.255402, `VerticeY`=-1.550049 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=1.473633, `VerticeY`=3.290649 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=3.604004, `VerticeY`=-0.09460449 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-8.097412, `VerticeY`=-7.459229 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-10.22803, `VerticeY`=-4.073853 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=0.2446289, `VerticeY`=3.59729 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=13.2915, `VerticeY`=-19.18689 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=9.820313, `VerticeY`=-21.17456 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3.226563, `VerticeY`=1.609619 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=10.7395, `VerticeY`=2.423004 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=10.89648, `VerticeY`=-1.573914 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-2.919189, `VerticeY`=-2.116089 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3.076172, `VerticeY`=1.880829 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=27.78284, `VerticeY`=12.94238 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=29.23181, `VerticeY`=9.214355 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-2.071777, `VerticeY`=-2.951172 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3.520752, `VerticeY`=0.7773438 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3, `VerticeY`=2.000122 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=24.24512, `VerticeY`=2 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=24.24536, `VerticeY`=-2 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3, `VerticeY`=-2 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=0.1311035, `VerticeY`=3.603149 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=3.376465, `VerticeY`=1.265015 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-15.31836, `VerticeY`=-24.68433 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-18.56396, `VerticeY`=-22.34631 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-9.921631, `VerticeY`=10.95477 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=3.583252, `VerticeY`=-0.3997803 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=1.009033, `VerticeY`=-3.461426 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-12.49561, `VerticeY`=7.893066 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-0.4638672, `VerticeY`=3.575562 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=18.05493, `VerticeY`=-17.66486 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=15.03979, `VerticeY`=-20.29358 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3.479004, `VerticeY`=0.9468994 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=2.632324, `VerticeY`=2.46405 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=3.286865, `VerticeY`=-1.482025 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-34.73047, `VerticeY`=-7.788971 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-35.38477, `VerticeY`=-3.842865 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-1.593811, `VerticeY`=3.234375 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=24.74603, `VerticeY`=-12.01904 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=22.74152, `VerticeY`=-15.48071 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
-UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3.598328, `VerticeY`=-0.2270508 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-1.068115, `VerticeY`=3.443665 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=22.38867, `VerticeY`=-15.60455 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=19.86719, `VerticeY`=-18.70966 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3.5896, `VerticeY`=0.338623 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=1.777344, `VerticeY`=3.137207 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=4.688232, `VerticeY`=-36.9104 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=0.6987305, `VerticeY`=-37.20044 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-2.212158, `VerticeY`=2.847168 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-2.516357, `VerticeY`=2.582275 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=26.78418, `VerticeY`=-3.672913 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=25.94897, `VerticeY`=-7.584778 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=0, `VerticeY`=-1.32959 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-2.046631, `VerticeY`=2.968506 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=13.33716, `VerticeY`=-3.160889 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=11.85645, `VerticeY`=-6.876709 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3.5271, `VerticeY`=-0.7475586 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=0.5588379, `VerticeY`=3.562012 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=3.50293, `VerticeY`=0.8544006 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-19.90674, `VerticeY`=-24.60117 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-22.85083, `VerticeY`=-21.89355 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=2.808716, `VerticeY`=2.260986 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=3.167114, `VerticeY`=-1.7229 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-33.07312, `VerticeY`=-4.984131 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-33.43176, `VerticeY`=-1.000244 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=2.905884, `VerticeY`=2.134521 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=3.087738, `VerticeY`=-1.861572 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-22.26642, `VerticeY`=-3.015625 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-22.4483, `VerticeY`=0.9804688 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-1.715363, `VerticeY`=3.171387 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=20.40811, `VerticeY`=-8.54248 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=18.53641, `VerticeY`=-12.07764 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3.587036, `VerticeY`=-0.3637695 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=0.6105957, `VerticeY`=3.553711 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=14.79004, `VerticeY`=-28.3811 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=11.13428, `VerticeY`=-30.00439 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3.045166, `VerticeY`=1.93042 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=5.302979, `VerticeY`=11.21027 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=8.595459, `VerticeY`=8.939026 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-0.05688477, `VerticeY`=-3.605042 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=0, `VerticeY`=-1.333862 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-1.489624, `VerticeY`=3.283447 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=31.04248, `VerticeY`=-16.97217 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=28.92828, `VerticeY`=-20.36743 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3.60376, `VerticeY`=-0.1120605 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-0.01269531, `VerticeY`=3.60553 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=20.4834, `VerticeY`=-26.90732 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=17.16309, `VerticeY`=-29.13776 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3.333252, `VerticeY`=1.375122 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=1.295044, `VerticeY`=3.36499 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=3.604187, `VerticeY`=0.09863281 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-16.20062, `VerticeY`=-13.90308 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-18.50977, `VerticeY`=-10.63696 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-1.314697, `VerticeY`=3.357178 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=2.593506, `VerticeY`=2.504639 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-2.766357, `VerticeY`=-22.06274 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-6.674561, `VerticeY`=-21.21021 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=2.452087, `VerticeY`=21.53198 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=6.367676, `VerticeY`=20.71436 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=1.344727, `VerticeY`=-3.345459 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-2.570801, `VerticeY`=-2.527832 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-2.039063, `VerticeY`=2.971252 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=25.95947, `VerticeY`=-8.243347 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=24.47241, `VerticeY`=-11.95648 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3.526367, `VerticeY`=-0.7420044 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-1.81604, `VerticeY`=3.114746 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=13.82629, `VerticeY`=-4.537109 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=12.06854, `VerticeY`=-8.130371 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3.57373, `VerticeY`=-0.4782715 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=47.2782, `VerticeY`=2.615479 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=47.3302, `VerticeY`=-1.384521 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-2.973633, `VerticeY`=-2.038818 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3.025635, `VerticeY`=1.961182 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-2.904541, `VerticeY`=2.135986 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=60.04956, `VerticeY`=-0.7653809 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=59.86548, `VerticeY`=-4.760986 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3.088745, `VerticeY`=-1.859863 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=8.354187, `VerticeY`=2.000244 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=8.354065, `VerticeY`=-1.999756 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3, `VerticeY`=-1.999756 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-2.999939, `VerticeY`=2.000244 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=47.18311, `VerticeY`=9.331543 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=47.79553, `VerticeY`=5.378662 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-2.658203, `VerticeY`=-2.435547 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3.270508, `VerticeY`=1.51709 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=59.00134, `VerticeY`=6.36377 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=59.2959, `VerticeY`=2.374512 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-2.84436, `VerticeY`=-2.215576 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3.139038, `VerticeY`=1.773438 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-2.717163, `VerticeY`=2.369873 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=58.72693, `VerticeY`=-5.611328 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=58.21155, `VerticeY`=-9.578125 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3.2323, `VerticeY`=-1.596924 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=54.3866, `VerticeY`=6.466309 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=54.71338, `VerticeY`=2.479492 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-2.826172, `VerticeY`=-2.238525 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3.153198, `VerticeY`=1.748047 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=26.00476, `VerticeY`=10.26172 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=27.203, `VerticeY`=6.445313 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-2.135742, `VerticeY`=-2.766846 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3.333984, `VerticeY`=1.049561 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-2.681396, `VerticeY`=2.075439 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=10.875, `VerticeY`=1.697998 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=10.76367, `VerticeY`=-2.300537 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-2.792725, `VerticeY`=-1.922852 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-23.25073, `VerticeY`=10.75629 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=3.355469, `VerticeY`=0.8887329 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=1.9646, `VerticeY`=-2.861633 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-24.64111, `VerticeY`=7.005981 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-4.106812, `VerticeY`=13.0647 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=3.10791, `VerticeY`=-1.828125 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-0.4918213, `VerticeY`=-3.571777 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-7.706787, `VerticeY`=11.32031 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-18.61194, `VerticeY`=15.81836 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=3.603516, `VerticeY`=-0.1245117 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=1.271362, `VerticeY`=-3.374023 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-20.94409, `VerticeY`=12.5686 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-4.513916, `VerticeY`=14.08887 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=3.0979, `VerticeY`=-1.844971 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-0.5113525, `VerticeY`=-3.569092 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-8.123169, `VerticeY`=12.36475 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-2.413574, `VerticeY`=2.678467 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=17.49951, `VerticeY`=-2.392822 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=16.51221, `VerticeY`=-6.268799 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3.400757, `VerticeY`=-1.197754 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-2.68277, `VerticeY`=2.408691 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=33.56143, `VerticeY`=-2.83374 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=32.98883, `VerticeY`=-6.79248 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3.255402, `VerticeY`=-1.550049 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=1.473633, `VerticeY`=3.290649 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=3.604004, `VerticeY`=-0.09460449 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-8.097412, `VerticeY`=-7.459229 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-10.22803, `VerticeY`=-4.073853 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=0.2446289, `VerticeY`=3.59729 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=13.2915, `VerticeY`=-19.18689 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=9.820313, `VerticeY`=-21.17456 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3.226563, `VerticeY`=1.609619 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=10.7395, `VerticeY`=2.423004 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=10.89648, `VerticeY`=-1.573914 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-2.919189, `VerticeY`=-2.116089 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3.076172, `VerticeY`=1.880829 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=27.78284, `VerticeY`=12.94238 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=29.23181, `VerticeY`=9.214355 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-2.071777, `VerticeY`=-2.951172 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3.520752, `VerticeY`=0.7773438 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3, `VerticeY`=2.000122 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=24.24512, `VerticeY`=2 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=24.24536, `VerticeY`=-2 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3, `VerticeY`=-2 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=0.1311035, `VerticeY`=3.603149 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=3.376465, `VerticeY`=1.265015 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-15.31836, `VerticeY`=-24.68433 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-18.56396, `VerticeY`=-22.34631 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-9.921631, `VerticeY`=10.95477 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=3.583252, `VerticeY`=-0.3997803 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=1.009033, `VerticeY`=-3.461426 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-12.49561, `VerticeY`=7.893066 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-0.4638672, `VerticeY`=3.575562 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=18.05493, `VerticeY`=-17.66486 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=15.03979, `VerticeY`=-20.29358 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3.479004, `VerticeY`=0.9468994 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=2.632324, `VerticeY`=2.46405 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=3.286865, `VerticeY`=-1.482025 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-34.73047, `VerticeY`=-7.788971 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-35.38477, `VerticeY`=-3.842865 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-1.593811, `VerticeY`=3.234375 WHERE (`AreaTriggerId`=10713 AND `Idx`=3);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=24.74603, `VerticeY`=-12.01904 WHERE (`AreaTriggerId`=10713 AND `Idx`=2);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=22.74152, `VerticeY`=-15.48071 WHERE (`AreaTriggerId`=10713 AND `Idx`=1);
+-- UPDATE `areatrigger_template_polygon_vertices` SET `AreaTriggerId`=0, `Idx`=0, `VerticeX`=-3.598328, `VerticeY`=-0.2270508 WHERE (`AreaTriggerId`=10713 AND `Idx`=0);
 
 DELETE FROM `spell_areatrigger` WHERE (`AreaTriggerId`=11781) OR (`SpellMiscId`=7802 AND `AreaTriggerId`=12120) OR (`SpellMiscId`=10085 AND `AreaTriggerId`=10202) OR (`SpellMiscId`=10084 AND `AreaTriggerId`=10202) OR (`SpellMiscId`=10083 AND `AreaTriggerId`=10202) OR (`SpellMiscId`=8430 AND `AreaTriggerId`=6197) OR (`SpellMiscId`=8624 AND `AreaTriggerId`=12724) OR (`SpellMiscId`=8539 AND `AreaTriggerId`=12678) OR (`SpellMiscId`=6616 AND `AreaTriggerId`=11204) OR (`SpellMiscId`=7175 AND `AreaTriggerId`=11627) OR (`SpellMiscId`=8284 AND `AreaTriggerId`=6197) OR (`SpellMiscId`=6216 AND `AreaTriggerId`=10916) OR (`SpellMiscId`=6484 AND `AreaTriggerId`=11109) OR (`SpellMiscId`=6249 AND `AreaTriggerId`=10947) OR (`SpellMiscId`=8129 AND `AreaTriggerId`=12356) OR (`SpellMiscId`=6146 AND `AreaTriggerId`=10827) OR (`SpellMiscId`=6145 AND `AreaTriggerId`=10826) OR (`AreaTriggerId`=0) OR (`SpellMiscId`=8449 AND `AreaTriggerId`=12600) OR (`SpellMiscId`=8485 AND `AreaTriggerId`=12638) OR (`SpellMiscId`=8484 AND `AreaTriggerId`=12637) OR (`SpellMiscId`=7432 AND `AreaTriggerId`=11875) OR (`SpellMiscId`=6226 AND `AreaTriggerId`=10926) OR (`SpellMiscId`=8149 AND `AreaTriggerId`=12376) OR (`SpellMiscId`=12015 AND `AreaTriggerId`=16725) OR (`SpellMiscId`=4943 AND `AreaTriggerId`=9660) OR (`SpellMiscId`=5428 AND `AreaTriggerId`=6197) OR (`SpellMiscId`=9865 AND `AreaTriggerId`=6197) OR (`SpellMiscId`=7614 AND `AreaTriggerId`=12015) OR (`SpellMiscId`=6214 AND `AreaTriggerId`=10914) OR (`SpellMiscId`=6238 AND `AreaTriggerId`=10936) OR (`SpellMiscId`=3938 AND `AreaTriggerId`=9575) OR (`SpellMiscId`=7088 AND `AreaTriggerId`=11556) OR (`SpellMiscId`=7025 AND `AreaTriggerId`=11496) OR (`SpellMiscId`=6505 AND `AreaTriggerId`=11124);
 INSERT INTO `spell_areatrigger` (`SpellMiscId`, `AreaTriggerId`, `MoveCurveId`, `ScaleCurveId`, `MorphCurveId`, `FacingCurveId`, `DecalPropertiesId`, `TimeToTarget`, `TimeToTargetScale`, `VerifiedBuild`) VALUES
-(UNKNOWN, 11781, 0, 0, 0, 0, 0, 1251, 10000, 26365), -- SpellId : 215058
+-- (UNKNOWN, 11781, 0, 0, 0, 0, 0, 1251, 10000, 26365), -- SpellId : 215058
 (7802, 12120, 0, 0, 0, 0, 0, 0, 0, 26365), -- SpellId : 218927
 (10085, 10202, 0, 0, 0, 0, 145, 0, 2800, 26365), -- SpellId : 239553
 (10084, 10202, 0, 0, 0, 0, 145, 0, 2800, 26365), -- SpellId : 239552
@@ -2592,9 +2592,9 @@ INSERT INTO `gameobject_template_addon` (`entry`, `faction`, `flags`) VALUES
 (251611, 0, 32), -- Chamber Door
 (251610, 1375, 32); -- Doodad_7DU_SuramarRaid_Door_Small005
 
-SET @CGUID := (SELECT max(guid) + 1 FROM creature);
+SET @CGUID := 10690000;
 DELETE FROM `creature` WHERE `guid` BETWEEN @CGUID+0 AND @CGUID+1536;
-INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `PhaseId`, `PhaseGroup`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`, `VerifiedBuild`) VALUES
+INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnDifficulties`, `PhaseId`, `PhaseGroup`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`, `VerifiedBuild`) VALUES
 (@CGUID+0, 111166, 1530, 8025, 8025, "14,15,16,17", '0', 0, 0, 0, 307.2371, 3100.198, 226.9067, 2.196002, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 26365), -- Resolute Courtesan (Area: SuramarRaid - Difficulty: Looking For Raid) (Auras: 190299 - Warden Salute)
 (@CGUID+1, 111170, 1530, 8025, 8025, "14,15,16,17", '0', 0, 0, 0, 262.914, 3121.102, 227.9345, 2.134936, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 26365), -- Astral Farseer (Area: SuramarRaid - Difficulty: Looking For Raid) (Auras: 225958 - Spellcaster, 221577 - Arcane Burst)
 (@CGUID+2, 111166, 1530, 8025, 8025, "14,15,16,17", '0', 0, 0, 0, 251.4011, 3143.844, 226.9067, 4.523971, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 26365), -- Resolute Courtesan (Area: SuramarRaid - Difficulty: Looking For Raid) (Auras: )
@@ -2807,10 +2807,7 @@ INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `P
 (@CGUID+246, 113321, 1530, 8025, 8025, "14,15,16,17", '0', 0, 0, 0, 505.8385, 3317.264, 59.98534, 0, 604800, 10, 0, 0, 0, 1, 0, 0, 0, 26365), -- Shambling Hungerer (Area: SuramarRaid - Difficulty: Looking For Raid) (possible waypoints or random movement)
 (@CGUID+247, 113307, 1530, 8025, 8025, "14,15,16,17", '0', 0, 0, 0, 505.3185, 3417.612, 109.5067, 1.797268, 604800, 10, 0, 0, 0, 1, 0, 0, 0, 26365), -- Chronowraith (Area: SuramarRaid - Difficulty: Looking For Raid) (possible waypoints or random movement)
 (@CGUID+248, 113608, 1530, 8025, 8025, "14,15,16,17", '0', 0, 0, 0, 404.2708, 3344.828, 59.97849, 4.638996, 604800, 10, 0, 0, 0, 1, 0, 0, 0, 26365), -- Kirin Tor Guardian (Area: SuramarRaid - Difficulty: Looking For Raid) (Auras: 211064 - Celerity Zone) (possible waypoints or random movement)
-(@CGUID+249, 113605, 1530, 8025, 8025, "14,15,16,17", '0', 0, 0, 0, 406.9618, 3348.733, 59.97906, 4.450373, 604800, 10, 0, 0, 0, 1, 0, 0, 0, 26365); -- Kirin Tor Guardian (Area: SuramarRaid - Difficulty: Looking For Raid) (Auras: 211064 - Celerity Zone) (possible waypoints or random movement)
-
-SET @CGUID := (SELECT max(guid) + 1 FROM creature);
-INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `PhaseId`, `PhaseGroup`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`, `VerifiedBuild`) VALUES
+(@CGUID+249, 113605, 1530, 8025, 8025, "14,15,16,17", '0', 0, 0, 0, 406.9618, 3348.733, 59.97906, 4.450373, 604800, 10, 0, 0, 0, 1, 0, 0, 0, 26365), -- Kirin Tor Guardian (Area: SuramarRaid - Difficulty: Looking For Raid) (Auras: 211064 - Celerity Zone) (possible waypoints or random movement)
 (@CGUID+250, 113383, 1530, 8025, 8025, "14,15,16,17", '0', 0, 0, 0, 519.0521, 3311.931, 59.97278, 0, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 26365), -- Fallen Defender (Area: SuramarRaid - Difficulty: Looking For Raid) (Auras: )
 (@CGUID+251, 112804, 1530, 8025, 8025, "14,15,16,17", '0', 0, 0, 0, 531.8924, 3390.382, 114.0629, 3.753449, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 26365), -- Trained Shadescale (Area: SuramarRaid - Difficulty: Looking For Raid) (Auras: )
 (@CGUID+252, 113608, 1530, 8025, 8025, "14,15,16,17", '0', 0, 0, 0, 410.0174, 3341.784, 59.96734, 4.638996, 604800, 10, 0, 0, 0, 1, 0, 0, 0, 26365), -- Kirin Tor Guardian (Area: SuramarRaid - Difficulty: Looking For Raid) (Auras: 211064 - Celerity Zone) (possible waypoints or random movement)
@@ -3056,10 +3053,7 @@ INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `P
 (@CGUID+495, 113307, 1530, 8025, 8025, "14,15,16,17", '0', 0, 0, 0, 229.4376, 3237.552, 142.0585, 0.626579, 604800, 10, 0, 0, 0, 1, 0, 0, 0, 26365), -- Chronowraith (Area: SuramarRaid - Difficulty: Looking For Raid) (possible waypoints or random movement)
 (@CGUID+496, 113406, 1530, 8025, 8025, "14,15,16,17", '0', 0, 0, 0, 296.276, 3149.38, 145.2817, 3.945174, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 26365), -- Manaflush Noble (Area: SuramarRaid - Difficulty: Looking For Raid) (Auras: 225579 - Imbibe Nightwell)
 (@CGUID+498, 112718, 1530, 8025, 8025, "14,15,16,17", '0', 0, 0, 0, 433.5743, 3087.494, 144.1067, 3.927423, 604800, 10, 0, 0, 0, 1, 0, 0, 0, 26365), -- Sidereal Familiar (Area: SuramarRaid - Difficulty: Looking For Raid) (possible waypoints or random movement)
-(@CGUID+499, 112804, 1530, 8025, 8025, "14,15,16,17", '0', 0, 0, 0, 513.9566, 3138.375, 148.6753, 4.017395, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 26365); -- Trained Shadescale (Area: SuramarRaid - Difficulty: Looking For Raid) (Auras: )
-
-SET @CGUID := (SELECT max(guid) + 1 FROM creature);
-INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `PhaseId`, `PhaseGroup`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`, `VerifiedBuild`) VALUES
+(@CGUID+499, 112804, 1530, 8025, 8025, "14,15,16,17", '0', 0, 0, 0, 513.9566, 3138.375, 148.6753, 4.017395, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 26365), -- Trained Shadescale (Area: SuramarRaid - Difficulty: Looking For Raid) (Auras: )
 (@CGUID+500, 112655, 1530, 8025, 8025, "14,15,16,17", '0', 0, 0, 0, 511.059, 3141.415, 148.6764, 0.9434972, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 26365), -- Celestial Acolyte (Area: SuramarRaid - Difficulty: Looking For Raid) (Auras: 224439 - Cosmetic Use Standing Loop)
 (@CGUID+501, 112804, 1530, 8025, 8025, "14,15,16,17", '0', 0, 0, 0, 503.0938, 3129.406, 148.6756, 0.2428643, 604800, 10, 0, 0, 0, 1, 0, 0, 0, 26365), -- Trained Shadescale (Area: SuramarRaid - Difficulty: Looking For Raid) (Auras: ) (possible waypoints or random movement)
 (@CGUID+502, 112767, 1530, 8025, 8025, "14,15,16,17", '0', 0, 0, 0, 497.611, 3101.477, 168.7331, 0.3285737, 604800, 10, 0, 0, 0, 1, 0, 0, 0, 26365), -- Star Shooting Stalker (Area: SuramarRaid - Difficulty: Looking For Raid) (possible waypoints or random movement)
@@ -3255,10 +3249,7 @@ INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `P
 (@CGUID+746, 111833, 1530, 8025, 8025, "14,15,16,17", '0', 0, 0, 0, 317.6927, 3171.016, 226.9358, 0.7613583, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 26365), -- Thal'kiel (Area: SuramarRaid - Difficulty: Looking For Raid)
 (@CGUID+747, 103685, 1530, 8025, 8025, "14,15,16,17", '0', 0, 0, 0, 226.4271, 3413.01, 171.8008, 5.501315, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 26365), -- Tichondrius (Area: SuramarRaid - Difficulty: Looking For Raid) (Auras: 217507 - Tich Light)
 (@CGUID+748, 113013, 1530, 8025, 8025, "14,15,16,17", '0', 0, 0, 0, 265.3681, 3421.55, 171.8008, 0.8800458, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 26365), -- Felsworn Shadowblade (Area: SuramarRaid - Difficulty: Looking For Raid) (Auras: 202427 - Mod Scale 150%)
-(@CGUID+749, 113012, 1530, 8025, 8025, "14,15,16,17", '0', 0, 0, 0, 241.2049, 3393.769, 171.8008, 2.365096, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 26365); -- Felsworn Chaos-Mage (Area: SuramarRaid - Difficulty: Looking For Raid) (Auras: 188236 - Mod Scale 125%)
-
-SET @CGUID := (SELECT max(guid) + 1 FROM creature);
-INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `PhaseId`, `PhaseGroup`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`, `VerifiedBuild`) VALUES
+(@CGUID+749, 113012, 1530, 8025, 8025, "14,15,16,17", '0', 0, 0, 0, 241.2049, 3393.769, 171.8008, 2.365096, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 26365), -- Felsworn Chaos-Mage (Area: SuramarRaid - Difficulty: Looking For Raid) (Auras: 188236 - Mod Scale 125%)
 (@CGUID+750, 113013, 1530, 8025, 8025, "14,15,16,17", '0', 0, 0, 0, 241.3715, 3398.967, 171.8008, 2.365096, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 26365), -- Felsworn Shadowblade (Area: SuramarRaid - Difficulty: Looking For Raid) (Auras: 202427 - Mod Scale 150%)
 (@CGUID+751, 113012, 1530, 8025, 8025, "14,15,16,17", '0', 0, 0, 0, 272.4495, 3393.554, 171.9067, 4.586026, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 26365), -- Felsworn Chaos-Mage (Area: SuramarRaid - Difficulty: Looking For Raid) (Auras: 188236 - Mod Scale 125%)
 (@CGUID+752, 113012, 1530, 8025, 8025, "14,15,16,17", '0', 0, 0, 0, 247.1007, 3399.324, 171.8008, 2.365096, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 26365), -- Felsworn Chaos-Mage (Area: SuramarRaid - Difficulty: Looking For Raid) (Auras: 188236 - Mod Scale 125%)
@@ -3508,10 +3499,7 @@ INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `P
 (@CGUID+996, 106522, 1530, 8025, 8025, "14,15,16,17", '0', 0, 0, 0, 282.0504, 3185.818, 374.1802, 4.849758, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 26365), -- Archmage Khadgar (Area: SuramarRaid - Difficulty: Looking For Raid) (Auras: 227671 - Arcane Flight)
 -- (@CGUID+997, 105371, UNKNOWN, 8025, 8025, "14,15,16,17", '0', 0, 0, 0, 0, 0, 5, 3.141593, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 26365), -- Well of Souls (Area: SuramarRaid - Difficulty: Looking For Raid) (Auras: 46598 - Ride Vehicle Hardcoded) - !!! on transport - transport template not found !!!
 (@CGUID+998, 116156, 1530, 8025, 8025, "14,15,16,17", '0', 0, 0, 0, 265.7303, 3109.346, 475.8518, 1.099469, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 26365), -- Light's Heart (Area: SuramarRaid - Difficulty: Looking For Raid) (Auras: 227371 - Encounter Bounds Aura (Broken Room))
-(@CGUID+999, 116156, 1530, 8025, 8025, "14,15,16,17", '0', 0, 0, 0, 266.1622, 3106.271, 477.2982, 1.099469, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 26365); -- Light's Heart (Area: SuramarRaid - Difficulty: Looking For Raid) (Auras: 227371 - Encounter Bounds Aura (Broken Room))
-
-SET @CGUID := (SELECT max(guid) + 1 FROM creature);
-INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `PhaseId`, `PhaseGroup`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`, `VerifiedBuild`) VALUES
+(@CGUID+999, 116156, 1530, 8025, 8025, "14,15,16,17", '0', 0, 0, 0, 266.1622, 3106.271, 477.2982, 1.099469, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 26365), -- Light's Heart (Area: SuramarRaid - Difficulty: Looking For Raid) (Auras: 227371 - Encounter Bounds Aura (Broken Room))
 (@CGUID+1000, 116156, 1530, 8025, 8025, "14,15,16,17", '0', 0, 0, 0, 268.9046, 3107.728, 475.8518, 1.099469, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 26365), -- Light's Heart (Area: SuramarRaid - Difficulty: Looking For Raid) (Auras: 227371 - Encounter Bounds Aura (Broken Room))
 (@CGUID+1001, 73400, 1530, 8025, 8025, "14,15,16,17", '0', 0, 0, 0, 282.8008, 3123.014, 466.0333, 0, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 26365), -- Healing Ran Invisible Stalker DND (Area: SuramarRaid - Difficulty: Looking For Raid) (Auras: 147490 - Healing Rain Visual)
 -- (@CGUID+1002, 105371, UNKNOWN, 8025, 8025, "14,15,16,17", '0', 0, 0, 0, 0, 0, 5, 3.044832, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 26365), -- Well of Souls (Area: SuramarRaid - Difficulty: Looking For Raid) (Auras: 227371 - Encounter Bounds Aura (Broken Room)) - !!! on transport - transport template not found !!!
@@ -3742,10 +3730,7 @@ INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `P
 (@CGUID+1246, 112675, 1530, 8025, 8025, "14,15,16,17", '0', 0, 0, 0, 85.0625, 3013.774, 110.8635, 6.235937, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 26365), -- Duskwatch Sentinel (Area: SuramarRaid - Difficulty: Looking For Raid)
 (@CGUID+1247, 112676, 1530, 8025, 8025, "14,15,16,17", '0', 0, 0, 0, 255.3733, 2983.22, 109.3202, 5.346361, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 26365), -- Nobleborn Warpcaster (Area: SuramarRaid - Difficulty: Looking For Raid) (Auras: 160758 - Mod Scale 140%)
 (@CGUID+1248, 112671, 1530, 8025, 8025, "14,15,16,17", '0', 0, 0, 0, 256.9236, 2976.372, 109.3202, 1.383791, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 26365), -- Duskwatch Battle-Magus (Area: SuramarRaid - Difficulty: Looking For Raid)
-(@CGUID+1249, 112675, 1530, 8025, 8025, "14,15,16,17", '0', 0, 0, 0, 260.5174, 2980.87, 109.3202, 3.38945, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 26365); -- Duskwatch Sentinel (Area: SuramarRaid - Difficulty: Looking For Raid)
-
-SET @CGUID := (SELECT max(guid) + 1 FROM creature);
-INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnDifficulties`, `PhaseId`, `PhaseGroup`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`, `VerifiedBuild`) VALUES
+(@CGUID+1249, 112675, 1530, 8025, 8025, "14,15,16,17", '0', 0, 0, 0, 260.5174, 2980.87, 109.3202, 3.38945, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 26365), -- Duskwatch Sentinel (Area: SuramarRaid - Difficulty: Looking For Raid)
 (@CGUID+1250, 113307, 1530, 8025, 8025, "14,15,16,17", '0', 0, 0, 0, 345.75, 3044.686, 142.0951, 3.62425, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 26365), -- Chronowraith (Area: SuramarRaid - Difficulty: Looking For Raid)
 (@CGUID+1251, 112675, 1530, 8025, 8025, "14,15,16,17", '0', 0, 0, 0, 214.0556, 2959.742, 109.3067, 0.2196933, 604800, 10, 0, 0, 0, 1, 0, 0, 0, 26365), -- Duskwatch Sentinel (Area: SuramarRaid - Difficulty: Looking For Raid) (possible waypoints or random movement)
 (@CGUID+1252, 112675, 1530, 8025, 8025, "14,15,16,17", '0', 0, 0, 0, 137.1059, 2963.017, 109.507, 1.72716, 604800, 10, 0, 0, 0, 1, 0, 0, 0, 26365), -- Duskwatch Sentinel (Area: SuramarRaid - Difficulty: Looking For Raid) (Auras: ) (possible waypoints or random movement)
@@ -3993,10 +3978,7 @@ INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnDifficult
 (@CGUID+1496, 109804, 1530, 8025, 8348, "14,15,16,17", '0', 0, 0, 0, 640.286, 2817.88, 125.3983, 0, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 26365), -- Plasma Sphere (Area: SuramarRaidGarden - Difficulty: Looking For Raid) (Auras: 218520 - Plasma Sphere)
 (@CGUID+1497, 109583, 1530, 8025, 8348, "14,15,16,17", '0', 0, 0, 0, 660.4586, 2802.245, 125.5099, 1.43117, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 26365), -- Solar Collapse Stalker (Area: SuramarRaidGarden - Difficulty: Looking For Raid)
 (@CGUID+1498, 92870, 1530, 8025, 8348, "14,15,16,17", '0', 0, 0, 0, 637.8885, 2788.024, 135.3853, 5.972192, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 26365), -- Sindragosa's Fury (Area: SuramarRaidGarden - Difficulty: Looking For Raid) (Auras: )
-(@CGUID+1499, 109075, 1530, 8025, 8348, "14,15,16,17", '0', 0, 0, 0, 651.3782, 2807.711, 125.5741, 4.954452, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 26365); -- Parasitic Lasher (Area: SuramarRaidGarden - Difficulty: Looking For Raid) (Auras: 218357 - Parasitic Fetter)
-
-SET @CGUID := (SELECT max(guid) + 1 FROM creature);
-INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `PhaseId`, `PhaseGroup`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`, `VerifiedBuild`) VALUES
+(@CGUID+1499, 109075, 1530, 8025, 8348, "14,15,16,17", '0', 0, 0, 0, 651.3782, 2807.711, 125.5741, 4.954452, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 26365), -- Parasitic Lasher (Area: SuramarRaidGarden - Difficulty: Looking For Raid) (Auras: 218357 - Parasitic Fetter)
 (@CGUID+1500, 109075, 1530, 8025, 8348, "14,15,16,17", '0', 0, 0, 0, 658.9012, 2787.305, 125.59, 4.769359, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 26365), -- Parasitic Lasher (Area: SuramarRaidGarden - Difficulty: Looking For Raid) (Auras: )
 (@CGUID+1501, 109075, 1530, 8025, 8348, "14,15,16,17", '0', 0, 0, 0, 660.6779, 2777.898, 125.3866, 0.6898727, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 26365), -- Parasitic Lasher (Area: SuramarRaidGarden - Difficulty: Looking For Raid) (Auras: )
 (@CGUID+1502, 109804, 1530, 8025, 8348, "14,15,16,17", '0', 0, 0, 0, 655.056, 2777.77, 125.3953, 0, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 26365), -- Plasma Sphere (Area: SuramarRaidGarden - Difficulty: Looking For Raid) (Auras: 218520 - Plasma Sphere)
@@ -4009,9 +3991,8 @@ INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `P
 (@CGUID+1509, 109804, 1530, 8025, 8348, "14,15,16,17", '0', 0, 0, 0, 610.007, 2787.85, 125.4043, 0, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 26365), -- Plasma Sphere (Area: SuramarRaidGarden - Difficulty: Looking For Raid) (Auras: 218520 - Plasma Sphere)
 (@CGUID+1510, 109804, 1530, 8025, 8348, "14,15,16,17", '0', 0, 0, 0, 640.286, 2817.88, 125.3983, 0, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 26365), -- Plasma Sphere (Area: SuramarRaidGarden - Difficulty: Looking For Raid) (Auras: 218520 - Plasma Sphere)
 (@CGUID+1511, 109075, 1530, 8025, 8348, "14,15,16,17", '0', 0, 0, 0, 629.1953, 2791.969, 125.481, 6.262758, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 26365), -- Parasitic Lasher (Area: SuramarRaidGarden - Difficulty: Looking For Raid) (Auras: 218357 - Parasitic Fetter)
-(@CGUID+1512, 109583, 1530, 8025, 8348, "14,15,16,17", '0', 0, 0, 0, 652.4758, 2794.96, 125.385, 4.869469, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 26365), -- Solar Collapse Stalker (Area: SuramarRaidGarden - Difficulty: Looking For Raid)
+(@CGUID+1512, 109583, 1530, 8025, 8348, "14,15,16,17", '0', 0, 0, 0, 652.4758, 2794.96, 125.385, 4.869469, 604800, 0, 0, 0, 0, 0, 0, 0, 0, 26365); -- Solar Collapse Stalker (Area: SuramarRaidGarden - Difficulty: Looking For Raid)
 
-SET @CGUID := (SELECT max(guid) + 1 FROM creature_addon);
 DELETE FROM `creature_addon` WHERE `guid` BETWEEN @CGUID+0 AND @CGUID+1536;
 INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `aiAnimKit`, `movementAnimKit`, `meleeAnimKit`, `auras`) VALUES
 (@CGUID+0, 0, 0, 0, 0, 0, 0, 0, 0, '190299'), -- Resolute Courtesan - 190299 - Warden Salute
@@ -4264,9 +4245,6 @@ INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `e
 (@CGUID+247, 0, 0, 0, 1, 0, 0, 0, 0, ''), -- Chronowraith
 (@CGUID+248, 0, 0, 0, 1, 0, 0, 0, 0, '211064'), -- Kirin Tor Guardian - 211064 - Celerity Zone
 (@CGUID+249, 0, 0, 0, 1, 0, 0, 0, 0, '211064'); -- Kirin Tor Guardian - 211064 - Celerity Zone
-
-SET @CGUID := (SELECT max(guid) + 1 FROM creature_addon);
-INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `aiAnimKit`, `movementAnimKit`, `meleeAnimKit`, `auras`) VALUES
 (@CGUID+250, 0, 0, 7, 1, 0, 0, 0, 0, ''), -- Fallen Defender
 (@CGUID+251, 0, 0, 0, 0, 0, 0, 0, 0, ''), -- Trained Shadescale
 (@CGUID+252, 0, 0, 0, 1, 0, 0, 0, 0, '211064'), -- Kirin Tor Guardian - 211064 - Celerity Zone
@@ -4516,10 +4494,7 @@ INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `e
 (@CGUID+496, 0, 0, 0, 1, 0, 0, 0, 0, '225579'), -- Manaflush Noble - 225579 - Imbibe Nightwell
 (@CGUID+497, 0, 0, 50331648, 1, 0, 0, 0, 0, ''), -- Val'kyr of Odyn
 (@CGUID+498, 0, 0, 0, 1, 0, 0, 0, 0, ''), -- Sidereal Familiar
-(@CGUID+499, 0, 0, 0, 1, 0, 0, 0, 0, ''); -- Trained Shadescale
-
-SET @CGUID := (SELECT max(guid) + 1 FROM creature_addon);
-INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `aiAnimKit`, `movementAnimKit`, `meleeAnimKit`, `auras`) VALUES
+(@CGUID+499, 0, 0, 0, 1, 0, 0, 0, 0, ''), -- Trained Shadescale
 (@CGUID+500, 0, 0, 0, 1, 0, 0, 0, 0, '224439'), -- Celestial Acolyte - 224439 - Cosmetic Use Standing Loop
 (@CGUID+501, 0, 0, 0, 1, 0, 0, 0, 0, ''), -- Trained Shadescale
 (@CGUID+502, 0, 0, 0, 1, 0, 0, 0, 0, ''), -- Star Shooting Stalker
@@ -4769,10 +4744,7 @@ INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `e
 (@CGUID+746, 0, 0, 0, 1, 0, 0, 0, 0, ''), -- Thal'kiel
 (@CGUID+747, 0, 0, 0, 1, 0, 0, 0, 0, '217507'), -- Tichondrius - 217507 - Tich Light
 (@CGUID+748, 0, 0, 0, 1, 0, 0, 0, 0, '202427'), -- Felsworn Shadowblade - 202427 - Mod Scale 150%
-(@CGUID+749, 0, 0, 0, 1, 0, 0, 0, 0, '188236'); -- Felsworn Chaos-Mage - 188236 - Mod Scale 125%
-
-SET @CGUID := (SELECT max(guid) + 1 FROM creature_addon);
-INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `aiAnimKit`, `movementAnimKit`, `meleeAnimKit`, `auras`) VALUES
+(@CGUID+749, 0, 0, 0, 1, 0, 0, 0, 0, '188236'), -- Felsworn Chaos-Mage - 188236 - Mod Scale 125%
 (@CGUID+750, 0, 0, 0, 1, 0, 0, 0, 0, '202427'), -- Felsworn Shadowblade - 202427 - Mod Scale 150%
 (@CGUID+751, 0, 0, 0, 1, 0, 0, 0, 0, '188236'), -- Felsworn Chaos-Mage - 188236 - Mod Scale 125%
 (@CGUID+752, 0, 0, 0, 1, 0, 0, 0, 0, '188236'), -- Felsworn Chaos-Mage - 188236 - Mod Scale 125%
@@ -5022,10 +4994,7 @@ INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `e
 (@CGUID+996, 0, 0, 0, 1, 0, 0, 0, 0, '227671'), -- Archmage Khadgar - 227671 - Arcane Flight
 (@CGUID+997, 0, 0, 0, 1, 0, 0, 0, 0, '46598'), -- Well of Souls - 46598 - Ride Vehicle Hardcoded
 (@CGUID+998, 0, 0, 50331648, 1, 0, 0, 0, 0, '227371'), -- Light's Heart - 227371 - Encounter Bounds Aura (Broken Room)
-(@CGUID+999, 0, 0, 50331648, 1, 0, 0, 0, 0, '227371'); -- Light's Heart - 227371 - Encounter Bounds Aura (Broken Room)
-
-SET @CGUID := (SELECT max(guid) + 1 FROM creature_addon);
-INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `aiAnimKit`, `movementAnimKit`, `meleeAnimKit`, `auras`) VALUES
+(@CGUID+999, 0, 0, 50331648, 1, 0, 0, 0, 0, '227371'), -- Light's Heart - 227371 - Encounter Bounds Aura (Broken Room)
 (@CGUID+1000, 0, 0, 50331648, 1, 0, 0, 0, 0, '227371'), -- Light's Heart - 227371 - Encounter Bounds Aura (Broken Room)
 (@CGUID+1001, 0, 0, 50331648, 1, 0, 0, 0, 0, '147490'), -- Healing Ran Invisible Stalker DND - 147490 - Healing Rain Visual
 (@CGUID+1002, 0, 0, 0, 1, 0, 0, 0, 0, '227371'), -- Well of Souls - 227371 - Encounter Bounds Aura (Broken Room)
@@ -5275,10 +5244,7 @@ INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `e
 (@CGUID+1246, 0, 0, 0, 1, 0, 0, 0, 0, ''), -- Duskwatch Sentinel
 (@CGUID+1247, 0, 0, 0, 0, 0, 0, 0, 0, '160758'), -- Nobleborn Warpcaster - 160758 - Mod Scale 140%
 (@CGUID+1248, 0, 0, 0, 0, 0, 0, 0, 0, ''), -- Duskwatch Battle-Magus
-(@CGUID+1249, 0, 0, 0, 0, 0, 0, 0, 0, ''); -- Duskwatch Sentinel
-
-SET @CGUID := (SELECT max(guid) + 1 FROM creature_addon);
-INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `aiAnimKit`, `movementAnimKit`, `meleeAnimKit`, `auras`) VALUES
+(@CGUID+1249, 0, 0, 0, 0, 0, 0, 0, 0, ''), -- Duskwatch Sentinel
 (@CGUID+1250, 0, 0, 0, 1, 0, 0, 0, 0, ''), -- Chronowraith
 (@CGUID+1251, 0, 0, 0, 1, 0, 0, 0, 0, ''), -- Duskwatch Sentinel
 (@CGUID+1252, 0, 0, 0, 1, 0, 0, 0, 0, ''), -- Duskwatch Sentinel
@@ -5528,10 +5494,7 @@ INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `e
 (@CGUID+1496, 0, 0, 0, 1, 0, 0, 0, 0, '218520'), -- Plasma Sphere - 218520 - Plasma Sphere
 (@CGUID+1497, 0, 0, 0, 1, 0, 0, 0, 0, ''), -- Solar Collapse Stalker
 (@CGUID+1498, 0, 0, 50331648, 1, 0, 0, 0, 0, ''), -- Sindragosa's Fury
-(@CGUID+1499, 0, 0, 0, 1, 0, 0, 0, 0, '218357'); -- Parasitic Lasher - 218357 - Parasitic Fetter
-
-SET @CGUID := (SELECT max(guid) + 1 FROM creature_addon);
-INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `aiAnimKit`, `movementAnimKit`, `meleeAnimKit`, `auras`) VALUES
+(@CGUID+1499, 0, 0, 0, 1, 0, 0, 0, 0, '218357'), -- Parasitic Lasher - 218357 - Parasitic Fetter
 (@CGUID+1500, 0, 0, 0, 1, 0, 0, 0, 0, ''), -- Parasitic Lasher
 (@CGUID+1501, 0, 0, 0, 1, 0, 0, 0, 0, ''), -- Parasitic Lasher
 (@CGUID+1502, 0, 0, 0, 1, 0, 0, 0, 0, '218520'), -- Plasma Sphere - 218520 - Plasma Sphere
@@ -5570,9 +5533,9 @@ INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `e
 (@CGUID+1535, 0, 0, 50331648, 1, 0, 0, 0, 0, ''), -- Val'kyr of Odyn
 (@CGUID+1536, 0, 0, 50331648, 1, 0, 0, 0, 0, ''); -- Val'kyr of Odyn
 
-SET @OGUID := (SELECT max(guid) + 1 FROM gameobject);
+SET @OGUID := 10690000;
 DELETE FROM `gameobject` WHERE `guid` BETWEEN @OGUID+0 AND @OGUID+355;
-INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `PhaseId`, `PhaseGroup`, `position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, `spawntimesecs`, `animprogress`, `state`, `VerifiedBuild`) VALUES
+INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnDifficulties`, `PhaseId`, `PhaseGroup`, `position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, `spawntimesecs`, `animprogress`, `state`, `VerifiedBuild`) VALUES
 (@OGUID+0, 251610, 1530, 8025, 8025, "14,15,16,17", '', 0, 341.0448, 3076.998, 227.2206, 5.497789, 0, 0, -0.3826828, 0.9238798, 604800, 255, 0, 26365), -- Doodad_7DU_SuramarRaid_Door_Small005 (Area: SuramarRaid - Difficulty: Looking For Raid)
 (@OGUID+1, 251611, 1530, 8025, 8025, "14,15,16,17", '', 0, 318.4244, 3099.897, 296.6438, 5.497789, 0, 0, -0.3826828, 0.9238798, 604800, 255, 1, 26365), -- Chamber Door (Area: SuramarRaid - Difficulty: Looking For Raid)
 (@OGUID+2, 252316, 1530, 8025, 8025, "14,15,16,17", '', 0, 323.241, 3094.773, 227.2206, 2.35619, 0, 0, 0.9238787, 0.3826855, 604800, 255, 0, 26365), -- Doodad_7DU_SuramarRaid_Door_Small013 (Area: SuramarRaid - Difficulty: Looking For Raid)
@@ -5822,10 +5785,7 @@ INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, 
 (@OGUID+246, 255925, 1530, 8025, 8025, "14,15,16,17", '', 0, 199.1752, 3218.978, 216.2109, 3.926996, 0, 0, -0.9238787, 0.3826855, 604800, 255, 1, 26365), -- Doodad_7NB_NIGHTBORN_TELEPORTER_BASE001 (Area: SuramarRaid - Difficulty: Looking For Raid)
 (@OGUID+247, 255928, 1530, 8025, 8025, "14,15,16,17", '', 0, 178.4451, 3239.732, 171.2827, 3.926996, 0, 0, -0.9238787, 0.3826855, 604800, 255, 1, 26365), -- Doodad_7NB_NIGHTBORN_CITYTELEPORTER002 (Area: SuramarRaid - Difficulty: Looking For Raid)
 (@OGUID+248, 251330, 1530, 8025, 8025, "14,15,16,17", '', 0, 282.5057, 3135.575, 226.8588, 3.926996, 0, 0, -0.9238787, 0.3826855, 604800, 255, 1, 26365), -- Doodad_7sr_suramar_nightwellfx004 (Area: SuramarRaid - Difficulty: Looking For Raid)
-(@OGUID+249, 266835, 1530, 8025, 8025, "14,15,16,17", '', 0, 314.0764, 3104.135, 146.8002, 5.50553, 0, 0, -0.3791037, 0.9253542, 604800, 255, 1, 26365); -- Nightborne Teleporter (Area: SuramarRaid - Difficulty: Looking For Raid)
-
-SET @OGUID := (SELECT max(guid) + 1 FROM gameobject);
-INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `PhaseId`, `PhaseGroup`, `position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, `spawntimesecs`, `animprogress`, `state`, `VerifiedBuild`) VALUES
+(@OGUID+249, 266835, 1530, 8025, 8025, "14,15,16,17", '', 0, 314.0764, 3104.135, 146.8002, 5.50553, 0, 0, -0.3791037, 0.9253542, 604800, 255, 1, 26365), -- Nightborne Teleporter (Area: SuramarRaid - Difficulty: Looking For Raid)
 (@OGUID+250, 251684, 1530, 8025, 8025, "14,15,16,17", '', 0, 531.4665, 3176.843, 148.5205, 3.926996, 0, 0, -0.9238787, 0.3826855, 604800, 255, 0, 26365), -- Doodad_7DU_SuramarRaid_Door_med006 (Area: SuramarRaid - Difficulty: Looking For Raid)
 (@OGUID+251, 251685, 1530, 8025, 8025, "14,15,16,17", '', 0, 466.3971, 3111.554, 148.5205, 0.7853968, 0, 0, 0.3826828, 0.9238798, 604800, 255, 0, 26365), -- Doodad_7DU_SuramarRaid_Door_med007 (Area: SuramarRaid - Difficulty: Looking For Raid)
 (@OGUID+252, 254243, 1530, 8025, 8025, "14,15,16,17", '', 0, 492.0308, 3127.706, 150.6529, 5.497789, 0, 0, -0.3826828, 0.9238798, 604800, 255, 1, 26365), -- Observatory Door (Area: SuramarRaid - Difficulty: Looking For Raid)
@@ -5904,9 +5864,8 @@ INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, 
 (@OGUID+338, 256878, 1530, 8025, 8348, "14,15,16,17", '', 0, 584.7778, 2677.812, 120.5694, 1.282817, 0, 0, 0.5983248, 0.8012537, 604800, 255, 1, 26365), -- Chair (Area: SuramarRaidGarden - Difficulty: Looking For Raid)
 (@OGUID+339, 256879, 1530, 8025, 8348, "14,15,16,17", '', 0, 583.7587, 2681.917, 120.5694, 4.337147, 0, 0, -0.8265886, 0.5628065, 604800, 255, 1, 26365), -- Chair (Area: SuramarRaidGarden - Difficulty: Looking For Raid)
 (@OGUID+340, 256876, 1530, 8025, 8348, "14,15,16,17", '', 0, 580.3438, 2679.314, 120.5694, 0.802851, 0, 0, 0.3907309, 0.920505, 604800, 255, 1, 26365), -- Chair (Area: SuramarRaidGarden - Difficulty: Looking For Raid)
-(@OGUID+341, 256877, 1530, 8025, 8348, "14,15,16,17", '', 0, 582.4896, 2678.551, 120.5694, 1.221729, 0, 0, 0.573576, 0.8191524, 604800, 255, 1, 26365), -- Chair (Area: SuramarRaidGarden - Difficulty: Looking For Raid)
+(@OGUID+341, 256877, 1530, 8025, 8348, "14,15,16,17", '', 0, 582.4896, 2678.551, 120.5694, 1.221729, 0, 0, 0.573576, 0.8191524, 604800, 255, 1, 26365); -- Chair (Area: SuramarRaidGarden - Difficulty: Looking For Raid)
 
-SET @OGUID := (SELECT max(guid) + 1 FROM gameobject_addon);
 DELETE FROM `gameobject_addon` WHERE `guid` BETWEEN @OGUID+0 AND @OGUID+355;
 INSERT INTO `gameobject_addon` (`guid`, `parent_rotation0`, `parent_rotation1`, `parent_rotation2`, `parent_rotation3`) VALUES
 (@OGUID+0, 0, 0, 0.9238795, -0.3826835), -- Doodad_7DU_SuramarRaid_Door_Small005
@@ -6158,10 +6117,7 @@ INSERT INTO `gameobject_addon` (`guid`, `parent_rotation0`, `parent_rotation1`, 
 (@OGUID+279, 0, 0, 0.9238795, -0.3826835), -- Nighthold Focusing Statue
 (@OGUID+280, 0, 0, 0.9238795, -0.3826835), -- The Eye of Aman'thul
 (@OGUID+281, 0, 0, 0.9238795, -0.3826835), -- Statue Energy Conduit
-(@OGUID+282, 0, 0, 0.9238795, -0.3826835); -- Statue Energy Conduit
-
-SET @OGUID := (SELECT max(guid) + 1 FROM gameobject_addon);
-INSERT INTO `gameobject_addon` (`guid`, `parent_rotation0`, `parent_rotation1`, `parent_rotation2`, `parent_rotation3`) VALUES
+(@OGUID+282, 0, 0, 0.9238795, -0.3826835), -- Statue Energy Conduit
 (@OGUID+283, 0, 0, 0.9238795, -0.3826835), -- Statue Energy Conduit
 (@OGUID+284, 0, 0, 0.9238795, -0.3826835), -- Statue Energy Conduit
 (@OGUID+285, 0, 0, 0.9238795, -0.3826835), -- Trilliax Portcullis Entrance
@@ -6655,8 +6611,8 @@ UPDATE `creature_template` SET `minlevel`=112, `maxlevel`=112, `faction`=16, `sp
 UPDATE `creature_template` SET `minlevel`=112, `maxlevel`=112, `faction`=16, `speed_walk`=1.6, `speed_run`=1.714286, `BaseAttackTime`=4000, `RangeAttackTime`=2000, `unit_class`=2, `unit_flags`=32768, `unit_flags2`=2099200 WHERE `entry`=111170; -- Astral Farseer
 UPDATE `creature_template` SET `minlevel`=112, `maxlevel`=112, `faction`=16, `speed_walk`=1.6, `speed_run`=1.714286, `BaseAttackTime`=4000, `RangeAttackTime`=2000, `unit_class`=2, `unit_flags`=32768, `unit_flags2`=2099200 WHERE `entry`=111166; -- Resolute Courtesan
 
-INSERT INTO `vehicle_template_accessory` (`entry`, `accessory_entry`, `seat_id`, `minion`, `description`, `summontype`, `summontimer`) VALUES
-(104154, 114438, 0, UNKNOWN, 'Gul''dan - The Eye of Aman''thul', UNKNOWN, UNKNOWN); -- Gul'dan - The Eye of Aman'thul
+-- INSERT INTO `vehicle_template_accessory` (`entry`, `accessory_entry`, `seat_id`, `minion`, `description`, `summontype`, `summontimer`) VALUES
+-- (104154, 114438, 0, UNKNOWN, 'Gul''dan - The Eye of Aman''thul', UNKNOWN, UNKNOWN); -- Gul'dan - The Eye of Aman'thul
 
 
 UPDATE `creature_template` SET `VerifiedBuild`=26365 WHERE `entry`=115784; -- Snowfeather Hatchling
