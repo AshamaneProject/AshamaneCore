@@ -4244,7 +4244,7 @@ INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `e
 (@CGUID+246, 0, 0, 0, 1, 0, 0, 0, 0, ''), -- Shambling Hungerer
 (@CGUID+247, 0, 0, 0, 1, 0, 0, 0, 0, ''), -- Chronowraith
 (@CGUID+248, 0, 0, 0, 1, 0, 0, 0, 0, '211064'), -- Kirin Tor Guardian - 211064 - Celerity Zone
-(@CGUID+249, 0, 0, 0, 1, 0, 0, 0, 0, '211064'); -- Kirin Tor Guardian - 211064 - Celerity Zone
+(@CGUID+249, 0, 0, 0, 1, 0, 0, 0, 0, '211064'), -- Kirin Tor Guardian - 211064 - Celerity Zone
 (@CGUID+250, 0, 0, 7, 1, 0, 0, 0, 0, ''), -- Fallen Defender
 (@CGUID+251, 0, 0, 0, 0, 0, 0, 0, 0, ''), -- Trained Shadescale
 (@CGUID+252, 0, 0, 0, 1, 0, 0, 0, 0, '211064'), -- Kirin Tor Guardian - 211064 - Celerity Zone
