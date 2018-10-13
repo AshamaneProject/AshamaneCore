@@ -627,7 +627,13 @@ int32 SpellEffectInfo::CalcValue(Unit const* caster /*= nullptr*/, int32 const* 
                 GtNpcManaCostScalerEntry const* spellScaler = sNpcManaCostScalerGameTable.GetRow(_spellInfo->SpellLevel);
                 GtNpcManaCostScalerEntry const* casterScaler = sNpcManaCostScalerGameTable.GetRow(caster->getLevel());
                 if (spellScaler && casterScaler)
+                {
+                    if (!caster->IsPlayer())
+                        if (_spellInfo->SpellLevel > caster->getLevel())
+                            value *= float(caster->getLevel()) / float(_spellInfo->SpellLevel);
+
                     value *= casterScaler->Scaler / spellScaler->Scaler;
+                }
             }
         }
     }
