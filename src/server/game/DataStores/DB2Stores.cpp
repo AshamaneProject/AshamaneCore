@@ -1735,6 +1735,15 @@ std::set<uint32> DB2Manager::GetItemBonusTree(uint32 itemId, uint32 itemContext)
     return bonusListIDs;
 }
 
+bool DB2Manager::HasItemContext(uint32 itemId) const
+{
+    auto itemIdRange = _itemToBonusTree.equal_range(itemId);
+    if (itemIdRange.first == itemIdRange.second)
+        return true;
+
+    return false;
+}
+
 bool DB2Manager::HasItemContext(uint32 itemId, uint32 itemContext) const
 {
     return !GetItemBonusTree(itemId, itemContext).empty();

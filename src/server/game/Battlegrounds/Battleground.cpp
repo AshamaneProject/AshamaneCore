@@ -414,7 +414,7 @@ inline void Battleground::_ProcessJoin(uint32 diff)
         uint32 countdownMaxForBGType = isArena() ? ARENA_COUNTDOWN_MAX : BATTLEGROUND_COUNTDOWN_MAX;
 
         WorldPackets::Misc::StartTimer startTimer;
-        startTimer.Type = 0;
+        startTimer.Type = WorldPackets::Misc::StartTimer::TIMER_TYPE_BATTLEGROUND;
         startTimer.TimeLeft = countdownMaxForBGType - (GetElapsedTime() / 1000);
         startTimer.TotalTime = countdownMaxForBGType;
         WorldPacket const* startTimerPacket = startTimer.Write();
@@ -1102,7 +1102,7 @@ void Battleground::AddPlayer(Player* player)
             int32 countdownMaxForBGType = isArena() ? ARENA_COUNTDOWN_MAX : BATTLEGROUND_COUNTDOWN_MAX;
 
             WorldPackets::Misc::StartTimer startTimer;
-            startTimer.Type = 0;
+            startTimer.Type = WorldPackets::Misc::StartTimer::TIMER_TYPE_BATTLEGROUND;
             startTimer.TimeLeft = countdownMaxForBGType - (GetElapsedTime() / 1000);
             startTimer.TotalTime = countdownMaxForBGType;
 

@@ -536,6 +536,7 @@ class TC_GAME_API SpellInfo
         uint32 GetCategory() const;
         bool HasEffect(uint32 difficulty, SpellEffectName effect) const;
         bool HasEffect(SpellEffectName effect) const;
+        bool HasAura(uint32 difficulty) const;
         bool HasAura(uint32 difficulty, AuraType aura) const;
         bool HasAreaAuraEffect(uint32 difficulty) const;
         bool HasAreaAuraEffect() const;

@@ -126,6 +126,7 @@ void SummonList::DoActionImpl(int32 action, StorageType const& summons)
 ScriptedAI::ScriptedAI(Creature* creature) : CreatureAI(creature),
     IsFleeing(false),
     summons(creature),
+    damageEvents(creature),
     instance(creature->GetInstanceScript()),
     _isCombatMovementAllowed(true)
 {
@@ -495,6 +496,12 @@ void BossAI::_KilledUnit(Unit* victim)
         Talk(BOSS_TALK_KILL_PLAYER);
 }
 
+void BossAI::_DamageTaken(Unit* /*attacker*/, uint32& damage)
+{
+    while (uint32 eventId = damageEvents.OnDamageTaken(damage))
+        ExecuteEvent(eventId);
+}
+
 void BossAI::_EnterCombat(bool showFrameEngage /*= true*/)
 {
     if (instance)
@@ -589,6 +596,57 @@ void BossAI::_DespawnAtEvade(uint32 delayToRespawn, Creature* who)
 
     if (instance && who == me)
         instance->SetBossState(_bossId, FAIL);
+}
+
+// StaticBossAI - for bosses that shouldn't move, and cast a spell when player are too far away
+
+void StaticBossAI::_Reset()
+{
+    BossAI::_Reset();
+    SetCombatMovement(false);
+    _InitStaticSpellCast();
+}
+
+void StaticBossAI::_InitStaticSpellCast()
+{
+    SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(_staticSpell);
+    if (!spellInfo)
+        return;
+
+    bool isAura = spellInfo->HasAura(me->GetMap()->GetDifficultyID());
+    bool isArea = spellInfo->IsAffectingArea(me->GetMap()->GetDifficultyID());
+
+    me->GetScheduler().Schedule(2s, [this, isAura, isArea](TaskContext context)
+    {
+        // Check if any player in range
+        for (auto threat : me->getThreatManager().getThreatList())
+        {
+            if (me->IsWithinCombatRange(threat->getTarget(), me->GetCombatReach()))
+            {
+                me->RemoveAurasDueToSpell(_staticSpell);
+                context.Repeat();
+                return;
+            }
+        }
+
+        // Else, cast spell depending of its effects
+        if (isAura)
+        {
+            if (!me->HasAura(_staticSpell))
+                me->CastSpell(me, _staticSpell, false);
+        }
+        else if (isArea)
+        {
+            me->CastSpell(nullptr, _staticSpell, false);
+        }
+        else
+        {
+            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM))
+                me->CastSpell(target, _staticSpell, false);
+        }
+
+        context.Repeat();
+    });
 }
 
 // WorldBossAI - for non-instanced bosses

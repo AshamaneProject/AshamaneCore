@@ -186,9 +186,10 @@ enum ShamanSpells
 
 enum TotemSpells
 {
-
     SPELL_TOTEM_WIND_RUSH_EFFECT                            = 192082,
+    SPELL_TOTEM_VOODOO_AT                                   = 196935,
     SPELL_TOTEM_VOODOO_EFFECT                               = 196942,
+    SPELL_TOTEM_VOODOO_COOLDOWN                             = 202318,
     SPELL_TOTEM_LIGHTNING_SURGE_EFFECT                      = 118905,
     SPELL_TOTEM_RESONANCE_EFFECT                            = 202192,
     SPELL_TOTEM_LIQUID_MAGMA_EFFECT                         = 192226,
@@ -2704,17 +2705,7 @@ struct npc_voodoo_totem : public ScriptedAI
 
     void Reset() override
     {
-        me->GetScheduler().Schedule(1s, [this](TaskContext context)
-        {
-            std::list<Unit*> targets;
-            me->GetAttackableUnitListInRange(targets, 8.0f);
-
-            for (Unit* target : targets)
-                if (me->IsValidAttackTarget(target))
-                    me->CastSpell(target, SPELL_TOTEM_VOODOO_EFFECT, true);
-
-            context.Repeat();
-        });
+        me->CastSpell(nullptr, SPELL_TOTEM_VOODOO_AT, true);
     }
 };
 
@@ -3725,6 +3716,32 @@ struct npc_feral_spirit : public ScriptedAI
     }
 };
 
+// Spell 196935 - Voodoo Totem
+// AT - 11577
+class at_sha_voodoo_totem : public AreaTriggerAI
+{
+public:
+    at_sha_voodoo_totem(AreaTrigger* areaTrigger) : AreaTriggerAI(areaTrigger) { }
+
+    void OnUnitEnter(Unit* unit) override
+    {
+        Unit* caster = at->GetCaster();
+        if (!caster || !unit)
+            return;
+
+        if (caster->IsValidAttackTarget(unit))
+        {
+            caster->CastSpell(unit, SPELL_TOTEM_VOODOO_EFFECT, true);
+            caster->CastSpell(unit, SPELL_TOTEM_VOODOO_COOLDOWN, true);
+        }
+    }
+
+    void OnUnitExit(Unit* unit) override
+    {
+        unit->RemoveAurasDueToSpell(SPELL_TOTEM_VOODOO_EFFECT, at->GetCasterGuid());
+    }
+};
+
 void AddSC_shaman_spell_scripts()
 {
     new at_sha_earthquake_totem();
@@ -3803,6 +3820,7 @@ void AddSC_shaman_spell_scripts()
     RegisterAuraScript(aura_sha_stormlash_buff);
     RegisterAreaTriggerAI(at_sha_crashing_storm);
     RegisterCreatureAI(npc_feral_spirit);
+    RegisterAreaTriggerAI(at_sha_voodoo_totem);
 }
 
 void AddSC_npc_totem_scripts()

@@ -57,6 +57,8 @@ enum DeathKnightSpells
     SPELL_DK_DEATH_GRIP_VISUAL                  = 55719,
     SPELL_DK_DEATH_GRIP_TAUNT                   = 57603,
     SPELL_DK_DEATH_STRIKE_HEAL                  = 45470,
+    SPELL_DK_DECOMPOSING_AURA                   = 199720,
+    SPELL_DK_DECOMPOSING_AURA_DAMAGE            = 199721,
     SPELL_DK_ENHANCED_DEATH_COIL                = 157343,
     SPELL_DK_FROST_FEVER                        = 55095,
     SPELL_DK_GHOUL_EXPLODE                      = 47496,
@@ -2609,6 +2611,18 @@ class spell_dk_blighted_rune_weapon : public SpellScript
     }
 };
 
+// Spell 199720
+// At 199720
+struct at_dk_decomposing_aura : AreaTriggerAI
+{
+    at_dk_decomposing_aura(AreaTrigger* areatrigger) : AreaTriggerAI(areatrigger) { }
+
+    void OnUnitExit(Unit* unit) override
+    {
+        unit->RemoveAurasDueToSpell(SPELL_DK_DECOMPOSING_AURA_DAMAGE, at->GetCasterGuid());
+    }
+};
+
 void AddSC_deathknight_spell_scripts()
 {
     new spell_dk_advantage_t10_4p();
@@ -2673,4 +2687,5 @@ void AddSC_deathknight_spell_scripts()
     RegisterAuraScript(aura_dk_defile);
     RegisterAreaTriggerAI(at_dk_defile);
     RegisterSpellScript(spell_dk_blighted_rune_weapon);
+    RegisterAreaTriggerAI(at_dk_decomposing_aura);
 }

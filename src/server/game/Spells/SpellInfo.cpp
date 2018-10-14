@@ -627,7 +627,13 @@ int32 SpellEffectInfo::CalcValue(Unit const* caster /*= nullptr*/, int32 const* 
                 GtNpcManaCostScalerEntry const* spellScaler = sNpcManaCostScalerGameTable.GetRow(_spellInfo->SpellLevel);
                 GtNpcManaCostScalerEntry const* casterScaler = sNpcManaCostScalerGameTable.GetRow(caster->getLevel());
                 if (spellScaler && casterScaler)
+                {
+                    if (!caster->IsPlayer())
+                        if (_spellInfo->SpellLevel > caster->getLevel())
+                            value *= float(caster->getLevel()) / float(_spellInfo->SpellLevel);
+
                     value *= casterScaler->Scaler / spellScaler->Scaler;
+                }
             }
         }
     }
@@ -1204,6 +1210,17 @@ bool SpellInfo::HasEffect(SpellEffectName effect) const
             if (eff && eff->IsEffect(effect))
                 return true;
         }
+    }
+    return false;
+}
+
+bool SpellInfo::HasAura(uint32 difficulty) const
+{
+    SpellEffectInfoVector effects = GetEffectsForDifficulty(difficulty);
+    for (SpellEffectInfo const* effect : effects)
+    {
+        if (effect && effect->IsAura())
+            return true;
     }
     return false;
 }

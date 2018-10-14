@@ -1903,7 +1903,7 @@ struct JournalEncounterItemEntry
 
     bool IsValidDifficultyMask(uint8 mask) const
     {
-        return !DifficultyMask || DifficultyMask == 0xFF || DifficultyMask & mask;
+        return !DifficultyMask || DifficultyMask & mask;
     }
 };
 
