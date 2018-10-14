@@ -1166,7 +1166,7 @@ void InstanceScript::StartChallengeMode(uint8 level)
     instance->SendToPlayers(WorldPackets::ChallengeMode::Reset(instance->GetId()).Write());
 
     WorldPackets::Misc::StartTimer startTimer;
-    startTimer.Type = 1;
+    startTimer.Type = WorldPackets::Misc::StartTimer::TIMER_TYPE_CHALLENGE;
     startTimer.TotalTime = 10;
     startTimer.TimeLeft = 10;
     instance->SendToPlayers(startTimer.Write());
