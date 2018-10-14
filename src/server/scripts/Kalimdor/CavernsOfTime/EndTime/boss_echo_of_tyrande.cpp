@@ -249,7 +249,7 @@ class npc_moonlance_single : public CreatureScript
                 _instance = creature->GetInstanceScript();
             }
 
-            void InitializeAI() override
+            void Reset() override
             {
                 me->SetSpeed(MOVE_RUN, 1.5f);
                 me->CastSpell(me, SPELL_MOONLANCE_AOE, true);
