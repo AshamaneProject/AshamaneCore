@@ -2014,6 +2014,24 @@ struct LockEntry
     uint16 Skill[MAX_LOCK_CASE];
     uint8 Type[MAX_LOCK_CASE];
     uint8 Action[MAX_LOCK_CASE];
+
+    bool HasMining()
+    {
+        for (uint8 type : Type)
+            if (type == LOCKTYPE_MINING_1 || (type >= LOCKTYPE_MINING_2 && type <= LOCKTYPE_MINING_9))
+                return true;
+
+        return false;
+    }
+
+    bool HasHerbalism()
+    {
+        for (uint8 type : Type)
+            if (type == LOCKTYPE_HERBALISM_1 || (type >= LOCKTYPE_HERBALISM_2 && type <= LOCKTYPE_HERBALISM_9))
+                return true;
+
+        return false;
+    }
 };
 
 struct MailTemplateEntry

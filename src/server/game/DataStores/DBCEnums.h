@@ -687,6 +687,55 @@ enum FactionMasks
 #define MAX_ITEM_PROTO_SOCKETS 3
 #define MAX_ITEM_PROTO_STATS  10
 
+// LockType.dbc (8.0.1)
+enum LockType
+{
+    LOCKTYPE_PICKLOCK               = 1,
+    LOCKTYPE_HERBALISM_1            = 2,
+    LOCKTYPE_MINING_1               = 3,
+    LOCKTYPE_DISARM_TRAP            = 4,
+    LOCKTYPE_OPEN                   = 5,
+    LOCKTYPE_TREASURE               = 6,
+    LOCKTYPE_CALCIFIED_ELVEN_GEMS   = 7,
+    LOCKTYPE_CLOSE                  = 8,
+    LOCKTYPE_ARM_TRAP               = 9,
+    LOCKTYPE_QUICK_OPEN             = 10,
+    LOCKTYPE_QUICK_CLOSE            = 11,
+    LOCKTYPE_OPEN_TINKERING         = 12,
+    LOCKTYPE_OPEN_KNEELING          = 13,
+    LOCKTYPE_OPEN_ATTACKING         = 14,
+    LOCKTYPE_GAHZRIDIAN             = 15,
+    LOCKTYPE_BLASTING               = 16,
+    LOCKTYPE_SLOW_OPEN              = 17,
+    LOCKTYPE_SLOW_CLOSE             = 18,
+    LOCKTYPE_FISHING                = 19,
+    LOCKTYPE_INSCRIPTION            = 20,
+    LOCKTYPE_OPEN_FROM_VEHICLE      = 21,
+    LOCKTYPE_ARCHAELOGY             = 22,
+    LOCKTYPE_PVP_OPEN_FAST          = 23,
+    LOCKTYPE_LUMBER_MILL            = 28,
+    LOCKTYPE_SKINNING_1             = 29,
+    LOCKTYPE_ANCIENT_MANA           = 30,
+    LOCKTYPE_WARBOARD               = 31,
+    LOCKTYPE_HERBALISM_2            = 32,
+    LOCKTYPE_HERBALISM_3            = 33,
+    LOCKTYPE_HERBALISM_4            = 34,
+    LOCKTYPE_HERBALISM_5            = 35,
+    LOCKTYPE_HERBALISM_6            = 36,
+    LOCKTYPE_HERBALISM_7            = 37,
+    LOCKTYPE_HERBALISM_8            = 38,
+    LOCKTYPE_HERBALISM_9            = 39,
+    LOCKTYPE_MINING_2               = 40,
+    LOCKTYPE_MINING_3               = 41,
+    LOCKTYPE_MINING_4               = 42,
+    LOCKTYPE_MINING_5               = 43,
+    LOCKTYPE_MINING_6               = 44,
+    LOCKTYPE_MINING_7               = 45,
+    LOCKTYPE_MINING_8               = 46,
+    LOCKTYPE_MINING_9               = 47,
+    LOCKTYPE_SKINNING_2             = 48,
+};
+
 enum MapTypes                                               // Lua_IsInInstance
 {
     MAP_COMMON          = 0,                                // none

@@ -19,6 +19,7 @@
 #ifndef _OBJECT_H
 #define _OBJECT_H
 
+#include "Area.h"
 #include "Common.h"
 #include "GridReference.h"
 #include "GridRefManager.h"
