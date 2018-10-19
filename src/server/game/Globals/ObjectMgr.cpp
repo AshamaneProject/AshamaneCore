@@ -2617,7 +2617,7 @@ void ObjectMgr::LoadGameobjects()
         }
 
         // Gathering Node are inserted in pools by area
-        if (data.areaId && gInfo->type != GAMEOBJECT_TYPE_GATHERING_NODE)
+        if (data.areaId && gInfo->type == GAMEOBJECT_TYPE_GATHERING_NODE)
         {
             if (Area* area = sAreaMgr->GetArea(data.areaId))
                 if (Area* zone = area->GetZone())

@@ -114,19 +114,25 @@ void Area::FillGatheringNodePool()
     {
         // Mother Pool Id format : type (TAAAAA Where T = Type and AAAAA = AreaId)
         uint32 motherPoolId = typeItr.first * 100000 + GetId();
-        sPoolMgr->AddPoolTemplate(motherPoolId, 50);
 
-        // Mother Pool Id format : type (MPPPP Where M = Mother pool id and PPPP = sub pool id)
+        // We spawn 50% of zone available spots
+        sPoolMgr->AddPoolTemplate(motherPoolId, typeItr.second.size() / 2);
+
+        // Mother Pool Id format : type (TAAAAAPPPP where PPPP = sub pool id)
         uint32 const subPoolBaseId = motherPoolId * 10000;
         uint32 subPoolCounter = 0;
 
         for (auto ceiledPositionItr : typeItr.second)
         {
-            ++subPoolCounter;
-            sPoolMgr->AddPoolToPool(motherPoolId, subPoolBaseId + subPoolCounter, 0);
+            uint32 const subPoolId = subPoolBaseId + subPoolCounter++;
+
+            sPoolMgr->AddPoolTemplate(subPoolId, 1);
+            sPoolMgr->AddPoolToPool(motherPoolId, subPoolId, 0);
 
             for (ObjectGuid::LowType guid : ceiledPositionItr.second)
-                sPoolMgr->AddGameObjectToPool(subPoolBaseId + subPoolCounter, guid, 0);
+                sPoolMgr->AddGameObjectToPool(subPoolId, guid, 0);
         }
+
+        sPoolMgr->SpawnPool(motherPoolId);
     }
 }
