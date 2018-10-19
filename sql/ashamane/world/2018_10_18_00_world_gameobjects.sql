@@ -1,6 +1,6 @@
 SET @GGUID := 21006000;
 
-DELETE FROM `gameobject` WHERE `id`=1731;
+DELETE FROM `gameobject` WHERE `id`=1731 OR (`guid` BETWEEN @GGUID+0 AND @GGUID+3760);
 INSERT INTO `gameobject` (`guid`, `id`, `map`, `position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, `spawntimesecs`, `animprogress`, `state`, `isActive`, `ScriptName`, `VerifiedBuild`, `zoneId`, `areaId`, `spawnDifficulties`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`) VALUES 
 (@GGUID+0   , 1731, 0, -5498.34, -212.064, 354.253, 1.64568, 0, 0, 0.733082, 0.680141, 30, 0, 1, 0, '', 0, 1, 136, 0, 0, 169, 0, -1),
 (@GGUID+1   , 1731, 0, -5453.97, -268.422, 354.762, 5.08966, 0, 0, 0.561968, -0.827159, 30, 0, 1, 0, '', 0, 1, 136, 0, 0, 169, 0, -1),
