@@ -24,6 +24,7 @@
 #include "AccountMgr.h"
 #include "AchievementMgr.h"
 #include "ArchaeologyMgr.h"
+#include "Area.h"
 #include "AreaTriggerDataStore.h"
 #include "AuctionHouseBot.h"
 #include "AuctionHouseMgr.h"
@@ -1801,6 +1802,9 @@ void World::SetInitialWorldSettings()
 
     TC_LOG_INFO("server.loading", "Loading Objects Pooling Data...");
     sPoolMgr->LoadFromDB();
+
+    TC_LOG_INFO("server.loading", "Filling pools data from Areas...");
+    sAreaMgr->FillGatheringNodePools();
 
     TC_LOG_INFO("server.loading", "Loading Game Event Data...");               // must be after loading pools fully
     sGameEventMgr->LoadFromDB();

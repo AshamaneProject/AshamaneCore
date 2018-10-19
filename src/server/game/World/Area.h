@@ -18,11 +18,14 @@
 #ifndef _AREA_H
 #define _AREA_H
 
-#include "ZoneScript.h"
 #include "DB2Structure.h"
+#include "Position.h"
+#include "ZoneScript.h"
 
 class Area;
 class ZoneScript;
+
+struct GameObjectTemplate;
 
 class TC_GAME_API AreaMgr
 {
@@ -30,6 +33,8 @@ public:
     static AreaMgr* instance();
 
     Area* GetArea(uint32 areaId);
+
+    void FillGatheringNodePools();
 
 private:
     std::map<uint32, Area*> m_areas;
@@ -40,20 +45,28 @@ private:
 class TC_GAME_API Area
 {
 public:
-    Area(AreaTableEntry const* areaTableEntry): m_areaTableEntry(areaTableEntry) { }
+    Area(AreaTableEntry const* areaTableEntry);
 
     AreaTableEntry const* GetEntry() const { return m_areaTableEntry; }
     uint32 GetId() const { return GetEntry()->ID; }
 
-    bool IsArea() const { return m_areaTableEntry->ParentAreaID != 0; }
-    bool IsZone() const { return m_areaTableEntry->ParentAreaID == 0; }
+    bool IsArea() const { return m_areaTableEntry->Flags[0] & AREA_FLAG_SUB_ZONE; }
+    bool IsZone() const { return !IsArea(); }
 
+    Area* GetParent();
     Area* GetZone();
     std::vector<Area*> GetTree();
+
+    ZoneScript* GetZoneScript();
+
+    void AddGatheringNode(ObjectGuid::LowType guid, GameObjectTemplate const* gInfo, Position gobPosition);
+    void FillGatheringNodePool();
 
 private:
     AreaTableEntry const* m_areaTableEntry;
     ZoneScript* m_zoneScript;
+
+    std::unordered_map<uint8, std::unordered_map<std::string, std::vector<ObjectGuid::LowType>>> m_gatheringNodes;
 };
 
 #endif

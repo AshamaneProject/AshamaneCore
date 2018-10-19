@@ -2616,7 +2616,15 @@ void ObjectMgr::LoadGameobjects()
             WorldDatabase.Execute(stmt);
         }
 
-        if (gameEvent == 0 && PoolId == 0)                      // if not this is to be managed by GameEvent System or Pool system
+        // Gathering Node are inserted in pools by area
+        if (data.areaId && gInfo->type != GAMEOBJECT_TYPE_GATHERING_NODE)
+        {
+            if (Area* area = sAreaMgr->GetArea(data.areaId))
+                if (Area* zone = area->GetZone())
+                    zone->AddGatheringNode(guid, gInfo, Position(data.posX, data.posY, data.posZ));
+        }
+        // if not this is to be managed by GameEvent System or Pool system
+        else if (gameEvent == 0 && PoolId == 0)
             AddGameobjectToGrid(guid, &data);
     }
     while (result->NextRow());

@@ -25,6 +25,8 @@
 #include <unordered_map>
 #include <vector>
 
+#define MAX_DB_POOL_ID 0xFFFFF
+
 class Creature;
 class GameObject;
 class Quest;
@@ -118,6 +120,10 @@ class TC_GAME_API PoolMgr
         void LoadFromDB();
         void LoadQuestPools();
         void SaveQuestsToDB();
+
+        void AddPoolTemplate(uint32 pool_id, uint32 maxLimit);
+        void AddGameObjectToPool(uint32 pool_id, ObjectGuid::LowType guid, uint32 chance);
+        void AddPoolToPool(uint32 mother_pool_id, uint32 pool_id, uint32 chance);
 
         void Initialize();
 

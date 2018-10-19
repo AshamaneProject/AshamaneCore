@@ -2015,7 +2015,7 @@ struct LockEntry
     uint8 Type[MAX_LOCK_CASE];
     uint8 Action[MAX_LOCK_CASE];
 
-    bool HasMining()
+    bool HasMining() const
     {
         for (uint8 type : Type)
             if (type == LOCKTYPE_MINING_1 || (type >= LOCKTYPE_MINING_2 && type <= LOCKTYPE_MINING_9))
@@ -2024,7 +2024,7 @@ struct LockEntry
         return false;
     }
 
-    bool HasHerbalism()
+    bool HasHerbalism() const
     {
         for (uint8 type : Type)
             if (type == LOCKTYPE_HERBALISM_1 || (type >= LOCKTYPE_HERBALISM_2 && type <= LOCKTYPE_HERBALISM_9))

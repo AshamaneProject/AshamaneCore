@@ -165,8 +165,6 @@ Player::Player(WorldSession* session) : Unit(true), m_sceneMgr(this), m_archaeol
     m_regenTimer = 0;
     m_regenTimerCount = 0;
     m_weaponChangeTimer = 0;
-
-    m_area = nullptr;
     m_zoneUpdateTimer = 0;
 
     m_team = 0;
@@ -1277,7 +1275,7 @@ void Player::Update(uint32 p_time)
                     _restMgr->RemoveRestFlag(REST_FLAG_IN_TAVERN);
             }
 
-            uint32 newAreaId = GetAreaId();
+            uint32 newAreaId = GetAreaIdFromPosition();
             if (m_area->GetId() != newAreaId)
                 UpdateArea(newAreaId);
         }
@@ -2405,7 +2403,7 @@ void Player::SetGameMaster(bool on)
             SetByteFlag(UNIT_FIELD_BYTES_2, UNIT_BYTES_2_OFFSET_PVP_FLAG, UNIT_BYTE2_FLAG_FFA_PVP);
 
         // restore FFA PvP area state, remove not allowed for GM mounts
-        UpdateArea(GetArea()->GetId());
+        UpdateArea(GetAreaIdFromPosition());
 
         getHostileRefManager().setOnlineOfflineState(true);
         m_serverSideVisibilityDetect.SetValue(SERVERSIDE_VISIBILITY_GM, SEC_PLAYER);
@@ -4427,7 +4425,7 @@ void Player::ResurrectPlayer(float restore_percent, bool applySickness)
     }
 
     // trigger update zone for alive state zone updates
-    UpdateArea(GetAreaId());
+    UpdateArea(GetAreaIdFromPosition());
     sOutdoorPvPMgr->HandlePlayerResurrects(this, GetZone());
 
     if (InBattleground())
@@ -7389,6 +7387,12 @@ void Player::UpdateZone(Area* oldArea)
         if (ZoneScript* oldZoneScript = GetZoneScript())
             if (oldZoneScript->IsZoneScript())
                 oldZoneScript->OnPlayerExit(this);
+
+        SetZoneScript();
+
+        if (ZoneScript* newZoneScript = GetZoneScript())
+            if (newZoneScript->IsZoneScript())
+                newZoneScript->OnPlayerEnter(this);
     }
 
     // group update
@@ -7397,15 +7401,6 @@ void Player::UpdateZone(Area* oldArea)
         SetGroupUpdateFlag(GROUP_UPDATE_FULL);
         if (Pet* pet = GetPet())
             pet->SetGroupUpdateFlag(GROUP_UPDATE_PET_FULL);
-    }
-
-    if (oldZone != newZone)
-    {
-        SetZoneScript();
-
-        if (ZoneScript* newZoneScript = GetZoneScript())
-            if (newZoneScript->IsZoneScript())
-                GetZoneScript()->OnPlayerEnter(this);
     }
 
     sScriptMgr->OnPlayerUpdateZone(this, GetArea(), oldArea);
@@ -24572,7 +24567,7 @@ void Player::SendInitialPacketsAfterAddToMap()
     UpdateVisibilityForPlayer();
 
     // update zone
-    UpdateArea(GetAreaId());                            // also call SendInitWorldStates();
+    UpdateArea(GetAreaIdFromPosition());                            // also call SendInitWorldStates();
 
     GetSession()->SendLoadCUFProfiles();
 

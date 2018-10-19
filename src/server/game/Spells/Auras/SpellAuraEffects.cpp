@@ -6366,7 +6366,7 @@ void AuraEffect::HandleOverrideZonePvpType(AuraApplication const* aurApp, uint8 
     else
     {
         // restore FFA PvP area state
-        player->UpdateArea(player->GetAreaId());
+        player->UpdateArea(player->GetAreaIdFromPosition());
     }
 }
 

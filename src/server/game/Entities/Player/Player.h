@@ -1787,9 +1787,6 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         void SendActionButtons(uint32 state) const;
         bool IsActionButtonDataValid(uint8 button, uint32 action, uint8 type) const;
 
-        Area* GetArea() const { return m_area; }
-        Area* GetZone() const { return m_area->GetZone(); }
-
         PvPInfo pvpInfo;
         void UpdatePvPState(bool onlyFFA = false);
         void SetPvP(bool state) override;
@@ -2750,7 +2747,6 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         uint32 m_drunkTimer;
         uint32 m_weaponChangeTimer;
 
-        Area*  m_area;
         uint32 m_zoneUpdateTimer;
 
         uint32 m_deathTimer;
