@@ -1,3 +1,5 @@
+-- By Renegados
+
 SET @GGUID := 21006000;
 
 DELETE FROM `gameobject` WHERE `id`=1731 OR (`guid` BETWEEN @GGUID+0 AND @GGUID+3760);

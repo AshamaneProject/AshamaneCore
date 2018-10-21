@@ -130,4 +130,7 @@ void Area::FillGatheringNodePool()
 
         sPoolMgr->SpawnPool(motherPoolId);
     }
+
+    // Free now unused memory
+    m_gatheringNodes.clear();
 }
