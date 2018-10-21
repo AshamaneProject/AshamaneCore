@@ -55,19 +55,13 @@ void AreaMgr::FillGatheringNodePools()
 Area::Area(AreaTableEntry const* areaTableEntry) : m_areaTableEntry(areaTableEntry)
 {
     m_zoneScript = sScriptMgr->GetZoneScript(sObjectMgr->GetScriptIdForZone(GetId()));
-}
 
-Area* Area::GetParent()
-{
-    return sAreaMgr->GetArea(GetEntry()->ParentAreaID);
-}
+    // Calculate parent & zone at creation
+    m_parent = sAreaMgr->GetArea(GetEntry()->ParentAreaID);
 
-Area* Area::GetZone()
-{
-    Area* zone = this;
-    while (zone && !zone->IsZone())
-        zone = sAreaMgr->GetArea(zone->GetEntry()->ParentAreaID);
-    return zone;
+    m_zone = m_parent ? m_parent: this;
+    while (m_zone && !m_zone->IsZone())
+        m_zone = sAreaMgr->GetArea(m_zone->GetEntry()->ParentAreaID);
 }
 
 std::vector<Area*> Area::GetTree()
@@ -104,8 +98,9 @@ void Area::AddGatheringNode(ObjectGuid::LowType guid, GameObjectTemplate const* 
     gobPosition.m_positionX -= fmod(gobPosition.m_positionX, 5);
     gobPosition.m_positionY -= fmod(gobPosition.m_positionY, 5);
     gobPosition.m_positionZ -= fmod(gobPosition.m_positionZ, 5);
+    size_t positionHash = std::hash<std::string>()(gobPosition.ToString());
 
-    m_gatheringNodes[type][gobPosition.ToString()].push_back(guid);
+    m_gatheringNodes[type][positionHash].push_back(guid);
 }
 
 void Area::FillGatheringNodePool()

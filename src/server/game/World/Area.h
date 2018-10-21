@@ -53,8 +53,8 @@ public:
     bool IsArea() const { return m_areaTableEntry->Flags[0] & AREA_FLAG_SUB_ZONE; }
     bool IsZone() const { return !IsArea(); }
 
-    Area* GetParent();
-    Area* GetZone();
+    Area* GetParent() { return m_parent; }
+    Area* GetZone() { return m_zone; }
     std::vector<Area*> GetTree();
 
     ZoneScript* GetZoneScript();
@@ -66,7 +66,10 @@ private:
     AreaTableEntry const* m_areaTableEntry;
     ZoneScript* m_zoneScript;
 
-    std::unordered_map<uint8, std::unordered_map<std::string, std::vector<ObjectGuid::LowType>>> m_gatheringNodes;
+    std::unordered_map<uint8, std::unordered_map<size_t, std::vector<ObjectGuid::LowType>>> m_gatheringNodes;
+
+    Area* m_parent;
+    Area* m_zone;
 };
 
 #endif
