@@ -7308,12 +7308,11 @@ void Player::UpdateArea(uint32 newAreaId)
     // FFA_PVP flags are area and not zone id dependent
     // so apply them accordingly
     m_area = sAreaMgr->GetArea(newAreaId);
-    ASSERT(m_area);
 
     UpdateZone(oldArea ? oldArea->GetZone(): nullptr);
     m_zoneUpdateTimer = ZONE_UPDATE_INTERVAL;
 
-    AreaTableEntry const* areaEntry = m_area->GetEntry();
+    AreaTableEntry const* areaEntry = m_area ? m_area->GetEntry(): nullptr;
     pvpInfo.IsInFFAPvPArea = areaEntry && (areaEntry->Flags[0] & AREA_FLAG_ARENA);
     UpdatePvPState(true);
 
@@ -7382,7 +7381,7 @@ void Player::UpdateZone(Area* oldArea)
         sBattlefieldMgr->HandlePlayerEnterZone(this, newZone);
         SendInitWorldStates();              // only if really enters to new zone, not just area change, works strange...
         if (Guild* guild = GetGuild())
-            guild->UpdateMemberData(this, GUILD_MEMBER_DATA_ZONEID, newZone->GetId());
+            guild->UpdateMemberData(this, GUILD_MEMBER_DATA_ZONEID, GetZoneId());
 
         if (ZoneScript* oldZoneScript = GetZoneScript())
             if (oldZoneScript->IsZoneScript())
@@ -7404,12 +7403,13 @@ void Player::UpdateZone(Area* oldArea)
     }
 
     sScriptMgr->OnPlayerUpdateZone(this, GetArea(), oldArea);
+    AreaTableEntry const* zoneEntry = newZone ? newZone->GetEntry(): nullptr;
 
-    AreaTableEntry const* zoneEntry = newZone->GetEntry();
+    uint32 newZoneId = GetZoneId();
     if (sWorld->getBoolConfig(CONFIG_WEATHER))
-        GetMap()->GetOrGenerateZoneDefaultWeather(newZone->GetId());
+        GetMap()->GetOrGenerateZoneDefaultWeather(newZoneId);
 
-    GetMap()->SendZoneDynamicInfo(newZone->GetId(), this);
+    GetMap()->SendZoneDynamicInfo(newZoneId, this);
 
     // in PvP, any not controlled zone (except zone->team == 6, default case)
     // in PvE, only opposition team capital
@@ -7447,13 +7447,13 @@ void Player::UpdateZone(Area* oldArea)
     // remove items with area/map limitations (delete only for alive player to allow back in ghost mode)
     // if player resurrected at teleport this will be applied in resurrect code
     if (IsAlive())
-        DestroyZoneLimitedItem(true, newZone->GetId());
+        DestroyZoneLimitedItem(true, newZoneId);
 
     // check some item equip limitations (in result lost CanTitanGrip at talent reset, for example)
     AutoUnequipOffhandIfNeed();
 
     // recent client version not send leave/join channel packets for built-in local channels
-    UpdateLocalChannels(newZone->GetId());
+    UpdateLocalChannels(newZoneId);
 }
 
 //If players are too far away from the duel flag... they lose the duel
@@ -9043,8 +9043,8 @@ void Player::SendUpdateWorldState(uint32 variable, uint32 value, bool hidden /*=
 
 void Player::SendInitWorldStates()
 {
-    uint32 areaId = GetArea()->GetId();
-    uint32 zoneId = GetZone()->GetId();
+    uint32 areaId = GetAreaId();
+    uint32 zoneId = GetZoneId();
 
     // data depends on zoneid/mapid...
     Battleground* bg = GetBattleground();
@@ -25872,11 +25872,14 @@ void Player::SetPersonnalXpRate(float personnalXPRate)
 
 void Player::UpdateAreaDependentAuras()
 {
+    if (!GetArea())
+        return;
+
     for (Area* area : GetArea()->GetTree())
     {
         SpellAreaForAreaMapBounds saBounds = sSpellMgr->GetSpellAreaForAreaMapBounds(area->GetId());
         for (SpellAreaForAreaMap::const_iterator itr = saBounds.first; itr != saBounds.second; ++itr)
-            if (itr->second->flags & SPELL_AREA_FLAG_AUTOCAST && itr->second->IsFitToRequirements(this, area->GetZone()->GetId(), GetArea()->GetId()))
+            if (itr->second->flags & SPELL_AREA_FLAG_AUTOCAST && itr->second->IsFitToRequirements(this, GetZoneId(), GetAreaId()))
                 if (!HasAura(itr->second->spellId))
                     CastSpell(this, itr->second->spellId, true);
 
@@ -25884,7 +25887,7 @@ void Player::UpdateAreaDependentAuras()
         for (AuraMap::iterator iter = m_ownedAuras.begin(); iter != m_ownedAuras.end();)
         {
             // use m_zoneUpdateId for speed: UpdateArea called from UpdateZone or instead UpdateZone in both cases m_zoneUpdateId up-to-date
-            if (iter->second->GetSpellInfo()->CheckLocation(GetMapId(), area->GetZone()->GetId(), GetArea()->GetId(), this) != SPELL_CAST_OK)
+            if (iter->second->GetSpellInfo()->CheckLocation(GetMapId(), GetZoneId(), GetAreaId(), this) != SPELL_CAST_OK)
                 RemoveOwnedAura(iter);
             else
                 ++iter;

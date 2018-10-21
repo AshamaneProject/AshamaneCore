@@ -246,8 +246,8 @@ public:
         CellCoord cellCoord = Trinity::ComputeCellCoord(object->GetPositionX(), object->GetPositionY());
         Cell cell(cellCoord);
 
-        uint32 zoneId = object->GetZone()->GetId();
-        uint32 areaId = object->GetArea()->GetId();
+        uint32 zoneId = object->GetZoneId();
+        uint32 areaId = object->GetAreaId();
         uint32 mapId = object->GetMapId();
 
         MapEntry const* mapEntry = sMapStore.LookupEntry(mapId);
