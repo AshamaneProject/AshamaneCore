@@ -7377,8 +7377,12 @@ void Player::UpdateZone(Area* oldArea)
             sBattlefieldMgr->HandlePlayerLeaveZone(this, oldZone);
         }
 
-        sOutdoorPvPMgr->HandlePlayerEnterZone(this, newZone);
-        sBattlefieldMgr->HandlePlayerEnterZone(this, newZone);
+        if (newZone)
+        {
+            sOutdoorPvPMgr->HandlePlayerEnterZone(this, newZone);
+            sBattlefieldMgr->HandlePlayerEnterZone(this, newZone);
+        }
+
         SendInitWorldStates();              // only if really enters to new zone, not just area change, works strange...
         if (Guild* guild = GetGuild())
             guild->UpdateMemberData(this, GUILD_MEMBER_DATA_ZONEID, GetZoneId());
