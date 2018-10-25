@@ -7319,7 +7319,7 @@ void Player::UpdateArea(uint32 newAreaId)
     UpdateAreaDependentAuras();
     PhasingHandler::OnAreaChange(this);
 
-    if (IsInAreaThatActivatesPvpTalents())
+    if (IsAreaThatActivatesPvpTalents(areaEntry))
         EnablePvpRules();
     else
         DisablePvpRules();
@@ -27278,7 +27278,8 @@ bool Player::HasPvpRulesEnabled() const
 
 bool Player::IsInAreaThatActivatesPvpTalents() const
 {
-    return IsAreaThatActivatesPvpTalents(GetArea()->GetEntry());
+    Area* area = GetArea();
+    return IsAreaThatActivatesPvpTalents(area ? area->GetEntry() : nullptr);
 }
 
 bool Player::IsAreaThatActivatesPvpTalents(AreaTableEntry const* area) const
