@@ -1,6 +1,6 @@
 UPDATE creature_template SET minlevel = 0, maxlevel = 0 WHERE entry IN (2041, 3468, 4423, 4262, 14379, 40552, 51371);
 
---Waypoint fixed for Huntress Ravenoak.
+-- Waypoint fixed for Huntress Ravenoak.
 DELETE FROM `waypoint_data` WHERE (id = 3120600);
 insert into `waypoint_data` (`id`, `point`, `position_x`, `position_y`, `position_z`, `orientation`, `delay`, `move_type`, `action`, `action_chance`, `wpguid`) values
 ('3120600','1','10106.3','2383.02','1316.86','0','0','0','0','100','280000420'),
@@ -112,4 +112,4 @@ insert into `waypoint_data` (`id`, `point`, `position_x`, `position_y`, `positio
 ('3117590','65','9648.53','2339.19','1327.49','0','0','0','0','100','280000945');
 
 -- Double NPC in Darnassus too.
-DELETE FROM `creature` WHERE (guid` = 276765);
+DELETE FROM `creature` WHERE (`guid` = 276765);
