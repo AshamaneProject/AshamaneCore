@@ -75,7 +75,7 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (@GORAT_TARGET_BUNNY, 0, 0, 0, 8, 0, 100, 0, 62792, 0, 0, 0, 12, @CAPTAIN_ELENDILAD, 2, 120000, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'Gorat\'s Target Bunny - On Just Summoned - Summon Captain Elendilad'),
 (@CAPTAIN_ELENDILAD*100, 9, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, 66, 0, 0, 0, 0, 0, 0, 19, @GORAT_SPIRIT, 70, 0, 0, 0, 0, 0, 'Script - Set Orientation to Gorat'),
 (@CAPTAIN_ELENDILAD*100, 9, 1, 0, 0, 0, 100, 0, 100, 100, 100, 100, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'Script - Say 0'),
-(@CAPTAIN_ELENDILAD*100, 9, 2, 0, 0, 0, 100, 0, 3000, 3000, 0, 0, 97, 20, 15, 1513.87, -2090.45, 90.242, 0, 1, 0, 0, 0, 1513.87, -2090.45, 90.242, 0, 'Script - Jump to Position'),
+(@CAPTAIN_ELENDILAD*100, 9, 2, 0, 0, 0, 100, 0, 3000, 3000, 0, 0, 97, 20, 15, 0, 0, 0, 0, 1, 0, 0, 0, 1513.87, -2090.45, 90.242, 0, 'Script - Jump to Position'),
 (@CAPTAIN_ELENDILAD*100, 9, 3, 0, 0, 0, 100, 0, 3000, 3000, 0, 0, 19, 768, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'Script - Remove Flags'),
 (@CAPTAIN_ELENDILAD*100, 9, 4, 0, 0, 0, 100, 0, 0, 0, 0, 0, 101, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'Script - Save Position'),
 (@CAPTAIN_ELENDILAD*100, 9, 5, 0, 0, 0, 100, 0, 3000, 3000, 0, 0, 49, 0, 0, 0, 0, 0, 0, 21, 50, 0, 0, 0, 0, 0, 0, 'Script - Attack Nearby Player'),
