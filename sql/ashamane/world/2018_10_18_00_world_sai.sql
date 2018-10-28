@@ -16,7 +16,7 @@ INSERT INTO `smart_scripts` (`entryorguid`,`source_type`,`id`,`link`,`event_type
 (@ENTRY,9,2,0,0,0,100,0,3000,3000,0,0,114,10,0,0,0,0,0,1,0,0,0,0,5,0,0,"Captured Demolitionist - On Script"),
 (@ENTRY,9,3,0,0,0,100,0,2000,2000,0,0,41,0,0,0,0,0,0,1,0,0,0,0,0,0,0,"Captured Demolitionist - On Script - Despawn Instant");
 
-INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `TextRange`, `comment`) VALUES (42491, 0, 0, 'It\'s been hard for our scouts to get information on what Crushcog is planning.', 12, 0, 100, 1, 0, 0, 43105, 0, 'Hinkles Fastblast to Captain Tread Sparknozzle');
+INSERT IGNORE INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `TextRange`, `comment`) VALUES (42491, 0, 0, 'It\'s been hard for our scouts to get information on what Crushcog is planning.', 12, 0, 100, 1, 0, 0, 43105, 0, 'Hinkles Fastblast to Captain Tread Sparknozzle');
 
 -- Makeshift Cage SAI
 SET @ENTRY := 204019;

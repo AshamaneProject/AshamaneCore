@@ -1537,6 +1537,8 @@ _dbPhase(0), m_visibleBySummonerOnly(false), m_notifyflags(0), m_executed_notifi
 {
     m_serverSideVisibility.SetValue(SERVERSIDE_VISIBILITY_GHOST, GHOST_VISIBILITY_ALIVE | GHOST_VISIBILITY_GHOST);
     m_serverSideVisibilityDetect.SetValue(SERVERSIDE_VISIBILITY_GHOST, GHOST_VISIBILITY_ALIVE);
+
+    m_area = nullptr;
 }
 
 void WorldObject::SetWorldObject(bool on)
@@ -1610,19 +1612,36 @@ void WorldObject::RemoveFromWorld()
     Object::RemoveFromWorld();
 }
 
-uint32 WorldObject::GetZoneId() const
+uint32 WorldObject::GetAreaId() const
 {
-    return GetMap()->GetZoneId(GetPhaseShift(), m_positionX, m_positionY, m_positionZ);
+    if (!GetArea())
+        return GetAreaIdFromPosition();
+
+    return GetArea()->GetId();
 }
 
-uint32 WorldObject::GetAreaId() const
+uint32 WorldObject::GetZoneId() const
+{
+    if (!GetZone())
+        return GetZoneIdFromPosition();
+
+    return GetZone()->GetId();
+}
+
+uint32 WorldObject::GetAreaIdFromPosition() const
 {
     return GetMap()->GetAreaId(GetPhaseShift(), m_positionX, m_positionY, m_positionZ);
 }
 
+uint32 WorldObject::GetZoneIdFromPosition() const
+{
+    return GetMap()->GetZoneId(GetPhaseShift(), m_positionX, m_positionY, m_positionZ);
+}
+
 void WorldObject::GetZoneAndAreaId(uint32& zoneid, uint32& areaid) const
 {
-    GetMap()->GetZoneAndAreaId(GetPhaseShift(), zoneid, areaid, m_positionX, m_positionY, m_positionZ);
+    zoneid = GetZoneId();
+    areaid = GetAreaId();
 }
 
 InstanceScript* WorldObject::GetInstanceScript() const
@@ -2556,8 +2575,8 @@ void WorldObject::SetZoneScript()
                 m_zoneScript = bf;
             else if (ZoneScript* out = sOutdoorPvPMgr->GetZoneScript(GetZoneId()))
                 m_zoneScript = out;
-            else
-                m_zoneScript = sScriptMgr->GetZoneScript(sObjectMgr->GetScriptIdForZone(GetZoneId()));
+            else if (Area* area = GetArea())
+                m_zoneScript = area->GetZoneScript();
         }
     }
 }

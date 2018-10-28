@@ -33,6 +33,7 @@
 #include "Transport.h"
 #include "Vehicle.h"
 #include "WaypointMovementGenerator.h"
+#include "SpellMgr.h"
 
 #define MOVEMENT_PACKET_TIME_DELAY 0
 
@@ -203,9 +204,7 @@ void WorldSession::HandleMoveWorldportAck()
         _player->RemoveAurasByType(SPELL_AURA_MOUNTED);
 
     // update zone immediately, otherwise leave channel will cause crash in mtmap
-    uint32 newzone, newarea;
-    GetPlayer()->GetZoneAndAreaId(newzone, newarea);
-    GetPlayer()->UpdateZone(newzone, newarea);
+    GetPlayer()->UpdateArea(GetPlayer()->GetAreaIdFromPosition());
 
     // honorless target
     if (GetPlayer()->pvpInfo.IsHostile)
@@ -272,13 +271,10 @@ void WorldSession::HandleMoveTeleportAck(WorldPackets::Movement::MoveTeleportAck
     WorldLocation const& dest = plMover->GetTeleportDest();
 
     plMover->UpdatePosition(dest, true);
-
-    uint32 newzone, newarea;
-    plMover->GetZoneAndAreaId(newzone, newarea);
-    plMover->UpdateZone(newzone, newarea);
+    plMover->UpdateArea(plMover->GetAreaIdFromPosition());
 
     // new zone
-    if (old_zone != newzone)
+    if (old_zone != plMover->GetZoneId())
     {
         // honorless target
         if (plMover->pvpInfo.IsHostile)
@@ -464,6 +460,12 @@ void WorldSession::HandleMovementOpcode(OpcodeClient opcode, MovementInfo& movem
         }
         else
             plrMover->RemoveFlag(PLAYER_FLAGS, PLAYER_FLAGS_IS_OUT_OF_BOUNDS);
+
+        if (opcode == CMSG_MOVE_JUMP)
+        {
+            plrMover->RemoveAurasWithInterruptFlags(AURA_INTERRUPT_FLAG_JUMP, 605); // Mind Control
+            plrMover->ProcSkillsAndAuras(nullptr, PROC_FLAG_JUMP, PROC_FLAG_NONE, PROC_SPELL_TYPE_MASK_ALL, PROC_SPELL_PHASE_NONE, PROC_HIT_NONE, nullptr, nullptr, nullptr);
+        }
     }
 }
 

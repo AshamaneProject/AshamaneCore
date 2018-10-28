@@ -27,12 +27,12 @@ class playerScript_enter_tanaan : public PlayerScript
 public:
     playerScript_enter_tanaan() : PlayerScript("playerScript_enter_tanaan") { }
 
-    void OnUpdateArea(Player* player, uint32 newAreaId, uint32 /*oldAreaID*/) override
+    void OnUpdateArea(Player* player, Area* newArea, Area* /*oldArea*/) override
     {
         if (player->GetZoneId() != TanaanZones::ZoneTanaanJungle)
             return;
 
-        switch (newAreaId)
+        switch (newArea->GetId())
         {
             case TanaanZones::AreaTheDarkPortal:
             {
