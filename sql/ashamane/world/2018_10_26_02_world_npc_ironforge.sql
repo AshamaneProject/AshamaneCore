@@ -19,7 +19,11 @@ DELETE FROM `creature` WHERE (`guid` = '128283');
 DELETE FROM `creature` WHERE (`guid` = '180856'); 
 
 -- Waypoints missing for Sraaz in IronForge
-insert into `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `aiAnimKit`, `movementAnimKit`, `meleeAnimKit`, `auras`) values('180650','8500005','0','0','0','0','0','0','0',NULL);
+DELETE FROM `creature_addon` WHERE `guid` = 180650;
+insert into `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `aiAnimKit`, `movementAnimKit`, `meleeAnimKit`, `auras`) values
+('180650','8500005','0','0','0','0','0','0','0',NULL);
+
+DELETE FROM `waypoint_data` WHERE `id` = 8500005;
 insert into `waypoint_data` (`id`, `point`, `position_x`, `position_y`, `position_z`, `orientation`, `delay`, `move_type`, `action`, `action_chance`, `wpguid`) values 
 ('8500005','1','-4793.76','-1168.47','502.209','0','0','0','0','100','280001355'),
 ('8500005','2','-4814.9','-1166.84','502.207','0','0','0','0','100','280001356'),
@@ -47,10 +51,13 @@ insert into `waypoint_data` (`id`, `point`, `position_x`, `position_y`, `positio
 ('8500005','24','-4783.29','-1165.71','502.211','0','0','0','0','100','280001378');
 
 -- Fix Anims of some NPCs inside Ironforge
-insert into `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `aiAnimKit`, `movementAnimKit`, `meleeAnimKit`, `auras`) values('180670','0','0','0','0','613','0','0','0',NULL);
-insert into `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `aiAnimKit`, `movementAnimKit`, `meleeAnimKit`, `auras`) values('180767','0','0','0','0','613','0','0','0',NULL);
+DELETE FROM `creature_addon` WHERE `guid` IN (180670, 180767);
+insert into `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `aiAnimKit`, `movementAnimKit`, `meleeAnimKit`, `auras`) values
+('180670','0','0','0','0','613','0','0','0',NULL),
+('180767','0','0','0','0','613','0','0','0',NULL);
 
 -- Fix Trainer Jewelery Ironforge
+DELETE FROM `npc_trainer` WHERE `ID` = 52586;
 insert into `npc_trainer` (`ID`, `SpellID`, `MoneyCost`, `ReqSkillLine`, `ReqSkillRank`, `ReqLevel`, `Index`) values
 ('52586','25229','10','0','0','0','0'),
 ('52586','25230','500','755','50','0','0'),
