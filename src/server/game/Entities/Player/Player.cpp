@@ -1276,7 +1276,7 @@ void Player::Update(uint32 p_time)
             }
 
             uint32 newAreaId = GetAreaIdFromPosition();
-            if (m_area->GetId() != newAreaId)
+            if (!m_area || m_area->GetId() != newAreaId)
                 UpdateArea(newAreaId);
         }
         else
@@ -27278,7 +27278,7 @@ bool Player::HasPvpRulesEnabled() const
 
 bool Player::IsInAreaThatActivatesPvpTalents() const
 {
-    Area* area = GetArea();
+    Area const* area = GetArea();
     return IsAreaThatActivatesPvpTalents(area ? area->GetEntry() : nullptr);
 }
 
