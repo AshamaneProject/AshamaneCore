@@ -515,6 +515,7 @@ class TC_GAME_API WorldObject : public Object, public WorldLocation
         Map* FindMap() const { return m_currMap; }
         //used to check all object's GetMap() calls when object is not in world!
 
+        void SetArea(Area* area) { m_area = area; }
         Area* GetArea() const { return m_area; }
         Area* GetZone() const { return m_area ? m_area->GetZone(): nullptr; }
 
