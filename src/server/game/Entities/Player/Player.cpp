@@ -1901,8 +1901,12 @@ void Player::RemoveFromWorld()
         StopCastingCharm();
         StopCastingBindSight();
         UnsummonPetTemporaryIfAny();
-        sOutdoorPvPMgr->HandlePlayerLeaveZone(this, GetZone());
-        sBattlefieldMgr->HandlePlayerLeaveZone(this, GetZone());
+
+        if (Area* zone = GetZone())
+        {
+            sOutdoorPvPMgr->HandlePlayerLeaveZone(this, zone);
+            sBattlefieldMgr->HandlePlayerLeaveZone(this, zone);
+        }
     }
 
     // Remove items from world before self - player must be found in Item::RemoveFromObjectUpdate
