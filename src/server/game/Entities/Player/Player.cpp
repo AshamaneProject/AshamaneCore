@@ -1277,7 +1277,12 @@ void Player::Update(uint32 p_time)
 
             uint32 newAreaId = GetAreaIdFromPosition();
             if (!m_area || m_area->GetId() != newAreaId)
+            {
                 UpdateArea(newAreaId);
+
+                if (Unit* vehicle = GetVehicleBase())
+                    vehicle->SetArea(GetArea());
+            }
         }
         else
             m_zoneUpdateTimer -= p_time;
