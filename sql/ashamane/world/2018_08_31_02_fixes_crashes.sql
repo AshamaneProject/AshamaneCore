@@ -16,6 +16,3 @@ UPDATE `gameobject` SET `spawnDifficulties`='1,2' WHERE `map`=36;
 
 -- SmartAIMgr::LoadSmartAIFromDB: Creature entry (315) is not using SmartAI, skipped loading.
 UPDATE `creature_template` SET `AIName`='SmartAI' WHERE `entry`=315;
-
--- Table `creature_template` lists creature (ID: 140210) with invalid `HealthScalingExpansion` 7. Ignored and set to 0.
-UPDATE `creature_template` SET `HealthScalingExpansion`=0 WHERE `entry`=140210;
