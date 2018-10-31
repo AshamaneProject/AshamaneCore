@@ -540,7 +540,8 @@ void WorldSession::LogoutPlayer(bool save)
         if (!_player->m_InstanceValid && !_player->IsGameMaster())
             _player->TeleportTo(_player->m_homebindMapId, _player->m_homebindX, _player->m_homebindY, _player->m_homebindZ, _player->GetOrientation());
 
-        sOutdoorPvPMgr->HandlePlayerLeaveZone(_player, _player->GetZone());
+        if (Area* zone = _player->GetZone())
+            sOutdoorPvPMgr->HandlePlayerLeaveZone(_player, zone);
 
         for (int i=0; i < PLAYER_MAX_BATTLEGROUND_QUEUES; ++i)
         {
