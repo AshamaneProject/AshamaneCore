@@ -249,7 +249,7 @@ namespace WorldPackets
         class GarrisonLearnBlueprintResult final : public ServerPacket
         {
         public:
-            GarrisonLearnBlueprintResult() : ServerPacket(SMSG_GARRISON_LEARN_BLUEPRINT_RESULT, 4 + 4) { }
+            GarrisonLearnBlueprintResult() : ServerPacket(SMSG_GARRISON_LEARN_BLUEPRINT_RESULT, 4 + 4 + 4) { }
 
             WorldPacket const* Write() override;
 
@@ -358,7 +358,7 @@ namespace WorldPackets
         class GarrisonRequestScoutingMap final : public ClientPacket
         {
         public:
-            GarrisonRequestScoutingMap(WorldPacket&& packet) : ClientPacket(CMSG_GARRISON_REQUEST_SCOUTING_MAP, std::move(packet)) { }
+            GarrisonRequestScoutingMap(WorldPacket&& packet) : ClientPacket(CMSG_ADVENTURE_MAP_POI_QUERY, std::move(packet)) { }
 
             void Read() override;
 
@@ -368,7 +368,7 @@ namespace WorldPackets
         class GarrisonScoutingMapResult final : public ServerPacket
         {
         public:
-            GarrisonScoutingMapResult() : ServerPacket(SMSG_GARRISON_SCOUTING_MAP_RESULT, 5) { }
+            GarrisonScoutingMapResult() : ServerPacket(SMSG_ADVENTURE_MAP_POI_QUERY_RESPONSE, 5) { }
 
             WorldPacket const* Write() override;
 

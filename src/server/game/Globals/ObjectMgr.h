@@ -610,9 +610,9 @@ struct PlayerInfo
 struct MailLevelReward
 {
     MailLevelReward() : raceMask(0), mailTemplateId(0), senderEntry(0) { }
-    MailLevelReward(uint32 _raceMask, uint32 _mailTemplateId, uint32 _senderEntry) : raceMask(_raceMask), mailTemplateId(_mailTemplateId), senderEntry(_senderEntry) { }
+    MailLevelReward(uint64 _raceMask, uint32 _mailTemplateId, uint32 _senderEntry) : raceMask(_raceMask), mailTemplateId(_mailTemplateId), senderEntry(_senderEntry) { }
 
-    uint32 raceMask;
+    uint64 raceMask;
     uint32 mailTemplateId;
     uint32 senderEntry;
 };
@@ -711,20 +711,19 @@ struct QuestPOI
     int32 QuestObjectiveID;
     int32 QuestObjectID;
     int32 MapID;
-    int32 WorldMapAreaID;
-    int32 Floor;
+    int32 UiMapID;
     int32 Priority;
     int32 Flags;
     int32 WorldEffectID;
     int32 PlayerConditionID;
-    int32 UnkWoD1;
+    int32 SpawnTrackingID;
     std::vector<QuestPOIPoint> points;
     bool AlwaysAllowMergingBlobs;
 
-    QuestPOI() : BlobIndex(0), ObjectiveIndex(0), QuestObjectiveID(0), QuestObjectID(0), MapID(0), WorldMapAreaID(0), Floor(0), Priority(0), Flags(0), WorldEffectID(0), PlayerConditionID(0), UnkWoD1(0), AlwaysAllowMergingBlobs(false){ }
-    QuestPOI(int32 _BlobIndex, int32 _ObjectiveIndex, int32 _QuestObjectiveID, int32 _QuestObjectID, int32 _MapID, int32 _WorldMapAreaID, int32 _Foor, int32 _Priority, int32 _Flags, int32 _WorldEffectID, int32 _PlayerConditionID, int32 _UnkWoD1, bool _AlwaysAllowMergingBlobs) :
-        BlobIndex(_BlobIndex), ObjectiveIndex(_ObjectiveIndex), QuestObjectiveID(_QuestObjectiveID), QuestObjectID(_QuestObjectID), MapID(_MapID), WorldMapAreaID(_WorldMapAreaID),
-        Floor(_Foor), Priority(_Priority), Flags(_Flags), WorldEffectID(_WorldEffectID), PlayerConditionID(_PlayerConditionID), UnkWoD1(_UnkWoD1), AlwaysAllowMergingBlobs(_AlwaysAllowMergingBlobs) { }
+    QuestPOI() : BlobIndex(0), ObjectiveIndex(0), QuestObjectiveID(0), QuestObjectID(0), MapID(0), UiMapID(0), Priority(0), Flags(0), WorldEffectID(0), PlayerConditionID(0), SpawnTrackingID(0), AlwaysAllowMergingBlobs(false){ }
+    QuestPOI(int32 blobIndex, int32 objectiveIndex, int32 questObjectiveID, int32 questObjectID, int32 mapID, int32 uiMapID, int32 priority, int32 flags, int32 worldEffectID, int32 playerConditionID, int32 spawnTrackingID, bool alwaysAllowMergingBlobs) :
+        BlobIndex(blobIndex), ObjectiveIndex(objectiveIndex), QuestObjectiveID(questObjectiveID), QuestObjectID(questObjectID), MapID(mapID), UiMapID(uiMapID),
+        Priority(priority), Flags(flags), WorldEffectID(worldEffectID), PlayerConditionID(playerConditionID), SpawnTrackingID(spawnTrackingID), AlwaysAllowMergingBlobs(alwaysAllowMergingBlobs) { }
 };
 
 typedef std::vector<QuestPOI> QuestPOIVector;
@@ -797,6 +796,9 @@ struct PlayerChoiceResponse
 {
     int32 ResponseId;
     int32 ChoiceArtFileId;
+    int32 Flags;
+    uint32 WidgetSetID;
+    uint8 GroupID;
     std::string Header;
     std::string Answer;
     std::string Description;
@@ -811,6 +813,7 @@ struct PlayerChoice
     std::string Question;
     std::vector<PlayerChoiceResponse> Responses;
     bool HideWarboardHeader;
+    bool KeepOpenAfterChoice;
 
     PlayerChoiceResponse const* GetResponse(int32 responseId) const
     {
@@ -888,7 +891,7 @@ typedef std::unordered_map<uint64, DungeonEncounterList> DungeonEncounterContain
 struct TerrainSwapInfo
 {
     uint32 Id;
-    std::vector<uint32> UiWorldMapAreaIDSwaps;
+    std::vector<uint32> UiMapPhaseIDs;
 };
 
 struct PhaseInfoStruct
@@ -1332,7 +1335,7 @@ class TC_GAME_API ObjectMgr
 
         ExclusiveQuestGroups mExclusiveQuestGroups;
 
-        MailLevelReward const* GetMailLevelReward(uint8 level, uint32 raceMask)
+        MailLevelReward const* GetMailLevelReward(uint8 level, uint64 raceMask)
         {
             MailLevelRewardContainer::const_iterator map_itr = _mailLevelRewardStore.find(level);
             if (map_itr == _mailLevelRewardStore.end())
@@ -1708,7 +1711,7 @@ class TC_GAME_API ObjectMgr
         PhaseInfoStruct const* GetPhaseInfo(uint32 phaseId) const;
         std::vector<PhaseAreaInfo> const* GetPhasesForArea(uint32 areaId) const;
         TerrainSwapInfo const* GetTerrainSwapInfo(uint32 terrainSwapId) const;
-        std::vector<TerrainSwapInfo*> const* GetTerrainSwapsForMap(uint32 mapId) const;
+        std::unordered_map<uint32, std::vector<TerrainSwapInfo*>> const& GetTerrainSwaps() const { return _terrainSwapInfoByMap; }
 
     private:
         std::unordered_map<uint32, PhaseInfoStruct> _phaseInfoById;

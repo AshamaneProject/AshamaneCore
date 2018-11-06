@@ -176,30 +176,26 @@ class aura_crashing_comet : public AuraScript
     }
 };
 
-// 230345
+// 233024
 class spell_crashing_comet_damage : public SpellScript
 {
     PrepareSpellScript(spell_crashing_comet_damage);
 
     void HandleHit(SpellEffIndex /*effIndex*/)
     {
-        Unit* target = GetHitUnit();
-        if (!target)
-            return;
-
-        CreatureList infernalSpikes;
-        target->GetCreatureListWithEntryInGrid(infernalSpikes, NPC_INFERNAL_SPIKE, GetSpellInfo()->GetEffect(EFFECT_0)->CalcRadius());
-
-        for (Creature* infernalSpike : infernalSpikes)
+        if (Unit* target = GetHitUnit())
         {
-            infernalSpike->SendPlaySpellVisual(infernalSpike->GetGUID(), SPELLVISUAL_INFERNAL_SPIKE_DESTROY);
-            infernalSpike->DespawnOrUnsummon();
+            if (Creature* infernalSpike = target->ToCreature())
+            {
+                infernalSpike->SendPlaySpellVisual(infernalSpike->GetGUID(), SPELLVISUAL_INFERNAL_SPIKE_DESTROY);
+                infernalSpike->DespawnOrUnsummon();
+            }
         }
     }
 
     void Register() override
     {
-        OnEffectHitTarget += SpellEffectFn(spell_crashing_comet_damage::HandleHit, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
+        OnEffectHitTarget += SpellEffectFn(spell_crashing_comet_damage::HandleHit, EFFECT_0, SPELL_EFFECT_DUMMY);
     }
 };
 
@@ -242,21 +238,21 @@ class spell_infernal_burning_remove_spikes : public SpellScript
 {
     PrepareSpellScript(spell_infernal_burning_remove_spikes);
 
-    void HandleOnCast()
+    void HandleHit(SpellEffIndex /*effIndex*/)
     {
-        CreatureList infernalSpikes;
-        GetCaster()->GetCreatureListWithEntryInGrid(infernalSpikes, NPC_INFERNAL_SPIKE, GetSpellInfo()->GetMaxRange());
-
-        for (Creature* infernalSpike : infernalSpikes)
+        if (Unit* target = GetHitUnit())
         {
-            infernalSpike->SendPlaySpellVisual(GetCaster()->GetGUID(), SPELLVISUAL_INFERNAL_SPIKE_DESTROY);
-            infernalSpike->DespawnOrUnsummon();
+            if (Creature* infernalSpike = target->ToCreature())
+            {
+                infernalSpike->SendPlaySpellVisual(infernalSpike->GetGUID(), SPELLVISUAL_INFERNAL_SPIKE_DESTROY);
+                infernalSpike->DespawnOrUnsummon();
+            }
         }
     }
 
     void Register() override
     {
-        OnCast += SpellCastFn(spell_infernal_burning_remove_spikes::HandleOnCast);
+        OnEffectHitTarget += SpellEffectFn(spell_infernal_burning_remove_spikes::HandleHit, EFFECT_0, SPELL_EFFECT_DUMMY);
     }
 };
 

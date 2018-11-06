@@ -192,10 +192,10 @@ bool Garrison::LoadFromDB()
             mission.PacketInfo.DbID             = dbId;
             mission.PacketInfo.MissionRecID     = missionId;
             mission.PacketInfo.OfferTime        = time_t(fields[2].GetUInt32());
-            mission.PacketInfo.OfferDuration    = missionEntry->OfferTime;
+            mission.PacketInfo.OfferDuration    = missionEntry->OfferDuration;
             mission.PacketInfo.StartTime        = time_t(fields[3].GetUInt32());
-            mission.PacketInfo.TravelDuration   = missionEntry->TravelTime;
-            mission.PacketInfo.MissionDuration  = missionEntry->Duration;
+            mission.PacketInfo.TravelDuration   = missionEntry->TravelDuration;
+            mission.PacketInfo.MissionDuration  = missionEntry->MissionDuration;
             mission.PacketInfo.MissionState     = fields[4].GetUInt8();
 
             if (mission.PacketInfo.StartTime == 0)
@@ -477,7 +477,7 @@ void Garrison::AddMission(uint32 garrMissionId)
     mission.PacketInfo.DbID = dbId;
     mission.PacketInfo.MissionRecID = garrMissionId;
     mission.PacketInfo.OfferTime = time(nullptr);
-    mission.PacketInfo.OfferDuration = missionEntry->OfferTime;
+    mission.PacketInfo.OfferDuration = missionEntry->OfferDuration;
     mission.PacketInfo.MissionState = GarrisonMission::State::Offered;
     mission.PacketInfo.Unknown2 = 1;
 
@@ -568,26 +568,26 @@ std::pair<std::vector<GarrMissionEntry const*>, std::vector<double>> Garrison::G
             continue;
 
         // Most missions with Duration <= 10 are tests
-        if (missionEntry->Duration <= 10)
+        if (missionEntry->OfferDuration <= 10)
             continue;
 
         if (missionEntry->GarrTypeID != GetType())
             continue;
 
-        if (missionEntry->RequiredLevel > maxFollowerlevel)
+        if (missionEntry->TargetLevel > maxFollowerlevel)
             continue;
 
-        if (missionEntry->RequiredFollowersCount > activeFolowerCount)
+        if (missionEntry->MaxFollowers > activeFolowerCount)
             continue;
 
         //if (missionEntry->RequiredItemLevel > averageFollowerILevel)
         //    continue;
 
-        uint32 requiredClass = sGarrisonMgr.GetClassByMissionType(missionEntry->MissionType);
+        uint32 requiredClass = sGarrisonMgr.GetClassByMissionType(missionEntry->GarrMissionTypeId);
         if (requiredClass != CLASS_NONE && requiredClass != _owner->getClass())
             continue;
 
-        uint32 requiredTeam = sGarrisonMgr.GetFactionByMissionType(missionEntry->MissionType);
+        uint32 requiredTeam = sGarrisonMgr.GetFactionByMissionType(missionEntry->GarrMissionTypeId);
         if (requiredTeam != TEAM_OTHER && requiredTeam != _owner->GetTeamId())
             continue;
 
@@ -646,11 +646,11 @@ void Garrison::StartMission(uint32 garrMissionId, std::vector<uint64 /*DbID*/> F
     if (!mission)
         return SendStartMissionResult(false);
 
-    if (missionEntry->CurrencyCost && !_owner->HasCurrency(missionEntry->CurrencyID, missionEntry->CurrencyCost))
+    if (missionEntry->MissionCost && !_owner->HasCurrency(missionEntry->MissionCostCurrencyTypesId, missionEntry->MissionCost))
         return SendStartMissionResult(false); // GARRISON_ERROR_NOT_ENOUGH_CURRENCY
 
-    mission->PacketInfo.TravelDuration = missionEntry->TravelTime;
-    mission->PacketInfo.MissionDuration = missionEntry->Duration;
+    mission->PacketInfo.TravelDuration = missionEntry->TravelDuration;
+    mission->PacketInfo.MissionDuration = missionEntry->MissionDuration;
     mission->PacketInfo.StartTime = time(nullptr);
     mission->PacketInfo.MissionState = GarrisonMission::State::InProgress;
     mission->PacketInfo.SuccessChance = sGarrisonMgr.GetMissionSuccessChance(this, mission->PacketInfo.MissionRecID);
@@ -670,7 +670,7 @@ void Garrison::StartMission(uint32 garrMissionId, std::vector<uint64 /*DbID*/> F
         follower->PacketInfo.CurrentMissionID = missionEntry->ID;
     }
 
-    _owner->ModifyCurrency(missionEntry->CurrencyID, -static_cast<int32>(missionEntry->CurrencyCost));
+    _owner->ModifyCurrency(missionEntry->MissionCostCurrencyTypesId, -static_cast<int32>(missionEntry->MissionCost));
 
     SendStartMissionResult(true, mission, &Followers);
 }

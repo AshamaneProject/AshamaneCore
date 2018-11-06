@@ -88,7 +88,7 @@ void ArchaeologyMgr::InitBranch(Player* player, uint32 currencyId)
     std::vector<uint16> BranchProjects;
 
     for(uint32 i = 0; i < 9; ++i)
-        if (player->GetUInt16Value(PLAYER_FIELD_RESEARCHING_1 + i / 2, i % 2))
+        if (player->GetUInt16Value(ACTIVE_PLAYER_DYNAMIC_FIELD_RESERACH + i / 2, i % 2))
             count = i + 1;
 
     for(uint32 i = 0; i < sResearchBranchStore.GetNumRows(); ++i)
@@ -108,7 +108,7 @@ void ArchaeologyMgr::InitBranch(Player* player, uint32 currencyId)
         }
 
         selectProject = BranchProjects[urand(0, BranchProjects.size()-1)];
-        player->SetUInt16Value(PLAYER_FIELD_RESEARCHING_1 + count / 2, count % 2, selectProject);
+        player->SetUInt16Value(ACTIVE_PLAYER_DYNAMIC_FIELD_RESERACH + count / 2, count % 2, selectProject);
         BranchProjects.clear();
     }
 }
@@ -116,7 +116,7 @@ void ArchaeologyMgr::InitBranch(Player* player, uint32 currencyId)
 void ArchaeologyMgr::ChangeDigsite(Player* player, uint8 memId)
 {
     std::vector<uint16> SitesInMap;
-    std::vector<uint32> digsites = player->GetDynamicValues(PLAYER_DYNAMIC_FIELD_RESEARCH_SITE);
+    std::vector<uint32> digsites = player->GetDynamicValues(ACTIVE_PLAYER_DYNAMIC_FIELD_RESERACH_SITE);
 
     for(DigsitesMap::iterator itr = mResearchDigsitesMap.begin(); itr != mResearchDigsitesMap.end(); ++itr)
     {
@@ -143,7 +143,7 @@ void ArchaeologyMgr::ChangeDigsite(Player* player, uint8 memId)
 
     uint16 selectDigsite = SitesInMap[urand(0, SitesInMap.size()-1)];
 
-    player->SetDynamicValue(PLAYER_DYNAMIC_FIELD_RESEARCH_SITE, memId, selectDigsite);
+    player->SetDynamicValue(ACTIVE_PLAYER_DYNAMIC_FIELD_RESERACH_SITE, memId, selectDigsite);
     player->GetArchaeologyMgr().SetDigsiteId(memId, selectDigsite);
 
     std::vector<uint32> tempContainer;
@@ -153,12 +153,12 @@ void ArchaeologyMgr::ChangeDigsite(Player* player, uint8 memId)
 
     digsites.swap(tempContainer);
 
-    player->ClearDynamicValue(PLAYER_DYNAMIC_FIELD_RESEARCH_SITE);
+    player->ClearDynamicValue(ACTIVE_PLAYER_DYNAMIC_FIELD_RESERACH_SITE);
 
     for (uint32 i = 0; i < tempContainer.size(); ++i)
     {
-        player->AddDynamicValue(PLAYER_DYNAMIC_FIELD_RESEARCH_SITE, tempContainer[i]);
-        player->AddDynamicValue(PLAYER_DYNAMIC_FIELD_RESEARCH_SITE_PROGRESS, 0);
+        player->AddDynamicValue(ACTIVE_PLAYER_DYNAMIC_FIELD_RESERACH_SITE, tempContainer[i]);
+        player->AddDynamicValue(ACTIVE_PLAYER_DYNAMIC_FIELD_RESEARCH_SITE_PROGRESS, 0);
 
         player->GetArchaeologyMgr().SetDigsitePosition(i, 0, 0, 0);
     }
@@ -207,7 +207,7 @@ void ArchaeologyMgr::AddDigsitesToMap(Player* player, uint32 mapId)
         {
             isActiveDigsite = false;
             selectDigsite = SitesInMap[urand(0, SitesInMap.size()-1)];
-            std::vector<uint32> const& site_now = player->GetDynamicValues(PLAYER_DYNAMIC_FIELD_RESEARCH_SITE);
+            std::vector<uint32> const& site_now = player->GetDynamicValues(ACTIVE_PLAYER_DYNAMIC_FIELD_RESERACH_SITE);
             uint32 offset = std::find(site_now.begin(), site_now.end(), selectDigsite) - site_now.begin();
 
             for(uint32 i = 0; i < 16; ++i)
@@ -220,8 +220,8 @@ void ArchaeologyMgr::AddDigsitesToMap(Player* player, uint32 mapId)
         }
         while (isActiveDigsite);
 
-        player->AddDynamicValue(PLAYER_DYNAMIC_FIELD_RESEARCH_SITE, selectDigsite);
-        player->AddDynamicValue(PLAYER_DYNAMIC_FIELD_RESEARCH_SITE_PROGRESS, 0);
+        player->AddDynamicValue(ACTIVE_PLAYER_DYNAMIC_FIELD_RESERACH_SITE, selectDigsite);
+        player->AddDynamicValue(ACTIVE_PLAYER_DYNAMIC_FIELD_RESEARCH_SITE_PROGRESS, 0);
         ++count;
     }
 
@@ -232,9 +232,9 @@ bool ArchaeologyMgr::IsActiveBranch(Player* player, uint32 currencyId)
 {
     for(uint32 i=0; i < 9; ++i)
     {
-        if (player->GetUInt16Value(PLAYER_FIELD_RESEARCHING_1 + i / 2, i % 2))
+        if (player->GetUInt16Value(ACTIVE_PLAYER_DYNAMIC_FIELD_RESERACH + i / 2, i % 2))
         {
-            uint16 projectId = player->GetUInt16Value(PLAYER_FIELD_RESEARCHING_1 + i / 2, i % 2);
+            uint16 projectId = player->GetUInt16Value(ACTIVE_PLAYER_DYNAMIC_FIELD_RESERACH + i / 2, i % 2);
             ResearchProjectEntry const* rs = sResearchProjectStore.LookupEntry(projectId);
             ResearchBranchEntry const* ab = sResearchBranchStore.LookupEntry(rs->ResearchBranchId);
 
@@ -257,7 +257,7 @@ void ArchaeologyMgr::GenerateRandomPosition(Player* player, uint8 count)
     }
     while (player->GetArchaeologyMgr().GetDigsite(x, y) == -1);
 
-    //std::vector<uint32> const& site_now = player->GetDynamicValues(PLAYER_DYNAMIC_FIELD_RESEARCH_SITE);
+    //std::vector<uint32> const& site_now = player->GetDynamicValues(ACTIVE_PLAYER_DYNAMIC_FIELD_RESERACH_SITE);
 
     player->GetArchaeologyMgr().SetDigsitePosition(memId, x, y, count);
 }

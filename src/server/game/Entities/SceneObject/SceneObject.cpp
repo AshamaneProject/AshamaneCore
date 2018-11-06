@@ -30,7 +30,8 @@ SceneObject::SceneObject() : WorldObject(false), _duration(0)
     m_objectType |= TYPEMASK_SCENEOBJECT;
     m_objectTypeId = TYPEID_SCENEOBJECT;
 
-    m_updateFlag = UPDATEFLAG_STATIONARY_POSITION;
+    m_updateFlag.Stationary = true;
+    m_updateFlag.SceneObject = true;
 
     m_valuesCount = SCENEOBJECT_END;
     _dynamicValuesCount = SCENEOBJECT_DYNAMIC_END;

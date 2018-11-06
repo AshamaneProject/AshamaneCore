@@ -548,7 +548,7 @@ public:
                 default:
                     break;
             }
-            
+
             return 0;
         }
 
@@ -788,10 +788,7 @@ class spell_garalon_furious_swipe: public SpellScriptLoader
 
             bool Validate(SpellInfo const* spellEntry) override
             {
-                if (!sSpellStore.LookupEntry(spellEntry->Id))
-                    return false;
-
-                return true;
+                return ValidateSpellInfo({ spellEntry->Id });
             }
 
             bool Load() override
@@ -833,10 +830,7 @@ class spell_garalon_pheromones_forcecast: public SpellScriptLoader
 
             bool Validate(SpellInfo const* spellEntry) override
             {
-                if (!sSpellStore.LookupEntry(spellEntry->Id))
-                    return false;
-
-                return true;
+                return ValidateSpellInfo({ spellEntry->Id });
             }
 
             bool Load() override
@@ -880,10 +874,7 @@ class spell_garalon_mend_leg: public SpellScriptLoader
 
             bool Validate(SpellInfo const* spellEntry) override
             {
-                if (!sSpellStore.LookupEntry(spellEntry->Id))
-                    return false;
-
-                return true;
+                return ValidateSpellInfo({ spellEntry->Id });
             }
 
             bool Load() override
@@ -953,10 +944,7 @@ class spell_garalon_crush_trigger: public SpellScriptLoader
 
             bool Validate(SpellInfo const* spellEntry) override
             {
-                if (!sSpellStore.LookupEntry(spellEntry->Id))
-                    return false;
-
-                return true;
+                return ValidateSpellInfo({ spellEntry->Id });
             }
 
             bool Load() override
@@ -1013,10 +1001,7 @@ class spell_garalon_pheromones_taunt: public SpellScriptLoader
 
             bool Validate(SpellInfo const* spellEntry) override
             {
-                if (!sSpellStore.LookupEntry(spellEntry->Id))
-                    return false;
-
-                return true;
+                return ValidateSpellInfo({ spellEntry->Id });
             }
 
             bool Load() override
@@ -1058,10 +1043,7 @@ class spell_garalon_broken_leg : public SpellScriptLoader
 
             bool Validate(SpellInfo const* spellEntry) override
             {
-                if (!sSpellStore.LookupEntry(spellEntry->Id))
-                    return false;
-
-                return true;
+                return ValidateSpellInfo({ spellEntry->Id });
             }
 
             bool Load() override
@@ -1104,10 +1086,7 @@ class spell_garalon_damaged : public SpellScriptLoader
 
             bool Validate(SpellInfo const* spellEntry) override
             {
-                if (!sSpellStore.LookupEntry(spellEntry->Id))
-                    return false;
-
-                return true;
+                return ValidateSpellInfo({ spellEntry->Id });
             }
 
             bool Load() override
@@ -1148,10 +1127,7 @@ class spell_garalon_pheromones_summon : public SpellScriptLoader
 
             bool Validate(SpellInfo const* spellEntry) override
             {
-                if (!sSpellStore.LookupEntry(spellEntry->Id))
-                    return false;
-
-                return true;
+                return ValidateSpellInfo({ spellEntry->Id });
             }
 
             bool Load() override
@@ -1199,10 +1175,7 @@ public:
 
         bool Validate(SpellInfo const* spellEntry) override
         {
-            if (!sSpellStore.LookupEntry(spellEntry->Id))
-                return false;
-
-            return true;
+            return ValidateSpellInfo({ spellEntry->Id });
         }
 
         bool Load() override
@@ -1244,10 +1217,7 @@ public:
 
         bool Validate(SpellInfo const* spellEntry) override
         {
-            if (!sSpellStore.LookupEntry(spellEntry->Id))
-                return false;
-
-            return true;
+            return ValidateSpellInfo({ spellEntry->Id });
         }
 
         bool Load() override

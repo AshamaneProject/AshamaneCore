@@ -568,7 +568,9 @@ enum AuraType : uint32
     SPELL_AURA_FORGET_LANGUAGE                              = 489,
     SPELL_AURA_SWITCH_TEAM                                  = 490,
     SPELL_AURA_MOD_HONOR_GAIN_PCT_2                         = 491,
-    TOTAL_AURAS                                             = 492
+    SPELL_AURA_492                                          = 492,
+    SPELL_AURA_493                                          = 493, // 1 spell, 267116 - Animal Companion (modifies Call Pet)
+    TOTAL_AURAS
 };
 
 enum AuraObjectType

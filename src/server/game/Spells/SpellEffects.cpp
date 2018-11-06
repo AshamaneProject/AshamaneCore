@@ -415,7 +415,8 @@ void Spell::EffectEnvironmentalDMG(SpellEffIndex /*effIndex*/)
         m_caster->CalcAbsorbResist(damageInfo);
 
         SpellNonMeleeDamage log(m_caster, unitTarget, m_spellInfo->Id, m_SpellVisual, m_spellInfo->GetSchoolMask(), m_castId);
-        log.damage = damage;
+        log.damage = damageInfo.GetDamage();
+        log.originalDamage = damage;
         log.absorb = damageInfo.GetAbsorb();
         log.resist = damageInfo.GetResist();
 
@@ -4114,7 +4115,7 @@ void Spell::EffectSummonSurveyTools(SpellEffIndex /*effIndex*/)
             int memId = player->GetArchaeologyMgr().GetDigsite(player->GetPositionX(), player->GetPositionY());
             uint32 digsiteId = 0;
 
-            std::vector<uint32> const& digsites = player->GetDynamicValues(PLAYER_DYNAMIC_FIELD_RESEARCH_SITE);
+            std::vector<uint32> const& digsites = player->GetDynamicValues(ACTIVE_PLAYER_DYNAMIC_FIELD_RESERACH_SITE);
 
             for (auto const& digSite : digsites)
                 digsiteId = digSite;
@@ -4174,7 +4175,7 @@ void Spell::EffectSummonSurveyTools(SpellEffIndex /*effIndex*/)
                 if (digsite.digCount + 1 < 3)
                 {
                     player->GetArchaeologyMgr().SetDigsitePosition(memId, 0, 0, digsite.digCount + 1);
-                    player->AddDynamicValue(PLAYER_DYNAMIC_FIELD_RESEARCH_SITE_PROGRESS, digsite.digCount + 1);
+                    player->AddDynamicValue(ACTIVE_PLAYER_DYNAMIC_FIELD_RESEARCH_SITE_PROGRESS, digsite.digCount + 1);
                 }
                 else
                     sArchaeologyMgr->ChangeDigsite(player, memId);

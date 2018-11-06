@@ -31,7 +31,6 @@ GameTable<GtCombatRatingsEntry>                 sCombatRatingsGameTable;
 GameTable<GtCombatRatingsMultByILvl>            sCombatRatingsMultByILvlGameTable;
 GameTable<GtChallengeModeDamage>                sChallengeModeDamage;
 GameTable<GtChallengeModeHealth>                sChallengeModeHealth;
-GameTable<GtHonorLevelEntry>                    sHonorLevelGameTable;
 GameTable<GtHpPerStaEntry>                      sHpPerStaGameTable;
 GameTable<GtItemSocketCostPerLevelEntry>        sItemSocketCostPerLevelGameTable;
 GameTable<GtNpcDamageByClassEntry>              sNpcDamageByClassGameTable[MAX_EXPANSIONS];
@@ -122,7 +121,6 @@ void LoadGameTables(std::string const& dataPath)
     LOAD_GT(sChallengeModeDamage, "ChallengeModeDamage.txt");
     LOAD_GT(sChallengeModeHealth, "ChallengeModeHealth.txt");
     LOAD_GT(sItemSocketCostPerLevelGameTable, "ItemSocketCostPerLevel.txt");
-    LOAD_GT(sHonorLevelGameTable, "HonorLevel.txt");
     LOAD_GT(sHpPerStaGameTable, "HpPerSta.txt");
     LOAD_GT(sNpcDamageByClassGameTable[0], "NpcDamageByClass.txt");
     LOAD_GT(sNpcDamageByClassGameTable[1], "NpcDamageByClassExp1.txt");
@@ -131,6 +129,7 @@ void LoadGameTables(std::string const& dataPath)
     LOAD_GT(sNpcDamageByClassGameTable[4], "NpcDamageByClassExp4.txt");
     LOAD_GT(sNpcDamageByClassGameTable[5], "NpcDamageByClassExp5.txt");
     LOAD_GT(sNpcDamageByClassGameTable[6], "NpcDamageByClassExp6.txt");
+    LOAD_GT(sNpcDamageByClassGameTable[7], "NpcDamageByClassExp7.txt");
     LOAD_GT(sNpcManaCostScalerGameTable, "NPCManaCostScaler.txt");
     LOAD_GT(sNpcTotalHpGameTable[0], "NpcTotalHp.txt");
     LOAD_GT(sNpcTotalHpGameTable[1], "NpcTotalHpExp1.txt");
@@ -139,6 +138,7 @@ void LoadGameTables(std::string const& dataPath)
     LOAD_GT(sNpcTotalHpGameTable[4], "NpcTotalHpExp4.txt");
     LOAD_GT(sNpcTotalHpGameTable[5], "NpcTotalHpExp5.txt");
     LOAD_GT(sNpcTotalHpGameTable[6], "NpcTotalHpExp6.txt");
+    LOAD_GT(sNpcTotalHpGameTable[7], "NpcTotalHpExp7.txt");
     LOAD_GT(sSpellScalingGameTable, "SpellScaling.txt");
     LOAD_GT(sXpGameTable, "xp.txt");
 

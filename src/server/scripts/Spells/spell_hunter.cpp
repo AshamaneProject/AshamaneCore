@@ -1080,7 +1080,7 @@ public:
             int32 dmg = 4.5f * owner->GetUInt32Value(UNIT_FIELD_RANGED_ATTACK_POWER);
             int32 lowNerf = std::min(int32(owner->getLevel()), 20) * 0.05f;
 
-            dmg = AddPct(dmg, owner->GetFloatValue(PLAYER_MASTERY));
+            dmg = AddPct(dmg, owner->GetFloatValue(ACTIVE_PLAYER_FIELD_MASTERY));
             dmg *= lowNerf;
 
             dmg = caster->SpellDamageBonusDone(target, GetSpellInfo(), dmg, SPELL_DIRECT_DAMAGE, GetEffectInfo(EFFECT_0));

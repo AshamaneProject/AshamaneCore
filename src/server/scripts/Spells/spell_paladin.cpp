@@ -579,7 +579,7 @@ class spell_pal_shield_of_the_righteous : public SpellScript
                     dmg += dmg / 5;
                     SetHitDamage(dmg); //damage is increased by 20%
 
-                    float mastery = player->GetFloatValue(PLAYER_MASTERY);
+                    float mastery = player->GetFloatValue(ACTIVE_PLAYER_FIELD_MASTERY);
 
                     int32 reduction = int32(((-25 - int32(mastery / 2.0f)) * 120.0f) / 100.0f); //damage reduction is increased by 20%
                     player->CastCustomSpell(player, SPELL_PALADIN_SHIELD_OF_THE_RIGHTEOUS_PROC, &reduction, NULL, NULL, true);

@@ -1742,7 +1742,7 @@ public:
             if (!caster->ToPlayer())
                 return;
 
-            int32 crit = caster->GetUInt32Value(PLAYER_FIELD_COMBAT_RATING_1 + CR_CRIT_SPELL);
+            int32 crit = caster->GetUInt32Value(ACTIVE_PLAYER_FIELD_COMBAT_RATING + CR_CRIT_SPELL);
             amount += crit;
         }
 

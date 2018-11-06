@@ -265,8 +265,8 @@ bool Loot::FillLoot(uint32 lootId, LootStore const& store, Player* lootOwner, bo
     _itemContext = lootOwner->GetMap()->GetDifficultyLootItemContext();
 
     if (LFGDungeonsEntry const* dungeonEntry = sLFGMgr->GetPlayerLFGDungeonEntry(lootOwner->GetGUID()))
-        if (dungeonEntry->Flags & lfg::LfgFlags::LFG_FLAG_TIMEWALKER)
-            _itemContext = ItemContext::TimeWalker;
+        if (dungeonEntry->Flags[0] & lfg::LfgFlags::LFG_FLAG_TIMEWALKER)
+            _itemContext = uint8(ItemContext::TimeWalker);
 
     LootTemplate const* tab = store.GetLootFor(lootId);
 

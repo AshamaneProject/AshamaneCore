@@ -2000,7 +2000,7 @@ class spell_sha_windfury : public AuraScript
         //Proc Chance is increased by 6.24% of Mastery (ceiled)
         float masteryBonus = 0.0f;
         if (Player* player = eventInfo.GetActor()->ToPlayer())
-            masteryBonus += (player->GetFloatValue(PLAYER_MASTERY)*6.24f) / 100.0f;
+            masteryBonus += (player->GetFloatValue(ACTIVE_PLAYER_FIELD_MASTERY)*6.24f) / 100.0f;
 
         float rollChance = 5.0f + masteryBonus;
         if (roll_chance_f(rollChance) || eventInfo.GetActor()->HasAura(SPELL_SHAMAN_DOOM_WINDS))
