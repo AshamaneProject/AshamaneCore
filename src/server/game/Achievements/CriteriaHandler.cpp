@@ -21,7 +21,6 @@
 #include "DB2Stores.h"
 #include "DisableMgr.h"
 #include "GameEventMgr.h"
-#include "WodGarrison.h"
 #include "ClassHall.h"
 #include "Group.h"
 #include "InstanceScript.h"
@@ -33,6 +32,8 @@
 #include "ScriptMgr.h"
 #include "SpellInfo.h"
 #include "SpellMgr.h"
+#include "WarCampaign.h"
+#include "WodGarrison.h"
 #include "World.h"
 
 bool CriteriaData::IsValid(Criteria const* criteria)

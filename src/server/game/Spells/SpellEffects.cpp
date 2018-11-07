@@ -72,6 +72,7 @@
 #include "Totem.h"
 #include "Unit.h"
 #include "Util.h"
+#include "WarCampaign.h"
 #include "WodGarrison.h"
 #include "World.h"
 #include "WorldPacket.h"

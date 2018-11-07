@@ -57,7 +57,6 @@
 #include "GameEventMgr.h"
 #include "GameObjectAI.h"
 #include "Garrison.h"
-#include "WodGarrison.h"
 #include "ClassHall.h"
 #include "GitRevision.h"
 #include "GossipDef.h"
@@ -118,8 +117,10 @@
 #include "Util.h"
 #include "Vehicle.h"
 #include "VehiclePackets.h"
+#include "WarCampaign.h"
 #include "Weather.h"
 #include "WeatherMgr.h"
+#include "WodGarrison.h"
 #include "World.h"
 #include "WorldPacket.h"
 #include "WorldQuestMgr.h"
@@ -28591,12 +28592,21 @@ void Player::CreateGarrison(uint32 garrSiteId)
             _garrisons[GARRISON_TYPE_GARRISON] = std::move(garrison);
         }
     }
-    else
+    else if (garrSiteId == GARRISON_SITE_CLASS_HALL_ALLIANCE ||
+             garrSiteId == GARRISON_SITE_CLASS_HALL_HORDE)
     {
         std::unique_ptr<Garrison> garrison(new ClassHall(this));
         if (garrison->Create(garrSiteId))
         {
             _garrisons[GARRISON_TYPE_CLASS_HALL] = std::move(garrison);
+        }
+    }
+    else
+    {
+        std::unique_ptr<Garrison> garrison(new WarCampaign(this));
+        if (garrison->Create(garrSiteId))
+        {
+            _garrisons[GARRISON_TYPE_WAR_CAMPAIGN] = std::move(garrison);
         }
     }
 }

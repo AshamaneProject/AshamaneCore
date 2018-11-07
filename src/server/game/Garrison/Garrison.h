@@ -31,6 +31,7 @@ class GameObject;
 class GarrisonAI;
 class Map;
 class Player;
+class WarCampaign;
 class WodGarrison;
 struct GarrSiteLevelEntry;
 
@@ -117,6 +118,10 @@ public:
     bool IsClassHall() const { return GetType() == GARRISON_TYPE_CLASS_HALL; }
     ClassHall* ToClassHall() { if (IsClassHall()) return reinterpret_cast<ClassHall*>(this); else return nullptr; }
     ClassHall const* ToClassHall() const { if (IsClassHall()) return reinterpret_cast<ClassHall const*>(this); else return nullptr; }
+
+    bool IsWarCampaign() const { return GetType() == GARRISON_TYPE_WAR_CAMPAIGN; }
+    WarCampaign* ToWarCampaign() { if (IsWarCampaign()) return reinterpret_cast<WarCampaign*>(this); else return nullptr; }
+    WarCampaign const* ToWarCampaign() const { if (IsWarCampaign()) return reinterpret_cast<WarCampaign const*>(this); else return nullptr; }
 
 protected:
     GarrisonType _garrisonType;
