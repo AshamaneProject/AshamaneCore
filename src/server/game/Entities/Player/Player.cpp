@@ -5417,21 +5417,21 @@ bool Player::UpdateCraftSkill(uint32 spellid)
 
     for (SkillLineAbilityMap::const_iterator _spell_idx = bounds.first; _spell_idx != bounds.second; ++_spell_idx)
     {
-        if (_spell_idx->second->SkillLine)
+        if (_spell_idx->second->SkillupSkillLineID)
         {
-            uint32 SkillValue = GetPureSkillValue(_spell_idx->second->SkillLine);
+            uint32 SkillValue = GetPureSkillValue(_spell_idx->second->SkillupSkillLineID);
 
             // Alchemy Discoveries here
             SpellInfo const* spellEntry = sSpellMgr->GetSpellInfo(spellid);
             if (spellEntry && spellEntry->Mechanic == MECHANIC_DISCOVERY)
             {
-                if (uint32 discoveredSpell = GetSkillDiscoverySpell(_spell_idx->second->SkillLine, spellid, this))
+                if (uint32 discoveredSpell = GetSkillDiscoverySpell(_spell_idx->second->SkillupSkillLineID, spellid, this))
                     LearnSpell(discoveredSpell, false);
             }
 
             uint32 craft_skill_gain = _spell_idx->second->NumSkillUps * sWorld->getIntConfig(CONFIG_SKILL_GAIN_CRAFTING);
 
-            return UpdateSkillPro(_spell_idx->second->SkillLine, SkillGainChance(SkillValue,
+            return UpdateSkillPro(_spell_idx->second->SkillupSkillLineID, SkillGainChance(SkillValue,
                 _spell_idx->second->TrivialSkillLineRankHigh,
                 (_spell_idx->second->TrivialSkillLineRankHigh + _spell_idx->second->TrivialSkillLineRankLow)/2,
                 _spell_idx->second->TrivialSkillLineRankLow),
@@ -26685,6 +26685,14 @@ void Player::_LoadSkills(PreparedQueryResult result)
             // set fixed skill ranges
             switch (GetSkillRangeType(rcEntry))
             {
+                case SKILL_RANGE_RANK:
+                {
+                    if (SkillTiersEntry const* skillTier = sObjectMgr->GetSkillTier(rcEntry->SkillTierID))
+                        if (max < skillTier->Value[0])
+                            max = skillTier->Value[0];
+
+                    break;
+                }
                 case SKILL_RANGE_LANGUAGE:                      // 300..300
                     value = max = 300;
                     break;
