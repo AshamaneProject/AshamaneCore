@@ -187,6 +187,7 @@ enum PriestSpells
     SPELL_PRIEST_VOID_SHIFT                         = 108968,
     SPELL_PRIEST_VOID_TENDRILS_SUMMON               = 127665,
     SPELL_PRIEST_VOID_TENDRILS_TRIGGER              = 127665,
+    SPELL_PRIEST_VOID_TORRENT_PREVENT_REGEN         = 262173,
     SPELL_PRIEST_WEAKENED_SOUL                      = 6788,
 };
 
@@ -2421,7 +2422,7 @@ class spell_pri_atonement : public AuraScript
         // Heal = DamageDealt * (40 * (1+mastery%))
         uint32 damage = eventInfo.GetDamageInfo() ? eventInfo.GetDamageInfo()->GetDamage() : 0;
         int32 base = aurEff->GetBaseAmount();
-        AddPct(base, caster->GetFloatValue(PLAYER_MASTERY));
+        AddPct(base, caster->GetFloatValue(ACTIVE_PLAYER_FIELD_MASTERY));
         uint32 heal = CalculatePct(damage, base);
 
         std::list<Unit*> units;
@@ -2633,6 +2634,28 @@ class spell_pri_void_bolt : public SpellScript
     }
 };
 
+// Void Torrent - 205065
+class aura_pri_void_torrent : public AuraScript
+{
+    PrepareAuraScript(aura_pri_void_torrent);
+
+    void OnApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+    {
+        GetTarget()->CastSpell(GetTarget(), SPELL_PRIEST_VOID_TORRENT_PREVENT_REGEN, true);
+    }
+
+    void HandleRemove(AuraEffect const* aurEff, AuraEffectHandleModes /*mode*/)
+    {
+        GetTarget()->RemoveAurasDueToSpell(SPELL_PRIEST_VOID_TORRENT_PREVENT_REGEN);
+    }
+
+    void Register() override
+    {
+        AfterEffectApply += AuraEffectApplyFn(aura_pri_void_torrent::OnApply, EFFECT_1, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+        AfterEffectRemove += AuraEffectRemoveFn(aura_pri_void_torrent::HandleRemove, EFFECT_2, SPELL_AURA_MELEE_SLOW, AURA_EFFECT_HANDLE_REAL);
+    }
+};
+
 // Angelic Feather areatrigger - created by SPELL_PRIEST_ANGELIC_FEATHER_AREATRIGGER
 // AreaTriggerID - 337
 struct at_pri_angelic_feather : AreaTriggerAI
@@ -2801,6 +2824,7 @@ void AddSC_priest_spell_scripts()
     RegisterAuraScript(spell_pri_clarity_of_will);
     RegisterAuraScript(spell_pri_twist_of_fate);
     RegisterAuraScript(spell_pri_mind_bomb);
+    RegisterAuraScript(aura_pri_void_torrent);
 
     RegisterSpellAndAuraScriptPair(spell_pri_power_word_shield, spell_pri_power_word_shield_AuraScript);
 }

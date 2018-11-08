@@ -29,7 +29,7 @@ namespace WorldPackets
         public:
             struct WorldStateInfo
             {
-                WorldStateInfo(uint32 variableID, int32 value)
+                WorldStateInfo(int32 variableID, int32 value)
                     : VariableID(variableID), Value(value) { }
 
                 bool operator < (const WorldStateInfo& info) const
@@ -37,7 +37,7 @@ namespace WorldPackets
                     return (VariableID < info.VariableID);
                 }
 
-                uint32 VariableID;
+                int32 VariableID;
                 int32 Value;
             };
 
@@ -45,9 +45,9 @@ namespace WorldPackets
 
             WorldPacket const* Write() override;
 
-            uint32 AreaID    = 0; ///< ZoneId
-            uint32 SubareaID = 0; ///< AreaId
-            uint32 MapID     = 0; ///< MapId
+            int32 AreaID    = 0; ///< ZoneId
+            int32 SubareaID = 0; ///< AreaId
+            int32 MapID     = 0; ///< MapId
 
             std::vector<WorldStateInfo> Worldstates;
         };

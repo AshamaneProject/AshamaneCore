@@ -49,7 +49,8 @@ AreaTrigger::AreaTrigger() : WorldObject(false), MapObject(), _aurEff(nullptr),
     m_objectType |= TYPEMASK_AREATRIGGER;
     m_objectTypeId = TYPEID_AREATRIGGER;
 
-    m_updateFlag = UPDATEFLAG_STATIONARY_POSITION | UPDATEFLAG_AREATRIGGER;
+    m_updateFlag.Stationary = true;
+    m_updateFlag.AreaTrigger = true;
 
     m_valuesCount = AREATRIGGER_END;
     _dynamicValuesCount = AREATRIGGER_DYNAMIC_END;
@@ -165,7 +166,7 @@ bool AreaTrigger::Create(uint32 spellMiscId, Unit* caster, Unit* target, SpellIn
     {
         AreaTriggerCircularMovementInfo cmi = GetMiscTemplate()->CircularMovementInfo;
         if (target && GetTemplate()->HasFlag(AREATRIGGER_FLAG_HAS_ATTACHED))
-            cmi.TargetGUID = target->GetGUID();
+            cmi.PathTarget = target->GetGUID();
         else
             cmi.Center = pos;
 
@@ -746,12 +747,12 @@ void AreaTrigger::InitSplines(std::vector<G3D::Vector3> splinePoints, uint32 tim
     {
         if (_reachedDestination)
         {
-            WorldPackets::AreaTrigger::AreaTriggerReShape reshape;
+            WorldPackets::AreaTrigger::AreaTriggerRePath reshape;
             reshape.TriggerGUID = GetGUID();
             SendMessageToSet(reshape.Write(), true);
         }
 
-        WorldPackets::AreaTrigger::AreaTriggerReShape reshape;
+        WorldPackets::AreaTrigger::AreaTriggerRePath reshape;
         reshape.TriggerGUID = GetGUID();
         reshape.AreaTriggerSpline = boost::in_place();
         reshape.AreaTriggerSpline->ElapsedTimeForMovement = GetElapsedTimeForMovement();
@@ -806,7 +807,7 @@ bool AreaTrigger::SetDestination(Position const& pos, uint32 timeToTarget)
 void AreaTrigger::InitCircularMovement(AreaTriggerCircularMovementInfo const& cmi, uint32 timeToTarget)
 {
     // Circular movement requires either a center position or an attached unit
-    ASSERT(cmi.Center.is_initialized() || cmi.TargetGUID.is_initialized());
+    ASSERT(cmi.Center.is_initialized() || cmi.PathTarget.is_initialized());
 
     // should be sent in object create packets only
     m_uint32Values[AREATRIGGER_TIME_TO_TARGET] = timeToTarget;
@@ -818,7 +819,7 @@ void AreaTrigger::InitCircularMovement(AreaTriggerCircularMovementInfo const& cm
 
     if (IsInWorld())
     {
-        WorldPackets::AreaTrigger::AreaTriggerReShape reshape;
+        WorldPackets::AreaTrigger::AreaTriggerRePath reshape;
         reshape.TriggerGUID = GetGUID();
         reshape.AreaTriggerCircularMovement = _circularMovementInfo;
 
@@ -833,11 +834,11 @@ bool AreaTrigger::HasCircularMovement() const
 
 Position const* AreaTrigger::GetCircularMovementCenterPosition() const
 {
-    if (_circularMovementInfo.is_initialized())
+    if (!_circularMovementInfo.is_initialized())
         return nullptr;
 
-    if (_circularMovementInfo->TargetGUID.is_initialized())
-        if (WorldObject* center = ObjectAccessor::GetWorldObject(*this, *_circularMovementInfo->TargetGUID))
+    if (_circularMovementInfo->PathTarget.is_initialized())
+        if (WorldObject* center = ObjectAccessor::GetWorldObject(*this, *_circularMovementInfo->PathTarget))
             return center;
 
     if (_circularMovementInfo->Center.is_initialized())

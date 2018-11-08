@@ -18,6 +18,7 @@
 #include "WorldSession.h"
 #include "WodGarrison.h"
 #include "ClassHall.h"
+#include "WarCampaign.h"
 #include "GarrisonAI.h"
 #include "GarrisonMgr.h"
 #include "GarrisonPackets.h"

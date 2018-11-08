@@ -51,7 +51,7 @@ requiredItemLevel(0)
 LFGDungeonData::LFGDungeonData(LFGDungeonsEntry const* dbc) : id(dbc->ID), name(dbc->Name->Str[sWorld->GetDefaultDbcLocale()]), map(dbc->MapID),
 type(uint8(dbc->TypeID)), subtype(uint8(dbc->Subtype)), expansion(uint8(dbc->ExpansionLevel)), randomId(uint8(dbc->RandomID)),
 minlevel(uint8(dbc->MinLevel)), maxlevel(uint8(dbc->MaxLevel)), difficulty(Difficulty(dbc->DifficultyID)),
-seasonal((dbc->Flags & LFG_FLAG_SEASONAL) != 0), x(0.0f), y(0.0f), z(0.0f), o(0.0f),
+seasonal((dbc->Flags[0] & LFG_FLAG_SEASONAL) != 0), x(0.0f), y(0.0f), z(0.0f), o(0.0f),
 requiredItemLevel(0)
 {
 }

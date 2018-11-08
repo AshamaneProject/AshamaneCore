@@ -1429,7 +1429,7 @@ class spell_warl_chaos_bolt : public SpellScript
         if (Unit* player = GetOriginalCaster())
         {
             int32 damage = GetHitDamage();
-            float crit = player->GetFloatValue(PLAYER_SPELL_CRIT_PERCENTAGE1);
+            float crit = player->GetFloatValue(ACTIVE_PLAYER_FIELD_SPELL_CRIT_PERCENTAGE1);
             AddPct(damage, crit);
             SetHitDamage(damage);
 

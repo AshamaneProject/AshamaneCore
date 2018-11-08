@@ -32,6 +32,7 @@ EndScriptData */
 #include "Language.h"
 #include "Player.h"
 #include "RBAC.h"
+#include "WarCampaign.h"
 #include "WodGarrison.h"
 
 class garrison_commandscript : public CommandScript

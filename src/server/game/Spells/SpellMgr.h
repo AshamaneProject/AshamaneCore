@@ -37,7 +37,6 @@ class Player;
 class Unit;
 class ProcEventInfo;
 struct SkillLineAbilityEntry;
-struct SpellEntry;
 struct SpellAuraOptionsEntry;
 struct SpellAuraRestrictionsEntry;
 struct SpellCastingRequirementsEntry;
@@ -48,6 +47,7 @@ struct SpellEquippedItemsEntry;
 struct SpellInterruptsEntry;
 struct SpellLevelsEntry;
 struct SpellMiscEntry;
+struct SpellNameEntry;
 struct SpellReagentsEntry;
 struct SpellScalingEntry;
 struct SpellShapeshiftEntry;
@@ -465,7 +465,7 @@ struct TC_GAME_API SpellArea
     uint32 questEnd;                                        // quest end (quest must not be rewarded for spell apply)
     int32  auraSpell;                                       // spell aura must be applied for spell apply)if possitive) and it must not be applied in other case
     int8   teamId;                                          // can be applied only to team
-    uint32 raceMask;                                        // can be applied only to races
+    uint64 raceMask;                                        // can be applied only to races
     Gender gender;                                          // can be applied only to gender
     uint32 questStartStatus;                                // QuestStatus that quest_start must have in order to keep the spell
     uint32 questEndStatus;                                  // QuestStatus that the quest_end must have in order to keep the spell (if the quest_end's status is different than this, the spell will be dropped)
@@ -564,7 +564,7 @@ bool IsWeaponSkill(uint32 skill);
 
 inline bool IsProfessionSkill(uint32 skill)
 {
-    return  IsPrimaryProfessionSkill(skill) || skill == SKILL_FISHING || skill == SKILL_COOKING || skill == SKILL_FIRST_AID;
+    return  IsPrimaryProfessionSkill(skill) || skill == SKILL_FISHING || skill == SKILL_COOKING;
 }
 
 inline bool IsProfessionOrRidingSkill(uint32 skill)
@@ -578,7 +578,7 @@ TC_GAME_API extern PetFamilySpellsStore                         sPetFamilySpells
 
 struct SpellInfoLoadHelper
 {
-    SpellEntry const* Entry = nullptr;
+    SpellNameEntry const* Entry = nullptr;
 
     SpellAuraOptionsEntry const* AuraOptions = nullptr;
     SpellAuraRestrictionsEntry const* AuraRestrictions = nullptr;

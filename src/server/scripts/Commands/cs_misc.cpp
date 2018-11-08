@@ -1204,8 +1204,8 @@ public:
         }
 
         uint32 val = uint32((1 << (area->AreaBit % 32)));
-        uint32 currFields = playerTarget->GetUInt32Value(PLAYER_EXPLORED_ZONES_1 + offset);
-        playerTarget->SetUInt32Value(PLAYER_EXPLORED_ZONES_1 + offset, uint32((currFields | val)));
+        uint32 currFields = playerTarget->GetUInt32Value(ACTIVE_PLAYER_FIELD_EXPLORED_ZONES + offset);
+        playerTarget->SetUInt32Value(ACTIVE_PLAYER_FIELD_EXPLORED_ZONES + offset, uint32((currFields | val)));
 
         handler->SendSysMessage(LANG_EXPLORE_AREA);
         return true;
@@ -1248,8 +1248,8 @@ public:
         }
 
         uint32 val = uint32((1 << (area->AreaBit % 32)));
-        uint32 currFields = playerTarget->GetUInt32Value(PLAYER_EXPLORED_ZONES_1 + offset);
-        playerTarget->SetUInt32Value(PLAYER_EXPLORED_ZONES_1 + offset, uint32((currFields ^ val)));
+        uint32 currFields = playerTarget->GetUInt32Value(ACTIVE_PLAYER_FIELD_EXPLORED_ZONES + offset);
+        playerTarget->SetUInt32Value(ACTIVE_PLAYER_FIELD_EXPLORED_ZONES + offset, uint32((currFields ^ val)));
 
         handler->SendSysMessage(LANG_UNEXPLORE_AREA);
         return true;

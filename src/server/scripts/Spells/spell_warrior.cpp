@@ -1315,7 +1315,7 @@ public:
             if (Player* _player = GetCaster()->ToPlayer())
                 if (Unit* target = GetHitUnit())
                 {
-                    _player->CastCustomSpell(SPELL_WARRIOR_COLOSSUS_SMASH_BUFF, SPELLVALUE_BASE_POINT0, 15.0f + _player->GetFloatValue(PLAYER_MASTERY), target, true);
+                    _player->CastCustomSpell(SPELL_WARRIOR_COLOSSUS_SMASH_BUFF, SPELLVALUE_BASE_POINT0, 15.0f + _player->GetFloatValue(ACTIVE_PLAYER_FIELD_MASTERY), target, true);
                 }
         }
 

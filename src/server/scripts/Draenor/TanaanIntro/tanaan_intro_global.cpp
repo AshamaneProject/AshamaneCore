@@ -85,11 +85,7 @@ public:
         }
 
         if (player->GetQuestStatus(TanaanQuests::QuestTheBattleOfTheForge) == QUEST_STATUS_REWARDED)
-        {
-            PhaseShift phaseShift;
-            phaseShift.AddUiWorldMapAreaIdSwap((uint32)TanaanZones::TerrainSwapID);
-            PhasingHandler::SendToPlayer(player, phaseShift);
-        }
+            PhasingHandler::AddVisibleMapId(player, TanaanZones::TerrainSwapID);
     }
 
     void OnObjectiveValidate(Player* player, uint32 questId, uint32 objectiveId) override

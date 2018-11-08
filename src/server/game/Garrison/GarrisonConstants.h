@@ -37,6 +37,8 @@ enum GarrisonSite
     GARRISON_SITE_WOD_HORDE             = 71,
     GARRISON_SITE_CLASS_HALL_ALLIANCE   = 161,
     GARRISON_SITE_CLASS_HALL_HORDE      = 163,
+    GARRISON_SITE_WAR_CAMPAIGN_ALLIANCE = 168,
+    GARRISON_SITE_WAR_CAMPAIGN_HORDE    = 169,
 };
 
 enum GarrisonType : int32
@@ -44,10 +46,10 @@ enum GarrisonType : int32
     GARRISON_TYPE_NONE          = 0,
     GARRISON_TYPE_GARRISON      = 2,
     GARRISON_TYPE_CLASS_HALL    = 3,
-    //GARRISON_TYPE_WAR_CAMPAIGN  = 9,
+    GARRISON_TYPE_WAR_CAMPAIGN  = 9,
 
     GARRISON_TYPE_MIN           = GARRISON_TYPE_GARRISON,
-    GARRISON_TYPE_MAX           = GARRISON_TYPE_CLASS_HALL + 1,
+    GARRISON_TYPE_MAX           = GARRISON_TYPE_WAR_CAMPAIGN + 1,
 };
 
 enum GarrisonFactionIndex
@@ -283,6 +285,11 @@ namespace GarrisonMission
         ClassHallTreasureDungeon    = 75,
         ClassHallTreasonRaid        = 76,
         BrokenShoreGeneric          = 79,
+        WarCampaignGeneric          = 80,
+        WarCampagnStealth           = 81,
+        WarCampagnQuickStrike       = 82,
+        WarCampagnLongCampaign      = 83,
+        WarCampagnHubUnlock         = 184,
     };
 
     enum Flags

@@ -130,9 +130,7 @@ public:
 
     void SwitchPhaseMapAfterDamExplosion(Player* player)
     {
-        PhaseShift phaseShift;
-        phaseShift.AddUiWorldMapAreaIdSwap((uint32)TanaanZones::TerrainSwapID);
-        PhasingHandler::SendToPlayer(player, phaseShift);
+        PhasingHandler::AddVisibleMapId(player, TanaanZones::TerrainSwapID);
     }
 };
 

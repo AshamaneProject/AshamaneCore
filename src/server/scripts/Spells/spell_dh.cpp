@@ -1900,7 +1900,7 @@ public:
             if (!caster)
                 return;
 
-            amount -= std::ceil(caster->GetFloatValue(PLAYER_MASTERY));
+            amount -= std::ceil(caster->GetFloatValue(ACTIVE_PLAYER_FIELD_MASTERY));
         }
 
         void Register() override
