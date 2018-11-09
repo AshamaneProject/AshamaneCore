@@ -15,16 +15,6 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
- // This is where scripts' loading functions should be declared:
-void AddSC_zone_drustvar();
-void AddSC_zone_stormsong_valley();
-void AddSC_zone_tiragarde_sound();
-
-// The name of this function should match:
-// void Add${NameOfDirectory}Scripts()
-void AddKulTirasScripts()
+void AddSC_zone_drustvar()
 {
-    AddSC_zone_drustvar();
-    AddSC_zone_stormsong_valley();
-    AddSC_zone_tiragarde_sound();
 }

@@ -1374,6 +1374,8 @@ class GenericCreatureScript : public CreatureScript
 };
 #define RegisterCreatureAI(ai_name) new GenericCreatureScript<ai_name>(#ai_name)
 
+#define RegisterSceneScript(scene_script) new scene_script()
+
 template <class AI, AI*(*AIFactory)(Creature*)>
 class FactoryCreatureScript : public CreatureScript
 {

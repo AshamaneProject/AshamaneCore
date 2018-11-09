@@ -107,7 +107,7 @@ struct questnpc_soul_gem : public ScriptedAI
         for (Creature* target : targets)
         {
             if(!target->IsAlive())
-            { 
+            {
                 switch (target->GetEntry())
                 {
                     case 90230:
