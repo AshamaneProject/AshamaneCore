@@ -16,12 +16,18 @@
  */
 
 #include "GameObjectAI.h"
+#include "Player.h"
+#include "ScriptedCreature.h"
+#include "ScriptedFollowerAI.h"
 #include "ScriptMgr.h"
+#include "TemporarySummon.h"
 
 enum eTiragardeQuests
 {
     QUEST_DAUGHTER_OF_THE_SEA   = 51341,
     QUEST_OUT_LIKE_FLYNN        = 47098,
+
+    KILL_CREDIT_GET_DRESSED     = 138554,
 };
 
 enum Intro
@@ -33,9 +39,14 @@ enum Intro
     SPELL_PRISONER                  = 272512,
     SPELL_TOL_DAGOR_WAKE_UP         = 270081,
 
+    SPELL_SUMMON_FLYNN_ESCAPE       = 246931,
+
     SPELL_SCENE_FLYNN_JAILBREAK     = 246821,
 
-    MOVIE_LADY_KATHERINE            = 859
+    NPC_FLYNN_BEGIN                 = 121239,
+    NPC_FLYNN_ESCAPE                = 124311,
+
+    MOVIE_LADY_KATHERINE            = 859,
 };
 
 // 120922 - Lady Jaina Proudmoore
@@ -69,15 +80,61 @@ public:
     }
 };
 
-// 121239 - Flynn Fairwind
-struct npc_flynn_fairwind : public ScriptedAI
+// 47098
+struct quest_out_like_flynn : public QuestScript
 {
-    npc_flynn_fairwind(Creature* creature) : ScriptedAI(creature) { }
+    quest_out_like_flynn() : QuestScript("quest_out_like_flynn") { }
 
-    void sQuestAccept(Player* /*player*/, Quest const* quest)
+    // Called when a quest objective data change
+    void OnQuestObjectiveChange(Player* player, Quest const* /*quest*/, QuestObjective const& objective, int32 /*oldAmount*/, int32 /*newAmount*/) override
+    {
+        if (objective.ObjectID == KILL_CREDIT_GET_DRESSED)
+            player->RemoveAurasDueToSpell(SPELL_PRISONER);
+    }
+};
+
+// 121239 - Flynn Fairwind
+struct npc_flynn_fairwind : public FollowerAI
+{
+    npc_flynn_fairwind(Creature* creature) : FollowerAI(creature) { }
+
+    void sQuestAccept(Player* player, Quest const* quest) override
     {
         if (quest->ID == QUEST_OUT_LIKE_FLYNN)
-            ;
+        {
+            if (Creature* flynn = me->SummonCreature(me->GetEntry(), me->GetPosition()))
+            {
+                flynn->AI()->DoAction(0);
+                me->DestroyForPlayer(player);
+            }
+        }
+    }
+
+    void DoAction(int32 const action) override
+    {
+        me->GetMotionMaster()->MoveJump(142.033f, -2715.19f, 29.1884f, 0.0f, 19.2911f, 19.2911f);
+
+        me->GetScheduler().Schedule(1s, [this](TaskContext context)
+        {
+            me->GetMotionMaster()->MovePoint(2, 143.0686f, -2713.593f, 29.4388f);
+        });
+    }
+};
+
+// 124311 - Flynn Fairwind (Quest follower)
+struct npc_flynn_fairwind_follower : public FollowerAI
+{
+    npc_flynn_fairwind_follower(Creature* creature) : FollowerAI(creature) { }
+
+    void IsSummonedBy(Unit* summoner) override
+    {
+        if (Player* player = summoner->ToPlayer())
+            StartFollow(player);
+    }
+
+    void UpdateFollowerAI(uint32) override
+    {
+
     }
 };
 
@@ -86,7 +143,7 @@ struct go_toldagor_cell_block_lever : public GameObjectAI
 {
     go_toldagor_cell_block_lever(GameObject* go) : GameObjectAI(go) { }
 
-    bool GossipHello(Player* player, bool /*isUse*/)
+    bool GossipHello(Player* player, bool /*isUse*/) override
     {
         player->CastSpell(player, SPELL_SCENE_FLYNN_JAILBREAK, true);
         return false;
@@ -97,6 +154,8 @@ void AddSC_zone_tiragarde_sound()
 {
     RegisterCreatureAI(npc_jaina_boralus_intro);
     RegisterSceneScript(scene_jaina_to_proudmoore_keep);
+    RegisterQuestScript(quest_out_like_flynn);
     RegisterCreatureAI(npc_flynn_fairwind);
+    RegisterCreatureAI(npc_flynn_fairwind_follower);
     RegisterGameObjectAI(go_toldagor_cell_block_lever);
 }
