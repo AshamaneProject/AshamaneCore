@@ -1,1 +1,0 @@
-REPLACE INTO spell_script_names VALUES ('210706', 'spell_dru_gore');

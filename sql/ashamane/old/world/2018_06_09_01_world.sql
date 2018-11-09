@@ -1,1 +1,0 @@
-UPDATE `creature_template` SET `ScriptName`='npc_son_of_flame_firelands', `VerifiedBuild`='26654' WHERE `entry`='53140';
