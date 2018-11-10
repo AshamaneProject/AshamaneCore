@@ -1743,9 +1743,11 @@ class TC_GAME_API Unit : public WorldObject
 
         GameObject* GetGameObject(uint32 spellId) const;
         std::vector<GameObject*> GetGameObjects(uint32 spellId) const;
+        GameObject* GetGameObjectByEntry(uint32 entry) const;
         void AddGameObject(GameObject* gameObj);
         void RemoveGameObject(GameObject* gameObj, bool del);
         void RemoveGameObject(uint32 spellid, bool del);
+        void RemoveGameObjectByEntry(uint32 entry, bool del = true);
         void RemoveAllGameObjects();
 
         // AreaTrigger management

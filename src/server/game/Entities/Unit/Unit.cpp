@@ -5035,6 +5035,15 @@ GameObject* Unit::GetGameObject(uint32 spellId) const
     return gameobjects.empty() ? nullptr : gameobjects.front();
 }
 
+GameObject* Unit::GetGameObjectByEntry(uint32 entry) const
+{
+    for (GameObject* gob : m_gameObj)
+        if (gob->GetEntry() == entry)
+            return gob;
+
+    return nullptr;
+}
+
 std::vector<GameObject*> Unit::GetGameObjects(uint32 spellId) const
 {
     std::vector<GameObject*> gameobjects;
@@ -5115,6 +5124,30 @@ void Unit::RemoveGameObject(uint32 spellid, bool del)
     {
         next = i;
         if (spellid == 0 || (*i)->GetSpellId() == spellid)
+        {
+            (*i)->SetOwnerGUID(ObjectGuid::Empty);
+            if (del)
+            {
+                (*i)->SetRespawnTime(0);
+                (*i)->Delete();
+            }
+
+            next = m_gameObj.erase(i);
+        }
+        else
+            ++next;
+    }
+}
+
+void Unit::RemoveGameObjectByEntry(uint32 entry, bool del /*= true*/)
+{
+    if (m_gameObj.empty())
+        return;
+    GameObjectList::iterator i, next;
+    for (i = m_gameObj.begin(); i != m_gameObj.end(); i = next)
+    {
+        next = i;
+        if ((*i)->GetEntry() == entry)
         {
             (*i)->SetOwnerGUID(ObjectGuid::Empty);
             if (del)
