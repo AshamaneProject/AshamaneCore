@@ -99,6 +99,9 @@ class TC_GAME_API TempSummon : public Creature
 
         void SetVisibleBySummonerOnly(bool visibleBySummonerOnly) { m_visibleBySummonerOnly = visibleBySummonerOnly; }
         bool IsVisibleBySummonerOnly() const { return m_visibleBySummonerOnly; }
+        void SetSummonerSpecificEntry(uint32 entry);
+        uint32 GetSummonerSpecificEntry() const { return m_summonerSpecificEntry; }
+        uint32 GetSummonerSpecificDisplayID() const { return m_summonerSpecificDisplayID; }
 
         const SummonPropertiesEntry* const m_Properties;
     private:
@@ -107,6 +110,8 @@ class TC_GAME_API TempSummon : public Creature
         uint32 m_lifetime;
         ObjectGuid m_summonerGUID;
         bool m_visibleBySummonerOnly;
+        uint32 m_summonerSpecificEntry;
+        uint32 m_summonerSpecificDisplayID;
 };
 
 class TC_GAME_API Minion : public TempSummon

@@ -14220,7 +14220,18 @@ void Unit::BuildValuesUpdate(uint8 updateType, ByteBuffer* data, Player* target)
         {
             UpdateMask::SetUpdateBit(data->contents() + maskPos, index);
 
-            if (index == UNIT_NPC_FLAGS)
+            if (index == OBJECT_FIELD_ENTRY)
+            {
+                uint32 entry = GetEntry();
+
+                if (TempSummon const* tempSummon = ToTempSummon())
+                    if (tempSummon->GetSummonerGUID() == target->GetGUID())
+                        if (uint32 specificEntry = tempSummon->GetSummonerSpecificEntry())
+                            entry = specificEntry;
+
+                *data << uint32(entry);
+            }
+            else if (index == UNIT_NPC_FLAGS)
             {
                 uint32 appendValue = m_uint32Values[UNIT_NPC_FLAGS];
 
@@ -14255,6 +14266,12 @@ void Unit::BuildValuesUpdate(uint8 updateType, ByteBuffer* data, Player* target)
             else if (index == UNIT_FIELD_DISPLAYID)
             {
                 uint32 displayId = m_uint32Values[UNIT_FIELD_DISPLAYID];
+
+                if (TempSummon const* tempSummon = ToTempSummon())
+                    if (tempSummon->GetSummonerGUID() == target->GetGUID())
+                        if (uint32 specificDisplayID = tempSummon->GetSummonerSpecificDisplayID())
+                            displayId = specificDisplayID;
+
                 if (creature)
                 {
                     CreatureTemplate const* cinfo = creature->GetCreatureTemplate();

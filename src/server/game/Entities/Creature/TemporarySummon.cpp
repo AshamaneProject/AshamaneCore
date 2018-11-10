@@ -27,7 +27,7 @@
 
 TempSummon::TempSummon(SummonPropertiesEntry const* properties, Unit* owner, bool isWorldObject) :
 Creature(isWorldObject), m_Properties(properties), m_type(TEMPSUMMON_MANUAL_DESPAWN),
-m_timer(0), m_lifetime(0), m_visibleBySummonerOnly(false)
+m_timer(0), m_lifetime(0), m_visibleBySummonerOnly(false), m_summonerSpecificEntry(0), m_summonerSpecificDisplayID(0)
 {
     if (owner)
         m_summonerGUID = owner->GetGUID();
@@ -174,6 +174,18 @@ void TempSummon::Update(uint32 diff)
     }
 }
 
+void TempSummon::SetSummonerSpecificEntry(uint32 entry)
+{
+    if (CreatureTemplate const* cinfo = sObjectMgr->GetCreatureTemplate(entry))
+    {
+        if (CreatureModel const* model = ObjectMgr::ChooseDisplayId(cinfo))
+        {
+            m_summonerSpecificEntry = entry;
+            m_summonerSpecificDisplayID = model->CreatureDisplayID;
+        }
+    }
+}
+
 void TempSummon::InitStats(uint32 duration)
 {
     ASSERT(!IsPet());
@@ -216,6 +228,9 @@ void TempSummon::InitStats(uint32 duration)
         setFaction(m_Properties->Faction);
     else if (IsVehicle() && owner) // properties should be vehicle
         setFaction(owner->getFaction());
+
+    if (uint32 summonerSpecificEntry = sObjectMgr->GetCreatureSummonerSpecificEntry(GetEntry()))
+        SetSummonerSpecificEntry(summonerSpecificEntry);
 }
 
 void TempSummon::InitSummon(Spell const* summonSpell /*= nullptr*/)

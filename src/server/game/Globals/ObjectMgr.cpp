@@ -8978,6 +8978,39 @@ void ObjectMgr::LoadCreatureDefaultTrainers()
     TC_LOG_INFO("server.loading", ">> Loaded " SZFMTD " default trainers in %u ms", _creatureDefaultTrainers.size(), GetMSTimeDiffToNow(oldMSTime));
 }
 
+void ObjectMgr::LoadCreatureSummonerEntry()
+{
+    uint32 oldMSTime = getMSTime();
+
+    _creatureSummonerEntry.clear();
+
+    if (QueryResult result = WorldDatabase.Query("SELECT CreatureId, SummonerVisibleCreatureId FROM creature_summoner_entry"))
+    {
+        do
+        {
+            Field* fields = result->Fetch();
+            uint32 creatureId = fields[0].GetUInt32();
+            uint32 SummonerVisibleCreatureId = fields[1].GetUInt32();
+
+            if (!GetCreatureTemplate(creatureId))
+            {
+                TC_LOG_ERROR("sql.sql", "Table `creature_summoner_entry` references non-existing creature template (CreatureId: %u), ignoring", creatureId);
+                continue;
+            }
+
+            if (!GetCreatureTemplate(SummonerVisibleCreatureId))
+            {
+                TC_LOG_ERROR("sql.sql", "Table `creature_summoner_entry` references non-existing creature template (SummonerVisibleCreatureId: %u), ignoring", creatureId);
+                continue;
+            }
+
+            _creatureSummonerEntry[creatureId] = SummonerVisibleCreatureId;
+        } while (result->NextRow());
+    }
+
+    TC_LOG_INFO("server.loading", ">> Loaded " SZFMTD " creature specific summoner entry in %u ms", _creatureSummonerEntry.size(), GetMSTimeDiffToNow(oldMSTime));
+}
+
 int ObjectMgr::LoadReferenceVendor(int32 vendor, int32 item, std::set<uint32> *skip_vendors)
 {
     // find all items from the reference vendor
@@ -9223,6 +9256,15 @@ uint32 ObjectMgr::GetCreatureDefaultTrainer(uint32 creatureId) const
 {
     auto itr = _creatureDefaultTrainers.find(creatureId);
     if (itr != _creatureDefaultTrainers.end())
+        return itr->second;
+
+    return 0;
+}
+
+uint32 ObjectMgr::GetCreatureSummonerSpecificEntry(uint32 creatureId) const
+{
+    auto itr = _creatureSummonerEntry.find(creatureId);
+    if (itr != _creatureSummonerEntry.end())
         return itr->second;
 
     return 0;
@@ -9556,7 +9598,7 @@ CreatureBaseStats const* ObjectMgr::GetCreatureBaseStats(uint8 level, uint8 unit
 void ObjectMgr::LoadCreatureClassLevelStats()
 {
     uint32 oldMSTime = getMSTime();
-    //                                               0      1      2         3          4            5        
+    //                                               0      1      2         3          4            5
     QueryResult result = WorldDatabase.Query("SELECT level, class, basemana, basearmor, attackpower, rangedattackpower FROM creature_classlevelstats");
 
     if (!result)
