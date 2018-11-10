@@ -399,7 +399,7 @@ class aura_dh_fraility : public AuraScript
     void HandleProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
     {
         Unit* caster = aurEff->GetCaster();
-        if (!caster)
+        if (!caster || !eventInfo.GetDamageInfo())
             return;
 
         int32 healAmount = CalculatePct(eventInfo.GetDamageInfo()->GetDamage(), GetEffectInfo(EFFECT_0)->BasePoints);
