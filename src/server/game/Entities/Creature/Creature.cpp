@@ -189,8 +189,7 @@ bool ForcedDespawnDelayEvent::Execute(uint64 /*e_time*/, uint32 /*p_time*/)
 }
 
 Creature::Creature(bool isWorldObject): Unit(isWorldObject), MapObject(),
-m_groupLootTimer(0), m_PlayerDamageReq(0),
-_pickpocketLootRestore(0), m_corpseRemoveTime(0), m_respawnTime(0),
+m_PlayerDamageReq(0), _pickpocketLootRestore(0), m_corpseRemoveTime(0), m_respawnTime(0),
 m_respawnDelay(300), m_corpseDelay(60), m_respawnradius(0.0f), m_boundaryCheckTime(2500), m_combatPulseTime(0), m_combatPulseDelay(0), m_reactState(REACT_AGGRESSIVE),
 m_defaultMovementType(IDLE_MOTION_TYPE), m_spawnId(UI64LIT(0)), m_equipmentId(0), m_originalEquipmentId(0), m_AlreadyCallAssistance(false),
 m_AlreadySearchedAssistance(false), m_regenHealth(true), m_cannotReachTarget(false), m_cannotReachTimer(0), m_AI_locked(false), m_meleeDamageSchoolMask(SPELL_SCHOOL_MASK_NORMAL),
@@ -346,10 +345,6 @@ bool Creature::InitEntry(uint32 entry, CreatureData const* data /*= nullptr*/)
 
     if (!cinfo)
         cinfo = normalInfo;
-
-    // Initialize loot duplicate count depending on raid difficulty
-    if (GetMap()->Is25ManRaid())
-        loot.maxDuplicates = 3;
 
     SetEntry(entry);                                        // normal entry always
     m_creatureInfo = cinfo;                                 // map mode related always
@@ -572,20 +567,7 @@ void Creature::Update(uint32 diff)
             if (m_deathState != CORPSE)
                 break;
 
-            if (m_groupLootTimer && !lootingGroupLowGUID.IsEmpty())
-            {
-                if (m_groupLootTimer <= diff)
-                {
-                    if (Group* group = sGroupMgr->GetGroupByGUID(lootingGroupLowGUID))
-                        group->EndRoll(&loot);
-
-                    m_groupLootTimer = 0;
-                    lootingGroupLowGUID.Clear();
-                }
-                else
-                    m_groupLootTimer -= diff;
-            }
-            else if (m_corpseRemoveTime <= time(NULL))
+            if (m_corpseRemoveTime <= time(NULL))
             {
                 RemoveCorpse(false);
                 TC_LOG_DEBUG("entities.unit", "Removing corpse... %u ", GetUInt32Value(OBJECT_FIELD_ENTRY));
@@ -1078,61 +1060,65 @@ bool Creature::CanResetTalents(Player* player) const
         && player->getClass() == GetCreatureTemplate()->trainer_class;
 }
 
-Player* Creature::GetLootRecipient() const
+std::vector<Player*> Creature::GetLootRecipients() const
 {
-    if (!m_lootRecipient)
-        return nullptr;
+    std::vector<Player*> recipients;
+    for (ObjectGuid guid : m_lootRecipients)
+        if (guid.IsPlayer())
+            recipients.push_back(ObjectAccessor::FindConnectedPlayer(guid));
 
-    return ObjectAccessor::FindConnectedPlayer(m_lootRecipient);
+    return recipients;
 }
 
-Group* Creature::GetLootRecipientGroup() const
+std::vector<Group*> Creature::GetLootRecipientGroups() const
 {
-    if (m_lootRecipientGroup.IsEmpty())
-        return nullptr;
+    std::vector<Group*> recipients;
+    for (ObjectGuid guid : m_lootRecipients)
+        if (guid.IsParty())
+            recipients.push_back(sGroupMgr->GetGroupByGUID(guid));
 
-    return sGroupMgr->GetGroupByGUID(m_lootRecipientGroup);
+    return recipients;
 }
 
-void Creature::SetLootRecipient(Unit* unit)
+void Creature::AddLootRecipient(Unit* unit)
 {
     // set the player whose group should receive the right
     // to loot the creature after it dies
     // should be set to nullptr after the loot disappears
 
-    if (!unit)
-    {
-        m_lootRecipient.Clear();
-        m_lootRecipientGroup.Clear();
-        RemoveFlag(OBJECT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE | UNIT_DYNFLAG_TAPPED);
-        return;
-    }
-
-    if (unit->GetTypeId() != TYPEID_PLAYER && !unit->IsVehicle())
+    if (!unit || !unit->IsPlayer() && !unit->IsVehicle())
         return;
 
     Player* player = unit->GetCharmerOrOwnerPlayerOrPlayerItself();
     if (!player)                                             // normal creature, no player involved
         return;
 
-    m_lootRecipient = player->GetGUID();
+    m_lootRecipients.push_back(player->GetGUID());
     if (Group* group = player->GetGroup())
-        m_lootRecipientGroup = group->GetGUID();
+        m_lootRecipients.push_back(group->GetGUID());
 
     SetFlag(OBJECT_DYNAMIC_FLAGS, UNIT_DYNFLAG_TAPPED);
 }
 
-// return true if this creature is tapped by the player or by a member of his group.
-bool Creature::isTappedBy(Player const* player) const
+void Creature::ResetLootRecipients()
 {
-    if (player->GetGUID() == m_lootRecipient)
+    m_lootRecipients.clear();
+    RemoveFlag(OBJECT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE | UNIT_DYNFLAG_TAPPED);
+}
+
+// return true if this creature is tapped by the player or by a member of his group.
+bool Creature::IsTappedBy(Player const* player) const
+{
+    if (std::find(m_lootRecipients.begin(), m_lootRecipients.end(), player->GetGUID()) != m_lootRecipients.end())
         return true;
 
-    Group const* playerGroup = player->GetGroup();
-    if (!playerGroup || playerGroup != GetLootRecipientGroup()) // if we dont have a group we arent the recipient
-        return false;                                           // if creature doesnt have group bound it means it was solo killed by someone else
+    if (Group const* playerGroup = player->GetGroup())
+        if (std::find(m_lootRecipients.begin(), m_lootRecipients.end(), player->GetGUID()) != m_lootRecipients.end())
+            return true;
 
-    return true;
+    // Todo : Check player team
+
+    return false;
 }
 
 void Creature::SaveToDB()
@@ -1838,7 +1824,7 @@ void Creature::setDeathState(DeathState s)
         else
             SetSpawnHealth();
 
-        SetLootRecipient(nullptr);
+        ResetLootRecipients();
         ResetPlayerDamageReq();
 
         SetCannotReachTarget(false);
@@ -2543,7 +2529,7 @@ void Creature::GetRespawnPosition(float &x, float &y, float &z, float* ori, floa
 
 void Creature::AllLootRemovedFromCorpse()
 {
-    if (loot.loot_type != LOOT_SKINNING && !IsPet() && GetCreatureTemplate()->SkinLootId && hasLootRecipient())
+    if (loot.loot_type != LOOT_SKINNING && !IsPet() && GetCreatureTemplate()->SkinLootId && HasLootRecipients())
         if (LootTemplates_Skinning.HaveLootFor(GetCreatureTemplate()->SkinLootId))
             SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SKINNABLE);
 

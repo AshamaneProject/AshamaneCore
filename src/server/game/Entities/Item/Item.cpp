@@ -2065,40 +2065,42 @@ void Item::ItemContainerSaveLootToDB()
         stmt_items->setUInt64(0, loot.containerID.GetCounter());
         trans->Append(stmt_items);
 
+        Player* const player = GetOwner();
+
         // Now insert the items
-        for (LootItemList::const_iterator _li = loot.items.begin(); _li != loot.items.end(); ++_li)
+        for (LootItem item : loot.items[player->GetGUID()])
         {
             // When an item is looted, it doesn't get removed from the items collection
             //  but we don't want to resave it.
-            if (!_li->canSave)
+            if (!item.canSave)
                 continue;
+
             // Conditions are not checked when loot is generated, it is checked when loot is sent to a player.
             // For items that are lootable, loot is saved to the DB immediately, that means that loot can be
             // saved to the DB that the player never should have gotten. This check prevents that, so that only
             // items that the player should get in loot are in the DB.
             // IE: Horde items are not saved to the DB for Ally players.
-            Player* const guid = GetOwner();
-            if (!_li->AllowedForPlayer(guid))
+            if (!item.AllowedForPlayer(player))
                continue;
 
             stmt_items = CharacterDatabase.GetPreparedStatement(CHAR_INS_ITEMCONTAINER_ITEMS);
 
             // container_id, item_id, item_count, follow_rules, ffa, blocked, counted, under_threshold, needs_quest, rnd_type, rnd_prop, rnd_suffix, context, bonus_list_ids
             stmt_items->setUInt64(0, loot.containerID.GetCounter());
-            stmt_items->setUInt32(1, _li->itemid);
-            stmt_items->setUInt32(2, _li->count);
-            stmt_items->setBool(3, _li->follow_loot_rules);
-            stmt_items->setBool(4, _li->freeforall);
-            stmt_items->setBool(5, _li->is_blocked);
-            stmt_items->setBool(6, _li->is_counted);
-            stmt_items->setBool(7, _li->is_underthreshold);
-            stmt_items->setBool(8, _li->needs_quest);
-            stmt_items->setUInt8(9, uint8(_li->randomPropertyId.Type));
-            stmt_items->setUInt32(10, _li->randomPropertyId.Id);
-            stmt_items->setUInt32(11, _li->randomSuffix);
-            stmt_items->setUInt8(12, _li->context);
+            stmt_items->setUInt32(1, item.itemid);
+            stmt_items->setUInt32(2, item.count);
+            stmt_items->setBool(3, item.follow_loot_rules);
+            stmt_items->setBool(4, item.freeforall);
+            stmt_items->setBool(5, item.is_blocked);
+            stmt_items->setBool(6, item.is_counted);
+            stmt_items->setBool(7, item.is_underthreshold);
+            stmt_items->setBool(8, item.needs_quest);
+            stmt_items->setUInt8(9, uint8(item.randomPropertyId.Type));
+            stmt_items->setUInt32(10, item.randomPropertyId.Id);
+            stmt_items->setUInt32(11, item.randomSuffix);
+            stmt_items->setUInt8(12, item.context);
             std::ostringstream bonusListIDs;
-            for (int32 bonusListID : _li->BonusListIDs)
+            for (int32 bonusListID : item.BonusListIDs)
                 bonusListIDs << bonusListID << ' ';
             stmt_items->setString(13, bonusListIDs.str());
             trans->Append(stmt_items);
@@ -2176,7 +2178,7 @@ bool Item::ItemContainerLoadLootFromDB()
                     loot_item.AddAllowedLooter(GetOwner());
 
                 // Finally add the LootItem to the container
-                loot.items.push_back(loot_item);
+                loot.items[GetOwner()->GetGUID()].push_back(loot_item);
 
                 // Increment unlooted count
                 loot.unlootedCount++;

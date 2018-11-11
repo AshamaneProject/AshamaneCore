@@ -58,16 +58,6 @@ namespace WorldPackets
 
 #define READYCHECK_DURATION 35000
 
-enum RollVote
-{
-    PASS              = 0,
-    NEED              = 1,
-    GREED             = 2,
-    DISENCHANT        = 3,
-    NOT_EMITED_YET    = 4,
-    NOT_VALID         = 5
-};
-
 enum GroupMemberOnlineStatus
 {
     MEMBER_STATUS_OFFLINE   = 0x0000,
@@ -170,31 +160,6 @@ enum GroupUpdatePetFlags
                             GROUP_UPDATE_FLAG_PET_CUR_HP | GROUP_UPDATE_FLAG_PET_MAX_HP | GROUP_UPDATE_FLAG_PET_AURAS // all pet flags
 };
 
-class Roll : public LootValidatorRef
-{
-    public:
-        explicit Roll(LootItem const& li);
-        ~Roll();
-        void setLoot(Loot* pLoot);
-        Loot* getLoot();
-        void targetObjectBuildLink() override;
-        void FillPacket(WorldPackets::Loot::LootItemData& lootItem) const;
-        ItemDisenchantLootEntry const* GetItemDisenchantLoot(Player const* player) const;
-
-        uint32 itemid;
-        ItemRandomEnchantmentId itemRandomPropId;
-        uint32 itemRandomSuffix;
-        uint8 itemCount;
-        typedef std::map<ObjectGuid, RollVote> PlayerVote;
-        PlayerVote playerVote;                              //vote position correspond with player position (in group)
-        uint8 totalPlayersRolling;
-        uint8 totalNeed;
-        uint8 totalGreed;
-        uint8 totalPass;
-        uint8 itemSlot;
-        uint8 rollVoteMask;
-};
-
 struct InstanceGroupBind
 {
     InstanceSave* save;
@@ -240,8 +205,6 @@ class TC_GAME_API Group
     protected:
         typedef MemberSlotList::iterator member_witerator;
         typedef std::set<Player*> InvitesList;
-
-        typedef std::vector<Roll*> Rolls;
 
     public:
         Group();
@@ -391,24 +354,6 @@ class TC_GAME_API Group
         void LostAgainst(uint32 Own_MMRating, uint32 Opponent_MMRating, int32& rating_change, uint8 slot);
         void FinishGame(int32 rating_change, uint8 slot);
 
-        /*********************************************************/
-        /***                   LOOT SYSTEM                     ***/
-        /*********************************************************/
-
-        bool isRollLootActive() const { return !RollId.empty(); }
-        void SendLootStartRollToPlayer(uint32 countDown, uint32 mapId, Player* p, bool canNeed, Roll const& r) const;
-        void SendLootRoll(ObjectGuid playerGuid, int32 rollNumber, uint8 rollType, Roll const& roll) const;
-        void SendLootRollWon(ObjectGuid winnerGuid, int32 rollNumber, uint8 rollType, Roll const& roll) const;
-        void SendLootAllPassed(Roll const& roll) const;
-        void SendLootRollsComplete(Roll const& roll) const;
-        void SendLooter(Creature* creature, Player* pLooter);
-        void GroupLoot(Loot* loot, WorldObject* pLootedObject);
-        void MasterLoot(Loot* loot, WorldObject* pLootedObject);
-        Rolls::iterator GetRoll(ObjectGuid lootObjectGuid, uint8 lootListId);
-        void CountTheRoll(Rolls::iterator roll);
-        void CountRollVote(ObjectGuid playerGuid, ObjectGuid lootObjectGuid, uint8 lootListId, uint8 choice);
-        void EndRoll(Loot* loot);
-
         // related to disenchant rolls
         void ResetMaxEnchantingLevel();
 
@@ -455,7 +400,6 @@ class TC_GAME_API Group
         ItemQualities       m_lootThreshold;
         ObjectGuid          m_looterGuid;
         ObjectGuid          m_masterLooterGuid;
-        Rolls               RollId;
         BoundInstancesMap   m_boundInstances;
         uint8*              m_subGroupsCounts;
         ObjectGuid          m_guid;
