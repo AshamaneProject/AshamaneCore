@@ -56,7 +56,7 @@ QuaternionData QuaternionData::fromEulerAnglesZYX(float Z, float Y, float X)
 }
 
 GameObject::GameObject() : WorldObject(false), MapObject(),
-    m_model(nullptr), m_goValue(), m_AI(nullptr), _animKitId(0),
+    m_model(nullptr), m_goValue(), m_AI(nullptr),
     _worldEffectID(0), _scheduler(this)
 {
     m_objectType |= TYPEMASK_GAMEOBJECT;
@@ -281,6 +281,14 @@ bool GameObject::Create(uint32 entry, Map* map, Position const& pos, QuaternionD
         {
             m_updateFlag.GameObject = true;
             SetWorldEffectID(m_goTemplateAddon->WorldEffectID);
+        }
+
+        if (m_goTemplateAddon->AIAnimKitID)
+        {
+            m_updateFlag.AnimKit = true;
+            _aiAnimKitId = m_goTemplateAddon->AIAnimKitID;
+            _movementAnimKitId = m_goTemplateAddon->MovementID;
+            _meleeAnimKitId = m_goTemplateAddon->MeleeID;
         }
     }
 
@@ -1314,7 +1322,7 @@ void GameObject::UseDoorOrButton(uint32 time_to_restore, bool alternative /* = f
 
 void GameObject::SetGoArtKit(uint8 kit)
 {
-    SetByteValue(GAMEOBJECT_BYTES_1, 2, kit);
+    SetByteValue(GAMEOBJECT_BYTES_1, GO_BYTES_1_OFFSET_ART_KIT, kit);
     GameObjectData* data = const_cast<GameObjectData*>(sObjectMgr->GetGOData(m_spawnId));
     if (data)
         data->artKit = kit;
@@ -2326,7 +2334,7 @@ void GameObject::SetLootState(LootState state, Unit* unit)
 
 void GameObject::SetGoState(GOState state)
 {
-    SetByteValue(GAMEOBJECT_BYTES_1, 0, state);
+    SetByteValue(GAMEOBJECT_BYTES_1, GO_BYTES_1_OFFSET_STATE, state);
     sScriptMgr->OnGameObjectStateChanged(this, state);
     if (m_model && !IsTransport())
     {
@@ -2657,18 +2665,18 @@ void GameObject::UpdateModelPosition()
     }
 }
 
-void GameObject::SetAnimKitId(uint16 animKitId, bool oneshot)
+void GameObject::SetAIAnimKitId(uint16 animKitId, bool oneshot)
 {
-    if (_animKitId == animKitId)
+    if (_aiAnimKitId == animKitId)
         return;
 
     if (animKitId && !sAnimKitStore.LookupEntry(animKitId))
         return;
 
     if (!oneshot)
-        _animKitId = animKitId;
+        _aiAnimKitId = animKitId;
     else
-        _animKitId = 0;
+        _aiAnimKitId = 0;
 
     WorldPackets::GameObject::GameObjectActivateAnimKit activateAnimKit;
     activateAnimKit.ObjectGUID = GetGUID();

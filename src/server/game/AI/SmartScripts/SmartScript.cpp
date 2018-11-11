@@ -2566,10 +2566,10 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
                     switch (e.action.animKit.type)
                     {
                         case 0:
-                            (*itr)->ToCreature()->PlayOneShotAnimKitId(e.action.animKit.animKit);
+                            (*itr)->ToCreature()->SetAIAnimKitId(e.action.animKit.animKit, true);
                             break;
                         case 1:
-                            (*itr)->ToCreature()->SetAIAnimKitId(e.action.animKit.animKit);
+                            (*itr)->ToCreature()->SetAIAnimKitId(e.action.animKit.animKit, false);
                             break;
                         case 2:
                             (*itr)->ToCreature()->SetMeleeAnimKitId(e.action.animKit.animKit);
@@ -2658,7 +2658,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
                                 break;
                         }
                     }
-                    
+
             delete targets;
             break;
         }
@@ -2721,7 +2721,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
                     if (!IsUnit(*itr))
                         continue;
 
-                    me->GetMotionMaster()->MoveCirclePath((*itr)->ToUnit()->GetPositionX(), (*itr)->ToUnit()->GetPositionY(), (*itr)->ToUnit()->GetPositionZ(), (float)e.action.moveCirclePath.radius, e.action.moveCirclePath.clockWise, uint8(e.action.moveCirclePath.stepCount));                        
+                    me->GetMotionMaster()->MoveCirclePath((*itr)->ToUnit()->GetPositionX(), (*itr)->ToUnit()->GetPositionY(), (*itr)->ToUnit()->GetPositionZ(), (float)e.action.moveCirclePath.radius, e.action.moveCirclePath.clockWise, uint8(e.action.moveCirclePath.stepCount));
                 }
 
                 delete targets;
@@ -2899,7 +2899,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
                     x = pos.GetPositionX() + (std::cos(o - (M_PI / 2))*e.target.x) + (std::cos(o)*e.target.y);
                     y = pos.GetPositionY() + (std::sin(o - (M_PI / 2))*e.target.x) + (std::sin(o)*e.target.y);
                     z = pos.GetPositionZ() + e.target.z;
-                    
+
                     if (e.action.castOffSet.triggered)
                        (*itr)->ToUnit()->CastSpell(x, y, z, e.action.castOffSet.spellId, true);
                    else

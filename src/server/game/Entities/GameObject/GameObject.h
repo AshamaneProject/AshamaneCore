@@ -177,16 +177,16 @@ class TC_GAME_API GameObject : public WorldObject, public GridObject<GameObject>
         void SendGameObjectDespawn();
         void getFishLoot(Loot* loot, Player* loot_owner);
         void getFishLootJunk(Loot* loot, Player* loot_owner);
-        GameobjectTypes GetGoType() const { return GameobjectTypes(GetByteValue(GAMEOBJECT_BYTES_1, 1)); }
-        void SetGoType(GameobjectTypes type) { SetByteValue(GAMEOBJECT_BYTES_1, 1, type); }
-        GOState GetGoState() const { return GOState(GetByteValue(GAMEOBJECT_BYTES_1, 0)); }
+        GameobjectTypes GetGoType() const { return GameobjectTypes(GetByteValue(GAMEOBJECT_BYTES_1, GO_BYTES_1_OFFSET_GO_TYPE)); }
+        void SetGoType(GameobjectTypes type) { SetByteValue(GAMEOBJECT_BYTES_1, GO_BYTES_1_OFFSET_GO_TYPE, type); }
+        GOState GetGoState() const { return GOState(GetByteValue(GAMEOBJECT_BYTES_1, GO_BYTES_1_OFFSET_STATE)); }
         void SetGoState(GOState state);
         virtual uint32 GetTransportPeriod() const;
         void SetTransportState(GOState state, uint32 stopFrame = 0);
-        uint8 GetGoArtKit() const { return GetByteValue(GAMEOBJECT_BYTES_1, 2); }
+        uint8 GetGoArtKit() const { return GetByteValue(GAMEOBJECT_BYTES_1, GO_BYTES_1_OFFSET_ART_KIT); }
         void SetGoArtKit(uint8 artkit);
-        uint8 GetGoAnimProgress() const { return GetByteValue(GAMEOBJECT_BYTES_1, 3); }
-        void SetGoAnimProgress(uint8 animprogress) { SetByteValue(GAMEOBJECT_BYTES_1, 3, animprogress); }
+        uint8 GetGoAnimProgress() const { return GetByteValue(GAMEOBJECT_BYTES_1, GO_BYTES_1_OFFSET_ANIM_PROGRESS); }
+        void SetGoAnimProgress(uint8 animprogress) { SetByteValue(GAMEOBJECT_BYTES_1, GO_BYTES_1_OFFSET_ANIM_PROGRESS, animprogress); }
         static void SetGoArtKit(uint8 artkit, GameObject* go, ObjectGuid::LowType lowguid = UI64LIT(0));
 
         void EnableCollision(bool enable);
@@ -295,8 +295,7 @@ class TC_GAME_API GameObject : public WorldObject, public GridObject<GameObject>
 
         void UpdateModelPosition();
 
-        uint16 GetAIAnimKitId() const override { return _animKitId; }
-        void SetAnimKitId(uint16 animKitId, bool oneshot);
+        void SetAIAnimKitId(uint16 animKitId, bool oneshot) override;
 
         /// Event handler
         EventProcessor m_Events;
@@ -365,7 +364,6 @@ class TC_GAME_API GameObject : public WorldObject, public GridObject<GameObject>
         }
 
         GameObjectAI* m_AI;
-        uint16 _animKitId;
         uint32 _worldEffectID;
 
         TaskScheduler _scheduler;

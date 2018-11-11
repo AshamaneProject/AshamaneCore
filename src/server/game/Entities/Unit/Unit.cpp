@@ -292,8 +292,7 @@ Unit::Unit(bool isWorldObject) :
     i_AI(NULL), i_disabledAI(NULL), m_AutoRepeatFirstCast(false), m_procDeep(0),
     m_removedAurasCount(0), i_motionMaster(new MotionMaster(this)), m_regenTimer(0), m_ThreatManager(this),
     m_vehicle(NULL), m_vehicleKit(NULL), m_unitTypeMask(UNIT_MASK_NONE),
-    m_HostileRefManager(this), _aiAnimKitId(0), _movementAnimKitId(0), _meleeAnimKitId(0),
-    _lastDamagedTime(0), _spellHistory(new SpellHistory(this)), _scheduler(this)
+    m_HostileRefManager(this), _lastDamagedTime(0), _spellHistory(new SpellHistory(this)), _scheduler(this)
 {
     m_objectType |= TYPEMASK_UNIT;
     m_objectTypeId = TYPEID_UNIT;
@@ -11190,26 +11189,21 @@ void Unit::SendDurabilityLoss(Player* receiver, uint32 percent)
     receiver->GetSession()->SendPacket(packet.Write());
 }
 
-void Unit::PlayOneShotAnimKitId(uint16 animKitId)
+void Unit::SetAIAnimKitId(uint16 animKitId, bool oneshot)
 {
-    if (!sAnimKitStore.LookupEntry(animKitId))
+    if (animKitId && !sAnimKitStore.LookupEntry(animKitId))
+        return;
+
+    if (oneshot)
     {
-        TC_LOG_ERROR("entities.unit", "Unit::PlayOneShotAnimKitId using invalid AnimKit ID: %u", animKitId);
+        WorldPackets::Misc::PlayOneShotAnimKit data;
+        data.Unit = GetGUID();
+        data.AnimKitID = animKitId;
+        SendMessageToSet(data.Write(), true);
         return;
     }
 
-    WorldPackets::Misc::PlayOneShotAnimKit data;
-    data.Unit = GetGUID();
-    data.AnimKitID = animKitId;
-    SendMessageToSet(data.Write(), true);
-}
-
-void Unit::SetAIAnimKitId(uint16 animKitId)
-{
     if (_aiAnimKitId == animKitId)
-        return;
-
-    if (animKitId && !sAnimKitStore.LookupEntry(animKitId))
         return;
 
     _aiAnimKitId = animKitId;

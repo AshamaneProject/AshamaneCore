@@ -2507,6 +2507,14 @@ enum GameObjectDestructibleState
     GO_DESTRUCTIBLE_REBUILDING  = 3
 };
 
+enum GameObjectBytes1Offsets : uint8
+{
+    GO_BYTES_1_OFFSET_STATE         = 0,
+    GO_BYTES_1_OFFSET_GO_TYPE       = 1,
+    GO_BYTES_1_OFFSET_ART_KIT       = 2,
+    GO_BYTES_1_OFFSET_ANIM_PROGRESS = 3,
+};
+
 // EmotesText.dbc (6.0.2.18988)
 enum TextEmotes
 {

@@ -7316,8 +7316,8 @@ void ObjectMgr::LoadGameObjectTemplateAddons()
 {
     uint32 oldMSTime = getMSTime();
 
-    //                                                0       1       2      3        4        5
-    QueryResult result = WorldDatabase.Query("SELECT entry, faction, flags, mingold, maxgold, WorldEffectID FROM gameobject_template_addon");
+    //                                               0       1       2      3        4        5              6            7           8
+    QueryResult result = WorldDatabase.Query("SELECT entry, faction, flags, mingold, maxgold, WorldEffectID, AIAnimKitID, MovementID, MeleeID FROM gameobject_template_addon");
 
     if (!result)
     {
@@ -7345,6 +7345,9 @@ void ObjectMgr::LoadGameObjectTemplateAddons()
         gameObjectAddon.mingold       = fields[3].GetUInt32();
         gameObjectAddon.maxgold       = fields[4].GetUInt32();
         gameObjectAddon.WorldEffectID = fields[5].GetUInt32();
+        gameObjectAddon.AIAnimKitID   = fields[6].GetUInt32();
+        gameObjectAddon.MovementID    = fields[7].GetUInt32();
+        gameObjectAddon.MeleeID       = fields[8].GetUInt32();
 
         // checks
         if (gameObjectAddon.faction && !sFactionTemplateStore.LookupEntry(gameObjectAddon.faction))
@@ -7367,6 +7370,12 @@ void ObjectMgr::LoadGameObjectTemplateAddons()
         {
             TC_LOG_ERROR("sql.sql", "GameObject (Entry: %u) has invalid WorldEffectID (%u) defined in `gameobject_template_addon`, set to 0.", entry, gameObjectAddon.WorldEffectID);
             gameObjectAddon.WorldEffectID = 0;
+        }
+
+        if (gameObjectAddon.AIAnimKitID && !sAnimKitStore.LookupEntry(gameObjectAddon.AIAnimKitID))
+        {
+            TC_LOG_ERROR("sql.sql", "GameObject (Entry: %u) has invalid AIAnimKitID (%u) defined in `gameobject_template_addon`, set to 0.", entry, gameObjectAddon.AIAnimKitID);
+            gameObjectAddon.AIAnimKitID = 0;
         }
 
         ++count;
@@ -9513,12 +9522,12 @@ bool ObjectMgr::HasNonControlVehicleSpellClick(Unit* unit) const
 {
     SpellClickInfoMapBounds spellClickMap = GetSpellClickInfoMapBounds(unit->GetEntry());
     for (SpellClickInfoContainer::const_iterator itr = spellClickMap.first; itr != spellClickMap.second; ++itr)
-    {
         if (SpellInfo const* spellEntry = sSpellMgr->GetSpellInfo(itr->second.spellId))
             for (SpellEffectInfo const* effect : spellEntry->GetEffectsForDifficulty(unit->GetMap()->GetDifficultyID()))
                 if (effect && effect->ApplyAuraName != SPELL_AURA_CONTROL_VEHICLE)
                     return true;
-    }
+
+    return false;
 }
 
 void ObjectMgr::LoadGarrisonScriptNames()
