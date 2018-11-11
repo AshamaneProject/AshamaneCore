@@ -11261,7 +11261,7 @@ void Unit::Kill(Unit* victim, bool durabilityLoss)
     Creature* creature = victim->ToCreature();
 
     bool isXpRewardAllowed = true;
-    bool isLootRewardAllowed = true;
+    bool isLootRewardAllowed = creature != nullptr;
 
     if (creature)
     {
