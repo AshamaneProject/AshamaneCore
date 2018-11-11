@@ -155,7 +155,7 @@ public:
             {
             case NPC_INFERNO_TRIGGER:
                 summon->setFaction(16);
-                summon->SetDisplayId(me->GetCreatureTemplate()->Modelid1);
+                summon->SetDisplayFromModel(0);
                 summon->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_NPC);
                 summon->AI()->DoCastAOE(SPELL_INFERNO_JUMP_VISUAL);
 
@@ -167,7 +167,7 @@ public:
                 summon->DespawnOrUnsummon(7500);
                 break;
             case NPC_SOLAR_WIND:
-                me->SetDisplayId(me->GetCreatureTemplate()->Modelid1);
+                me->SetDisplayFromModel(0);
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_NPC);
                 DoCastAOE(SPELL_SOLAR_FIRE);
                 break;
@@ -293,7 +293,7 @@ public:
 
         void IsSummonedBy(Unit* /*summoner*/) override
         {
-            me->SetDisplayId(me->GetCreatureTemplate()->Modelid1);
+            me->SetDisplayFromModel(0);
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_NPC);
             me->SetReactState(REACT_PASSIVE);
             DoCastAOE(SPELL_FIRE_VORTEX);

@@ -1065,6 +1065,13 @@ public:
 
         int32 powerAmount = atoi(amount);
 
+        int32 maxAmount = target->GetMaxPower(Powers(powerType->PowerTypeEnum));
+        char* maxamountStr = strtok(nullptr, " ");
+        if (maxamountStr)
+            maxAmount = atoi(maxamountStr);
+
+        maxAmount = std::max(maxAmount, powerAmount);
+
         if (powerAmount < 1)
         {
             handler->SendSysMessage(LANG_BAD_VALUE);
@@ -1093,7 +1100,7 @@ public:
 
         NotifyModification(handler, target, LANG_YOU_CHANGE_POWER, LANG_YOUR_POWER_CHANGED, formattedPowerName.c_str(), powerAmount, powerAmount);
         powerAmount *= powerType->DisplayModifier;
-        target->SetMaxPower(Powers(powerType->PowerTypeEnum), powerAmount);
+        target->SetMaxPower(Powers(powerType->PowerTypeEnum), maxAmount);
         target->SetPower(Powers(powerType->PowerTypeEnum), powerAmount);
         return true;
     }
