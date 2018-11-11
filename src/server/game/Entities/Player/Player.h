@@ -2524,6 +2524,8 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         void SendCustomMessage(std::string const& opcode, std::string const& data = "");
         void SendCustomMessage(std::string const& opcode, std::vector<std::string> const& data);
 
+        void PlayConversation(uint32 conversationId);
+
     protected:
         // Gamemaster whisper whitelist
         GuidList WhisperList;

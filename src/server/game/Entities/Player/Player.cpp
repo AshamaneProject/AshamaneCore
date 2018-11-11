@@ -29805,6 +29805,11 @@ void Player::SendCustomMessage(std::string const& opcode, std::vector<std::strin
     ChatHandler(GetSession()).SendSysMessage(message.str().c_str());
 }
 
+void Player::PlayConversation(uint32 conversationId)
+{
+    Conversation::CreateConversation(conversationId, this, GetPosition(), { GetGUID() });
+}
+
 void Player::FinishWeek()
 {
     for (WorldPackets::Battleground::RatedInfo& slotInfo : m_ratedInfos)
