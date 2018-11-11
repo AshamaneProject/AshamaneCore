@@ -11193,7 +11193,7 @@ void Unit::SendDurabilityLoss(Player* receiver, uint32 percent)
     receiver->GetSession()->SendPacket(packet.Write());
 }
 
-void Unit::SetAIAnimKitId(uint16 animKitId, bool oneshot)
+void Unit::SetAIAnimKitId(uint16 animKitId, bool oneshot /*= false*/)
 {
     if (animKitId && !sAnimKitStore.LookupEntry(animKitId))
         return;

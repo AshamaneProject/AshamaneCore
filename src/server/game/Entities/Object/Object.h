@@ -640,7 +640,7 @@ class TC_GAME_API WorldObject : public Object, public WorldLocation
         virtual float GetStationaryZ() const { return GetPositionZ(); }
         virtual float GetStationaryO() const { return GetOrientation(); }
 
-        virtual void SetAIAnimKitId(uint16 animKitId, bool oneshot) { _aiAnimKitId = animKitId; }
+        virtual void SetAIAnimKitId(uint16 animKitId, bool oneshot = false) { _aiAnimKitId = animKitId; }
         uint16 GetAIAnimKitId() const { return _aiAnimKitId; }
 
         virtual void SetMovementAnimKitId(uint16 animKitId) { _movementAnimKitId = animKitId; }
