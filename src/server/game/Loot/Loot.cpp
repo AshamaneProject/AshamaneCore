@@ -360,7 +360,7 @@ LootItem* Loot::LootItemInSlot(uint32 lootSlot, Player* player)
 {
     LootItemList& playerItems = items.at(player->GetGUID());
     if (lootSlot >= playerItems.size())
-        return false;
+        return nullptr;
 
     LootItem* item = &playerItems[lootSlot];
     if (item->is_looted)
