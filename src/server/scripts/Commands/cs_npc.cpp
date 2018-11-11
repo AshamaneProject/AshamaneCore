@@ -1156,8 +1156,9 @@ public:
         if (phaseID != 0)
             PhasingHandler::AddPhase(creature, phaseID, true);
 
-        creature->SetDBPhase(phaseID);
+        handler->GetSession()->GetPlayer()->UpdateVisibilityForPlayer();
 
+        creature->SetDBPhase(phaseID);
         creature->SaveToDB();
 
         TC_LOG_DEBUG("sql.dev", "UPDATE creature SET PhaseId = %u WHERE guid = %s;", phaseID, std::to_string(creature->GetSpawnId()).c_str());
