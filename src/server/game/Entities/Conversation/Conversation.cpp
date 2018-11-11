@@ -31,7 +31,6 @@ Conversation::Conversation() : WorldObject(false), _duration(0)
     m_objectTypeId = TYPEID_CONVERSATION;
 
     m_updateFlag.Stationary = true;
-    m_updateFlag.Conversation = true;
 
     m_valuesCount = CONVERSATION_END;
     _dynamicValuesCount = CONVERSATION_DYNAMIC_END;
@@ -126,6 +125,8 @@ bool Conversation::Create(ObjectGuid::LowType lowGuid, uint32 conversationEntry,
     _duration = conversationTemplate->LastLineEndTime;
     _textureKitId = conversationTemplate->TextureKitId;
 
+    m_updateFlag.Conversation = conversationTemplate->Actors.size() != 0;
+
     for (uint16 actorIndex = 0; actorIndex < conversationTemplate->Actors.size(); ++actorIndex)
     {
         if (ConversationActorTemplate const* actor = conversationTemplate->Actors[actorIndex])
@@ -177,11 +178,12 @@ bool Conversation::Create(ObjectGuid::LowType lowGuid, uint32 conversationEntry,
     return true;
 }
 
-void Conversation::AddActor(ObjectGuid const& actorGuid, uint16 actorIdx)
+void Conversation::AddActor(ObjectGuid const& actorGuid, uint16 actorIdx, uint32 padding/* = 0*/)
 {
     ConversationDynamicFieldActor actorField;
     actorField.ActorGuid = actorGuid;
     actorField.Type = ConversationDynamicFieldActor::ActorType::WorldObjectActor;
+    actorField.Padding = padding;
     SetDynamicStructuredValue(CONVERSATION_DYNAMIC_FIELD_ACTORS, actorIdx, &actorField);
 }
 
