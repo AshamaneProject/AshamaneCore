@@ -402,7 +402,7 @@ void Loot::BuildLootResponse(WorldPackets::Loot::LootResponse& packet, Player* v
 
     packet.Coins = gold;
 
-    auto& itr = items.find(viewer->GetGUID());
+    auto const& itr = items.find(viewer->GetGUID());
     if (itr == items.end())
         return;
 
