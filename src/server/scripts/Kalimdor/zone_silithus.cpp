@@ -38,10 +38,12 @@ EndContentData */
 #include "ScriptMgr.h"
 #include "CreatureAIImpl.h"
 #include "GameObject.h"
+#include "GameObjectAI.h"
 #include "Group.h"
 #include "MotionMaster.h"
 #include "Player.h"
 #include "ObjectAccessor.h"
+#include "ObjectMgr.h"
 #include "ScriptedCreature.h"
 #include "ScriptedGossip.h"
 #include "TemporarySummon.h"
@@ -1370,6 +1372,166 @@ class go_wind_stone : public GameObjectScript
         }
 };
 
+// 130216 - Magni Bronzebeard
+struct npc_magni_bronzebeard_silithus : public ScriptedAI
+{
+    npc_magni_bronzebeard_silithus(Creature* creature) : ScriptedAI(creature) { }
+
+    void MoveInLineOfSight(Unit* unit) override
+    {
+        if (Player* player = unit->ToPlayer())
+            if (player->GetDistance(me) < 20.0f)
+                player->KilledMonsterCredit(me->GetEntry());
+    }
+};
+
+// 136907 - Magni Bronzebeard
+struct npc_magni_bronzebeard_heart_chamber : public ScriptedAI
+{
+    npc_magni_bronzebeard_heart_chamber(Creature* creature) : ScriptedAI(creature) { }
+
+    void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 /*gossipListId*/) override
+    {
+        player->CastSpell(player, 268798, true); // Heart of Azeroth Scene
+    }
+
+    void sQuestAccept(Player* player, Quest const* quest) override
+    {
+        if (quest->ID == 52428)
+            player->PlayConversation(9001);
+
+        if (quest->ID == 51403 || quest->ID == 53031)
+            player->PlayConversation(9001);
+    }
+};
+
+// 293847 - Titan Console
+struct go_azeroth_heart_chamber_titan_console : public GameObjectAI
+{
+    go_azeroth_heart_chamber_titan_console(GameObject* go) : GameObjectAI(go) { }
+
+    bool GossipSelect(Player* player, uint32 /*sender*/, uint32 /*action*/) override
+    {
+        player->CastSpell(player, 270537, true); // Azeroth Stabbed
+        return false;
+    }
+};
+
+enum WoundMending
+{
+    SPELL_AZERITE_EXPLOSION     = 271748,
+    SPELL_MAIN                  = 278756,
+};
+
+// 141870 - Azerite Wound
+struct npc_azeroth_heart_chamber_azerite_wound : public ScriptedAI
+{
+    npc_azeroth_heart_chamber_azerite_wound(Creature* creature) : ScriptedAI(creature) { }
+
+    void Reset()
+    {
+        me->GetScheduler().CancelAll();
+        me->GetScheduler().Schedule(1s, [](TaskContext context)
+        {
+            GetContextUnit()->CastSpell(nullptr, SPELL_AZERITE_EXPLOSION, true);
+            context.Repeat(0.5s, 2s);
+        });
+    }
+
+    void SpellHit(Unit* caster, SpellInfo const* /*spell*/) override
+    {
+        if (Player* pCaster = caster->ToPlayer())
+        {
+            pCaster->KilledMonsterCredit(me->GetEntry());
+
+            if (GameObject* rock = me->FindNearestGameObject(294030, 5.f))
+                rock->SetAIAnimKitId(16292, false);
+
+            if (Quest const* quest = sObjectMgr->GetQuestTemplate(52428))
+            {
+                if (pCaster->IsQuestObjectiveProgressComplete(quest))
+                {
+                    pCaster->RemoveAurasDueToSpell(275824);
+                    pCaster->CastSpell(pCaster, 271184, true);
+                }
+            }
+
+            me->GetScheduler().CancelAll();
+            me->GetScheduler().Schedule(20s, [](TaskContext context)
+            {
+                if (GameObject* rock = GetContextUnit()->FindNearestGameObject(294030, 5.f))
+                    rock->SetAIAnimKitId(2664, false);
+
+                GetContextCreature()->AI()->Reset();
+            });
+        }
+    }
+};
+
+// 267913 Heart of Azeroth
+class spell_azeroth_heart_chamber_heart_of_azeroth : public SpellScript
+{
+    PrepareSpellScript(spell_azeroth_heart_chamber_heart_of_azeroth);
+
+    void HandleAfterHit()
+    {
+        GetCaster()->CastSpell(nullptr, SPELL_MAIN, true);
+
+        GetCaster()->GetScheduler().Schedule(500ms, [](TaskContext context)
+        {
+            GetContextUnit()->CastSpell(nullptr, SPELL_AZERITE_EXPLOSION, true);
+            GetContextUnit()->ModifyPower(POWER_ALTERNATE_POWER, 1);
+
+            if (GetContextUnit()->HasAura(SPELL_MAIN))
+                context.Repeat();
+        });
+    }
+
+    void Register() override
+    {
+        AfterHit += SpellHitFn(spell_azeroth_heart_chamber_heart_of_azeroth::HandleAfterHit);
+    }
+};
+
+enum TeleportPadEntries
+{
+    GO_TELEPORT_PAD_ALLIANCE            = 294313,
+    GO_TELEPORT_PAD_HORDE               = 294538,
+    GO_TELEPORT_PAD_SILITHUS            = 289522,
+
+    QUEST_SPEAKER_IMPERATIVE_ALLIANCE   = 51403,
+    QUEST_SPEAKER_IMPERATIVE_HORDE      = 53031,
+};
+
+// 294313/294538/289522 - Teleport Pad
+struct go_azeroth_heart_chamber_teleport_pad : public GameObjectAI
+{
+    go_azeroth_heart_chamber_teleport_pad(GameObject* go) : GameObjectAI(go) { }
+
+    bool IsNeverVisibleFor(WorldObject const* seer) override
+    {
+        Player const* player = seer->ToPlayer();
+        if (!player)
+            return false;
+
+        if (player->HasQuest(QUEST_SPEAKER_IMPERATIVE_ALLIANCE) && go->GetEntry() != GO_TELEPORT_PAD_ALLIANCE)
+            return true;
+        else if (player->HasQuest(QUEST_SPEAKER_IMPERATIVE_HORDE) && go->GetEntry() != GO_TELEPORT_PAD_HORDE)
+            return true;
+        else if (!player->HasQuest(QUEST_SPEAKER_IMPERATIVE_ALLIANCE) && !player->HasQuest(QUEST_SPEAKER_IMPERATIVE_HORDE) && go->GetEntry() != GO_TELEPORT_PAD_SILITHUS)
+            return true;
+
+        return false;
+    }
+
+    bool GossipHello(Player* player, bool /*isUse*/) override
+    {
+        player->KilledMonsterCredit(140176);
+        player->KilledMonsterCredit(142930);
+        return false;
+    }
+};
+
 void AddSC_silithus()
 {
     new go_crystalline_tear();
@@ -1377,4 +1539,10 @@ void AddSC_silithus()
     new npc_anachronos_the_ancient();
     new npc_qiraj_war_spawn();
     new go_wind_stone();
+    RegisterCreatureAI(npc_magni_bronzebeard_silithus);
+    RegisterCreatureAI(npc_magni_bronzebeard_heart_chamber);
+    RegisterGameObjectAI(go_azeroth_heart_chamber_titan_console);
+    RegisterCreatureAI(npc_azeroth_heart_chamber_azerite_wound);
+    RegisterSpellScript(spell_azeroth_heart_chamber_heart_of_azeroth);
+    RegisterGameObjectAI(go_azeroth_heart_chamber_teleport_pad);
 }
