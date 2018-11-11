@@ -1165,6 +1165,10 @@ bool GameObject::IsNeverVisibleFor(WorldObject const* seer) const
             if (!sConditionMgr->IsPlayerMeetingCondition(seer->ToPlayer(), playerCondition))
                 return true;
 
+    if (AI())
+        if (AI()->IsNeverVisibleFor(seer))
+            return true;
+
     return false;
 }
 
