@@ -1539,6 +1539,8 @@ class TC_GAME_API ObjectMgr
         std::string const& GetScriptName(uint32 id) const;
         uint32 GetScriptId(std::string const& name);
 
+        bool HasNonControlVehicleSpellClick(Unit* unit) const;
+
         SpellClickInfoMapBounds GetSpellClickInfoMapBounds(uint32 creature_id) const
         {
             return _spellClickInfoStore.equal_range(creature_id);

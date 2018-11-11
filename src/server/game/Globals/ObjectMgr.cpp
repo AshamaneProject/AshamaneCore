@@ -9509,6 +9509,18 @@ uint32 ObjectMgr::GetScriptId(std::string const& name)
     return uint32(itr - _scriptNamesStore.begin());
 }
 
+bool ObjectMgr::HasNonControlVehicleSpellClick(Unit* unit) const
+{
+    SpellClickInfoMapBounds spellClickMap = GetSpellClickInfoMapBounds(unit->GetEntry());
+    for (SpellClickInfoContainer::const_iterator itr = spellClickMap.first; itr != spellClickMap.second; ++itr)
+    {
+        if (SpellInfo const* spellEntry = sSpellMgr->GetSpellInfo(itr->second.spellId))
+            for (SpellEffectInfo const* effect : spellEntry->GetEffectsForDifficulty(unit->GetMap()->GetDifficultyID()))
+                if (effect && effect->ApplyAuraName != SPELL_AURA_CONTROL_VEHICLE)
+                    return true;
+    }
+}
+
 void ObjectMgr::LoadGarrisonScriptNames()
 {
     uint32 oldMSTime = getMSTime();

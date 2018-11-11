@@ -28,6 +28,8 @@
 #include "ObjectMgr.h"
 #include "Player.h"
 #include "ScriptMgr.h"
+#include "SpellInfo.h"
+#include "SpellMgr.h"
 #include "TemporarySummon.h"
 #include "Unit.h"
 #include "Util.h"
@@ -51,7 +53,10 @@ _lastShootPos(), _passengersSpawnedByAI(false), _canBeCastedByPassengers(false)
     if (UsableSeatNum)
         _me->SetFlag64(UNIT_NPC_FLAGS, (_me->GetTypeId() == TYPEID_PLAYER ? UNIT_NPC_FLAG_PLAYER_VEHICLE : UNIT_NPC_FLAG_SPELLCLICK));
     else
-        _me->RemoveFlag64(UNIT_NPC_FLAGS, (_me->GetTypeId() == TYPEID_PLAYER ? UNIT_NPC_FLAG_PLAYER_VEHICLE : UNIT_NPC_FLAG_SPELLCLICK));
+    {
+        if (!sObjectMgr->HasNonControlVehicleSpellClick(_me))
+            _me->RemoveFlag64(UNIT_NPC_FLAGS, (_me->GetTypeId() == TYPEID_PLAYER ? UNIT_NPC_FLAG_PLAYER_VEHICLE : UNIT_NPC_FLAG_SPELLCLICK));
+    }
 
     InitMovementInfoForBase();
 }
@@ -378,7 +383,9 @@ void Vehicle::InstallAccessory(uint32 entry, int8 seatId, bool minion, uint8 typ
     if (minion)
         accessory->AddUnitTypeMask(UNIT_MASK_ACCESSORY);
 
-    (void)_me->HandleSpellClick(accessory, seatId);
+    // If no valid spellClick, use HARDCODED
+    if (!_me->HandleSpellClick(accessory, seatId))
+        accessory->CastCustomSpell(VEHICLE_SPELL_RIDE_HARDCODED, SPELLVALUE_BASE_POINT0, seatId + 1, _me, false);
 
     /// If for some reason adding accessory to vehicle fails it will unsummon in
     /// @VehicleJoinEvent::Abort
@@ -781,10 +788,13 @@ bool VehicleJoinEvent::Execute(uint64, uint32)
         --(Target->UsableSeatNum);
         if (!Target->UsableSeatNum)
         {
-            if (Target->GetBase()->GetTypeId() == TYPEID_PLAYER)
+            if (Target->GetBase()->IsPlayer())
                 Target->GetBase()->RemoveFlag64(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_PLAYER_VEHICLE);
             else
-                Target->GetBase()->RemoveFlag64(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+            {
+                if (!sObjectMgr->HasNonControlVehicleSpellClick(Target->GetBase()))
+                    Target->GetBase()->RemoveFlag64(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+            }
         }
     }
 
