@@ -1322,7 +1322,7 @@ public:
 
         void Reset() override
         {
-            me->SetDisplayId(me->GetCreatureTemplate()->Modelid1);
+            me->SetDisplayFromModel(0);
             _events.ScheduleEvent(EVENT_FIRE, 500);
         }
 

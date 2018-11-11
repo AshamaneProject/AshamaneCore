@@ -203,7 +203,7 @@ class boss_stone_guard_controler : public CreatureScript
                         for (uint32 entry: guardiansEntry)
                             if (Creature* guardian = pInstance->GetCreature(entry))
                                 pInstance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, guardian);
-                        
+
                         pInstance->DoRemoveAurasDueToSpellOnPlayers(SPELL_TOTALY_PETRIFIED);
                         pInstance->DoRemoveAurasDueToSpellOnPlayers(SPELL_JASPER_CHAINS);
                         pInstance->DoRemoveAurasDueToSpellOnPlayers(SPELL_JASPER_PETRIFICATION_BAR);
@@ -566,7 +566,7 @@ class boss_generic_guardian : public CreatureScript
                         spellMainAttack             = 0;
                         break;
                 }
-                
+
                 if (pInstance)
                     pInstance->DoRemoveAurasDueToSpellOnPlayers(spellPetrificationBarId);
 
@@ -682,7 +682,7 @@ class boss_generic_guardian : public CreatureScript
                 }
 
                 if (IsLFR())
-                    me->SetLootRecipient(nullptr);
+                    me->ResetLootRecipients();
             }
 
             void DoAction(int32 const action) override
@@ -890,7 +890,7 @@ class boss_generic_guardian : public CreatureScript
                                             break;
 
                                         Trinity::Containers::RandomResize(tempPlayerList, 2);
-                                    
+
                                         Player* firstPlayer  = *tempPlayerList.begin();
                                         Player* SecondPlayer = *(++(tempPlayerList.begin()));
 
@@ -1032,7 +1032,7 @@ class mob_living_crystal : public CreatureScript
             {
                 pInstance = creature->GetInstanceScript();
             }
-            
+
             InstanceScript* pInstance;
 
             void Reset() override
@@ -1230,7 +1230,7 @@ class mob_tiling_creature : public CreatureScript
                                 break;
                             }
                         }
-                                    
+
                         if (!activated)
                             events.ScheduleEvent(EVENT_TILING, 100);
 
@@ -1354,7 +1354,7 @@ class spell_jasper_chains : public SpellScriptLoader
                             return;
                         }
                     }
-                    
+
                     caster->AddAura(spell->Id, target);
                     target->CastSpell(linkedPlayer, SPELL_JASPER_CHAINS_DAMAGE, true);
                 }

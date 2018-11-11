@@ -374,7 +374,7 @@ class boss_jin_qin_xi : public CreatureScript
 
                     /*if (IsLFR())
                     {
-                        me->SetLootRecipient(NULL);
+                        me->ResetLootRecipients();
                         Player* l_Player = me->GetMap()->GetPlayers().begin()->GetSource();
                         if (l_Player && l_Player->GetGroup())
                             sLFGMgr->AutomaticLootAssignation(me, l_Player->GetGroup());
@@ -400,7 +400,7 @@ class boss_jin_qin_xi : public CreatureScript
                 _JustDied();
 
                 if (me->GetMap()->IsLFR())
-                    me->SetLootRecipient(NULL);
+                    me->ResetLootRecipients();
             }
 
             void JustSummoned(Creature* summon) override

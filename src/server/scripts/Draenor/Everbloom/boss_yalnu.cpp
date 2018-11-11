@@ -93,7 +93,7 @@ public:
             if (who->IsPlayer() && me->IsWithinDistInMap(who, 50.0f) && !introDone)
             {
                 introDone = true;
-                me->PlayOneShotAnimKitId(ANIMKIT_PRE);
+                me->SetAIAnimKitId(ANIMKIT_PRE, true);
                 me->SetWalk(false);
                 me->GetMotionMaster()->MovePoint(0, 623.6406f, 1733.708f, 143.6253f);
             }
@@ -267,7 +267,7 @@ public:
                 introDone = 2;
                 me->SetWalk(true);
 
-                me->PlayOneShotAnimKitId(ANIMKIT);
+                me->SetAIAnimKitId(ANIMKIT, true);
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC);
 

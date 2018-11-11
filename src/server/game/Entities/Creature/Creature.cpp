@@ -1086,7 +1086,7 @@ void Creature::AddLootRecipient(Unit* unit)
     // to loot the creature after it dies
     // should be set to nullptr after the loot disappears
 
-    if (!unit || !unit->IsPlayer() && !unit->IsVehicle())
+    if (!unit || (!unit->IsPlayer() && !unit->IsVehicle()))
         return;
 
     Player* player = unit->GetCharmerOrOwnerPlayerOrPlayerItself();

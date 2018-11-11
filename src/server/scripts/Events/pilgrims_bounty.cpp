@@ -201,8 +201,8 @@ public:
             init.SetFacing(o);
             init.Launch();
             who->m_Events.AddEvent(new CastFoodSpell(who, _chairSpells.at(who->GetEntry())), who->m_Events.CalculateTime(1000));
-            if (who->GetTypeId() == TYPEID_UNIT)
-                who->SetDisplayId(who->ToCreature()->GetCreatureTemplate()->Modelid1);
+            if (who->IsCreature())
+                who->ToCreature()->SetDisplayFromModel(0);
         }
     };
 

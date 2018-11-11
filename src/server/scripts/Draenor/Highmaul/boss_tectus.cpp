@@ -317,7 +317,7 @@ class boss_tectus : public CreatureScript
                             return;
 
                         me->SetAIAnimKitId(0);
-                        me->PlayOneShotAnimKitId(eAnimKits::AnimRise);
+                        me->SetAIAnimKitId(eAnimKits::AnimRise, true);
 
                         AddTimedDelayedOperation(4500, [this]() -> void
                         {
@@ -350,7 +350,7 @@ class boss_tectus : public CreatureScript
                         if (m_MoteKilled >= (eMiscs::MotesSpawnCount * 2))
                         {
                             me->SetAIAnimKitId(0);
-                            me->PlayOneShotAnimKitId(eAnimKits::AnimRise);
+                            me->SetAIAnimKitId(eAnimKits::AnimRise, true);
 
                             AddTimedDelayedOperation(4 * TimeConstants::IN_MILLISECONDS, [this]() -> void
                             {
@@ -364,8 +364,8 @@ class boss_tectus : public CreatureScript
                                 if (Player* player = me->GetMap()->GetPlayers().begin()->GetSource())
                                 {
                                     player->CastSpell(me, eSpells::SuicideNoBloodNoLogging, true);
-                                    if(me->GetLootRecipient() == nullptr)
-                                        me->SetLootRecipient(player);
+                                    if(!me->HasLootRecipients())
+                                        me->AddLootRecipient(player);
                                 }
                             });
                         }
@@ -548,7 +548,7 @@ class boss_tectus : public CreatureScript
                         break;
                     case eSpells::SpawnTectusShards:
                     {
-                        target->PlayOneShotAnimKitId(eAnimKits::AnimRise2);
+                        target->SetAIAnimKitId(eAnimKits::AnimRise2, true);
                         target->RestoreDisplayId();
 
                         ObjectGuid guid = target->GetGUID();
@@ -1103,7 +1103,7 @@ class npc_highmaul_rokka_and_lokk : public CreatureScript
                 {
                     m_Risen = true;
                     me->SetAIAnimKitId(0);
-                    me->PlayOneShotAnimKitId(eAnimKit::AnimRise);
+                    me->SetAIAnimKitId(eAnimKit::AnimRise, true);
 
                     AddTimedDelayedOperation(4500, [this]() -> void
                     {
@@ -1248,7 +1248,7 @@ class npc_highmaul_oro : public CreatureScript
                 {
                     m_Risen = true;
                     me->SetAIAnimKitId(0);
-                    me->PlayOneShotAnimKitId(eAnimKit::AnimRise);
+                    me->SetAIAnimKitId(eAnimKit::AnimRise, true);
 
                     AddTimedDelayedOperation(4500, [this]() -> void
                     {
@@ -1779,7 +1779,7 @@ class spell_highmaul_accretion : public SpellScriptLoader
 
             /*
 
-            // @Use this only if tectus didn't buff allies 
+            // @Use this only if tectus didn't buff allies
             void HandleMythicAllyBuffing(AuraEffect const* aurEff, AuraEffectHandleModes mode)
             {
                 // trigger ally buffing in MM only if the caster is buffing himself !
@@ -2089,7 +2089,7 @@ public:
             }
         }
     }
-        
+
     void OnRemove() override
     {
         /*if (Unit* caster = at->GetCaster())
@@ -2100,7 +2100,7 @@ public:
             Trinity::AnyUnfriendlyUnitInObjectRangeCheck l_Check(at, caster, radius);
             Trinity::UnitListSearcher<Trinity::AnyUnfriendlyUnitInObjectRangeCheck> l_Searcher(at, targetList, l_Check);
             Cell::VisitAllObjects(at, l_Searcher, radius);
-                
+
             for (Unit* l_Unit : targetList)
             {
                 if (!l_Unit->SelectNearestAreaTrigger(at->GetSpellId(), 2.0f))

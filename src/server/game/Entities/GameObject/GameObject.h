@@ -294,7 +294,7 @@ class TC_GAME_API GameObject : public WorldObject, public GridObject<GameObject>
 
         void UpdateModelPosition();
 
-        void SetAIAnimKitId(uint16 animKitId, bool oneshot) override;
+        void SetAIAnimKitId(uint16 animKitId, bool oneshot = false) override;
 
         /// Event handler
         EventProcessor m_Events;

@@ -443,7 +443,7 @@ class boss_tayak : public CreatureScript
 
                 /*if (me->GetMap()->IsLFR())
                 {
-                    me->SetLootRecipient(NULL);
+                    me->ResetLootRecipients();
                     Player* l_Player = me->GetMap()->GetPlayers().begin()->GetSource();
                     if (l_Player && l_Player->GetGroup())
                         sLFGMgr->AutomaticLootAssignation(me, l_Player->GetGroup());

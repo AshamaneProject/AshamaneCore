@@ -264,12 +264,16 @@ public:
             _events.Reset();
             if (Creature* legoso = me->FindNearestCreature(NPC_LEGOSO, SIZE_OF_GRIDS))
             {
-                Group* group = me->GetLootRecipientGroup();
-
-                if (killer->GetGUID() == legoso->GetGUID() ||
-                    (group && group->IsMember(killer->GetGUID())) ||
-                    killer->GetGUID() == legoso->AI()->GetGUID(DATA_EVENT_STARTER_GUID))
-                    legoso->AI()->DoAction(ACTION_LEGOSO_SIRONAS_KILLED);
+                for (Group* group : me->GetLootRecipientGroups())
+                {
+                    if (killer->GetGUID() == legoso->GetGUID() ||
+                        (group && group->IsMember(killer->GetGUID())) ||
+                        killer->GetGUID() == legoso->AI()->GetGUID(DATA_EVENT_STARTER_GUID))
+                    {
+                        legoso->AI()->DoAction(ACTION_LEGOSO_SIRONAS_KILLED);
+                        break;
+                    }
+                }
             }
         }
 

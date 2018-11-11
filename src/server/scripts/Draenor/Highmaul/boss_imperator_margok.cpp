@@ -660,7 +660,7 @@ class boss_imperator_margok : public CreatureScript
 
                     ///< Only Cho'gall can loot in mythic mode
                     if (IsMythic())
-                        me->SetLootRecipient(nullptr);
+                        me->ResetLootRecipients();
                 }
             }
 

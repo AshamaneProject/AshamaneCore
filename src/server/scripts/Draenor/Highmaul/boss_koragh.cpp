@@ -1151,7 +1151,7 @@ class go_highmaul_chain : public GameObjectScript
 
             void Reset() override
             {
-                go->SetAnimKitId(eAnimID::AnimKit, false);
+                go->SetAIAnimKitId(eAnimID::AnimKit, false);
             }
         };
 

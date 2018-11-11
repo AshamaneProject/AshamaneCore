@@ -2457,7 +2457,7 @@ void GameObject::AddLootRecipient(Unit* unit)
     // to loot the creature after it dies
     // should be set to nullptr after the loot disappears
 
-    if (!unit || !unit->IsPlayer() && !unit->IsVehicle())
+    if (!unit || (!unit->IsPlayer() && !unit->IsVehicle()))
         return;
 
     Player* player = unit->GetCharmerOrOwnerPlayerOrPlayerItself();
@@ -2650,7 +2650,7 @@ void GameObject::UpdateModelPosition()
     }
 }
 
-void GameObject::SetAIAnimKitId(uint16 animKitId, bool oneshot)
+void GameObject::SetAIAnimKitId(uint16 animKitId, bool oneshot /*= false*/)
 {
     if (_aiAnimKitId == animKitId)
         return;

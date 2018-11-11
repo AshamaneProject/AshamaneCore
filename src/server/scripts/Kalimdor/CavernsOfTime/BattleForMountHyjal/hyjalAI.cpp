@@ -429,7 +429,7 @@ void hyjalAI::EnterEvadeMode(EvadeReason /*why*/)
     if (me->IsAlive())
         me->GetMotionMaster()->MoveTargetedHome();
 
-    me->SetLootRecipient(NULL);
+    me->ResetLootRecipients();
 }
 
 void hyjalAI::EnterCombat(Unit* /*who*/)
