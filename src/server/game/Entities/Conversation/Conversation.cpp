@@ -82,6 +82,7 @@ void Conversation::Remove()
 {
     if (IsInWorld())
     {
+        sScriptMgr->OnConversationRemove(this, ObjectAccessor::GetUnit(*this, GetCreatorGuid()));
         AddObjectToRemoveList(); // calls RemoveFromWorld
     }
 }

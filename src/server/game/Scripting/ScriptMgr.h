@@ -962,6 +962,9 @@ class TC_GAME_API ConversationScript : public ScriptObject
 
         // Called when Conversation is created but not added to Map yet.
         virtual void OnConversationCreate(Conversation* /*conversation*/, Unit* /*creator*/) { }
+
+        // Called when Conversation is removed
+        virtual void OnConversationRemove(Conversation* /*conversation*/, Unit* /*creator*/) { }
 };
 
 class TC_GAME_API SceneScript : public ScriptObject
@@ -1313,6 +1316,7 @@ class TC_GAME_API ScriptMgr
     public: /* ConversationScript */
 
         void OnConversationCreate(Conversation* conversation, Unit* creator);
+        void OnConversationRemove(Conversation* conversation, Unit* creator);
 
     public: /* SceneScript */
 
