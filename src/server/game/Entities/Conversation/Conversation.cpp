@@ -25,7 +25,7 @@
 #include "Unit.h"
 #include "UpdateData.h"
 
-Conversation::Conversation() : WorldObject(false), _duration(0)
+Conversation::Conversation() : WorldObject(false), _duration(0), _relocateTick(CONVERSATION_RELOCATE_TICK)
 {
     m_objectType |= TYPEMASK_CONVERSATION;
     m_objectTypeId = TYPEID_CONVERSATION;
@@ -74,6 +74,16 @@ void Conversation::Update(uint32 diff)
         _duration -= diff;
     else
         Remove(); // expired
+
+    if (_relocateTick <= diff)
+    {
+        if (Unit* creator = ObjectAccessor::GetUnit(*this, GetCreatorGuid()))
+            Relocate(*creator);
+
+        _relocateTick = CONVERSATION_RELOCATE_TICK;
+    }
+    else
+        _relocateTick -= diff;
 
     WorldObject::Update(diff);
 }

@@ -23,6 +23,7 @@
 #include "ScriptedFollowerAI.h"
 #include "ScriptMgr.h"
 #include "TemporarySummon.h"
+#include "Vehicle.h"
 
 enum eTiragardeQuests
 {
@@ -48,8 +49,10 @@ enum Intro
     SPELL_SUMMON_FLYNN_ESCORT       = 246931,
 
     SPELL_SCENE_FLYNN_JAILBREAK     = 246821,
-
-    SPELL_GATEWAY_BOAT_CONVERSATION = 247230,
+    SPELL_SCENE_GETAWAY_BOAT_TRIGGER= 281331,
+    
+    SPELL_GETAWAY_CONVERSATION_1    = 247230,
+    SPELL_GETAWAY_CONVERSATION_2    = 247275,
 
     NPC_FLYNN_BEGIN                 = 121239,
     NPC_FLYNN_ESCORT                = 124311,
@@ -356,18 +359,93 @@ struct npc_tol_dagor_enter_sewer_credit : public ScriptedAI
     }
 };
 
+// 124357 - Getaway Boat 
+struct npc_tol_dagor_getaway_boat : public ScriptedAI
+{
+    npc_tol_dagor_getaway_boat(Creature* creature) : ScriptedAI(creature) { }
+
+    Position boatPath[6] = {
+        { 240.6500f, -2812.950f, -0.052747f },
+        { 245.9427f, -2807.717f,  0.052747f },
+        { 272.6615f, -2792.370f, -0.052747f },
+        { 353.6458f, -2743.795f,  0.052747f },
+        { 366.6493f, -2540.583f, -0.052747f },
+        { 396.1441f, -2403.012f, -0.052747f },
+    };
+
+    void IsSummonedBy(Unit* unit) override
+    {
+        if (Player* player = unit->ToPlayer())
+        {
+            me->SetReactState(REACT_PASSIVE);
+            player->EnterVehicle(me, 1);
+            player->CastSpell(player, SPELL_SCENE_GETAWAY_BOAT_TRIGGER, true);
+
+            player->GetScheduler().Schedule(1s, [this, player](TaskContext /*context*/)
+            {
+                player->PlayConversation(5336);
+                me->GetMotionMaster()->MoveSmoothPath(1, boatPath, 6, false, true);
+            });
+        }
+    }
+
+    void MovementInform(uint32 type, uint32 pointId) override
+    {
+        if (type == EFFECT_MOTION_TYPE && pointId == 2)
+        {
+            if (Vehicle* meVehicle = me->GetVehicle())
+                if (Unit* playerPassenger = meVehicle->GetPassenger(1))
+                    playerPassenger->ExitVehicle(&Position(1053.48f, -627.64f, 0.54f, 2.523746f));
+        }
+    }
+};
+
 // 5336
+// 5340
 struct conversation_tol_dagor_escape : public ConversationScript
 {
     conversation_tol_dagor_escape() : ConversationScript("conversation_tol_dagor_escape") { }
 
     void OnConversationCreate(Conversation* conversation, Unit* creator) override
     {
-        if (Creature* taelia = creator->FindNearestCreature(NPC_TAELIA, 10.f))
-            conversation->AddActor(taelia->GetGUID(), 0, 59469);
+        if (Vehicle* boat = creator->GetVehicle())
+        {
+            if (Unit* taelia = boat->GetPassenger(0))
+                conversation->AddActor(taelia->GetGUID(), 0, 59469);
 
-        if (Creature* flynn = creator->FindNearestCreature(NPC_FLYNN_ESCAPE, 10.f))
-            conversation->AddActor(flynn->GetGUID(), 1, 59472);
+            // Flynn only speak during the first conversation
+            if (conversation->GetEntry() == 5336)
+                if (Unit* flynn = boat->GetPassenger(2))
+                    conversation->AddActor(flynn->GetGUID(), 1, 59472);
+        }
+    }
+};
+
+// 1746
+class scene_tol_dagor_getaway_boat : public SceneScript
+{
+public:
+    scene_tol_dagor_getaway_boat() : SceneScript("scene_tol_dagor_getaway_boat") { }
+
+    Position boatPath[4] =
+    {
+        { 880.6389f, -585.5486f, -0.02336364f },
+        { 998.2083f, -575.0087f, -0.03875812f },
+        { 1025.792f, -619.1180f, -0.03875812f },
+        { 1040.462f, -631.7864f, -0.03875812f },
+    };
+
+    void OnSceneTriggerEvent(Player* player, uint32 /*sceneInstanceID*/, SceneTemplate const* /*sceneTemplate*/, std::string const& triggerName) override
+    {
+        if (triggerName == "TeleportToMarket")
+            if (Unit* vehicleBase = player->GetVehicleBase())
+            {
+                vehicleBase->GetMotionMaster()->MovementExpired();
+                vehicleBase->NearTeleportTo(867.132f, -602.811f, -0.117634f, 1.536673f);
+                vehicleBase->GetMotionMaster()->MoveSmoothPath(2, boatPath, 4, false, true);
+
+                player->CastSpell(player, SPELL_GETAWAY_CONVERSATION_2, true);
+            }
     }
 };
 
@@ -382,5 +460,7 @@ void AddSC_zone_tiragarde_sound()
     RegisterSceneScript(scene_flynn_jailbreak);
     RegisterCreatureAI(npc_flynn_fairwind_follower);
     RegisterCreatureAI(npc_tol_dagor_enter_sewer_credit);
+    RegisterCreatureAI(npc_tol_dagor_getaway_boat);
     RegisterConversationScript(conversation_tol_dagor_escape);
+    RegisterSceneScript(scene_tol_dagor_getaway_boat);
 }

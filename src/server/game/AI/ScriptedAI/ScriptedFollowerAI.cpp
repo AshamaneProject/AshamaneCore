@@ -185,9 +185,15 @@ void FollowerAI::EnterEvadeMode(EvadeReason /*why*/)
 
         if (me->GetMotionMaster()->GetCurrentMovementGeneratorType() == CHASE_MOTION_TYPE)
         {
-            float fPosX, fPosY, fPosZ;
-            me->GetPosition(fPosX, fPosY, fPosZ);
-            me->GetMotionMaster()->MovePoint(POINT_COMBAT_START, fPosX, fPosY, fPosZ);
+            me->GetMotionMaster()->Clear();
+
+            if (GetLeaderForFollower())
+            {
+                if (!HasFollowState(STATE_FOLLOW_PAUSED))
+                    AddFollowState(STATE_FOLLOW_RETURNING);
+            }
+            else
+                me->DespawnOrUnsummon();
         }
     }
     else

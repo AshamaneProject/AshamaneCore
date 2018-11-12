@@ -25,6 +25,8 @@
 class Unit;
 class SpellInfo;
 
+#define CONVERSATION_RELOCATE_TICK 1000
+
 #pragma pack(push, 1)
 struct ConversationDynamicFieldActor
 {
@@ -99,6 +101,7 @@ class TC_GAME_API Conversation : public WorldObject, public GridObject<Conversat
         Position _stationaryPosition;
         ObjectGuid _creatorGuid;
         uint32 _duration;
+        uint32 _relocateTick;
         uint32 _textureKitId;
         GuidUnorderedSet _participants;
 };

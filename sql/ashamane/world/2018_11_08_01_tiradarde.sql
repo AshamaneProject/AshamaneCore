@@ -25,7 +25,7 @@ INSERT INTO spell_script_names VALUES
 UPDATE `npc_spellclick_spells` SET `cast_flags` = '1' WHERE `npc_entry` = '124030' AND `spell_id` = '247045';
 UPDATE `creature_template` SET `InhabitType` = 4 WHERE (entry = 124030);
 
-UPDATE `conversation_template` SET `ScriptName` = 'conversation_tol_dagor_escape' WHERE `Id` = '5336'; 
+UPDATE `conversation_template` SET `ScriptName` = 'conversation_tol_dagor_escape' WHERE `Id` IN (5336, 5340);
 UPDATE `creature_template` SET `InhabitType` = 4, `VehicleId` = '5474' WHERE `entry` = '124357'; 
 
 DELETE FROM `gameobject` WHERE `guid` IN (210406721, 210406722);
@@ -69,3 +69,18 @@ UPDATE `quest_template_addon` SET `PrevQuestID` = '46727', `ExclusiveGroup` = '0
 UPDATE `quest_template_addon` SET `PrevQuestID` = '51403', `ExclusiveGroup` = '0' WHERE `id` = 46727;
 UPDATE `quest_template_addon` SET `ExclusiveGroup` = '0' WHERE `id` = 51403;
 
+DELETE FROM `npc_spellclick_spells` WHERE `npc_entry` = 124357;
+INSERT INTO `npc_spellclick_spells` (`npc_entry`, `spell_id`, `cast_flags`) VALUES
+('124357', '46598', '1'); 
+
+DELETE FROM creature WHERE guid IN (210303743, 210303744, 210303745, 210303746, 210303747);
+
+UPDATE `vehicle_template_accessory` SET `seat_id` = '2' WHERE `entry` = '124357' AND `seat_id` = '1'; 
+
+DELETE FROM `creature_equip_template` WHERE `CreatureID` IN (124356, 124363);
+INSERT INTO `creature_equip_template` (`CreatureID`, `ItemID1`, `VerifiedBuild`) VALUES
+('124356', '155767', '28503'),
+('124363', '155767', '28503'); 
+
+UPDATE creature_template SET scriptname = "npc_tol_dagor_getaway_boat" WHERE entry = 124357;
+UPDATE scene_template SET ScriptName = "scene_tol_dagor_getaway_boat" where SceneId = 1746;
