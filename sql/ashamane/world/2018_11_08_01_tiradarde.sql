@@ -1,9 +1,17 @@
+UPDATE creature_template SET scriptname = "npc_anduin_tides_of_war" WHERE entry = 120756;
+UPDATE creature_template SET scriptname = "npc_jaina_tides_of_war" WHERE entry = 120590;
+UPDATE `conversation_template` SET `ScriptName` = 'conversation_tides_of_war' WHERE `Id` IN (4857, 8709);
+
+UPDATE creature_template SET gossip_menu_id = 22328 WHERE entry = 120590;
+REPLACE INTO `gossip_menu` VALUES (22328, 34271, 28153);
+REPLACE INTO `gossip_menu_option` VALUES (22328, 0, 0, "I'm ready to set sail!", 0, 1, 1, 28153);
+UPDATE creature SET npcflag = 1 WHERE guid = 280000120;
+
 UPDATE creature_template SET scriptname = "npc_jaina_boralus_intro" WHERE entry = 120922;
 UPDATE scene_template SET ScriptName = "scene_jaina_to_proudmoore_keep" where SceneId = 1954;
 UPDATE scene_template SET ScriptName = "scene_flynn_jailbreak" where SceneId = 1735;
 UPDATE creature_template SET scriptname = "npc_flynn_fairwind" WHERE entry = 121239;
 UPDATE creature_template SET scriptname = "npc_flynn_fairwind_follower" WHERE entry = 124311;
-UPDATE creature_template SET scriptname = "npc_anduin_tides_of_war" WHERE entry = 120756;
 UPDATE gameobject_template SET scriptname = "go_toldagor_cell_block_lever" WHERE entry = 271938;
 UPDATE `creature_template` SET `flags_extra` = 128, `ScriptName` = 'npc_tol_dagor_enter_sewer_credit' WHERE (entry = 134922);
 
@@ -18,8 +26,9 @@ DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId` = 13 AND `SourceEntry` 
 INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `ConditionTypeOrReference`, `ConditionValue1`, `ConditionValue2`) VALUES
 (13, 1, 246555, 31, 5, 124022); 
 
-DELETE FROM spell_script_names WHERE scriptname = "aura_tol_dagor_intro_prisoner";
+DELETE FROM spell_script_names WHERE scriptname IN ("aura_tol_dagor_intro_prisoner", "aura_stormwind_to_harbor_teleport");
 INSERT INTO spell_script_names VALUES
+(240876, "aura_stormwind_to_harbor_teleport"),
 (272512, "aura_tol_dagor_intro_prisoner");
 
 UPDATE `npc_spellclick_spells` SET `cast_flags` = '1' WHERE `npc_entry` = '124030' AND `spell_id` = '247045';
@@ -50,7 +59,6 @@ INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnDifficult
 
 DELETE FROM `conversation_actors` WHERE ConversationId IN (4857, 4896, 8709);
 INSERT INTO `conversation_actors` (`ConversationId`, `ConversationActorGuid`, `Idx`, `VerifiedBuild`) VALUES
-(4857, 280000108, 3, 27404), -- Full: 0x203CE0000075C3800009A5000003E011 Creature/0 R3896/S2469 Map: Eastern Kingdoms Entry: Lady Jaina Proudmoore Low: 253969
 (4857, 280000109, 1, 27404), -- Full: 0x203CE00000885D000009A5000000A939 Creature/0 R3896/S2469 Map: Eastern Kingdoms Entry: 139636 (Master Mathias Shaw) Low: 43321
 (4857, 280000110, 2, 27404), -- Full: 0x203CE0000075F5000009A5000000A938 Creature/0 R3896/S2469 Map: Eastern Kingdoms Entry: Genn Greymane Low: 43320
 (4857, 280000111, 0, 27404), -- Full: 0x203CE0000075ED000009A5000000A938 Creature/0 R3896/S2469 Map: Eastern Kingdoms Entry: Anduin Wrynn Low: 43320
@@ -58,7 +66,6 @@ INSERT INTO `conversation_actors` (`ConversationId`, `ConversationActorGuid`, `I
 (4896, 280000111, 1, 27404), -- Full: 0x203CE0000075ED000009A5000000A938 Creature/0 R3896/S2469 Map: Eastern Kingdoms Entry: Anduin Wrynn Low: 43320
 (4896, 280000111, 0, 27404),
 (8709, 280000111, 0, 27404), -- Full: 0x203CE0000075ED000009A5000000A938 Creature/0 R3896/S2469 Map: Eastern Kingdoms Entry: Anduin Wrynn Low: 43320
-(8709, 280000108, 1, 27404), -- Full: 0x203CE0000075C3800009A5000000A933 Creature/0 R3896/S2469 Map: Eastern Kingdoms Entry: Lady Jaina Proudmoore Low: 43315
 (8709, 280000110, 2, 27404); -- Full: 0x203CE0000075F5000009A5000000A938 Creature/0 R3896/S2469 Map: Eastern Kingdoms Entry: Genn Greymane Low: 43320;
 
 UPDATE `quest_template_addon` SET `PrevQuestID` = '47099', `ExclusiveGroup` = '0' WHERE `id` = 46729;
