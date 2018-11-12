@@ -2499,10 +2499,8 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         RestMgr& GetRestMgr() const { return *_restMgr; }
 
         std::vector<std::pair<uint32, std::function<void()>>> MovieDelayedActions;
-        void AddMovieDelayedAction(uint32 movieId, std::function<void()> && function)
-        {
-            MovieDelayedActions.push_back(std::pair<uint32, std::function<void()>>(movieId, function));
-        }
+        void AddMovieDelayedAction(uint32 movieId, std::function<void()> && function);
+        void RemoveMovieDelayedAction(uint32 movieId);
 
         void SendPlayerChoice(ObjectGuid sender, int32 choiceId);
         void UpdateShop(uint32 diff);
