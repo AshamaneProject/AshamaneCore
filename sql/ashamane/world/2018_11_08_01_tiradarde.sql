@@ -32,9 +32,10 @@ INSERT INTO spell_script_names VALUES
 (272512, "aura_tol_dagor_intro_prisoner");
 
 UPDATE `npc_spellclick_spells` SET `cast_flags` = '1' WHERE `npc_entry` = '124030' AND `spell_id` = '247045';
-UPDATE `creature_template` SET `InhabitType` = 4 WHERE (entry = 124030);
+UPDATE `creature_template` SET `InhabitType` = 4 WHERE entry IN (124030, 139522);
 
 UPDATE `conversation_template` SET `ScriptName` = 'conversation_tol_dagor_escape' WHERE `Id` IN (5336, 5340);
+UPDATE `conversation_template` SET `ScriptName` = 'conversation_tol_dagor_inmate' WHERE `Id` IN (8330, 8333, 8334);
 UPDATE `creature_template` SET `InhabitType` = 4, `VehicleId` = '5474' WHERE `entry` = '124357'; 
 
 DELETE FROM `gameobject` WHERE `guid` IN (210406721, 210406722);
@@ -57,7 +58,10 @@ INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnDifficult
 (280000122, 144378, 0, 1519, 4411, '0', '11825', 0, 0, 0, -8237.676, 1369.901, 23.27885, 3.236135, 120, 0, 0, 0, 0, 0, 0, 0, 0, 27404), -- Alliance Sailor (Area: Stormwind Harbor - Difficulty: 0)
 (280000123, 144378, 0, 1519, 4411, '0', '11825', 0, 0, 0, -8240, 1369.356, 23.27885, 0.6054686, 120, 0, 0, 0, 0, 0, 0, 0, 0, 27404); -- Alliance Sailor (Area: Stormwind Harbor - Difficulty: 0)
 
-DELETE FROM `conversation_actors` WHERE ConversationId IN (4857, 4896, 8709);
+UPDATE conversation_template SET LastLineEndTime = 35185 WHERE Id = 5336;
+UPDATE conversation_template SET LastLineEndTime = 15326 WHERE Id = 5340;
+
+DELETE FROM `conversation_actors` WHERE ConversationId IN (4857, 4896, 8709, 8334, 7653, 5462, 8062, 8356, 8741, 8742);
 INSERT INTO `conversation_actors` (`ConversationId`, `ConversationActorGuid`, `Idx`, `VerifiedBuild`) VALUES
 (4857, 280000109, 1, 27404), -- Full: 0x203CE00000885D000009A5000000A939 Creature/0 R3896/S2469 Map: Eastern Kingdoms Entry: 139636 (Master Mathias Shaw) Low: 43321
 (4857, 280000110, 2, 27404), -- Full: 0x203CE0000075F5000009A5000000A938 Creature/0 R3896/S2469 Map: Eastern Kingdoms Entry: Genn Greymane Low: 43320
@@ -66,7 +70,36 @@ INSERT INTO `conversation_actors` (`ConversationId`, `ConversationActorGuid`, `I
 (4896, 280000111, 1, 27404), -- Full: 0x203CE0000075ED000009A5000000A938 Creature/0 R3896/S2469 Map: Eastern Kingdoms Entry: Anduin Wrynn Low: 43320
 (4896, 280000111, 0, 27404),
 (8709, 280000111, 0, 27404), -- Full: 0x203CE0000075ED000009A5000000A938 Creature/0 R3896/S2469 Map: Eastern Kingdoms Entry: Anduin Wrynn Low: 43320
-(8709, 280000110, 2, 27404); -- Full: 0x203CE0000075F5000009A5000000A938 Creature/0 R3896/S2469 Map: Eastern Kingdoms Entry: Genn Greymane Low: 43320;
+(8709, 280000110, 2, 27404), -- Full: 0x203CE0000075F5000009A5000000A938 Creature/0 R3896/S2469 Map: Eastern Kingdoms Entry: Genn Greymane Low: 43320;
+
+(8334, 210347835, 0, 27404), -- Full: 0x204240CD60797100006DC9000000A78F Creature/0 R4240/S28105 Map: Kul Tiras Entry: 124356 (Taelia) Low: 42895
+-- (8334, UNKNOWN, 1, 27404), -- Full: 0x204240CD607965C0006DC9000003E89F Creature/0 R4240/S28105 Map: Kul Tiras Entry: 124311 (Tol Dagor Inmate) Low: 256159
+
+-- "King greyman it is an honor"
+(8062, 210347841, 0, 27404), -- Full: 0x203CD0CD60778080003183000003EECC Creature/0 R3892/S12675 Map: Kul Tiras Entry: Cyrus Crestfall Low: 257740
+(8062, 210347835, 1, 27404), -- Full: 0x203CD0CD607664C000318300000316A7 Creature/0 R3892/S12675 Map: Kul Tiras Entry: Taelia Low: 202407
+
+-- Cyrus story with wounded guy
+(7653, 210347841, 1, 27404), -- Full: 0x203CD0CD60778080003183000003EF63 Creature/0 R3892/S12675 Map: Kul Tiras Entry: Cyrus Crestfall Low: 257891
+(7653, 210334796, 0, 27404), -- Full: 0x203CD0CD6075F500003183000003169E Creature/0 R3892/S12675 Map: Kul Tiras Entry: Genn Greymane Low: 202398
+
+(5462, 210347841, 0, 27404), -- Full: 0x0800040000000000FFFFFFFFFFFFFFFF Player/0 R1/S16777215 Map: Eastern Kingdoms Low: 1099511627775
+(5462, 210347841, 1, 27404), -- Full: 0x203CD0CD60778080003183000003169E Creature/0 R3892/S12675 Map: Kul Tiras Entry: Cyrus Crestfall Low: 202398
+(5462, 210304139, 2, 27404), -- Full: 0x203CD0CD607665C0003183000003169E Creature/0 R3892/S12675 Map: Kul Tiras Entry: Flynn Fairwind Low: 202398
+
+-- "Situation report ready"
+(8356, 210347841, 1, 27404), -- Full: 0x203CD0CD60778080003183000003169E Creature/0 R3892/S12675 Map: Kul Tiras Entry: Cyrus Crestfall Low: 202398
+(8356, 210347835, 0, 27404), -- Full: 0x203CD0CD607664C000318300000316A7 Creature/0 R3892/S12675 Map: Kul Tiras Entry: Taelia Low: 202407
+
+-- Flynn explain new ashvane weapon
+(8741, 210347841, 1, 27404), -- Full: 0x203CD0CD60778080003183000003169E Creature/0 R3892/S12675 Map: Kul Tiras Entry: Cyrus Crestfall Low: 202398
+(8741, 210304139, 2, 27404), -- Full: 0x203CD0CD607665C0003183000003169E Creature/0 R3892/S12675 Map: Kul Tiras Entry: Flynn Fairwind Low: 202398
+(8741, 210347835, 0, 27404), -- Full: 0x203CD0CD607664C000318300000316A7 Creature/0 R3892/S12675 Map: Kul Tiras Entry: Taelia Low: 202407
+
+-- Flynn  help our new ally
+(8742, 210347841, 0, 27404), -- Full: 0x203CD0CD60778080003183000003169E Creature/0 R3892/S12675 Map: Kul Tiras Entry: Cyrus Crestfall Low: 202398
+(8742, 210304139, 1, 27404), -- Full: 0x203CD0CD607665C0003183000003F242 Creature/0 R3892/S12675 Map: Kul Tiras Entry: Flynn Fairwind Low: 258626
+(8742, 210347835, 2, 27404); -- Full: 0x203CD0CD607664C000318300000316A7 Creature/0 R3892/S12675 Map: Kul Tiras Entry: Taelia Low: 202407
 
 UPDATE `quest_template_addon` SET `PrevQuestID` = '47099', `ExclusiveGroup` = '0' WHERE `id` = 46729;
 UPDATE `quest_template_addon` SET `PrevQuestID` = '47098', `ExclusiveGroup` = '0' WHERE `id` = 47099;
@@ -91,3 +124,26 @@ INSERT INTO `creature_equip_template` (`CreatureID`, `ItemID1`, `VerifiedBuild`)
 
 UPDATE creature_template SET scriptname = "npc_tol_dagor_getaway_boat" WHERE entry = 124357;
 UPDATE scene_template SET ScriptName = "scene_tol_dagor_getaway_boat" where SceneId = 1746;
+
+UPDATE `conversation_template` SET `ScriptName` = 'conversation_boralus_get_your_bearings' WHERE `Id` IN (5360, 5362, 5365, 5366, 5375, 7605, 9556);
+
+REPLACE INTO `creature_model_info` (`DisplayID`, `CombatReach`, `VerifiedBuild`) VALUES
+('81516', '1', '28503');
+
+UPDATE creature_template SET npcflag = 2, scriptname = "npc_taelia_get_your_bearings" WHERE entry = 124630;
+
+DELETE FROM `creature_questender` WHERE (quest = 47099);
+INSERT INTO `creature_questender` (`id`, `quest`) VALUES
+(124630, 47099);
+
+DELETE FROM `creature_queststarter` WHERE (quest = 46729);
+INSERT INTO `creature_queststarter` (`id`, `quest`) VALUES
+(124630, 46729);
+
+REPLACE INTO `creature_summoner_entry` (`CreatureId`, `SummonerVisibleCreatureId`) VALUES
+('124630', '138622');
+
+DELETE FROM creature WHERE id IN (32639, 62821, 32638);
+DELETE FROM creature WHERE guid IN (210304119, 210304120, 210304117, 210304118);
+
+UPDATE creature_addon SET aiAnimKit = 13362 WHERE guid = 210304139;

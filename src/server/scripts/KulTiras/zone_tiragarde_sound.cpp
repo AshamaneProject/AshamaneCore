@@ -28,11 +28,14 @@
 enum eTiragardeQuests
 {
     QUEST_DAUGHTER_OF_THE_SEA   = 51341,
-    QUEST_OUT_LIKE_FLYNN        = 47098,
 
+    QUEST_OUT_LIKE_FLYNN        = 47098,
     KILL_CREDIT_GET_DRESSED     = 138554,
     KILL_CREDIT_PULL_LEVER      = 138553,
     KILL_CREDIT_CELL_BLOCK_DOOR = 137923,
+
+    QUEST_GET_YOUR_BEARINGS     = 47099,
+    QUEST_THE_OLD_KNIGHT        = 46729,
 };
 
 enum Intro
@@ -50,15 +53,21 @@ enum Intro
 
     SPELL_SCENE_FLYNN_JAILBREAK     = 246821,
     SPELL_SCENE_GETAWAY_BOAT_TRIGGER= 281331,
-    
+
     SPELL_GETAWAY_CONVERSATION_1    = 247230,
     SPELL_GETAWAY_CONVERSATION_2    = 247275,
+
+    SPELL_MAINTAIN_TAELIA_SUMMON    = 247532,
+    SPELL_SCENE_OLD_KNIGHT          = 271234,
 
     NPC_FLYNN_BEGIN                 = 121239,
     NPC_FLYNN_ESCORT                = 124311,
     NPC_FLYNN_ESCAPE                = 124363,
     NPC_ASHVANE_JAILER_EVENT        = 124022,
     NPC_TAELIA                      = 124356,
+    NPC_GETAWAY_BOAT_BOARDED        = 124030,
+    NPC_TAELIA_GET_YOUR_BEARINGS    = 124630,
+    NPC_CYRUS_CRESTFALL             = 122370,
 
     GOB_PRISON_BARS                 = 281878,
     GOB_PRISON_GATE                 = 301088,
@@ -331,19 +340,6 @@ struct npc_flynn_fairwind_follower : public FollowerAI
                 player->KilledMonsterCredit(KILL_CREDIT_CELL_BLOCK_DOOR);
         });
     }
-
-    void UpdateFollowerAI(uint32) override
-    {
-        if (HasFollowState(STATE_FOLLOW_NONE))
-            if (Unit* summoner = me->ToTempSummon()->GetSummoner())
-                if (Player* player = summoner->ToPlayer())
-                    StartFollow(player);
-
-        if (!UpdateVictim())
-            return;
-
-        DoMeleeAttackIfReady();
-    }
 };
 
 // 134922 - Kill Credit Enter Sewers
@@ -359,7 +355,21 @@ struct npc_tol_dagor_enter_sewer_credit : public ScriptedAI
     }
 };
 
-// 124357 - Getaway Boat 
+// 8330
+// 8333
+// 8334
+struct conversation_tol_dagor_inmate : public ConversationScript
+{
+    conversation_tol_dagor_inmate() : ConversationScript("conversation_tol_dagor_inmate") { }
+
+    void OnConversationCreate(Conversation* conversation, Unit* creator) override
+    {
+        if (Unit* flynn = creator->GetSummonedCreatureByEntry(NPC_FLYNN_ESCORT))
+            conversation->AddActor(flynn->GetGUID(), conversation->GetEntry() == 8334 ? 1 : 0);
+    }
+};
+
+// 124357 - Getaway Boat
 struct npc_tol_dagor_getaway_boat : public ScriptedAI
 {
     npc_tol_dagor_getaway_boat(Creature* creature) : ScriptedAI(creature) { }
@@ -379,23 +389,19 @@ struct npc_tol_dagor_getaway_boat : public ScriptedAI
         {
             me->SetReactState(REACT_PASSIVE);
             player->EnterVehicle(me, 1);
-            player->CastSpell(player, SPELL_SCENE_GETAWAY_BOAT_TRIGGER, true);
+            player->KilledMonsterCredit(NPC_GETAWAY_BOAT_BOARDED);
 
             player->GetScheduler().Schedule(1s, [this, player](TaskContext /*context*/)
             {
                 player->PlayConversation(5336);
                 me->GetMotionMaster()->MoveSmoothPath(1, boatPath, 6, false, true);
+            })
+            .Schedule(36s, [player](TaskContext /*context*/)
+            {
+                // This specific scene is spawned at 0 0 0
+                Position scenePos = Position();
+                player->GetSceneMgr().PlayScene(1746, &scenePos, &ObjectGuid::Empty);
             });
-        }
-    }
-
-    void MovementInform(uint32 type, uint32 pointId) override
-    {
-        if (type == EFFECT_MOTION_TYPE && pointId == 2)
-        {
-            if (Vehicle* meVehicle = me->GetVehicle())
-                if (Unit* playerPassenger = meVehicle->GetPassenger(1))
-                    playerPassenger->ExitVehicle(&Position(1053.48f, -627.64f, 0.54f, 2.523746f));
         }
     }
 };
@@ -438,14 +444,111 @@ public:
     void OnSceneTriggerEvent(Player* player, uint32 /*sceneInstanceID*/, SceneTemplate const* /*sceneTemplate*/, std::string const& triggerName) override
     {
         if (triggerName == "TeleportToMarket")
-            if (Unit* vehicleBase = player->GetVehicleBase())
+        {
+            if (Creature* vehicleBase = player->GetVehicleCreatureBase())
             {
-                vehicleBase->GetMotionMaster()->MovementExpired();
                 vehicleBase->NearTeleportTo(867.132f, -602.811f, -0.117634f, 1.536673f);
-                vehicleBase->GetMotionMaster()->MoveSmoothPath(2, boatPath, 4, false, true);
+                vehicleBase->GetScheduler().Schedule(2s, [this, vehicleBase, player](TaskContext /*context*/)
+                {
+                    vehicleBase->GetMotionMaster()->MoveSmoothPath(2, boatPath, 4, false, true);
 
-                player->CastSpell(player, SPELL_GETAWAY_CONVERSATION_2, true);
+                    player->CastSpell(player, SPELL_GETAWAY_CONVERSATION_2, true);
+                })
+                .Schedule(25s, [player, vehicleBase](TaskContext /*context*/)
+                {
+                    DespawnAndTeleportPlayer(player, vehicleBase);
+                });
             }
+        }
+    }
+
+    void OnSceneCancel(Player* player, uint32 /*sceneInstanceID*/, SceneTemplate const* /*sceneTemplate*/) override
+    {
+        if (Creature* vehicleBase = player->GetVehicleCreatureBase())
+        {
+            vehicleBase->GetScheduler().CancelAll();
+            DespawnAndTeleportPlayer(player, vehicleBase);
+        }
+    }
+
+private:
+    static void DespawnAndTeleportPlayer(Player* player, Creature* vehicleBase)
+    {
+        player->ExitVehicle();
+        player->NearTeleportTo(1053.48f, -627.64f, 0.54f, 2.523746f);
+        vehicleBase->DespawnOrUnsummon();
+    }
+};
+
+// 5360 Intro
+// 5362 ferry
+// 5365 bank
+// 5366 fly
+// 5375 tavern
+// 7605 harbormaster office
+// 9556
+struct conversation_boralus_get_your_bearings : public ConversationScript
+{
+    conversation_boralus_get_your_bearings() : ConversationScript("conversation_boralus_get_your_bearings") { }
+
+    void OnConversationCreate(Conversation* conversation, Unit* creator) override
+    {
+        if (Unit* taelia = creator->GetSummonedCreatureByEntry(NPC_TAELIA_GET_YOUR_BEARINGS))
+            conversation->AddActor(taelia->GetGUID(), 0);
+    }
+};
+
+// 124630 - Taelia (Get your bearings)
+struct npc_taelia_get_your_bearings : public FollowerAI
+{
+    npc_taelia_get_your_bearings(Creature* creature) : FollowerAI(creature) { }
+
+    struct ConvByKillStruct
+    {
+        ConvByKillStruct(uint8 objectiveIndex, uint32 killCreditID, uint32 conversationID) :
+            ObjectiveIndex(objectiveIndex), KillCreditID(killCreditID), ConversationID(conversationID) { }
+
+        uint8 ObjectiveIndex = 0;
+        uint32 KillCreditID = 0;
+        uint32 ConversationID = 0;
+    };
+
+    std::map<uint32, ConvByKillStruct> convByKillCredit = {
+        { 124720, ConvByKillStruct(0, 124586, 5365) },
+        { 124725, ConvByKillStruct(1, 124587, 5366) },
+        { 135064, ConvByKillStruct(2, 124588, 5362) },
+        { 135153, ConvByKillStruct(3, 124768, 5375) },
+    };
+
+    void IsSummonedBy(Unit* unit) override
+    {
+        if (Player* player = unit->ToPlayer())
+        {
+            player->PlayConversation(5360);
+
+            me->GetScheduler().Schedule(1s, [this, player](TaskContext context)
+            {
+                for (auto itr : convByKillCredit)
+                    if (player->FindNearestCreature(itr.first, 10.f))
+                        if (!player->GetQuestObjectiveData(QUEST_GET_YOUR_BEARINGS, itr.second.ObjectiveIndex))
+                        {
+                            player->KilledMonsterCredit(itr.second.KillCreditID);
+                            player->PlayConversation(itr.second.ConversationID);
+                        }
+
+                if (player->HasQuest(QUEST_THE_OLD_KNIGHT))
+                    if (!player->GetQuestObjectiveData(QUEST_THE_OLD_KNIGHT, 0))
+                        if (player->FindNearestCreature(NPC_CYRUS_CRESTFALL, 15.f))
+                        {
+                            player->CastSpell(player, SPELL_SCENE_OLD_KNIGHT, true);
+                            player->KilledMonsterCredit(NPC_CYRUS_CRESTFALL);
+                            player->RemoveAurasDueToSpell(SPELL_MAINTAIN_TAELIA_SUMMON);
+                            return;
+                        }
+
+                context.Repeat();
+            });
+        }
     }
 };
 
@@ -461,6 +564,9 @@ void AddSC_zone_tiragarde_sound()
     RegisterCreatureAI(npc_flynn_fairwind_follower);
     RegisterCreatureAI(npc_tol_dagor_enter_sewer_credit);
     RegisterCreatureAI(npc_tol_dagor_getaway_boat);
+    RegisterConversationScript(conversation_tol_dagor_inmate);
     RegisterConversationScript(conversation_tol_dagor_escape);
     RegisterSceneScript(scene_tol_dagor_getaway_boat);
+    RegisterConversationScript(conversation_boralus_get_your_bearings);
+    RegisterCreatureAI(npc_taelia_get_your_bearings);
 }
