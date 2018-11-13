@@ -530,7 +530,8 @@ struct npc_taelia_get_your_bearings : public FollowerAI
         uint32 ConversationID = 0;
     };
 
-    std::map<uint32, ConvByKillStruct> convByKillCredit = {
+    std::map<uint32, ConvByKillStruct> convByKillCredit =
+    {
         { 124720, ConvByKillStruct(0, 124586, 5365) },
         { 124725, ConvByKillStruct(1, 124587, 5366) },
         { 135064, ConvByKillStruct(2, 124588, 5362) },
