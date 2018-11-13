@@ -31,15 +31,15 @@ SceneMgr::SceneMgr(Player* player) : _player(player)
     _isDebuggingScenes = false;
 }
 
-uint32 SceneMgr::PlayScene(uint32 sceneId, Position const* position /*= nullptr*/)
+uint32 SceneMgr::PlayScene(uint32 sceneId, Position const* position /*= nullptr*/, ObjectGuid const* transportGuid /*= nullptr*/)
 {
     if (SceneTemplate const* sceneTemplate = sObjectMgr->GetSceneTemplate(sceneId))
-        return PlaySceneByTemplate(*sceneTemplate, position);
+        return PlaySceneByTemplate(*sceneTemplate, position, transportGuid);
 
     return 0;
 }
 
-uint32 SceneMgr::PlaySceneByTemplate(SceneTemplate const sceneTemplate, Position const* position /*= nullptr*/)
+uint32 SceneMgr::PlaySceneByTemplate(SceneTemplate const sceneTemplate, Position const* position /*= nullptr*/, ObjectGuid const* transportGuid /*= nullptr*/)
 {
     SceneScriptPackageEntry const* entry = sSceneScriptPackageStore.LookupEntry(sceneTemplate.ScenePackageId);
     if (!entry)
@@ -48,6 +48,10 @@ uint32 SceneMgr::PlaySceneByTemplate(SceneTemplate const sceneTemplate, Position
     // By default, take player position
     if (!position)
         position = GetPlayer();
+
+    // By default, take player transport guid
+    if (!transportGuid)
+        transportGuid = &GetPlayer()->GetTransGUID();
 
     uint32 sceneInstanceID = GetNewStandaloneSceneInstanceID();
 
@@ -60,7 +64,7 @@ uint32 SceneMgr::PlaySceneByTemplate(SceneTemplate const sceneTemplate, Position
     playScene.SceneInstanceID      = sceneInstanceID;
     playScene.SceneScriptPackageID = sceneTemplate.ScenePackageId;
     playScene.Location             = *position;
-    playScene.TransportGUID        = GetPlayer()->GetTransGUID();
+    playScene.TransportGUID        = *transportGuid;
 
     GetPlayer()->SendDirectMessage(playScene.Write());
 
