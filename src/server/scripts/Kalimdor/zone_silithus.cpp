@@ -1401,7 +1401,7 @@ struct npc_magni_bronzebeard_heart_chamber : public ScriptedAI
             player->PlayConversation(9001);
 
         if (quest->ID == 51403 || quest->ID == 53031)
-            player->PlayConversation(9001);
+            player->PlayConversation(8689);
     }
 };
 

@@ -5,7 +5,6 @@ UPDATE `conversation_template` SET `ScriptName` = 'conversation_tides_of_war' WH
 UPDATE creature_template SET gossip_menu_id = 22328 WHERE entry = 120590;
 REPLACE INTO `gossip_menu` VALUES (22328, 34271, 28153);
 REPLACE INTO `gossip_menu_option` VALUES (22328, 0, 0, "I'm ready to set sail!", 0, 1, 1, 28153);
-UPDATE creature SET npcflag = 1 WHERE guid = 280000120;
 
 UPDATE creature_template SET scriptname = "npc_jaina_boralus_intro" WHERE entry = 120922;
 UPDATE scene_template SET ScriptName = "scene_jaina_to_proudmoore_keep" where SceneId = 1954;
@@ -57,6 +56,8 @@ INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnDifficult
 (280000121, 144378, 0, 1519, 4411, '0', '11825', 0, 0, 0, -8263.696, 1359.635, 18.8017, 1.417557, 120, 0, 0, 0, 0, 0, 0, 0, 0, 27404), -- Alliance Sailor (Area: Stormwind Harbor - Difficulty: 0)
 (280000122, 144378, 0, 1519, 4411, '0', '11825', 0, 0, 0, -8237.676, 1369.901, 23.27885, 3.236135, 120, 0, 0, 0, 0, 0, 0, 0, 0, 27404), -- Alliance Sailor (Area: Stormwind Harbor - Difficulty: 0)
 (280000123, 144378, 0, 1519, 4411, '0', '11825', 0, 0, 0, -8240, 1369.356, 23.27885, 0.6054686, 120, 0, 0, 0, 0, 0, 0, 0, 0, 27404); -- Alliance Sailor (Area: Stormwind Harbor - Difficulty: 0)
+
+UPDATE creature SET npcflag = 1 WHERE guid = 280000120;
 
 UPDATE conversation_template SET LastLineEndTime = 35185 WHERE Id = 5336;
 UPDATE conversation_template SET LastLineEndTime = 15326 WHERE Id = 5340;
@@ -147,3 +148,13 @@ DELETE FROM creature WHERE id IN (32639, 62821, 32638, 137316);
 DELETE FROM creature WHERE guid IN (210304119, 210304120, 210304117, 210304118);
 
 UPDATE creature_addon SET aiAnimKit = 13362 WHERE guid = 210304139;
+
+DELETE FROM `spell_area` WHERE `spell` IN (272512, 247532);
+INSERT INTO `spell_area` (`spell`, `area`, `quest_start`, `quest_end`, `racemask`, `flags`, `quest_start_status`, `quest_end_status`) VALUES
+(272512, 8978, 47098, 0,     0, 1, 1,  0),
+(247532, 8717, 47099, 46729, 0, 1, 74, 66);
+
+UPDATE scene_template SET ScriptName = "scene_boralus_old_knight" where SceneId = 1960;
+
+UPDATE creature_template SET scriptname = "npc_cyrus_crestfall" WHERE entry = 137009;
+UPDATE `conversation_template` SET `LastLineEndTime` = '110000', `ScriptName` = "conversation_cyrus_story" WHERE `Id` = '7653'; 

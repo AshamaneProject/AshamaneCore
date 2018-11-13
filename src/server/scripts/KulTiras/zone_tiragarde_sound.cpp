@@ -502,8 +502,8 @@ private:
 // 5365 bank
 // 5366 fly
 // 5375 tavern
+// 9556 end
 // 7605 harbormaster office
-// 9556
 struct conversation_boralus_get_your_bearings : public ConversationScript
 {
     conversation_boralus_get_your_bearings() : ConversationScript("conversation_boralus_get_your_bearings") { }
@@ -545,17 +545,22 @@ struct npc_taelia_get_your_bearings : public FollowerAI
 
             me->GetScheduler().Schedule(1s, [this, player](TaskContext context)
             {
+                bool justCompletedObjective = false;
                 for (auto itr : convByKillCredit)
                     if (player->FindNearestCreature(itr.first, 10.f))
                         if (!player->GetQuestObjectiveData(QUEST_GET_YOUR_BEARINGS, itr.second.ObjectiveIndex))
                         {
                             player->KilledMonsterCredit(itr.second.KillCreditID);
                             player->PlayConversation(itr.second.ConversationID);
+                            justCompletedObjective = true;
                         }
+
+                if (justCompletedObjective && player->GetQuestStatus(QUEST_GET_YOUR_BEARINGS) == QUEST_STATUS_COMPLETE)
+                    player->PlayConversation(9556);
 
                 if (player->HasQuest(QUEST_THE_OLD_KNIGHT))
                     if (!player->GetQuestObjectiveData(QUEST_THE_OLD_KNIGHT, 0))
-                        if (player->FindNearestCreature(NPC_CYRUS_CRESTFALL, 15.f))
+                        if (player->FindNearestCreature(NPC_CYRUS_CRESTFALL, 10.f))
                         {
                             player->CastSpell(player, SPELL_SCENE_OLD_KNIGHT, true);
                             player->KilledMonsterCredit(NPC_CYRUS_CRESTFALL);
@@ -566,6 +571,43 @@ struct npc_taelia_get_your_bearings : public FollowerAI
                 context.Repeat();
             });
         }
+    }
+};
+
+// 1960
+class scene_boralus_old_knight : public SceneScript
+{
+public:
+    scene_boralus_old_knight() : SceneScript("scene_boralus_old_knight") { }
+
+    void OnSceneEnd(Player* player, uint32 /*sceneInstanceID*/, SceneTemplate const* /*sceneTemplate*/) override
+    {
+        player->PlayConversation(8062);
+    }
+};
+
+// 137009
+class npc_cyrus_crestfall : public ScriptedAI
+{
+public:
+    npc_cyrus_crestfall(Creature* creature) : ScriptedAI(creature) { }
+
+    void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 /*gossipListId*/) override
+    {
+        player->KilledMonsterCredit(me->GetEntry());
+        player->PlayConversation(7653);
+    }
+};
+
+// 7653
+struct conversation_cyrus_story : public ConversationScript
+{
+    conversation_cyrus_story() : ConversationScript("conversation_cyrus_story") { }
+
+    void OnConversationRemove(Conversation* /*conversation*/, Unit* creator) override
+    {
+        if (Player* player = creator->ToPlayer())
+            player->KilledMonsterCredit(137877);
     }
 };
 
@@ -586,4 +628,7 @@ void AddSC_zone_tiragarde_sound()
     RegisterSceneScript(scene_tol_dagor_getaway_boat);
     RegisterConversationScript(conversation_boralus_get_your_bearings);
     RegisterCreatureAI(npc_taelia_get_your_bearings);
+    RegisterSceneScript(scene_boralus_old_knight);
+    RegisterCreatureAI(npc_cyrus_crestfall);
+    RegisterConversationScript(conversation_cyrus_story);
 }
