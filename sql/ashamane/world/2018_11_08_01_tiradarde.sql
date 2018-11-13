@@ -143,7 +143,7 @@ INSERT INTO `creature_queststarter` (`id`, `quest`) VALUES
 REPLACE INTO `creature_summoner_entry` (`CreatureId`, `SummonerVisibleCreatureId`) VALUES
 ('124630', '138622');
 
-DELETE FROM creature WHERE id IN (32639, 62821, 32638);
+DELETE FROM creature WHERE id IN (32639, 62821, 32638, 137316);
 DELETE FROM creature WHERE guid IN (210304119, 210304120, 210304117, 210304118);
 
 UPDATE creature_addon SET aiAnimKit = 13362 WHERE guid = 210304139;

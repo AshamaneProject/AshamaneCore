@@ -308,6 +308,19 @@ struct npc_flynn_fairwind_follower : public FollowerAI
             else
                 context.Repeat();
         });
+
+        me->GetScheduler().Schedule(2s, [this](TaskContext context)
+        {
+            if (me->FindNearestCreature(NPC_TAELIA, 40.f))
+            {
+                if (TempSummon* tempMe = me->ToTempSummon())
+                    if (Unit* summoner = tempMe->GetSummoner())
+                        if (Player* playerSummoner = summoner->ToPlayer())
+                            playerSummoner->PlayConversation(8334);
+            }
+            else
+                context.Repeat();
+        });
     }
 
     void MovementInform(uint32 type, uint32 pointId) override
@@ -364,6 +377,10 @@ struct conversation_tol_dagor_inmate : public ConversationScript
 
     void OnConversationCreate(Conversation* conversation, Unit* creator) override
     {
+        if (conversation->GetEntry() == 8334)
+            if (Unit* taelia = creator->FindNearestCreature(NPC_TAELIA, 50.f))
+                conversation->AddActor(taelia->GetGUID(), 0);
+
         if (Unit* flynn = creator->GetSummonedCreatureByEntry(NPC_FLYNN_ESCORT))
             conversation->AddActor(flynn->GetGUID(), conversation->GetEntry() == 8334 ? 1 : 0);
     }
