@@ -31,6 +31,7 @@ EndScriptData */
 #include "MotionMaster.h"
 #include "ObjectAccessor.h"
 #include "Player.h"
+#include "TemporarySummon.h"
 
 const float MAX_PLAYER_DISTANCE = 100.0f;
 
@@ -269,6 +270,12 @@ void FollowerAI::UpdateAI(uint32 uiDiff)
 
 void FollowerAI::UpdateFollowerAI(uint32 /*uiDiff*/)
 {
+    if (HasFollowState(STATE_FOLLOW_NONE))
+        if (TempSummon* meTemp = me->ToTempSummon())
+            if (Unit* summoner = meTemp->GetSummoner())
+                if (Player* player = summoner->ToPlayer())
+                    StartFollow(player);
+
     if (!UpdateVictim())
         return;
 
