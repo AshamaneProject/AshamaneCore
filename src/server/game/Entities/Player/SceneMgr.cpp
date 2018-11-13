@@ -49,9 +49,10 @@ uint32 SceneMgr::PlaySceneByTemplate(SceneTemplate const sceneTemplate, Position
     if (!position)
         position = GetPlayer();
 
+    ObjectGuid plrTransGuid = GetPlayer()->GetTransGUID();
     // By default, take player transport guid
     if (!transportGuid)
-        transportGuid = &GetPlayer()->GetTransGUID();
+        transportGuid = &plrTransGuid;
 
     uint32 sceneInstanceID = GetNewStandaloneSceneInstanceID();
 
