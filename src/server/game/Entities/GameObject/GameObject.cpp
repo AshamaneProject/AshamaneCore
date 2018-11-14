@@ -1168,6 +1168,9 @@ bool GameObject::IsAlwaysVisibleFor(WorldObject const* seer) const
         if (seer->GetGUID() == GetOwnerGUID())
             return true;
 
+        if (!IsVisibleBySummonerOnly())
+            return false;
+
         Unit* owner = GetOwner();
         if (Unit const* unitSeer = seer->ToUnit())
             if (owner && owner->IsFriendlyTo(unitSeer))
