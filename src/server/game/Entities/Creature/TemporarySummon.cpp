@@ -206,6 +206,9 @@ void TempSummon::InitStats(uint32 duration)
             m_ControlledByPlayer = true;
     }
 
+    if (uint32 summonerSpecificEntry = sObjectMgr->GetCreatureSummonerSpecificEntry(GetEntry()))
+        SetSummonerSpecificEntry(summonerSpecificEntry);
+
     if (!m_Properties)
         return;
 
@@ -228,9 +231,6 @@ void TempSummon::InitStats(uint32 duration)
         setFaction(m_Properties->Faction);
     else if (IsVehicle() && owner) // properties should be vehicle
         setFaction(owner->getFaction());
-
-    if (uint32 summonerSpecificEntry = sObjectMgr->GetCreatureSummonerSpecificEntry(GetEntry()))
-        SetSummonerSpecificEntry(summonerSpecificEntry);
 }
 
 void TempSummon::InitSummon(Spell const* summonSpell /*= nullptr*/)
