@@ -159,3 +159,206 @@ UPDATE scene_template SET ScriptName = "scene_boralus_old_knight" where SceneId 
 
 UPDATE creature_template SET scriptname = "npc_cyrus_crestfall" WHERE entry = 122370;
 UPDATE `conversation_template` SET `LastLineEndTime` = '106000', `ScriptName` = "conversation_cyrus_story" WHERE `Id` = '7653'; 
+
+UPDATE gameobject_template_addon SET flags = 3 WHERE entry IN (281878, 301088);
+
+UPDATE creature_template_addon SET aiAnimKit = 15435 WHERE entry = 135943;
+
+DELETE FROM `conversation_actors` WHERE (`ConversationId`=7317 AND `Idx`=1) OR (`ConversationId`=7317 AND `Idx`=0);
+INSERT INTO `conversation_actors` (`ConversationId`, `ConversationActorId`, `Idx`, `VerifiedBuild`) VALUES
+(7317, 210321411, 1, 27377), -- Full: 0x204228CD6084C240001AC10000772A61 Creature/0 R4234/S6849 Map: Kul Tiras Entry: 135945 (Mark Waldorf) Low: 7809633
+(7317, 210321420, 0, 27377); -- Full: 0x204228CD6084C1C0001AC10000772A61 Creature/0 R4234/S6849 Map: Kul Tiras Entry: 135943 (Laura Statler) Low: 7809633
+
+UPDATE `gameobject_template_addon` SET `faction`=2908 WHERE `entry`=35591; -- Fishing Bobber
+
+UPDATE `creature_template_addon` SET `auras`='98892 281565 178806' WHERE `entry`=131997; -- 131997 (Training Dummy)
+UPDATE `creature_template_addon` SET `auras`='98892 167347 260294 178806' WHERE `entry`=131998; -- 131998 (Training Dummy)
+
+REPLACE INTO `vehicle_template_accessory` (`entry`, `accessory_entry`, `seat_id`, `minion`, `description`, `summontype`, `summontimer`) VALUES
+(135107, 135112, 0, 1, 'Scrimshaw Thug - Gaunt Vagabond', 6, 60000), -- Scrimshaw Thug - Gaunt Vagabond
+(142543, 142132, 0, 1, 'Becca\'s Vehicle Bunny - Becca', 6, 60000), -- Becca's Vehicle Bunny - Becca
+(135792, 124883, 0, 1, 'Boralus Worker - Kul Tiran Wheelbarrow', 6, 60000), -- Boralus Worker - Kul Tiran Wheelbarrow
+(135798, 135797, 0, 1, 'Hanging - Abraham Combs', 6, 60000), -- Hanging - Abraham Combs
+(137979, 137980, 1, 1, 'Galeheart - Taelia', 6, 60000), -- Galeheart - Taelia
+(143260, 143262, 0, 1, 'Steve Martinez - Captain', 6, 60000); -- Steve Martinez - Captain
+
+REPLACE INTO `npc_spellclick_spells` (`npc_entry`, `spell_id`, `cast_flags`, `user_type`) VALUES
+(142139, 224326, 1, 0),
+(142056, 224326, 1, 0),
+(143022, 224326, 1, 0),
+(143502, 224326, 1, 0),
+(135521, 224326, 1, 0),
+(143272, 224326, 1, 0),
+(134849, 267134, 1, 0),
+(134845, 265601, 1, 0),
+(142119, 224326, 1, 0),
+(142092, 224326, 1, 0),
+(142099, 224326, 1, 0),
+(143721, 224326, 1, 0),
+(142126, 224326, 1, 0),
+(142527, 224326, 1, 0),
+(142530, 224326, 1, 0),
+(142541, 224326, 1, 0),
+(142124, 224326, 1, 0),
+(142130, 224326, 1, 0),
+(142091, 224326, 1, 0),
+(142090, 224326, 1, 0),
+(143571, 224326, 1, 0),
+(143516, 224326, 1, 0),
+(142125, 224326, 1, 0),
+(142505, 224326, 1, 0),
+(142507, 224326, 1, 0),
+(142122, 224326, 1, 0),
+(142127, 224326, 1, 0),
+(142542, 224326, 1, 0),
+(142129, 224326, 1, 0),
+(142506, 224326, 1, 0),
+(142116, 224326, 1, 0),
+(142549, 224326, 1, 0),
+(143501, 224326, 1, 0),
+(142513, 224326, 1, 0),
+(142118, 224326, 1, 0),
+(142514, 224326, 1, 0),
+(142517, 224326, 1, 0),
+(142526, 224326, 1, 0),
+(144175, 224326, 1, 0),
+(144178, 224326, 1, 0),
+(144177, 224326, 1, 0),
+(144176, 224326, 1, 0),
+(139735, 274326, 1, 0),
+(142111, 224326, 1, 0),
+(137199, 224326, 1, 0),
+(137196, 224326, 1, 0),
+(142050, 224326, 1, 0),
+(138423, 224326, 1, 0),
+(142035, 224326, 1, 0),
+(142044, 224326, 1, 0),
+(142453, 224326, 1, 0),
+(138410, 224326, 1, 0),
+(138421, 224326, 1, 0),
+(142069, 224326, 1, 0),
+(142051, 224326, 1, 0),
+(142053, 224326, 1, 0),
+(142052, 224326, 1, 0),
+(142029, 224326, 1, 0),
+(142046, 224326, 1, 0),
+(142031, 224326, 1, 0),
+(142030, 224326, 1, 0),
+(142613, 224326, 1, 0),
+(142043, 224326, 1, 0),
+(142042, 224326, 1, 0),
+(142040, 224326, 1, 0),
+(137201, 224326, 1, 0),
+(138422, 224326, 1, 0),
+(142055, 224326, 1, 0),
+(142032, 224326, 1, 0),
+(144110, 224326, 1, 0),
+(144327, 224326, 1, 0),
+(144328, 224326, 1, 0),
+(143444, 224326, 1, 0),
+(137135, 269403, 1, 0);
+
+
+UPDATE `gameobject_template_addon` SET `faction`=2908 WHERE `entry`=35591; -- Fishing Bobber
+
+UPDATE `creature_template_addon` SET `bytes1`=0 WHERE `entry`=143700; -- 143700 (Domestic Alpaca)
+UPDATE `creature_template_addon` SET `bytes1`=50331649 WHERE `entry`=127636; -- 127636 (Tiragarde Owl)
+UPDATE `creature_template_addon` SET `auras`='212682' WHERE `entry`=133264; -- 133264 (Hatherford Inspector)
+UPDATE `creature_template_addon` SET `bytes1`=0 WHERE `entry`=126496; -- 126496 (Wandering Mouser)
+UPDATE `creature_template_addon` SET `bytes1`=0 WHERE `entry`=142774; -- 142774 (Cellarman Hinz)
+UPDATE `creature_template_addon` SET `bytes2`=0, `auras`='' WHERE `entry`=140906; -- 140906 (Dock Rat)
+UPDATE `creature_template_addon` SET `bytes2`=1 WHERE `entry`=144213; -- 144213 (Scrimshaw Racketeer)
+UPDATE `creature_template_addon` SET `bytes2`=0 WHERE `entry`=132638; -- 132638 (Kul Tiran Noble)
+UPDATE `creature_template_addon` SET `auras`='' WHERE `entry`=142180; -- 142180 (Tradewinds Laborer)
+UPDATE `creature_template_addon` SET `aiAnimKit`=16390 WHERE `entry`=143107; -- 143107 (Navigator Hudson)
+UPDATE `creature_template_addon` SET `bytes1`=0, `auras`='244863' WHERE `entry`=142166; -- 142166 (Tradewinds Dockworker)
+UPDATE `creature_template_addon` SET `auras`='145953' WHERE `entry`=143870; -- 143870 (Off-Duty Cannoneer)
+UPDATE `creature_template_addon` SET `bytes2`=258 WHERE `entry`=136633; -- Harbor Guard
+UPDATE `creature_template_addon` SET `bytes2`=1, `aiAnimKit`=14225 WHERE `entry`=121239; -- Flynn Fairwind
+UPDATE `creature_template_addon` SET `bytes1`=0, `bytes2`=1 WHERE `entry`=123642; -- 123642 (Boralus Citizen)
+UPDATE `creature_template_addon` SET `bytes1`=0 WHERE `entry`=133282; -- 133282 (Stormsong Trader)
+UPDATE `creature_template_addon` SET `auras`='281526' WHERE `entry`=135520; -- 135520 (Boralus Youth)
+UPDATE `creature_template_addon` SET `bytes2`=0, `auras`='' WHERE `entry`=141085; -- 141085 (Off-Duty Cadet)
+UPDATE `creature_template_addon` SET `mount`=81689 WHERE `entry`=139088; -- Boralus Guard
+UPDATE `creature_template_addon` SET `bytes2`=1 WHERE `entry`=144378; -- 144378 (Alliance Sailor)
+UPDATE `creature_template_addon` SET `bytes1`=0 WHERE `entry`=140202; -- 140202 (Darnassian Archer)
+UPDATE `creature_template_addon` SET `bytes2`=256 WHERE `entry`=120788; -- Genn Greymane
+UPDATE `creature_template_addon` SET `bytes2`=256 WHERE `entry`=120599; -- Greyguard
+UPDATE `creature_template_addon` SET `bytes1`=8 WHERE `entry`=141583; -- 141583 (Grieving Citizen)
+UPDATE `creature_template_addon` SET `aiAnimKit`=0 WHERE `entry`=136728; -- 136728 (Maiden of Vitality)
+UPDATE `creature_template_addon` SET `bytes2`=256 WHERE `entry`=133433; -- 133433 (Ghostblade Scout)
+UPDATE `creature_template_addon` SET `auras`='122729 123240' WHERE `entry`=62822; -- 62822 (Cousin Slowhands)
+UPDATE `creature_template_addon` SET `auras`='122729 123236' WHERE `entry`=62821; -- 62821 (Mystic Birdhat)
+
+
+UPDATE `creature_equip_template` SET `ItemID1`=2703 WHERE (`CreatureID`=125005 AND `ID`=2); -- Kul Tiran Noble
+UPDATE `creature_equip_template` SET `ItemID1`=2202 WHERE (`CreatureID`=125005 AND `ID`=1); -- Kul Tiran Noble
+UPDATE `creature_equip_template` SET `ItemID1`=163840 WHERE (`CreatureID`=139088 AND `ID`=2); -- Boralus Guard
+UPDATE `creature_equip_template` SET `ItemID1`=2202 WHERE (`CreatureID`=142605 AND `ID`=1); -- Chris Pyle
+UPDATE `creature_equip_template` SET `ItemID1`=163840 WHERE (`CreatureID`=133282 AND `ID`=1); -- Stormsong Trader
+UPDATE `creature_equip_template` SET `ItemID1`=80057 WHERE (`CreatureID`=135792 AND `ID`=2); -- Boralus Worker
+UPDATE `creature_equip_template` SET `ItemID1`=1905 WHERE (`CreatureID`=135792 AND `ID`=1); -- Boralus Worker
+UPDATE `creature_equip_template` SET `ItemID1`=31824 WHERE (`CreatureID`=135678 AND `ID`=2); -- 7th Legion Cannoneer
+UPDATE `creature_equip_template` SET `ItemID1`=0 WHERE (`CreatureID`=135678 AND `ID`=1); -- 7th Legion Cannoneer
+
+
+UPDATE `creature_template` SET `npcflag`=0 WHERE `entry`=139522; -- Scouting Map
+UPDATE `creature_template` SET `npcflag`=3 WHERE `entry`=121239; -- Flynn Fairwind
+UPDATE `creature_template` SET `faction`=2995 WHERE `entry`=141085; -- Off-Duty Cadet
+UPDATE `creature_template` SET `minlevel`=123, `maxlevel`=123 WHERE `entry`=43845; -- Malfurion Stormrage
+UPDATE `creature_template` SET `minlevel`=123, `maxlevel`=123 WHERE `entry`=7999; -- Tyrande Whisperwind
+UPDATE `creature_template` SET `unit_flags`=32768 WHERE `entry`=120599; -- Greyguard
+UPDATE `creature_template` SET `minlevel`=120, `maxlevel`=120 WHERE `entry`=1756; -- Stormwind Royal Guard
+UPDATE `creature_template` SET `minlevel`=120, `maxlevel`=120 WHERE `entry`=89715; -- Franklin Martin
+UPDATE `creature_template` SET `minlevel`=120, `maxlevel`=120 WHERE `entry`=14439; -- Officer Brady
+UPDATE `creature_template` SET `minlevel`=120, `maxlevel`=120 WHERE `entry`=43690; -- Auctioneer Hesse
+UPDATE `creature_template` SET `minlevel`=120, `maxlevel`=120 WHERE `entry`=43842; -- Auctioneer Fitzgerald
+UPDATE `creature_template` SET `minlevel`=120, `maxlevel`=120 WHERE `entry`=43841; -- Auctioneer Lauffer
+UPDATE `creature_template` SET `maxlevel`=5 WHERE `entry`=43102; -- Rock Lobster
+UPDATE `creature_template` SET `minlevel`=120, `maxlevel`=120 WHERE `entry`=37944; -- Stormwind City Patroller
+UPDATE `creature_template` SET `minlevel`=120, `maxlevel`=120 WHERE `entry`=29712; -- Stormwind Harbor Guard
+UPDATE `creature_template` SET `speed_run`=0.7142857 WHERE `entry`=140146; -- Stormwind Infantry Captain
+UPDATE `creature_template` SET `minlevel`=120, `maxlevel`=120 WHERE `entry`=48275; -- Kurzel
+UPDATE `creature_template` SET `minlevel`=120, `maxlevel`=120 WHERE `entry`=48883; -- Ramkahen Guardian
+UPDATE `creature_template` SET `unit_flags`=768, `unit_flags3`=1 WHERE `entry`=3681; -- Wisp
+UPDATE `creature_template` SET `minlevel`=120, `maxlevel`=120 WHERE `entry`=51348; -- Stormwind Gryphon Rider
+UPDATE `creature_template` SET `minlevel`=120, `maxlevel`=120 WHERE `entry`=1976; -- Stormwind City Patroller
+UPDATE `creature_template` SET `minlevel`=2, `maxlevel`=2 WHERE `entry`=12360; -- Riding Striped Nightsaber
+UPDATE `creature_template` SET `unit_flags`=768, `unit_flags3`=1 WHERE `entry`=50307; -- Lord Candren
+UPDATE `creature_template` SET `unit_flags`=768, `unit_flags3`=1 WHERE `entry`=50305; -- Moon Priestess Lasara
+UPDATE `creature_template` SET `minlevel`=2, `maxlevel`=2 WHERE `entry`=35168; -- Striped Dawnsaber
+UPDATE `creature_template` SET `minlevel`=2, `maxlevel`=2 WHERE `entry`=14556; -- Swift Frostsaber
+UPDATE `creature_template` SET `minlevel`=120, `maxlevel`=120, `unit_flags`=33536, `unit_flags3`=1 WHERE `entry`=4423; -- Darnassian Protector
+UPDATE `creature_template` SET `minlevel`=1, `maxlevel`=1 WHERE `entry`=14602; -- Swift Stormsaber
+UPDATE `creature_template` SET `minlevel`=1, `maxlevel`=1 WHERE `entry`=12358; -- Riding Striped Frostsaber
+UPDATE `creature_template` SET `minlevel`=120, `maxlevel`=120 WHERE `entry`=68; -- Stormwind City Guard
+
+REPLACE INTO `npc_spellclick_spells` (`npc_entry`, `spell_id`, `cast_flags`, `user_type`) VALUES
+(112698, 224326, 1, 0),
+(112686, 224326, 1, 0),
+(112694, 224326, 1, 0),
+(142786, 224326, 1, 0),
+(29152, 83580, 1, 0),
+(139645, 274244, 1, 0),
+(135521, 224326, 1, 0),
+(124030, 247045, 1, 0),
+(142056, 224326, 1, 0),
+(142139, 224326, 1, 0),
+(143502, 224326, 1, 0),
+(143022, 224326, 1, 0),
+(143272, 224326, 1, 0),
+(142119, 224326, 1, 0),
+(129745, 257256, 1, 0),
+(134586, 257256, 1, 0),
+(134122, 257256, 1, 0),
+(129724, 257217, 1, 0),
+(140755, 275332, 1, 0),
+(127016, 252092, 1, 0),
+(125333, 224326, 1, 0),
+(130461, 224326, 1, 0),
+(127149, 240770, 1, 0),
+(127618, 254969, 1, 0),
+(124847, 254964, 1, 0),
+(127718, 253500, 1, 0),
+(128478, 254961, 1, 0),
+(128476, 254965, 1, 0);
