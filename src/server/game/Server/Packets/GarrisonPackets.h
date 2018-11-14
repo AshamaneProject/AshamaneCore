@@ -345,14 +345,15 @@ namespace WorldPackets
             int32 GarrTypeID = 0;
         };
 
-        class ShowAdventureMap final : public ServerPacket
+        class TC_GAME_API ShowAdventureMap final : public ServerPacket
         {
         public:
-            ShowAdventureMap(ObjectGuid guid) : ServerPacket(SMSG_SHOW_ADVENTURE_MAP, 4), Unit(guid) { }
+            ShowAdventureMap(ObjectGuid guid, uint32 id) : ServerPacket(SMSG_SHOW_ADVENTURE_MAP, 4), Unit(guid), ID(id) { }
 
             WorldPacket const* Write() override;
 
             ObjectGuid Unit;
+            uint32 ID;
         };
 
         class GarrisonRequestScoutingMap final : public ClientPacket

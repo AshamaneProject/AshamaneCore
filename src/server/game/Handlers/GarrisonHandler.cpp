@@ -94,7 +94,7 @@ void WorldSession::HandleGarrisonOpenMissionNpc(WorldPackets::Garrison::Garrison
 
     if (garType == GARRISON_TYPE_CLASS_HALL)
     {
-        SendPacket(WorldPackets::Garrison::ShowAdventureMap(garrisonOpenMissionNpcClient.NpcGUID).Write());
+        SendPacket(WorldPackets::Garrison::ShowAdventureMap(garrisonOpenMissionNpcClient.NpcGUID, garType).Write());
     }
     else
     {
