@@ -84,10 +84,6 @@ INSERT INTO `conversation_actors` (`ConversationId`, `ConversationActorGuid`, `I
 (7653, 210347841, 1, 27404), -- Full: 0x203CD0CD60778080003183000003EF63 Creature/0 R3892/S12675 Map: Kul Tiras Entry: Cyrus Crestfall Low: 257891
 (7653, 210334796, 0, 27404), -- Full: 0x203CD0CD6075F500003183000003169E Creature/0 R3892/S12675 Map: Kul Tiras Entry: Genn Greymane Low: 202398
 
-(5462, 210347841, 0, 27404), -- Full: 0x0800040000000000FFFFFFFFFFFFFFFF Player/0 R1/S16777215 Map: Eastern Kingdoms Low: 1099511627775
-(5462, 210347841, 1, 27404), -- Full: 0x203CD0CD60778080003183000003169E Creature/0 R3892/S12675 Map: Kul Tiras Entry: Cyrus Crestfall Low: 202398
-(5462, 210304139, 2, 27404), -- Full: 0x203CD0CD607665C0003183000003169E Creature/0 R3892/S12675 Map: Kul Tiras Entry: Flynn Fairwind Low: 202398
-
 -- "Situation report ready"
 (8356, 210347841, 1, 27404), -- Full: 0x203CD0CD60778080003183000003169E Creature/0 R3892/S12675 Map: Kul Tiras Entry: Cyrus Crestfall Low: 202398
 (8356, 210347835, 0, 27404), -- Full: 0x203CD0CD607664C000318300000316A7 Creature/0 R3892/S12675 Map: Kul Tiras Entry: Taelia Low: 202407
@@ -96,6 +92,11 @@ INSERT INTO `conversation_actors` (`ConversationId`, `ConversationActorGuid`, `I
 (8741, 210347841, 1, 27404), -- Full: 0x203CD0CD60778080003183000003169E Creature/0 R3892/S12675 Map: Kul Tiras Entry: Cyrus Crestfall Low: 202398
 (8741, 210304139, 2, 27404), -- Full: 0x203CD0CD607665C0003183000003169E Creature/0 R3892/S12675 Map: Kul Tiras Entry: Flynn Fairwind Low: 202398
 (8741, 210347835, 0, 27404), -- Full: 0x203CD0CD607664C000318300000316A7 Creature/0 R3892/S12675 Map: Kul Tiras Entry: Taelia Low: 202407
+
+-- What was that ?
+(5462, 210347841, 0, 27404), -- Full: 0x0800040000000000FFFFFFFFFFFFFFFF Player/0 R1/S16777215 Map: Eastern Kingdoms Low: 1099511627775
+(5462, 210347841, 1, 27404), -- Full: 0x203CD0CD60778080003183000003169E Creature/0 R3892/S12675 Map: Kul Tiras Entry: Cyrus Crestfall Low: 202398
+(5462, 210304139, 2, 27404), -- Full: 0x203CD0CD607665C0003183000003169E Creature/0 R3892/S12675 Map: Kul Tiras Entry: Flynn Fairwind Low: 202398
 
 -- Flynn  help our new ally
 (8742, 210347841, 0, 27404), -- Full: 0x203CD0CD60778080003183000003169E Creature/0 R3892/S12675 Map: Kul Tiras Entry: Cyrus Crestfall Low: 202398
@@ -156,5 +157,5 @@ INSERT INTO `spell_area` (`spell`, `area`, `quest_start`, `quest_end`, `racemask
 
 UPDATE scene_template SET ScriptName = "scene_boralus_old_knight" where SceneId = 1960;
 
-UPDATE creature_template SET scriptname = "npc_cyrus_crestfall" WHERE entry = 137009;
-UPDATE `conversation_template` SET `LastLineEndTime` = '110000', `ScriptName` = "conversation_cyrus_story" WHERE `Id` = '7653'; 
+UPDATE creature_template SET scriptname = "npc_cyrus_crestfall" WHERE entry = 122370;
+UPDATE `conversation_template` SET `LastLineEndTime` = '106000', `ScriptName` = "conversation_cyrus_story" WHERE `Id` = '7653'; 

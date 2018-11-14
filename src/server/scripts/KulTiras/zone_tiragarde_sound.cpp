@@ -21,6 +21,7 @@
 #include "Player.h"
 #include "ScriptedCreature.h"
 #include "ScriptedFollowerAI.h"
+#include "ScriptedGossip.h"
 #include "ScriptMgr.h"
 #include "TemporarySummon.h"
 #include "Vehicle.h"
@@ -595,8 +596,9 @@ public:
 
     void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 /*gossipListId*/) override
     {
-        player->KilledMonsterCredit(me->GetEntry());
+        player->KilledMonsterCredit(137009);
         player->PlayConversation(7653);
+        CloseGossipMenuFor(player);
     }
 };
 
