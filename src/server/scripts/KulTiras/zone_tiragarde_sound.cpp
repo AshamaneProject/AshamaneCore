@@ -541,6 +541,8 @@ struct npc_taelia_get_your_bearings : public FollowerAI
 
     void IsSummonedBy(Unit* unit) override
     {
+        me->SetFlag64(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
+
         if (Player* player = unit->ToPlayer())
         {
             player->PlayConversation(5360);
@@ -558,7 +560,10 @@ struct npc_taelia_get_your_bearings : public FollowerAI
                         }
 
                 if (justCompletedObjective && player->GetQuestStatus(QUEST_GET_YOUR_BEARINGS) == QUEST_STATUS_COMPLETE)
+                {
                     player->PlayConversation(9556);
+                    me->SetFlag64(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
+                }
 
                 if (player->HasQuest(QUEST_THE_OLD_KNIGHT))
                     if (!player->GetQuestObjectiveData(QUEST_THE_OLD_KNIGHT, 0))

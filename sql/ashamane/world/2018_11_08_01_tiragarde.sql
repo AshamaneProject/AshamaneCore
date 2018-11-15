@@ -362,3 +362,134 @@ REPLACE INTO `npc_spellclick_spells` (`npc_entry`, `spell_id`, `cast_flags`, `us
 (127718, 253500, 1, 0),
 (128478, 254961, 1, 0),
 (128476, 254965, 1, 0);
+
+UPDATE `quest_template_addon` SET `PrevQuestID` = 47186 WHERE (ID = 47189);
+UPDATE `quest_template_addon` SET `PrevQuestID` = 46729 WHERE (ID = 52128);
+UPDATE `quest_template_addon` SET `PrevQuestID` = 52128 WHERE (ID = 47186);
+UPDATE `quest_template_addon` SET `PrevQuestID` = 47189 WHERE (ID = 52654);
+UPDATE `quest_template_addon` SET `PrevQuestID` = 52654 WHERE (ID = 52544);
+UPDATE `quest_template_addon` SET `PrevQuestID` = 52544 WHERE (ID = 53332);
+
+UPDATE `quest_template_addon` SET `PrevQuestID` = 53332 WHERE (ID = 51714);
+UPDATE `quest_template_addon` SET `PrevQuestID` = 51714 WHERE (ID = 51715);
+UPDATE `quest_template_addon` SET `PrevQuestID` = 51715 WHERE (ID = 53074);
+UPDATE `quest_template_addon` SET `PrevQuestID` = 53074 WHERE (ID = 51569);
+
+UPDATE `quest_template_addon` SET `PrevQuestID` = 47960 WHERE (ID = 47181);
+UPDATE `quest_template_addon` SET `PrevQuestID` = 47181 WHERE (ID = 47485);
+UPDATE `quest_template_addon` SET `PrevQuestID` = 50972 WHERE (ID = 52800);
+
+UPDATE `quest_template_addon` SET `PrevQuestID` = 47962 WHERE (ID = 47952);
+UPDATE `quest_template_addon` SET `PrevQuestID` = 47952 WHERE (ID = 51487);
+UPDATE `quest_template_addon` SET `PrevQuestID` = 51487 WHERE (ID = 51488);
+UPDATE `quest_template_addon` SET `PrevQuestID` = 51488 WHERE (ID = 51489);
+UPDATE `quest_template_addon` SET `PrevQuestID` = 51489 WHERE (ID = 51490);
+UPDATE `quest_template_addon` SET `PrevQuestID` = 51490 WHERE (ID = 51401);
+
+
+UPDATE `quest_template_addon` SET `PrevQuestID` = 47961 WHERE (ID = 48622);
+UPDATE `quest_template_addon` SET `PrevQuestID` = 48622 WHERE (ID = 47968);
+UPDATE `quest_template_addon` SET `PrevQuestID` = 47968 WHERE (ID = 47978);
+UPDATE `quest_template_addon` SET `PrevQuestID` = 47978 WHERE (ID = 47979);
+UPDATE `quest_template_addon` SET `PrevQuestID` = 47979 WHERE (ID = 47981);
+UPDATE `quest_template_addon` SET `PrevQuestID` = 47981 WHERE (ID = 47982);
+
+UPDATE `quest_template_addon` SET `PrevQuestID` = 49404 WHERE (ID = 52148);
+
+
+UPDATE `quest_template_addon` SET `PrevQuestID` = '53041', `ExclusiveGroup` = '0' WHERE `id` = 47489;
+UPDATE `quest_template_addon` SET `PrevQuestID` = '50531', `ExclusiveGroup` = '0' WHERE `id` = 53041;
+UPDATE `quest_template_addon` SET `PrevQuestID` = '47486', `ExclusiveGroup` = '0' WHERE `id` = 50531;
+UPDATE `quest_template_addon` SET `PrevQuestID` = '47485', `ExclusiveGroup` = '-47486' WHERE `id` = 47486;
+UPDATE `quest_template_addon` SET `PrevQuestID` = '47485', `ExclusiveGroup` = '-47486' WHERE `id` = 47488;
+UPDATE `quest_template_addon` SET `PrevQuestID` = '47485', `ExclusiveGroup` = '-47486' WHERE `id` = 50573;
+UPDATE `quest_template_addon` SET `PrevQuestID` = '47485', `ExclusiveGroup` = '-47486' WHERE `id` = 47487;
+UPDATE `quest_template_addon` SET `ExclusiveGroup` = '0' WHERE `id` = 47485;
+
+UPDATE `quest_template_addon` SET `RequiredSkillID` = 2565, `RequiredSkillPoints` = 150 WHERE ID IN (51889, 52043);
+
+DELETE FROM `creature_queststarter` WHERE quest = 47186 AND id IN (120788);
+DELETE FROM `creature_questender`   WHERE quest = 47186 AND id IN (120788);
+
+UPDATE creature SET phaseId = 50 WHERE guid IN (210322451);
+
+UPDATE `quest_template_addon` SET `PrevQuestID` = 47960 WHERE `id` = 47181;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 47181 WHERE `id` = 47485;
+UPDATE `quest_template_addon` SET `PrevQuestID` = '47485', `ExclusiveGroup` = '-47488' WHERE `id` = 47488;
+UPDATE `quest_template_addon` SET `PrevQuestID` = '47485', `ExclusiveGroup` = '-47488' WHERE `id` = 47487;
+UPDATE `quest_template_addon` SET `PrevQuestID` = '47485', `ExclusiveGroup` = '-47488' WHERE `id` = 47486;
+UPDATE `quest_template_addon` SET `PrevQuestID` = '47485', `ExclusiveGroup` = '-47488' WHERE `id` = 50573;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 47488 WHERE `id` = 50531;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 50531 WHERE `id` = 53041;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 53041 WHERE `id` = 47489;
+
+UPDATE `quest_template_addon` SET `PrevQuestID` = 47489 WHERE `id` = 49218;
+UPDATE `quest_template_addon` SET `PrevQuestID` = '49218', `ExclusiveGroup` = '-49230' WHERE `id` = 49230;
+UPDATE `quest_template_addon` SET `PrevQuestID` = '49218', `ExclusiveGroup` = '-49230' WHERE `id` = 49178;
+UPDATE `quest_template_addon` SET `PrevQuestID` = '49218', `ExclusiveGroup` = '-49230' WHERE `id` = 49226;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 49230 WHERE `id` = 48421;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 48421 WHERE `id` = 48516;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 48516 WHERE `id` = 48419;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 48419 WHERE `id` = 48505;
+
+UPDATE `quest_template_addon` SET `PrevQuestID` = 48505 WHERE `id` = 48539;
+UPDATE `quest_template_addon` SET `PrevQuestID` = '48539', `ExclusiveGroup` = '-48558' WHERE `id` = 48558;
+UPDATE `quest_template_addon` SET `PrevQuestID` = '48539', `ExclusiveGroup` = '-48558' WHERE `id` = 48773;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 48558 WHERE `id` = 49239;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 49239 WHERE `id` = 49398;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 49398 WHERE `id` = 49401;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 49401 WHERE `id` = 49399;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 49399 WHERE `id` = 49404;
+
+UPDATE `quest_template_addon` SET `PrevQuestID` = 49404 WHERE `id` = 49405;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 49405 WHERE `id` = 52431;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 52431 WHERE `id` = 49869;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 49869 WHERE `id` = 52750;
+
+UPDATE `quest_template_addon` SET `PrevQuestID` = 52750 WHERE `id` = 49737;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 49737 WHERE `id` = 49738;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 49738 WHERE `id` = 49736;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 49736 WHERE `id` = 49740;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 49740 WHERE `id` = 52787;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 52787 WHERE `id` = 49741;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 49741 WHERE `id` = 50110;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 50110 WHERE `id` = 50795;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 50795 WHERE `id` = 50787;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 50787 WHERE `id` = 50788;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 50788 WHERE `id` = 50789;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 50789 WHERE `id` = 50790;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 50790 WHERE `id` = 50972;
+
+UPDATE `quest_template_addon` SET `PrevQuestID` = 48070 WHERE `Id` = 48077;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 48077 WHERE `Id` = 48080;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 48080 WHERE `Id` = 48616;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 48616 WHERE `Id` = 48670;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 48670 WHERE `Id` = 48195;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 48195 WHERE `Id` = 48196;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 48196 WHERE `Id` = 48597;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 48597 WHERE `Id` = 48778;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 48778 WHERE `Id` = 48003;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 48003 WHERE `Id` = 48005;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 48005 WHERE `Id` = 48004;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 48004 WHERE `Id` = 48939;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 48939 WHERE `Id` = 48087;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 48087 WHERE `Id` = 48088;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 48088 WHERE `Id` = 48089;
+
+UPDATE `quest_template_addon` SET `PrevQuestID` = 48347 WHERE `Id` = 48540;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 48540 WHERE `Id` = 49268;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 49268 WHERE `Id` = 48352;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 48352 WHERE `Id` = 48348;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 48348 WHERE `Id` = 48353;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 48353 WHERE `Id` = 49292;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 49292 WHERE `Id` = 48354;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 48354 WHERE `Id` = 48355;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 48355 WHERE `Id` = 48356;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 48356 WHERE `Id` = 48009;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 48009 WHERE `Id` = 48365;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 48365 WHERE `Id` = 48366;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 48366 WHERE `Id` = 48372;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 48372 WHERE `Id` = 48368;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 48368 WHERE `Id` = 48370;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 48370 WHERE `Id` = 48367;
+UPDATE `quest_template_addon` SET `PrevQuestID` = 48367 WHERE `Id` = 49302;
