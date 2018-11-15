@@ -338,6 +338,8 @@ struct TC_GAME_API ScriptedAI : public CreatureAI
         return heroic25;
     }
 
+    void KillCreditMe(Player* player) { player->KilledMonsterCredit(me->GetEntry()); }
+
     private:
         Difficulty _difficulty;
         bool _isCombatMovementAllowed;

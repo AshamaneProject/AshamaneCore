@@ -37,6 +37,7 @@ enum eTiragardeQuests
 
     QUEST_GET_YOUR_BEARINGS     = 47099,
     QUEST_THE_OLD_KNIGHT        = 46729,
+    QUEST_NATION_DIVIDED        = 47189,
 };
 
 enum Intro
@@ -54,6 +55,7 @@ enum Intro
 
     SPELL_SCENE_FLYNN_JAILBREAK     = 246821,
     SPELL_SCENE_GETAWAY_BOAT_TRIGGER= 281331,
+    SPELL_SCENE_NATION_DIVIDED      = 269191,
 
     SPELL_GETAWAY_CONVERSATION_1    = 247230,
     SPELL_GETAWAY_CONVERSATION_2    = 247275,
@@ -567,7 +569,7 @@ struct npc_taelia_get_your_bearings : public FollowerAI
 
                 if (player->HasQuest(QUEST_THE_OLD_KNIGHT))
                     if (!player->GetQuestObjectiveData(QUEST_THE_OLD_KNIGHT, 0))
-                        if (player->FindNearestCreature(NPC_CYRUS_CRESTFALL, 10.f))
+                        if (player->FindNearestCreature(NPC_CYRUS_CRESTFALL, 20.f))
                         {
                             player->CastSpell(player, SPELL_SCENE_OLD_KNIGHT, true);
                             player->KilledMonsterCredit(NPC_CYRUS_CRESTFALL);
@@ -619,6 +621,48 @@ struct conversation_cyrus_story : public ConversationScript
     }
 };
 
+// 137066
+class npc_boralus_portal_maga : public ScriptedAI
+{
+public:
+    npc_boralus_portal_maga(Creature* creature) : ScriptedAI(creature) { }
+
+    void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 /*gossipListId*/) override
+    {
+        KillCreditMe(player);
+    }
+};
+
+// 121235
+class npc_taelia_harbormaster : public ScriptedAI
+{
+public:
+    npc_taelia_harbormaster(Creature* creature) : ScriptedAI(creature) { }
+
+    void sQuestAccept(Player* player, Quest const* quest) override
+    {
+        if (quest->ID == QUEST_NATION_DIVIDED)
+            player->CastSpell(player, SPELL_SCENE_NATION_DIVIDED, true);
+    }
+
+    void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 /*gossipListId*/) override
+    {
+        player->CastSpell(player, SPELL_SCENE_NATION_DIVIDED, true);
+    }
+};
+
+// 139522
+class npc_boralus_adventure_map : public ScriptedAI
+{
+public:
+    npc_boralus_adventure_map(Creature* creature) : ScriptedAI(creature) { }
+
+    void sGossipHello(Player* player) override
+    {
+        KillCreditMe(player);
+    }
+};
+
 void AddSC_zone_tiragarde_sound()
 {
     RegisterCreatureAI(npc_jaina_boralus_intro);
@@ -639,4 +683,7 @@ void AddSC_zone_tiragarde_sound()
     RegisterSceneScript(scene_boralus_old_knight);
     RegisterCreatureAI(npc_cyrus_crestfall);
     RegisterConversationScript(conversation_cyrus_story);
+    RegisterCreatureAI(npc_boralus_portal_maga);
+    RegisterCreatureAI(npc_taelia_harbormaster);
+    RegisterCreatureAI(npc_boralus_adventure_map);
 }

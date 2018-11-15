@@ -502,6 +502,7 @@ INSERT INTO `creature_equip_template` (`CreatureID`, `ItemID1`) VALUES
 DELETE FROM `creature_queststarter` WHERE `quest` = 53118;
 UPDATE `creature_template` SET `ScriptName` = 'npc_boralus_portal_maga' WHERE (entry = 137066);
 UPDATE `creature_template` SET `ScriptName` = 'npc_taelia_harbormaster' WHERE (entry = 121235);
+UPDATE `creature_template` SET `ScriptName` = 'npc_boralus_adventure_map' WHERE (entry = 139522);
 
 UPDATE `creature_template` SET `gossip_menu_id` = 21157 WHERE (entry = 122681);
-UPDATE `gameobject_template` SET `Data1` = 'quest=47486' WHERE (entry = 271616);
+UPDATE `gameobject_template` SET `Data1` = '47486' WHERE (entry = 271616);
