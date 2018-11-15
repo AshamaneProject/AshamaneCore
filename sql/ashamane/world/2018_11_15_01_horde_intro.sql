@@ -1,0 +1,3 @@
+DELETE FROM scenarios WHERE map = 1904;
+INSERT INTO scenarios VALUES
+(1904, 12, 0, 1522);
