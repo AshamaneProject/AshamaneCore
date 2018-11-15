@@ -82,22 +82,19 @@ void WorldSession::HandleGarrisonGetBuildingLandmarks(WorldPackets::Garrison::Ga
 
 void WorldSession::HandleGarrisonOpenMissionNpc(WorldPackets::Garrison::GarrisonOpenMissionNpcClient& garrisonOpenMissionNpcClient)
 {
-    if (!_player->GetNPCIfCanInteractWith(garrisonOpenMissionNpcClient.NpcGUID, UNIT_NPC_FLAG_GARRISON_MISSION_NPC))
+    Creature* adventureMap = _player->GetNPCIfCanInteractWith(garrisonOpenMissionNpcClient.NpcGUID, UNIT_NPC_FLAG_GARRISON_MISSION_NPC);
+    if (!adventureMap)
         return;
 
-    GarrisonType garType = GARRISON_TYPE_CLASS_HALL; // Todo : differenciate depending of NPC
+    uint32 uiMapId = sObjectMgr->GetAdventureMapUIByCreature(adventureMap->GetEntry());
 
-    Garrison const* garrison = _player->GetGarrison(garType);
-
-    if (!garrison)
-        return;
-
-    if (garType == GARRISON_TYPE_CLASS_HALL)
+    if (uiMapId)
     {
-        SendPacket(WorldPackets::Garrison::ShowAdventureMap(garrisonOpenMissionNpcClient.NpcGUID, garType).Write());
+        SendPacket(WorldPackets::Garrison::ShowAdventureMap(garrisonOpenMissionNpcClient.NpcGUID, uiMapId).Write());
     }
     else
     {
+        Garrison const* garrison = _player->GetGarrison(GARRISON_TYPE_GARRISON);
         WorldPackets::Garrison::GarrisonOpenMissionNpc garrisonOpenMissionNpc;
         for (auto const& p : garrison->GetMissions())
         {
@@ -109,9 +106,21 @@ void WorldSession::HandleGarrisonOpenMissionNpc(WorldPackets::Garrison::Garrison
 
 void WorldSession::HandleGarrisonRequestScoutingMap(WorldPackets::Garrison::GarrisonRequestScoutingMap& scoutingMap)
 {
+    AdventureMapPOIEntry const* poiEntry = sAdventureMapPOIStore.LookupEntry(scoutingMap.ID);
+    if (!poiEntry)
+        return;
+
+    bool active = true;
+    if (poiEntry->PlayerConditionID)
+        active = active && _player->MeetPlayerCondition(poiEntry->PlayerConditionID);
+
+    if (poiEntry->QuestID)
+        if (Quest const* quest = sObjectMgr->GetQuestTemplate(poiEntry->QuestID))
+            active = active && _player->CanTakeQuest(quest, false);
+
     WorldPackets::Garrison::GarrisonScoutingMapResult result;
     result.ID = scoutingMap.ID;
-    result.Active = true;
+    result.Active = active;
     SendPacket(result.Write());
 }
 

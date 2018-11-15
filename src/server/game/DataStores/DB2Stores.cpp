@@ -38,6 +38,7 @@
 
 DB2Storage<AchievementEntry>                    sAchievementStore("Achievement.db2", AchievementLoadInfo::Instance());
 DB2Storage<AdventureJournalEntry>               sAdventureJournalStore("AdventureJournal.db2", AdventureJournalLoadInfo::Instance());
+DB2Storage<AdventureMapPOIEntry>                sAdventureMapPOIStore("AdventureMapPOI.db2", AdventureMapPOILoadInfo::Instance());
 DB2Storage<AnimationDataEntry>                  sAnimationDataStore("AnimationData.db2", AnimationDataLoadInfo::Instance());
 DB2Storage<AnimKitEntry>                        sAnimKitStore("AnimKit.db2", AnimKitLoadInfo::Instance());
 DB2Storage<AreaGroupMemberEntry>                sAreaGroupMemberStore("AreaGroupMember.db2", AreaGroupMemberLoadInfo::Instance());
@@ -521,6 +522,7 @@ void DB2Manager::LoadStores(std::string const& dataPath, uint32 defaultLocale)
 
     LOAD_DB2(sAchievementStore);
     LOAD_DB2(sAdventureJournalStore);
+    LOAD_DB2(sAdventureMapPOIStore);
     LOAD_DB2(sAnimationDataStore);
     LOAD_DB2(sAnimKitStore);
     LOAD_DB2(sAreaGroupMemberStore);

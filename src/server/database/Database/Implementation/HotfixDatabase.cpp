@@ -47,6 +47,11 @@ void HotfixDatabaseConnection::DoPrepareStatements()
     PREPARE_LOCALE_STMT(HOTFIX_SEL_ADVENTURE_JOURNAL, "SELECT ID, Name_lang, Description_lang, ButtonText_lang, RewardDescription_lang, "
         "ContinueDescription_lang FROM adventure_journal_locale WHERE locale = ?", CONNECTION_SYNCH);
 
+    // AdventureMapPOI.db2
+    PrepareStatement(HOTFIX_SEL_ADVENTURE_MAP_POI, "SELECT Title, Description, WorldPosition1, WorldPosition2, Type, PlayerConditionID, QuestID, "
+        "LfgDungeonID, RewardItemID, UiTextureAtlasMemberID, UiTextureKitID, MapID, AreaTableID FROM adventure_map_poi ORDER BY ID DESC", CONNECTION_SYNCH);
+    PREPARE_LOCALE_STMT(HOTFIX_SEL_ADVENTURE_MAP_POI, "SELECT ID, Title_lang, Description_lang FROM adventure_map_poi_locale WHERE locale = ?", CONNECTION_SYNCH);
+
     // AnimKit.db2
     PrepareStatement(HOTFIX_SEL_ANIM_KIT, "SELECT ID, OneShotDuration, OneShotStopAnimKitID, LowDefAnimKitID FROM anim_kit ORDER BY ID DESC", CONNECTION_SYNCH);
 

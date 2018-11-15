@@ -407,8 +407,8 @@ WorldPacket const* WorldPackets::Garrison::GarrisonOpenMissionNpc::Write()
 
 WorldPacket const* WorldPackets::Garrison::ShowAdventureMap::Write()
 {
-    _worldPacket << Unit;
-    _worldPacket << uint32(ID);
+    _worldPacket << UnitGUID;
+    _worldPacket << uint32(UiMapID);
 
     return &_worldPacket;
 }

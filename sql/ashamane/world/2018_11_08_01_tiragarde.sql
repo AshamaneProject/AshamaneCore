@@ -493,3 +493,15 @@ UPDATE `quest_template_addon` SET `PrevQuestID` = 48372 WHERE `Id` = 48368;
 UPDATE `quest_template_addon` SET `PrevQuestID` = 48368 WHERE `Id` = 48370;
 UPDATE `quest_template_addon` SET `PrevQuestID` = 48370 WHERE `Id` = 48367;
 UPDATE `quest_template_addon` SET `PrevQuestID` = 48367 WHERE `Id` = 49302;
+
+UPDATE `creature_template` SET `minlevel` = 120, `maxlevel` = 120 WHERE (entry = 124630);
+DELETE FROM `creature_equip_template` WHERE (CreatureID = 124630);
+INSERT INTO `creature_equip_template` (`CreatureID`, `ItemID1`) VALUES
+(124630, 155757);
+
+DELETE FROM `creature_queststarter` WHERE `quest` = 53118;
+UPDATE `creature_template` SET `ScriptName` = 'npc_boralus_portal_maga' WHERE (entry = 137066);
+UPDATE `creature_template` SET `ScriptName` = 'npc_taelia_harbormaster' WHERE (entry = 121235);
+
+UPDATE `creature_template` SET `gossip_menu_id` = 21157 WHERE (entry = 122681);
+UPDATE `gameobject_template` SET `Data1` = 'quest=47486' WHERE (entry = 271616);

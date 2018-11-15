@@ -348,12 +348,12 @@ namespace WorldPackets
         class TC_GAME_API ShowAdventureMap final : public ServerPacket
         {
         public:
-            ShowAdventureMap(ObjectGuid guid, uint32 id) : ServerPacket(SMSG_SHOW_ADVENTURE_MAP, 4), Unit(guid), ID(id) { }
+            ShowAdventureMap(ObjectGuid guid, uint32 uiMapID) : ServerPacket(SMSG_SHOW_ADVENTURE_MAP, 20), UnitGUID(guid), UiMapID(uiMapID) { }
 
             WorldPacket const* Write() override;
 
-            ObjectGuid Unit;
-            uint32 ID;
+            ObjectGuid UnitGUID;
+            uint32 UiMapID;
         };
 
         class GarrisonRequestScoutingMap final : public ClientPacket
