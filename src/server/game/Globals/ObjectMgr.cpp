@@ -2235,14 +2235,17 @@ void ObjectMgr::LoadCreatures()
             uint32 zoneId = 0;
             PhasingHandler::InitDbVisibleMapId(phaseShift, data.terrainSwapMap);
             sMapMgr->GetZoneAndAreaId(phaseShift, zoneId, data.areaId, data.mapid, data.posX, data.posY, data.posZ);
+            
+            if (data.areaId)
+            {
+                PreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_UPD_CREATURE_ZONE_AREA_DATA);
 
-            PreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_UPD_CREATURE_ZONE_AREA_DATA);
+                stmt->setUInt32(0, zoneId);
+                stmt->setUInt32(1, data.areaId);
+                stmt->setUInt64(2, guid);
 
-            stmt->setUInt32(0, zoneId);
-            stmt->setUInt32(1, data.areaId);
-            stmt->setUInt64(2, guid);
-
-            WorldDatabase.Execute(stmt);
+                WorldDatabase.Execute(stmt);
+            }
         }
 
         // Add to grid if not managed by the game event or pool system
@@ -2438,7 +2441,7 @@ void ObjectMgr::LoadGameobjects()
 
         data.id             = entry;
         data.mapid          = fields[2].GetUInt16();
-        data.areaId         = fields[3].GetUInt32();
+        data.areaId         = fields[3].GetUInt16();
         data.posX           = fields[4].GetFloat();
         data.posY           = fields[5].GetFloat();
         data.posZ           = fields[6].GetFloat();
@@ -2607,13 +2610,16 @@ void ObjectMgr::LoadGameobjects()
             PhasingHandler::InitDbVisibleMapId(phaseShift, data.terrainSwapMap);
             sMapMgr->GetZoneAndAreaId(phaseShift, zoneId, data.areaId, data.mapid, data.posX, data.posY, data.posZ);
 
-            PreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_UPD_GAMEOBJECT_ZONE_AREA_DATA);
+            if (data.areaId)
+            {
+                PreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_UPD_GAMEOBJECT_ZONE_AREA_DATA);
 
-            stmt->setUInt32(0, zoneId);
-            stmt->setUInt32(1, data.areaId);
-            stmt->setUInt64(2, guid);
+                stmt->setUInt32(0, zoneId);
+                stmt->setUInt32(1, data.areaId);
+                stmt->setUInt64(2, guid);
 
-            WorldDatabase.Execute(stmt);
+                WorldDatabase.Execute(stmt);
+            }
         }
 
         // Gathering Node are inserted in pools by area
