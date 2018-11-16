@@ -1598,6 +1598,15 @@ bool CriteriaHandler::AdditionalRequirementsSatisfied(ModifierTreeNode const* tr
         }
     }
 
+    bool conditionMet = AdditionalRequirementsConditionSatisfied(tree, miscValue1, miscValue2, unit, referencePlayer);
+    if (tree->Entry->Operator == CRITERIA_TREE_OPERATOR_MODIFIER_SINGLE_NOT_COMPLETED)
+        conditionMet = !conditionMet;
+
+    return conditionMet;
+}
+
+bool CriteriaHandler::AdditionalRequirementsConditionSatisfied(ModifierTreeNode const* tree, uint64 miscValue1, uint64 miscValue2, Unit const* unit, Player* referencePlayer) const
+{
     uint32 reqType = tree->Entry->Type;
     if (!reqType)
         return true;
@@ -1754,12 +1763,20 @@ bool CriteriaHandler::AdditionalRequirementsSatisfied(ModifierTreeNode const* tr
                 return false;
             break;
         }
+        case CRITERIA_ADDITIONAL_CONDITION_QUEST_INCOMPLETE: // 84
+            if (!referencePlayer->HasQuest(reqValue))
+                return false;
+            break;
         case CRITERIA_ADDITIONAL_CONDITION_BATTLE_PET_SPECIES: // 91
             if (miscValue1 != reqValue)
                 return false;
             break;
         case CRITERIA_ADDITIONAL_CONDITION_REPUTATION: // 95
             if (referencePlayer->GetReputation(reqValue) < int32(tree->Entry->SecondaryAsset))
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_QUEST_REWARDED: // 110
+            if (!referencePlayer->IsQuestRewarded(reqValue))
                 return false;
             break;
         case CRITERIA_ADDITIONAL_CONDITION_GARRISON_FOLLOWER_ENTRY: // 144
