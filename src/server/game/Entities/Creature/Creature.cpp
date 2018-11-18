@@ -2152,19 +2152,34 @@ Unit* Creature::SelectNearestTarget(float dist, bool playerOnly /* = false */) c
 }
 
 // select nearest hostile unit within the given attack distance (i.e. distance is ignored if > than ATTACK_DISTANCE), regardless of threat list.
-Unit* Creature::SelectNearestTargetInAttackDistance(float dist) const
+std::vector<Unit*> Creature::SelectNearestTargetsInAttackDistance(float dist) const
 {
     if (dist > MAX_VISIBILITY_DISTANCE)
     {
-        TC_LOG_ERROR("entities.unit", "Creature (%s) SelectNearestTargetInAttackDistance called with dist > MAX_VISIBILITY_DISTANCE. Distance set to ATTACK_DISTANCE.", GetGUID().ToString().c_str());
+        TC_LOG_ERROR("entities.unit", "Creature (%s) SelectNearestTargetsInAttackDistance called with dist > MAX_VISIBILITY_DISTANCE. Distance set to ATTACK_DISTANCE.", GetGUID().ToString().c_str());
         dist = ATTACK_DISTANCE;
     }
 
-    Unit* target = nullptr;
+    std::vector<Unit*> targets;
     Trinity::NearestHostileUnitInAttackDistanceCheck u_check(this, dist);
-    Trinity::UnitLastSearcher<Trinity::NearestHostileUnitInAttackDistanceCheck> searcher(this, target, u_check);
+    Trinity::UnitListSearcher<Trinity::NearestHostileUnitInAttackDistanceCheck> searcher(this, targets, u_check);
     Cell::VisitAllObjects(this, searcher, std::max(dist, ATTACK_DISTANCE));
-    return target;
+
+    if (targets.size() < 2)
+        return targets;
+
+    std::sort(targets.begin(), targets.end(), [](Unit* a, Unit*b)
+    {
+        return a->GetAttackersCount() < b->GetAttackersCount();
+    });
+
+    uint32 lowerAttackersCount = targets.front()->GetAttackersCount();
+    targets.erase(std::remove_if(targets.begin(), targets.end(), [lowerAttackersCount](Unit* a)
+    {
+        return a->GetAttackersCount() > lowerAttackersCount;
+    }), targets.end());
+
+    return targets;
 }
 
 void Creature::SendAIReaction(AiReaction reactionType)

@@ -65,6 +65,9 @@ void CombatAI::InitializeAI()
 void CombatAI::Reset()
 {
     events.Reset();
+    spellEvents.Reset();
+
+    events.ScheduleEvent(EVENT_UPDATE_VICTIM, 0s, 1s);
 }
 
 void CombatAI::JustDied(Unit* killer)
@@ -81,32 +84,66 @@ void CombatAI::EnterCombat(Unit* who)
         if (AISpellInfo[*i].condition == AICOND_AGGRO)
             me->CastSpell(who, *i, false);
         else if (AISpellInfo[*i].condition == AICOND_COMBAT)
-            events.ScheduleEvent(*i, AISpellInfo[*i].cooldown + rand32() % AISpellInfo[*i].cooldown);
+            spellEvents.ScheduleEvent(*i, AISpellInfo[*i].cooldown + rand32() % AISpellInfo[*i].cooldown);
     }
 }
 
 void CombatAI::UpdateAI(uint32 diff)
 {
-    if (!UpdateVictim())
-        return;
-
     events.Update(diff);
+
+    if (events.ExecuteEvent() == EVENT_UPDATE_VICTIM)
+    {
+        if (!UpdateVictim())
+        {
+            events.Repeat(1s);
+            return;
+        }
+    }
 
     if (me->HasUnitState(UNIT_STATE_CASTING))
         return;
 
-    if (uint32 spellId = events.ExecuteEvent())
+    spellEvents.Update(diff);
+
+    if (!UpdateVictim())
+        return;
+
+    if (uint32 spellId = spellEvents.ExecuteEvent())
     {
         DoCast(spellId);
-        events.ScheduleEvent(spellId, AISpellInfo[spellId].cooldown + rand32() % AISpellInfo[spellId].cooldown);
+        spellEvents.ScheduleEvent(spellId, AISpellInfo[spellId].cooldown + rand32() % AISpellInfo[spellId].cooldown);
     }
     else
         DoMeleeAttackIfReady();
 }
 
+bool CombatAI::UpdateVictim()
+{
+    if (!me->HasReactState(REACT_PASSIVE))
+    {
+        if (Unit* victim = me->SelectVictim(false))
+        {
+            if (!me->IsFocusing(nullptr, true))
+                AttackStart(victim);
+        }
+        else if (me->IsInCombat())
+            EnterEvadeMode(CreatureAI::EVADE_REASON_NO_HOSTILES);
+
+        return me->GetVictim() != nullptr;
+    }
+    else if (me->getThreatManager().isThreatListEmpty())
+    {
+        EnterEvadeMode(EVADE_REASON_NO_HOSTILES);
+        return false;
+    }
+
+    return true;
+}
+
 void CombatAI::SpellInterrupted(uint32 spellId, uint32 unTimeMs)
 {
-    events.RescheduleEvent(spellId, unTimeMs);
+    spellEvents.RescheduleEvent(spellId, unTimeMs);
 }
 
 /////////////////

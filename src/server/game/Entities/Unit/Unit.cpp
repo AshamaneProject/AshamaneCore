@@ -8915,7 +8915,7 @@ void Unit::TauntFadeOut(Unit* taunter)
 
 //======================================================================
 
-Unit* Creature::SelectVictim()
+Unit* Creature::SelectVictim(bool evadeIfNoVictim /*= true*/)
 {
     // function provides main threat functionality
     // next-victim-selection algorithm and evade mode are called
@@ -8956,8 +8956,14 @@ Unit* Creature::SelectVictim()
     if (CanHaveThreatList())
     {
         if (!target && !m_ThreatManager.isThreatListEmpty())
+        {
             // No taunt aura or taunt aura caster is dead standard target selection
             target = m_ThreatManager.getHostilTarget();
+
+            // If our target is a creature we should check if there isn't a better target to focus
+            if (target && target->IsCreature())
+                target = nullptr;
+        }
     }
     else if (!HasReactState(REACT_PASSIVE))
     {
@@ -9012,7 +9018,15 @@ Unit* Creature::SelectVictim()
     // search nearby enemy before enter evade mode
     if (HasReactState(REACT_AGGRESSIVE))
     {
-        target = SelectNearestTargetInAttackDistance(m_CombatDistance ? m_CombatDistance : ATTACK_DISTANCE);
+        std::vector<Unit*> targets = SelectNearestTargetsInAttackDistance(m_CombatDistance ? m_CombatDistance : ATTACK_DISTANCE);
+
+        if (targets.size())
+        {
+            if (GetVictim() && std::find(targets.begin(), targets.end(), GetVictim()) != targets.end())
+                target = GetVictim();
+            else
+                target = targets.front();
+        }
 
         if (target && _IsTargetAcceptable(target) && CanCreatureAttack(target))
             return target;
@@ -9033,7 +9047,8 @@ Unit* Creature::SelectVictim()
     }
 
     // enter in evade mode in other case
-    AI()->EnterEvadeMode(CreatureAI::EVADE_REASON_NO_HOSTILES);
+    if (evadeIfNoVictim)
+        AI()->EnterEvadeMode(CreatureAI::EVADE_REASON_NO_HOSTILES);
 
     return nullptr;
 }

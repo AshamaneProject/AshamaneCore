@@ -123,6 +123,8 @@ bool AchievementMgr::CanCompleteCriteriaTree(CriteriaTree const* tree)
 
 void AchievementMgr::CompletedCriteriaTree(CriteriaTree const* tree, Player* referencePlayer)
 {
+    CriteriaHandler::CompletedCriteriaTree(tree, referencePlayer);
+
     AchievementEntry const* achievement = tree->Achievement;
     if (!achievement)
         return;
@@ -135,7 +137,7 @@ void AchievementMgr::CompletedCriteriaTree(CriteriaTree const* tree, Player* ref
     if (HasAchieved(achievement->ID))
         return;
 
-    if (IsCompletedAchievement(achievement))
+    if (IsCompletedAchievement(achievement, referencePlayer))
         CompletedAchievement(achievement, referencePlayer);
 }
 
@@ -148,16 +150,16 @@ void AchievementMgr::AfterCriteriaTreeUpdate(CriteriaTree const* tree, Player* r
     // check again the completeness for SUMM and REQ COUNT achievements,
     // as they don't depend on the completed criteria but on the sum of the progress of each individual criteria
     if (achievement->Flags & ACHIEVEMENT_FLAG_SUMM)
-        if (IsCompletedAchievement(achievement))
+        if (IsCompletedAchievement(achievement, referencePlayer))
             CompletedAchievement(achievement, referencePlayer);
 
     if (std::vector<AchievementEntry const*> const* achRefList = sAchievementMgr->GetAchievementByReferencedId(achievement->ID))
         for (AchievementEntry const* refAchievement : *achRefList)
-            if (IsCompletedAchievement(refAchievement))
+            if (IsCompletedAchievement(refAchievement, referencePlayer))
                 CompletedAchievement(refAchievement, referencePlayer);
 }
 
-bool AchievementMgr::IsCompletedAchievement(AchievementEntry const* entry)
+bool AchievementMgr::IsCompletedAchievement(AchievementEntry const* entry, Player* referencePlayer)
 {
     // counter can never complete
     if (entry->Flags & ACHIEVEMENT_FLAG_COUNTER)
@@ -181,7 +183,7 @@ bool AchievementMgr::IsCompletedAchievement(AchievementEntry const* entry)
         return progress >= tree->Entry->Amount;
     }
 
-    return IsCompletedCriteriaTree(tree);
+    return CheckCompletedCriteriaTree(tree, referencePlayer);
 }
 
 bool AchievementMgr::RequiredAchievementSatisfied(uint32 achievementId) const
@@ -363,7 +365,7 @@ void PlayerAchievementMgr::ResetCriteria(CriteriaTypes type, uint64 miscValue1, 
                 continue;
 
             // don't update already completed criteria if not forced or achievement already complete
-            if (!(IsCompletedCriteriaTree(tree) && !evenIfCriteriaComplete) || !HasAchieved(tree->Achievement->ID))
+            if (!(CheckCompletedCriteriaTree(tree, _owner) && !evenIfCriteriaComplete) || !HasAchieved(tree->Achievement->ID))
             {
                 allComplete = false;
                 break;

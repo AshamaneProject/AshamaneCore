@@ -235,7 +235,7 @@ class TC_GAME_API Creature : public Unit, public GridObject<Creature>, public Ma
         void SendAIReaction(AiReaction reactionType);
 
         Unit* SelectNearestTarget(float dist = 0, bool playerOnly = false) const;
-        Unit* SelectNearestTargetInAttackDistance(float dist = 0) const;
+        std::vector<Unit*> SelectNearestTargetsInAttackDistance(float dist = 0) const;
         Unit* SelectNearestHostileUnitInAggroRange(bool useLOS = false) const;
 
         void DoFleeToGetAssistance();
@@ -316,7 +316,7 @@ class TC_GAME_API Creature : public Unit, public GridObject<Creature>, public Ma
         CreatureGroup* GetFormation() { return m_formation; }
         void SetFormation(CreatureGroup* formation) { m_formation = formation; }
 
-        Unit* SelectVictim();
+        Unit* SelectVictim(bool evadeIfNoVictim = true);
 
         void SetDisableReputationGain(bool disable) { DisableReputationGain = disable; }
         bool IsReputationGainDisabled() const { return DisableReputationGain; }
