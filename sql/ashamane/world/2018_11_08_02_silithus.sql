@@ -24,3 +24,5 @@ INSERT INTO spell_script_names VALUES
 (267913, "spell_azeroth_heart_chamber_heart_of_azeroth");
 
 UPDATE gameobject_template SET scriptname = "go_azeroth_heart_chamber_teleport_pad" WHERE entry IN (294313, 294538, 289522);
+
+UPDATE creature_addon SET aiAnimKit = 16268 WHERE guid = 210302876;
