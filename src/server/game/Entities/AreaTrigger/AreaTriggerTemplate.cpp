@@ -64,7 +64,7 @@ void AreaTriggerTemplate::InitMaxSearchRadius()
         case AREATRIGGER_TYPE_POLYGON:
         {
             if (PolygonDatas.Height <= 0.0f)
-                PolygonDatas.Height = 1.0f;
+                PolygonDatas.Height = 10.0f;
 
             Position center(0.0f, 0.0f);
             for (TaggedPosition<Position::XY> const& vertice : PolygonVertices)
