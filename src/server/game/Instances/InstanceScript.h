@@ -21,6 +21,7 @@
 
 #include "ZoneScript.h"
 #include "Common.h"
+#include "CriteriaHandler.h"
 #include "Optional.h"
 #include "Position.h"
 #include <map>
@@ -217,6 +218,8 @@ class TC_GAME_API InstanceScript : public ZoneScript
         void OnPlayerEnter(Player*) override;
         void OnPlayerExit(Player*) override;
         void OnPlayerDeath(Player*) override;
+
+        virtual void OnCompletedCriteriaTree(CriteriaTree const* /*tree*/) { }
 
         // Handle open / close objects
         // * use HandleGameObject(0, boolen, GO); in OnObjectCreate in instance scripts

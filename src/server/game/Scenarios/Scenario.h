@@ -21,6 +21,8 @@
 #include "CriteriaHandler.h"
 #include <unordered_set>
 
+class InstanceScenario;
+
 struct ScenarioData;
 struct ScenarioStepEntry;
 
@@ -44,6 +46,12 @@ enum ScenarioStepState
     SCENARIO_STEP_NOT_STARTED   = 1,
     SCENARIO_STEP_IN_PROGRESS   = 2,
     SCENARIO_STEP_DONE          = 3
+};
+
+enum ScenarioInstanceType
+{
+    SCENARIO_INSTANCE_TYPE_SCENARIO          = 1,
+    SCENARIO_INSTANCE_TYPE_INSTANCE_SCENARIO = 2,
 };
 
 class TC_GAME_API Scenario : public CriteriaHandler
@@ -73,6 +81,10 @@ class TC_GAME_API Scenario : public CriteriaHandler
 
         void SendScenarioEvent(Player* player, uint32 eventId);
 
+        inline bool IsInstanceScenarioo() const { return _scenarioType == SCENARIO_INSTANCE_TYPE_INSTANCE_SCENARIO; }
+        InstanceScenario* ToInstanceScenario() { if (IsInstanceScenarioo()) return reinterpret_cast<InstanceScenario*>(this); else return nullptr; }
+        InstanceScenario const* ToInstanceScenario() const { if (IsInstanceScenarioo()) return reinterpret_cast<InstanceScenario const*>(this); else return nullptr; }
+
     protected:
         GuidUnorderedSet _players;
 
@@ -96,6 +108,8 @@ class TC_GAME_API Scenario : public CriteriaHandler
         CriteriaList const& GetCriteriaByType(CriteriaTypes type) const override;
         ScenarioData const* _data;
         Ashamane::AnyData Variables;
+
+        ScenarioInstanceType _scenarioType;
 
     private:
         ScenarioStepEntry const* _currentstep;

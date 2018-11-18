@@ -25702,6 +25702,9 @@ void Player::RewardPlayerAndGroupAtEvent(uint32 creature_id, WorldObject* pRewar
     }
     else                                                    // if (!group)
         KilledMonsterCredit(creature_id, creature_guid);
+
+    if (Scenario* scenario = GetScenario())
+        scenario->UpdateCriteria(CRITERIA_TYPE_KILL_CREATURE, creature_id, 1, 0, pRewardSource->ToUnit(), this);
 }
 
 bool Player::IsAtGroupRewardDistance(WorldObject const* pRewardSource) const
