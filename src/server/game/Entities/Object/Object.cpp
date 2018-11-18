@@ -2192,6 +2192,17 @@ bool WorldObject::CanSeeOrDetect(WorldObject const* obj, bool ignoreStealth, boo
     if (obj->IsNeverVisibleFor(this) || CanNeverSee(obj))
         return false;
 
+    if (obj->IsVisibleBySummonerOnly())
+    {
+        if (Creature const* creature = obj->ToCreature())
+            if (GetGUID() != creature->GetOwnerGUID())
+                    return false;
+
+        if (GameObject const* gameObject = obj->ToGameObject())
+            if (GetGUID() != gameObject->GetOwnerGUID())
+                return false;
+    }
+
     if (obj->IsAlwaysVisibleFor(this) || CanAlwaysSee(obj))
         return true;
 
@@ -2216,24 +2227,7 @@ bool WorldObject::CanSeeOrDetect(WorldObject const* obj, bool ignoreStealth, boo
 
         WorldObject const* viewpoint = this;
         if (Player const* player = this->ToPlayer())
-        {
             viewpoint = player->GetViewpoint();
-
-            if (obj->IsVisibleBySummonerOnly())
-            {
-                if (Creature const* creature = obj->ToCreature())
-                {
-                    if (TempSummon const* tempSummon = creature->ToTempSummon())
-                        if (GetGUID() != tempSummon->GetSummonerGUID())
-                            return false;
-                }
-                else if (GameObject const* gameObject = obj->ToGameObject())
-                {
-                    if (GetGUID() != gameObject->GetOwnerGUID())
-                        return false;
-                }
-            }
-        }
 
         if (!viewpoint)
             viewpoint = this;
