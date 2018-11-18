@@ -176,6 +176,7 @@ struct npc_flynn_fairwind : public ScriptedAI
     {
         m_playerGUID = guid;
         me->RemoveFlag64(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
+        me->SetAIAnimKitId(0);
 
         if (Creature* ashvaneJailer = me->SummonCreature(NPC_ASHVANE_JAILER_EVENT, 144.839996f, -2702.790039f, 28.961100f, 0.799371f, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 2000, true))
             m_ashvaneJailerGUID = ashvaneJailer->GetGUID();
