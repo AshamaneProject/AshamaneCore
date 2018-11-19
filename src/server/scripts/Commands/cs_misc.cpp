@@ -18,6 +18,7 @@
 #include "AccountMgr.h"
 #include "CellImpl.h"
 #include "Chat.h"
+#include "CreatureGroups.h"
 #include "DatabaseEnv.h"
 #include "DB2Stores.h"
 #include "DisableMgr.h"
@@ -2310,7 +2311,10 @@ public:
 
         Player* player = handler->GetSession()->GetPlayer();
 
-        caster->GetMotionMaster()->MovePoint(0, player->GetPositionX(), player->GetPositionY(), player->GetPositionZ());
+        if (CreatureGroup* formation = caster->GetFormation())
+            formation->MoveGroupTo(player->GetPositionX(), player->GetPositionY(), player->GetPositionZ());
+        else
+            caster->GetMotionMaster()->MovePoint(0, player->GetPositionX(), player->GetPositionY(), player->GetPositionZ());
 
         return true;
     }

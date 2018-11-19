@@ -58,7 +58,7 @@ class TC_GAME_API FormationMgr
     public:
         static FormationMgr* instance();
 
-        void AddCreatureToGroup(ObjectGuid::LowType leaderGuid, Creature* creature);
+        void AddCreatureToGroup(ObjectGuid::LowType leaderGuid, Creature* creature, uint32 groupId = 0);
         void RemoveCreatureFromGroup(CreatureGroup* group, Creature* creature);
         void LoadCreatureFormations();
         CreatureGroupInfoType CreatureGroupMap;
@@ -71,22 +71,27 @@ class TC_GAME_API CreatureGroup
         typedef std::map<Creature*, FormationInfo*>  CreatureGroupMemberType;
         CreatureGroupMemberType m_members;
 
-        ObjectGuid::LowType m_groupID;
+        uint32 m_groupId;
+        ObjectGuid::LowType m_leaderSpawnId;
         bool m_Formed;
 
     public:
         //Group cannot be created empty
-        explicit CreatureGroup(ObjectGuid::LowType id) : m_leader(NULL), m_groupID(id), m_Formed(false) { }
+        explicit CreatureGroup(ObjectGuid::LowType leaderSpawnID, uint32 groupID = 0) : m_leader(NULL), m_groupId(groupID), m_leaderSpawnId(leaderSpawnID), m_Formed(false) { }
         ~CreatureGroup() { }
 
         Creature* getLeader() const { return m_leader; }
-        ObjectGuid::LowType GetId() const { return m_groupID; }
+        void SetLeader(Creature* leader) { m_leader = leader; }
+        uint32 GetId() const { return m_groupId; }
+        ObjectGuid::LowType GetLeaderSpawnId() const { return m_leaderSpawnId; }
         bool isEmpty() const { return m_members.empty(); }
         bool isFormed() const { return m_Formed; }
 
         void AddMember(Creature* member);
         void RemoveMember(Creature* member);
         void FormationReset(bool dismiss);
+
+        void MoveGroupTo(float x, float y, float z);
 
         void LeaderMoveTo(float x, float y, float z);
         void MemberAttackStart(Creature* member, Unit* target);

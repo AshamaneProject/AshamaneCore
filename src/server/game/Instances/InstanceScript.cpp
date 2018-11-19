@@ -784,6 +784,15 @@ void InstanceScript::SummonCreatureGroup(uint32 creatureGroupID, std::list<TempS
     }
 }
 
+CreatureGroup* InstanceScript::GetCreatureGroup(uint32 creatureGroupID)
+{
+    for (ObjectGuid guid : summonBySummonGroupIDs[creatureGroupID])
+        if (Creature* summon = instance->GetCreature(guid))
+            return summon->GetFormation();
+
+    return nullptr;
+}
+
 void InstanceScript::DespawnCreatureGroup(uint32 creatureGroupID)
 {
     for (ObjectGuid guid : summonBySummonGroupIDs[creatureGroupID])
@@ -865,6 +874,27 @@ void InstanceScript::DoStartMovie(uint32 movieId)
         for (Map::PlayerList::const_iterator i = playerList.begin(); i != playerList.end(); ++i)
             if (Player* player = i->GetSource())
                 player->SendMovieStart(movieId);
+}
+
+void InstanceScript::DoPlayConversation(uint32 conversationId)
+{
+    Map::PlayerList const& playerList = instance->GetPlayers();
+    if (!playerList.isEmpty())
+        for (Map::PlayerList::const_iterator i = playerList.begin(); i != playerList.end(); ++i)
+            if (Player* player = i->GetSource())
+                player->PlayConversation(conversationId);
+}
+
+void InstanceScript::DoSendScenarioEvent(uint32 eventId)
+{
+    Map::PlayerList const& playerList = instance->GetPlayers();
+    if (!playerList.isEmpty())
+        for (Map::PlayerList::const_iterator i = playerList.begin(); i != playerList.end(); ++i)
+            if (Player* player = i->GetSource())
+            {
+                player->GetScenario()->SendScenarioEvent(player, eventId);
+                return;
+            }
 }
 
 // Update Achievement Criteria for all players in instance

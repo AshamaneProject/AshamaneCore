@@ -21,108 +21,10 @@
 
 #include "CreatureAI.h"
 #include "Creature.h" // convenience include for scripts, all uses of ScriptedCreature also need Creature (except ScriptedCreature itself doesn't need Creature)
-#include "DamageEventMap.h"
 #include "DBCEnums.h"
 #include "TaskScheduler.h"
 
 class InstanceScript;
-
-class TC_GAME_API SummonList
-{
-public:
-    typedef GuidList StorageType;
-    typedef StorageType::iterator iterator;
-    typedef StorageType::const_iterator const_iterator;
-    typedef StorageType::size_type size_type;
-    typedef StorageType::value_type value_type;
-
-    explicit SummonList(Creature* creature)
-        : me(creature)
-    { }
-
-    // And here we see a problem of original inheritance approach. People started
-    // to exploit presence of std::list members, so I have to provide wrappers
-
-    iterator begin()
-    {
-        return storage_.begin();
-    }
-
-    const_iterator begin() const
-    {
-        return storage_.begin();
-    }
-
-    iterator end()
-    {
-        return storage_.end();
-    }
-
-    const_iterator end() const
-    {
-        return storage_.end();
-    }
-
-    iterator erase(iterator i)
-    {
-        return storage_.erase(i);
-    }
-
-    bool empty() const
-    {
-        return storage_.empty();
-    }
-
-    size_type size() const
-    {
-        return storage_.size();
-    }
-
-    // Clear the underlying storage. This does NOT despawn the creatures - use DespawnAll for that!
-    void clear()
-    {
-        storage_.clear();
-    }
-
-    void Summon(Creature const* summon);
-    void Despawn(Creature const* summon);
-    void DespawnEntry(uint32 entry);
-    void DespawnAll();
-
-    template <typename T>
-    void DespawnIf(T const &predicate)
-    {
-        storage_.remove_if(predicate);
-    }
-
-    template <class Predicate>
-    void DoAction(int32 info, Predicate&& predicate, uint16 max = 0)
-    {
-        // We need to use a copy of SummonList here, otherwise original SummonList would be modified
-        StorageType listCopy = storage_;
-        Trinity::Containers::RandomResize<StorageType, Predicate>(listCopy, std::forward<Predicate>(predicate), max);
-        DoActionImpl(info, listCopy);
-    }
-
-    template <class Predicate>
-    ObjectGuid GetRandomGUID(Predicate&& predicate)
-    {
-        // We need to use a copy of SummonList here, otherwise original SummonList would be modified
-        StorageType listCopy = storage_;
-        Trinity::Containers::RandomResize<StorageType, Predicate>(listCopy, std::forward<Predicate>(predicate), 1);
-        return listCopy.front();
-    }
-
-    void DoZoneInCombat(uint32 entry = 0, float maxRangeToNearestTarget = 250.0f);
-    void RemoveNotExisting();
-    bool HasEntry(uint32 entry) const;
-
-private:
-    void DoActionImpl(int32 action, StorageType const& summons);
-
-    Creature* me;
-    StorageType storage_;
-};
 
 class TC_GAME_API EntryCheckPredicate
 {
@@ -184,11 +86,6 @@ struct TC_GAME_API ScriptedAI : public CreatureAI
 
     //For fleeing
     bool IsFleeing;
-
-    SummonList summons;
-    EventMap events;
-    DamageEventMap damageEvents;
-    InstanceScript* const instance;
 
     // *************
     //Pure virtual functions
@@ -440,9 +337,6 @@ class TC_GAME_API WorldBossAI : public ScriptedAI
         void _Reset();
         void _EnterCombat();
         void _JustDied();
-
-        EventMap events;
-        SummonList summons;
 };
 
 // SD2 grid searchers.

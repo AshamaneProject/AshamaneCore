@@ -125,9 +125,6 @@ void SummonList::DoActionImpl(int32 action, StorageType const& summons)
 
 ScriptedAI::ScriptedAI(Creature* creature) : CreatureAI(creature),
     IsFleeing(false),
-    summons(creature),
-    damageEvents(creature),
-    instance(creature->GetInstanceScript()),
     _isCombatMovementAllowed(true)
 {
     _isHeroic = me->GetMap()->IsHeroic();
@@ -652,8 +649,7 @@ void StaticBossAI::_InitStaticSpellCast()
 // WorldBossAI - for non-instanced bosses
 
 WorldBossAI::WorldBossAI(Creature* creature) :
-    ScriptedAI(creature),
-    summons(creature) { }
+    ScriptedAI(creature) { }
 
 void WorldBossAI::_Reset()
 {

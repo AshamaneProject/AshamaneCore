@@ -16,7 +16,9 @@
  */
 
 #include "ScriptMgr.h"
+#include "CombatAI.h"
 #include "Creature.h"
+#include "CreatureGroups.h"
 #include "GameObject.h"
 #include "InstanceScript.h"
 #include "Scenario.h"
@@ -50,19 +52,52 @@ struct scenario_stormwind_extraction : public InstanceScript
         {
             DespawnCreatureGroup(SUMMON_GROUP_LION_REST);
             SummonCreatureGroup(SUMMON_GROUP_INSIDE_PRISON);
+
+            SummonCreatureGroup(SUMMON_GROUP_GUARD_ENTRANCE);
+            SummonCreatureGroup(SUMMON_GROUP_GUARD_FIRST_ROOM);
+        }
+        else if (type == SCENARIO_EVENT_FIND_ROKHAN)
+        {
+            DoPlayConversation(CONVERSATION_PRISON_ENTRANCE);
+            DoSendScenarioEvent(SCENARIO_EVENT_FIND_ROKHAN);
         }
     }
 
     void OnCreatureGroupWipe(uint32 creatureGroupId) override
     {
-        if (creatureGroupId == FORMATION_GUARD_PRISON_ENTRANCE)
+        if (creatureGroupId == SUMMON_GROUP_GUARD_ENTRANCE)
         {
             if (Creature* rokhan = GetRokhan())
             {
-                rokhan->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC);
-                rokhan->CastSpell(rokhan, SPELL_ROKHAN_SOLO_STEALTH, true);
-                rokhan->GetMotionMaster()->MovePoint(1, -8692.569336f, 905.782898f, 53.733604f);
                 // StartConversation 7042
+                rokhan->GetScheduler().Schedule(2s, [](TaskContext context)
+                {
+                    GetContextUnit()->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC);
+                    GetContextUnit()->CastSpell(GetContextUnit(), SPELL_ROKHAN_SOLO_STEALTH, true);
+                    GetContextUnit()->GetMotionMaster()->MovePoint(1, -8692.569336f, 905.782898f, 53.733604f);
+                });
+            }
+
+            if (Creature* thalyssra = GetThalyssra())
+            {
+                thalyssra->GetScheduler().Schedule(5s, [this](TaskContext context)
+                {
+                    GetContextUnit()->GetMotionMaster()->MovePoint(1, -8743.606445f, 998.370361f, 44.149288f, 3.284534f);
+
+                    if (CreatureGroup* group = GetCreatureGroup(SUMMON_GROUP_GUARD_FIRST_ROOM))
+                        group->MoveGroupTo(-8747.977539f, 997.306824f, 44.148872f);
+                });
+            }
+        }
+
+        if (creatureGroupId == SUMMON_GROUP_GUARD_FIRST_ROOM)
+        {
+            if (Creature* thalyssra = GetThalyssra())
+            {
+                thalyssra->GetScheduler().Schedule(2s, [thalyssra](TaskContext /*context*/)
+                {
+                    thalyssra->AI()->DoAction(1);
+                });
             }
         }
     }

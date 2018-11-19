@@ -36,6 +36,7 @@
 
 class AreaBoundary;
 class Creature;
+class CreatureGroup;
 class GameObject;
 class InstanceMap;
 class ModuleReference;
@@ -284,10 +285,15 @@ class TC_GAME_API InstanceScript : public ZoneScript
         // Start movie for all players in instance
         void DoStartMovie(uint32 movieId);
 
+        void DoPlayConversation(uint32 conversationId);
+
+        void DoSendScenarioEvent(uint32 eventId);
+
         // Return wether server allow two side groups or not
         bool ServerAllowsTwoSideGroups();
 
         void SummonCreatureGroup(uint32 creatureGroupID, std::list<TempSummon*>* list = nullptr);
+        CreatureGroup* GetCreatureGroup(uint32 creatureGroupID);
         void DespawnCreatureGroup(uint32 creatureGroupID);
 
         virtual bool SetBossState(uint32 id, EncounterState state);

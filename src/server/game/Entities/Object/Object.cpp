@@ -23,6 +23,7 @@
 #include "BattlefieldMgr.h"
 #include "CellImpl.h"
 #include "CinematicMgr.h"
+#include "CreatureGroups.h"
 #include "Common.h"
 #include "Creature.h"
 #include "CreatureAI.h"
@@ -2572,10 +2573,22 @@ void Map::SummonCreatureGroup(uint8 group, std::list<TempSummon*>* list /*= NULL
     if (!data)
         return;
 
+    ObjectGuid::LowType groupLeaderGUID = 0;
     for (std::vector<TempSummonData>::const_iterator itr = data->begin(); itr != data->end(); ++itr)
+    {
         if (TempSummon* summon = SummonCreature(itr->entry, itr->pos, NULL, itr->time))
+        {
+            if (!groupLeaderGUID)
+                groupLeaderGUID = summon->GetGUID().GetCounter();
+
+            sFormationMgr->AddCreatureToGroup(groupLeaderGUID, summon, group);
+
+            summon->SetTempSummonType(itr->type);
+
             if (list)
                 list->push_back(summon);
+        }
+    }
 }
 
 void WorldObject::SetZoneScript()

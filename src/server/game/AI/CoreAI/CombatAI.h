@@ -60,7 +60,6 @@ class TC_GAME_API CombatAI : public CreatureAI
         static int Permissible(Creature const* /*creature*/) { return PERMIT_BASE_NO; }
 
     protected:
-        EventMap events;
         EventMap spellEvents;
         SpellVct spells;
         uint32 combatCheckTimer;

@@ -610,14 +610,14 @@ public:
                 if (lose)
                 {
                     if (!me->HasAura(SPELL_GROVEL))
-                        EnterEvadeMode();
+                        EnterEvadeMode(EvadeReason::EVADE_REASON_OTHER);
                     return;
                 }
                 else if (me->GetVictim() && me->EnsureVictim()->GetTypeId() == TYPEID_PLAYER && me->EnsureVictim()->HealthBelowPct(10))
                 {
                     me->EnsureVictim()->CastSpell(me->GetVictim(), SPELL_GROVEL, true); // beg
                     me->EnsureVictim()->RemoveGameObject(SPELL_DUEL_FLAG, true);
-                    EnterEvadeMode();
+                    EnterEvadeMode(EvadeReason::EVADE_REASON_OTHER);
                     return;
                 }
             }

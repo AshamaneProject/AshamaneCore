@@ -1584,7 +1584,7 @@ public:
         ObjectGuid::LowType lowguid = creature->GetSpawnId();
         if (creature->GetFormation())
         {
-            handler->PSendSysMessage("Selected creature is already member of group " UI64FMTD, creature->GetFormation()->GetId());
+            handler->PSendSysMessage("Selected creature is already member of group " UI64FMTD, creature->GetFormation()->GetLeaderSpawnId());
             return false;
         }
 

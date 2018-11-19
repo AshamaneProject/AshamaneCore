@@ -23,7 +23,7 @@ UPDATE creature_addon SET aiAnimKit = 6059 WHERE guid = 280000383;
 UPDATE creature_addon SET aiAnimKit = 4175 WHERE guid IN (280000370, 280000379, 280000380);
 DELETE FROM creature WHERE id = 134094 AND map = 1904 AND guid IN (SELECT guid FROM creature_addon WHERE auras = "271187" OR auras = "263506");
 
-UPDATE creature_template SET inhabitType = 4 WHERE entry = 134094;
+UPDATE creature_template SET inhabitType = 4 WHERE entry IN (134094, 134085, 134087, 137428);
 
 DELETE FROM `conversation_actors` WHERE (`ConversationId`=8174 AND `Idx`=0) OR (`ConversationId`=8175 AND `Idx`=0) OR (`ConversationId`=6721 AND `Idx`=0) OR (`ConversationId`=6722 AND `Idx`=0) OR (`ConversationId`=6722 AND `Idx`=1) OR (`ConversationId`=7039 AND `Idx`=0) OR (`ConversationId`=7040 AND `Idx`=0) OR (`ConversationId`=7041 AND `Idx`=0) OR (`ConversationId`=7042 AND `Idx`=1) OR (`ConversationId`=7042 AND `Idx`=0) OR (`ConversationId`=7044 AND `Idx`=0) OR (`ConversationId`=7044 AND `Idx`=2) OR (`ConversationId`=7044 AND `Idx`=1) OR (`ConversationId`=7047 AND `Idx`=3) OR (`ConversationId`=7047 AND `Idx`=2) OR (`ConversationId`=7047 AND `Idx`=1) OR (`ConversationId`=7047 AND `Idx`=0) OR (`ConversationId`=7049 AND `ConversationActorId`=134163 AND `Idx`=0) OR (`ConversationId`=7052 AND `Idx`=0) OR (`ConversationId`=7052 AND `Idx`=2) OR (`ConversationId`=7052 AND `Idx`=1) OR (`ConversationId`=7055 AND `Idx`=0) OR (`ConversationId`=7055 AND `Idx`=1) OR (`ConversationId`=7058 AND `Idx`=3) OR (`ConversationId`=7058 AND `Idx`=2) OR (`ConversationId`=7058 AND `Idx`=1) OR (`ConversationId`=7058 AND `Idx`=0) OR (`ConversationId`=7088 AND `Idx`=1) OR (`ConversationId`=7088 AND `Idx`=0) OR (`ConversationId`=7089 AND `Idx`=0) OR (`ConversationId`=7091 AND `Idx`=1) OR (`ConversationId`=7091 AND `Idx`=0) OR (`ConversationId`=7092 AND `Idx`=0) OR (`ConversationId`=7092 AND `Idx`=1) OR (`ConversationId`=7093 AND `Idx`=0) OR (`ConversationId`=7094 AND `Idx`=1) OR (`ConversationId`=7094 AND `Idx`=0) OR (`ConversationId`=7095 AND `Idx`=2) OR (`ConversationId`=7095 AND `Idx`=1) OR (`ConversationId`=7095 AND `Idx`=0) OR (`ConversationId`=7109 AND `Idx`=1) OR (`ConversationId`=7109 AND `Idx`=0) OR (`ConversationId`=7110 AND `Idx`=1) OR (`ConversationId`=7110 AND `Idx`=0) OR (`ConversationId`=7112 AND `Idx`=0) OR (`ConversationId`=7113 AND `Idx`=1) OR (`ConversationId`=7113 AND `Idx`=0) OR (`ConversationId`=7114 AND `Idx`=1) OR (`ConversationId`=7114 AND `Idx`=0) OR (`ConversationId`=7115 AND `Idx`=0) OR (`ConversationId`=7115 AND `Idx`=1) OR (`ConversationId`=7138 AND `Idx`=0) OR (`ConversationId`=7139 AND `Idx`=1) OR (`ConversationId`=7139 AND `Idx`=0) OR (`ConversationId`=7142 AND `Idx`=1) OR (`ConversationId`=7142 AND `Idx`=0) OR (`ConversationId`=7143 AND `Idx`=3) OR (`ConversationId`=7143 AND `Idx`=2) OR (`ConversationId`=7143 AND `Idx`=1) OR (`ConversationId`=7143 AND `Idx`=0) OR (`ConversationId`=7144 AND `Idx`=1) OR (`ConversationId`=7144 AND `Idx`=0) OR (`ConversationId`=7145 AND `Idx`=0) OR (`ConversationId`=7145 AND `Idx`=1) OR (`ConversationId`=7147 AND `Idx`=1) OR (`ConversationId`=7147 AND `Idx`=2) OR (`ConversationId`=7147 AND `Idx`=3) OR (`ConversationId`=7147 AND `Idx`=0) OR (`ConversationId`=7170 AND `Idx`=2) OR (`ConversationId`=7170 AND `Idx`=1) OR (`ConversationId`=7170 AND `Idx`=0) OR (`ConversationId`=8174 AND `ConversationActorId`=134201 AND `Idx`=0) OR (`ConversationId`=8175 AND `ConversationActorId`=134201 AND `Idx`=0) OR (`ConversationId`=8177 AND `Idx`=0) OR (`ConversationId`=8178 AND `Idx`=1) OR (`ConversationId`=8178 AND `Idx`=0) OR (`ConversationId`=8399 AND `Idx`=0) OR (`ConversationId`=8689 AND `Idx`=0) OR (`ConversationId`=9001 AND `Idx`=0) OR (`ConversationId`=9435 AND `Idx`=0) OR (`ConversationId`=9436 AND `Idx`=0) OR (`ConversationId`=9437 AND `Idx`=0) OR (`ConversationId`=9438 AND `Idx`=0) OR (`ConversationId`=9570 AND `Idx`=0) OR (`ConversationId`=9683 AND `Idx`=0);
 INSERT INTO `conversation_actors` (`ConversationId`, `ConversationActorId`, `Idx`, `VerifiedBuild`) VALUES
@@ -138,6 +138,14 @@ INSERT INTO `creature_summon_groups` VALUES
 (1904,  2, 20,  134038, -8718.78,   1000.06,    45.482,     3.25104,    8,  0),
 (1904,  2, 20,  134037, -8716.91,   1002.92,    45.482,     3.21722,    8,  0),
 
+-- 7th Legion patrol at prison entranced
+(1904,  2, 21,  134083, -8726.49,   999.258,    45.481,     0.08642,    6,  5000),
+(1904,  2, 21,  134084, -8727.34,   1002.08,    45.481,     0.08450,    6,  5000),
+
+-- 7th Legion patrol coming to first prison room
+(1904,  2, 22,  134083, -8776.01,   993.645,    45.4819,    4.86111,    6,  5000),
+(1904,  2, 22,  134084, -8775.62,   991.278,    45.4819,    1.80494,    6,  5000),
+
 -- Rokhan & Thalyssra after saurfang
 (1904,  2, 30,  134038, -8687.52,   903.445,    53.8153,    3.80015,    8,  0),
 (1904,  2, 30,  134037, -8691.53,   908.429,    53.8153,    4.41243,    8,  0),
@@ -171,7 +179,10 @@ INSERT INTO `creature_summon_groups` VALUES
 UPDATE gameobject_template SET scriptname = "go_se_sewer_access_portal" WHERE entry = 281484;
 
 UPDATE `creature_template` SET `unit_flags` = 33024 WHERE entry IN (134037, 134038);
+UPDATE `creature_template_addon` SET `bytes1` = 0 WHERE entry IN (134037, 134038);
 
-INSERT INTO creature_formations (leaderGUID, memberGUID) VALUES
-(280000375, 280000375),
-(280000375, 280000381);
+DELETE FROM creature WHERE guid IN (280000375, 280000381, 280000384, 280000389);
+UPDATE creature_addon SET auras = "31261 230246 248811" WHERE guid IN (280000365, 280000355);
+
+UPDATE creature_template SET scriptname = "npc_se_thalyssra" WHERE entry = 134037;
+
