@@ -16,6 +16,7 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "CombatAI.h"
 #include "CreatureGroups.h"
 #include "Creature.h"
 #include "CreatureAI.h"
@@ -236,7 +237,7 @@ void CreatureGroup::FormationReset(bool dismiss)
     m_Formed = !dismiss;
 }
 
-void CreatureGroup::MoveGroupTo(float x, float y, float z)
+void CreatureGroup::MoveGroupTo(float x, float y, float z, bool fightMove /*= false*/)
 {
     if (!m_leader)
         return;
@@ -257,7 +258,10 @@ void CreatureGroup::MoveGroupTo(float x, float y, float z)
         float destY = itr.first->GetPositionY() + (y - centerY);
         float destZ = m_leader->GetMap()->GetHeight(m_leader->GetPhaseShift(), destX, destY, z + 1.f, true);
 
-        itr.first->GetMotionMaster()->MovePoint(1, destX, destY, destZ);
+        if (fightMove)
+            static_cast<CombatAI*>(itr.first->AI())->MoveCombat(Position(destX, destY, destZ));
+        else
+            itr.first->GetMotionMaster()->MovePoint(1, destX, destY, destZ);
     }
 }
 

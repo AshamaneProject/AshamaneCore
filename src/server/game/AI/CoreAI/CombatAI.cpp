@@ -67,7 +67,7 @@ void CombatAI::Reset()
     events.Reset();
     spellEvents.Reset();
 
-    events.ScheduleEvent(EVENT_UPDATE_VICTIM, 0s, 1s);
+    events.ScheduleEvent(EVENT_UPDATE_VICTIM, 0ms, 500ms);
 }
 
 void CombatAI::JustDied(Unit* killer)
@@ -96,7 +96,7 @@ void CombatAI::UpdateAI(uint32 diff)
     {
         if (!UpdateVictim())
         {
-            events.Repeat(1s);
+            events.Repeat(500ms);
             return;
         }
     }
