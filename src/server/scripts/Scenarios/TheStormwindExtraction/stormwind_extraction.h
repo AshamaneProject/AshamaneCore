@@ -22,7 +22,9 @@
 
 enum Npcs
 {
-    NPC_JAINA   = 134201,
+    NPC_JAINA       = 134201,
+    NPC_ROKHAN      = 134038,
+    NPC_THALYSSRA   = 134037,
 };
 
 enum Spells
@@ -52,6 +54,24 @@ enum CriteriaTrees
 {
     CRITERIA_TREE_OPEN_SEWERS = 65350,
 };
+
+enum SummonGroups
+{
+    SUMMON_GROUP_LION_REST          = 10,
+    SUMMON_GROUP_TALANJI_ZUL_PRISON = 11,
+    SUMMON_GROUP_INSIDE_PRISON      = 20,
+    SUMMON_GROUP_POST_SAURFANG      = 30,
+    SUMMON_GROUP_BATTLEMAGE         = 31,
+    SUMMON_GROUP_OUTSIDE_PRISON     = 40,
+    SUMMON_GROUP_CATHEDRAL_PLACE    = 50,
+    SUMMON_GROUP_HARBOR             = 60,
+};
+
+enum FormationId
+{
+    FORMATION_GUARD_PRISON_ENTRANCE = 280000375,
+};
+
 /*
 Position JainaSpawnPosition1 = { -8653.080078f, 904.432007f, 98.132301f, 0.805635f };
 Position JainaSpawnPosition2 = { -8566.570313f, 997.429016f, 96.022499f, 0.000000f };

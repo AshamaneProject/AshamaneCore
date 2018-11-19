@@ -28,6 +28,9 @@ struct scenario_stormwind_extraction : public InstanceScript
 
     void OnPlayerEnter(Player* player) override
     {
+        SummonCreatureGroup(SUMMON_GROUP_LION_REST);
+        SummonCreatureGroup(SUMMON_GROUP_TALANJI_ZUL_PRISON);
+
         // Temp introduction fix
         player->GetScheduler().Schedule(2s, [player](TaskContext /*context*/)
         {
@@ -35,11 +38,38 @@ struct scenario_stormwind_extraction : public InstanceScript
         });
     }
 
-    void OnCompletedCriteriaTree(CriteriaTree const* tree)
+    void OnCompletedCriteriaTree(CriteriaTree const* tree) override
     {
         if (tree->ID == CRITERIA_TREE_OPEN_SEWERS)
             HandleGameObject(GetObjectGuid(GOB_SEWER_ACCESS_GATE), true);
     }
+
+    void SetData(uint32 type, uint32 value) override
+    {
+        if (type == SCENARIO_EVENT_ENTER_STOCKADE)
+        {
+            DespawnCreatureGroup(SUMMON_GROUP_LION_REST);
+            SummonCreatureGroup(SUMMON_GROUP_INSIDE_PRISON);
+        }
+    }
+
+    void OnCreatureGroupWipe(uint32 creatureGroupId) override
+    {
+        if (creatureGroupId == FORMATION_GUARD_PRISON_ENTRANCE)
+        {
+            if (Creature* rokhan = GetRokhan())
+            {
+                rokhan->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC);
+                rokhan->CastSpell(rokhan, SPELL_ROKHAN_SOLO_STEALTH, true);
+                rokhan->GetMotionMaster()->MovePoint(1, -8692.569336f, 905.782898f, 53.733604f);
+                // StartConversation 7042
+            }
+        }
+    }
+
+private:
+    Creature* GetRokhan()       { return GetCreature(NPC_ROKHAN); }
+    Creature* GetThalyssra()    { return GetCreature(NPC_THALYSSRA); }
 };
 
 void AddSC_scenario_stormwind_extraction()
