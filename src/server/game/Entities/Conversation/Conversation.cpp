@@ -163,6 +163,16 @@ bool Conversation::Create(ObjectGuid::LowType lowGuid, uint32 conversationEntry,
         }
     }
 
+    for (uint16 actorIndex = 0; actorIndex < conversationTemplate->ActorNearIds.size(); ++actorIndex)
+    {
+        uint32 const& actorNearId = conversationTemplate->ActorNearIds[actorIndex];
+        if (!actorNearId)
+            continue;
+
+        if (Creature* actor = creator->FindNearestCreature(actorNearId, 50.f))
+            AddActor(actor->GetGUID(), actorIndex);
+    }
+
     std::set<uint16> actorIndices;
     for (ConversationLineTemplate const* line : conversationTemplate->Lines)
     {
