@@ -11450,6 +11450,9 @@ void Unit::Kill(Unit* victim, bool durabilityLoss)
         if (creature->AI())
             creature->AI()->JustDied(this);
 
+        if (CreatureGroup* formation = creature->GetFormation())
+            formation->CheckWipe(creature);
+
         if (TempSummon* summon = creature->ToTempSummon())
             if (Unit* summoner = summon->GetSummoner())
                 if (summoner->ToCreature() && summoner->IsAIEnabled)
