@@ -1011,7 +1011,7 @@ class TC_GAME_API Unit : public WorldObject
         bool AttackStop();
         void RemoveAllAttackers();
         AttackerSet const& getAttackers() const { return m_attackers; }
-        uint32 GetAttackersCount() const { return getAttackers().size(); }
+        uint32 GetAttackersCount(Unit const* except = nullptr) const { return std::count_if(getAttackers().begin(), getAttackers().end(), [except](Unit* attacker) { return except != attacker; }); }
         bool isAttackingPlayer() const;
         Unit* GetVictim() const { return m_attacking; }
         // Use this only when 100% sure there is a victim

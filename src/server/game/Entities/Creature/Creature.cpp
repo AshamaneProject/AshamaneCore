@@ -2168,15 +2168,16 @@ std::vector<Unit*> Creature::SelectNearestTargetsInAttackDistance(float dist) co
     if (targets.size() < 2)
         return targets;
 
-    std::sort(targets.begin(), targets.end(), [](Unit* a, Unit*b)
+    std::sort(targets.begin(), targets.end(), [this](Unit* a, Unit*b)
     {
-        return a->GetAttackersCount() < b->GetAttackersCount();
+        return a->GetAttackersCount(this) < b->GetAttackersCount(this);
     });
 
-    uint32 lowerAttackersCount = targets.front()->GetAttackersCount();
-    targets.erase(std::remove_if(targets.begin(), targets.end(), [lowerAttackersCount](Unit* a)
+    uint32 lowerAttackersCount = targets.front()->GetAttackersCount(this);
+
+    targets.erase(std::remove_if(targets.begin(), targets.end(), [this, lowerAttackersCount](Unit* a)
     {
-        return a->GetAttackersCount() > lowerAttackersCount;
+        return a->GetAttackersCount(this) > lowerAttackersCount;
     }), targets.end());
 
     return targets;

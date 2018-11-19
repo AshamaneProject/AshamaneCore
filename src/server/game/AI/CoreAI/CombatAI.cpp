@@ -146,6 +146,45 @@ void CombatAI::SpellInterrupted(uint32 spellId, uint32 unTimeMs)
     spellEvents.RescheduleEvent(spellId, unTimeMs);
 }
 
+void CombatAI::MoveCombat(Position destination)
+{
+    me->GetMotionMaster()->MovePoint(POINT_ID_COMBAT_MOVEMENT, destination);
+    combatMoveDest = destination;
+}
+
+void CombatAI::MovementInform(uint32 type, uint32 id)
+{
+    if (type == POINT_MOTION_TYPE && id == POINT_ID_COMBAT_MOVEMENT)
+        combatMoveDest.reset();
+}
+
+void CombatAI::EnterEvadeMode(EvadeReason why)
+{
+    if (!_EnterEvadeMode(why))
+        return;
+
+    if (combatMoveDest.is_initialized())
+        MoveCombat(*combatMoveDest);
+    else
+    {
+        if (!me->GetVehicle()) // otherwise me will be in evade mode forever
+        {
+            if (Unit* owner = me->GetCharmerOrOwner())
+            {
+                me->GetMotionMaster()->Clear(false);
+                me->GetMotionMaster()->MoveFollow(owner, PET_FOLLOW_DIST, me->GetFollowAngle(), MOTION_SLOT_ACTIVE);
+            }
+            else
+            {
+                // Required to prevent attacking creatures that are evading and cause them to reenter combat
+                // Does not apply to MoveFollow
+                me->AddUnitState(UNIT_STATE_EVADE);
+                me->GetMotionMaster()->MoveTargetedHome();
+            }
+        }
+    }
+}
+
 /////////////////
 // CasterAI
 /////////////////

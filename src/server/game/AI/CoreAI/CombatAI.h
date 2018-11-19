@@ -39,9 +39,10 @@ class TC_GAME_API CombatAI : public CreatureAI
     public:
         explicit CombatAI(Creature* c) : CreatureAI(c) { }
 
-        enum Events
+        enum CombatAIEnum
         {
-            EVENT_UPDATE_VICTIM = 1,
+            EVENT_UPDATE_VICTIM         = 5000,
+            POINT_ID_COMBAT_MOVEMENT    = 5000,
         };
 
         void InitializeAI() override;
@@ -52,6 +53,9 @@ class TC_GAME_API CombatAI : public CreatureAI
         void SpellInterrupted(uint32 spellId, uint32 unTimeMs) override;
         bool UpdateVictim();
         void MoveInLineOfSight(Unit* who) override { }
+        void MoveCombat(Position destination);
+        void MovementInform(uint32 type, uint32 id) override;
+        void EnterEvadeMode(EvadeReason why) override;
 
         static int Permissible(Creature const* /*creature*/) { return PERMIT_BASE_NO; }
 
@@ -60,6 +64,7 @@ class TC_GAME_API CombatAI : public CreatureAI
         EventMap spellEvents;
         SpellVct spells;
         uint32 combatCheckTimer;
+        Optional<Position> combatMoveDest;
 };
 
 class TC_GAME_API CasterAI : public CombatAI
