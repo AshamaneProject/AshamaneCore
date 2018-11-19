@@ -766,6 +766,33 @@ bool InstanceScript::ServerAllowsTwoSideGroups()
     return sWorld->getBoolConfig(CONFIG_ALLOW_TWO_SIDE_INTERACTION_GROUP);
 }
 
+void InstanceScript::SummonCreatureGroup(uint32 creatureGroupID, std::list<TempSummon*>* list /*= nullptr*/)
+{
+    bool createTempList = !list;
+    if (createTempList)
+        list = new std::list<TempSummon*>;
+
+    instance->SummonCreatureGroup(creatureGroupID, list);
+
+    for (TempSummon* summon : *list)
+        summonBySummonGroupIDs[creatureGroupID].push_back(summon->GetGUID());
+
+    if (createTempList)
+    {
+        delete list;
+        list = nullptr;
+    }
+}
+
+void InstanceScript::DespawnCreatureGroup(uint32 creatureGroupID)
+{
+    for (ObjectGuid guid : summonBySummonGroupIDs[creatureGroupID])
+        if (Creature* summon = instance->GetCreature(guid))
+            summon->DespawnOrUnsummon();
+
+    summonBySummonGroupIDs.erase(creatureGroupID);
+}
+
 void InstanceScript::DoSetAlternatePowerOnPlayers(int32 value)
 {
     Map::PlayerList const &plrList = instance->GetPlayers();
