@@ -22,21 +22,39 @@
 
 enum Npcs
 {
-    NPC_JAINA       = 134201,
-    NPC_ROKHAN      = 134038,
-    NPC_THALYSSRA   = 134037,
+    NPC_JAINA           = 134201,
+    NPC_ROKHAN          = 134038,
+    NPC_THALYSSRA       = 134037,
+    NPC_SAURFANG        = 134120,
+    NPC_ZUL             = 134093,
+    NPC_TALANJI         = 134092,
+    NPC_NATHANOS        = 134039,
+    NPC_GREYMANE        = 134200,
+
+    NPC_FX_STALKER      = 134094,
+    NPC_ESCAPE_STOCKADE = 139948,
 };
 
 enum Spells
 {
-    SPELL_TELEPORT_STOCKADE     = 269934,
-    SPELL_SCENE_GENN_ARRIVES    = 264771,
-    SPELL_SCENE_JAINA_AND_ZUL   = 273374,
+    SPELL_TELEPORT_STOCKADE             = 269934,
+    SPELL_SCENE_GENN_ARRIVES            = 264771,
+    SPELL_SCENE_JAINA_AND_ZUL           = 273374,
 
-    SPELL_ROKHAN_SOLO_STEALTH   = 86603,
+    SPELL_ROKHAN_SOLO_STEALTH           = 86603,
 
-    SPELL_ARCANE_BARRIER        = 271187,
-    SPELL_ARCANE_BARRIER_MOVING = 263506,
+    SPELL_ARCANE_CHANNELING             = 54219,
+    SPELL_ARCANE_BARRIER                = 271187,
+    SPELL_ARCANE_BARRIER_MOVING         = 263506,
+
+    SPELL_CHAT_BUBBLE                   = 140812,
+
+    SPELL_NULLIFICATION_BARRIER         = 264422,
+
+    SPELL_TALANJI_OPEN_ARCANE_BARRIER   = 271229,
+
+    SPELL_SCENARIO_COMPLETE             = 263949,
+    SPELL_SCENARIO_COMPLETE_TELEPORT    = 263948,
 };
 
 enum GameObjects
@@ -49,6 +67,10 @@ enum Events
     SCENARIO_EVENT_STORMWIND_INFILTRATION   = 62745,
     SCENARIO_EVENT_ENTER_STOCKADE           = 62746,
     SCENARIO_EVENT_FIND_ROKHAN              = 62758,
+    SCENARIO_EVENT_FREE_SAURFANG            = 62803,
+    EVENT_FIND_PRISONNERS                   = 100,
+    SCENARIO_EVENT_FREE_PRISONNERS          = 62811,
+    EVENT_END_OF_PRISON_REACHED             = 101,
 };
 
 enum CriteriaTrees
@@ -63,11 +85,13 @@ enum SummonGroups
     SUMMON_GROUP_INSIDE_PRISON      = 20,
     SUMMON_GROUP_GUARD_ENTRANCE     = 21,
     SUMMON_GROUP_GUARD_FIRST_ROOM   = 22,
-    SUMMON_GROUP_POST_SAURFANG      = 30,
+    SUMMON_GROUP_ALL_AFTER_FREED    = 30,
     SUMMON_GROUP_BATTLEMAGE         = 31,
     SUMMON_GROUP_OUTSIDE_PRISON     = 40,
     SUMMON_GROUP_CATHEDRAL_PLACE    = 50,
     SUMMON_GROUP_HARBOR             = 60,
+
+    SUMMON_GROUP_END_HARBOR_HACKFIX = 70,
 };
 
 enum Conversations
@@ -77,26 +101,20 @@ enum Conversations
     CONVERSATION_NATHANOS_3         = 7041,
     CONVERSATION_PRISON_ENTRANCE    = 7042,
     CONVERSATION_SAURFANG           = 7044,
+    CONVERSATION_ESCORT_ARRIVED     = 9683,
+    CONVERSATION_THANK_YOU_PRISON   = 7047,
     CONVERSATION_NULLIFICATION      = 7055,
+    CONVERSATION_HOW_GET_OUT        = 7052,
+    CONVERSATION_BEFORE_ESCAPE      = 7058,
     CONVERSATION_AFTER_ESCAPE       = 7088,
     CONVERSATION_GENN_ATTACK        = 7109,
+    CONVERSATION_JAINA_END_OF_ESCAPE= 7145,
+    CONVERSATION_THANKS_ZUL         = 7147,
 };
 
 /*
 Position JainaSpawnPosition1 = { -8653.080078f, 904.432007f, 98.132301f, 0.805635f };
 Position JainaSpawnPosition2 = { -8566.570313f, 997.429016f, 96.022499f, 0.000000f };
-
-Position PrisonMagicWallsPositions[] =
-{
-    { -8740.16f,    866.198f,   53.8153f,   0.66650f }, // bottom (moving to push player)
-    { -8702.05f,    904.297f,   53.8153f,   5.37439f }, // Arrival (moving to push player)
-    { -8693.48f,    902.970f,   53.8153f,   3.77220f }, // front of saurfang cell
-    { -8719.19f,    890.029f,   52.8987f,   5.40985f }, // first right
-    { -8712.07f,    880.811f,   52.8987f,   2.22569f }, // first left
-    { -8729.27f,    866.807f,   52.8987f,   2.23515f }, // down left
-    { -8694.57f,    894.535f,   53.8153f,   2.22813f }, // exit (openned by Talanji)
-    { -8736.71f,    876.128f,   52.8987f,   5.41640f }, // down right
-};
 
 struct GameObjectPosition
 {

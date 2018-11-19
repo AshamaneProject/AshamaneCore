@@ -31,92 +31,138 @@ INSERT INTO `conversation_actors` (`ConversationId`, `ConversationActorId`, `Idx
 (8174, 134201, 0, 28153),
 (8175, 134201, 0, 28153);
 
-INSERT INTO `conversation_actors` (`ConversationId`, `ConversationActorGuid`, `Idx`, `VerifiedBuild`) VALUES
--- (7170, UNKNOWN, 2, 28153), -- Full: 0x2016FC002084094000755B0000720B37 Creature/0 R1471/S30043 Map: Kalimdor Entry: 135205 -- (Nathanos Blightcaller) Low: 7473975
--- (7170, UNKNOWN, 1, 28153), -- Full: 0x2016FC002084098000755B0000720B37 Creature/0 R1471/S30043 Map: Kalimdor Entry: 135206 -- (Rokhan) Low: 7473975
--- (7170, UNKNOWN, 0, 28153), -- Full: 0x2016FC00208409C000755B0000720B37 Creature/0 R1471/S30043 Map: Kalimdor Entry: 135207 -- (First Arcanist Thalyssra) Low: 7473975
--- (8399, UNKNOWN, 0, 28153), -- Full: 0x2016FC002084094000755B0000720B64 Creature/0 R1471/S30043 Map: Kalimdor Entry: 135205 -- (Nathanos Blightcaller) Low: 7474020
+INSERT INTO `conversation_actors` (`ConversationId`, `ConversationActorGuid`, `ConversationActorNearId`, `Idx`, `VerifiedBuild`) VALUES
+(9570, 0,           140176, 0, 28153), -- Full: 0x2016FC002088E40000755B000072001D Creature/0 R1471/S30043 Map: Kalimdor Entry: 140176 -- (Nathanos Blightcaller) Low: 7471133
+
+(7170, 0,           135205, 2, 28153), -- Full: 0x2016FC002084094000755B0000720B37 Creature/0 R1471/S30043 Map: Kalimdor Entry: 135205 -- (Nathanos Blightcaller) Low: 7473975
+(7170, 0,           135206, 1, 28153), -- Full: 0x2016FC002084098000755B0000720B37 Creature/0 R1471/S30043 Map: Kalimdor Entry: 135206 -- (Rokhan) Low: 7473975
+(7170, 0,           135207, 0, 28153), -- Full: 0x2016FC00208409C000755B0000720B37 Creature/0 R1471/S30043 Map: Kalimdor Entry: 135207 -- (First Arcanist Thalyssra) Low: 7473975
+(8399, 0,           135205, 0, 28153), -- Full: 0x2016FC002084094000755B0000720B64 Creature/0 R1471/S30043 Map: Kalimdor Entry: 135205 -- (Nathanos Blightcaller) Low: 7474020
 
 -- Nathanos arrival speech
-(7039, 280000317, 0, 28153), -- Full: 0x2016FCEE0082E5C000014E0000720BAC Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Nathanos Blightcaller Low: 7474092
-(7040, 280000317, 0, 28153), -- Full: 0x2016FCEE0082E5C000014E0000720BAC Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Nathanos Blightcaller Low: 7474092
-(7041, 280000317, 0, 28153), -- Full: 0x2016FCEE0082E5C000014E0000720BAC Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Nathanos Blightcaller Low: 7474092
+(7039, 0,           134039, 0, 28153), -- Full: 0x2016FCEE0082E5C000014E0000720BAC Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Nathanos Blightcaller Low: 7474092
+(7040, 0,           134039, 0, 28153), -- Full: 0x2016FCEE0082E5C000014E0000720BAC Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Nathanos Blightcaller Low: 7474092
+(7041, 0,           134039, 0, 28153), -- Full: 0x2016FCEE0082E5C000014E0000720BAC Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Nathanos Blightcaller Low: 7474092
 
 -- At prison entrance, rokhan go ahead
-(7042, 280000373, 1, 28153), -- Full: 0x2016FCEE0082E54000014E0000720BFD Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: First Arcanist Thalyssra Low: 7474173
-(7042, 280000372, 0, 28153), -- Full: 0x2016FCEE0082E58000014E0000720BFD Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Rokhan Low: 7474173
+(7042, 0,           134037, 1, 28153), -- Full: 0x2016FCEE0082E54000014E0000720BFD Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: First Arcanist Thalyssra Low: 7474173
+(7042, 0,           134038, 0, 28153), -- Full: 0x2016FCEE0082E58000014E0000720BFD Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Rokhan Low: 7474173
 
 -- Saurfang dialog
-(7044, 280000345, 0, 28153), -- Full: 0x2016FCEE0082FA0000014E0000720BFE Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: 134120 -- (High Overlord Saurfang) Low: 7474174
-(7044, 280000373, 2, 28153), -- Full: 0x2016FCEE0082E54000014E0000720CAB Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: First Arcanist Thalyssra Low: 7474347
-(7044, 280000372, 1, 28153), -- Full: 0x2016FCEE0082E58000014E0000720CAB Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Rokhan Low: 7474347
+(7044, 280000345,   0,      0, 28153), -- Full: 0x2016FCEE0082FA0000014E0000720BFE Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: 134120 -- (High Overlord Saurfang) Low: 7474174
+(7044, 0,           134037, 2, 28153), -- Full: 0x2016FCEE0082E54000014E0000720CAB Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: First Arcanist Thalyssra Low: 7474347
+(7044, 0,           134038, 1, 28153), -- Full: 0x2016FCEE0082E58000014E0000720CAB Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Rokhan Low: 7474347
+
+-- Escort arrive just as i said
+(9683, 0,           134093, 0, 28153), -- Full: 0x2016FCEE0082F34000014E0000720C9D Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Zul the Prophet Low: 7474333
+
+-- Thank you (prison free)
+(7047, 0,           134093, 3, 28153), -- Full: 0x2016FCEE0082F34000014E0000720C9D Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Zul the Prophet Low: 7474333
+(7047, 0,           134037, 2, 28153), -- Full: 0x2016FCEE0082E54000014E0000720CAB Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: First Arcanist Thalyssra Low: 7474347
+(7047, 0,           134038, 1, 28153), -- Full: 0x2016FCEE0082E58000014E0000720CAB Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Rokhan Low: 7474347
+(7047, 0,           134092, 0, 28153), -- Full: 0x2016FCEE0082F30000014E0000720C9D Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Princess Talanji Low: 7474333
 
 -- Nullification field
-(7055, 280000317, 0, 28153), -- Full: 0x2016FCEE0082E58000014E0000720CAB Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Rokhan Low: 7474347
-(7055, 280000319, 1, 28153), -- Full: 0x2016FCEE0082E54000014E0000720CAB Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: First Arcanist Thalyssra Low: 7474347
+(7055, 0,           134038, 0, 28153), -- Full: 0x2016FCEE0082E58000014E0000720CAB Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Rokhan Low: 7474347
+(7055, 0,           134037, 1, 28153), -- Full: 0x2016FCEE0082E54000014E0000720CAB Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: First Arcanist Thalyssra Low: 7474347
+
+-- How do we get out ? this way ! that would be a mistake
+(7052, 0,           134092, 0, 28153), -- Full: 0x2016FCEE0082F30000014E0000720C9D Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Princess Talanji Low: 7474333
+(7052, 0,           134093, 2, 28153), -- Full: 0x2016FCEE0082F34000014E0000720C9D Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Zul the Prophet Low: 7474333
+(7052, 0,           134038, 1, 28153), -- Full: 0x2016FCEE0082E58000014E0000720CAB Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Rokhan Low: 7474347
+
+-- It smells unpleasant. Where dis be leading ? out
+(7058, 0,           134093, 3, 28153), -- Full: 0x2016FCEE0082F34000014E0000720C9D Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Zul the Prophet Low: 7474333
+(7058, 0,           134037, 2, 28153), -- Full: 0x2016FCEE0082E54000014E0000720CAB Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: First Arcanist Thalyssra Low: 7474347
+(7058, 0,           134038, 1, 28153), -- Full: 0x2016FCEE0082E58000014E0000720CAB Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Rokhan Low: 7474347
+(7058, 0,           134092, 0, 28153), -- Full: 0x2016FCEE0082F30000014E0000720C9D Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Princess Talanji Low: 7474333
 
 -- After prison escape
-(7088, 280000317, 1, 28153), -- Full: 0x2016FCEE0082E58000014E0000720DD3 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Rokhan Low: 7474643
-(7088, 280000319, 0, 28153), -- Full: 0x2016FCEE0082E54000014E0000720DD3 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: First Arcanist Thalyssra Low: 7474643
+(7088, 0,           134038, 1, 28153), -- Full: 0x2016FCEE0082E58000014E0000720DD3 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Rokhan Low: 7474643
+(7088, 0,           134037, 0, 28153), -- Full: 0x2016FCEE0082E54000014E0000720DD3 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: First Arcanist Thalyssra Low: 7474643
+
+-- All citizen shall remain inside
+(7089, 0,           137892, 0, 28153), -- Full: 0x2016FCEE0086A90000014E0000720DFF Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: 137892 (Crier Goodman) Low: 7474687
+
+-- Let's cross the bridge
+(7091, 0,           134092, 1, 28153), -- Full: 0x2016FCEE0082F30000014E0000720DD3 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Princess Talanji Low: 7474643
+(7091, 0,           134038, 0, 28153), -- Full: 0x2016FCEE0082E58000014E0000720DD3 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Rokhan Low: 7474643
+
+-- Jump the bridge
+(7092, 0,           134093, 0, 28153), -- Full: 0x2016FCEE0082F34000014E0000720DD3 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Zul the Prophet Low: 7474643
+(7092, 0,           134038, 1, 28153), -- Full: 0x2016FCEE0082E58000014E0000720DD3 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Rokhan Low: 7474643
+
+-- Anduin on the bridge intruder have been detected
+(7093, 0,           134202, 0, 28153), -- Full: 0x2016FCEE00830E8000014E0000720E49 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: 134202 (Anduin Wrynn) Low: 7474761
+
+-- A little more warning would have been nice
+(7094, 0,           134093, 1, 28153), -- Full: 0x2016FCEE0082F34000014E0000720DD3 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Zul the Prophet Low: 7474643
+(7094, 0,           134038, 0, 28153), -- Full: 0x2016FCEE0082E58000014E0000720DD3 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Rokhan Low: 7474643
+
+-- Where are the guards ?
+(7095, 0,           134093, 2, 28153), -- Full: 0x2016FCEE0082F34000014E0000720DD3 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Zul the Prophet Low: 7474643
+(7095, 0,           134092, 1, 28153), -- Full: 0x2016FCEE0082F30000014E0000720DD3 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Princess Talanji Low: 7474643
+(7095, 0,           134037, 0, 28153), -- Full: 0x2016FCEE0082E54000014E0000720DD3 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: First Arcanist Thalyssra Low: 7474643
+
+(7110, 0,           134038, 1, 28153), -- Full: 0x2016FCEE0082E58000014E0000720EB5 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Rokhan Low: 7474869
+(7110, 0,           134200, 0, 28153), -- Full: 0x2016FCEE00830E0000014E0000720EB5 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Genn Greymane Low: 7474869
 
 -- At genn attack
-(7109, 280000317, 1, 28153), -- Full: 0x2016FCEE0082E58000014E0000720EB5 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Rokhan Low: 7474869
-(7109, 280000319, 0, 28153); -- Full: 0x2016FCEE0082E54000014E0000720EB5 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: First Arcanist Thalyssra Low: 7474869
+(7109, 0,           134038, 1, 28153), -- Full: 0x2016FCEE0082E58000014E0000720EB5 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Rokhan Low: 7474869
+(7109, 0,           134037, 0, 28153), -- Full: 0x2016FCEE0082E54000014E0000720EB5 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: First Arcanist Thalyssra Low: 7474869
 
+-- You will want to wait here
+(7113, 0,           134092, 1, 28153), -- Full: 0x2016FCEE0082F30000014E0000720EB5 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Princess Talanji Low: 7474869
+(7113, 0,           134093, 0, 28153), -- Full: 0x2016FCEE0082F34000014E0000720EB5 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Zul the Prophet Low: 7474869
 
--- (7047, UNKNOWN, 3, 28153), -- Full: 0x2016FCEE0082F34000014E0000720C9D Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Zul the Prophet Low: 7474333
--- (7047, UNKNOWN, 2, 28153), -- Full: 0x2016FCEE0082E54000014E0000720CAB Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: First Arcanist Thalyssra Low: 7474347
--- (7047, UNKNOWN, 1, 28153), -- Full: 0x2016FCEE0082E58000014E0000720CAB Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Rokhan Low: 7474347
--- (7047, UNKNOWN, 0, 28153), -- Full: 0x2016FCEE0082F30000014E0000720C9D Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Princess Talanji Low: 7474333
--- (7052, UNKNOWN, 0, 28153), -- Full: 0x2016FCEE0082F30000014E0000720C9D Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Princess Talanji Low: 7474333
--- (7052, UNKNOWN, 2, 28153), -- Full: 0x2016FCEE0082F34000014E0000720C9D Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Zul the Prophet Low: 7474333
--- (7052, UNKNOWN, 1, 28153), -- Full: 0x2016FCEE0082E58000014E0000720CAB Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Rokhan Low: 7474347
--- (7058, UNKNOWN, 3, 28153), -- Full: 0x2016FCEE0082F34000014E0000720C9D Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Zul the Prophet Low: 7474333
--- (7058, UNKNOWN, 2, 28153), -- Full: 0x2016FCEE0082E54000014E0000720CAB Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: First Arcanist Thalyssra Low: 7474347
--- (7058, UNKNOWN, 1, 28153), -- Full: 0x2016FCEE0082E58000014E0000720CAB Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Rokhan Low: 7474347
--- (7058, UNKNOWN, 0, 28153), -- Full: 0x2016FCEE0082F30000014E0000720C9D Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Princess Talanji Low: 7474333
--- (7089, UNKNOWN, 0, 28153), -- Full: 0x2016FCEE0086A90000014E0000720DFF Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: 137892 -- (Crier Goodman) Low: 7474687
--- (7091, UNKNOWN, 1, 28153), -- Full: 0x2016FCEE0082F30000014E0000720DD3 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Princess Talanji Low: 7474643
--- (7091, UNKNOWN, 0, 28153), -- Full: 0x2016FCEE0082E58000014E0000720DD3 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Rokhan Low: 7474643
--- (7092, UNKNOWN, 0, 28153), -- Full: 0x2016FCEE0082F34000014E0000720DD3 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Zul the Prophet Low: 7474643
--- (7092, UNKNOWN, 1, 28153), -- Full: 0x2016FCEE0082E58000014E0000720DD3 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Rokhan Low: 7474643
--- (7093, UNKNOWN, 0, 28153), -- Full: 0x2016FCEE00830E8000014E0000720E49 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: 134202 -- (Anduin Wrynn) Low: 7474761
--- (7094, UNKNOWN, 1, 28153), -- Full: 0x2016FCEE0082F34000014E0000720DD3 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Zul the Prophet Low: 7474643
--- (7094, UNKNOWN, 0, 28153), -- Full: 0x2016FCEE0082E58000014E0000720DD3 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Rokhan Low: 7474643
--- (7095, UNKNOWN, 2, 28153), -- Full: 0x2016FCEE0082F34000014E0000720DD3 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Zul the Prophet Low: 7474643
--- (7095, UNKNOWN, 1, 28153), -- Full: 0x2016FCEE0082F30000014E0000720DD3 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Princess Talanji Low: 7474643
--- (7095, UNKNOWN, 0, 28153), -- Full: 0x2016FCEE0082E54000014E0000720DD3 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: First Arcanist Thalyssra Low: 7474643
--- (7110, UNKNOWN, 1, 28153), -- Full: 0x2016FCEE0082E58000014E0000720EB5 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Rokhan Low: 7474869
--- (7110, UNKNOWN, 0, 28153), -- Full: 0x2016FCEE00830E0000014E0000720EB5 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Genn Greymane Low: 7474869
--- (7112, UNKNOWN, 0, 28153), -- Full: 0x2016FCEE00830E4000014E0000720F35 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Lady Jaina Proudmoore Low: 7474997
--- (7113, UNKNOWN, 1, 28153), -- Full: 0x2016FCEE0082F30000014E0000720EB5 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Princess Talanji Low: 7474869
--- (7113, UNKNOWN, 0, 28153), -- Full: 0x2016FCEE0082F34000014E0000720EB5 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Zul the Prophet Low: 7474869
--- (7114, UNKNOWN, 1, 28153), -- Full: 0x2016FCEE0082F30000014E0000720EB5 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Princess Talanji Low: 7474869
--- (7114, UNKNOWN, 0, 28153), -- Full: 0x2016FCEE0082F34000014E0000720EB5 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Zul the Prophet Low: 7474869
--- (7115, UNKNOWN, 0, 28153), -- Full: 0x2016FCEE0082E5C000014E0000720EB2 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Nathanos Blightcaller Low: 7474866
--- (7115, UNKNOWN, 1, 28153), -- Full: 0x2016FCEE0082E58000014E0000720EB5 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Rokhan Low: 7474869
--- (7138, UNKNOWN, 0, 28153), -- Full: 0x2016FCEE0082E5C000014E0000720FA0 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Nathanos Blightcaller Low: 7475104
--- (7139, UNKNOWN, 1, 28153), -- Full: 0x2016FCEE0082E5C000014E0000720FA0 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Nathanos Blightcaller Low: 7475104
--- (7139, UNKNOWN, 0, 28153), -- Full: 0x2016FCEE0082E54000014E0000720FA0 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: First Arcanist Thalyssra Low: 7475104
--- (7142, UNKNOWN, 1, 28153), -- Full: 0x2016FCEE0082E5C000014E0000720FA0 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Nathanos Blightcaller Low: 7475104
--- (7142, UNKNOWN, 0, 28153), -- Full: 0x2016FCEE0082E54000014E0000720FA0 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: First Arcanist Thalyssra Low: 7475104
--- (7143, UNKNOWN, 3, 28153), -- Full: 0x2016FCEE0082F30000014E0000720FA0 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Princess Talanji Low: 7475104
--- (7143, UNKNOWN, 2, 28153), -- Full: 0x2016FCEE0082E58000014E0000720FA0 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Rokhan Low: 7475104
--- (7143, UNKNOWN, 1, 28153), -- Full: 0x2016FCEE0082E50000014E0000721092 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: 134036 -- (Lasan Skyhorn) Low: 7475346
--- (7143, UNKNOWN, 0, 28153), -- Full: 0x2016FCEE0082F34000014E0000720FA0 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Zul the Prophet Low: 7475104
--- (7144, UNKNOWN, 1, 28153), -- Full: 0x2016FCEE0082E5C000014E0000720FA0 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Nathanos Blightcaller Low: 7475104
--- (7144, UNKNOWN, 0, 28153), -- Full: 0x2016FCEE0082E54000014E0000720FA0 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: First Arcanist Thalyssra Low: 7475104
--- (7145, UNKNOWN, 0, 28153), -- Full: 0x2016FCEE00830E4000014E00007210BE Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Lady Jaina Proudmoore Low: 7475390
--- (7145, UNKNOWN, 1, 28153), -- Full: 0x2016FCEE0082E5C000014E0000720FA0 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Nathanos Blightcaller Low: 7475104
--- (7147, UNKNOWN, 1, 28153), -- Full: 0x2016FCEE0082F34000014E0000720FA0 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Zul the Prophet Low: 7475104
--- (7147, UNKNOWN, 2, 28153), -- Full: 0x2016FCEE0082F30000014E0000720FA0 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Princess Talanji Low: 7475104
--- (7147, UNKNOWN, 3, 28153), -- Full: 0x2016FCEE0082E5C000014E0000720FA0 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Nathanos Blightcaller Low: 7475104
--- (7147, UNKNOWN, 0, 28153), -- Full: 0x2016FCEE0082E58000014E0000720FA0 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Rokhan Low: 7475104
--- (8177, UNKNOWN, 0, 28153), -- Full: 0x2016FCEE0082F30000014E0000720FA0 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Princess Talanji Low: 7475104
--- (8178, UNKNOWN, 1, 28153), -- Full: 0x2016FCEE0082E58000014E0000720FA0 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Rokhan Low: 7475104
--- (8178, UNKNOWN, 0, 28153), -- Full: 0x2016FCEE0082E5C000014E0000720FA0 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Nathanos Blightcaller Low: 7475104
--- (9570, UNKNOWN, 0, 28153), -- Full: 0x2016FC002088E40000755B000072001D Creature/0 R1471/S30043 Map: Kalimdor Entry: 140176 -- (Nathanos Blightcaller) Low: 7471133
--- (9683, UNKNOWN, 0, 28153), -- Full: 0x2016FCEE0082F34000014E0000720C9D Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Zul the Prophet Low: 7474333
+(7112, 0,           134201, 0, 28153), -- Full: 0x2016FCEE00830E4000014E0000720F35 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Lady Jaina Proudmoore Low: 7474997
+
+-- One would think a city is less flamable
+(7114, 0,           134092, 1, 28153), -- Full: 0x2016FCEE0082F30000014E0000720EB5 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Princess Talanji Low: 7474869
+(7114, 0,           134093, 0, 28153), -- Full: 0x2016FCEE0082F34000014E0000720EB5 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Zul the Prophet Low: 7474869
+
+-- fine mess we're in
+(7115, 0,           134039, 0, 28153), -- Full: 0x2016FCEE0082E5C000014E0000720EB2 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Nathanos Blightcaller Low: 7474866
+(7115, 0,           134038, 1, 28153), -- Full: 0x2016FCEE0082E58000014E0000720EB5 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Rokhan Low: 7474869
+
+-- Alliance won't be taking prisonner this time
+(7138, 0,           134039, 0, 28153), -- Full: 0x2016FCEE0082E5C000014E0000720FA0 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Nathanos Blightcaller Low: 7475104
+
+-- She has cut our escape ! break the ice !
+(7139, 0,           134039, 1, 28153), -- Full: 0x2016FCEE0082E5C000014E0000720FA0 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Nathanos Blightcaller Low: 7475104
+(7139, 0,           134037, 0, 28153), -- Full: 0x2016FCEE0082E54000014E0000720FA0 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: First Arcanist Thalyssra Low: 7475104
+
+-- Loa lend me your strenght !
+(8177, 0,           134092, 0, 28153), -- Full: 0x2016FCEE0082F30000014E0000720FA0 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Princess Talanji Low: 7475104
+
+-- Thank loa lets move
+(8178, 0,           134038, 1, 28153), -- Full: 0x2016FCEE0082E58000014E0000720FA0 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Rokhan Low: 7475104
+(8178, 0,           134039, 0, 28153), -- Full: 0x2016FCEE0082E5C000014E0000720FA0 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Nathanos Blightcaller Low: 7475104
+
+-- Their force must have returned how will we get through ?
+(7142, 0,           134039, 1, 28153), -- Full: 0x2016FCEE0082E5C000014E0000720FA0 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Nathanos Blightcaller Low: 7475104
+(7142, 0,           134037, 0, 28153), -- Full: 0x2016FCEE0082E54000014E0000720FA0 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: First Arcanist Thalyssra Low: 7475104
+
+-- Lasan appear from sky with eagles
+(7143, 0,           134092, 3, 28153), -- Full: 0x2016FCEE0082F30000014E0000720FA0 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Princess Talanji Low: 7475104
+(7143, 0,           134038, 2, 28153), -- Full: 0x2016FCEE0082E58000014E0000720FA0 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Rokhan Low: 7475104
+(7143, 0,           134036, 1, 28153), -- Full: 0x2016FCEE0082E50000014E0000721092 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: 134036 (Lasan Skyhorn) Low: 7475346
+(7143, 0,           134093, 0, 28153), -- Full: 0x2016FCEE0082F34000014E0000720FA0 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Zul the Prophet Low: 7475104
+
+-- Are they not pursuing us ? (jaina front)
+(7144, 0,           134039, 1, 28153), -- Full: 0x2016FCEE0082E5C000014E0000720FA0 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Nathanos Blightcaller Low: 7475104
+(7144, 0,           134037, 0, 28153), -- Full: 0x2016FCEE0082E54000014E0000720FA0 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: First Arcanist Thalyssra Low: 7475104
+
+-- Your little jailbreak is hover
+(7145, 0,           134201, 0, 28153), -- Full: 0x2016FCEE00830E4000014E00007210BE Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Lady Jaina Proudmoore Low: 7475390
+(7145, 0,           134039, 1, 28153), -- Full: 0x2016FCEE0082E5C000014E0000720FA0 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Nathanos Blightcaller Low: 7475104
+
+-- Thank you zul (go to ship)
+(7147, 0,           134093, 1, 28153), -- Full: 0x2016FCEE0082F34000014E0000720FA0 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Zul the Prophet Low: 7475104
+(7147, 0,           134092, 2, 28153), -- Full: 0x2016FCEE0082F30000014E0000720FA0 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Princess Talanji Low: 7475104
+(7147, 0,           134039, 3, 28153), -- Full: 0x2016FCEE0082E5C000014E0000720FA0 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Nathanos Blightcaller Low: 7475104
+(7147, 0,           134038, 0, 28153); -- Full: 0x2016FCEE0082E58000014E0000720FA0 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Rokhan Low: 7475104
+
 
 -- (6721, UNKNOWN, 0, 28153), -- Full: 0x204234CD40818D400077A60000721226 Creature/0 R4237/S30630 Map: Zandalar Entry: Princess Talanji Low: 7475750
 -- (6722, UNKNOWN, 0, 28153), -- Full: 0x204234CD4077C9400077A600007206F4 Creature/0 R4237/S30630 Map: Zandalar Entry: General Jakra'zet Low: 7472884
@@ -146,12 +192,14 @@ INSERT INTO `creature_summon_groups` VALUES
 (1904,  2, 22,  134083, -8776.01,   993.645,    45.4819,    4.86111,    6,  5000),
 (1904,  2, 22,  134084, -8775.62,   991.278,    45.4819,    1.80494,    6,  5000),
 
--- Rokhan & Thalyssra after saurfang
-(1904,  2, 30,  134038, -8687.52,   903.445,    53.8153,    3.80015,    8,  0),
-(1904,  2, 30,  134037, -8691.53,   908.429,    53.8153,    4.41243,    8,  0),
+-- Rokhan & Thalyssra & Talanji & Zul after cell open
+(1904,  2, 30,  134038, -8743.460938, 883.260620, 52.815895, 2.071085,  8,  0),
+(1904,  2, 30,  134037, -8741.128906, 885.286560, 52.815895, 2.326339,  8,  0),
+(1904,  2, 30,  134092, -8745.711914, 886.244446, 52.815662, 5.269852,  8,  0),
+(1904,  2, 30,  134093, -8743.465820, 888.028198, 52.815895, 5.251949,  8,  0),
 
 -- 7th Legion battlemage after Talanji & Zul freed
-(1904,  2, 31,  134091, -8691.55,   891.026,    53.8153,    2.28253,    6,  5000),
+-- (1904,  2, 31,  134091, -8691.55,   891.026,    53.8153,    2.28253,    6,  5000),
 (1904,  2, 31,  134091, -8704.78,   907.356,    53.8153,    5.36426,    6,  5000),
 (1904,  2, 31,  134091, -8691.04,   904.984,    53.8153,    3.75466,    6,  5000),
 (1904,  2, 31,  134091, -8741.61,   865.161,    53.8153,    0.67442,    6,  5000),
@@ -174,15 +222,40 @@ INSERT INTO `creature_summon_groups` VALUES
 (1904,  2, 60,  134038, -8493.51,   931.075,    97.4637,    1.85595,    8,  0),
 (1904,  2, 60,  134037, -8495.97,   930.771,    97.5362,    1.02702,    8,  0),
 (1904,  2, 60,  134092, -8491.81,   932.398,    97.4484,    2.68383,    8,  0),
-(1904,  2, 60,  134093, -8490.09,   933.602,    97.4276,    3.14107,    8,  0);
+(1904,  2, 60,  134093, -8490.09,   933.602,    97.4276,    3.14107,    8,  0),
+
+-- HACKFIX everybody in front of jaina at dock
+(1904,  2, 70,  134038, -8294.779297, 1364.241455, 5.230810, 1.573214,  8,  0),
+(1904,  2, 70,  134037, -8297.929688, 1364.233887, 5.230810, 1.573214,  8,  0),
+(1904,  2, 70,  134092, -8290.789063, 1364.251099, 5.562543, 1.573214,  8,  0),
+(1904,  2, 70,  134093, -8283.789063, 1364.267944, 5.230956, 1.573214,  8,  0),
+(1904,  2, 70,  134039, -8281.269531, 1364.264160, 5.227362, 1.569287,  8,  0);
 
 UPDATE gameobject_template SET scriptname = "go_se_sewer_access_portal" WHERE entry = 281484;
+UPDATE gameobject_template SET scriptname = "go_se_talanji_zul_cell_door" WHERE entry = 287550;
 
 UPDATE `creature_template` SET `unit_flags` = 33024 WHERE entry IN (134037, 134038);
 UPDATE `creature_template_addon` SET `bytes1` = 0 WHERE entry IN (134037, 134038);
 
-DELETE FROM creature WHERE guid IN (280000375, 280000381, 280000384, 280000389);
+DELETE FROM creature WHERE guid IN (280000375, 280000381, 280000384, 280000389, 280000394);
+
+UPDATE creature SET unit_flags = 768 WHERE guid IN (280000365, 280000355);
 UPDATE creature_addon SET auras = "31261 230246 248811" WHERE guid IN (280000365, 280000355);
 
 UPDATE creature_template SET scriptname = "npc_se_thalyssra" WHERE entry = 134037;
+UPDATE creature_template SET scriptname = "npc_se_saurfang" WHERE entry = 134120;
 
+UPDATE creature_template_addon SET auras = "" WHERE entry = 134093;
+
+UPDATE `creature_template` SET `unit_flags` = 32768 WHERE entry IN (134092, 134093, 134038, 134091);
+UPDATE creature_template SET aiName = "CombatAI" WHERE entry IN (134092, 134093, 134038);
+
+-- TEMP HACKFIX
+DELETE FROM `spell_target_position` WHERE ID = 263524;
+INSERT INTO `spell_target_position` VALUES
+(263524, 0, 1904, -8287.646484, 1364.246338, 5.233779, 28153);
+-- (263524, 0, 1904, -8536.96, 483.68, 101.7, 28153);
+
+UPDATE `creature_template` SET `npcflag` = 16777216 WHERE (entry = 139948);
+
+UPDATE scene_template SET scriptname = "scene_se_jaina_and_zul" WHERE SceneId = 2119;
