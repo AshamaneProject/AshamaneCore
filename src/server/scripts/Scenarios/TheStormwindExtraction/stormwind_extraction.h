@@ -71,6 +71,7 @@ enum Events
     EVENT_FIND_PRISONNERS                   = 100,
     SCENARIO_EVENT_FREE_PRISONNERS          = 62811,
     EVENT_END_OF_PRISON_REACHED             = 101,
+    SCENARIO_EVENT_PRISON_ESCAPE            = 62824,
 };
 
 enum CriteriaTrees

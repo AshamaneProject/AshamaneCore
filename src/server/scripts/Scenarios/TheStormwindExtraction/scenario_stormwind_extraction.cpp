@@ -44,12 +44,13 @@ struct scenario_stormwind_extraction : public InstanceScript
 
     void OnPlayerEnter(Player* player) override
     {
-        SummonCreatureGroup(SUMMON_GROUP_LION_REST);
+        CreatureGroup* talanjizulLionRest = SummonCreatureGroup(SUMMON_GROUP_LION_REST);
         SummonCreatureGroup(SUMMON_GROUP_TALANJI_ZUL_PRISON);
 
         // Temp introduction fix
-        player->GetScheduler().Schedule(2s, [player](TaskContext /*context*/)
+        player->GetScheduler().Schedule(2s, [player, talanjizulLionRest](TaskContext /*context*/)
         {
+            talanjizulLionRest->MoveGroupTo(-8671.096680f, 915.972229f, 89.469795f);
             player->GetScenario()->SendScenarioEvent(player, SCENARIO_EVENT_STORMWIND_INFILTRATION);
         });
     }
@@ -168,28 +169,32 @@ struct scenario_stormwind_extraction : public InstanceScript
             {
                 if (Creature* escapeStockade = GetCreature(NPC_ESCAPE_STOCKADE))
                 {
-                    escapeStockade->SetFlag64(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+                    escapeStockade->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+
+                    //DoSendScenarioEvent(SCENARIO_EVENT_PRISON_ESCAPE);
+
+                    // TEMP FIX
+                    if (ScenarioStepEntry const* step = sScenarioStepStore.LookupEntry(3731))
+                        GetThalyssra()->GetScenario()->SetStep(step);
 
                     if (CreatureGroup* creGroup = GetCreatureGroup(SUMMON_GROUP_ALL_AFTER_FREED))
                         creGroup->MoveGroupTo(escapeStockade->GetPositionX(), escapeStockade->GetPositionY(), escapeStockade->GetPositionZ());
                 }
 
-            }).Schedule(17s, [this](TaskContext context)
+            }).Schedule(16s, [this](TaskContext context)
             {
                 DespawnCreatureGroup(SUMMON_GROUP_ALL_AFTER_FREED);
                 SummonCreatureGroup(SUMMON_GROUP_END_HARBOR_HACKFIX);
 
-                GetThalyssra()->GetScheduler().Schedule(20s, [this](TaskContext context)
+                GetThalyssra()->GetScheduler().Schedule(4s, [this](TaskContext context)
                 {
                     DoPlayConversation(CONVERSATION_JAINA_END_OF_ESCAPE);
 
-                }).Schedule(44s, [this](TaskContext context)
+                }).Schedule(24s, [this](TaskContext context)
                 {
                     DoCastSpellOnPlayers(SPELL_SCENE_JAINA_AND_ZUL);
                 });
             });
-
-
         }
     }
 
