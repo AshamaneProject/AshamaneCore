@@ -107,7 +107,7 @@ void ConversationDataStore::LoadConversationTemplates()
             uint32 conversationId         = fields[0].GetUInt32();
             uint32 actorId                = fields[1].GetUInt32();
             ObjectGuid::LowType actorGuid = fields[2].GetUInt64();
-            uint32 actorNearId            = fields[3].GetUInt64();
+            uint32 actorNearId            = fields[3].GetUInt32();
             uint16 idx                    = fields[4].GetUInt16();
 
             if (actorId != 0 && actorGuid != 0)

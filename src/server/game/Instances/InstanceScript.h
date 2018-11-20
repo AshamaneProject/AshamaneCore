@@ -292,7 +292,7 @@ class TC_GAME_API InstanceScript : public ZoneScript
         // Return wether server allow two side groups or not
         bool ServerAllowsTwoSideGroups();
 
-        void SummonCreatureGroup(uint32 creatureGroupID, std::list<TempSummon*>* list = nullptr);
+        CreatureGroup* SummonCreatureGroup(uint32 creatureGroupID, std::list<TempSummon*>* list = nullptr);
         CreatureGroup* GetCreatureGroup(uint32 creatureGroupID);
         void DespawnCreatureGroup(uint32 creatureGroupID);
 

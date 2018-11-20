@@ -2,6 +2,20 @@ DELETE FROM instance_template WHERE `map` = 1904;
 INSERT INTO instance_template VALUES
 (1904, 0, "scenario_stormwind_extraction", 1, 0);
 
+DELETE FROM creature_questender WHERE id = 140176;
+INSERT INTO creature_questender VALUES
+(140176, 53031);
+
+DELETE FROM creature_queststarter WHERE id = 140176;
+INSERT INTO creature_queststarter VALUES
+(140176, 51443);
+
+UPDATE `quest_template_addon` SET `PrevQuestID` = 53031 WHERE (ID = 51443);
+
+UPDATE creature_template SET scriptname = "npc_orgri_mission_orders_speak_sylvanas" WHERE entry = 135201;
+UPDATE scene_template SET scriptname = "scene_orgri_secret_weapon" WHERE SceneId = 2136;
+UPDATE creature_template SET scriptname = "npc_orgri_mission_orders_meet_team" WHERE entry = 135202;
+
 DELETE FROM scenarios WHERE `map` = 1904;
 INSERT INTO scenarios VALUES
 (1904, 12, 0, 1522);
@@ -34,10 +48,11 @@ INSERT INTO `conversation_actors` (`ConversationId`, `ConversationActorId`, `Idx
 INSERT INTO `conversation_actors` (`ConversationId`, `ConversationActorGuid`, `ConversationActorNearId`, `Idx`, `VerifiedBuild`) VALUES
 (9570, 0,           140176, 0, 28153), -- Full: 0x2016FC002088E40000755B000072001D Creature/0 R1471/S30043 Map: Kalimdor Entry: 140176 -- (Nathanos Blightcaller) Low: 7471133
 
+(8399, 0,           135205, 0, 28153), -- Full: 0x2016FC002084094000755B0000720B64 Creature/0 R1471/S30043 Map: Kalimdor Entry: 135205 -- (Nathanos Blightcaller) Low: 7474020
+
 (7170, 0,           135205, 2, 28153), -- Full: 0x2016FC002084094000755B0000720B37 Creature/0 R1471/S30043 Map: Kalimdor Entry: 135205 -- (Nathanos Blightcaller) Low: 7473975
 (7170, 0,           135206, 1, 28153), -- Full: 0x2016FC002084098000755B0000720B37 Creature/0 R1471/S30043 Map: Kalimdor Entry: 135206 -- (Rokhan) Low: 7473975
 (7170, 0,           135207, 0, 28153), -- Full: 0x2016FC00208409C000755B0000720B37 Creature/0 R1471/S30043 Map: Kalimdor Entry: 135207 -- (First Arcanist Thalyssra) Low: 7473975
-(8399, 0,           135205, 0, 28153), -- Full: 0x2016FC002084094000755B0000720B64 Creature/0 R1471/S30043 Map: Kalimdor Entry: 135205 -- (Nathanos Blightcaller) Low: 7474020
 
 -- Nathanos arrival speech
 (7039, 0,           134039, 0, 28153), -- Full: 0x2016FCEE0082E5C000014E0000720BAC Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Nathanos Blightcaller Low: 7474092
@@ -259,3 +274,7 @@ INSERT INTO `spell_target_position` VALUES
 UPDATE `creature_template` SET `npcflag` = 16777216 WHERE (entry = 139948);
 
 UPDATE scene_template SET scriptname = "scene_se_jaina_and_zul" WHERE SceneId = 2119;
+
+DELETE FROM `creature_addon` WHERE guid IN (280000435);
+INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `auras`) VALUES
+(280000435, 0, 0, 0, 1, 0, '');

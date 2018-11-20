@@ -766,7 +766,7 @@ bool InstanceScript::ServerAllowsTwoSideGroups()
     return sWorld->getBoolConfig(CONFIG_ALLOW_TWO_SIDE_INTERACTION_GROUP);
 }
 
-void InstanceScript::SummonCreatureGroup(uint32 creatureGroupID, std::list<TempSummon*>* list /*= nullptr*/)
+CreatureGroup* InstanceScript::SummonCreatureGroup(uint32 creatureGroupID, std::list<TempSummon*>* list /*= nullptr*/)
 {
     bool createTempList = !list;
     if (createTempList)
@@ -782,6 +782,8 @@ void InstanceScript::SummonCreatureGroup(uint32 creatureGroupID, std::list<TempS
         delete list;
         list = nullptr;
     }
+
+    return GetCreatureGroup(creatureGroupID);
 }
 
 CreatureGroup* InstanceScript::GetCreatureGroup(uint32 creatureGroupID)
