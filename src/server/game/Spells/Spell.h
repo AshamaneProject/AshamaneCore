@@ -342,6 +342,7 @@ class TC_GAME_API Spell
         void EffectInstaKill(SpellEffIndex effIndex);
         void EffectDummy(SpellEffIndex effIndex);
         void EffectTeleportUnits(SpellEffIndex effIndex);
+        void EffectTeleportToLFG(SpellEffIndex effIndex);
         void EffectApplyAura(SpellEffIndex effIndex);
         void EffectSendEvent(SpellEffIndex effIndex);
         void EffectPowerBurn(SpellEffIndex effIndex);
