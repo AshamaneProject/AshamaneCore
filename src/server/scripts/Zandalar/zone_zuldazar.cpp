@@ -15,13 +15,30 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-void AddSC_zone_nazmir();
-void AddSC_zone_voldun();
-void AddSC_zone_zuldazar();
+#include "ScriptedEscortAI.h"
 
-void AddZandalarScripts()
+//
+struct npc_talanji_arrival_escort : public npc_escortAI
 {
-    AddSC_zone_nazmir();
-    AddSC_zone_voldun();
-    AddSC_zone_zuldazar();
+    npc_talanji_arrival_escort(Creature* creature) : npc_escortAI(creature) { }
+
+    void Reset() override { }
+
+    void WaypointReached(uint32 waypointId) override
+    {
+        Player* player = GetPlayerForEscort();
+        if (!player)
+            return;
+
+        switch (waypointId)
+        {
+            default:
+                break;
+        }
+    }
+};
+
+void AddSC_zone_zuldazar()
+{
+    RegisterCreatureAI(npc_talanji_arrival_escort);
 }

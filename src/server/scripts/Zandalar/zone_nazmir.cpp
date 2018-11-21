@@ -15,13 +15,8 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-void AddSC_zone_nazmir();
-void AddSC_zone_voldun();
-void AddSC_zone_zuldazar();
+#include "ScriptedCreature.h"
 
-void AddZandalarScripts()
+void AddSC_zone_nazmir()
 {
-    AddSC_zone_nazmir();
-    AddSC_zone_voldun();
-    AddSC_zone_zuldazar();
 }

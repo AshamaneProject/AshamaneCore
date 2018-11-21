@@ -132,11 +132,11 @@ public:
 
     void OnSceneEnd(Player* player, uint32 /*sceneInstanceID*/, SceneTemplate const* /*sceneTemplate*/) override
     {
-        player->CastSpell(player, SPELL_SCENARIO_COMPLETE, true);
         player->SendMovieStart(857);
 
         player->AddMovieDelayedAction(857, [player]
         {
+            player->CastSpell(player, SPELL_SCENARIO_COMPLETE, true);
             player->CastSpell(player, SPELL_SCENARIO_COMPLETE_TELEPORT, true);
         });
     }

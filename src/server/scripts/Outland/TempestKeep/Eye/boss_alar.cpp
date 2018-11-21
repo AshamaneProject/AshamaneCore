@@ -436,10 +436,9 @@ class boss_alar : public CreatureScript
                     }
                     else
                     {
-                        Unit* target = NULL;
-                        target = me->SelectNearestTargetInAttackDistance(5);
-                        if (target)
-                            AttackStart(target);
+                        std::vector<Unit*> targets = me->SelectNearestTargetsInAttackDistance(5);
+                        if (targets.size() > 0)
+                            AttackStart(targets[0]);
                         else
                         {
                             DoCast(me, SPELL_FLAME_BUFFET, true);
