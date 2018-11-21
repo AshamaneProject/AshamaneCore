@@ -2,19 +2,26 @@ DELETE FROM instance_template WHERE `map` = 1904;
 INSERT INTO instance_template VALUES
 (1904, 0, "scenario_stormwind_extraction", 1, 0);
 
-DELETE FROM creature_questender WHERE id = 140176;
+DELETE FROM creature_questender WHERE id IN (140176, 135205);
 INSERT INTO creature_questender VALUES
-(140176, 53031);
+(140176, 53031),
+(135205, 51443);
 
-DELETE FROM creature_queststarter WHERE id = 140176;
+DELETE FROM creature_queststarter WHERE id IN (140176, 135205);
 INSERT INTO creature_queststarter VALUES
-(140176, 51443);
+(140176, 51443),
+(135205, 50769);
 
 UPDATE `quest_template_addon` SET `PrevQuestID` = 53031 WHERE (ID = 51443);
+UPDATE `quest_template_addon` SET `PrevQuestID` = 51443 WHERE (ID = 50769);
+UPDATE `quest_template_addon` SET `PrevQuestID` = 50769 WHERE (ID = 46957);
+
+UPDATE quest_template_addon SET scriptname = "quest_stormwind_extraction" WHERE Id = 50769;
 
 UPDATE creature_template SET scriptname = "npc_orgri_mission_orders_speak_sylvanas" WHERE entry = 135201;
 UPDATE scene_template SET scriptname = "scene_orgri_secret_weapon" WHERE SceneId = 2136;
 UPDATE creature_template SET scriptname = "npc_orgri_mission_orders_meet_team" WHERE entry = 135202;
+UPDATE creature_template SET scriptname = "npc_skyhorn_eagle" WHERE entry = 135211;
 
 DELETE FROM scenarios WHERE `map` = 1904;
 INSERT INTO scenarios VALUES
@@ -48,11 +55,13 @@ INSERT INTO `conversation_actors` (`ConversationId`, `ConversationActorId`, `Idx
 INSERT INTO `conversation_actors` (`ConversationId`, `ConversationActorGuid`, `ConversationActorNearId`, `Idx`, `VerifiedBuild`) VALUES
 (9570, 0,           140176, 0, 28153), -- Full: 0x2016FC002088E40000755B000072001D Creature/0 R1471/S30043 Map: Kalimdor Entry: 140176 -- (Nathanos Blightcaller) Low: 7471133
 
-(8399, 0,           135205, 0, 28153), -- Full: 0x2016FC002084094000755B0000720B64 Creature/0 R1471/S30043 Map: Kalimdor Entry: 135205 -- (Nathanos Blightcaller) Low: 7474020
 
 (7170, 0,           135205, 2, 28153), -- Full: 0x2016FC002084094000755B0000720B37 Creature/0 R1471/S30043 Map: Kalimdor Entry: 135205 -- (Nathanos Blightcaller) Low: 7473975
 (7170, 0,           135206, 1, 28153), -- Full: 0x2016FC002084098000755B0000720B37 Creature/0 R1471/S30043 Map: Kalimdor Entry: 135206 -- (Rokhan) Low: 7473975
 (7170, 0,           135207, 0, 28153), -- Full: 0x2016FC00208409C000755B0000720B37 Creature/0 R1471/S30043 Map: Kalimdor Entry: 135207 -- (First Arcanist Thalyssra) Low: 7473975
+
+-- Transports await on remparts, lets move out
+(8399, 0,           135205, 0, 28153), -- Full: 0x2016FC002084094000755B0000720B64 Creature/0 R1471/S30043 Map: Kalimdor Entry: 135205 -- (Nathanos Blightcaller) Low: 7474020
 
 -- Nathanos arrival speech
 (7039, 0,           134039, 0, 28153), -- Full: 0x2016FCEE0082E5C000014E0000720BAC Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Nathanos Blightcaller Low: 7474092
@@ -176,12 +185,12 @@ INSERT INTO `conversation_actors` (`ConversationId`, `ConversationActorGuid`, `C
 (7147, 0,           134093, 1, 28153), -- Full: 0x2016FCEE0082F34000014E0000720FA0 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Zul the Prophet Low: 7475104
 (7147, 0,           134092, 2, 28153), -- Full: 0x2016FCEE0082F30000014E0000720FA0 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Princess Talanji Low: 7475104
 (7147, 0,           134039, 3, 28153), -- Full: 0x2016FCEE0082E5C000014E0000720FA0 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Nathanos Blightcaller Low: 7475104
-(7147, 0,           134038, 0, 28153); -- Full: 0x2016FCEE0082E58000014E0000720FA0 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Rokhan Low: 7475104
+(7147, 0,           134038, 0, 28153), -- Full: 0x2016FCEE0082E58000014E0000720FA0 Creature/0 R1471/S334 Map: Stormwind Escape from Stockades Entry: Rokhan Low: 7475104
 
+(6721, 0,           132661, 0, 28153), -- Full: 0x204234CD40818D400077A60000721226 Creature/0 R4237/S30630 Map: Zandalar Entry: Princess Talanji Low: 7475750
 
--- (6721, UNKNOWN, 0, 28153), -- Full: 0x204234CD40818D400077A60000721226 Creature/0 R4237/S30630 Map: Zandalar Entry: Princess Talanji Low: 7475750
--- (6722, UNKNOWN, 0, 28153), -- Full: 0x204234CD4077C9400077A600007206F4 Creature/0 R4237/S30630 Map: Zandalar Entry: General Jakra'zet Low: 7472884
--- (6722, UNKNOWN, 1, 28153); -- Full: 0x204234CD40818D400077A60000721226 Creature/0 R4237/S30630 Map: Zandalar Entry: Princess Talanji Low: 7475750
+(6722, 0,           122661, 0, 28153), -- Full: 0x204234CD4077C9400077A600007206F4 Creature/0 R4237/S30630 Map: Zandalar Entry: General Jakra'zet Low: 7472884
+(6722, 0,           120169, 1, 28153); -- Full: 0x204234CD40818D400077A60000721226 Creature/0 R4237/S30630 Map: Zandalar Entry: Princess Talanji Low: 7475750
 
 DELETE FROM creature WHERE id = 134091 AND position_z > 46;
 DELETE FROM creature WHERE map = 1904 AND id IN (134038, 134037, 134092, 134093);
@@ -265,6 +274,12 @@ UPDATE creature_template_addon SET auras = "" WHERE entry = 134093;
 UPDATE `creature_template` SET `unit_flags` = 32768 WHERE entry IN (134092, 134093, 134038, 134091);
 UPDATE creature_template SET aiName = "CombatAI" WHERE entry IN (134092, 134093, 134038);
 
+DELETE FROM `gameobject_loot_template` WHERE (Entry = 289645) AND (Item IN (160251));
+INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES
+(289645, 160251, 0, 100, 1, 1, 0, 1, 1, '');
+
+UPDATE `gameobject_template_addon` SET flags = 0 WHERE entry = 289645;
+
 -- TEMP HACKFIX
 DELETE FROM `spell_target_position` WHERE ID = 263524;
 INSERT INTO `spell_target_position` VALUES
@@ -278,3 +293,28 @@ UPDATE scene_template SET scriptname = "scene_se_jaina_and_zul" WHERE SceneId = 
 DELETE FROM `creature_addon` WHERE guid IN (280000435);
 INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `auras`) VALUES
 (280000435, 0, 0, 0, 1, 0, '');
+
+DELETE FROM `npc_spellclick_spells` WHERE `npc_entry` = 135211;
+INSERT INTO `npc_spellclick_spells` (`npc_entry`, `spell_id`, `cast_flags`) VALUES
+('135211', '52391', '1');
+
+DELETE FROM `lfg_dungeon_template` WHERE dungeonId = 1702;
+INSERT INTO `lfg_dungeon_template` VALUES
+-- Temp hackfix
+(1702, "The Stormwind Extraction", -8692.881836, 900.341980, 90.369476, 0.642935, 0, 28153);
+-- Real data (1702, "The Stormwind Extraction", -7442.66, 1270.47, 6.8, 0, 0, 28153);
+
+SET @CGUID := 280001213;
+DELETE FROM `creature` WHERE `guid` BETWEEN @CGUID+0 AND @CGUID+9;
+INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnDifficulties`, `PhaseId`, `PhaseGroup`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`, `VerifiedBuild`) VALUES
+(@CGUID+0, 135205, 1, 1637, 8618, '0', 0, 0, 0, 0, 1569.832, -4412.496, 15.76778, 4.602501, 0, 0, 0, 0, 0, 0, 0, 0, 0, 28153),
+(@CGUID+1, 135206, 1, 1637, 8618, '0', 0, 0, 0, 0, 1575.929, -4457.361, 15.82104, 1.154236, 0, 0, 0, 0, 0, 0, 0, 0, 0, 28153),
+(@CGUID+2, 135207, 1, 1637, 8618, '0', 0, 0, 0, 0, 1580.411, -4456.325, 15.82240, 2.439798, 0, 0, 0, 0, 0, 0, 0, 0, 0, 28153),
+
+(@CGUID+3, 135211, 1, 1637, 1637, '0', 0, 0, 0, 0, 1400.568, -4370.092, 73.99435, 0.4421007, 0, 0, 0, 0, 0, 0, 0, 0, 0, 28153),
+(@CGUID+4, 135211, 1, 1637, 1637, '0', 0, 0, 0, 0, 1399.734, -4366.507, 73.99405, 0.3240699, 0, 0, 0, 0, 0, 0, 0, 0, 0, 28153),
+(@CGUID+5, 135211, 1, 1637, 1637, '0', 0, 0, 0, 0, 1398.655, -4362.934, 74.0129,  0.1080972, 0, 0, 0, 0, 0, 0, 0, 0, 0, 28153),
+(@CGUID+6, 135211, 1, 1637, 1637, '0', 0, 0, 0, 0, 1398.134, -4352.111, 74.03416, 0.1517032, 0, 0, 0, 0, 0, 0, 0, 0, 0, 28153),
+(@CGUID+7, 135211, 1, 1637, 1637, '0', 0, 0, 0, 0, 1397.248, -4347.71,  74.05701, 0.0766947, 0, 0, 0, 0, 0, 0, 0, 0, 0, 28153),
+(@CGUID+8, 135211, 1, 1637, 1637, '0', 0, 0, 0, 0, 1397.168, -4344.111, 73.97974, 0.1371043, 0, 0, 0, 0, 0, 0, 0, 0, 0, 28153),
+(@CGUID+9, 135211, 1, 1637, 1637, '0', 0, 0, 0, 0, 1398.134, -4352.111, 74.1175,  0.1517032, 0, 0, 0, 0, 0, 0, 0, 0, 0, 28153);
