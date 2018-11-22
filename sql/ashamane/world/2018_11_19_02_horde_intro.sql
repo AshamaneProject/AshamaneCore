@@ -190,7 +190,7 @@ INSERT INTO `conversation_actors` (`ConversationId`, `ConversationActorGuid`, `C
 (6721, 0,           132661, 0, 28153), -- Full: 0x204234CD40818D400077A60000721226 Creature/0 R4237/S30630 Map: Zandalar Entry: Princess Talanji Low: 7475750
 
 (6722, 0,           122661, 0, 28153), -- Full: 0x204234CD4077C9400077A600007206F4 Creature/0 R4237/S30630 Map: Zandalar Entry: General Jakra'zet Low: 7472884
-(6722, 0,           120169, 1, 28153); -- Full: 0x204234CD40818D400077A60000721226 Creature/0 R4237/S30630 Map: Zandalar Entry: Princess Talanji Low: 7475750
+(6722, 0,           132661, 1, 28153); -- Full: 0x204234CD40818D400077A60000721226 Creature/0 R4237/S30630 Map: Zandalar Entry: Princess Talanji Low: 7475750
 
 DELETE FROM creature WHERE id = 134091 AND position_z > 46;
 DELETE FROM creature WHERE map = 1904 AND id IN (134038, 134037, 134092, 134093);
@@ -318,3 +318,16 @@ INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnDifficult
 (@CGUID+7, 135211, 1, 1637, 1637, '0', 0, 0, 0, 0, 1397.248, -4347.71,  74.05701, 0.0766947, 0, 0, 0, 0, 0, 0, 0, 0, 0, 28153),
 (@CGUID+8, 135211, 1, 1637, 1637, '0', 0, 0, 0, 0, 1397.168, -4344.111, 73.97974, 0.1371043, 0, 0, 0, 0, 0, 0, 0, 0, 0, 28153),
 (@CGUID+9, 135211, 1, 1637, 1637, '0', 0, 0, 0, 0, 1398.134, -4352.111, 74.1175,  0.1517032, 0, 0, 0, 0, 0, 0, 0, 0, 0, 28153);
+
+UPDATE `creature_template` SET `npcflag` = 16777216 WHERE (entry = 135438);
+UPDATE `npc_spellclick_spells` SET `cast_flags` = '1' WHERE `npc_entry` = '135438' AND `spell_id` = '241199'; 
+
+UPDATE creature_template SET scriptname = "npc_talanji_arrival_escort" WHERE entry = 132661;
+
+UPDATE `quest_template_addon` SET `PrevQuestID` = 46957 WHERE (ID = 46930);
+UPDATE `quest_template_addon` SET `PrevQuestID` = 46930 WHERE (ID = 46931);
+
+UPDATE creature_template SET scriptname = "npc_enforcer_pterrordax" WHERE entry = 138912;
+
+UPDATE creature_template SET minlevel = 120, maxlevel = 120, vehicleId = 6031, InhabitType = 4 WHERE entry = 138912;
+UPDATE `vehicle_template_accessory` SET `minion` = '1' , `summontype` = '8' WHERE `entry` = '138912' AND `seat_id` = '1'; 

@@ -17,28 +17,70 @@
 
 #include "ScriptedEscortAI.h"
 
-//
+enum ZuldazarQuests
+{
+    QUEST_WELCOME_ZULDAZAR  = 46957
+};
+
+enum ZuldazarSpells
+{
+    SPELL_TALANJI_EXPOSITION_CONVERSATION_1 = 261541,
+    SPELL_TALANJI_EXPOSITION_CONVERSATION_2 = 261549,
+    SPELL_TALANJI_EXPOSITION_KILL_CREDIT    = 265711,
+
+    SPELL_RASTAKHAN_GREETINGS_SCENE         = 244534,
+};
+
+// 132661
 struct npc_talanji_arrival_escort : public npc_escortAI
 {
     npc_talanji_arrival_escort(Creature* creature) : npc_escortAI(creature) { }
 
-    void Reset() override { }
-
-    void WaypointReached(uint32 waypointId) override
+    void IsSummonedBy(Unit* summoner)
     {
-        Player* player = GetPlayerForEscort();
-        if (!player)
-            return;
+        me->Mount(80358);
+        Start(false, true, summoner->GetGUID());
+        SetDespawnAtEnd(false);
+        summoner->CastSpell(summoner, SPELL_TALANJI_EXPOSITION_CONVERSATION_1, true);
+    }
 
-        switch (waypointId)
+    void LastWaypointReached() override
+    {
+        me->SetFacingTo(0.f);
+
+        if (Player* player = GetPlayerForEscort())
         {
-            default:
-                break;
+            player->CastSpell(player, SPELL_TALANJI_EXPOSITION_CONVERSATION_2, true);
+            player->CastSpell(player, SPELL_TALANJI_EXPOSITION_KILL_CREDIT, true);
         }
+    }
+};
+
+// 138912
+struct npc_enforcer_pterrordax : public npc_escortAI
+{
+    npc_enforcer_pterrordax(Creature* creature) : npc_escortAI(creature) { }
+
+    void IsSummonedBy(Unit* summoner)
+    {
+        if (Player* player = summoner->ToPlayer())
+        {
+            KillCreditMe(player);
+            me->SetSpeed(MOVE_RUN, 21.f);
+            player->EnterVehicle(me);
+            Start(false, true, player->GetGUID());
+        }
+    }
+
+    void LastWaypointReached() override
+    {
+        if (Player* player = GetPlayerForEscort())
+            player->CastSpell(player, SPELL_RASTAKHAN_GREETINGS_SCENE, true);
     }
 };
 
 void AddSC_zone_zuldazar()
 {
     RegisterCreatureAI(npc_talanji_arrival_escort);
+    RegisterCreatureAI(npc_enforcer_pterrordax);
 }

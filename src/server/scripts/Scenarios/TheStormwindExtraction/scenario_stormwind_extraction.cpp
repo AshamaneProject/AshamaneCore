@@ -223,7 +223,7 @@ struct scenario_stormwind_extraction : public InstanceScript
                 {
                     thalyssra->SetWalk(false);
                     thalyssra->SetSpeed(MOVE_RUN, 6.f);
-                    thalyssra->GetMotionMaster()->MovePoint(1, -8743.606445f, 998.370361f, 44.149288f, 3.284534f);
+                    thalyssra->GetMotionMaster()->MovePoint(1, -8743.606445f, 998.370361f, 44.149288f);
 
                     if (CreatureGroup* group = GetCreatureGroup(SUMMON_GROUP_GUARD_FIRST_ROOM))
                         group->MoveGroupTo(-8747.977539f, 997.306824f, 44.148872f);
