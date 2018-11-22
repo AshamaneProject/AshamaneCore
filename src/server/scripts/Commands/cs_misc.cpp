@@ -110,7 +110,7 @@ public:
             { "setskill",         rbac::RBAC_PERM_COMMAND_SETSKILL,         false, &HandleSetSkillCommand,         "" },
             { "showarea",         rbac::RBAC_PERM_COMMAND_SHOWAREA,         false, &HandleShowAreaCommand,         "" },
             { "summon",           rbac::RBAC_PERM_COMMAND_SUMMON,           false, &HandleSummonCommand,           "" },
-            { "unaura",           rbac::RBAC_PERM_COMMAND_UNAURA,           false, &HandleUnAuraCommand,           "" },
+            { "unaura",           rbac::RBAC_PERM_COMMAND_UNAURA,            true, &HandleUnAuraCommand,           "" },
             { "unbindsight",      rbac::RBAC_PERM_COMMAND_UNBINDSIGHT,      false, HandleUnbindSightCommand,       "" },
             { "unfreeze",         rbac::RBAC_PERM_COMMAND_UNFREEZE,         false, &HandleUnFreezeCommand,         "" },
             { "unmute",           rbac::RBAC_PERM_COMMAND_UNMUTE,            true, &HandleUnmuteCommand,           "" },
@@ -339,15 +339,31 @@ public:
 
     static bool HandleUnAuraCommand(ChatHandler* handler, char const* args)
     {
-        Unit* target = handler->getSelectedUnit();
-        if (!target)
+        Unit* target = nullptr;
+        Player* player;
+        ObjectGuid targetGuid;
+        std::string targetName;
+        std::string argstr;
+
+        if (!handler->extractPlayerTarget((char*)args, &player, nullptr, nullptr, false) || !player)
         {
-            handler->SendSysMessage(LANG_SELECT_CHAR_OR_CREATURE);
-            handler->SetSentErrorMessage(true);
-            return false;
+            target = handler->getSelectedUnit();
+
+            if (!target)
+            {
+                handler->SendSysMessage(LANG_SELECT_CHAR_OR_CREATURE);
+                handler->SetSentErrorMessage(true);
+                return false;
+            }
+
+            argstr = strtok((char*)args, " ");
+        }
+        else
+        {
+            target = player;
+            argstr = strtok(NULL, " ");
         }
 
-        std::string argstr = args;
         if (argstr == "all")
         {
             target->RemoveAllAuras();

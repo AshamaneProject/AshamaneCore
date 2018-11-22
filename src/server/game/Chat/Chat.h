@@ -127,7 +127,7 @@ class TC_GAME_API ChatHandler
         bool GetPlayerGroupAndGUIDByName(const char* cname, Player*& player, Group*& group, ObjectGuid& guid, bool offline = false);
         std::string extractPlayerNameFromLink(char* text);
         // select by arg (name/link) or in-game selection online/offline player or self if a creature is selected
-        bool extractPlayerTarget(char* args, Player** player, ObjectGuid* player_guid = nullptr, std::string* player_name = nullptr);
+        bool extractPlayerTarget(char* args, Player** player, ObjectGuid* player_guid = nullptr, std::string* player_name = nullptr, bool sendError = true);
 
         std::string playerLink(std::string const& name) const { return m_session ? "|cffffffff|Hplayer:"+name+"|h["+name+"]|h|r" : name; }
         std::string GetNameLink(Player* chr) const;
@@ -182,6 +182,7 @@ public:
         ARG_UINT,
         ARG_FLOAT,
         ARG_STRING,
+        ARG_UNIT,
         ARG_PLAYER,
 
         ARG_OPTIONAL_BEGIN,
@@ -190,6 +191,7 @@ public:
         ARG_UINT_OPTIONAL,
         ARG_FLOAT_OPTIONAL,
         ARG_STRING_OPTIONAL,
+        ARG_UNIT_OPTIONAL,
         ARG_PLAYER_OPTIONAL,
     };
 

@@ -999,15 +999,18 @@ std::string ChatHandler::extractPlayerNameFromLink(char* text)
     return name;
 }
 
-bool ChatHandler::extractPlayerTarget(char* args, Player** player, ObjectGuid* player_guid /*= nullptr*/, std::string* player_name /*= nullptr*/)
+bool ChatHandler::extractPlayerTarget(char* args, Player** player, ObjectGuid* player_guid /*= nullptr*/, std::string* player_name /*= nullptr*/, bool sendError /*= true*/)
 {
     if (args && *args)
     {
         std::string name = extractPlayerNameFromLink(args);
         if (name.empty())
         {
-            SendSysMessage(LANG_PLAYER_NOT_FOUND);
-            SetSentErrorMessage(true);
+            if (sendError)
+            {
+                SendSysMessage(LANG_PLAYER_NOT_FOUND);
+                SetSentErrorMessage(true);
+            }
             return false;
         }
 
@@ -1044,8 +1047,11 @@ bool ChatHandler::extractPlayerTarget(char* args, Player** player, ObjectGuid* p
     // some from req. data must be provided (note: name is empty if player does not exist)
     if ((!player || !*player) && (!player_guid || !*player_guid) && (!player_name || player_name->empty()))
     {
-        SendSysMessage(LANG_PLAYER_NOT_FOUND);
-        SetSentErrorMessage(true);
+        if (sendError)
+        {
+            SendSysMessage(LANG_PLAYER_NOT_FOUND);
+            SetSentErrorMessage(true);
+        }
         return false;
     }
 
@@ -1233,18 +1239,18 @@ void CommandArgs::Initialize(std::initializer_list<CommandArgsType> argsType)
         CheckOptionalArgs(argsTypeVector, argsVector.size());
 
         // Finally, we cast all our args to their types
-        for (uint8 i = 0; i < argsTypeVector.size(); ++i)
+        for (uint8 typeIndex = 0, argIndex = 0; typeIndex < argsTypeVector.size(); ++typeIndex, ++argIndex)
         {
-            switch (argsTypeVector[i])
+            switch (argsTypeVector[typeIndex])
             {
                 case ARG_INT:
                 case ARG_INT_OPTIONAL:
-                    _args.push_back(int32(atoi(argsVector[i].c_str())));
+                    _args.push_back(int32(atoi(argsVector[argIndex].c_str())));
                     break;
                 case ARG_UINT:
                 case ARG_UINT_OPTIONAL:
                 {
-                    int value = atoi(argsVector[i].c_str());
+                    int value = atoi(argsVector[argIndex].c_str());
                     if (value < 0)
                         return;
 
@@ -1253,17 +1259,30 @@ void CommandArgs::Initialize(std::initializer_list<CommandArgsType> argsType)
                 }
                 case ARG_FLOAT:
                 case ARG_FLOAT_OPTIONAL:
-                    _args.push_back(float(atof(argsVector[i].c_str())));
+                    _args.push_back(float(atof(argsVector[argIndex].c_str())));
                     break;
                 case ARG_STRING:
                 case ARG_STRING_OPTIONAL:
-                    _args.push_back(argsVector[i]);
+                    _args.push_back(argsVector[argIndex]);
                     break;
+                case ARG_UNIT:
+                case ARG_UNIT_OPTIONAL:
+                {
+                    PlayerResult result;
+                    if (_handler->extractPlayerTarget((char*)argsVector[argIndex].c_str(), &result.PlayerPtr, &result.Guid, &result.Name) && result.PlayerPtr)
+                        _args.push_back((Unit*)result.PlayerPtr);
+                    else if (Unit* selectedUnit = _handler->getSelectedUnit())
+                    {
+                        --argIndex;
+                        _args.push_back((Unit*)selectedUnit);
+                    }
+                    break;
+                }
                 case ARG_PLAYER:
                 case ARG_PLAYER_OPTIONAL:
                 {
                     PlayerResult result;
-                    _handler->extractPlayerTarget((char*)argsVector[i].c_str(), &result.PlayerPtr, &result.Guid, &result.Name);
+                    _handler->extractPlayerTarget((char*)argsVector[argIndex].c_str(), &result.PlayerPtr, &result.Guid, &result.Name);
                     _args.push_back(result);
                     break;
                 }
