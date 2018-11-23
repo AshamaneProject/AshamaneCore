@@ -2821,47 +2821,52 @@ private:
     bool _alreadyProc = false;
 };
 
-// 163201 - Execute
-// 217955 - Execute (PvP Talent)
+// 163201  - Execute
+// 217955  - Execute
+// 281000  - Execute
 class spell_warr_execute : public SpellScript
 {
     PrepareSpellScript(spell_warr_execute);
 
-    int32 m_maxExtraRageTaken = 0;
-    int32 m_ExtraSpellCost = 0;
-    int32 m_powerTaken = 0;
-
-    bool Load() override
-    {
-        m_maxExtraRageTaken = (GetEffectInfo(EFFECT_4)->BasePoints - GetEffectInfo(EFFECT_3)->BasePoints) * 10;
-        m_ExtraSpellCost = std::max(std::min(GetCaster()->GetPower(POWER_RAGE), m_maxExtraRageTaken), 0);
-        return true;
-    }
+    float m_powerTaken = 0.f;
 
     void HandleTakePower(SpellPowerCost& powerCost)
     {
-        powerCost.Amount += m_ExtraSpellCost;
         m_powerTaken = powerCost.Amount;
-    }
-
-    void HandleDamage(SpellEffIndex /*effIndex*/)
-    {
-        int32 dmg = CalculatePct(GetHitDamage(), 100.f + (float(m_ExtraSpellCost) / float(m_maxExtraRageTaken) * 300.f));
-        SetHitDamage(dmg);
+        float dmgMultiplier = powerCost.Amount / (powerCost.Amount - powerCost.OptionalAmount);
+        GetCaster()->Variables.Set("spell_warr_execute_damages::multiplier", dmgMultiplier);
     }
 
     void HandleAfterHit()
     {
         if (Unit* target = GetHitUnit())
             if (target->IsAlive())
-                GetCaster()->ModifyPower(POWER_RAGE, CalculatePct(m_powerTaken, GetEffectInfo(EFFECT_4)->BasePoints));
+                GetCaster()->ModifyPower(POWER_RAGE, CalculatePct(m_powerTaken, GetEffectInfo(EFFECT_1)->BasePoints));
+
+        GetCaster()->Variables.Remove("spell_warr_execute_damages::multiplier");
     }
 
     void Register() override
     {
         OnTakePower += SpellOnTakePowerFn(spell_warr_execute::HandleTakePower);
-        OnEffectHitTarget += SpellEffectFn(spell_warr_execute::HandleDamage, EFFECT_1, SPELL_EFFECT_WEAPON_PERCENT_DAMAGE);
         AfterHit += SpellHitFn(spell_warr_execute::HandleAfterHit);
+    }
+};
+
+// 260798  - Executes damages
+class spell_warr_execute_damages : public SpellScript
+{
+    PrepareSpellScript(spell_warr_execute_damages);
+
+    void HandleDamage(SpellEffIndex /*effIndex*/)
+    {
+        float damageMultiplier = GetCaster()->Variables.GetValue<float>("spell_warr_execute_damages::multiplier", 1.f);
+        SetHitDamage(GetHitDamage() * damageMultiplier);
+    }
+
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_warr_execute_damages::HandleDamage, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
     }
 };
 
@@ -3004,6 +3009,7 @@ void AddSC_warrior_spell_scripts()
     RegisterSpellAndAuraScriptPair(spell_warr_ravager, aura_warr_ravager);
     RegisterSpellScript(spell_warr_ravager_damage);
     RegisterSpellScript(spell_warr_execute);
+    RegisterSpellScript(spell_warr_execute_damages);
     RegisterAuraScript(aura_warr_war_machine);
 
     RegisterCreatureAI(npc_warr_ravager);
