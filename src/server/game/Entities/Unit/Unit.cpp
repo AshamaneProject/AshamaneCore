@@ -824,9 +824,8 @@ uint32 Unit::DealDamage(Unit* victim, uint32 damage, CleanDamage const* cleanDam
             rage /= 2;
 
         // Hackfix, find how to move to script ?
-        if (spellProto->Id == 6603/*Auto attack*/)
-            if (Aura* aura = GetAura(279423)/*Seasoned Soldier*/)
-                AddPct(rage, aura->GetEffect(EFFECT_0)->GetAmount());
+        if (Aura* aura = GetAura(279423)/*Seasoned Soldier*/)
+            AddPct(rage, aura->GetEffect(EFFECT_0)->GetAmount());
 
         RewardRage(rage);
     }
