@@ -1025,6 +1025,16 @@ namespace WorldPackets
             ObjectGuid Guid;
             uint32 RaceId;
         };
+
+        class SetWarMode final : public ClientPacket
+        {
+        public:
+            SetWarMode(WorldPacket&& packet) : ClientPacket(CMSG_SET_WAR_MODE, std::move(packet)) { }
+
+            void Read() override;
+
+            bool Enabled;
+        };
     }
 }
 

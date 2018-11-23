@@ -6522,6 +6522,12 @@ enum Maps : uint32
     MAP_DALARAN_UNDERBELLY      = 1502,
 };
 
+enum AreaName : uint32
+{
+    ZONE_STORMWIND_CITY = 1519,
+    ZONE_ORGRIMMAR      = 1637,
+};
+
 enum SpecialSpells : uint32
 {
     SPELL_MERCENARY_CONTRACT_HORDE      = 193472,

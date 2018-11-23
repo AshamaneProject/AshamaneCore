@@ -508,6 +508,7 @@ namespace WorldPackets
         class StartTimer;
         class StartElapsedTimer;
         class OpenAlliedRaceDetailsGiver;
+        class SetWarMode;
     }
 
     namespace Movement
@@ -1731,6 +1732,7 @@ class TC_GAME_API WorldSession
         void HandleAdventureJournalOpenQuest(WorldPackets::Misc::AdventureJournalOpenQuest& packet);
         void HandleSelectFactionOpcode(WorldPackets::Misc::FactionSelect& selectFaction);
         void HandleAdventureJournalStartQuest(WorldPackets::Misc::AdventureJournalStartQuest& packet);
+        void HandleSetWarModeOpcode(WorldPackets::Misc::SetWarMode& packet);
 
         // Toys
         void HandleAddToy(WorldPackets::Toy::AddToy& packet);
