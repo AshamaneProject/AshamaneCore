@@ -166,6 +166,8 @@ enum WarlockSpells
     SPELL_WARLOCK_SEED_OF_CURRUPTION_DAMAGE         = 27285,
     SPELL_WARLOCK_SHADOW_BOLT                       = 686,
     SPELL_WARLOCK_SHADOW_BOLT_SHOULSHARD            = 194192,
+    SPELL_WARLOCK_SHADOW_EMBRACE                    = 32388,
+    SPELL_WARLOCK_SHADOW_EMBRACE_BUFF               = 32390,
     SPELL_WARLOCK_SHADOW_TRANCE                     = 17941,
     SPELL_WARLOCK_SHADOW_WARD                       = 6229,
     SPELL_WARLOCK_SHADOWBURN_ENERGIZE               = 125882,
@@ -434,6 +436,9 @@ class spell_warl_shadow_bolt : public SpellScript
 
         if (caster->HasAura(SPELL_WARLOCK_SHADOWY_INSPIRATION_EFFECT))
             caster->RemoveAura(SPELL_WARLOCK_SHADOWY_INSPIRATION_EFFECT);
+
+        if (caster->HasAura(SPELL_WARLOCK_SHADOW_EMBRACE))
+            caster->CastSpell(caster, SPELL_WARLOCK_SHADOW_EMBRACE_BUFF, true);
     }
 
     void Register() override
@@ -1577,53 +1582,49 @@ class spell_warl_demonic_gateway : public SpellScript
 };
 
 // Drain Soul - 198590
-class spell_warl_drain_soul : public SpellScriptLoader
+class spell_warl_drain_soul : public AuraScript
 {
-public:
-    spell_warl_drain_soul() : SpellScriptLoader("spell_warl_drain_soul") { }
+    PrepareAuraScript(spell_warl_drain_soul);
 
-    class spell_warl_drain_soul_AuraScript : public AuraScript
+    void HandleApply(const AuraEffect* /*aurEff*/, AuraEffectHandleModes /* mode */)
     {
-        PrepareAuraScript(spell_warl_drain_soul_AuraScript);
+        if (GetCaster() && GetCaster()->HasAura(SPELL_WARLOCK_SHADOW_EMBRACE))
+            GetCaster()->CastSpell(nullptr, SPELL_WARLOCK_SHADOW_EMBRACE_BUFF, true);
+    }
 
-        void HandleRemove(const AuraEffect* /*aurEff*/, AuraEffectHandleModes /* mode */)
-        {
-            if (GetCaster() && GetTargetApplication()->GetRemoveMode() == AURA_REMOVE_BY_DEATH)
-                GetCaster()->ModifyPower(POWER_SOUL_SHARDS, 10);
-        }
-
-        void HandleDummyPeriodic(AuraEffect const* /* auraEffect */)
-        {
-            Unit* target = GetTarget();
-            Unit* caster = GetCaster();
-            if (!caster || !target)
-                return;
-
-            uint32 DrainSoulData[4][3] =
-            {
-                { 146739,   EFFECT_0, 131740 }, // Corruption
-                { 30108,    EFFECT_0, 131736 },
-                { 27243,    EFFECT_0, 132566 },
-                { 980,      EFFECT_0, 131737 },
-            };
-
-            for (uint8 i = 0; i < 4; i++)
-            {
-                if (target->GetAuraEffect(DrainSoulData[i][0], DrainSoulData[i][1], GetCaster()->GetGUID()))
-                    caster->CastSpell(target, DrainSoulData[i][2], true);
-            }
-        }
-
-        void Register() override
-        {
-            OnEffectPeriodic += AuraEffectPeriodicFn(spell_warl_drain_soul_AuraScript::HandleDummyPeriodic, EFFECT_0, SPELL_AURA_PERIODIC_LEECH);
-            OnEffectRemove += AuraEffectApplyFn(spell_warl_drain_soul_AuraScript::HandleRemove, EFFECT_0, SPELL_AURA_PERIODIC_LEECH, AURA_EFFECT_HANDLE_REAL);
-        }
-    };
-
-    AuraScript* GetAuraScript() const override
+    void HandleDummyPeriodic(AuraEffect const* /* auraEffect */)
     {
-        return new spell_warl_drain_soul_AuraScript();
+        Unit* target = GetTarget();
+        Unit* caster = GetCaster();
+        if (!caster || !target)
+            return;
+
+        uint32 DrainSoulData[4][3] =
+        {
+            { 146739,   EFFECT_0, 131740 }, // Corruption
+            { 30108,    EFFECT_0, 131736 },
+            { 27243,    EFFECT_0, 132566 },
+            { 980,      EFFECT_0, 131737 },
+        };
+
+        for (uint8 i = 0; i < 4; i++)
+        {
+            if (target->GetAuraEffect(DrainSoulData[i][0], DrainSoulData[i][1], GetCaster()->GetGUID()))
+                caster->CastSpell(target, DrainSoulData[i][2], true);
+        }
+    }
+
+    void HandleRemove(const AuraEffect* /*aurEff*/, AuraEffectHandleModes /* mode */)
+    {
+        if (GetCaster() && GetTargetApplication()->GetRemoveMode() == AURA_REMOVE_BY_DEATH)
+            GetCaster()->ModifyPower(POWER_SOUL_SHARDS, 10);
+    }
+
+    void Register() override
+    {
+        OnEffectApply += AuraEffectApplyFn(spell_warl_drain_soul::HandleApply, EFFECT_0, SPELL_AURA_PERIODIC_LEECH, AURA_EFFECT_HANDLE_REAL);
+        OnEffectPeriodic += AuraEffectPeriodicFn(spell_warl_drain_soul::HandleDummyPeriodic, EFFECT_0, SPELL_AURA_PERIODIC_LEECH);
+        OnEffectRemove += AuraEffectRemoveFn(spell_warl_drain_soul::HandleRemove, EFFECT_0, SPELL_AURA_PERIODIC_LEECH, AURA_EFFECT_HANDLE_REAL);
     }
 };
 
@@ -3076,59 +3077,6 @@ public:
     }
 };
 
-// Soul Harvest - 196098
-class spell_warl_soul_harvest : public SpellScriptLoader
-{
-public:
-    spell_warl_soul_harvest() : SpellScriptLoader("spell_warl_soul_harvest") {}
-
-    class spell_warl_soul_harvest_AuraScript : public AuraScript
-    {
-        PrepareAuraScript(spell_warl_soul_harvest_AuraScript);
-
-        void HandleApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
-        {
-            Unit* caster = GetCaster();
-            if (!caster)
-                return;
-            if (!caster->ToPlayer())
-                return;
-
-            std::list<Unit*> enemies;
-            caster->GetAttackableUnitListInRange(enemies, 100.0f);
-            int32 spellId = 0;
-            switch (caster->GetUInt32Value(PLAYER_FIELD_CURRENT_SPEC_ID))
-            {
-                case TALENT_SPEC_WARLOCK_AFFLICTION:
-                    spellId = SPELL_WARLOCK_AGONY;
-                    break;
-                case TALENT_SPEC_WARLOCK_DEMONOLOGY:
-                    spellId = SPELL_WARLOCK_DOOM;
-                    break;
-                case TALENT_SPEC_WARLOCK_DESTRUCTION:
-                    spellId = SPELL_WARLOCK_IMMOLATE_DOT;
-                    break;
-            }
-            enemies.remove_if(Trinity::UnitAuraCheck(false, spellId, caster->GetGUID()));
-            int32 mod = std::min((int)enemies.size(), 15);
-            int32 duration = GetAura()->GetMaxDuration() + 2 * mod * IN_MILLISECONDS;
-
-            GetAura()->SetMaxDuration(duration);
-            GetAura()->SetDuration(duration);
-        }
-
-        void Register() override
-        {
-            AfterEffectApply += AuraEffectApplyFn(spell_warl_soul_harvest_AuraScript::HandleApply, EFFECT_0, SPELL_AURA_MOD_DAMAGE_PERCENT_DONE, AURA_EFFECT_HANDLE_REAL);
-        }
-    };
-
-    AuraScript* GetAuraScript() const override
-    {
-        return new spell_warl_soul_harvest_AuraScript();
-    }
-};
-
 // Grimoire of Service summons - 111859, 111895, 111896, 111897, 111898
 class spell_warl_grimoire_of_service : public SpellScriptLoader
 {
@@ -3539,41 +3487,6 @@ class aura_warl_phantomatic_singularity : public AuraScript
     }
 };
 
-// Grimoire of Service - 108501
-class spell_warl_grimoire_of_service_aura : public AuraScript
-{
-    PrepareAuraScript(spell_warl_grimoire_of_service_aura);
-
-    void Handlearn(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
-    {
-        if (Player* player = GetCaster()->ToPlayer())
-        {
-            player->LearnSpell(SPELL_WARLOCK_GRIMOIRE_IMP, false);
-            player->LearnSpell(SPELL_WARLOCK_GRIMOIRE_VOIDWALKER, false);
-            player->LearnSpell(SPELL_WARLOCK_GRIMOIRE_SUCCUBUS, false);
-            player->LearnSpell(SPELL_WARLOCK_GRIMOIRE_FELHUNTER, false);
-            if (player->GetSpecializationId() == TALENT_SPEC_WARLOCK_DEMONOLOGY)
-                player->LearnSpell(SPELL_WARLOCK_GRIMOIRE_FELGUARD, false);
-        }
-    }
-    void HandleRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
-    {
-        if (Player* player = GetCaster()->ToPlayer())
-        {
-            player->RemoveSpell(SPELL_WARLOCK_GRIMOIRE_IMP, false, false);
-            player->RemoveSpell(SPELL_WARLOCK_GRIMOIRE_VOIDWALKER, false, false);
-            player->RemoveSpell(SPELL_WARLOCK_GRIMOIRE_SUCCUBUS, false, false);
-            player->RemoveSpell(SPELL_WARLOCK_GRIMOIRE_FELHUNTER, false, false);
-            player->RemoveSpell(SPELL_WARLOCK_GRIMOIRE_FELGUARD, false, false);
-        }
-    }
-    void Register() override
-    {
-        OnEffectApply += AuraEffectApplyFn(spell_warl_grimoire_of_service_aura::Handlearn, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
-        OnEffectRemove += AuraEffectApplyFn(spell_warl_grimoire_of_service_aura::HandleRemove, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
-    }
-};
-
 // Incinerate - 29722
 class spell_warl_incinerate : public SpellScript
 {
@@ -3703,7 +3616,7 @@ void AddSC_warlock_spell_scripts()
     RegisterSpellScript(spell_warl_demonic_empowerment);
     RegisterSpellScript(spell_warl_demonic_gateway);
     RegisterSpellScript(spell_warl_devour_magic);
-    new spell_warl_drain_soul();
+    RegisterSpellScript(spell_warl_drain_soul);
     new spell_warl_fear();
     new spell_warl_fear_buff();
     new spell_warl_glyph_of_soulwell();
@@ -3749,7 +3662,6 @@ void AddSC_warlock_spell_scripts()
     RegisterAuraScript(spell_warl_immolate_dot);
     new spell_warl_channel_demonfire();
     new spell_warl_soul_conduit();
-    new spell_warl_soul_harvest();
     new spell_warl_grimoire_of_service();
     new spell_warl_implosion();
     new spell_warl_grimoire_of_synergy();
@@ -3758,7 +3670,6 @@ void AddSC_warlock_spell_scripts()
     new spell_warl_chaotic_energies();
     new spell_warl_eradication();
     RegisterAuraScript(aura_warl_phantomatic_singularity);
-    RegisterAuraScript(spell_warl_grimoire_of_service_aura);
     RegisterSpellScript(spell_warl_incinerate);
     RegisterSpellScript(spell_warl_summon_darkglare);
 
