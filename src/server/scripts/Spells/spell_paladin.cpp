@@ -66,7 +66,6 @@ enum PaladinSpells
     SPELL_PALADIN_CRUSADERS_JUDGMENT            = 204023,
     SPELL_PALADIN_CRUSADERS_MIGHT               = 196926,
     SPELL_PALADIN_CRUSADER_STRIKE               = 35395,
-    SPELL_PALADIN_DIVINE_HAMMER                 = 198034,
     SPELL_PALADIN_DIVINE_INTERVENTION_HEAL      = 184250,
     SPELL_PALADIN_DIVINE_PURPOSE_HOLY           = 197646,
     SPELL_PALADIN_DIVINE_PURPOSE_HOLY_AURA_1    = 216411,
@@ -81,7 +80,6 @@ enum PaladinSpells
     SPELL_PALADIN_DIVINE_STEED_TAUREN           = 221885,
     SPELL_PALADIN_DIVINE_STORM                  = 53385,
     SPELL_PALADIN_DIVINE_STORM_DAMAGE           = 224239,
-    SPELL_PALADIN_EXECUTE_SENTENCE              = 213757,
     SPELL_PALADIN_EYE_FOR_AN_EYE_DAMAGE         = 205202,
     SPELL_PALADIN_FERVENT_MARTYR_BUFF           = 223316,
     SPELL_PALADIN_FINAL_STAND                   = 204077,
@@ -122,7 +120,6 @@ enum PaladinSpells
     SPELL_PALADIN_LIGHT_OF_THE_PROTECTOR        = 184092,
     SPELL_PALADIN_RETRIBUTION_AURA_DAMAGE       = 204011,
     SPELL_PALADIN_RIGHTEOUS_PROTECTOR           = 204074,
-    SPELL_PALADIN_SEAL_OF_LIGHT                 = 213757,
     SPELL_PALADIN_SERAPHIM                      = 152262,
     SPELL_PALADIN_SHIELD_OF_THE_RIGHTEOUS       = 53600,
     SPELL_PALADIN_SHIELD_OF_THE_RIGHTEOUS_PROC  = 132403,
@@ -337,54 +334,6 @@ class spell_pal_beacon_of_light_proc : public AuraScript
     {
         DoCheckProc += AuraCheckProcFn(spell_pal_beacon_of_light_proc::CheckProc);
         OnEffectProc += AuraEffectProcFn(spell_pal_beacon_of_light_proc::OnProc, EFFECT_0, SPELL_AURA_DUMMY);
-    }
-};
-
-// Judgment of Light - 183778
-class spell_pal_judgment_of_light : public AuraScript
-{
-    PrepareAuraScript(spell_pal_judgment_of_light);
-
-    bool CheckProc(ProcEventInfo& eventInfo)
-    {
-        if (eventInfo.GetSpellInfo()->Id == SPELL_PALADIN_JUDGMENT)
-            return true;
-
-        return false;
-    }
-
-    void Register() override
-    {
-        DoCheckProc += AuraCheckProcFn(spell_pal_judgment_of_light::CheckProc);
-    }
-};
-
-// Judgment of Light Proc - 196941
-class spell_pal_judgment_of_light_proc : public AuraScript
-{
-    PrepareAuraScript(spell_pal_judgment_of_light_proc);
-
-    void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
-    {
-        PreventDefaultAction();
-
-        if (!GetCaster())
-            return;
-
-        Unit* attacker = eventInfo.GetActor();
-        if (!attacker)
-            return;
-
-        if (eventInfo.GetActor()->GetGUID() != GetCaster()->GetGUID())
-            return;
-
-        if (Unit* caster = GetCaster())
-            caster->CastSpell(attacker, SPELL_PALADIN_JUDGMENT_OF_LIGHT_HEAL, true);
-    }
-
-    void Register() override
-    {
-        OnEffectProc += AuraEffectProcFn(spell_pal_judgment_of_light_proc::HandleProc, EFFECT_0, SPELL_AURA_PROC_TRIGGER_SPELL);
     }
 };
 
@@ -713,40 +662,6 @@ class spell_pal_eye_for_an_eye : public AuraScript
     }
 };
 
-// 210220 - Holy Wrath
-class spell_pal_holy_wrath : public SpellScript
-{
-    PrepareSpellScript(spell_pal_holy_wrath);
-
-    void HandleOnHit(SpellEffIndex /* effIndex */)
-    {
-        Unit* caster = GetCaster();
-        Unit* target = GetHitUnit();
-        if (!target)
-            return;
-
-        int32 dmg = 0;
-        int32 maxHealthDamage = caster->GetMaxHealth();
-        int32 healthMissing = maxHealthDamage - caster->GetHealth();
-
-        AddPct(maxHealthDamage, 20);
-        dmg = healthMissing * 2;
-
-        if (dmg > maxHealthDamage)
-            dmg = maxHealthDamage;
-
-        if (target->IsPlayer())
-            ApplyPct(dmg, 35);
-
-        SetHitDamage(dmg);
-    }
-
-    void Register() override
-    {
-        OnEffectHitTarget += SpellEffectFn(spell_pal_holy_wrath::HandleOnHit, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
-    }
-};
-
 //231832 - Blade of Wrath! (proc)
 class spell_pal_blade_of_wrath_proc : public AuraScript
 {
@@ -1059,49 +974,6 @@ class spell_pal_justicars_vengeance : public SpellScript
     }
 };
 
-// 213757 - Execution Sentence
-class spell_pal_execute_sentence : public SpellScript
-{
-    PrepareSpellScript(spell_pal_execute_sentence);
-
-    void HandleOnHit()
-    {
-        if (Unit* caster = GetCaster())
-        {
-            bool noHpCost = false;
-            uint8 hp = caster->GetPower(POWER_HOLY_POWER);
-            uint8 hpCost = 3;
-
-            if (caster->HasAura(SPELL_PALADIN_DIVINE_PURPOSE_RET_AURA))
-            {
-                caster->RemoveAurasDueToSpell(SPELL_PALADIN_DIVINE_PURPOSE_RET_AURA);
-                noHpCost = true;
-            }
-
-            if (caster->HasAura(SPELL_PALADIN_THE_FIRES_OF_JUSTICE) && !noHpCost)
-            {
-                caster->RemoveAurasDueToSpell(SPELL_PALADIN_THE_FIRES_OF_JUSTICE);
-                hpCost -= 1;
-            }
-
-            if (!noHpCost)
-            {
-                hp -= hpCost;
-                caster->SetPower(POWER_HOLY_POWER, hp);
-            }
-
-            if (caster->HasAura(SPELL_PALADIN_FIST_OF_JUSTICE_RETRI))
-            {
-                if (caster->GetSpellHistory()->HasCooldown(SPELL_PALADIN_HAMMER_OF_JUSTICE))
-                    caster->GetSpellHistory()->ModifyCooldown(SPELL_PALADIN_HAMMER_OF_JUSTICE, -7.5 * IN_MILLISECONDS);
-            }
-        }
-    }
-    void Register() override
-    {
-        OnCast += SpellCastFn(spell_pal_execute_sentence::HandleOnHit);
-    }
-};
 
 // The fires of Justice - 203316
 class spell_pal_the_fire_of_justice : public AuraScript
@@ -1119,28 +991,6 @@ class spell_pal_the_fire_of_justice : public AuraScript
     void Register() override
     {
         DoCheckProc += AuraCheckProcFn(spell_pal_the_fire_of_justice::CheckProc);
-    }
-};
-
-//198034 - Divine Hammer
-class spell_pal_divine_hammer : public SpellScript
-{
-    PrepareSpellScript(spell_pal_divine_hammer);
-
-    bool Validate(SpellInfo const* /*spell*/) override
-    {
-        return ValidateSpellInfo({ SPELL_PALADIN_DIVINE_HAMMER });
-    }
-
-    void HandleDummy(SpellEffIndex /*effIndex*/)
-    {
-        uint8 hp = GetCaster()->GetPower(POWER_HOLY_POWER);
-        GetCaster()->SetPower(POWER_HOLY_POWER, hp + 2);
-    }
-
-    void Register() override
-    {
-        OnEffectHitTarget += SpellEffectFn(spell_pal_divine_hammer::HandleDummy, EFFECT_1, SPELL_EFFECT_DUMMY);
     }
 };
 
@@ -1304,7 +1154,7 @@ class spell_pal_judgment : public SpellScript
 };
 
 // Divine Purpose Proc
-// Called by Seal of Light - 202273, Justicar's Vengeance - 215661, Word of Glory - 210191, Execution Sentence - 213757, Divine Storm - 53385, Templar's Verdict - 85256
+// Called by Seal of Light - 202273, Justicar's Vengeance - 215661, Word of Glory - 210191, Divine Storm - 53385, Templar's Verdict - 85256
 // Called by Holy Shock - 20473, Light of Dawn - 85222
 class spell_pal_divine_purpose_proc : public SpellScript
 {
@@ -1325,7 +1175,7 @@ class spell_pal_divine_purpose_proc : public SpellScript
                     {
                         if (roll_chance_i(20))
                         {
-                            if (activateSpell == SPELL_PALADIN_SEAL_OF_LIGHT || activateSpell == SPELL_PALADIN_JUSTICARS_VENGEANCE || activateSpell == SPELL_PALADIN_WORD_OF_GLORY || activateSpell == SPELL_PALADIN_EXECUTE_SENTENCE || activateSpell == SPELL_PALADIN_DIVINE_STORM || activateSpell == SPELL_PALADIN_TEMPLARS_VERDICT)
+                            if (activateSpell == SPELL_PALADIN_JUSTICARS_VENGEANCE || activateSpell == SPELL_PALADIN_WORD_OF_GLORY || activateSpell == SPELL_PALADIN_DIVINE_STORM || activateSpell == SPELL_PALADIN_TEMPLARS_VERDICT)
                                 player->CastSpell(player, SPELL_PALADIN_DIVINE_PURPOSE_RET_AURA);
                         }
                         break;
@@ -1568,49 +1418,6 @@ public:
     }
 };
 
-// Zeal - 217020
-class spell_pal_zeal : public SpellScriptLoader
-{
-public:
-    spell_pal_zeal() : SpellScriptLoader("spell_pal_zeal") {}
-
-    class spell_pal_zeal_SpellScript : public SpellScript
-    {
-        PrepareSpellScript(spell_pal_zeal_SpellScript);
-
-    public:
-        spell_pal_zeal_SpellScript()
-        {
-            targetIdx = 0;
-        }
-
-    private:
-
-        uint8 targetIdx;
-
-        void HandleOnHit(SpellEffIndex /*effIndex*/)
-        {
-            int32 dmg = GetHitDamage();
-            for (int i = 0; i < targetIdx; ++i) //damage is reduced by 40% with each jump
-            {
-                ApplyPct(dmg, 60);
-            }
-            SetHitDamage(dmg);
-            targetIdx++;
-        }
-
-        void Register() override
-        {
-            OnEffectHitTarget += SpellEffectFn(spell_pal_zeal_SpellScript::HandleOnHit, EFFECT_0, SPELL_EFFECT_NORMALIZED_WEAPON_DMG);
-        }
-    };
-
-    SpellScript* GetSpellScript() const override
-    {
-        return new spell_pal_zeal_SpellScript();
-    }
-};
-
 // Light of the Martyr - 183998
 class spell_pal_light_of_the_martyr : public SpellScriptLoader
 {
@@ -1822,73 +1629,6 @@ public:
     SpellScript* GetSpellScript() const override
     {
         return new spell_pal_light_of_dawn_trigger_SpellScript();
-    }
-};
-
-// Divine Intervention - 213313
-class spell_pal_divine_intervention : public SpellScriptLoader
-{
-public:
-    spell_pal_divine_intervention() : SpellScriptLoader("spell_pal_divine_intervention") { }
-
-    class spell_pal_divine_intervention_AuraScript : public AuraScript
-    {
-        PrepareAuraScript(spell_pal_divine_intervention_AuraScript);
-
-    public:
-        spell_pal_divine_intervention_AuraScript()
-        {
-            healPct = 0;
-        }
-
-        bool Validate(SpellInfo const* /*spellInfo*/) override
-        {
-            if (!sSpellMgr->GetSpellInfo(SPELL_PALADIN_DIVINE_INTERVENTION_HEAL))
-                return false;
-            return true;
-        }
-
-        bool Load() override
-        {
-            healPct = GetSpellInfo()->GetEffect(EFFECT_1)->CalcValue();
-            return GetUnitOwner()->GetTypeId() == TYPEID_PLAYER;
-        }
-
-        void CalculateAmount(AuraEffect const* /*aurEff*/, int32& amount, bool& /*canBeRecalculated*/)
-        {
-            amount = -1;
-        }
-
-        void Absorb(AuraEffect* aurEff, DamageInfo& dmgInfo, uint32& /*absorbAmount*/)
-        {
-            Unit* target = GetTarget();
-
-            if (dmgInfo.GetDamage() < target->GetHealth())
-                return;
-
-            int32 healAmount = int32(target->CountPctFromMaxHealth(healPct));
-
-            if (!target->HasAura(SPELL_PALADIN_FORBEARANCE) && !target->GetSpellHistory()->HasCooldown(SPELL_PALADIN_DIVINE_SHIELD))
-            {
-                target->CastSpell(target, SPELL_PALADIN_DIVINE_SHIELD, true);
-                target->CastCustomSpell(target, SPELL_PALADIN_DIVINE_INTERVENTION_HEAL, &healAmount, NULL, NULL, true, NULL, aurEff);
-            }
-        }
-
-        void Register() override
-        {
-            DoEffectCalcAmount += AuraEffectCalcAmountFn(spell_pal_divine_intervention_AuraScript::CalculateAmount, EFFECT_0, SPELL_AURA_SCHOOL_ABSORB);
-            OnEffectAbsorb += AuraEffectAbsorbFn(spell_pal_divine_intervention_AuraScript::Absorb, EFFECT_0);
-        }
-
-    private:
-        uint32 healPct;
-
-    };
-
-    AuraScript* GetAuraScript() const override
-    {
-        return new spell_pal_divine_intervention_AuraScript();
     }
 };
 
@@ -2312,7 +2052,6 @@ void AddSC_paladin_spell_scripts()
     new spell_pal_bastion_of_light();
     new spell_pal_blinding_light();
     //new spell_pal_cleanse();
-    new spell_pal_divine_intervention();
     new spell_pal_hand_of_sacrifice();
     new spell_pal_holy_prism();
     new spell_pal_holy_prism_effect();
@@ -2325,12 +2064,8 @@ void AddSC_paladin_spell_scripts()
     new spell_pal_light_of_dawn_trigger();
     new spell_pal_light_of_the_martyr();
     new spell_pal_greater_blessing_of_kings();
-    new spell_pal_zeal();
 
-    //7.3.2.25549
     RegisterSpellScript(spell_pal_holy_shock);
-    RegisterSpellScript(spell_pal_divine_hammer);
-    RegisterSpellScript(spell_pal_execute_sentence);
     RegisterSpellScript(spell_pal_templar_s_verdict);
     RegisterSpellScript(spell_pal_seraphim);
     RegisterSpellScript(spell_pal_divine_storm);
@@ -2341,7 +2076,6 @@ void AddSC_paladin_spell_scripts()
     RegisterSpellScript(spell_pal_justicars_vengeance);
     RegisterSpellScript(spell_pal_judgment);
     RegisterSpellScript(spell_pal_divine_purpose_proc);
-    RegisterSpellScript(spell_pal_holy_wrath);
     RegisterSpellScript(spell_pal_grand_crusader);
     RegisterSpellScript(spell_pal_avengers_shield);
     RegisterSpellScript(spell_pal_shield_of_the_righteous);
@@ -2354,8 +2088,6 @@ void AddSC_paladin_spell_scripts()
 
     RegisterAuraScript(spell_pal_beacon_of_light_aura);
     RegisterAuraScript(spell_pal_beacon_of_light_proc);
-    RegisterAuraScript(spell_pal_judgment_of_light);
-    RegisterAuraScript(spell_pal_judgment_of_light_proc);
     RegisterAuraScript(spell_pal_infusion_of_light);
     RegisterAuraScript(spell_pal_eye_for_an_eye);
     RegisterAuraScript(spell_pal_shield_of_vengeance);
