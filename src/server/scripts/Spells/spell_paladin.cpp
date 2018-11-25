@@ -2150,6 +2150,32 @@ class spell_pal_wake_of_ashes : public SpellScript
     }
 };
 
+// 248033 - Awakening
+class spell_pal_awakening : public AuraScript
+{
+    PrepareAuraScript(spell_pal_awakening);
+
+    bool CheckProc(ProcEventInfo& eventInfo)
+    {
+        if (Spell const* procSpell = eventInfo.GetProcSpell())
+            if (procSpell->GetSpellInfo()->Id == SPELL_PALADIN_LIGHT_OF_DAWN)
+                return roll_chance_f(GetEffectInfo(EFFECT_0)->BasePoints);
+
+        return false;
+    }
+
+    void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
+    {
+        GetTarget()->CastCustomSpell(SPELL_PALADIN_AVENGING_WRATH, SPELLVALUE_DURATION, GetEffectInfo(EFFECT_1)->BasePoints, GetTarget(), TRIGGERED_FULL_MASK);
+    }
+
+    void Register() override
+    {
+        DoCheckProc += AuraCheckProcFn(spell_pal_awakening::CheckProc);
+        OnEffectProc += AuraEffectProcFn(spell_pal_awakening::OnProc, EFFECT_0, SPELL_AURA_DUMMY);
+    }
+};
+
 void AddSC_paladin_spell_scripts()
 {
     new spell_pal_bastion_of_light();
@@ -2199,13 +2225,13 @@ void AddSC_paladin_spell_scripts()
     RegisterAuraScript(spell_pal_blade_of_wrath_proc);
     RegisterAuraScript(spell_pal_the_fire_of_justice);
     RegisterAuraScript(spell_pal_ardent_defender);
-    RegisterCastSpellOnProcAuraScript("spell_pal_fervent_martyr", EFFECT_0, SPELL_AURA_DUMMY, SPELL_PALADIN_FERVENT_MARTYR_BUFF); // 196923
     RegisterAuraScript(spell_pal_crusade);
     RegisterAuraScript(spell_pal_consecration);
     RegisterAuraScript(spell_pal_aura_of_sacrifice_ally);
     RegisterAuraScript(spell_pal_art_of_war);
     RegisterAuraScript(spell_pal_proc_from_holy_power_consumption);
     RegisterAuraScript(spell_pal_righteous_verdict);
+    RegisterAuraScript(spell_pal_awakening);
 
     // NPC Scripts
     RegisterCreatureAI(npc_pal_lights_hammer);
