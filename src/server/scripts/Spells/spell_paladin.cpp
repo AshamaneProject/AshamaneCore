@@ -2049,10 +2049,11 @@ class spell_pal_art_of_war : public AuraScript
     }
 };
 
-// 271580
-class spell_pal_divine_judgement : public AuraScript
+// 271580 - Divine Judgement
+// 85804 - Selfless Healer
+class spell_pal_proc_from_holy_power_consumption : public AuraScript
 {
-    PrepareAuraScript(spell_pal_divine_judgement);
+    PrepareAuraScript(spell_pal_proc_from_holy_power_consumption);
 
     bool CheckProc(ProcEventInfo& eventInfo)
     {
@@ -2066,7 +2067,7 @@ class spell_pal_divine_judgement : public AuraScript
 
     void Register() override
     {
-        DoCheckProc += AuraCheckProcFn(spell_pal_divine_judgement::CheckProc);
+        DoCheckProc += AuraCheckProcFn(spell_pal_proc_from_holy_power_consumption::CheckProc);
     }
 };
 
@@ -2169,7 +2170,7 @@ void AddSC_paladin_spell_scripts()
     RegisterAuraScript(spell_pal_consecration);
     RegisterAuraScript(spell_pal_aura_of_sacrifice_ally);
     RegisterAuraScript(spell_pal_art_of_war);
-    RegisterAuraScript(spell_pal_divine_judgement);
+    RegisterAuraScript(spell_pal_proc_from_holy_power_consumption);
     RegisterAuraScript(spell_pal_righteous_verdict);
 
     // NPC Scripts

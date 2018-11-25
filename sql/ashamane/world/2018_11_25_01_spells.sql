@@ -6,13 +6,14 @@ DELETE FROM spell_script_names WHERE scriptname IN ("spell_pal_art_of_war",
                                                     "spell_pal_judgment_of_light",
                                                     "spell_pal_judgment_of_light_proc",
                                                     "spell_pal_zeal",
-                                                    "spell_pal_divine_judgement",
+                                                    "spell_pal_proc_from_holy_power_consumption",
                                                     "spell_pal_inquisition",
                                                     "spell_pal_righteous_verdict"
                                                     );
 INSERT INTO spell_script_names VALUES
 (267344, "spell_pal_art_of_war"),
-(271580, "spell_pal_divine_judgement"),
+(271580, "spell_pal_proc_from_holy_power_consumption"),
+(85804, "spell_pal_proc_from_holy_power_consumption"),
 (84963, "spell_pal_inquisition"),
 (267610, "spell_pal_righteous_verdict");
 
