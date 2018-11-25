@@ -2887,6 +2887,10 @@ SpellMissInfo Spell::DoSpellHitOnUnit(Unit* unit, uint32 effectMask, bool scaleA
                         }
                     }
 
+                    // Set duration to desired value
+                    if (m_spellValue->Duration > 0)
+                        duration = m_spellValue->Duration;
+
                     if (duration != m_spellAura->GetMaxDuration())
                     {
                         m_spellAura->SetMaxDuration(duration);
@@ -7501,6 +7505,9 @@ void Spell::SetSpellValue(SpellValueMod mod, int32 value)
             break;
         case SPELLVALUE_AURA_STACK:
             m_spellValue->AuraStackAmount = uint8(value);
+            break;
+        case SPELLVALUE_DURATION:
+            m_spellValue->Duration = (uint32)value;
             break;
         default:
             break;
