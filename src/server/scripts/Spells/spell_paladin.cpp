@@ -120,6 +120,8 @@ enum PaladinSpells
     SPELL_PALADIN_LIGHT_OF_THE_PROTECTOR        = 184092,
     SPELL_PALADIN_RETRIBUTION_AURA_DAMAGE       = 204011,
     SPELL_PALADIN_RIGHTEOUS_PROTECTOR           = 204074,
+    SPELL_PALADIN_RIGHTEOUS_VERDICT             = 267610,
+    SPELL_PALADIN_RIGHTEOUS_VERDICT_PROC        = 267611,
     SPELL_PALADIN_SERAPHIM                      = 152262,
     SPELL_PALADIN_SHIELD_OF_THE_RIGHTEOUS       = 53600,
     SPELL_PALADIN_SHIELD_OF_THE_RIGHTEOUS_PROC  = 132403,
@@ -2093,6 +2095,27 @@ class spell_pal_inquisition : public SpellScript
     }
 };
 
+// 267610 - Righteous Verdict
+class spell_pal_righteous_verdict : public AuraScript
+{
+    PrepareAuraScript(spell_pal_righteous_verdict);
+
+    void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
+    {
+        Unit* target = GetTarget();
+
+        if (target->HasAura(SPELL_PALADIN_RIGHTEOUS_VERDICT_PROC))
+            target->RemoveAurasDueToSpell(SPELL_PALADIN_RIGHTEOUS_VERDICT_PROC);
+        else
+            target->CastSpell(target, SPELL_PALADIN_RIGHTEOUS_VERDICT_PROC, true);
+    }
+
+    void Register() override
+    {
+        OnEffectProc += AuraEffectProcFn(spell_pal_righteous_verdict::OnProc, EFFECT_0, SPELL_AURA_DUMMY);
+    }
+};
+
 void AddSC_paladin_spell_scripts()
 {
     new spell_pal_bastion_of_light();
@@ -2147,6 +2170,7 @@ void AddSC_paladin_spell_scripts()
     RegisterAuraScript(spell_pal_aura_of_sacrifice_ally);
     RegisterAuraScript(spell_pal_art_of_war);
     RegisterAuraScript(spell_pal_divine_judgement);
+    RegisterAuraScript(spell_pal_righteous_verdict);
 
     // NPC Scripts
     RegisterCreatureAI(npc_pal_lights_hammer);
