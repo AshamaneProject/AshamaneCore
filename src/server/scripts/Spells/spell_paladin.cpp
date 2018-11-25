@@ -321,7 +321,7 @@ class spell_pal_beacon_of_light_proc : public AuraScript
             ownerOfBeacon->CastCustomSpell(SPELL_PALADIN_BEACON_OF_LIGHT_HEAL, SPELLVALUE_BASE_POINT0, bp, targetOfBeacon, true);
             auraCheck = true;
         }
-            
+
         if ((GetSpellInfo()->Id == SPELL_PALADIN_BEACON_OF_FAITH_PROC_AURA && targetOfBeacon->HasAura(SPELL_PALADIN_BEACON_OF_FAITH)))
         {
             bp /= 2;
@@ -654,7 +654,7 @@ class spell_pal_grand_crusader : public SpellScript
 
             if (caster->HasAura(SPELL_PALADIN_CRUSADERS_JUDGMENT))
                 caster->GetSpellHistory()->RestoreCharge(sSpellMgr->AssertSpellInfo(SPELL_PALADIN_JUDGMENT)->ChargeCategoryId);
-        }    
+        }
     }
 
     void Register() override
@@ -807,7 +807,7 @@ class spell_pal_shield_of_vengeance : public AuraScript
 
         std::list<Unit*> targets;
         caster->GetAttackableUnitListInRange(targets, 8.0f);
-        
+
 		if (uint32 targetSize = targets.size())
            absorb /= targetSize;
 
@@ -922,6 +922,7 @@ class spell_pal_divine_steed : public SpellScript
                 spellId = SPELL_PALADIN_DIVINE_STEED_HUMAN;
                 break;
             case RACE_DWARF:
+            case RACE_DARK_IRON_DWARF:
                 spellId = SPELL_PALADIN_DIVINE_STEED_HUMAN;
                 break;
             case RACE_DRAENEI:
@@ -1328,7 +1329,7 @@ class spell_pal_divine_purpose_proc : public SpellScript
                                 player->CastSpell(player, SPELL_PALADIN_DIVINE_PURPOSE_RET_AURA);
                         }
                         break;
-                    } 
+                    }
                     case TALENT_SPEC_PALADIN_HOLY:
                     {
                         if (roll_chance_i(15))
@@ -1350,7 +1351,7 @@ class spell_pal_divine_purpose_proc : public SpellScript
                             }
                         }
                         break;
-                    }  
+                    }
                 }
             }
         }
@@ -2290,6 +2291,22 @@ class spell_pal_aura_of_sacrifice_ally : public AuraScript
     }
 };
 
+// 267344
+class spell_pal_art_of_war : public AuraScript
+{
+    PrepareAuraScript(spell_pal_art_of_war);
+
+    void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
+    {
+        GetTarget()->GetSpellHistory()->ResetCooldown(SPELL_PALADIN_BLADE_OF_JUSTICE, true);
+    }
+
+    void Register() override
+    {
+        OnEffectProc += AuraEffectProcFn(spell_pal_art_of_war::OnProc, EFFECT_0, SPELL_AURA_DUMMY);
+    }
+};
+
 void AddSC_paladin_spell_scripts()
 {
     new spell_pal_bastion_of_light();
@@ -2309,7 +2326,7 @@ void AddSC_paladin_spell_scripts()
     new spell_pal_light_of_the_martyr();
     new spell_pal_greater_blessing_of_kings();
     new spell_pal_zeal();
-    
+
     //7.3.2.25549
     RegisterSpellScript(spell_pal_holy_shock);
     RegisterSpellScript(spell_pal_divine_hammer);
@@ -2334,7 +2351,7 @@ void AddSC_paladin_spell_scripts()
     RegisterSpellScript(spell_pal_beacon_of_faith);
     RegisterSpellScript(spell_pal_beacon_of_light);
     RegisterSpellScript(spell_pal_beacon_of_virtue);
-    
+
     RegisterAuraScript(spell_pal_beacon_of_light_aura);
     RegisterAuraScript(spell_pal_beacon_of_light_proc);
     RegisterAuraScript(spell_pal_judgment_of_light);
@@ -2349,6 +2366,7 @@ void AddSC_paladin_spell_scripts()
     RegisterAuraScript(spell_pal_crusade);
     RegisterAuraScript(spell_pal_consecration);
     RegisterAuraScript(spell_pal_aura_of_sacrifice_ally);
+    RegisterAuraScript(spell_pal_art_of_war);
 
     // NPC Scripts
     RegisterCreatureAI(npc_pal_lights_hammer);
