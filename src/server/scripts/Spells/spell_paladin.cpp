@@ -2068,6 +2068,31 @@ class spell_pal_divine_judgement : public AuraScript
     }
 };
 
+// 84963  - Inquisition
+class spell_pal_inquisition : public SpellScript
+{
+    PrepareSpellScript(spell_pal_inquisition);
+
+    float m_powerTaken = 0.f;
+
+    void HandleTakePower(SpellPowerCost& powerCost)
+    {
+        m_powerTaken = powerCost.Amount;
+    }
+
+    void HandleAfterHit()
+    {
+        if (Aura* aura = GetCaster()->GetAura(GetSpellInfo()->Id))
+            aura->SetDuration(aura->GetDuration() * m_powerTaken);
+    }
+
+    void Register() override
+    {
+        OnTakePower += SpellOnTakePowerFn(spell_pal_inquisition::HandleTakePower);
+        AfterHit += SpellHitFn(spell_pal_inquisition::HandleAfterHit);
+    }
+};
+
 void AddSC_paladin_spell_scripts()
 {
     new spell_pal_bastion_of_light();
@@ -2106,6 +2131,7 @@ void AddSC_paladin_spell_scripts()
     RegisterSpellScript(spell_pal_beacon_of_faith);
     RegisterSpellScript(spell_pal_beacon_of_light);
     RegisterSpellScript(spell_pal_beacon_of_virtue);
+    RegisterSpellScript(spell_pal_inquisition);
 
     RegisterAuraScript(spell_pal_beacon_of_light_aura);
     RegisterAuraScript(spell_pal_beacon_of_light_proc);
