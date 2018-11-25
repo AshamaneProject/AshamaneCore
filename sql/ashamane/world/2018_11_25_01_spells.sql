@@ -19,7 +19,8 @@ INSERT INTO spell_script_names VALUES
 (267610, "spell_pal_righteous_verdict"),
 (205290, "spell_pal_wake_of_ashes");
 
-DELETE FROM `spell_proc` WHERE `SpellId` IN (267610, 267611, 269569);
-INSERT INTO `spell_proc` (`SpellId`, `SpellFamilyName`, `SpellFamilyMask2`, `SpellPhaseMask`) VALUES
-(267610, 10, 8192, 2),
-(269569, 10, 2,    2);
+DELETE FROM `spell_proc` WHERE `SpellId` IN (267610, 269569, 281178);
+INSERT INTO `spell_proc` (`SpellId`, `SpellFamilyName`, `SpellFamilyMask2`, `SpellFamilyMask3`, `SpellPhaseMask`) VALUES
+(267610, 10, 8192, 0,           2),
+(269569, 10, 2,    0,           2),
+(281178, 10, 0,    1073741824,  2);

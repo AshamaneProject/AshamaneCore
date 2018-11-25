@@ -1003,15 +1003,28 @@ class spell_pal_word_of_glory : public SpellScript
 {
     PrepareSpellScript(spell_pal_word_of_glory);
 
+    WorldObject* m_mainTarget;
+
+    void HandleDummy(SpellEffIndex effIndex)
+    {
+        m_mainTarget = GetHitUnit();
+    }
+
     void FilterTargets(std::list<WorldObject*>& targets)
     {
-        uint32 const maxTargets = uint32(GetSpellInfo()->GetEffect(EFFECT_1)->CalcValue(GetCaster()));
+        uint32 const maxTargets = uint32(GetSpellInfo()->GetEffect(EFFECT_0)->CalcValue(GetCaster()));
+
+        if (m_mainTarget)
+            targets.remove(m_mainTarget);
 
         if (targets.size() > maxTargets)
         {
             targets.sort(Trinity::HealthPctOrderPred());
             targets.resize(maxTargets);
         }
+
+        if (m_mainTarget)
+            targets.push_back(m_mainTarget);
 
         _targets = targets;
     }
@@ -1026,8 +1039,6 @@ class spell_pal_word_of_glory : public SpellScript
         if (Unit* caster = GetCaster())
         {
             bool noHpCost = false;
-            // Personnal Heal
-            caster->CastSpell(caster, SPELL_PALADIN_WORD_OF_GLORY_HEAL, true);
 
             uint8 hp = caster->GetPower(POWER_HOLY_POWER);
             uint8 hpCost = 3;
@@ -1061,6 +1072,7 @@ class spell_pal_word_of_glory : public SpellScript
     void Register() override
     {
         OnCast += SpellCastFn(spell_pal_word_of_glory::HandleOnCast);
+        OnEffectHitTarget += SpellEffectFn(spell_pal_word_of_glory::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
     }
 
 private:
