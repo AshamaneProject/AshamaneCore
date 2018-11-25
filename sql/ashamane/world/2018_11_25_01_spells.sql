@@ -32,7 +32,8 @@ UPDATE creature_template SET scriptname = "npc_pet_warlock_darkglare";
 
 DELETE FROM spell_script_names WHERE scriptname IN ("spell_warl_summon_darkglare",
                                                     "spell_warl_grimoire_of_service_aura",
-                                                    "spell_warl_soul_harvest"
+                                                    "spell_warl_soul_harvest",
+                                                    "spell_warl_demonic_empowerment"
                                                     );
 INSERT INTO spell_script_names VALUES
 (205180, "spell_warl_summon_darkglare");

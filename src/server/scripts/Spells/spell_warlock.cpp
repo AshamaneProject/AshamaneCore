@@ -94,8 +94,6 @@ enum WarlockSpells
     SPELL_WARLOCK_DEMONIC_GATEWAY_TELEPORT_PURPLE   = 120729,
     SPELL_WARLOCK_DEMONIC_LEAP_JUMP                 = 109163,
     SPELL_WARLOCK_DEMONSKIN                         = 219272,
-    SPELL_WARLOCK_DEMONWRATH_AURA                   = 193440,
-    SPELL_WARLOCK_DEMONWRATH_SOULSHARD              = 194379,
     SPELL_WARLOCK_DESTRUCTION_PASSIVE               = 137046,
     SPELL_WARLOCK_DEVOUR_MAGIC_HEAL                 = 19658,
     SPELL_WARLOCK_DISRUPTED_NETHER                  = 114736,
@@ -231,87 +229,6 @@ enum eGatewayNpc
 {
     GreenGate   = 59262,
     PurpleGate  = 59271
-};
-
-// Demonwrath damage - 193439
-class spell_warl_demonwrath : public SpellScript
-{
-    PrepareSpellScript(spell_warl_demonwrath);
-
-    void SelectTargets(std::list<WorldObject*>& targets)
-    {
-        Unit* caster = GetCaster();
-        if (!caster)
-            return;
-
-        std::list<Creature*> pets;
-        caster->GetCreatureListInGrid(pets, 100.0f);
-
-        pets.remove_if([caster](Creature* creature)
-        {
-            if (creature == caster)
-                return true;
-            if (!creature->HasAura(SPELL_WARLOCK_DEMONWRATH_AURA))
-                return true;
-            if (creature->GetCreatureType() != CREATURE_TYPE_DEMON)
-                return true;
-            return false;
-        });
-
-        targets.remove_if([pets, caster](WorldObject* obj)
-        {
-            if (!obj->ToUnit())
-                return true;
-            if (!caster->IsValidAttackTarget(obj->ToUnit()))
-                return true;
-            bool inRange = false;
-            for (Unit* pet : pets)
-                if (pet->GetExactDist(obj) <= 10.0f)
-                    inRange = true;
-
-            return !inRange;
-        });
-    }
-
-    void HandleHit(SpellEffIndex /*effIndex*/)
-    {
-        Unit* caster = GetCaster();
-        if (!caster)
-            return;
-
-        if (Aura* aur = caster->GetAura(SPELL_WARLOCK_DEMONIC_CALLING))
-            if (AuraEffect* aurEff = aur->GetEffect(EFFECT_1))
-                if (roll_chance_i(aurEff->GetBaseAmount()))
-                    caster->CastSpell(caster, SPELL_WARLOCK_DEMONIC_CALLING_TRIGGER, true);
-    }
-
-    void Register() override
-    {
-        OnEffectHitTarget += SpellEffectFn(spell_warl_demonwrath::HandleHit, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
-        OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_warl_demonwrath::SelectTargets, EFFECT_0, TARGET_UNIT_SRC_AREA_ENEMY);
-    }
-};
-
-// Demonwrath periodic - 193440
-class spell_warl_demonwrath_periodic : public AuraScript
-{
-    PrepareAuraScript(spell_warl_demonwrath_periodic);
-
-    void HandlePeriodic(AuraEffect const* /*aurEff*/)
-    {
-        Unit* caster = GetCaster();
-        if (!caster)
-            return;
-
-        int32 rollChance = GetSpellInfo()->GetEffect(EFFECT_2)->BasePoints;
-        if (roll_chance_i(rollChance))
-            caster->CastSpell(caster, SPELL_WARLOCK_DEMONWRATH_SOULSHARD, true);
-    }
-
-    void Register() override
-    {
-        OnEffectPeriodic += AuraEffectPeriodicFn(spell_warl_demonwrath_periodic::HandlePeriodic, EFFECT_1, SPELL_AURA_PERIODIC_TRIGGER_SPELL);
-    }
 };
 
 // Demonbolt - 157695
@@ -642,52 +559,6 @@ class spell_warl_demonic_circle_teleport : public AuraScript
     void Register() override
     {
         OnEffectApply += AuraEffectApplyFn(spell_warl_demonic_circle_teleport::HandleTeleport, EFFECT_0, SPELL_AURA_MECHANIC_IMMUNITY, AURA_EFFECT_HANDLE_REAL);
-    }
-};
-
-// Demonic Empowerment - 193396
-class spell_warl_demonic_empowerment : public SpellScript
-{
-    PrepareSpellScript(spell_warl_demonic_empowerment);
-
-    void HandleTargets(std::list<WorldObject*>& targets)
-    {
-        Unit* caster = GetCaster();
-        if (!caster)
-            return;
-
-        targets.remove_if([caster](WorldObject* target)
-        {
-            if (!target->ToCreature())
-                return true;
-
-            if (!caster->IsFriendlyTo(target->ToUnit()))
-                return true;
-
-            if (target->ToCreature()->GetCreatureType() != CREATURE_TYPE_DEMON)
-                return true;
-
-            return false;
-        });
-    }
-
-    void HandleCast()
-    {
-        Unit* caster = GetCaster();
-        if (!caster)
-            return;
-
-        if (caster->HasAura(SPELL_WARLOCK_SHADOWY_INSPIRATION))
-            caster->CastSpell(caster, SPELL_WARLOCK_SHADOWY_INSPIRATION_EFFECT, true);
-
-        if (caster->HasAura(SPELL_WARLOCK_POWER_TRIP) && caster->IsInCombat() && roll_chance_i(50))
-            caster->CastSpell(caster, SPELL_WARLOCK_POWER_TRIP_ENERGIZE, true);
-    }
-
-    void Register() override
-    {
-        OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_warl_demonic_empowerment::HandleTargets, EFFECT_ALL, TARGET_UNIT_CASTER_PET);
-        OnCast += SpellCastFn(spell_warl_demonic_empowerment::HandleCast);
     }
 };
 
@@ -3613,10 +3484,9 @@ void AddSC_warlock_spell_scripts()
     RegisterSpellScript(spell_warl_demonic_call);
     RegisterAuraScript(spell_warl_demonic_circle_summon);
     RegisterAuraScript(spell_warl_demonic_circle_teleport);
-    RegisterSpellScript(spell_warl_demonic_empowerment);
     RegisterSpellScript(spell_warl_demonic_gateway);
     RegisterSpellScript(spell_warl_devour_magic);
-    RegisterSpellScript(spell_warl_drain_soul);
+    RegisterAuraScript(spell_warl_drain_soul);
     new spell_warl_fear();
     new spell_warl_fear_buff();
     new spell_warl_glyph_of_soulwell();
@@ -3654,8 +3524,6 @@ void AddSC_warlock_spell_scripts()
     new spell_warl_whiplash();
     new spell_warl_spell_lock();
     new spell_warl_felstorm();
-    RegisterSpellScript(spell_warl_demonwrath);
-    RegisterAuraScript(spell_warl_demonwrath_periodic);
     new spell_warl_meteor_strike();
     new spell_warl_shadow_lock();
     new spell_warl_cataclysm();
