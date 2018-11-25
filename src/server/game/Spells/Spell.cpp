@@ -544,6 +544,7 @@ SpellValue::SpellValue(Difficulty diff, SpellInfo const* proto)
     MaxAffectedTargets = proto->MaxAffectedTargets;
     RadiusMod = 1.0f;
     AuraStackAmount = 1;
+    Duration = 0;
 }
 
 class TC_GAME_API SpellEvent : public BasicEvent

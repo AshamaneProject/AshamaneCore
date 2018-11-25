@@ -64,6 +64,8 @@ enum WarlockSpells
     SPELL_WARLOCK_CREATE_HEALTHSTONE                = 23517,
     SPELL_WARLOCK_CURSE_OF_DOOM_EFFECT              = 18662,
     SPELL_WARLOCK_DARK_BARGAIN_DOT                  = 110914,
+    SPELL_WARLOCK_DARKGLARE_EYE_BEAM                = 205231,
+    SPELL_WARLOCK_DARKGLARE_SUMMON                  = 205180,
     SPELL_WARLOCK_DARK_REGENERATION                 = 108359,
     SPELL_WARLOCK_DARK_SOUL_INSTABILITY             = 113858,
     SPELL_WARLOCK_DARK_SOUL_KNOWLEDGE               = 113861,
@@ -3370,36 +3372,6 @@ public:
     }
 };
 
-// Darkglare - 103673
-class npc_pet_warlock_darkglare : public CreatureScript
-{
-public:
-    npc_pet_warlock_darkglare() : CreatureScript("npc_pet_warlock_darkglare") {}
-
-    struct npc_pet_warlock_darkglare_PetAI : public PetAI
-    {
-        npc_pet_warlock_darkglare_PetAI(Creature* creature) : PetAI(creature) {}
-
-        void UpdateAI(uint32 /*diff*/) override
-        {
-            Unit* owner = me->GetOwner();
-            if (!owner)
-                return;
-
-            std::list<Unit*> targets;
-            owner->GetAttackableUnitListInRange(targets, 100.0f);
-            targets.remove_if(Trinity::UnitAuraCheck(false, SPELL_WARLOCK_DOOM, owner->GetGUID()));
-            if (!targets.empty())
-                me->CastSpell(targets.front(), SPELL_WARLOCK_EYE_LASER, false, nullptr, nullptr, owner->GetGUID());
-        }
-    };
-
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new npc_pet_warlock_darkglare_PetAI(creature);
-    }
-};
-
 // Wild Imp - 99739
 struct npc_pet_warlock_wild_imp : public PetAI
 {
@@ -3627,6 +3599,88 @@ class spell_warl_incinerate : public SpellScript
     }
 };
 
+// Summon Darkglare - 205180
+class spell_warl_summon_darkglare : public SpellScript
+{
+    PrepareSpellScript(spell_warl_summon_darkglare);
+
+    void HandleOnHitTarget(SpellEffIndex /*effIndex*/)
+    {
+        if (Unit* target = GetHitUnit())
+        {
+            Player::AuraEffectList effectList = target->GetAuraEffectsByTypes({ SPELL_AURA_PERIODIC_DAMAGE, SPELL_AURA_PERIODIC_DAMAGE_PERCENT }, GetCaster()->GetGUID());
+
+            for (AuraEffect* effect : effectList)
+                if (Aura* aura = effect->GetBase())
+                    aura->ModDuration(GetEffectInfo(EFFECT_1)->BasePoints * IN_MILLISECONDS);
+        }
+    }
+
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_warl_summon_darkglare::HandleOnHitTarget, EFFECT_1, SPELL_EFFECT_SCRIPT_EFFECT);
+    }
+};
+
+// Darkglare - 103673
+struct npc_pet_warlock_darkglare : public PetAI
+{
+    npc_pet_warlock_darkglare(Creature* creature) : PetAI(creature) {}
+
+    void UpdateAI(uint32 /*diff*/) override
+    {
+        Unit* owner = me->GetOwner();
+        if (!owner)
+            return;
+
+        Unit* target = GetTarget();
+        ObjectGuid newtargetGUID = owner->GetTarget();
+        if (newtargetGUID.IsEmpty() || newtargetGUID == _targetGUID)
+        {
+            CastSpellOnTarget(owner, target);
+            return;
+        }
+
+        if (Unit* newTarget = ObjectAccessor::GetUnit(*me, newtargetGUID))
+            if (target != newTarget && me->IsValidAttackTarget(newTarget))
+                target = newTarget;
+
+        CastSpellOnTarget(owner, target);
+    }
+
+    void DamageDealt(Unit* /*victim*/, uint32& damage, DamageEffectType /*damageType*/) override
+    {
+        Unit* owner = me->GetOwner();
+        if (!owner)
+            return;
+
+        uint32 baseDamageMultiplier = 0;
+        if (Aura* darkGlareSummonAura = owner->GetAura(SPELL_WARLOCK_DARKGLARE_SUMMON))
+            baseDamageMultiplier = darkGlareSummonAura->GetEffect(EFFECT_2)->GetBaseAmount();
+
+        auto ownedAuras = owner->GetOwnedAurasByTypes({ SPELL_AURA_PERIODIC_DAMAGE, SPELL_AURA_PERIODIC_DAMAGE_PERCENT });
+
+        AddPct(damage, ownedAuras.size() * baseDamageMultiplier);
+    }
+
+private:
+    Unit* GetTarget() const
+    {
+        return ObjectAccessor::GetUnit(*me, _targetGUID);
+    }
+
+    void CastSpellOnTarget(Unit* owner, Unit* target)
+    {
+        if (target && me->IsValidAttackTarget(target))
+        {
+            _targetGUID = target->GetGUID();
+            me->CastSpell(target, SPELL_WARLOCK_DARKGLARE_EYE_BEAM, false);
+        }
+    }
+
+    ObjectGuid _targetGUID;
+};
+
 void AddSC_warlock_spell_scripts()
 {
     RegisterAuraScript(spell_warl_demonskin);
@@ -3706,6 +3760,7 @@ void AddSC_warlock_spell_scripts()
     RegisterAuraScript(aura_warl_phantomatic_singularity);
     RegisterAuraScript(spell_warl_grimoire_of_service_aura);
     RegisterSpellScript(spell_warl_incinerate);
+    RegisterSpellScript(spell_warl_summon_darkglare);
 
     ///AreaTrigger scripts
     RegisterAreaTriggerAI(at_warl_rain_of_fire);
@@ -3713,6 +3768,6 @@ void AddSC_warlock_spell_scripts()
     ///NPC scripts
     new spell_npc_warl_demonic_gateway_green();
     new spell_npc_warl_demonic_gateway_purple();
-    new npc_pet_warlock_darkglare();
     RegisterCreatureAI(npc_pet_warlock_wild_imp);
+    RegisterCreatureAI(npc_pet_warlock_darkglare);
 }

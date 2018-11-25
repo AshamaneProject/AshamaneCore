@@ -27,3 +27,9 @@ INSERT INTO `spell_proc` (`SpellId`, `SpellFamilyName`, `SpellFamilyMask2`, `Spe
 (267610, 10, 8192, 0,           2),
 (269569, 10, 2,    0,           2),
 (281178, 10, 0,    1073741824,  2);
+
+UPDATE creature_template SET scriptname = "npc_pet_warlock_darkglare";
+
+DELETE FROM spell_script_names WHERE scriptname IN ("spell_warl_summon_darkglare");
+INSERT INTO spell_script_names VALUES
+(205180, "spell_warl_summon_darkglare");

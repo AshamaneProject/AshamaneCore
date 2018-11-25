@@ -1471,6 +1471,8 @@ class TC_GAME_API Unit : public WorldObject
 
         Aura* GetOwnedAura(uint32 spellId, ObjectGuid casterGUID = ObjectGuid::Empty, ObjectGuid itemCasterGUID = ObjectGuid::Empty, uint32 reqEffMask = 0, Aura* except = NULL) const;
 
+        std::vector<Aura*> GetOwnedAurasByTypes(std::initializer_list<AuraType> types) const;
+
         // m_appliedAuras container management
         AuraApplicationMap      & GetAppliedAuras()       { return m_appliedAuras; }
         AuraApplicationMap const& GetAppliedAuras() const { return m_appliedAuras; }
@@ -1520,7 +1522,7 @@ class TC_GAME_API Unit : public WorldObject
         void _ApplyAllAuraStatMods();
 
         AuraEffectList const& GetAuraEffectsByType(AuraType type) const { return m_modAuras[type]; }
-        AuraEffectList const GetAuraEffectsByTypes(std::initializer_list<AuraType> types) const;
+        AuraEffectList GetAuraEffectsByTypes(std::initializer_list<AuraType> types, ObjectGuid casterGUID = ObjectGuid::Empty) const;
         AuraList      & GetSingleCastAuras()       { return m_scAuras; }
         AuraList const& GetSingleCastAuras() const { return m_scAuras; }
 

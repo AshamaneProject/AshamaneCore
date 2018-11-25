@@ -3668,6 +3668,25 @@ Aura* Unit::GetOwnedAura(uint32 spellId, ObjectGuid casterGUID, ObjectGuid itemC
     return NULL;
 }
 
+std::vector<Aura*> Unit::GetOwnedAurasByTypes(std::initializer_list<AuraType> types) const
+{
+    std::vector<Aura*> returnAuras;
+
+    for (auto itr : m_ownedAuras)
+    {
+        for (AuraType type : types)
+        {
+            if (itr.second->HasEffectType(type))
+            {
+                returnAuras.push_back(itr.second);
+                break;
+            }
+        }
+    }
+
+    return returnAuras;
+}
+
 void Unit::RemoveAura(AuraApplicationMap::iterator &i, AuraRemoveMode mode)
 {
     AuraApplication * aurApp = i->second;
@@ -4340,17 +4359,14 @@ void Unit::_ApplyAllAuraStatMods()
         (*i).second->GetBase()->HandleAllEffects(i->second, AURA_EFFECT_HANDLE_STAT, true);
 }
 
-Player::AuraEffectList const Unit::GetAuraEffectsByTypes(std::initializer_list<AuraType> types) const
+Player::AuraEffectList Unit::GetAuraEffectsByTypes(std::initializer_list<AuraType> types, ObjectGuid casterGUID /*= ObjectGuid::Empty*/) const
 {
     Player::AuraEffectList returnAuraEffectList;
 
     for (AuraType type : types)
-    {
-        Player::AuraEffectList typeAuraEffectList = GetAuraEffectsByType(type);
-
-        if (!typeAuraEffectList.empty())
-            returnAuraEffectList.insert(returnAuraEffectList.end(), typeAuraEffectList.begin(), typeAuraEffectList.end());
-    }
+        for (AuraEffect* effect : GetAuraEffectsByType(type))
+            if (casterGUID.IsEmpty() || effect->GetCasterGUID() == casterGUID)
+                returnAuraEffectList.push_back(effect);
 
     return returnAuraEffectList;
 }
