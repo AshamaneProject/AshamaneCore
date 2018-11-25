@@ -22866,7 +22866,7 @@ bool Player::ActivateTaxiPathTo(std::vector<uint32> const& nodes, Creature* npc 
         // Check only if start != end
         if (nodes.size() > 2 || nodes[0] != nodes[1])
         {
-            if (node->ContinentID != GetMapId() || !IsInDist(node->Pos.X, node->Pos.Y, node->Pos.Z, 2 * INTERACTION_DISTANCE))
+            if (node->ContinentID != GetMapId() || !IsInDist(node->Pos.X, node->Pos.Y, node->Pos.Z, 6.f * INTERACTION_DISTANCE))
             {
                 GetSession()->SendActivateTaxiReply(ERR_TAXITOOFARAWAY);
                 return false;
