@@ -129,6 +129,8 @@ enum PaladinSpells
     SPELL_PALADIN_TEMPLARS_VERDICT              = 85256,
     SPELL_PALADIN_TEMPLARS_VERDICT_DAMAGE       = 224266,
     SPELL_PALADIN_THE_FIRES_OF_JUSTICE          = 209785,
+    SPELL_PALADIN_WAKE_OF_ASHES                 = 255937,
+    SPELL_PALADIN_WAKE_OF_ASHES_STUN            = 255941,
     SPELL_PALADIN_WORD_OF_GLORY                 = 210191,
     SPELL_PALADIN_WORD_OF_GLORY_HEAL            = 214894,
     SPELL_PALADIN_BLESSED_HAMMER                = 204019,
@@ -2117,6 +2119,25 @@ class spell_pal_righteous_verdict : public AuraScript
     }
 };
 
+// 205290 - Wake of Ashes
+class spell_pal_wake_of_ashes : public SpellScript
+{
+    PrepareSpellScript(spell_pal_wake_of_ashes);
+
+    void HandleDamages(SpellEffIndex /*effIndex*/)
+    {
+        if (Creature* target = GetHitCreature())
+            if (CreatureTemplate const* creTemplate = target->GetCreatureTemplate())
+                if (creTemplate->type == CREATURE_TYPE_DEMON || creTemplate->type == CREATURE_TYPE_UNDEAD)
+                    GetCaster()->CastSpell(target, SPELL_PALADIN_WAKE_OF_ASHES_STUN, true);
+    }
+
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_pal_wake_of_ashes::HandleDamages, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
+    }
+};
+
 void AddSC_paladin_spell_scripts()
 {
     new spell_pal_bastion_of_light();
@@ -2156,6 +2177,7 @@ void AddSC_paladin_spell_scripts()
     RegisterSpellScript(spell_pal_beacon_of_light);
     RegisterSpellScript(spell_pal_beacon_of_virtue);
     RegisterSpellScript(spell_pal_inquisition);
+    RegisterSpellScript(spell_pal_wake_of_ashes);
 
     RegisterAuraScript(spell_pal_beacon_of_light_aura);
     RegisterAuraScript(spell_pal_beacon_of_light_proc);

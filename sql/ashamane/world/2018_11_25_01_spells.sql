@@ -8,14 +8,16 @@ DELETE FROM spell_script_names WHERE scriptname IN ("spell_pal_art_of_war",
                                                     "spell_pal_zeal",
                                                     "spell_pal_proc_from_holy_power_consumption",
                                                     "spell_pal_inquisition",
-                                                    "spell_pal_righteous_verdict"
+                                                    "spell_pal_righteous_verdict",
+                                                    "spell_pal_wake_of_ashes"
                                                     );
 INSERT INTO spell_script_names VALUES
 (267344, "spell_pal_art_of_war"),
 (271580, "spell_pal_proc_from_holy_power_consumption"),
 (85804, "spell_pal_proc_from_holy_power_consumption"),
 (84963, "spell_pal_inquisition"),
-(267610, "spell_pal_righteous_verdict");
+(267610, "spell_pal_righteous_verdict"),
+(205290, "spell_pal_wake_of_ashes");
 
 DELETE FROM `spell_proc` WHERE `SpellId` IN (267610, 267611);
 INSERT INTO `spell_proc` (`SpellId`, `SpellFamilyName`, `SpellFamilyMask2`, `SpellPhaseMask`) VALUES ('267610', '10', '8192', '2'); 
