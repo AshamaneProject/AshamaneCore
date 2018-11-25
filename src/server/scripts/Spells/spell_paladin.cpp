@@ -2047,6 +2047,27 @@ class spell_pal_art_of_war : public AuraScript
     }
 };
 
+// 271580
+class spell_pal_divine_judgement : public AuraScript
+{
+    PrepareAuraScript(spell_pal_divine_judgement);
+
+    bool CheckProc(ProcEventInfo& eventInfo)
+    {
+        if (Spell const* procSpell = eventInfo.GetProcSpell())
+            if (SpellPowerCost const* powerCost = procSpell->GetPowerCost(POWER_HOLY_POWER))
+                if (powerCost->Amount > 0)
+                    return true;
+
+        return false;
+    }
+
+    void Register() override
+    {
+        DoCheckProc += AuraCheckProcFn(spell_pal_divine_judgement::CheckProc);
+    }
+};
+
 void AddSC_paladin_spell_scripts()
 {
     new spell_pal_bastion_of_light();
@@ -2099,6 +2120,7 @@ void AddSC_paladin_spell_scripts()
     RegisterAuraScript(spell_pal_consecration);
     RegisterAuraScript(spell_pal_aura_of_sacrifice_ally);
     RegisterAuraScript(spell_pal_art_of_war);
+    RegisterAuraScript(spell_pal_divine_judgement);
 
     // NPC Scripts
     RegisterCreatureAI(npc_pal_lights_hammer);
