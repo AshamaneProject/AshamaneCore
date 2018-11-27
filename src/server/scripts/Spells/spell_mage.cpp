@@ -130,7 +130,6 @@ enum MageSpells
     SPELL_MAGE_ARCANE_MISSILES_VISUAL_THREE      = 170572,
     SPELL_MAGE_ARCANE_MISSILES_TRIGGER           = 7268,
     SPELL_MAGE_ARCANE_MISSILES                   = 5143,
-    SPELL_MAGE_ARCANE_MISSILES_DAMAGE            = 7268,
     SPELL_MAGE_ARCANE_MISSILES_POWER             = 208030,
     SPELL_MAGE_ARCANE_MISSILES_CHARGES           = 79683,
     SPELL_MAGE_ARCANE_ORB_DAMAGE                 = 153640,
@@ -164,7 +163,11 @@ enum MageSpells
     SPELL_MAGE_CINDERSTORM_DMG                   = 198928,
     SPELL_MAGE_IGNITE_DOT                        = 12654,
     SPELL_MAGE_REVERBERATE                       = 281482,
-    SPELL_MAGE_RESONANCE                         = 205028
+    SPELL_MAGE_RESONANCE                         = 205028,
+    SPELL_MAGE_CLEARCASTING_BUFF                 = 277726, // Channel quicker
+    SPELL_MAGE_CLEARCASTING_EFFECT               = 263725, // Removing the costs
+    SPELL_MAGE_CLEARCASTING_PVP_STACK_EFFECT     = 276743, // Costs and is stackable
+    SPELL_MAGE_ARCANE_EMPOWERMENT                = 276741
 };
 
 enum TemporalDisplacementSpells
@@ -285,26 +288,9 @@ class spell_mage_arcane_missiles : public AuraScript
         if (!caster)
             return;
 
-        caster->CastSpell(caster, SPELL_MAGE_ARCANE_MISSILES_POWER, true);
-
-        if (Aura* missilesCharges = caster->GetAura(SPELL_MAGE_ARCANE_MISSILES_CHARGES))
-        {
-            switch (missilesCharges->GetStackAmount())
-            {
-                case 1:
-                    caster->RemoveAurasDueToSpell(SPELL_MAGE_ARCANE_MISSILES_VISUAL_ONE);
-                    break;
-                case 2:
-                    caster->RemoveAurasDueToSpell(SPELL_MAGE_ARCANE_MISSILES_VISUAL_TWO);
-                    caster->CastSpell(caster, SPELL_MAGE_ARCANE_MISSILES_VISUAL_ONE, true);
-                    break;
-                case 3:
-                    caster->RemoveAurasDueToSpell(SPELL_MAGE_ARCANE_MISSILES_VISUAL_THREE);
-                    caster->CastSpell(caster, SPELL_MAGE_ARCANE_MISSILES_VISUAL_TWO, true);
-                    break;
-            }
-            missilesCharges->ModStackAmount(-1);
-        }
+        caster->RemoveAura(SPELL_MAGE_CLEARCASTING_BUFF);
+        caster->RemoveAura(SPELL_MAGE_CLEARCASTING_EFFECT);
+        caster->RemoveAura(SPELL_MAGE_CLEARCASTING_PVP_STACK_EFFECT);
     }
 
     void Register() override
@@ -330,75 +316,73 @@ class spell_mage_arcane_missiles_damage :public SpellScript
     }
 };
 
-// Arcane Missiles Proc - 79684
-class spell_mage_arcane_missiles_proc : public AuraScript
+// Clearcasting - 79684
+class spell_mage_clearcasting : public AuraScript
 {
-    PrepareAuraScript(spell_mage_arcane_missiles_proc);
+    PrepareAuraScript(spell_mage_clearcasting);
 
-    bool HandleProc(ProcEventInfo& eventInfo)
+    bool CheckProc(ProcEventInfo& eventInfo)
     {
-        if (eventInfo.GetSpellInfo()->Id == SPELL_MAGE_ARCANE_MISSILES ||
-            eventInfo.GetSpellInfo()->Id == SPELL_MAGE_ARCANE_MISSILES_TRIGGER)
-            return false;
-        return true;
+        if (SpellEffectInfo const* eff0 = GetSpellInfo()->GetEffect(EFFECT_0))
+        {
+            int32 reqManaToSpent = 0;
+            int32 manaUsed = 0;
+
+            // For each ${$c*100/$s1} mana you spend, you have a 1% chance
+            // Means: I cast a spell which costs 1000 Mana, for every 500 mana used I have 1% chance =  2% chance to proc
+            for (SpellPowerCost powerCost : GetSpellInfo()->CalcPowerCost(GetCaster(), GetSpellInfo()->GetSchoolMask()))
+                if (powerCost.Power == POWER_MANA)
+                    reqManaToSpent = powerCost.Amount * 100 / eff0->CalcValue();
+
+            // Something changed in DBC, Clearcasting should cost 1% of base mana 8.0.1
+            if (reqManaToSpent == 0)
+                return false;
+
+            for (SpellPowerCost powerCost : eventInfo.GetSpellInfo()->CalcPowerCost(GetCaster(), eventInfo.GetSpellInfo()->GetSchoolMask()))
+                if (powerCost.Power == POWER_MANA)
+                    manaUsed = powerCost.Amount;
+
+            int32 chance = std::floor(manaUsed / reqManaToSpent) * 1;
+            return roll_chance_i(chance);
+        }
+
+        return false;
+    }
+
+    void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
+    {
+        Unit* actor = eventInfo.GetActor();
+        actor->CastSpell(actor, SPELL_MAGE_CLEARCASTING_BUFF, true);
+        if (actor->HasAura(SPELL_MAGE_ARCANE_EMPOWERMENT))
+            actor->CastSpell(actor, SPELL_MAGE_CLEARCASTING_PVP_STACK_EFFECT, true);
+        else
+            actor->CastSpell(actor, SPELL_MAGE_CLEARCASTING_EFFECT, true);
     }
 
     void Register() override
     {
-        DoCheckProc += AuraCheckProcFn(spell_mage_arcane_missiles_proc::HandleProc);
+        DoCheckProc += AuraCheckProcFn(spell_mage_clearcasting::CheckProc);
+        OnEffectProc += AuraEffectProcFn(spell_mage_clearcasting::HandleProc, EFFECT_0, SPELL_AURA_DUMMY);
     }
 };
 
-// Arcane Missiles charges - 79683
-class spell_mage_arcane_missiles_charges : public AuraScript
+// Presence of mind - 205025
+class spell_mage_presence_of_mind : public AuraScript
 {
-    PrepareAuraScript(spell_mage_arcane_missiles_charges);
+    PrepareAuraScript(spell_mage_presence_of_mind);
 
-    void OnApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+    bool HandleProc(ProcEventInfo& eventInfo)
     {
         Unit* caster = GetCaster();
-        if (!caster)
-            return;
 
-        if (Aura* missilesCharges = caster->GetAura(SPELL_MAGE_ARCANE_MISSILES_CHARGES))
-        {
-            switch (missilesCharges->GetStackAmount())
-            {
-                case 1:
-                    caster->CastSpell(caster, SPELL_MAGE_ARCANE_MISSILES_VISUAL_ONE, true);
-                    break;
-                case 2:
-                    caster->RemoveAurasDueToSpell(SPELL_MAGE_ARCANE_MISSILES_VISUAL_ONE);
-                    caster->CastSpell(caster, SPELL_MAGE_ARCANE_MISSILES_VISUAL_TWO, true);
-                    break;
-                case 3:
-                    caster->RemoveAurasDueToSpell(SPELL_MAGE_ARCANE_MISSILES_VISUAL_TWO);
-                    caster->CastSpell(caster, SPELL_MAGE_ARCANE_MISSILES_VISUAL_THREE, true);
-                    break;
-            }
-        }
-    }
-
-    void OnRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
-    {
-        Unit* caster = GetCaster();
-        if (!caster)
-            return;
-
-        Aura* missilesCharges = caster->GetAura(SPELL_MAGE_ARCANE_MISSILES_CHARGES);
-
-        if (!missilesCharges)
-        {
-            caster->RemoveAurasDueToSpell(SPELL_MAGE_ARCANE_MISSILES_VISUAL_ONE);
-            caster->RemoveAurasDueToSpell(SPELL_MAGE_ARCANE_MISSILES_VISUAL_TWO);
-            caster->RemoveAurasDueToSpell(SPELL_MAGE_ARCANE_MISSILES_VISUAL_THREE);
-        }
+        if (eventInfo.GetSpellInfo()->Id == SPELL_MAGE_ARCANE_BLAST)
+            return true;
+        return false;
     }
 
     void Register() override
     {
-        OnEffectRemove += AuraEffectApplyFn(spell_mage_arcane_missiles_charges::OnRemove, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
-        OnEffectApply += AuraEffectApplyFn(spell_mage_arcane_missiles_charges::OnApply, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+        DoCheckProc += AuraCheckProcFn(spell_mage_presence_of_mind::HandleProc);
     }
 };
 
@@ -476,27 +460,6 @@ class spell_mage_arcane_barrage : public SpellScript
         OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_mage_arcane_barrage::FilterTargets, EFFECT_0, TARGET_UNIT_TARGET_ENEMY);
         OnEffectHitTarget += SpellEffectFn(spell_mage_arcane_barrage::HandleEffectHitTarget, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
         AfterCast += SpellCastFn(spell_mage_arcane_barrage::RemoveCharges);
-    }
-};
-
-// Arcane Blast - 30451
-class spell_mage_arcane_blast : public SpellScript
-{
-    PrepareSpellScript(spell_mage_arcane_blast);
-
-    void HandleHit(SpellEffIndex /*effIndex*/)
-    {
-        Unit* caster = GetCaster();
-        if (!caster || !caster->IsPlayer())
-            return;
-
-        if (Aura* presenceOfMind = caster->GetAura(SPELL_MAGE_PRESENCE_OF_MIND))
-            presenceOfMind->ModCharges(-1);
-    }
-
-    void Register() override
-    {
-        OnEffectHitTarget += SpellEffectFn(spell_mage_arcane_blast::HandleHit, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
     }
 };
 
@@ -587,21 +550,7 @@ class spell_mage_polymorph : public SpellScript
 
     void HandleTarget(SpellEffIndex /*effIndex*/)
     {
-        if (Unit* caster = GetCaster())
-        {
-            if (!caster->HasAura(56382))
-                return;
-
-            if (Unit* target = GetHitUnit())
-            {
-                if (target->GetCreatureType() == CREATURE_TYPE_CRITTER)
-                {
-                    PreventHitAura();
-
-                    caster->CastSpell(target, SPELL_MAGE_POLYMORPH_CRITTERMORPH, true);
-                }
-            }
-        }
+        // Keep this for later use: Blind, Poly, Blinding Light, etc should remove DoTs TODO
     }
 
     void Register() override
@@ -783,12 +732,7 @@ class spell_mage_frenetic_speed : public AuraScript
 
     bool CheckProc(ProcEventInfo& eventInfo)
     {
-        bool _spellCanProc = (eventInfo.GetSpellInfo()->Id == SPELL_MAGE_SCORCH);
-
-        if (_spellCanProc)
-            return true;
-
-        return false;
+        return eventInfo.GetSpellInfo() && eventInfo.GetSpellInfo()->Id == SPELL_MAGE_SCORCH;
     }
 
     void Register() override
@@ -804,7 +748,7 @@ class spell_mage_conflagration : public AuraScript
 
     bool CheckProc(ProcEventInfo& eventInfo)
     {
-        return eventInfo.GetSpellInfo()->Id == SPELL_MAGE_FIREBALL;
+        return eventInfo.GetSpellInfo() && eventInfo.GetSpellInfo()->Id == SPELL_MAGE_FIREBALL;
     }
 
     void Register() override
@@ -865,22 +809,16 @@ class spell_mage_pyroblast : public SpellScript
         if (caster->HasAura(SPELL_MAGE_HOT_STREAK))
         {
             caster->RemoveAurasDueToSpell(SPELL_MAGE_HOT_STREAK);
+
             if (caster->HasAura(SPELL_MAGE_PYROMANIAC))
-            {
-                int32 pyromaniacChance = 0;
+                if (AuraEffect* pyromaniacEff0 = caster->GetAuraEffect(SPELL_MAGE_PYROMANIAC, EFFECT_0))
+                    if (roll_chance_i(pyromaniacEff0->GetAmount()))
+                    {
+                        if (caster->HasAura(SPELL_MAGE_HEATING_UP))
+                            caster->RemoveAurasDueToSpell(SPELL_MAGE_HEATING_UP);
 
-                if (Aura* pyromaniacAura = caster->GetAura(SPELL_MAGE_PYROMANIAC))
-                {
-                    pyromaniacChance = (pyromaniacAura->GetEffect(EFFECT_0)->GetAmount());
-                }
-
-                if (roll_chance_i(pyromaniacChance))
-                {
-                    if (caster->HasAura(SPELL_MAGE_HEATING_UP))
-                        caster->RemoveAurasDueToSpell(SPELL_MAGE_HEATING_UP);
-                    caster->CastSpell(caster, SPELL_MAGE_HOT_STREAK, true);
-                }
-            }
+                        caster->CastSpell(caster, SPELL_MAGE_HOT_STREAK, true);
+                    }
         }      
     }
 
@@ -904,22 +842,16 @@ class spell_mage_flamestrike : public SpellScript
         if (caster->HasAura(SPELL_MAGE_HOT_STREAK))
         {
             caster->RemoveAurasDueToSpell(SPELL_MAGE_HOT_STREAK);
+
             if (caster->HasAura(SPELL_MAGE_PYROMANIAC))
-            {
-                int32 pyromaniacChance = 0;
+                if (AuraEffect* pyromaniacEff0 = caster->GetAuraEffect(SPELL_MAGE_PYROMANIAC, EFFECT_0))
+                    if (roll_chance_i(pyromaniacEff0->GetAmount()))
+                    {
+                        if (caster->HasAura(SPELL_MAGE_HEATING_UP))
+                            caster->RemoveAurasDueToSpell(SPELL_MAGE_HEATING_UP);
 
-                if (Aura* pyromaniacAura = caster->GetAura(SPELL_MAGE_PYROMANIAC))
-                {
-                    pyromaniacChance = (pyromaniacAura->GetEffect(EFFECT_0)->GetAmount());
-                }
-
-                if (roll_chance_i(pyromaniacChance))
-                {
-                    if (caster->HasAura(SPELL_MAGE_HEATING_UP))
-                        caster->RemoveAurasDueToSpell(SPELL_MAGE_HEATING_UP);
-                    caster->CastSpell(caster, SPELL_MAGE_HOT_STREAK, true);
-                } 
-            }
+                        caster->CastSpell(caster, SPELL_MAGE_HOT_STREAK, true);
+                    }
         }
     }
 
@@ -931,12 +863,8 @@ class spell_mage_flamestrike : public SpellScript
             return;
 
         if (caster->HasAura(SPELL_MAGE_FLAME_PATCH))
-        {
             if (WorldLocation const* dest = GetExplTargetDest())
-            {
                 caster->CastSpell(dest->GetPosition(), SPELL_MAGE_FLAME_PATCH_TRIGGER, true);
-            }
-        }
     }
 
     void Register() override
@@ -953,20 +881,16 @@ class spell_mage_kindling : public AuraScript
 
     bool CheckProc(ProcEventInfo& eventInfo)
     {
-        bool _spellCanProc = (eventInfo.GetSpellInfo()->Id == SPELL_MAGE_FIREBALL || eventInfo.GetSpellInfo()->Id == SPELL_MAGE_FIRE_BLAST || eventInfo.GetSpellInfo()->Id == SPELL_MAGE_PYROBLAST);
-
-        if (_spellCanProc)
-            return true;
-        return false;
+        return eventInfo.GetSpellInfo()->Id == SPELL_MAGE_FIREBALL || eventInfo.GetSpellInfo()->Id == SPELL_MAGE_FIRE_BLAST || eventInfo.GetSpellInfo()->Id == SPELL_MAGE_PYROBLAST;
     }
 
-    void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
+    void HandleProc(AuraEffect const* aurEff, ProcEventInfo& /*eventInfo*/)
     {
         Unit* caster = GetCaster();
         if (!caster)
             return;
 
-        caster->GetSpellHistory()->ModifyCooldown(SPELL_MAGE_COMBUSTION, -1 * IN_MILLISECONDS);
+        caster->GetSpellHistory()->ModifyCooldown(SPELL_MAGE_COMBUSTION, -aurEff->GetAmount() * IN_MILLISECONDS);
     }
 
     void Register() override
@@ -1050,7 +974,7 @@ class spell_mage_firestarter : public SpellScript
     void HandleCritChance(Unit* victim, float& chance)
     {
         if (Aura* aura = GetCaster()->GetAura(SPELL_MAGE_FIRESTARTER))
-            if (victim->GetHealthPct() >= aura->GetEffect(EFFECT_0)->GetBaseAmount())
+            if (victim->GetHealthPct() >= aura->GetEffect(EFFECT_0)->GetAmount())
                 chance = 100.f;
     }
 
@@ -1260,19 +1184,19 @@ class spell_mage_ice_lance : public SpellScript
             return;
 
         caster->CastSpell(target, SPELL_MAGE_ICE_LANCE_TRIGGER, true);
-
-        // Frost Bomb
-        if (target->HasAura(SPELL_MAGE_FROST_BOMB_AURA) && (target->HasAuraState(AURA_STATE_FROZEN) || caster->HasAura(SPELL_MAGE_FINGERS_OF_FROST_AURA)))
-            caster->CastSpell(target, SPELL_MAGE_FROST_BOMB_TRIGGERED, true);
-
+        
         // Thermal Void
         if (caster->HasAura(SPELL_MAGE_THERMAL_VOID) && (target->HasAuraState(AURA_STATE_FROZEN) || caster->HasAura(SPELL_MAGE_FINGERS_OF_FROST_AURA)))
         {
             if (Aura* icyVeins = caster->GetAura(SPELL_MAGE_ICY_VEINS))
             {
-                int32 increaseDuration = sSpellMgr->GetSpellInfo(SPELL_MAGE_THERMAL_VOID)->GetEffect(EFFECT_0)->BasePoints * IN_MILLISECONDS;
-                int32 newDuration = (icyVeins->GetDuration() + increaseDuration);
-                icyVeins->SetDuration(newDuration);
+                if (SpellInfo const* thermalVoidInfo = sSpellMgr->GetSpellInfo(SPELL_MAGE_THERMAL_VOID))
+                    if (SpellEffectInfo const* eff0 = thermalVoidInfo->GetEffect(EFFECT_0))
+                    {
+                        int32 increaseDuration = eff0->CalcValue() * IN_MILLISECONDS;
+                        int32 newDuration = (icyVeins->GetDuration() + increaseDuration);
+                        icyVeins->SetDuration(newDuration);
+                    }
             }
         }
 
@@ -1359,11 +1283,7 @@ class spell_mage_jouster : public AuraScript
 
     bool CheckProc(ProcEventInfo& eventInfo)
     {
-        bool _spellCanProc = (eventInfo.GetSpellInfo()->Id == SPELL_MAGE_ICE_LANCE);
-
-        if (_spellCanProc)
-            return true;
-        return false;
+        return eventInfo.GetSpellInfo()->Id == SPELL_MAGE_ICE_LANCE;
     }
 
     void Register() override
@@ -1383,10 +1303,8 @@ class spell_mage_jouster_buff : public AuraScript
         if (!caster)
             return;
 
-        if (Aura* jousterRank = caster->GetAura(SPELL_MAGE_JOUSTER))
-        {
-            amount = (jousterRank->GetEffect(EFFECT_0)->GetAmount());
-        }
+        if (AuraEffect* jousterRank = caster->GetAuraEffect(SPELL_MAGE_JOUSTER, EFFECT_0))
+            amount = jousterRank->GetAmount();
     }
 
     void Register() override
@@ -1402,49 +1320,12 @@ class spell_mage_chain_reaction : public AuraScript
 
     bool CheckProc(ProcEventInfo& eventInfo)
     {
-        bool _spellCanProc = (eventInfo.GetSpellInfo()->Id == SPELL_MAGE_FROSTBOLT || eventInfo.GetSpellInfo()->Id == SPELL_MAGE_FROSTBOLT_TRIGGER);
-
-        if (_spellCanProc)
-            return true;
-
-        return false;
+        return eventInfo.GetSpellInfo()->Id == SPELL_MAGE_FROSTBOLT || eventInfo.GetSpellInfo()->Id == SPELL_MAGE_FROSTBOLT_TRIGGER;
     }
 
     void Register() override
     {
         DoCheckProc += AuraCheckProcFn(spell_mage_chain_reaction::CheckProc);
-    }
-};
-
-// Frozen Veins - 195345
-class spell_mage_frozen_veins : public AuraScript
-{
-    PrepareAuraScript(spell_mage_frozen_veins);
-
-    bool CheckProc(ProcEventInfo& eventInfo)
-    {
-        bool _spellCanProc = (eventInfo.GetSpellInfo()->Id == SPELL_MAGE_FROSTBOLT || eventInfo.GetSpellInfo()->Id == SPELL_MAGE_FROSTBOLT_TRIGGER);
-
-        if (_spellCanProc)
-            return true;
-
-        return false;
-    }
-
-    void HandleProc(AuraEffect const* aurEff, ProcEventInfo& /*eventInfo*/)
-    {
-        Unit* caster = GetCaster();
-        if (!caster)
-            return;
-
-        if (caster->GetSpellHistory()->HasCooldown(SPELL_MAGE_ICY_VEINS))
-            caster->GetSpellHistory()->ModifyCooldown(SPELL_MAGE_ICY_VEINS, aurEff->GetAmount());
-    }
-
-    void Register() override
-    {
-        OnEffectProc += AuraEffectProcFn(spell_mage_frozen_veins::HandleProc, EFFECT_0, SPELL_AURA_PROC_TRIGGER_SPELL);
-        DoCheckProc += AuraCheckProcFn(spell_mage_frozen_veins::CheckProc);
     }
 };
 
@@ -1455,12 +1336,7 @@ class spell_mage_chilled_to_the_core : public AuraScript
 
     bool CheckProc(ProcEventInfo& eventInfo)
     {
-        bool _spellCanProc = (eventInfo.GetSpellInfo()->Id == SPELL_MAGE_ICY_VEINS);
-
-        if (_spellCanProc)
-            return true;
-
-        return false;
+        return eventInfo.GetSpellInfo()->Id == SPELL_MAGE_ICY_VEINS;
     }
 
     void Register() override
@@ -1541,129 +1417,31 @@ class spell_mage_frostbolt : public SpellScript
     }
 };
 
-// Frost Bomb Damage - 113092 
-class spell_mage_frost_bomb_damage : public SpellScript
-{
-    PrepareSpellScript(spell_mage_frost_bomb_damage);
-
-    void HandleDamage(SpellEffIndex /*effIndex*/)
-    {
-        Unit* caster = GetCaster();
-        Unit* target = GetHitUnit();
-        Unit* explunit = GetExplTargetUnit();
-        if (!caster || !target || !explunit)
-            return;
-
-        float mplier = 1.15128f;
-
-        if (target == explunit)
-            mplier = 1.84275f;
-
-        int32 sp = caster->SpellBaseDamageBonusDone(SPELL_SCHOOL_MASK_SPELL);
-        int32 dmg = (sp * mplier);
-
-        SetHitDamage(dmg);
-    }
-
-    void Register() override
-    {
-        OnEffectHitTarget += SpellEffectFn(spell_mage_frost_bomb_damage::HandleDamage, EFFECT_1, SPELL_EFFECT_SCHOOL_DAMAGE);
-    }
-};
-
 // Ice Nova | Supernova - 157997 | 157980
 class spell_mage_nova_talent : public SpellScript
 {
     PrepareSpellScript(spell_mage_nova_talent);
 
-    ObjectGuid PlayerGUID;
-
-    void HandleOnCast()
-    {
-        if (GetExplTargetUnit())
-            PlayerGUID = GetExplTargetUnit()->GetGUID();
-    }
-
     void HandleDamage(SpellEffIndex /*effIndex*/)
     {
         Unit* caster = GetCaster();
         Unit* target = GetHitUnit();
-        if (!target || !caster)
+        Unit* explTarget = GetExplTargetUnit();
+        if (!target || !caster || !explTarget)
             return;
 
-        if (target->GetGUID() == PlayerGUID && !target->IsFriendlyTo(caster))
+        if (SpellEffectInfo const* eff2 = GetSpellInfo()->GetEffect(EFFECT_2))
         {
-            int32 dmg = (GetHitDamage() * 2);
+            int32 dmg = GetHitDamage();
+            if (target == explTarget)
+                dmg = CalculatePct(dmg, eff2->CalcValue());
             SetHitDamage(dmg);
         }
     }
 
     void Register() override
     {
-        OnCast += SpellCastFn(spell_mage_nova_talent::HandleOnCast);
-        OnEffectHitTarget += SpellEffectFn(spell_mage_nova_talent::HandleDamage, EFFECT_1, SPELL_EFFECT_SCHOOL_DAMAGE);
-    }
-};
-
-// Unstable Magic - 157976
-// Called by Arcane Blast - 30451, Fireball - 133, Frostbolt - 228597
-class spell_mage_unstable_magic : public SpellScript
-{
-    PrepareSpellScript(spell_mage_unstable_magic);
-
-    void HandleDamage(SpellEffIndex)
-    {
-        if (Player* player = GetCaster()->ToPlayer())
-        {
-            if (Aura* unstableMagic = player->GetAura(SPELL_MAGE_UNSTABLE_MAGIC))
-            {
-                int32 chance = 0;
-                uint32 spec = player->GetUInt32Value(PLAYER_FIELD_CURRENT_SPEC_ID);
-                switch (spec)
-                {
-                    case TALENT_SPEC_MAGE_ARCANE:
-                        chance = unstableMagic->GetEffect(EFFECT_0) ? unstableMagic->GetEffect(EFFECT_0)->GetAmount() : 0;
-                        break;
-                    case TALENT_SPEC_MAGE_FROST:
-                        chance = unstableMagic->GetEffect(EFFECT_1) ? unstableMagic->GetEffect(EFFECT_1)->GetAmount() : 0;
-                        break;
-                    case TALENT_SPEC_MAGE_FIRE:
-                        chance = unstableMagic->GetEffect(EFFECT_2) ? unstableMagic->GetEffect(EFFECT_2)->GetAmount() : 0;
-                        break;
-                    default:
-                    break;
-                }
-
-                if (!roll_chance_i(chance))
-                    return;
-
-                if (Unit* target = GetHitUnit())
-                {
-                    int32 pct = unstableMagic->GetEffect(EFFECT_3) ? unstableMagic->GetEffect(EFFECT_3)->GetAmount() : 0;
-                    int32 basePoints = CalculatePct(GetHitDamage(), pct);
-                    uint32 spellID = GetSpellInfo()->Id;
-                    switch (spellID)
-                    {
-                        case SPELL_MAGE_ARCANE_BLAST:
-                            player->CastCustomSpell(target, SPELL_MAGE_UNSTABLE_MAGIC_DAMAGE_ARCANE, &basePoints, nullptr, nullptr, true);
-                            break;
-                        case SPELL_MAGE_FROSTBOLT_TRIGGER:
-                            player->CastCustomSpell(target, SPELL_MAGE_UNSTABLE_MAGIC_DAMAGE_FROST, &basePoints, nullptr, nullptr, true);
-                            break;
-                        case SPELL_MAGE_FIREBALL:
-                            player->CastCustomSpell(target, SPELL_MAGE_UNSTABLE_MAGIC_DAMAGE_FIRE, &basePoints, nullptr, nullptr, true);
-                            break;
-                        default:
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
-    void Register() override
-    {
-        OnEffectHitTarget += SpellEffectFn(spell_mage_unstable_magic::HandleDamage, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
+        OnEffectHitTarget += SpellEffectFn(spell_mage_nova_talent::HandleDamage, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
     }
 };
 
@@ -1681,11 +1459,9 @@ class spell_mage_blizzard : public SpellScript
 
         caster->CastSpell(target, SPELL_MAGE_CHILLED, true);
 
-        if (caster->HasSpell(SPELL_MAGE_BLIZZARD_RANK_2))
-        {
+        if (AuraEffect* eff0 = caster->GetAuraEffect(SPELL_MAGE_BLIZZARD_RANK_2, EFFECT_0))
             if (caster->GetSpellHistory()->HasCooldown(SPELL_MAGE_FROZEN_ORB))
-                caster->GetSpellHistory()->ModifyCooldown(SPELL_MAGE_FROZEN_ORB, -0.5 * IN_MILLISECONDS);
-        }
+                caster->GetSpellHistory()->ModifyCooldown(SPELL_MAGE_FROZEN_ORB, -(eff0->GetAmount() / 100) * IN_MILLISECONDS);
 
         // Fingers of Frost
         if (caster->HasSpell(SPELL_MAGE_FINGERS_OF_FROST))
@@ -1737,9 +1513,9 @@ class spell_mage_frozen_orb : public SpellScript
 
             if (caster->HasAura(SPELL_MAGE_FROZEN_TOUCH))
             {
-                if (Aura* frozenTouchPct = caster->GetAura(SPELL_MAGE_FROZEN_TOUCH))
+                if (AuraEffect* frozenEff0 = caster->GetAuraEffect(SPELL_MAGE_FROZEN_TOUCH, EFFECT_0))
                 {
-                    int32 pct = frozenTouchPct->GetEffect(EFFECT_0)->GetAmount();
+                    int32 pct = frozenEff0->GetAmount();
                     AddPct(fingersFrostChance, pct);
                 }
             }
@@ -1777,7 +1553,7 @@ public:
             if (!caster)
                 return;
 
-            if (!caster->ToPlayer())
+            if (!caster->GetTypeId() == TYPEID_PLAYER)
                 return;
 
             int32 crit = caster->GetUInt32Value(ACTIVE_PLAYER_FIELD_COMBAT_RATING + CR_CRIT_SPELL);
@@ -1896,9 +1672,9 @@ class spell_mage_time_warp : public SpellScriptLoader
 
             SpellCastResult CheckCast()
             {
-                Player* player = GetCaster()->ToPlayer();
-                if (!player)
+                if (GetCaster()->GetTypeId() != TYPEID_PLAYER)
                     return SPELL_FAILED_DONT_REPORT;
+                Player* player = GetCaster()->ToPlayer();
                 Group* grp = player->GetGroup();
                 if (!grp)
                 {
@@ -2029,7 +1805,7 @@ class spell_mage_ice_floes : public AuraScript
 
     void HandleAfterProc(ProcEventInfo& eventInfo)
     {
-        if (eventInfo.GetSpellInfo() && eventInfo.GetSpellInfo()->CalcCastTime() && eventInfo.GetSpellInfo()->Id != 2948) // Exclude Scorch
+        if (eventInfo.GetSpellInfo() && eventInfo.GetSpellInfo()->CalcCastTime())
             if (Unit* caster = GetCaster())
                 if (Aura* iceFloes = caster->GetAura(SPELL_MAGE_ICE_FLOES))
                     iceFloes->ModStackAmount(-1);
@@ -2053,17 +1829,17 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_MAGE_FIRE_ON) ||
-                !sSpellMgr->GetSpellInfo(SPELL_MAGE_FIRE_BLAST))
-                return false;
-            return true;
+            return ValidateSpellInfo({
+                    SPELL_MAGE_FIRE_ON,
+                    SPELL_MAGE_FIRE_BLAST
+                });
         }
 
         void HandleDummy(SpellEffIndex /*effIndex*/)
         {
             Unit* caster = GetCaster();
             Unit* target = GetHitUnit();
-            if (!caster || !target)
+            if (!caster || !target || caster->GetTypeId() != TYPEID_PLAYER)
                 return;
 
             caster->ToPlayer()->GetSpellHistory()->ResetCharges(sSpellMgr->GetSpellInfo(SPELL_MAGE_FIRE_BLAST)->ChargeCategoryId);
@@ -2140,6 +1916,8 @@ public:
         {
             Unit* target = GetTarget();
 
+            if (target->GetTypeId() != TYPEID_PLAYER)
+                return;
             if (dmgInfo.GetDamage() < target->GetHealth())
                 return;
 
@@ -2297,9 +2075,9 @@ class spell_mage_pet_freeze : public AuraScript
     {
         if (Unit* caster = GetCaster())
         {
-            if (caster->GetOwner())
+            if (Unit* owner = caster->GetOwner())
             {
-                if (Player* player = caster->GetOwner()->ToPlayer())
+                if (Player* player = owner->ToPlayer())
                 {
                     if (player->HasAura(SPELL_MAGE_FINGERS_OF_FROST_AURA))
                         player->CastSpell(player, SPELL_MAGE_FINGERS_OF_FROST_VISUAL_UI, true);
@@ -2329,9 +2107,7 @@ public:
         {
             if (Player* player = GetCaster()->ToPlayer())
             {
-                Group* group = player->GetGroup();
-
-                if (group)
+                if (Group* group = player->GetGroup())
                     player->CastSpell(player, SPELL_MAGE_CONJURE_REFRESHMENT_GROUP, true);
                 else
                     player->CastSpell(player, SPELL_MAGE_CONJURE_REFRESHMENT_SOLO, true);
@@ -2418,7 +2194,7 @@ public:
             if (!caster || !unit)
                 return;
 
-            if (!caster->ToPlayer())
+            if (caster->GetTypeId() != TYPEID_PLAYER)
                 return;
 
             if (caster->IsValidAttackTarget(unit))
@@ -2432,7 +2208,7 @@ public:
             if (!caster || !unit)
                 return;
 
-            if (!caster->ToPlayer())
+            if (caster->GetTypeId() != TYPEID_PLAYER)
                 return;
 
             if (Aura* meteor = unit->GetAura(SPELL_MAGE_METEOR_BURN, caster->GetGUID()))
@@ -2474,7 +2250,7 @@ public:
             if (!caster)
                 return;
 
-            if (!caster->ToPlayer())
+            if (caster->GetTypeId() != TYPEID_PLAYER)
                 return;
 
             timeInterval += diff;
@@ -2664,23 +2440,26 @@ public:
 
         void EnterCombat(Unit* /*who*/) override
         {
-            if (!me->GetOwner())
-                return;
-
-            Player* owner = me->GetOwner()->ToPlayer();
+            Unit* owner = me->GetOwner();
             if (!owner)
                 return;
 
+            Player* ownerPlayer = owner->ToPlayer();
+            if (!ownerPlayer)
+                return;
+
             eSpells spellId = eSpells::SPELL_MAGE_FROSTBOLT;
-            /*if (owner->HasAura(SPELL_MAGE_GLYPH))
-            {*/
-            switch (owner->GetSpecializationId())
+            switch (ownerPlayer->GetSpecializationId())
             {
-            case TALENT_SPEC_MAGE_ARCANE:   spellId = eSpells::SPELL_MAGE_ARCANE_BLAST; break;
-            case TALENT_SPEC_MAGE_FIRE:     spellId = eSpells::SPELL_MAGE_FIREBALL;     break;
-            default: break;
+                case TALENT_SPEC_MAGE_ARCANE:
+                    spellId = eSpells::SPELL_MAGE_ARCANE_BLAST;
+                    break;
+                case TALENT_SPEC_MAGE_FIRE:
+                    spellId = eSpells::SPELL_MAGE_FIREBALL;
+                    break;
+                default:
+                    break;
             }
-            //}
 
             events.ScheduleEvent(spellId, 0); ///< Schedule cast
             me->GetMotionMaster()->Clear(false);
@@ -2713,7 +2492,7 @@ public:
         bool CanAIAttack(Unit const* target) const override
         {
             /// Am I supposed to attack this target? (ie. do not attack polymorphed target)
-            return target && !target->HasAuraType(SPELL_AURA_MOD_CONFUSE);
+            return target && !target->HasBreakableByDamageCrowdControlAura();
         }
 
         void UpdateAI(uint32 diff) override
@@ -2826,7 +2605,7 @@ struct at_mage_flame_patch : AreaTriggerAI
         if (!caster)
             return;
 
-        if (!caster->ToPlayer())
+        if (caster->GetTypeId() != TYPEID_PLAYER)
             return;
 
         timeInterval += diff;
@@ -2896,7 +2675,6 @@ void AddSC_mage_spell_scripts()
     RegisterAuraScript(spell_mage_ice_floes);
 
     //7.3.2.25549
-    RegisterSpellScript(spell_mage_unstable_magic);
     RegisterSpellScript(spell_mage_cold_snap);
     RegisterSpellScript(spell_mage_cone_of_cold);
     RegisterSpellScript(spell_mage_ice_lance);
@@ -2905,7 +2683,6 @@ void AddSC_mage_spell_scripts()
     RegisterSpellScript(spell_mage_frostbolt);
     RegisterSpellScript(spell_mage_blizzard);
     RegisterSpellScript(spell_mage_frozen_orb);
-    RegisterSpellScript(spell_mage_frost_bomb_damage);
     RegisterSpellScript(spell_mage_firestarter);
     RegisterSpellScript(spell_mage_pyroblast);
     RegisterSpellScript(spell_mage_living_bomb);
@@ -2914,15 +2691,12 @@ void AddSC_mage_spell_scripts()
     RegisterSpellScript(spell_mage_meteor_damage);
     RegisterSpellScript(spell_mage_comet_storm);
     RegisterSpellScript(spell_mage_fire_blast);
-    RegisterSpellScript(spell_mage_arcane_blast);
     RegisterSpellScript(spell_mage_arcane_barrage);
     RegisterSpellScript(spell_mage_arcane_missiles_damage);
     RegisterSpellScript(spell_mage_arcane_explosion);
 
     RegisterAuraScript(spell_mage_chrono_shift);
     RegisterAuraScript(spell_mage_arcane_missiles);
-    RegisterAuraScript(spell_mage_arcane_missiles_proc);
-    RegisterAuraScript(spell_mage_arcane_missiles_charges);
     RegisterAuraScript(spell_mage_arcane_barrier);
     RegisterAuraScript(spell_mage_conflagration);
     RegisterAuraScript(spell_mage_enhanced_pyrotechnics);
@@ -2931,7 +2705,6 @@ void AddSC_mage_spell_scripts()
     RegisterAuraScript(spell_mage_blazing_barrier);
     RegisterAuraScript(spell_mage_kindling);
     RegisterAuraScript(spell_mage_pyroblast_clearcasting_driver);
-    RegisterAuraScript(spell_mage_frozen_veins);
     RegisterAuraScript(spell_mage_chilled_to_the_core);
     RegisterAuraScript(spell_mage_chain_reaction);
     RegisterAuraScript(spell_mage_jouster);
@@ -2948,7 +2721,9 @@ void AddSC_mage_spell_scripts()
     RegisterAuraScript(spell_mage_ring_of_frost);
     new spell_mage_ring_of_frost_stun();
     RegisterSpellScript(spell_mage_cinderstorm);
-    
+    RegisterAuraScript(spell_mage_clearcasting);
+    RegisterAuraScript(spell_mage_presence_of_mind);
+
     // Spell Pet scripts
     RegisterAuraScript(spell_mage_pet_freeze);
 
