@@ -3379,6 +3379,9 @@ AuraApplication * Unit::_CreateAuraApplication(Aura* aura, uint32 effMask)
     AuraApplication * aurApp = new AuraApplication(this, caster, aura, effMask);
     m_appliedAuras.insert(AuraApplicationMap::value_type(aurId, aurApp));
 
+    if (caster)
+        caster->RegisterTargetAura(aurApp);
+
     if (aurSpellInfo->HasAnyAuraInterruptFlag())
     {
         m_interruptableAuras.push_back(aurApp);
@@ -3463,6 +3466,8 @@ void Unit::_UnapplyAura(AuraApplicationMap::iterator &i, AuraRemoveMode removeMo
 
     // Remove all pointers from lists here to prevent possible pointer invalidation on spellcast/auraapply/auraremove
     m_appliedAuras.erase(i);
+    if (caster)
+        caster->UnregisterTargetAura(aurApp);
 
     if (aura->GetSpellInfo()->HasAnyAuraInterruptFlag())
     {
@@ -3685,6 +3690,42 @@ std::vector<Aura*> Unit::GetOwnedAurasByTypes(std::initializer_list<AuraType> ty
     }
 
     return returnAuras;
+}
+
+Unit::AuraApplicationVector Unit::GetTargetAuraApplications(uint32 spellId) const
+{
+    AuraApplicationVector aurApps;
+
+    auto bounds = m_targetAuras.equal_range(spellId);
+    for (auto itr = bounds.first; itr != bounds.second; ++itr)
+    {
+        if (Unit* target = ObjectAccessor::GetUnit(*this, itr->second))
+            if (AuraApplication* aurApp = target->GetAuraApplication(itr->first, GetGUID()))
+                aurApps.push_back(aurApp);
+    }
+
+    return aurApps;
+}
+
+void Unit::RegisterTargetAura(AuraApplication const* aurApp)
+{
+    m_targetAuras.emplace(aurApp->GetBase()->GetId(), aurApp->GetTarget()->GetGUID());
+}
+
+void Unit::UnregisterTargetAura(AuraApplication const* aurApp)
+{
+    auto bounds = m_targetAuras.equal_range(aurApp->GetBase()->GetId());
+    for (auto itr = bounds.first; itr != bounds.second;)
+    {
+        if (itr->second == aurApp->GetTarget()->GetGUID())
+        {
+            itr = m_targetAuras.erase(itr);
+            // erase only one entry from container
+            return;
+        }
+        else
+            ++itr;
+    }
 }
 
 void Unit::RemoveAura(AuraApplicationMap::iterator &i, AuraRemoveMode mode)

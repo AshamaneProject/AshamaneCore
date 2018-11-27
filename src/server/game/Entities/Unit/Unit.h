@@ -963,6 +963,9 @@ class TC_GAME_API Unit : public WorldObject
         struct VisibleAuraSlotCompare { bool operator()(AuraApplication* left, AuraApplication* right) const; };
         typedef std::set<AuraApplication*, VisibleAuraSlotCompare> VisibleAuraContainer;
 
+        typedef std::unordered_multimap<uint32 /*spellId*/, ObjectGuid /*targetGuid*/> TargetAuraContainer;
+        typedef std::vector<AuraApplication*> AuraApplicationVector;
+
         virtual ~Unit();
 
         UnitAI* GetAI() { return i_AI; }
@@ -1476,6 +1479,10 @@ class TC_GAME_API Unit : public WorldObject
         // m_appliedAuras container management
         AuraApplicationMap      & GetAppliedAuras()       { return m_appliedAuras; }
         AuraApplicationMap const& GetAppliedAuras() const { return m_appliedAuras; }
+
+        AuraApplicationVector GetTargetAuraApplications(uint32 spellId) const;
+        void RegisterTargetAura(AuraApplication const* aurApp);
+        void UnregisterTargetAura(AuraApplication const* aurApp);
 
         void RemoveAura(AuraApplicationMap::iterator &i, AuraRemoveMode mode = AURA_REMOVE_BY_DEFAULT);
         void RemoveAura(uint32 spellId, ObjectGuid casterGUID = ObjectGuid::Empty, uint32 reqEffMask = 0, AuraRemoveMode removeMode = AURA_REMOVE_BY_DEFAULT);
@@ -2025,6 +2032,8 @@ class TC_GAME_API Unit : public WorldObject
         AuraList m_removedAuras;
         AuraMap::iterator m_auraUpdateIterator;
         uint32 m_removedAurasCount;
+
+        TargetAuraContainer m_targetAuras;
 
         AuraEffectList m_modAuras[TOTAL_AURAS];
         AuraList m_scAuras;                        // cast singlecast auras
