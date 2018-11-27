@@ -162,7 +162,8 @@ enum MageSpells
     SPELL_MAGE_FLAME_PATCH_AOE_DMG               = 205472,
     SPELL_MAGE_CINDERSTORM                       = 198929,
     SPELL_MAGE_CINDERSTORM_DMG                   = 198928,
-    SPELL_MAGE_IGNITE_DOT                        = 12654
+    SPELL_MAGE_IGNITE_DOT                        = 12654,
+    SPELL_MAGE_REVERBERATE                       = 281482
 };
 
 enum TemporalDisplacementSpells
@@ -223,33 +224,52 @@ class spell_mage_arcane_explosion : public SpellScript
 {
     PrepareSpellScript(spell_mage_arcane_explosion);
 
-    bool _hit;
+    int32 _hit;
+
+    bool Validate(SpellInfo const* /*spellInfo*/) override
+    {
+        return ValidateSpellInfo(
+            {
+                SPELL_MAGE_REVERBERATE
+            });
+    }
 
     bool Load() override
     {
-        _hit = false;
+        _hit = 0;
         return true;
     }
 
     void CheckTargets(std::list<WorldObject*>& targets)
     {
-        if (!targets.empty())
-            _hit = true;
+        _hit = targets.size();
     }
 
     void Prevent(SpellEffIndex effIndex)
     {
-        if (!_hit)
+        if (_hit == 0)
             PreventHitEffect(effIndex);
+    }
+
+    void PreventTalent(SpellEffIndex effIndex)
+    {
+        if (Aura* reverberate = GetCaster()->GetAura(SPELL_MAGE_REVERBERATE))
+            if (_hit >= reverberate->GetEffect(EFFECT_1)->GetAmount())
+                if (roll_chance_i(100 - reverberate->GetEffect(EFFECT_0)->GetAmount()))
+                    return;
+
+        PreventHitEffect(effIndex);
     }
 
     void Register() override
     {
-        OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_mage_arcane_explosion::CheckTargets, EFFECT_0, TARGET_UNIT_SRC_AREA_ENEMY);
-        OnEffectLaunch += SpellEffectFn(spell_mage_arcane_explosion::Prevent, EFFECT_1, SPELL_EFFECT_ENERGIZE);
-        OnEffectLaunchTarget += SpellEffectFn(spell_mage_arcane_explosion::Prevent, EFFECT_1, SPELL_EFFECT_ENERGIZE);
-        OnEffectHit += SpellEffectFn(spell_mage_arcane_explosion::Prevent, EFFECT_1, SPELL_EFFECT_ENERGIZE);
-        OnEffectHitTarget += SpellEffectFn(spell_mage_arcane_explosion::Prevent, EFFECT_1, SPELL_EFFECT_ENERGIZE);
+        OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_mage_arcane_explosion::CheckTargets, EFFECT_1, TARGET_UNIT_SRC_AREA_ENEMY);
+
+        OnEffectHit += SpellEffectFn(spell_mage_arcane_explosion::Prevent, EFFECT_0, SPELL_EFFECT_ENERGIZE);
+        OnEffectHitTarget += SpellEffectFn(spell_mage_arcane_explosion::Prevent, EFFECT_0, SPELL_EFFECT_ENERGIZE);
+
+        OnEffectHit += SpellEffectFn(spell_mage_arcane_explosion::PreventTalent, EFFECT_2, SPELL_EFFECT_ENERGIZE);
+        OnEffectHitTarget += SpellEffectFn(spell_mage_arcane_explosion::PreventTalent, EFFECT_2, SPELL_EFFECT_ENERGIZE);
     }
 };
 
