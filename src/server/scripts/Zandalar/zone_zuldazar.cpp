@@ -37,7 +37,7 @@ struct npc_talanji_arrival_escort : public npc_escortAI
 {
     npc_talanji_arrival_escort(Creature* creature) : npc_escortAI(creature) { }
 
-    void IsSummonedBy(Unit* summoner)
+    void IsSummonedBy(Unit* summoner) override
     {
         me->Mount(80358);
         Start(false, true, summoner->GetGUID());
@@ -62,7 +62,7 @@ struct npc_enforcer_pterrordax : public npc_escortAI
 {
     npc_enforcer_pterrordax(Creature* creature) : npc_escortAI(creature) { }
 
-    void IsSummonedBy(Unit* summoner)
+    void IsSummonedBy(Unit* summoner) override
     {
         if (Player* player = summoner->ToPlayer())
         {

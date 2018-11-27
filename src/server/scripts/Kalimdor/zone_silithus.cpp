@@ -1428,7 +1428,7 @@ struct npc_azeroth_heart_chamber_azerite_wound : public ScriptedAI
 {
     npc_azeroth_heart_chamber_azerite_wound(Creature* creature) : ScriptedAI(creature) { }
 
-    void Reset()
+    void Reset() override
     {
         me->GetScheduler().CancelAll();
         me->GetScheduler().Schedule(1s, [](TaskContext context)

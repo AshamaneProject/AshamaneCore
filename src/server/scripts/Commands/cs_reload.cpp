@@ -33,6 +33,7 @@ EndScriptData */
 #include "CreatureTextMgr.h"
 #include "DatabaseEnv.h"
 #include "DisableMgr.h"
+#include "GameObject.h"
 #include "ItemEnchantmentMgr.h"
 #include "Language.h"
 #include "LFGMgr.h"
@@ -49,6 +50,7 @@ EndScriptData */
 #include "WardenCheckMgr.h"
 #include "WaypointManager.h"
 #include "World.h"
+#include "WorldSession.h"
 
 class reload_commandscript : public CommandScript
 {
@@ -1109,6 +1111,20 @@ public:
     {
         TC_LOG_INFO("misc", "Re-Loading Smart Scripts...");
         sSmartScriptMgr->LoadSmartAIFromDB();
+
+        if (WorldSession* session = handler->GetSession())
+        {
+            std::list<Creature*> creatures;
+            session->GetPlayer()->GetCreatureListInGrid(creatures);
+            for (Creature* creature : creatures)
+                creature->AIM_Initialize();
+
+            std::list<GameObject*> gameObjects;
+            session->GetPlayer()->GetGameObjectListWithEntryInGrid(gameObjects, 0);
+            for (GameObject* gameObject : gameObjects)
+                gameObject->AIM_Initialize();
+        }
+
         handler->SendGlobalGMSysMessage("Smart Scripts reloaded.");
         return true;
     }
