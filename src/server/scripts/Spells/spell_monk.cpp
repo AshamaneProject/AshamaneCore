@@ -3195,10 +3195,10 @@ public:
                 return;
             Unit* caster = GetCaster();
 
-            //Formula:  [(((Spell power * 31.164) + 0)) * (1 + $versadmg)]
-            //Simplified to : [(Spellpower * 31.164)]
+            //Formula:  [(((Spell power * 11) + 0)) * (1 + Versatility)]
+            //Simplified to : [(Spellpower * 11)]
             //Versatility will be taken into account at a later date.
-            amount += caster->GetTotalSpellPowerValue(GetSpellInfo()->GetSchoolMask(), true) * 31.164;
+            amount += caster->GetTotalSpellPowerValue(GetSpellInfo()->GetSchoolMask(), true) * 11;
             canBeRecalculated = false;
         }
 
