@@ -163,7 +163,8 @@ enum MageSpells
     SPELL_MAGE_CINDERSTORM                       = 198929,
     SPELL_MAGE_CINDERSTORM_DMG                   = 198928,
     SPELL_MAGE_IGNITE_DOT                        = 12654,
-    SPELL_MAGE_REVERBERATE                       = 281482
+    SPELL_MAGE_REVERBERATE                       = 281482,
+    SPELL_MAGE_RESONANCE                         = 205028
 };
 
 enum TemporalDisplacementSpells
@@ -434,19 +435,47 @@ private:
     Unit* _mainTarget;
 };
 
-// Arcane Barrage - 44425
+// 44425 - Arcane Barrage
 class spell_mage_arcane_barrage : public SpellScript
 {
     PrepareSpellScript(spell_mage_arcane_barrage);
 
-    void OnHit(SpellEffIndex /* effIndex */)
+    uint32 _chainTargetCount = 0;
+
+    bool Validate(SpellInfo const* /*spellInfo*/) override
+    {
+        return ValidateSpellInfo
+        ({
+            SPELL_MAGE_RESONANCE
+        });
+    }
+
+    void FilterTargets(std::list<WorldObject*>& targets)
+    {
+        if (targets.size() > GetCaster()->GetPower(POWER_ARCANE_CHARGES))
+            targets.resize(GetCaster()->GetPower(POWER_ARCANE_CHARGES));
+        _chainTargetCount = targets.size();
+    }
+
+    void HandleEffectHitTarget(SpellEffIndex /*effIndex*/)
+    {
+        int32 damage = GetHitDamage();
+        if (AuraEffect const* aurEff = GetCaster()->GetAuraEffect(SPELL_MAGE_RESONANCE, EFFECT_0))
+            AddPct(damage, ((1 + _chainTargetCount) * aurEff->GetAmount()));
+
+        SetHitDamage(damage);
+    }
+
+    void RemoveCharges()
     {
         GetCaster()->SetPower(POWER_ARCANE_CHARGES, 0);
     }
 
     void Register() override
     {
-        OnEffectHitTarget += SpellEffectFn(spell_mage_arcane_barrage::OnHit, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
+        OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_mage_arcane_barrage::FilterTargets, EFFECT_0, TARGET_UNIT_TARGET_ENEMY);
+        OnEffectHitTarget += SpellEffectFn(spell_mage_arcane_barrage::HandleEffectHitTarget, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
+        AfterCast += SpellCastFn(spell_mage_arcane_barrage::RemoveCharges);
     }
 };
 
