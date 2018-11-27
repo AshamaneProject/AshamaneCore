@@ -265,6 +265,7 @@ public:
             { "set",       rbac::RBAC_PERM_COMMAND_NPC_SET,       false, nullptr,              "", npcSetCommandTable },
             { "evade",     rbac::RBAC_PERM_COMMAND_NPC_EVADE,     false, &HandleNpcEvadeCommand,             ""       },
             { "reload",    rbac::RBAC_PERM_COMMAND_NPC_RELOAD,    false, &HandleNpcReloadCommand,            ""		  },
+            { "aianimkit", rbac::RBAC_PERM_COMMAND_NPC,           false, &HandleNpcAIAnimKitCommand,         ""		  },
         };
         static std::vector<ChatCommand> commandTable =
         {
@@ -1744,6 +1745,24 @@ public:
         TC_LOG_DEBUG("sql.dev", "UPDATE creature_template SET InhabitType = %u WHERE entry = %u;", inhabitType, entry);
 
         handler->PSendSysMessage("InhabitType updated in database, reboot needed");
+        return true;
+    }
+
+    static bool HandleNpcAIAnimKitCommand(ChatHandler* handler, char const* args)
+    {
+        Creature* creatureTarget = handler->getSelectedCreature();
+        if (!creatureTarget)
+        {
+            handler->PSendSysMessage(LANG_SELECT_CREATURE);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        CommandArgs cmdArgs = CommandArgs(handler, args, { CommandArgs::ARG_UINT, CommandArgs::ARG_UINT_OPTIONAL });
+        if (!cmdArgs.ValidArgs())
+            return false;
+
+        creatureTarget->SetAIAnimKitId(cmdArgs.GetArg<uint32>(0), bool(cmdArgs.GetArg<uint32>(1, 0)));
         return true;
     }
 };
