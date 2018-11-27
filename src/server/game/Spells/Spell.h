@@ -659,6 +659,7 @@ class TC_GAME_API Spell
         void SetAutoRepeat(bool rep) { m_autoRepeat = rep; }
         void ReSetTimer() { m_timer = m_casttime > 0 ? m_casttime : 0; }
         TriggerCastFlags GetTriggeredCastFlags() const { return _triggeredCastFlags; }
+        void SetTriggerCastFlags(TriggerCastFlags flags) { _triggeredCastFlags = TriggerCastFlags(uint32(_triggeredCastFlags) | flags); }
         bool IsTriggered() const;
         bool IsIgnoringCooldowns() const;
         bool IsProcDisabled() const;

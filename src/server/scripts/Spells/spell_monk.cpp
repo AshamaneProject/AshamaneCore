@@ -797,16 +797,20 @@ public:
     {
         PrepareSpellScript(spell_monk_enveloping_mist_SpellScript);
 
-        void HandleAfterCast()
+        void HandleOnPrepare()
         {
-            if (Player* _player = GetCaster()->ToPlayer())
-                if (Unit* target = GetExplTargetUnit())
-                    _player->CastSpell(target, SPELL_MONK_ENVELOPING_MIST_HEAL, true);
+            if (GetCaster()->GetCurrentSpell(CURRENT_CHANNELED_SPELL) && GetCaster()->GetCurrentSpell(CURRENT_CHANNELED_SPELL)->GetSpellInfo()->Id == SPELL_MONK_SOOTHING_MIST)
+            {
+                TriggerCastFlags castFlags = TriggerCastFlags(GetSpell()->GetTriggeredCastFlags() | TRIGGERED_CAST_DIRECTLY);
+                GetSpell()->SetTriggerCastFlags(castFlags);
+                SpellCastTargets targets = GetCaster()->GetCurrentSpell(CURRENT_CHANNELED_SPELL)->m_targets;
+                GetSpell()->InitExplicitTargets(targets);
+            }
         }
 
         void Register() override
         {
-            AfterCast += SpellCastFn(spell_monk_enveloping_mist_SpellScript::HandleAfterCast);
+            OnPrepare += SpellOnPrepareFn(spell_monk_enveloping_mist_SpellScript::HandleOnPrepare);
         }
     };
 
@@ -3655,6 +3659,45 @@ class spell_monk_tiger_palm : public SpellScript
     }
 };
 
+// 116670 - Vivify
+class spell_monk_vivify : public SpellScriptLoader
+{
+public:
+    spell_monk_vivify() : SpellScriptLoader("spell_monk_vivify") { }
+
+    class spell_monk_vivify_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_monk_vivify_SpellScript);
+
+        void FilterRenewingMist(std::list<WorldObject*>& targets)
+        {
+            targets.remove_if(Trinity::UnitAuraCheck(false, SPELL_MONK_RENEWING_MIST_HOT, GetCaster()->GetGUID()));
+        }
+
+        void HandleOnPrepare()
+        {
+            if (GetCaster()->GetCurrentSpell(CURRENT_CHANNELED_SPELL) && GetCaster()->GetCurrentSpell(CURRENT_CHANNELED_SPELL)->GetSpellInfo()->Id == SPELL_MONK_SOOTHING_MIST)
+            {
+                TriggerCastFlags castFlags = TriggerCastFlags(GetSpell()->GetTriggeredCastFlags() | TRIGGERED_CAST_DIRECTLY);
+                GetSpell()->SetTriggerCastFlags(castFlags);
+                SpellCastTargets targets = GetCaster()->GetCurrentSpell(CURRENT_CHANNELED_SPELL)->m_targets;
+                GetSpell()->InitExplicitTargets(targets);
+            }
+        }
+
+        void Register() override
+        {
+            OnPrepare += SpellOnPrepareFn(spell_monk_vivify_SpellScript::HandleOnPrepare);
+            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_monk_vivify_SpellScript::FilterRenewingMist, EFFECT_1, TARGET_UNIT_DEST_AREA_ALLY);
+        }
+    };
+
+    SpellScript* GetSpellScript() const override
+    {
+        return new spell_monk_vivify_SpellScript();
+    }
+};
+
 void AddSC_monk_spell_scripts()
 {
     RegisterAreaTriggerAI(at_monk_gift_of_the_ox_sphere);
@@ -3733,6 +3776,7 @@ void AddSC_monk_spell_scripts()
     new spell_monk_zen_pilgrimage();
     new spell_monk_zen_pulse();
     new playerScript_monk_whirling_dragon_punch();
+    new spell_monk_vivify();
     RegisterAuraScript(spell_monk_whirling_dragon_punch);
     RegisterSpellScript(spell_monk_tiger_palm);
 
