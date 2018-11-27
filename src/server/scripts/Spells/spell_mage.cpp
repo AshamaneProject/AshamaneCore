@@ -451,7 +451,7 @@ class spell_mage_arcane_blast : public SpellScript
     }
 };
 
-// Arcane Barrier - 235450
+// Prismatic Barrier (Arcane Barrier) - 235450
 class spell_mage_arcane_barrier : public AuraScript
 {
     PrepareAuraScript(spell_mage_arcane_barrier);
@@ -460,7 +460,8 @@ class spell_mage_arcane_barrier : public AuraScript
     {
         canBeRecalculated = false;
         if (Unit* caster = GetCaster())
-            amount += int32(7.0f * caster->SpellBaseHealingBonusDone(GetSpellInfo()->GetSchoolMask()));
+            if (SpellEffectInfo const* eff4 = GetSpellInfo()->GetEffect(EFFECT_4))
+                amount = int32(CalculatePct(caster->GetMaxHealth(), eff4->CalcValue()));
     }
 
     void Register() override
@@ -777,7 +778,8 @@ class spell_mage_blazing_barrier : public AuraScript
     {
         canBeRecalculated = false;
         if (Unit* caster = GetCaster())
-            amount += int32(caster->SpellBaseHealingBonusDone(GetSpellInfo()->GetSchoolMask()) * 7.0f);
+            if (SpellEffectInfo const* eff1 = GetSpellInfo()->GetEffect(EFFECT_1))
+                amount = int32(CalculatePct(caster->GetMaxHealth(), eff1->CalcValue()));
     }
 
     void Absorb(AuraEffect* auraEffect, DamageInfo& dmgInfo, uint32& /*absorbAmount*/)
@@ -1069,23 +1071,10 @@ class spell_mage_ice_barrier : public AuraScript
 
     void CalculateAmount(AuraEffect const* /*aurEff*/, int32& amount, bool& canBeRecalculated)
     {
-        Unit* caster = GetCaster();
-        if (!caster)
-            return;
-
         canBeRecalculated = false;
-        int32 absorbamount = int32(10.0f * caster->SpellBaseHealingBonusDone(GetSpellInfo()->GetSchoolMask()));
-
-        if (caster->HasAura(SPELL_MAGE_SHIELD_OF_ALODI))
-        {
-            if (Aura* shieldOfAlodiRank = caster->GetAura(SPELL_MAGE_SHIELD_OF_ALODI))
-            {
-                int32 pct = shieldOfAlodiRank->GetEffect(EFFECT_0)->GetAmount();
-                AddPct(absorbamount, pct);
-            }
-        }
-
-        amount += absorbamount;
+        if (Unit* caster = GetCaster())
+            if (SpellEffectInfo const* eff1 = GetSpellInfo()->GetEffect(EFFECT_1))
+                amount = int32(CalculatePct(caster->GetMaxHealth(), eff1->CalcValue()));
     }
 
     void Absorb(AuraEffect* auraEffect, DamageInfo& dmgInfo, uint32& /*absorbAmount*/)
