@@ -5208,7 +5208,9 @@ void Spell::EffectKillCreditPersonal(SpellEffIndex /*effIndex*/)
     if (!unitTarget || unitTarget->GetTypeId() != TYPEID_PLAYER)
         return;
 
-    unitTarget->ToPlayer()->KilledMonsterCredit(effectInfo->MiscValue);
+    uint32 killCreditCount = damage > 0 ? damage : 1;
+    for (uint32 i = 0; i < damage; ++i)
+        unitTarget->ToPlayer()->KilledMonsterCredit(effectInfo->MiscValue);
 }
 
 void Spell::EffectKillCredit(SpellEffIndex /*effIndex*/)
