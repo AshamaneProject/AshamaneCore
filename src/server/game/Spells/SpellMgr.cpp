@@ -2583,6 +2583,9 @@ void SpellMgr::LoadSpellInfoCorrections()
         spellInfo->AttributesEx3 |= SPELL_ATTR3_CANT_TRIGGER_PROC;
     });
 
+    // Chi Torpedo
+    ApplySpellFix({ 115008 }, [](SpellInfo* spellInfo) { const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_2))->BasePoints = 410; });
+
     ApplySpellFix({
         31347, // Doom
         36327, // Shoot Arcane Explosion Arrow
