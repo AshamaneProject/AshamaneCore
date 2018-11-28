@@ -1381,6 +1381,7 @@ class GenericCreatureScript : public CreatureScript
 #define RegisterSceneScript(script) new script()
 #define RegisterQuestScript(script) new script()
 #define RegisterConversationScript(script) new script()
+#define RegisterPlayerScript(script) new script()
 
 template <class AI, AI*(*AIFactory)(Creature*)>
 class FactoryCreatureScript : public CreatureScript

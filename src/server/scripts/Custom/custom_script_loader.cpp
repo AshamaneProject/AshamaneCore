@@ -17,6 +17,7 @@
 
 // This is where scripts' loading functions should be declared:
 void AddSC_custom_npcs();
+void AddSC_custom_player_script();
 
 // ADM declaration begin
 // ADM declaration end
@@ -26,6 +27,7 @@ void AddSC_custom_npcs();
 void AddCustomScripts()
 {
     AddSC_custom_npcs();
+    AddSC_custom_player_script();
 
     // ADM call begin
     // ADM call end
