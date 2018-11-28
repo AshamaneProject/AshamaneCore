@@ -167,7 +167,9 @@ enum MageSpells
     SPELL_MAGE_CLEARCASTING_BUFF                 = 277726, // Channel quicker
     SPELL_MAGE_CLEARCASTING_EFFECT               = 263725, // Removing the costs
     SPELL_MAGE_CLEARCASTING_PVP_STACK_EFFECT     = 276743, // Costs and is stackable
-    SPELL_MAGE_ARCANE_EMPOWERMENT                = 276741
+    SPELL_MAGE_ARCANE_EMPOWERMENT                = 276741,
+    SPELL_MAGE_MANA_SHIELD_TALENT                = 235463,
+    SPELL_MAGE_MANA_SHIELD_BURN                  = 235470
 };
 
 enum TemporalDisplacementSpells
@@ -476,8 +478,18 @@ class spell_mage_arcane_barrier : public AuraScript
                 amount = int32(CalculatePct(caster->GetMaxHealth(), eff4->CalcValue()));
     }
 
+    void CalcAbsorb(AuraEffect* aurEff, DamageInfo& dmgInfo, uint32& absorbAmount)
+    {
+        if (AuraEffect const* eff0 = GetCaster()->GetAuraEffect(SPELL_MAGE_MANA_SHIELD_TALENT, EFFECT_0))
+        {
+            int32 manaBurned = CalculatePct(dmgInfo.GetDamage(), eff0->GetAmount());
+            GetCaster()->CastCustomSpell(SPELL_MAGE_MANA_SHIELD_BURN, SPELLVALUE_BASE_POINT0, manaBurned, GetCaster(), TRIGGERED_FULL_MASK);
+        }
+    }
+
     void Register() override
     {
+        OnEffectAbsorb += AuraEffectAbsorbFn(spell_mage_arcane_barrier::CalcAbsorb, EFFECT_0);
         DoEffectCalcAmount += AuraEffectCalcAmountFn(spell_mage_arcane_barrier::CalculateAmount, EFFECT_0, SPELL_AURA_SCHOOL_ABSORB);
     }
 };
