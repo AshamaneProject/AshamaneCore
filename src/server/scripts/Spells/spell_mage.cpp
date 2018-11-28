@@ -169,7 +169,9 @@ enum MageSpells
     SPELL_MAGE_CLEARCASTING_PVP_STACK_EFFECT     = 276743, // Costs and is stackable
     SPELL_MAGE_ARCANE_EMPOWERMENT                = 276741,
     SPELL_MAGE_MANA_SHIELD_TALENT                = 235463,
-    SPELL_MAGE_MANA_SHIELD_BURN                  = 235470
+    SPELL_MAGE_MANA_SHIELD_BURN                  = 235470,
+    SPELL_MAGE_RULE_OF_THREES                    = 264354,
+    SPELL_MAGE_RULE_OF_THREES_BUFF               = 264774
 };
 
 enum TemporalDisplacementSpells
@@ -182,7 +184,6 @@ enum TemporalDisplacementSpells
     SPELL_PET_NETHERWINDS_FATIGUED               = 160455
 };
 
-// Runic Empowerment - 81229
 class playerscript_mage_arcane : public PlayerScript
 {
 public:
@@ -193,15 +194,25 @@ public:
         AURA_ARCANIC_CHARGE = 36032,
     };
 
-    void OnModifyPower(Player* player, Powers power, int32 /*oldValue*/, int32& newValue, bool /*regen*/, bool /*after*/)
+    void OnModifyPower(Player* player, Powers power, int32 oldValue, int32& newValue, bool /*regen*/, bool after)
     {
+        if (after)
+            return;
+
         if (power != POWER_ARCANE_CHARGES)
             return;
 
-        player->RemoveAurasDueToSpell(AURA_ARCANIC_CHARGE);
-
-        for (int32 i = 0; i < newValue; ++i)
-            player->CastSpell(player, AURA_ARCANIC_CHARGE, true);
+        // Going up in charges is handled by aura 190427
+        // Decreasing power seems weird clientside does not always match serverside power amount (client stays at 1, server is at 0)
+        if (oldValue >= newValue)
+        {
+            player->RemoveAurasDueToSpell(AURA_ARCANIC_CHARGE);
+            for (int32 i = 0; i < newValue; ++i)
+                player->CastSpell(player, AURA_ARCANIC_CHARGE, true);
+        }
+        if (player->HasAura(SPELL_MAGE_RULE_OF_THREES))
+            if (newValue == 3 && oldValue == 2)
+                player->CastSpell(player, SPELL_MAGE_RULE_OF_THREES_BUFF, true);
     }
 };
 
@@ -290,9 +301,12 @@ class spell_mage_arcane_missiles : public AuraScript
         if (!caster)
             return;
 
+        //@TODO: Remove when proc system can handle arcane missiles.....
         caster->RemoveAura(SPELL_MAGE_CLEARCASTING_BUFF);
         caster->RemoveAura(SPELL_MAGE_CLEARCASTING_EFFECT);
-        caster->RemoveAura(SPELL_MAGE_CLEARCASTING_PVP_STACK_EFFECT);
+        if (Aura* pvpClearcast = caster->GetAura(SPELL_MAGE_CLEARCASTING_PVP_STACK_EFFECT))
+            pvpClearcast->ModStackAmount(-1);
+        caster->RemoveAura(SPELL_MAGE_RULE_OF_THREES_BUFF);
     }
 
     void Register() override
@@ -368,6 +382,24 @@ class spell_mage_clearcasting : public AuraScript
     }
 };
 
+// Arcane Blast - 30451
+class spell_mage_arcane_blast : public SpellScript
+{
+    PrepareSpellScript(spell_mage_arcane_blast);
+
+    void DoCast()
+    {
+        if (Unit* caster = GetCaster())
+            if (Aura* threes = caster->GetAura(SPELL_MAGE_RULE_OF_THREES_BUFF))
+                threes->Remove();
+    }
+
+    void Register() override
+    {
+        OnCast += SpellCastFn(spell_mage_arcane_blast::DoCast);
+    }
+};
+
 // Presence of mind - 205025
 class spell_mage_presence_of_mind : public AuraScript
 {
@@ -375,8 +407,6 @@ class spell_mage_presence_of_mind : public AuraScript
 
     bool HandleProc(ProcEventInfo& eventInfo)
     {
-        Unit* caster = GetCaster();
-
         if (eventInfo.GetSpellInfo()->Id == SPELL_MAGE_ARCANE_BLAST)
             return true;
         return false;
@@ -2735,6 +2765,7 @@ void AddSC_mage_spell_scripts()
     RegisterSpellScript(spell_mage_cinderstorm);
     RegisterAuraScript(spell_mage_clearcasting);
     RegisterAuraScript(spell_mage_presence_of_mind);
+    RegisterSpellScript(spell_mage_arcane_blast);
 
     // Spell Pet scripts
     RegisterAuraScript(spell_mage_pet_freeze);

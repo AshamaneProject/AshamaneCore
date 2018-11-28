@@ -138,6 +138,7 @@ enum PriestSpells
     SPELL_PRIEST_PRAYER_OF_MENDING_HEAL             = 33110,
     SPELL_PRIEST_PRAYER_OF_MENDING_RADIUS           = 123262,
     SPELL_PRIEST_RAPID_RENEWAL_AURA                 = 95649,
+    SPELL_PRIEST_RAPTURE                            = 47536,
     SPELL_PRIEST_RAPTURE_ENERGIZE                   = 47755,
     SPELL_PRIEST_REFLECTIVE_SHIELD_R1               = 33201,
     SPELL_PRIEST_REFLECTIVE_SHIELD_TRIGGERED        = 33619,
@@ -189,6 +190,7 @@ enum PriestSpells
     SPELL_PRIEST_VOID_TENDRILS_TRIGGER              = 127665,
     SPELL_PRIEST_VOID_TORRENT_PREVENT_REGEN         = 262173,
     SPELL_PRIEST_WEAKENED_SOUL                      = 6788,
+    SPELL_SHADOW_PRIEST_BASE_AURA                   = 137033
 };
 
 enum PriestSpellIcons
@@ -229,13 +231,18 @@ class spell_pri_power_word_shield : public SpellScript
     }
 };
 
+/*
+$rapture=$?a47536[${(1+$47536s1/100)}][${1}]
+$shadow=$?a137033[${1.36}][${1}]
+$shield=${$SP*1.54*(1+$@versadmg)*$<rapture>*$<shadow>}
+*/
 class spell_pri_power_word_shield_AuraScript : public AuraScript
 {
     PrepareAuraScript(spell_pri_power_word_shield_AuraScript);
 
     bool Validate(SpellInfo const* /*spellInfo*/) override
     {
-        return ValidateSpellInfo({ SPELL_PRIEST_POWER_WORD_SHIELD });
+        return ValidateSpellInfo({ SPELL_PRIEST_POWER_WORD_SHIELD, SPELL_PRIEST_RAPTURE, SPELL_SHADOW_PRIEST_BASE_AURA });
     }
 
     void CalculateAmount(AuraEffect const* aurEff, int32& amount, bool& /*canBeRecalculated*/)
@@ -244,8 +251,13 @@ class spell_pri_power_word_shield_AuraScript : public AuraScript
         {
             if (Player* player = caster->ToPlayer())
             {
-                int32 absorbamount = int32(5.5f * player->SpellBaseHealingBonusDone(GetSpellInfo()->GetSchoolMask()));
-                amount += absorbamount;
+                int32 absorbAmount = int32(1.54f * player->SpellBaseHealingBonusDone(GetSpellInfo()->GetSchoolMask()));
+                if (Aura* rapture = player->GetAura(SPELL_PRIEST_RAPTURE))
+                    if (AuraEffect* eff0 = rapture->GetEffect(EFFECT_0))
+                        absorbAmount += CalculatePct(absorbAmount, eff0->GetAmount());
+                if (player->HasAura(SPELL_SHADOW_PRIEST_BASE_AURA))
+                    absorbAmount *= 1.36f;
+                amount += absorbAmount;
             }
         }
     }
@@ -1524,8 +1536,8 @@ class spell_pri_shadowform : public SpellScriptLoader
 
             void Register() override
             {
-                AfterEffectApply += AuraEffectApplyFn(spell_pri_shadowform_AuraScript::HandleEffectApply, EFFECT_0, SPELL_AURA_MOD_DAMAGE_PERCENT_DONE, AURA_EFFECT_HANDLE_REAL_OR_REAPPLY_MASK);
-                AfterEffectRemove += AuraEffectRemoveFn(spell_pri_shadowform_AuraScript::HandleEffectRemove, EFFECT_0, SPELL_AURA_MOD_DAMAGE_PERCENT_DONE, AURA_EFFECT_HANDLE_REAL_OR_REAPPLY_MASK);
+                AfterEffectApply += AuraEffectApplyFn(spell_pri_shadowform_AuraScript::HandleEffectApply, EFFECT_0, SPELL_AURA_ADD_PCT_MODIFIER, AURA_EFFECT_HANDLE_REAL_OR_REAPPLY_MASK);
+                AfterEffectRemove += AuraEffectRemoveFn(spell_pri_shadowform_AuraScript::HandleEffectRemove, EFFECT_0, SPELL_AURA_ADD_PCT_MODIFIER, AURA_EFFECT_HANDLE_REAL_OR_REAPPLY_MASK);
             }
         };
 
