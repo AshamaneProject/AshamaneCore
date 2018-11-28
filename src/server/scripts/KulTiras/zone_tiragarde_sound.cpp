@@ -160,6 +160,25 @@ struct npc_flynn_fairwind : public ScriptedAI
 {
     npc_flynn_fairwind(Creature* creature) : ScriptedAI(creature) { }
 
+    enum FlynnTalks
+    {
+        TALK_HERES_PLAN     = 6,
+        TALK_HIT_ME         = 7,
+        TALK_COME_ON_HIT_ME = 8,
+        TALK_DONT_SHY_HIT_ME= 9,
+        TALK_YOU_BRUTE      = 10,
+        TALK_GUARD          = 11,
+        TALK_HIT_THAT_LEVER = 12,
+    };
+
+    enum GuardTalks
+    {
+        TALK_WHATS_GOING_ON = 0,
+        TALK_STOP_RIGHT_HERE= 1,
+        TALK_WHAT           = 2,
+        TALK_NO             = 3,
+    };
+
     void sQuestAccept(Player* player, Quest const* quest) override
     {
         if (quest->ID == QUEST_OUT_LIKE_FLYNN)
@@ -192,6 +211,11 @@ struct npc_flynn_fairwind : public ScriptedAI
         .Schedule(3s, [this](TaskContext /*context*/)
         {
             me->SetFacingToObject(GetPlayer());
+            Talk(TALK_HERES_PLAN, GetPlayer());
+        })
+        .Schedule(5s, [this](TaskContext /*context*/)
+        {
+            Talk(TALK_HIT_ME, GetPlayer());
             me->SetFlag64(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
         });
     }
@@ -203,7 +227,7 @@ struct npc_flynn_fairwind : public ScriptedAI
 
         me->RemoveFlag64(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
         me->HandleEmoteCommand(EMOTE_ONESHOT_BEG);
-        // Talk "Oh you brute"
+        Talk(TALK_YOU_BRUTE);
 
         caster->ToPlayer()->KilledMonsterCredit(me->GetEntry());
 
@@ -211,7 +235,7 @@ struct npc_flynn_fairwind : public ScriptedAI
         {
             me->GetScheduler().Schedule(2s, [this](TaskContext /*context*/)
             {
-                // Talk "GUARD"
+                Talk(TALK_GUARD);
                 me->SetByteValue(UNIT_FIELD_BYTES_1, UNIT_BYTES_1_OFFSET_STAND_STATE, UNIT_STAND_STATE_DEAD);
             });
 
@@ -225,7 +249,7 @@ struct npc_flynn_fairwind : public ScriptedAI
             })
             .Schedule(5s, [](TaskContext context)
             {
-                // Talk What's going on
+                GetContextCreature()->AI()->Talk(TALK_WHATS_GOING_ON);
                 GetContextUnit()->HandleEmoteCommand(EMOTE_ONESHOT_EXCLAMATION);
             })
             .Schedule(6s, [](TaskContext context)
@@ -239,17 +263,20 @@ struct npc_flynn_fairwind : public ScriptedAI
             })
             .Schedule(8s, [](TaskContext context)
             {
+                GetContextCreature()->AI()->Talk(TALK_STOP_RIGHT_HERE);
                 GetContextUnit()->GetMotionMaster()->MovePoint(2, 143.408783f, -2710.396240f, 29.187752f);
                 // Set hostile
             });
 
-            me->GetScheduler().Schedule(9s, [this](TaskContext /*context*/)
+            me->GetScheduler().Schedule(9s, [this, ashvaneJailer](TaskContext /*context*/)
             {
                 me->SetByteValue(UNIT_FIELD_BYTES_1, UNIT_BYTES_1_OFFSET_STAND_STATE, UNIT_STAND_STATE_STAND);
+                ashvaneJailer->AI()->Talk(TALK_WHAT);
             })
-            .Schedule(10s, [this](TaskContext /*context*/)
+            .Schedule(10s, [this, ashvaneJailer](TaskContext /*context*/)
             {
                 me->CastSpell(nullptr, SPELL_FLYNN_KNOCKOUT_JAILER, false);
+                ashvaneJailer->AI()->Talk(TALK_NO);
             })
             .Schedule(11s, [this](TaskContext /*context*/)
             {
@@ -258,6 +285,7 @@ struct npc_flynn_fairwind : public ScriptedAI
             .Schedule(14s, [this](TaskContext /*context*/)
             {
                 me->SetFacingTo(2.540090f);
+                Talk(TALK_HIT_THAT_LEVER);
             });
         }
     }
