@@ -5209,7 +5209,7 @@ void Spell::EffectKillCreditPersonal(SpellEffIndex /*effIndex*/)
         return;
 
     uint32 killCreditCount = damage > 0 ? damage : 1;
-    for (uint32 i = 0; i < damage; ++i)
+    for (uint32 i = 0; i < killCreditCount; ++i)
         unitTarget->ToPlayer()->KilledMonsterCredit(effectInfo->MiscValue);
 }
 
