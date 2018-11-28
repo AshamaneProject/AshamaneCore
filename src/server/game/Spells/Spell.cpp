@@ -6901,8 +6901,8 @@ void Spell::Delayed() // only called in DealDamage()
     //    return;
 
     //check pushback reduce
-    int32 delaytime = 500;                                  // spellcasting delay is normally 500ms
-    int32 delayReduce = 100;                                // must be initialized to 100 for percent modifiers
+    int32 delaytime = 150;      // spellcasting delay is normally 500ms, updated Legion 2x150ms ~
+    int32 delayReduce = 100;    // must be initialized to 100 for percent modifiers
     m_caster->ToPlayer()->ApplySpellMod(m_spellInfo->Id, SPELLMOD_NOT_LOSE_CASTING_TIME, delayReduce, this);
     delayReduce += m_caster->GetTotalAuraModifier(SPELL_AURA_REDUCE_PUSHBACK) - 100;
     if (delayReduce >= 100)
@@ -6939,8 +6939,11 @@ void Spell::DelayedChannel()
     // should be affected by modifiers, not take the dbc duration.
     int32 duration = ((m_channeledDuration > 0) ? m_channeledDuration : m_spellInfo->GetDuration());
 
-    int32 delaytime = CalculatePct(duration, 25); // channeling delay is normally 25% of its time per hit
-    int32 delayReduce = 100;                                    // must be initialized to 100 for percent modifiers
+    // needs some more research, sniff shows anywhere from 130 to 189, it is not a pct of duration
+    // https://gist.github.com/EPS1L0N/fa8977a74918ba4b9c63
+    int32 delaytime = 150;
+    int32 delayReduce = 100;    // must be initialized to 100 for percent modifiers
+
     m_caster->ToPlayer()->ApplySpellMod(m_spellInfo->Id, SPELLMOD_NOT_LOSE_CASTING_TIME, delayReduce, this);
     delayReduce += m_caster->GetTotalAuraModifier(SPELL_AURA_REDUCE_PUSHBACK) - 100;
     if (delayReduce >= 100)

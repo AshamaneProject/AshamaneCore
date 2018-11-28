@@ -954,13 +954,23 @@ uint32 Unit::DealDamage(Unit* victim, uint32 damage, CleanDamage const* cleanDam
                             uint32 interruptFlags = spell->m_spellInfo->InterruptFlags;
                             if (interruptFlags & SPELL_INTERRUPT_FLAG_ABORT_ON_DMG)
                                 victim->InterruptNonMeleeSpells(false);
-                            else if (interruptFlags & SPELL_INTERRUPT_FLAG_PUSH_BACK)
+                            else if (interruptFlags & SPELL_INTERRUPT_FLAG_PUSH_BACK && cleanDamage && (cleanDamage->attackType == BASE_ATTACK || cleanDamage->attackType == OFF_ATTACK))
                                 spell->Delayed();
                         }
 
                 if (Spell* spell = victim->m_currentSpells[CURRENT_CHANNELED_SPELL])
-                    if (spell->getState() == SPELL_STATE_CASTING && spell->m_spellInfo->HasChannelInterruptFlag(CHANNEL_FLAG_DELAY) && damagetype != DOT)
-                        spell->DelayedChannel();
+                    if (spell->getState() == SPELL_STATE_CASTING)
+                    {
+                        // No spell pushback for channels, last tested 7.2 (22/05/2017)
+                        //uint32 channelInterruptFlags = spell->m_spellInfo->ChannelInterruptFlags;
+                        //if (((channelInterruptFlags & CHANNEL_FLAG_DELAY) != 0) && (damagetype != DOT) && cleanDamage && (cleanDamage->attackType == BASE_ATTACK || cleanDamage->attackType == OFF_ATTACK))
+                        //    spell->DelayedChannel();
+
+                        // Checked on retail - capturing flag in BFG is cancelled when dots are absorbed by PW:S.
+                        uint32 interruptFlags = spell->m_spellInfo->InterruptFlags;
+                        if (interruptFlags & SPELL_INTERRUPT_FLAG_ABORT_ON_DMG)
+                            victim->InterruptSpell(CURRENT_CHANNELED_SPELL, true, true);
+                    }
             }
         }
 
