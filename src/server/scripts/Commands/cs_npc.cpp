@@ -1762,7 +1762,10 @@ public:
         if (!cmdArgs.ValidArgs())
             return false;
 
-        creatureTarget->SetAIAnimKitId(cmdArgs.GetArg<uint32>(0), bool(cmdArgs.GetArg<uint32>(1, 0)));
+        uint32 aiAnimKitId  = cmdArgs.GetArg<uint32>(0);
+        bool oneshot        = cmdArgs.GetArg<uint32>(1, 0);
+
+        creatureTarget->SetAIAnimKitId(aiAnimKitId, oneshot);
         return true;
     }
 };
