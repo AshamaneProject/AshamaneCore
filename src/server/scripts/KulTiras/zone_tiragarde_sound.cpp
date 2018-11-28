@@ -580,23 +580,26 @@ struct npc_taelia_get_your_bearings : public FollowerAI
 
             me->GetScheduler().Schedule(1s, [this, player](TaskContext context)
             {
-                bool justCompletedObjective = false;
-                for (auto itr : convByKillCredit)
-                    if (player->FindNearestCreature(itr.first, 10.f))
-                        if (!player->GetQuestObjectiveData(QUEST_GET_YOUR_BEARINGS, itr.second.ObjectiveIndex))
-                        {
-                            player->KilledMonsterCredit(itr.second.KillCreditID);
-                            player->PlayConversation(itr.second.ConversationID);
-                            justCompletedObjective = true;
-                        }
-
-                if (justCompletedObjective && player->GetQuestStatus(QUEST_GET_YOUR_BEARINGS) == QUEST_STATUS_COMPLETE)
+                if (player->GetQuestStatus(QUEST_GET_YOUR_BEARINGS) == QUEST_STATUS_INCOMPLETE)
                 {
-                    player->PlayConversation(9556);
-                    me->SetFlag64(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
+                    bool justCompletedObjective = false;
+                    for (auto itr : convByKillCredit)
+                        if (player->FindNearestCreature(itr.first, 10.f))
+                            if (!player->GetQuestObjectiveData(QUEST_GET_YOUR_BEARINGS, itr.second.ObjectiveIndex))
+                            {
+                                player->KilledMonsterCredit(itr.second.KillCreditID);
+                                player->PlayConversation(itr.second.ConversationID);
+                                justCompletedObjective = true;
+                            }
+
+                    if (justCompletedObjective && player->GetQuestStatus(QUEST_GET_YOUR_BEARINGS) == QUEST_STATUS_COMPLETE)
+                    {
+                        player->PlayConversation(9556);
+                        me->SetFlag64(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
+                    }
                 }
 
-                if (player->HasQuest(QUEST_THE_OLD_KNIGHT))
+                if (player->GetQuestStatus(QUEST_THE_OLD_KNIGHT) == QUEST_STATUS_INCOMPLETE)
                     if (!player->GetQuestObjectiveData(QUEST_THE_OLD_KNIGHT, 0))
                         if (player->FindNearestCreature(NPC_CYRUS_CRESTFALL, 20.f))
                         {
