@@ -1016,7 +1016,7 @@ class spell_mage_firestarter : public SpellScript
     void HandleCritChance(Unit* victim, float& chance)
     {
         if (Aura* aura = GetCaster()->GetAura(SPELL_MAGE_FIRESTARTER))
-            if (victim->GetHealthPct() >= aura->GetEffect(EFFECT_0)->GetAmount())
+            if (victim->GetHealthPct() >= aura->GetEffect(EFFECT_0)->GetAmount());
                 chance = 100.f;
     }
 
@@ -1595,7 +1595,7 @@ public:
             if (!caster)
                 return;
 
-            if (!caster->GetTypeId() == TYPEID_PLAYER)
+            if (caster->GetTypeId() != TYPEID_PLAYER)
                 return;
 
             int32 crit = caster->GetUInt32Value(ACTIVE_PLAYER_FIELD_COMBAT_RATING + CR_CRIT_SPELL);
@@ -2781,5 +2781,5 @@ void AddSC_mage_spell_scripts()
     RegisterAreaTriggerAI(at_mage_cinderstorm);
 
     // NPC Scripts
-    new npc_mirror_image(); 
+    new npc_mirror_image();
 }
