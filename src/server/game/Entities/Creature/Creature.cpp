@@ -1065,7 +1065,8 @@ std::vector<Player*> Creature::GetLootRecipients() const
     std::vector<Player*> recipients;
     for (ObjectGuid guid : m_lootRecipients)
         if (guid.IsPlayer())
-            recipients.push_back(ObjectAccessor::FindConnectedPlayer(guid));
+            if (Player* player = ObjectAccessor::FindConnectedPlayer(guid))
+                recipients.push_back(player);
 
     return recipients;
 }
