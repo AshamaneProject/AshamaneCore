@@ -2348,7 +2348,7 @@ enum Targets
     TARGET_UNIT_CASTER_PET             = 120,
     TARGET_UNIT_TARGET_DEAD            = 121,
     TARGET_UNIT_CASTER_AREA_ENEMY      = 122,
-    TARGET_UNIT_TARGET_AREA_ENEMY      = 123,
+    TARGET_UNIT_CASTER_LOOT_RECIPIENTS = 123,
     TARGET_UNK_124                     = 124,
     TARGET_UNK_125                     = 125,
     TARGET_UNK_126                     = 126,

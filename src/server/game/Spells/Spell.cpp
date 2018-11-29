@@ -1584,6 +1584,11 @@ void Spell::SelectImplicitCasterObjectTargets(SpellEffIndex effIndex, SpellImpli
         case TARGET_UNIT_OWN_CRITTER:
             target = ObjectAccessor::GetCreatureOrPetOrVehicle(*m_caster, m_caster->GetCritterGUID());
             break;
+        case TARGET_UNIT_CASTER_LOOT_RECIPIENTS:
+            if (Creature* casterCreature = m_caster->ToCreature())
+                for (Player* player : casterCreature->GetLootRecipients())
+                    AddUnitTarget(player, 1 << effIndex, checkIfValid);
+            return;
         default:
             break;
     }

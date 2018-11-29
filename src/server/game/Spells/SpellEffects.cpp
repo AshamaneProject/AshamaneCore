@@ -5222,7 +5222,11 @@ void Spell::EffectKillCredit(SpellEffIndex /*effIndex*/)
         return;
 
     if (int32 creatureEntry = effectInfo->MiscValue)
-        unitTarget->ToPlayer()->RewardPlayerAndGroupAtEvent(creatureEntry, unitTarget);
+    {
+        uint32 killCreditCount = damage > 0 ? damage : 1;
+        for (uint32 i = 0; i < killCreditCount; ++i)
+            unitTarget->ToPlayer()->RewardPlayerAndGroupAtEvent(creatureEntry, unitTarget);
+    }
 }
 
 void Spell::EffectQuestFail(SpellEffIndex /*effIndex*/)
