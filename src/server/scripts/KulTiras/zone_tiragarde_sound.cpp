@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation; either version 2 of the License, or (at your
- * option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
- * more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program. If not, see <http://www.gnu.org/licenses/>.
- */
+* Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
+*
+* This program is free software; you can redistribute it and/or modify it
+* under the terms of the GNU General Public License as published by the
+* Free Software Foundation; either version 2 of the License, or (at your
+* option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+* more details.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
 
 #include "Conversation.h"
 #include "GameObject.h"
@@ -28,55 +28,55 @@
 
 enum eTiragardeQuests
 {
-    QUEST_DAUGHTER_OF_THE_SEA   = 51341,
+    QUEST_DAUGHTER_OF_THE_SEA = 51341,
 
-    QUEST_OUT_LIKE_FLYNN        = 47098,
-    KILL_CREDIT_GET_DRESSED     = 138554,
-    KILL_CREDIT_PULL_LEVER      = 138553,
+    QUEST_OUT_LIKE_FLYNN = 47098,
+    KILL_CREDIT_GET_DRESSED = 138554,
+    KILL_CREDIT_PULL_LEVER = 138553,
     KILL_CREDIT_CELL_BLOCK_DOOR = 137923,
 
-    QUEST_GET_YOUR_BEARINGS     = 47099,
-    QUEST_THE_OLD_KNIGHT        = 46729,
-    QUEST_NATION_DIVIDED        = 47189,
+    QUEST_GET_YOUR_BEARINGS = 47099,
+    QUEST_THE_OLD_KNIGHT = 46729,
+    QUEST_NATION_DIVIDED = 47189,
 };
 
 enum Intro
 {
-    SPELL_PROUDMOORE_KEEP_ESCORT    = 269772,
-    SPELL_LADY_KATHERINE_MOVIE      = 241525,
+    SPELL_PROUDMOORE_KEEP_ESCORT = 269772,
+    SPELL_LADY_KATHERINE_MOVIE = 241525,
 
-    SPELL_TELEPORT_TO_TOL_DAGOR     = 241526,
-    SPELL_PRISONER                  = 272512,
-    SPELL_TOL_DAGOR_WAKE_UP         = 270081,
+    SPELL_TELEPORT_TO_TOL_DAGOR = 241526,
+    SPELL_PRISONER = 272512,
+    SPELL_TOL_DAGOR_WAKE_UP = 270081,
 
-    SPELL_PUNCH_FLYNN               = 264918,
-    SPELL_FLYNN_KNOCKOUT_JAILER     = 246555,
-    SPELL_SUMMON_FLYNN_ESCORT       = 246931,
+    SPELL_PUNCH_FLYNN = 264918,
+    SPELL_FLYNN_KNOCKOUT_JAILER = 246555,
+    SPELL_SUMMON_FLYNN_ESCORT = 246931,
 
-    SPELL_SCENE_FLYNN_JAILBREAK     = 246821,
-    SPELL_SCENE_GETAWAY_BOAT_TRIGGER= 281331,
-    SPELL_SCENE_NATION_DIVIDED      = 269191,
+    SPELL_SCENE_FLYNN_JAILBREAK = 246821,
+    SPELL_SCENE_GETAWAY_BOAT_TRIGGER = 281331,
+    SPELL_SCENE_NATION_DIVIDED = 269191,
 
-    SPELL_GETAWAY_CONVERSATION_1    = 247230,
-    SPELL_GETAWAY_CONVERSATION_2    = 247275,
+    SPELL_GETAWAY_CONVERSATION_1 = 247230,
+    SPELL_GETAWAY_CONVERSATION_2 = 247275,
 
-    SPELL_MAINTAIN_TAELIA_SUMMON    = 247532,
-    SPELL_SCENE_OLD_KNIGHT          = 271234,
+    SPELL_MAINTAIN_TAELIA_SUMMON = 247532,
+    SPELL_SCENE_OLD_KNIGHT = 271234,
 
-    NPC_FLYNN_BEGIN                 = 121239,
-    NPC_FLYNN_ESCORT                = 124311,
-    NPC_FLYNN_ESCAPE                = 124363,
-    NPC_ASHVANE_JAILER_EVENT        = 124022,
-    NPC_TAELIA                      = 124356,
-    NPC_GETAWAY_BOAT_BOARDED        = 124030,
-    NPC_TAELIA_GET_YOUR_BEARINGS    = 124630,
-    NPC_CYRUS_CRESTFALL             = 122370,
+    NPC_FLYNN_BEGIN = 121239,
+    NPC_FLYNN_ESCORT = 124311,
+    NPC_FLYNN_ESCAPE = 124363,
+    NPC_ASHVANE_JAILER_EVENT = 124022,
+    NPC_TAELIA = 124356,
+    NPC_GETAWAY_BOAT_BOARDED = 124030,
+    NPC_TAELIA_GET_YOUR_BEARINGS = 124630,
+    NPC_CYRUS_CRESTFALL = 122370,
 
-    GOB_PRISON_BARS                 = 281878,
-    GOB_PRISON_GATE                 = 301088,
-    GOB_CELL_BLOCK_GATE             = 281902,
+    GOB_PRISON_BARS = 281878,
+    GOB_PRISON_GATE = 301088,
+    GOB_CELL_BLOCK_GATE = 281902,
 
-    MOVIE_LADY_KATHERINE            = 859,
+    MOVIE_LADY_KATHERINE = 859,
 };
 
 // 120922 - Lady Jaina Proudmoore
@@ -120,7 +120,7 @@ class aura_tol_dagor_intro_prisoner : public AuraScript
         GetTarget()->RemoveGameObjectByEntry(GOB_PRISON_BARS);
         GetTarget()->RemoveGameObjectByEntry(GOB_PRISON_GATE);
 
-        GetTarget()->SummonGameObject(GOB_PRISON_BARS, 145.772995f, -2707.709961f, 28.818899f, 0.942667f, QuaternionData(0.f, 0.f,  0.454075f, 0.890964f), 0, true);
+        GetTarget()->SummonGameObject(GOB_PRISON_BARS, 145.772995f, -2707.709961f, 28.818899f, 0.942667f, QuaternionData(0.f, 0.f, 0.454075f, 0.890964f), 0, true);
         GetTarget()->SummonGameObject(GOB_PRISON_GATE, 146.242996f, -2699.399902f, 28.877800f, 5.663670f, QuaternionData(0.f, 0.f, -0.304828f, 0.952407f), 0, true);
     }
 
@@ -162,21 +162,21 @@ struct npc_flynn_fairwind : public ScriptedAI
 
     enum FlynnTalks
     {
-        TALK_HERES_PLAN     = 6,
-        TALK_HIT_ME         = 7,
+        TALK_HERES_PLAN = 6,
+        TALK_HIT_ME = 7,
         TALK_COME_ON_HIT_ME = 8,
-        TALK_DONT_SHY_HIT_ME= 9,
-        TALK_YOU_BRUTE      = 10,
-        TALK_GUARD          = 11,
+        TALK_DONT_SHY_HIT_ME = 9,
+        TALK_YOU_BRUTE = 10,
+        TALK_GUARD = 11,
         TALK_HIT_THAT_LEVER = 12,
     };
 
     enum GuardTalks
     {
         TALK_WHATS_GOING_ON = 0,
-        TALK_STOP_RIGHT_HERE= 1,
-        TALK_WHAT           = 2,
-        TALK_NO             = 3,
+        TALK_STOP_RIGHT_HERE = 1,
+        TALK_WHAT = 2,
+        TALK_NO = 3,
     };
 
     void sQuestAccept(Player* player, Quest const* quest) override
@@ -204,16 +204,16 @@ struct npc_flynn_fairwind : public ScriptedAI
         {
             me->GetMotionMaster()->MoveJump(142.033f, -2715.19f, 29.1884f, 0.0f, 19.2911f, 19.2911f);
         })
-        .Schedule(2s, [this](TaskContext /*context*/)
+            .Schedule(2s, [this](TaskContext /*context*/)
         {
             me->GetMotionMaster()->MovePoint(2, 145.070679f, -2710.949463f, 29.187674f);
         })
-        .Schedule(3s, [this](TaskContext /*context*/)
+            .Schedule(3s, [this](TaskContext /*context*/)
         {
             me->SetFacingToObject(GetPlayer());
             Talk(TALK_HERES_PLAN, GetPlayer());
         })
-        .Schedule(5s, [this](TaskContext /*context*/)
+            .Schedule(5s, [this](TaskContext /*context*/)
         {
             Talk(TALK_HIT_ME, GetPlayer());
             me->SetFlag64(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
@@ -243,25 +243,25 @@ struct npc_flynn_fairwind : public ScriptedAI
             {
                 GetContextUnit()->GetMotionMaster()->MovePoint(1, 147.070480f, -2705.972412f, 29.189432f);
             })
-            .Schedule(4s, [](TaskContext context)
+                .Schedule(4s, [](TaskContext context)
             {
                 GetContextUnit()->SetFacingTo(4.111071f);
             })
-            .Schedule(5s, [](TaskContext context)
+                .Schedule(5s, [](TaskContext context)
             {
                 GetContextCreature()->AI()->Talk(TALK_WHATS_GOING_ON);
                 GetContextUnit()->HandleEmoteCommand(EMOTE_ONESHOT_EXCLAMATION);
             })
-            .Schedule(6s, [](TaskContext context)
+                .Schedule(6s, [](TaskContext context)
             {
                 GetContextUnit()->HandleEmoteCommand(EMOTE_ONESHOT_USE_STANDING);
             })
-            .Schedule(7s, [caster](TaskContext /*context*/)
+                .Schedule(7s, [caster](TaskContext /*context*/)
             {
                 if (GameObject* gob = caster->GetGameObjectByEntry(GOB_PRISON_BARS))
                     gob->UseDoorOrButton();
             })
-            .Schedule(8s, [](TaskContext context)
+                .Schedule(8s, [](TaskContext context)
             {
                 GetContextCreature()->AI()->Talk(TALK_STOP_RIGHT_HERE);
                 GetContextUnit()->GetMotionMaster()->MovePoint(2, 143.408783f, -2710.396240f, 29.187752f);
@@ -273,16 +273,16 @@ struct npc_flynn_fairwind : public ScriptedAI
                 me->SetByteValue(UNIT_FIELD_BYTES_1, UNIT_BYTES_1_OFFSET_STAND_STATE, UNIT_STAND_STATE_STAND);
                 ashvaneJailer->AI()->Talk(TALK_WHAT);
             })
-            .Schedule(10s, [this, ashvaneJailer](TaskContext /*context*/)
+                .Schedule(10s, [this, ashvaneJailer](TaskContext /*context*/)
             {
                 me->CastSpell(nullptr, SPELL_FLYNN_KNOCKOUT_JAILER, false);
                 ashvaneJailer->AI()->Talk(TALK_NO);
             })
-            .Schedule(11s, [this](TaskContext /*context*/)
+                .Schedule(11s, [this](TaskContext /*context*/)
             {
                 me->GetMotionMaster()->MovePoint(3, 165.596573f, -2707.874756f, 28.877989f);
             })
-            .Schedule(14s, [this](TaskContext /*context*/)
+                .Schedule(14s, [this](TaskContext /*context*/)
             {
                 me->SetFacingTo(2.540090f);
                 Talk(TALK_HIT_THAT_LEVER);
@@ -291,7 +291,7 @@ struct npc_flynn_fairwind : public ScriptedAI
     }
 
 private:
-    Player* GetPlayer() { return ObjectAccessor::GetPlayer(*me, m_playerGUID); }
+    Player * GetPlayer() { return ObjectAccessor::GetPlayer(*me, m_playerGUID); }
     Creature* GetAshvaneJailer() { return ObjectAccessor::GetCreature(*me, m_ashvaneJailerGUID); }
 
     ObjectGuid m_playerGUID;
@@ -366,7 +366,7 @@ struct npc_flynn_fairwind_follower : public FollowerAI
         {
             me->HandleEmoteCommand(EMOTE_ONESHOT_USE_STANDING);
         })
-        .Schedule(2s, [this](TaskContext /*context*/)
+            .Schedule(2s, [this](TaskContext /*context*/)
         {
             if (GameObject* door = me->FindNearestGameObject(GOB_CELL_BLOCK_GATE, 10.f))
             {
@@ -374,7 +374,7 @@ struct npc_flynn_fairwind_follower : public FollowerAI
                 door->DestroyForPlayer(GetLeaderForFollower());
             }
         })
-        .Schedule(4s, [this](TaskContext /*context*/)
+            .Schedule(4s, [this](TaskContext /*context*/)
         {
             SetFollowPaused(false);
 
@@ -425,11 +425,11 @@ struct npc_tol_dagor_getaway_boat : public ScriptedAI
 
     Position boatPath[6] = {
         { 240.6500f, -2812.950f, -0.052747f },
-        { 245.9427f, -2807.717f,  0.052747f },
-        { 272.6615f, -2792.370f, -0.052747f },
-        { 353.6458f, -2743.795f,  0.052747f },
-        { 366.6493f, -2540.583f, -0.052747f },
-        { 396.1441f, -2403.012f, -0.052747f },
+    { 245.9427f, -2807.717f,  0.052747f },
+    { 272.6615f, -2792.370f, -0.052747f },
+    { 353.6458f, -2743.795f,  0.052747f },
+    { 366.6493f, -2540.583f, -0.052747f },
+    { 396.1441f, -2403.012f, -0.052747f },
     };
 
     void IsSummonedBy(Unit* unit) override
@@ -445,7 +445,7 @@ struct npc_tol_dagor_getaway_boat : public ScriptedAI
                 player->PlayConversation(5336);
                 me->GetMotionMaster()->MoveSmoothPath(1, boatPath, 6, false, true);
             })
-            .Schedule(36s, [player](TaskContext /*context*/)
+                .Schedule(36s, [player](TaskContext /*context*/)
             {
                 // This specific scene is spawned at 0 0 0
                 Position scenePos = Position();
@@ -485,9 +485,9 @@ public:
     Position boatPath[4] =
     {
         { 880.6389f, -585.5486f, -0.02336364f },
-        { 998.2083f, -575.0087f, -0.03875812f },
-        { 1025.792f, -619.1180f, -0.03875812f },
-        { 1040.462f, -631.7864f, -0.03875812f },
+    { 998.2083f, -575.0087f, -0.03875812f },
+    { 1025.792f, -619.1180f, -0.03875812f },
+    { 1040.462f, -631.7864f, -0.03875812f },
     };
 
     void OnSceneTriggerEvent(Player* player, uint32 /*sceneInstanceID*/, SceneTemplate const* /*sceneTemplate*/, std::string const& triggerName) override
@@ -503,7 +503,7 @@ public:
 
                     player->CastSpell(player, SPELL_GETAWAY_CONVERSATION_2, true);
                 })
-                .Schedule(25s, [player, vehicleBase](TaskContext /*context*/)
+                    .Schedule(25s, [player, vehicleBase](TaskContext /*context*/)
                 {
                     DespawnAndTeleportPlayer(player, vehicleBase);
                 });
@@ -565,9 +565,9 @@ struct npc_taelia_get_your_bearings : public FollowerAI
     std::map<uint32, ConvByKillStruct> convByKillCredit =
     {
         { 124720, ConvByKillStruct(0, 124586, 5365) },
-        { 124725, ConvByKillStruct(1, 124587, 5366) },
-        { 135064, ConvByKillStruct(2, 124588, 5362) },
-        { 135153, ConvByKillStruct(3, 124768, 5375) },
+    { 124725, ConvByKillStruct(1, 124587, 5366) },
+    { 135064, ConvByKillStruct(2, 124588, 5362) },
+    { 135153, ConvByKillStruct(3, 124768, 5375) },
     };
 
     void IsSummonedBy(Unit* unit) override
@@ -695,6 +695,32 @@ public:
     }
 };
 
+// 126157
+class npc_lugeia : public ScriptedAI
+{
+public:
+    npc_lugeia(Creature* creature) : ScriptedAI(creature) { }
+
+    enum
+    {
+        NPC_FLYNN_ENTRY = 126158,
+        SPELL_LOVESTRUCK = 245526,
+        SPELL_BROKEN_HEART = 250911
+    };
+
+    void JustDied(Unit* /*killer*/) override
+    {
+        if (Creature* flynn = me->FindNearestCreature(NPC_FLYNN_ENTRY, 20.f))
+        {
+            flynn->RemoveAura(SPELL_LOVESTRUCK);
+            flynn->CastSpell(flynn, SPELL_BROKEN_HEART, true);
+
+            flynn->GetMotionMaster()->MovePoint(0, -1386.29f, -1663.99f, 0.111337f);
+            flynn->ForcedDespawn(4500);
+        }
+    }
+};
+
 void AddSC_zone_tiragarde_sound()
 {
     RegisterCreatureAI(npc_jaina_boralus_intro);
@@ -718,4 +744,5 @@ void AddSC_zone_tiragarde_sound()
     RegisterCreatureAI(npc_boralus_portal_maga);
     RegisterCreatureAI(npc_taelia_harbormaster);
     RegisterCreatureAI(npc_boralus_adventure_map);
+    RegisterCreatureAI(npc_lugeia);
 }
