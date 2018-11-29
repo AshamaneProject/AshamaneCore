@@ -220,9 +220,6 @@ class spell_pri_power_word_shield : public SpellScript
 
         if (caster->HasAura(SPELL_PRIEST_ATONEMENT))
             caster->CastSpell(target, SPELL_PRIEST_ATONEMENT_AURA, true);
-
-        if (caster->HasAura(SPELL_PRIEST_BODY_AND_SOUL_AURA))
-            caster->CastSpell(target, SPELL_PRIEST_BODY_AND_SOUL_SPEED, true);
     }
 
     void Register() override
