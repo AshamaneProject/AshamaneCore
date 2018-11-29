@@ -20,6 +20,7 @@
 #include "GameObjectAI.h"
 #include "Player.h"
 #include "ScriptedCreature.h"
+#include "ScriptedEscortAI.h"
 #include "ScriptedFollowerAI.h"
 #include "ScriptedGossip.h"
 #include "ScriptMgr.h"
@@ -695,6 +696,36 @@ public:
     }
 };
 
+// 126158
+class npc_flynn_allured : public ScriptedAI
+{
+public:
+    npc_flynn_allured(Creature* creature) : ScriptedAI(creature) { }
+
+    enum
+    {
+        QUEST_ALLURED_ID = 48419,
+        QUEST_LOVESICK_ID = 48505,
+        SPELL_SUMMON_FLYNN_ESCORT_ID = 251037
+    };
+
+    void MoveInLineOfSight(Unit* unit) override
+    {
+        if (Player* player = unit->ToPlayer())
+            if (player->GetQuestStatus(QUEST_ALLURED_ID) == QUEST_STATUS_INCOMPLETE)
+                KillCreditMe(player);
+    }
+
+    void sQuestAccept(Player* player, Quest const* quest) override
+    {
+        if (quest->ID == QUEST_LOVESICK_ID)
+        {
+            me->DestroyForPlayer(player);
+            player->CastSpell(nullptr, SPELL_SUMMON_FLYNN_ESCORT_ID, true);
+        }
+    }
+};
+
 // 126157
 class npc_lugeia : public ScriptedAI
 {
@@ -721,6 +752,115 @@ public:
     }
 };
 
+/// TODO Make Flynn wait for player
+/// TODO Cast the good spells at the right time
+// 126490
+class npc_flynn_lovesick_escort : public npc_escortAI
+{
+public:
+    npc_flynn_lovesick_escort(Creature* creature) : npc_escortAI(creature) { }
+
+    enum
+    {
+        SPELL_LOVESICK = 250911,
+        SPELL_FLYNN_FLASK = 251027,
+        SPELL_DRUNK = 251260,
+        SPELL_THROW_FLASK = 251065
+    };
+
+    void IsSummonedBy(Unit* summoner) override
+    {
+        Start(false, true, summoner->GetGUID());
+        SetEscortPaused(true);
+
+        me->GetScheduler().Schedule(5s, [this](TaskContext /*context*/)
+        {
+
+            me->CastSpell(me, SPELL_LOVESICK, true);
+
+        }).Schedule(8s, [this](TaskContext /*context*/)
+        {
+
+            TalkToEscortPlayer(0);
+
+        }).Schedule(10s, [this](TaskContext /*context*/)
+        {
+
+            me->CastSpell(me, SPELL_FLYNN_FLASK, true);
+
+        }).Schedule(17s, [this](TaskContext /*context*/)
+        {
+
+            SetEscortPaused(false);
+
+        });
+
+    }
+
+    void WaypointReached(uint32 pointId) override
+    {
+        switch (pointId)
+        {
+        case 0:
+            TalkToEscortPlayer(1);
+            break;
+        case 1:
+            TalkToEscortPlayer(2);
+            SetEscortPaused(true);
+            me->GetScheduler().Schedule(7s, [this](TaskContext /*context*/)
+            {
+                TalkToEscortPlayer(3);
+                SetEscortPaused(false);
+            });
+
+            break;
+        case 6:
+            TalkToEscortPlayer(4);
+            SetRun(false);
+            break;
+        case 12:
+            TalkToEscortPlayer(5);
+            SetEscortPaused(true);
+            me->GetScheduler().Schedule(7s, [this](TaskContext /*context*/)
+            {
+                SetEscortPaused(false);
+                TalkToEscortPlayer(6);
+            });
+            me->CastSpell(me, 251260, true);
+            break;
+        case 16:
+            TalkToEscortPlayer(7);
+            break;
+        case 31:
+            TalkToEscortPlayer(9);
+            break;
+        case 40:
+            TalkToEscortPlayer(10);
+            break;
+        case 45:
+            TalkToEscortPlayer(11);
+            break;
+        case 46:
+            TalkToEscortPlayer(12);
+            KillCreditMe(GetPlayerForEscort());
+            break;
+        default:
+            break;
+        }
+    }
+
+    void LastWaypointReached() override
+    {
+        if (Player* player = GetPlayerForEscort())
+        {
+            KillCreditMe(player);
+        }
+    }
+
+private:
+    uint8 m_talkId = 0;
+};
+
 void AddSC_zone_tiragarde_sound()
 {
     RegisterCreatureAI(npc_jaina_boralus_intro);
@@ -744,5 +884,7 @@ void AddSC_zone_tiragarde_sound()
     RegisterCreatureAI(npc_boralus_portal_maga);
     RegisterCreatureAI(npc_taelia_harbormaster);
     RegisterCreatureAI(npc_boralus_adventure_map);
+    RegisterCreatureAI(npc_flynn_allured);
     RegisterCreatureAI(npc_lugeia);
+    RegisterCreatureAI(npc_flynn_lovesick_escort);
 }
