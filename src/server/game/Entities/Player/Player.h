@@ -1530,6 +1530,9 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         uint32 GetInGameTime() const { return m_ingametime; }
         void SetInGameTime(uint32 time) { m_ingametime = time; }
 
+        ObjectGuid GetLastQuestGiverGUID() const { return m_lastQuestGiverGUID; }
+        WorldObject* GetLastQuestGiver() const;
+
         void AddTimedQuest(uint32 questId) { m_timedquests.insert(questId); }
         void RemoveTimedQuest(uint32 questId) { m_timedquests.erase(questId); }
 
@@ -2887,6 +2890,8 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         bool _usePvpItemLevels;
 
         ArchaeologyPlayerMgr m_archaeologyPlayerMgr;
+
+        ObjectGuid m_lastQuestGiverGUID;
 };
 
 TC_GAME_API void AddItemsSetItem(Player* player, Item* item);

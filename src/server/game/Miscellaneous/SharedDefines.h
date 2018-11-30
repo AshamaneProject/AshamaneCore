@@ -2367,7 +2367,7 @@ enum Targets
     TARGET_UNK_139                     = 139,
     TARGET_UNK_140                     = 140,
     TARGET_UNK_141                     = 141,
-    TARGET_UNK_142                     = 142,
+    TARGET_DEST_LAST_QUEST_GIVER       = 142,
     TARGET_UNK_143                     = 143,
     TARGET_UNK_144                     = 144,
     TARGET_UNK_145                     = 145,
