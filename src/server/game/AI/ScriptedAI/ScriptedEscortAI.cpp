@@ -220,11 +220,11 @@ void npc_escortAI::UpdateAI(uint32 diff)
                     me->GetMotionMaster()->MoveIdle();
 
                     m_bEnded = false;
+                    LastWaypointReached();
 
                     if (DespawnAtEnd)
                     {
                         TC_LOG_DEBUG("scripts", "EscortAI reached end of waypoints");
-                        LastWaypointReached();
 
                         if (m_bCanReturnToStart)
                         {

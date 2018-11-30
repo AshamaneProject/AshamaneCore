@@ -15335,7 +15335,6 @@ void Player::AddQuestAndCheckCompletion(Quest const* quest, Object* questGiver)
         case TYPEID_UNIT:
             sScriptMgr->OnQuestAccept(this, questGiver->ToCreature(), quest);
             questGiver->ToCreature()->AI()->sQuestAccept(this, quest);
-            m_lastQuestGiverGUID = questGiver->GetGUID();
             break;
         case TYPEID_ITEM:
         case TYPEID_CONTAINER:
@@ -15362,7 +15361,6 @@ void Player::AddQuestAndCheckCompletion(Quest const* quest, Object* questGiver)
         case TYPEID_GAMEOBJECT:
             sScriptMgr->OnQuestAccept(this, questGiver->ToGameObject(), quest);
             questGiver->ToGameObject()->AI()->QuestAccept(this, quest);
-            m_lastQuestGiverGUID = questGiver->GetGUID();
             break;
         default:
             break;
@@ -15469,6 +15467,9 @@ void Player::AddQuest(Quest const* quest, Object* questGiver)
         return;
 
     uint32 quest_id = quest->GetQuestId();
+
+    if (questGiver)
+        m_lastQuestGiverGUID = questGiver->GetGUID();
 
     // if not exist then created with set uState == NEW and rewarded=false
     QuestStatusData& questStatusData = m_QuestStatus[quest_id];
