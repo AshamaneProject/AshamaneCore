@@ -1168,7 +1168,7 @@ void WorldSession::HandleAdventureJournalStartQuest(WorldPackets::Misc::Adventur
 {
     if (Quest const* quest = sObjectMgr->GetQuestTemplate(packet.QuestID))
         if (!_player->hasQuest(packet.QuestID))
-            _player->AddQuest(quest, nullptr);
+            _player->AddQuestAndCheckCompletion(quest, nullptr);
 }
 
 void WorldSession::HandleSelectFactionOpcode(WorldPackets::Misc::FactionSelect& selectFaction)
