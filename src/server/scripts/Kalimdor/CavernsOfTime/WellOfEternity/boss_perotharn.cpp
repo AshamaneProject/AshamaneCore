@@ -150,7 +150,7 @@ public:
 
         void InitializeAI() override
         {
-            if (!instance || static_cast<InstanceMap*>(me->GetMap())->GetScriptId() != sObjectMgr->GetScriptId(WoEScriptName))
+            if (!instance || static_cast<InstanceMap*>(me->GetMap())->GetScriptId() != sObjectMgr->GetScriptIdOrAdd(WoEScriptName))
                 me->IsAIEnabled = false;
             else if (!me->isDead())
                 Reset();

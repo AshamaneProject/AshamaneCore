@@ -31,3 +31,7 @@ DELETE FROM `spell_script_names` WHERE `ScriptName` IN (
 DELETE FROM `spell_script_names` WHERE `ScriptName` = 'spell_pri_power_of_the_dark_side';
 INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES 
 (198068, 'spell_pri_power_of_the_dark_side');
+
+DELETE FROM `command` WHERE `name`='reload spell_script_names';
+INSERT INTO `command` (`name`, `permission`, `help`) VALUES 
+('reload spell_script_names', 2008, 'Syntax: .reload spell_script_names');

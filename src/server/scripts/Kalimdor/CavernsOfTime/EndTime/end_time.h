@@ -80,7 +80,7 @@ CreatureAI* GetEndTimelAI(Creature* creature)
 {
     if (InstanceMap* instance = creature->GetMap()->ToInstanceMap())
         if (instance->GetInstanceScript())
-            if (instance->GetScriptId() == sObjectMgr->GetScriptId(EndTimeScriptName))
+            if (instance->GetScriptId() == sObjectMgr->GetScriptIdOrAdd(EndTimeScriptName))
                 return new AI(creature);
     return NULL;
 }

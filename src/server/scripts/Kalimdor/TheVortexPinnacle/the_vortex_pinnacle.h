@@ -90,7 +90,7 @@ CreatureAI* GetVortexPinnacleAI(Creature* creature)
 {
     if (InstanceMap* instance = creature->GetMap()->ToInstanceMap())
         if (instance->GetInstanceScript())
-            if (instance->GetScriptId() == sObjectMgr->GetScriptId(VortexPinnacleScriptName))
+            if (instance->GetScriptId() == sObjectMgr->GetScriptIdOrAdd(VortexPinnacleScriptName))
                 return new AI(creature);
 
     return NULL;

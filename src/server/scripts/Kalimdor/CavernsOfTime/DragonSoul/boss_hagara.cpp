@@ -405,7 +405,7 @@ class boss_hagara_the_stormbinder: public CreatureScript
 
             void InitializeAI() override
             {
-                if (!instance || static_cast<InstanceMap*>(me->GetMap())->GetScriptId() != sObjectMgr->GetScriptId(DSScriptName))
+                if (!instance || static_cast<InstanceMap*>(me->GetMap())->GetScriptId() != sObjectMgr->GetScriptIdOrAdd(DSScriptName))
                     me->IsAIEnabled = false;
                 else if (!me->isDead())
                     Reset();
@@ -2305,7 +2305,7 @@ public:
             // This script should execute only in Dragon Soul
             if (InstanceMap* instance = GetCaster()->GetMap()->ToInstanceMap())
             if (instance->GetInstanceScript())
-            if (instance->GetScriptId() == sObjectMgr->GetScriptId(DSScriptName))
+            if (instance->GetScriptId() == sObjectMgr->GetScriptIdOrAdd(DSScriptName))
                 return true;
 
             return false;

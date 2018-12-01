@@ -3167,7 +3167,7 @@ void Creature::ReLoad(bool skipDB)
         }
         Field* fields = scriptQuery->Fetch();
         CreatureData& cdata = sObjectMgr->NewOrExistCreatureData(GetSpawnId());
-        cdata.ScriptId = sObjectMgr->GetScriptId(fields[0].GetString());
+        cdata.ScriptId = sObjectMgr->GetScriptIdOrAdd(fields[0].GetString());
         if (!cdata.ScriptId)
             cdata.ScriptId = cInfo->ScriptID;
     }

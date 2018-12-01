@@ -226,7 +226,7 @@ class boss_warmaster_blackhorn: public CreatureScript
 
             void InitializeAI() override
             {
-                if (!instance || static_cast<InstanceMap*>(me->GetMap())->GetScriptId() != sObjectMgr->GetScriptId(DSScriptName))
+                if (!instance || static_cast<InstanceMap*>(me->GetMap())->GetScriptId() != sObjectMgr->GetScriptIdOrAdd(DSScriptName))
                     me->IsAIEnabled = false;
                 else if (!me->isDead())
                     Reset();
