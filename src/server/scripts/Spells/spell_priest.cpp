@@ -139,6 +139,7 @@ enum PriestSpells
     SPELL_PRIEST_PRAYER_OF_MENDING_RADIUS           = 123262,
     SPELL_PRIEST_POWER_WORD_RADIANCE                = 194509,
     SPELL_PRIEST_RAPID_RENEWAL_AURA                 = 95649,
+    SPELL_PRIEST_PURGE_THE_WICKED                   = 204197,
     SPELL_PRIEST_RAPTURE                            = 47536,
     SPELL_PRIEST_RAPTURE_ENERGIZE                   = 47755,
     SPELL_PRIEST_REFLECTIVE_SHIELD_R1               = 33201,
@@ -2675,6 +2676,23 @@ class aura_pri_void_torrent : public AuraScript
     }
 };
 
+// 198068 - Power Of The Dark Side
+class spell_pri_power_of_the_dark_side : public AuraScript
+{
+    PrepareAuraScript(spell_pri_power_of_the_dark_side);
+
+    bool CheckProc(ProcEventInfo& eventInfo)
+    {
+        return eventInfo.GetSpellInfo() && (eventInfo.GetSpellInfo()->Id == SPELL_PRIEST_SHADOW_WORD_PAIN || eventInfo.GetSpellInfo()->Id == SPELL_PRIEST_PURGE_THE_WICKED);
+    }
+
+    void Register() override
+    {
+        DoCheckProc += AuraCheckProcFn(spell_pri_power_of_the_dark_side::CheckProc);
+    }
+};
+
+
 // Angelic Feather areatrigger - created by SPELL_PRIEST_ANGELIC_FEATHER_AREATRIGGER
 // AreaTriggerID - 337
 struct at_pri_angelic_feather : AreaTriggerAI
@@ -2826,6 +2844,7 @@ void AddSC_priest_spell_scripts()
     RegisterSpellScript(spell_pri_vampiric_embrace_target);
     RegisterAuraScript(spell_pri_vampiric_touch);
     RegisterSpellScript(spell_pri_void_eruption);
+    RegisterAuraScript(spell_pri_power_of_the_dark_side);
     new spell_pri_void_shift();
     new spell_pri_void_tendrils();
     new spell_pri_voidform();

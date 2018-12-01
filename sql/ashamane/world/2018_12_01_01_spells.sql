@@ -26,3 +26,8 @@ DELETE FROM `spell_script_names` WHERE `ScriptName` IN (
 'spell_warl_soul_shatter', 'spell_warl_shadow_ward', 'spell_warl_soul_swap',
 'spell_warl_soul_swap_dot_marker', 'spell_warl_soul_swap_exhale', 
 'spell_warl_soul_swap_override', 'spell_warl_soulshatter');
+
+-- 198068 - Power Of The Dark Side
+DELETE FROM `spell_script_names` WHERE `ScriptName` = 'spell_pri_power_of_the_dark_side';
+INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES 
+(198068, 'spell_pri_power_of_the_dark_side');
