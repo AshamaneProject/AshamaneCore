@@ -305,6 +305,22 @@ struct SpellValue
     uint32    EffectTriggerSpell[MAX_SPELL_EFFECTS];
 };
 
+struct TargetInfo
+{
+    ObjectGuid targetGUID;
+    uint64 timeDelay;
+    int32  damage;
+
+    SpellMissInfo missCondition;
+    SpellMissInfo reflectResult;
+
+    uint32 effectMask;
+    bool   processed;
+    bool   alive;
+    bool   crit;
+    bool   scaleAura;
+};
+
 enum SpellState
 {
     SPELL_STATE_NULL      = 0,
@@ -792,22 +808,8 @@ class TC_GAME_API Spell
         // Spell target subsystem
         // *****************************************
         // Targets store structures and data
-        struct TargetInfo
-        {
-            ObjectGuid targetGUID;
-            uint64 timeDelay;
-            int32  damage;
-
-            SpellMissInfo missCondition;
-            SpellMissInfo reflectResult;
-
-            uint32 effectMask;
-            bool   processed;
-            bool   alive;
-            bool   crit;
-            bool   scaleAura;
-        };
         std::vector<TargetInfo> m_UniqueTargetInfo;
+        TargetInfo* m_currentTargetInfo;
         uint32 m_channelTargetEffectMask;                        // Mask req. alive targets
 
         struct GOTargetInfo

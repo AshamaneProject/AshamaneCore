@@ -48,6 +48,7 @@ struct SpellDestination;
 struct SpellModifier;
 struct SpellPowerCost;
 struct SpellValue;
+struct TargetInfo;
 
 #define SPELL_EFFECT_ANY (uint16)-1
 #define SPELL_AURA_ANY (uint16)-1
@@ -539,6 +540,8 @@ class TC_GAME_API SpellScript : public _SpellScript
         Aura* GetHitAura() const;
         // prevents applying aura on current spell hit target
         void PreventHitAura();
+
+        TargetInfo* GetCurrentTargetInfo() const;
 
         // prevents effect execution on current spell hit target
         // including other effect/hit scripts

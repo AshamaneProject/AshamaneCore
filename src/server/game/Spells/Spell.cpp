@@ -647,6 +647,7 @@ m_spellValue(new SpellValue(caster->GetMap()->GetDifficultyID(), m_spellInfo))
     m_channeledDuration = 0;                                // will be setup in Spell::handle_immediate
     m_immediateHandled = false;
 
+    m_currentTargetInfo = nullptr;
     m_channelTargetEffectMask = 0;
 
     // Determine if spell can be reflected back to the caster
@@ -2497,6 +2498,7 @@ void Spell::DoAllEffectOnTarget(TargetInfo* target)
     // Reset damage/healing counter
     m_damage = target->damage;
     m_healing = -target->damage;
+    m_currentTargetInfo = target;
 
     // Fill base trigger info
     uint32 procAttacker = m_procAttacker;
@@ -3673,6 +3675,8 @@ uint64 Spell::handle_delayed(uint64 t_offset)
                 next_time = ihit->timeDelay;
         }
     }
+
+    m_currentTargetInfo = nullptr;
 
     // now recheck gameobject targeting correctness
     for (std::vector<GOTargetInfo>::iterator ighit = m_UniqueGOTargetInfo.begin(); ighit != m_UniqueGOTargetInfo.end(); ++ighit)
