@@ -566,9 +566,9 @@ struct npc_taelia_get_your_bearings : public FollowerAI
     std::map<uint32, ConvByKillStruct> convByKillCredit =
     {
         { 124720, ConvByKillStruct(0, 124586, 5365) },
-    { 124725, ConvByKillStruct(1, 124587, 5366) },
-    { 135064, ConvByKillStruct(2, 124588, 5362) },
-    { 135153, ConvByKillStruct(3, 124768, 5375) },
+        { 124725, ConvByKillStruct(1, 124587, 5366) },
+        { 135064, ConvByKillStruct(2, 124588, 5362) },
+        { 135153, ConvByKillStruct(3, 124768, 5375) },
     };
 
     void IsSummonedBy(Unit* unit) override
@@ -579,8 +579,12 @@ struct npc_taelia_get_your_bearings : public FollowerAI
         {
             player->PlayConversation(5360);
 
-            me->GetScheduler().Schedule(1s, [this, player](TaskContext context)
+            player->GetScheduler().Schedule(1s, [this](TaskContext context)
             {
+                Player* player = GetContextPlayer();
+                if (!player)
+                    return;
+
                 if (player->GetQuestStatus(QUEST_GET_YOUR_BEARINGS) == QUEST_STATUS_INCOMPLETE)
                 {
                     bool justCompletedObjective = false;
