@@ -8312,7 +8312,7 @@ bool Unit::_IsValidAttackTarget(Unit const* target, SpellInfo const* bySpell, Wo
     // additional checks - only PvP case
     if (playerAffectingAttacker && playerAffectingTarget)
     {
-        if (target->IsPvP())
+        if (IsPvP() && target->IsPvP())
             return true;
 
         if (IsFFAPvP() && target->IsFFAPvP())
