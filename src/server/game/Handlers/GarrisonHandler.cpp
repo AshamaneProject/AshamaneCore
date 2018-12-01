@@ -94,13 +94,15 @@ void WorldSession::HandleGarrisonOpenMissionNpc(WorldPackets::Garrison::Garrison
     }
     else
     {
-        Garrison const* garrison = _player->GetGarrison(GARRISON_TYPE_GARRISON);
-        WorldPackets::Garrison::GarrisonOpenMissionNpc garrisonOpenMissionNpc;
-        for (auto const& p : garrison->GetMissions())
+        if (Garrison const* garrison = _player->GetGarrison(GARRISON_TYPE_GARRISON))
         {
-            garrisonOpenMissionNpc.Missions.push_back(p.first);
+            WorldPackets::Garrison::GarrisonOpenMissionNpc garrisonOpenMissionNpc;
+            for (auto const& p : garrison->GetMissions())
+            {
+                garrisonOpenMissionNpc.Missions.push_back(p.first);
+            }
+            SendPacket(garrisonOpenMissionNpc.Write());
         }
-        SendPacket(garrisonOpenMissionNpc.Write());
     }
 }
 
