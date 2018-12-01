@@ -43,41 +43,41 @@ enum eTiragardeQuests
 
 enum Intro
 {
-    SPELL_PROUDMOORE_KEEP_ESCORT = 269772,
-    SPELL_LADY_KATHERINE_MOVIE = 241525,
+    SPELL_PROUDMOORE_KEEP_ESCORT        = 269772,
+    SPELL_LADY_KATHERINE_MOVIE          = 241525,
 
-    SPELL_TELEPORT_TO_TOL_DAGOR = 241526,
-    SPELL_PRISONER = 272512,
-    SPELL_TOL_DAGOR_WAKE_UP = 270081,
+    SPELL_TELEPORT_TO_TOL_DAGOR         = 241526,
+    SPELL_PRISONER                      = 272512,
+    SPELL_TOL_DAGOR_WAKE_UP             = 270081,
 
-    SPELL_PUNCH_FLYNN = 264918,
-    SPELL_FLYNN_KNOCKOUT_JAILER = 246555,
-    SPELL_SUMMON_FLYNN_ESCORT = 246931,
+    SPELL_PUNCH_FLYNN                   = 264918,
+    SPELL_FLYNN_KNOCKOUT_JAILER         = 246555,
+    SPELL_SUMMON_FLYNN_ESCORT           = 246931,
 
-    SPELL_SCENE_FLYNN_JAILBREAK = 246821,
-    SPELL_SCENE_GETAWAY_BOAT_TRIGGER = 281331,
-    SPELL_SCENE_NATION_DIVIDED = 269191,
+    SPELL_SCENE_FLYNN_JAILBREAK         = 246821,
+    SPELL_SCENE_GETAWAY_BOAT_TRIGGER    = 281331,
+    SPELL_SCENE_NATION_DIVIDED          = 269191,
 
-    SPELL_GETAWAY_CONVERSATION_1 = 247230,
-    SPELL_GETAWAY_CONVERSATION_2 = 247275,
+    SPELL_GETAWAY_CONVERSATION_1        = 247230,
+    SPELL_GETAWAY_CONVERSATION_2        = 247275,
 
-    SPELL_MAINTAIN_TAELIA_SUMMON = 247532,
-    SPELL_SCENE_OLD_KNIGHT = 271234,
+    SPELL_MAINTAIN_TAELIA_SUMMON        = 247532,
+    SPELL_SCENE_OLD_KNIGHT              = 271234,
 
-    NPC_FLYNN_BEGIN = 121239,
-    NPC_FLYNN_ESCORT = 124311,
-    NPC_FLYNN_ESCAPE = 124363,
-    NPC_ASHVANE_JAILER_EVENT = 124022,
-    NPC_TAELIA = 124356,
-    NPC_GETAWAY_BOAT_BOARDED = 124030,
-    NPC_TAELIA_GET_YOUR_BEARINGS = 124630,
-    NPC_CYRUS_CRESTFALL = 122370,
+    NPC_FLYNN_BEGIN                     = 121239,
+    NPC_FLYNN_ESCORT                    = 124311,
+    NPC_FLYNN_ESCAPE                    = 124363,
+    NPC_ASHVANE_JAILER_EVENT            = 124022,
+    NPC_TAELIA                          = 124356,
+    NPC_GETAWAY_BOAT_BOARDED            = 124030,
+    NPC_TAELIA_GET_YOUR_BEARINGS        = 124630,
+    NPC_CYRUS_CRESTFALL                 = 122370,
 
-    GOB_PRISON_BARS = 281878,
-    GOB_PRISON_GATE = 301088,
-    GOB_CELL_BLOCK_GATE = 281902,
+    GOB_PRISON_BARS                     = 281878,
+    GOB_PRISON_GATE                     = 301088,
+    GOB_CELL_BLOCK_GATE                 = 281902,
 
-    MOVIE_LADY_KATHERINE = 859,
+    MOVIE_LADY_KATHERINE                = 859,
 };
 
 // 120922 - Lady Jaina Proudmoore
@@ -292,7 +292,7 @@ struct npc_flynn_fairwind : public ScriptedAI
     }
 
 private:
-    Player * GetPlayer() { return ObjectAccessor::GetPlayer(*me, m_playerGUID); }
+    Player* GetPlayer() { return ObjectAccessor::GetPlayer(*me, m_playerGUID); }
     Creature* GetAshvaneJailer() { return ObjectAccessor::GetCreature(*me, m_ashvaneJailerGUID); }
 
     ObjectGuid m_playerGUID;
