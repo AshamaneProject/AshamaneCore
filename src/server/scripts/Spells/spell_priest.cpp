@@ -137,6 +137,7 @@ enum PriestSpells
     SPELL_PRIEST_PRAYER_OF_MENDING_BUFF             = 41635,
     SPELL_PRIEST_PRAYER_OF_MENDING_HEAL             = 33110,
     SPELL_PRIEST_PRAYER_OF_MENDING_RADIUS           = 123262,
+    SPELL_PRIEST_POWER_WORD_RADIANCE                = 194509,
     SPELL_PRIEST_RAPID_RENEWAL_AURA                 = 95649,
     SPELL_PRIEST_RAPTURE                            = 47536,
     SPELL_PRIEST_RAPTURE_ENERGIZE                   = 47755,
@@ -2194,17 +2195,28 @@ class spell_pri_shadow_mend : public SpellScript
         if (!caster || !target)
             return;
 
+        int32 backfireDamage = GetHitHeal() / 2;
+
         if (caster->HasAura(SPELL_PRIEST_ATONEMENT))
             caster->CastSpell(target, SPELL_PRIEST_ATONEMENT_AURA, true);
 
         if (caster->HasAura(SPELL_PRIEST_MASOCHISM) && caster == target)
         {
-            caster->CastSpell(caster, SPELL_PRIEST_MASOCHISM_HEAL, true);
+            if (SpellEffectInfo const* eff0 = sSpellMgr->GetSpellInfo(SPELL_PRIEST_MASOCHISM_HEAL)->GetEffect(EFFECT_0))
+            {
+                int32 heal = int32(backfireDamage / sSpellMgr->GetSpellInfo(SPELL_PRIEST_MASOCHISM_HEAL)->GetMaxTicks(DIFFICULTY_NONE));
+                caster->CastCustomSpell(SPELL_PRIEST_MASOCHISM_HEAL, SPELLVALUE_BASE_POINT0, heal, caster, TRIGGERED_FULL_MASK);
+            }
+
             return;
         }
 
         if (target->IsInCombat())
-            caster->CastCustomSpell(SPELL_PRIEST_SHADOW_MEND_AURA, SPELLVALUE_BASE_POINT0, GetHitHeal(), target, TRIGGERED_FULL_MASK);
+        {
+            int32 backfireTickDamage = int32(backfireDamage / sSpellMgr->GetSpellInfo(SPELL_PRIEST_SHADOW_MEND_AURA)->GetMaxTicks(DIFFICULTY_NONE));
+            uint32 remainingDamage = target->GetRemainingPeriodicAmount(caster->GetGUID(), SPELL_PRIEST_SHADOW_MEND_AURA, SPELL_AURA_PERIODIC_DUMMY);
+            caster->CastCustomSpell(SPELL_PRIEST_SHADOW_MEND_AURA, SPELLVALUE_BASE_POINT0, int32(remainingDamage + backfireTickDamage), target, TRIGGERED_FULL_MASK);
+        }
     }
 
     void Register() override
@@ -2218,8 +2230,6 @@ class spell_pri_shadow_mend_aura : public AuraScript
 {
     PrepareAuraScript(spell_pri_shadow_mend_aura);
 
-    int32 damageThreshold = 0;
-
     bool CheckProc(ProcEventInfo& eventInfo)
     {
         Unit* target = eventInfo.GetActionTarget();
@@ -2229,12 +2239,6 @@ class spell_pri_shadow_mend_aura : public AuraScript
 
         if (!eventInfo.GetDamageInfo())
             return false;
-
-        damageThreshold -= eventInfo.GetDamageInfo()->GetDamage();
-
-        if (Aura* shadowMendAura = GetAura())
-            if (damageThreshold <= 0)
-                shadowMendAura->SetDuration(1);
 
         return true;
     }
@@ -2252,16 +2256,22 @@ class spell_pri_shadow_mend_aura : public AuraScript
             target->CastCustomSpell(SPELL_PRIEST_SHADOW_MEND_DAMAGE, SPELLVALUE_BASE_POINT0, aurEff->GetAmount(), target, TRIGGERED_FULL_MASK, NULL, NULL, caster->GetGUID());
     }
 
-    void CalcDamage(AuraEffect const* /*aurEff*/, int32& amount, bool& /*canBeRecalculated*/)
+    void DoProc(AuraEffect const* aurEff, ProcEventInfo& procInfo)
     {
-        // Remaining damage gets added.
-        damageThreshold += amount;
-        amount = damageThreshold / 10;
+        if (AuraEffect const* eff0 = GetEffect(EFFECT_0))
+        {
+            int32 amountRemaining = procInfo.GetDamageInfo()->GetDamage() / int32(eff0->GetTotalTicks() - eff0->GetTickNumber());
+            amountRemaining = eff0->GetAmount() - amountRemaining;
+            if (amountRemaining <= 0)
+                GetAura()->Remove();
+            else
+                GetEffect(EFFECT_0)->ChangeAmount(amountRemaining);
+        }
     }
 
     void Register() override
     {
-        DoEffectCalcAmount += AuraEffectCalcAmountFn(spell_pri_shadow_mend_aura::CalcDamage, EFFECT_0, SPELL_AURA_PERIODIC_DUMMY);
+        OnEffectProc += AuraEffectProcFn(spell_pri_shadow_mend_aura::DoProc, EFFECT_1, SPELL_AURA_DUMMY);
         DoCheckProc += AuraCheckProcFn(spell_pri_shadow_mend_aura::CheckProc);
         OnEffectPeriodic += AuraEffectPeriodicFn(spell_pri_shadow_mend_aura::HandlePeriodic, EFFECT_0, SPELL_AURA_PERIODIC_DUMMY);
     }
