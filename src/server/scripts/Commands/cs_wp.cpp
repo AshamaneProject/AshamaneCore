@@ -53,9 +53,14 @@ public:
             { "reload", rbac::RBAC_PERM_COMMAND_WP_RELOAD, false, &HandleWpReloadCommand, "" },
             { "show",   rbac::RBAC_PERM_COMMAND_WP_SHOW,   false, &HandleWpShowCommand,   "" },
         };
+        static std::vector<ChatCommand> scriptWpCommandTable =
+        {
+            { "add",    rbac::RBAC_PERM_COMMAND_WP_ADD,    false, &HandleScriptWpAddCommand,    "" },
+        };
         static std::vector<ChatCommand> commandTable =
         {
-            { "wp", rbac::RBAC_PERM_COMMAND_WP, false, NULL, "", wpCommandTable },
+            { "wp",         rbac::RBAC_PERM_COMMAND_WP, false, NULL, "", wpCommandTable },
+            { "script_wp",  rbac::RBAC_PERM_COMMAND_WP, false, NULL, "", scriptWpCommandTable },
         };
         return commandTable;
     }
@@ -1096,6 +1101,30 @@ public:
         }
 
         handler->PSendSysMessage("|cffff33ffDEBUG: wpshow - no valid command found|r");
+        return true;
+    }
+
+    static bool HandleScriptWpAddCommand(ChatHandler* handler, const char* args)
+    {
+        CommandArgs cmdArgs = CommandArgs(handler, args, { CommandArgs::ARG_UINT, CommandArgs::ARG_UINT_OPTIONAL });
+        if (!cmdArgs.ValidArgs())
+            return false;
+
+        uint32 entry = cmdArgs.GetNextArg<uint32>();
+        QueryResult maxResult = WorldDatabase.PQuery("SELECT IFNULL(MAX(pointid), 0) FROM `script_waypoint` WHERE entry = %u", entry);
+
+        // Internal error ?
+        if (!maxResult)
+            return false;
+
+        Player* player = handler->GetSession()->GetPlayer();
+        uint32 maxPointId = maxResult->Fetch()[0].GetUInt32();
+        uint32 waitTime = cmdArgs.Count() > 1 ? cmdArgs.GetNextArg<uint32>() : 0;
+
+        WorldDatabase.PExecute("INSERT INTO `script_waypoint` (`entry`, `pointid`, `location_x`, `location_y`, `location_z`, `waittime`, `point_comment`) VALUES (%u, %u, %f, %f, %f, %u, '')",
+                                entry, maxPointId + 1, player->GetPositionX(), player->GetPositionY(), player->GetPositionZ(), waitTime);
+
+        handler->PSendSysMessage("Script waypoint for entry %u add with pointId %u", entry, maxPointId + 1);
         return true;
     }
 };
