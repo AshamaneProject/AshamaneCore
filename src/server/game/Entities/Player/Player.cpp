@@ -7418,7 +7418,8 @@ void Player::UpdateZone(Area* oldArea)
     AutoUnequipOffhandIfNeed();
 
     // recent client version not send leave/join channel packets for built-in local channels
-    UpdateLocalChannels(newZoneId);
+    if (oldZone != newZone)
+        UpdateLocalChannels(newZoneId);
 }
 
 //If players are too far away from the duel flag... they lose the duel
