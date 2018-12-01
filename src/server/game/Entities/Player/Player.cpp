@@ -341,7 +341,7 @@ Player::Player(WorldSession* session) : Unit(true), m_sceneMgr(this), m_archaeol
 
     _lastTargetedGO = 0;
 
-    _PersonnalXpRate = 0;
+    _PersonnalXpRate = sWorld->getRate(RATE_XP_KILL);
 
     memset(_voidStorageItems, 0, VOID_STORAGE_MAX_SLOT * sizeof(VoidStorageItem*));
 
