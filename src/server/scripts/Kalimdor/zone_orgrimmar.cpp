@@ -21,6 +21,7 @@
 enum OrgrimmarQuests
 {
     QUEST_MISSION_ORDERS                    = 51443,
+    QUEST_STORMWIND_EXTRACTION              = 50769,
 
     OBJECTIVE_STORMWIND_EXTRACTION_POTION   = 333785,
 };
@@ -125,13 +126,17 @@ struct npc_skyhorn_eagle : public ScriptedAI
 {
     npc_skyhorn_eagle(Creature* creature) : ScriptedAI(creature) { }
 
-    void OnSpellClick(Unit* clicker, bool& /*result*/) override
+    void OnSpellClick(Unit* clicker, bool& result) override
     {
-        if (Player* player = clicker->ToPlayer())
+        Player* player = clicker->ToPlayer();
+        if (!player || player->GetQuestStatus(QUEST_STORMWIND_EXTRACTION) != QUEST_STATUS_INCOMPLETE)
         {
-            KillCreditMe(player);
-            player->CastSpell(player, SPELL_START_SE_SCENARIO);
+            result = false;
+            return;
         }
+
+        KillCreditMe(player);
+        player->CastSpell(player, SPELL_START_SE_SCENARIO);
     }
 };
 
