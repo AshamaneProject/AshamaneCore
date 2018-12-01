@@ -114,6 +114,32 @@ void WorldSession::HandleGarrisonRequestScoutingMap(WorldPackets::Garrison::Garr
     if (poiEntry->PlayerConditionID)
         active = active && _player->MeetPlayerCondition(poiEntry->PlayerConditionID);
 
+    switch (scoutingMap.ID)
+    {
+        case 40: // Zuldazar
+            active = true;
+            break;
+        case 41:
+        case 42:
+        case 148:
+        case 149:
+        case 150:
+            active = false;// _player->GetTeam() == HORDE;
+            break;
+        case 43: // Tiragarde Sound
+            active = true;
+            break;
+        case 44:
+        case 45:
+        case 151:
+        case 152:
+        case 153:
+            active = false;// _player->GetTeam() == ALLIANCE;
+            break;
+        default:
+            break;
+    }
+
     if (poiEntry->QuestID)
         if (Quest const* quest = sObjectMgr->GetQuestTemplate(poiEntry->QuestID))
             active = active && _player->CanTakeQuest(quest, false);
