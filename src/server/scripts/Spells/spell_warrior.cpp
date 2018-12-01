@@ -2833,7 +2833,8 @@ class spell_warr_execute : public SpellScript
     void HandleTakePower(SpellPowerCost& powerCost)
     {
         m_powerTaken = powerCost.Amount;
-        float dmgMultiplier = powerCost.Amount / (powerCost.Amount - powerCost.OptionalAmount);
+        uint32 requiredAmount = powerCost.Amount - powerCost.OptionalAmount;
+        float dmgMultiplier = powerCost.Amount / (requiredAmount ? requiredAmount : 1);
         GetCaster()->Variables.Set("spell_warr_execute_damages::multiplier", dmgMultiplier);
     }
 
