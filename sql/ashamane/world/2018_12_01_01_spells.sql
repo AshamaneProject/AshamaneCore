@@ -21,3 +21,8 @@ INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES
 DELETE FROM `spell_script_names` WHERE `ScriptName` = 'spell_warl_doom';
 INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES 
 (265412, 'spell_warl_doom');
+
+DELETE FROM `spell_script_names` WHERE `ScriptName` IN (
+'spell_warl_soul_shatter', 'spell_warl_shadow_ward', 'spell_warl_soul_swap',
+'spell_warl_soul_swap_dot_marker', 'spell_warl_soul_swap_exhale', 
+'spell_warl_soul_swap_override', 'spell_warl_soulshatter');
