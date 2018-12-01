@@ -2433,28 +2433,28 @@ class spell_pri_atonement : public AuraScript
         return ValidateSpellInfo({ SPELL_PRIEST_ATONEMENT_AURA, SPELL_PRIEST_ATONEMENT_HEAL });
     }
 
+    bool CheckProc(ProcEventInfo& eventInfo)
+    {
+        if (!eventInfo.GetDamageInfo())
+            return false;
+        return true;
+    }
+
     void HandleProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
     {
         Unit* caster = GetCaster();
-        if (!caster || !caster->IsPlayer())
+        if (!caster)
             return;
 
-        // Heal = DamageDealt * (40 * (1+mastery%))
-        uint32 damage = eventInfo.GetDamageInfo() ? eventInfo.GetDamageInfo()->GetDamage() : 0;
-        int32 base = aurEff->GetBaseAmount();
-        AddPct(base, caster->GetFloatValue(ACTIVE_PLAYER_FIELD_MASTERY));
-        uint32 heal = CalculatePct(damage, base);
+        uint32 heal = CalculatePct(eventInfo.GetDamageInfo()->GetDamage(), aurEff->GetAmount());
 
-        std::list<Unit*> units;
-        caster->GetFriendlyUnitListInRange(units, 100.f);
-
-        for (Unit* unit : units)
-            if (unit->HasAura(SPELL_PRIEST_ATONEMENT_AURA, caster->GetGUID()))
-                caster->CastCustomSpell(SPELL_PRIEST_ATONEMENT_HEAL, SPELLVALUE_BASE_POINT0, heal, unit, TRIGGERED_FULL_MASK);
+        for (AuraApplication* auApp : caster->GetTargetAuraApplications(SPELL_PRIEST_ATONEMENT_AURA))
+            caster->CastCustomSpell(SPELL_PRIEST_ATONEMENT_HEAL, SPELLVALUE_BASE_POINT0, heal, auApp->GetTarget(), TRIGGERED_FULL_MASK);
     }
 
     void Register() override
     {
+        DoCheckProc += AuraCheckProcFn(spell_pri_atonement::CheckProc);
         OnEffectProc += AuraEffectProcFn(spell_pri_atonement::HandleProc, EFFECT_0, SPELL_AURA_DUMMY);
     }
 };
