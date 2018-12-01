@@ -541,7 +541,7 @@ class spell_mage_fire_blast : public SpellScript
                 caster->CastSpell(caster, SPELL_MAGE_HEATING_UP, true);
                 procCheck = true;
             }
-                
+
 
             if (caster->HasAura(SPELL_MAGE_HEATING_UP) && !caster->HasAura(SPELL_MAGE_HOT_STREAK) && !procCheck)
             {
@@ -861,7 +861,7 @@ class spell_mage_pyroblast : public SpellScript
 
                         caster->CastSpell(caster, SPELL_MAGE_HOT_STREAK, true);
                     }
-        }      
+        }
     }
 
     void Register() override
@@ -1109,7 +1109,7 @@ class spell_mage_ice_barrier : public AuraScript
     }
 };
 
-// Chilled - 205708 
+// Chilled - 205708
 class spell_mage_chilled : public AuraScript
 {
     PrepareAuraScript(spell_mage_chilled);
@@ -1226,7 +1226,7 @@ class spell_mage_ice_lance : public SpellScript
             return;
 
         caster->CastSpell(target, SPELL_MAGE_ICE_LANCE_TRIGGER, true);
-        
+
         // Thermal Void
         if (caster->HasAura(SPELL_MAGE_THERMAL_VOID) && (target->HasAuraState(AURA_STATE_FROZEN) || caster->HasAura(SPELL_MAGE_FINGERS_OF_FROST_AURA)))
         {
@@ -2593,39 +2593,6 @@ public:
     }
 };
 
-// Blazing Soul - 235365
-class spell_mage_blazing_soul : public AuraScript
-{
-    PrepareAuraScript(spell_mage_blazing_soul);
-
-    bool Validate(SpellInfo const* /*spell*/) override
-    {
-        return ValidateSpellInfo({ SPELL_MAGE_BLAZING_BARRIER, SPELL_MAGE_BLAZING_SOUL });
-    }
-
-    void HandleProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
-    {
-        Unit* caster = GetCaster();
-        Unit* victim = eventInfo.GetActionTarget();
-        int32 dist = aurEff->GetBase()->GetEffect(EFFECT_1)->GetAmount();
-
-        if (!caster || !victim || caster->GetDistance(victim) > dist || !eventInfo.GetDamageInfo())
-            return;
-
-        if (AuraEffect* barrier = caster->GetAuraEffect(SPELL_MAGE_BLAZING_BARRIER, EFFECT_0))
-        {
-            int32 bonus = eventInfo.GetDamageInfo()->GetDamage() * aurEff->GetAmount() / 100;
-            int32 maxAmount = int32(barrier->GetBaseAmount() + caster->SpellBaseHealingBonusDone(barrier->GetSpellInfo()->GetSchoolMask()) * 7.0f);
-            barrier->ChangeAmount(std::min(barrier->GetAmount() + bonus, maxAmount));
-        }
-    }
-
-    void Register() override
-    {
-        OnEffectProc += AuraEffectProcFn(spell_mage_blazing_soul::HandleProc, EFFECT_0, SPELL_AURA_DUMMY);
-    }
-};
-
 // Flame Patch
 // AreaTriggerID - 10801
 struct at_mage_flame_patch : AreaTriggerAI
@@ -2758,7 +2725,6 @@ void AddSC_mage_spell_scripts()
     RegisterAuraScript(spell_mage_ray_of_frost_buff);
     //7.3.2.25549 END
 
-    RegisterAuraScript(spell_mage_blazing_soul);
     RegisterSpellScript(spell_mage_flamestrike);
     RegisterAuraScript(spell_mage_ring_of_frost);
     new spell_mage_ring_of_frost_stun();
