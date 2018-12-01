@@ -44,6 +44,9 @@ struct scenario_stormwind_extraction : public InstanceScript
 
     void OnPlayerEnter(Player* player) override
     {
+        if (!player->GetScenario())
+            return;
+
         CreatureGroup* talanjizulLionRest = SummonCreatureGroup(SUMMON_GROUP_LION_REST);
         SummonCreatureGroup(SUMMON_GROUP_TALANJI_ZUL_PRISON);
 
