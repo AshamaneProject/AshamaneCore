@@ -101,8 +101,7 @@ public:
 
     void OnLogin(Player* player, bool firstLogin) override
     {
-        // Can happen in recovery cases
-        if (player->getLevel() >= 110 && firstLogin)
+        if (player->getLevel() >= 110)
             HandleBFAStart(player);
     }
 
@@ -114,10 +113,11 @@ public:
 
     void HandleBFAStart(Player* player)
     {
-        player->CastSpell(player, player->IsInAlliance() ? SPELL_CREATE_WAR_CAMPAIGN_A : SPELL_CREATE_WAR_CAMPAIGN_H, true);
-
-        if (player->GetQuestStatus(QUEST_DYING_WORLD_A) == QUEST_STATUS_NONE && player->GetQuestStatus(QUEST_DYING_WORLD_H) == QUEST_STATUS_NONE)
+        if (player->GetQuestStatus(QUEST_DYING_WORLD_A) == QUEST_STATUS_NONE &&
+            player->GetQuestStatus(QUEST_DYING_WORLD_H) == QUEST_STATUS_NONE)
         {
+            player->CastSpell(player, player->IsInAlliance() ? SPELL_CREATE_WAR_CAMPAIGN_A : SPELL_CREATE_WAR_CAMPAIGN_H, true);
+
             Conversation::CreateConversation(CONVERSATION_MAGNI_DYING_WORLD, player, player->GetPosition(), { player->GetGUID() });
 
             if (const Quest* quest = sObjectMgr->GetQuestTemplate(player->IsInAlliance() ? QUEST_DYING_WORLD_A : QUEST_DYING_WORLD_H))
