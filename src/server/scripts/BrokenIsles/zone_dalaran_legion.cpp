@@ -56,13 +56,6 @@ public:
         CONVERSATION_KHADGAR_BLINK_OF_EYE   = 3827,
     };
 
-    void OnLogin(Player* player, bool firstLogin) override
-    {
-        // Can happen in recovery cases
-        if (player->getLevel() >= 100 && firstLogin)
-            HandleLegionArrival(player);
-    }
-
     void OnLevelChanged(Player* player, uint8 oldLevel) override
     {
         if (oldLevel < 100 && player->getLevel() >= 100)
@@ -110,13 +103,6 @@ public:
     {
         QUEST_UNITING_THE_ISLES     = 43341,
     };
-
-    void OnLogin(Player* player, bool firstLogin) override
-    {
-        // Can happen in recovery cases
-        if (player->getLevel() >= 110 && firstLogin)
-            Handle110Arrival(player);
-    }
 
     void OnLevelChanged(Player* player, uint8 oldLevel) override
     {
