@@ -745,7 +745,6 @@ public:
         {
             flynn->RemoveAura(SPELL_LOVESTRUCK);
             flynn->CastSpell(flynn, SPELL_BROKEN_HEART, true);
-
             flynn->GetMotionMaster()->MovePoint(0, -1386.29f, -1663.99f, 0.111337f);
             flynn->ForcedDespawn(4500);
         }
@@ -772,29 +771,19 @@ public:
     {
         Start(false, true, summoner->GetGUID());
         SetEscortPaused(true);
-
         me->GetScheduler().Schedule(5s, [this](TaskContext /*context*/)
         {
-
             me->CastSpell(me, SPELL_LOVESICK, true);
-
         }).Schedule(8s, [this](TaskContext /*context*/)
         {
-
             TalkToEscortPlayer(0);
-
         }).Schedule(10s, [this](TaskContext /*context*/)
         {
-
             me->CastSpell(me, SPELL_FLYNN_FLASK, true);
-
         }).Schedule(17s, [this](TaskContext /*context*/)
         {
-
             SetEscortPaused(false);
-
         });
-
     }
 
     void WaypointReached(uint32 pointId) override
@@ -812,7 +801,6 @@ public:
                 TalkToEscortPlayer(3);
                 SetEscortPaused(false);
             });
-
             break;
         case 6:
             TalkToEscortPlayer(4);
@@ -826,7 +814,7 @@ public:
                 SetEscortPaused(false);
                 TalkToEscortPlayer(6);
             });
-            me->CastSpell(me, 251260, true);
+            me->CastSpell(me, SPELL_DRUNK, true);
             break;
         case 16:
             TalkToEscortPlayer(7);
