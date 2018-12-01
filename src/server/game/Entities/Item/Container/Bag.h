@@ -23,6 +23,8 @@
 #define MAX_BAG_SIZE 36                                     // 2.0.12
 
 #include "Item.h"
+#include "DB2Stores.h"
+#include "AzeriteItem.h"
 
 class TC_GAME_API Bag : public Item
 {
@@ -65,9 +67,13 @@ class TC_GAME_API Bag : public Item
         Item* m_bagslot[MAX_BAG_SIZE];
 };
 
-inline Item* NewItemOrBag(ItemTemplate const* proto)
+inline Item* NewItemOrBag(ItemTemplate const* itemTemplate)
 {
-    return (proto->GetInventoryType() == INVTYPE_BAG) ? new Bag : new Item;
+    if (sDB2Manager.IsAzeriteItem(itemTemplate->GetId()))
+        return new AzeriteItem;
+    if (sDB2Manager.IsAzeriteEmpoweredItem(itemTemplate->GetId()))
+        return new AzeriteEmpoweredItem;
+    return itemTemplate->GetInventoryType() == INVTYPE_BAG ? new Bag : new Item;
 }
 
 #endif

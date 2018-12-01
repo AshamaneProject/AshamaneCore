@@ -1307,6 +1307,7 @@ enum CurrencyTypes
     CURRENCY_TYPE_SECRET_OF_DRAENOR_LEATHERWORKING  = 1017,
     CURRENCY_TYPE_SECRET_OF_DRAENOR_BLACKSMITHING   = 1020,
     CURRENCY_TYPE_OIL                               = 1101,
+    CURRENCY_TYPE_AZERITE                           = 1553,
 };
 
 enum WorldMapTransformsFlags

@@ -69,3 +69,19 @@ WorldPacket const* WorldPackets::Artifact::ArtifactXpGain::Write()
 
     return &_worldPacket;
 }
+
+WorldPacket const * WorldPackets::Artifact::AzeriteXpGain::Write()
+{
+    _worldPacket << Item;
+    _worldPacket << AzeriteXPGained;
+
+    return &_worldPacket;
+}
+
+void WorldPackets::Artifact::AzeriteEmpoweredItemSelectPower::Read()
+{
+    _worldPacket >> Tier;
+    _worldPacket >> PowerID;
+    _worldPacket >> ContainerSlot;
+    _worldPacket >> Slot;
+}

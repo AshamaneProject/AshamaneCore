@@ -51,6 +51,12 @@ TC_GAME_API extern DB2Storage<ArtifactPowerPickerEntry>             sArtifactPow
 TC_GAME_API extern DB2Storage<ArtifactTierEntry>                    sArtifactTierStore;
 TC_GAME_API extern DB2Storage<ArtifactUnlockEntry>                  sArtifactUnlockStore;
 TC_GAME_API extern DB2Storage<AuctionHouseEntry>                    sAuctionHouseStore;
+TC_GAME_API extern DB2Storage<AzeriteEmpoweredItemEntry>            sAzeriteEmpoweredItemStore;
+TC_GAME_API extern DB2Storage<AzeriteItemEntry>                     sAzeriteItemStore;
+TC_GAME_API extern DB2Storage<AzeriteItemMilestonePowerEntry>       sAzeriteItemMilestonePowerStore;
+TC_GAME_API extern DB2Storage<AzeritePowerEntry>                    sAzeritePowerStore;
+TC_GAME_API extern DB2Storage<AzeritePowerSetMemberEntry>           sAzeritePowerSetMemberStore;
+TC_GAME_API extern DB2Storage<AzeriteTierUnlockEntry>               sAzeriteTierUnlockStore;
 TC_GAME_API extern DB2Storage<BankBagSlotPricesEntry>               sBankBagSlotPricesStore;
 TC_GAME_API extern DB2Storage<BannedAddonsEntry>                    sBannedAddonsStore;
 TC_GAME_API extern DB2Storage<BarberShopStyleEntry>                 sBarberShopStyleStore;
@@ -309,6 +315,7 @@ public:
     std::vector<uint32> const* GetGlyphRequiredSpecs(uint32 glyphPropertiesId) const;
     ItemBonusList const* GetItemBonusList(uint32 bonusListId) const;
     uint32 GetItemBonusListForItemLevelDelta(int16 delta) const;
+    std::set<uint32> GetItemBonusTree(uint32 itemId, uint32 itemContext, uint32& itemLevel) const;
     std::set<uint32> GetItemBonusTree(uint32 itemId, uint32 itemContext) const;
     bool HasItemContext(uint32 itemId) const;
     bool HasItemContext(uint32 itemId, uint32 itemContext) const;
@@ -369,6 +376,9 @@ public:
     void Map2ZoneCoordinates(uint32 areaId, float& x, float& y) const;
     bool IsUiMapPhase(uint32 phaseId) const;
     WMOAreaTableEntry const* GetWMOAreaTable(int32 rootId, int32 adtId, int32 groupId) const;
+
+    bool IsAzeriteItem(uint32 itemID) const;
+    bool IsAzeriteEmpoweredItem(uint32 itemID) const;
 
 private:
     friend class DB2HotfixGeneratorBase;

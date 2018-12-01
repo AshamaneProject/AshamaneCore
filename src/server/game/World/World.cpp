@@ -1487,6 +1487,8 @@ void World::LoadConfigSettings(bool reload)
 
     m_bool_configs[CONFIG_LEGACY_BUFF_ENABLED] = sConfigMgr->GetBoolDefault("LegacyBuffEnabled", true);
 
+    m_int_configs[CONFIG_AZERITE_KNOWLEGE] = sConfigMgr->GetIntDefault("Azerite.Knowledge.Level", 1);
+
     // call ScriptMgr if we're reloading the configuration
     if (reload)
         sScriptMgr->OnConfigLoad(reload);
@@ -3359,6 +3361,7 @@ void World::ResetWeeklyQuests()
 
     // change available weeklies
     sPoolMgr->ChangeWeeklyQuests();
+    //CONFIG_AZERITE_KNOWLEGE increased per week after raid launch + one week
 }
 
 void World::ResetMonthlyQuests()

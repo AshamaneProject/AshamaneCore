@@ -27,6 +27,22 @@ struct GtArmorMitigationByLvlEntry
     float Mitigation = 0.0f;
 };
 
+struct GtAzeriteKnowledgeMultiplierEntry
+{
+    float Multiplier = 0.f;
+};
+
+struct GtAzeriteLevelToItemLevelEntry
+{
+    float ItemLevel = 0.f;
+};
+
+struct GtAzeriteBaseExperiencePerLevelEntry
+{
+    float BaseExperienceToNextLevel = 0.f;
+    float MinimumExperienceToNextLevel = 0.f;
+};
+
 struct GtArtifactKnowledgeMultiplierEntry
 {
     float Multiplier = 0.0f;
@@ -204,6 +220,8 @@ public:
         return &_data[row];
     }
 
+    T const* operator[](uint32 row) const { return GetRow(row); }
+    
     std::size_t GetTableRowCount() const { return _data.size(); }
 
     void SetData(std::vector<T> data) { _data = std::move(data); }
@@ -215,12 +233,15 @@ private:
 TC_GAME_API extern GameTable<GtArmorMitigationByLvlEntry>           sArmorMitigationByLvlGameTable;
 TC_GAME_API extern GameTable<GtArtifactKnowledgeMultiplierEntry>    sArtifactKnowledgeMultiplierGameTable;
 TC_GAME_API extern GameTable<GtArtifactLevelXPEntry>                sArtifactLevelXPGameTable;
+TC_GAME_API extern GameTable<GtAzeriteBaseExperiencePerLevelEntry>  sAzeriteBaseExperiencePerLevelTable;
+TC_GAME_API extern GameTable<GtAzeriteKnowledgeMultiplierEntry>     sAzeriteKnowledgeMultiplierGameTable;
+TC_GAME_API extern GameTable<GtAzeriteLevelToItemLevelEntry>        sAzeriteLevelToItemLevelGameTable;
 TC_GAME_API extern GameTable<GtBarberShopCostBaseEntry>             sBarberShopCostBaseGameTable;
 TC_GAME_API extern GameTable<GtBaseMPEntry>                         sBaseMPGameTable;
-TC_GAME_API extern GameTable<GtCombatRatingsEntry>                  sCombatRatingsGameTable;
-TC_GAME_API extern GameTable<GtCombatRatingsMultByILvl>             sCombatRatingsMultByILvlGameTable;
 TC_GAME_API extern GameTable<GtChallengeModeDamage>                 sChallengeModeDamage;
 TC_GAME_API extern GameTable<GtChallengeModeHealth>                 sChallengeModeHealth;
+TC_GAME_API extern GameTable<GtCombatRatingsEntry>                  sCombatRatingsGameTable;
+TC_GAME_API extern GameTable<GtCombatRatingsMultByILvl>             sCombatRatingsMultByILvlGameTable;
 TC_GAME_API extern GameTable<GtHpPerStaEntry>                       sHpPerStaGameTable;
 TC_GAME_API extern GameTable<GtItemSocketCostPerLevelEntry>         sItemSocketCostPerLevelGameTable;
 TC_GAME_API extern GameTable<GtNpcDamageByClassEntry>               sNpcDamageByClassGameTable[MAX_EXPANSIONS];

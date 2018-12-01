@@ -127,6 +127,7 @@
 #include "WorldSession.h"
 #include "WorldStatePackets.h"
 #include <G3D/g3dmath.h>
+#include "AzeriteItem.h"
 
 #define ZONE_UPDATE_INTERVAL (1*IN_MILLISECONDS)
 #define SHOP_UPDATE_INTERVAL (30*IN_MILLISECONDS)
@@ -6948,6 +6949,19 @@ void Player::ModifyCurrency(uint32 id, int32 count, bool printLog/* = true*/, bo
     CurrencyTypesEntry const* currency = sCurrencyTypesStore.LookupEntry(id);
     ASSERT(currency);
 
+    switch (id)
+    {
+        case CURRENCY_TYPE_AZERITE:
+        {
+            if (Item* item = GetItemByEntry(158075)) // Heart of Azeroth
+                item->ToAzeriteItem()->AddExperience(count);
+
+            return;
+        }
+        default:
+            break;
+    }
+
     if (!ignoreMultipliers)
         count *= GetTotalAuraMultiplierByMiscValue(SPELL_AURA_MOD_CURRENCY_GAIN, id);
 
@@ -7609,6 +7623,7 @@ void Player::_ApplyItemMods(Item* item, uint8 slot, bool apply, bool updateItemA
         ApplyItemDependentAuras(item, apply);
     ApplyArtifactPowers(item, apply);
     ApplyEnchantment(item, apply);
+    ApplyAzeriteItemPowers(item, apply);
 
     TC_LOG_DEBUG("entities.player.items", "Player::_ApplyItemMods: completed");
 }
@@ -8114,6 +8129,9 @@ void Player::UpdateItemSetAuras(bool formChange /*= false*/)
 
 void Player::ApplyArtifactPowers(Item* item, bool apply)
 {
+    // Disabled since BFA, TODO : Remove method
+    return;
+
     for (ItemDynamicFieldArtifactPowers const& artifactPower : item->GetArtifactPowers())
     {
         uint8 rank = artifactPower.CurrentRankWithBonus;
@@ -8191,6 +8209,12 @@ void Player::ApplyArtifactPowerRank(Item* artifact, ArtifactPowerRankEntry const
         }
     }
 
+}
+
+void Player::ApplyAzeriteItemPowers(Item* item, bool apply)
+{
+    if (AzeriteEmpoweredItem* azeriteItem = item->ToAzeriteImpoweredItem())
+        azeriteItem->ApplyPowers(this, apply);
 }
 
 void Player::CastItemCombatSpell(DamageInfo const& damageInfo)
@@ -8472,6 +8496,7 @@ void Player::_RemoveAllItemMods()
             ApplyItemEquipSpell(m_items[i], false);
             ApplyEnchantment(m_items[i], false);
             ApplyArtifactPowers(m_items[i], false);
+            ApplyAzeriteItemPowers(m_items[i], false);
         }
     }
 
@@ -8524,6 +8549,7 @@ void Player::_ApplyAllItemMods()
             ApplyItemEquipSpell(m_items[i], true);
             ApplyArtifactPowers(m_items[i], true);
             ApplyEnchantment(m_items[i], true);
+            ApplyAzeriteItemPowers(m_items[i], true);
         }
     }
 

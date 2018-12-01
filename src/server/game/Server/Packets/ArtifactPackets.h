@@ -99,6 +99,30 @@ namespace WorldPackets
             ObjectGuid ArtifactGUID;
             uint64 Amount = 0;
         };
+
+        class AzeriteXpGain final : public ServerPacket
+        {
+        public:
+            AzeriteXpGain() : ServerPacket(SMSG_AZERITE_XP_GAIN, 16 + 8) { }
+
+            WorldPacket const* Write() override;
+
+            ObjectGuid Item;
+            uint64 AzeriteXPGained = 0;
+        };
+
+        class AzeriteEmpoweredItemSelectPower final : public ClientPacket
+        {
+        public:
+            AzeriteEmpoweredItemSelectPower(WorldPacket&& packet) : ClientPacket(CMSG_AZERITE_EMPOWERED_ITEM_SELECT_POWER, std::move(packet)) { }
+
+            void Read() override;
+
+            int32 Tier = 0;
+            int32 PowerID = 0;
+            uint8 ContainerSlot = 0;
+            uint8 Slot = 0;
+        };
     }
 }
 

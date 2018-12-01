@@ -1811,7 +1811,10 @@ public:
             if (dmgInfo.GetSpellInfo() == sSpellMgr->GetSpellInfo(SPELL_MONK_STAGGER))
                 return;
 
-            int32 staggerPct = GetSpellInfo()->GetEffect(EFFECT_8)->CalcValue(GetCaster());
+            if (!GetSpellInfo()->GetEffect(EFFECT_4))
+                return;
+
+            int32 staggerPct = GetSpellInfo()->GetEffect(EFFECT_4)->CalcValue(GetCaster());
             int32 staggerAmount = CalculatePct(dmgInfo.GetDamage(), staggerPct);
 
             absorbAmount = staggerAmount;

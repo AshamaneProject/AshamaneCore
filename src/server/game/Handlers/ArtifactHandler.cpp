@@ -25,6 +25,7 @@
 #include "SpellAuraEffects.h"
 #include "SpellInfo.h"
 #include "SpellPackets.h"
+#include "AzeriteItem.h"
 
 void WorldSession::HandleArtifactAddPower(WorldPackets::Artifact::ArtifactAddPower& artifactAddPower)
 {
@@ -259,4 +260,17 @@ void WorldSession::HandleConfirmArtifactRespec(WorldPackets::Artifact::ConfirmAr
 
     artifact->SetUInt64Value(ITEM_FIELD_ARTIFACT_XP, newAmount);
     artifact->SetState(ITEM_CHANGED, _player);
+}
+
+void WorldSession::HandleAzeriteEmpoweredItemSelectPower(WorldPackets::Artifact::AzeriteEmpoweredItemSelectPower& packet)
+{
+    auto item = _player->GetItemByPos(packet.ContainerSlot, packet.Slot);
+    if (!item)
+        return;
+
+    if (!sDB2Manager.IsAzeriteEmpoweredItem(item->GetEntry()))
+        return;
+
+    if (auto azeriteImte = item->ToAzeriteImpoweredItem())
+        azeriteImte->SelectPower(packet.PowerID, packet.Tier);
 }

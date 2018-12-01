@@ -123,6 +123,28 @@ void HotfixDatabaseConnection::DoPrepareStatements()
     PrepareStatement(HOTFIX_SEL_AUCTION_HOUSE, "SELECT ID, Name, FactionID, DepositRate, ConsignmentRate FROM auction_house ORDER BY ID DESC", CONNECTION_SYNCH);
     PREPARE_LOCALE_STMT(HOTFIX_SEL_AUCTION_HOUSE, "SELECT ID, Name_lang FROM auction_house_locale WHERE locale = ?", CONNECTION_SYNCH);
 
+    // AzeriteEmpoweredItem.db2
+    PrepareStatement(HOTFIX_SEL_AZERITE_EMPOWERED_ITEM, "SELECT ID, ItemID, AzeriteTierUnlockSetID, AzeritePowerSetID FROM azerite_empowered_item"
+        " ORDER BY ID DESC", CONNECTION_SYNCH);
+
+    // AzeriteItem.db2
+    PrepareStatement(HOTFIX_SEL_AZERITE_ITEM, "SELECT ID, ItemID FROM azerite_item ORDER BY ID DESC", CONNECTION_SYNCH);
+
+    // AzeriteItemMilestonePower.db2
+    PrepareStatement(HOTFIX_SEL_AZERITE_ITEM_MILESTONE_POWER, "SELECT ID, RequiredLevel, AzeritePowerID FROM azerite_item_milestone_power"
+        " ORDER BY ID DESC", CONNECTION_SYNCH);
+
+    // AzeritePower.db2
+    PrepareStatement(HOTFIX_SEL_AZERITE_POWER, "SELECT ID, SpellID, ItemBonusListID, SpecSetMemberID, Flags FROM azerite_power ORDER BY ID DESC", CONNECTION_SYNCH);
+
+    // AzeritePowerSetMember.db2
+    PrepareStatement(HOTFIX_SEL_AZERITE_POWER_SET_MEMBER, "SELECT ID, AzeritePowerID, Class, Tier, OrderIndex, AzeritePowerSetID"
+        " FROM azerite_power_set_member ORDER BY ID DESC", CONNECTION_SYNCH);
+
+    // AzeriteTierUnlock.db2
+    PrepareStatement(HOTFIX_SEL_AZERITE_TIER_UNLOCK, "SELECT ID, ItemCreationContext, Tier, AzeriteLevel, AzeriteTierUnlockSetID"
+        " FROM azerite_tier_unlock ORDER BY ID DESC", CONNECTION_SYNCH);
+
     // BankBagSlotPrices.db2
     PrepareStatement(HOTFIX_SEL_BANK_BAG_SLOT_PRICES, "SELECT ID, Cost FROM bank_bag_slot_prices ORDER BY ID DESC", CONNECTION_SYNCH);
 

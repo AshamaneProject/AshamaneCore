@@ -57,6 +57,12 @@ DB2Storage<ArtifactQuestXPEntry>                sArtifactQuestXPStore("ArtifactQ
 DB2Storage<ArtifactTierEntry>                   sArtifactTierStore("ArtifactTier.db2", ArtifactTierLoadInfo::Instance());
 DB2Storage<ArtifactUnlockEntry>                 sArtifactUnlockStore("ArtifactUnlock.db2", ArtifactUnlockLoadInfo::Instance());
 DB2Storage<AuctionHouseEntry>                   sAuctionHouseStore("AuctionHouse.db2", AuctionHouseLoadInfo::Instance());
+DB2Storage<AzeriteEmpoweredItemEntry>           sAzeriteEmpoweredItemStore("AzeriteEmpoweredItem.db2", AzeriteEmpoweredItemLoadInfo::Instance());
+DB2Storage<AzeriteItemEntry>                    sAzeriteItemStore("AzeriteItem.db2", AzeriteItemLoadInfo::Instance());
+DB2Storage<AzeriteItemMilestonePowerEntry>      sAzeriteItemMilestonePowerStore("AzeriteItemMilestonePower.db2", AzeriteItemMilestonePowerLoadInfo::Instance());
+DB2Storage<AzeritePowerEntry>                   sAzeritePowerStore("AzeritePower.db2", AzeritePowerLoadInfo::Instance());
+DB2Storage<AzeritePowerSetMemberEntry>          sAzeritePowerSetMemberStore("AzeritePowerSetMember.db2", AzeritePowerSetMemberLoadInfo::Instance());
+DB2Storage<AzeriteTierUnlockEntry>              sAzeriteTierUnlockStore("AzeriteTierUnlock.db2", AzeriteTierUnlockLoadInfo::Instance());
 DB2Storage<BankBagSlotPricesEntry>              sBankBagSlotPricesStore("BankBagSlotPrices.db2", BankBagSlotPricesLoadInfo::Instance());
 DB2Storage<BannedAddonsEntry>                   sBannedAddonsStore("BannedAddons.db2", BannedAddonsLoadInfo::Instance());
 DB2Storage<BarberShopStyleEntry>                sBarberShopStyleStore("BarberShopStyle.db2", BarberShopStyleLoadInfo::Instance());
@@ -438,6 +444,8 @@ namespace
     std::unordered_multimap<int32, UiMapAssignmentEntry const*> _uiMapAssignmentByWmoGroup[MAX_UI_MAP_SYSTEM];
     std::unordered_set<int32> _uiMapPhases;
     WMOAreaTableLookupContainer _wmoAreaTableLookup;
+    std::set<uint32> _azeriteItems;
+    std::set<uint32> _azeriteEmpoweredItems;
 }
 
 template<class T, template<class> class DB2>
@@ -518,7 +526,7 @@ void DB2Manager::LoadStores(std::string const& dataPath, uint32 defaultLocale)
     std::vector<std::string> bad_db2_files;
     uint32 availableDb2Locales = 0xFF;
 
-#define LOAD_DB2(store) LoadDB2(availableDb2Locales, bad_db2_files, _stores, &store, db2Path, defaultLocale, store)
+#define LOAD_DB2(store) LoadDB2(availableDb2Locales, bad_db2_files, _stores, &(store), db2Path, defaultLocale, store)
 
     LOAD_DB2(sAchievementStore);
     LOAD_DB2(sAdventureJournalStore);
@@ -540,6 +548,12 @@ void DB2Manager::LoadStores(std::string const& dataPath, uint32 defaultLocale)
     LOAD_DB2(sArtifactTierStore);
     LOAD_DB2(sArtifactUnlockStore);
     LOAD_DB2(sAuctionHouseStore);
+    LOAD_DB2(sAzeriteEmpoweredItemStore);
+    LOAD_DB2(sAzeriteItemStore);
+    LOAD_DB2(sAzeriteItemMilestonePowerStore);
+    LOAD_DB2(sAzeritePowerStore);
+    LOAD_DB2(sAzeritePowerSetMemberStore);
+    LOAD_DB2(sAzeriteTierUnlockStore);
     LOAD_DB2(sBankBagSlotPricesStore);
     LOAD_DB2(sBannedAddonsStore);
     LOAD_DB2(sBarberShopStyleStore);
@@ -1302,13 +1316,20 @@ void DB2Manager::LoadStores(std::string const& dataPath, uint32 defaultLocale)
         }
     }
 
+    for (auto const entry : sAzeriteEmpoweredItemStore)
+        _azeriteEmpoweredItems.insert(entry->ItemID);
+
+    for (auto const entry : sAzeriteItemStore)
+        _azeriteItems.insert(entry->ItemID);
+
     // error checks
     if (bad_db2_files.size() == _stores.size())
     {
         TC_LOG_ERROR("misc", "\nIncorrect DataDir value in worldserver.conf or ALL required *.db2 files (" SZFMTD ") not found by path: %sdbc/%s/", _stores.size(), dataPath.c_str(), localeNames[defaultLocale]);
         exit(1);
     }
-    else if (!bad_db2_files.empty())
+
+    if (!bad_db2_files.empty())
     {
         std::string str;
         for (auto const& bad_db2_file : bad_db2_files)
@@ -1874,7 +1895,7 @@ uint32 DB2Manager::GetItemBonusListForItemLevelDelta(int16 delta) const
     return 0;
 }
 
-std::set<uint32> DB2Manager::GetItemBonusTree(uint32 itemId, uint32 itemContext) const
+std::set<uint32> DB2Manager::GetItemBonusTree(uint32 itemId, uint32 itemContext, uint32& itemLevel) const
 {
     std::set<uint32> bonusListIDs;
 
@@ -1898,14 +1919,15 @@ std::set<uint32> DB2Manager::GetItemBonusTree(uint32 itemId, uint32 itemContext)
                 continue;
 
             if (bonusTreeNode->ChildItemBonusListID)
-            {
                 bonusListIDs.insert(bonusTreeNode->ChildItemBonusListID);
-            }
+
             else if (bonusTreeNode->ChildItemLevelSelectorID)
             {
                 ItemLevelSelectorEntry const* selector = sItemLevelSelectorStore.LookupEntry(bonusTreeNode->ChildItemLevelSelectorID);
                 if (!selector)
                     continue;
+
+                itemLevel = selector->MinItemLevel;
 
                 int16 delta = int16(selector->MinItemLevel) - proto->ItemLevel;
 
@@ -1923,9 +1945,7 @@ std::set<uint32> DB2Manager::GetItemBonusTree(uint32 itemId, uint32 itemContext)
                         else if (selector->MinItemLevel >= selectorQualitySet->IlvlRare)
                             quality = ITEM_QUALITY_RARE;
 
-                        auto itemSelectorQuality = std::lower_bound(itemSelectorQualities->second.begin(), itemSelectorQualities->second.end(),
-                            quality, ItemLevelSelectorQualityEntryComparator{});
-
+                        auto itemSelectorQuality = std::lower_bound(itemSelectorQualities->second.begin(), itemSelectorQualities->second.end(), quality, ItemLevelSelectorQualityEntryComparator{});
                         if (itemSelectorQuality != itemSelectorQualities->second.end())
                             bonusListIDs.insert((*itemSelectorQuality)->QualityItemBonusListID);
                     }
@@ -1940,20 +1960,19 @@ std::set<uint32> DB2Manager::GetItemBonusTree(uint32 itemId, uint32 itemContext)
 bool DB2Manager::HasItemContext(uint32 itemId) const
 {
     auto itemIdRange = _itemToBonusTree.equal_range(itemId);
-    if (itemIdRange.first == itemIdRange.second)
-        return true;
-
-    return false;
+    return itemIdRange.first == itemIdRange.second;
 }
 
 bool DB2Manager::HasItemContext(uint32 itemId, uint32 itemContext) const
 {
-    return !GetItemBonusTree(itemId, itemContext).empty();
+    uint32 redunantData = 0;
+    return !GetItemBonusTree(itemId, itemContext, redunantData).empty();
 }
 
 std::vector<int32> DB2Manager::GetItemBonusTreeVector(uint32 itemId, uint32 itemBonusTreeMod) const
 {
-    std::set<uint32> bonusListIDs = GetItemBonusTree(itemId, itemBonusTreeMod);
+    uint32 redunantData = 0;
+    std::set<uint32> bonusListIDs = GetItemBonusTree(itemId, itemBonusTreeMod, redunantData);
     std::vector<int32> vectorBonusListIDs;
 
     for (uint32 bonusList : bonusListIDs)
@@ -2893,4 +2912,14 @@ bool DB2Manager::MountTypeXCapabilityEntryComparator::Compare(MountTypeXCapabili
     if (left->MountTypeID == right->MountTypeID)
         return left->OrderIndex < right->OrderIndex;
     return left->MountTypeID < right->MountTypeID;
+}
+
+bool DB2Manager::IsAzeriteItem(uint32 itemID) const
+{
+    return _azeriteItems.find(itemID) != _azeriteItems.end();
+}
+
+bool DB2Manager::IsAzeriteEmpoweredItem(uint32 itemID) const
+{
+    return _azeriteEmpoweredItems.find(itemID) != _azeriteEmpoweredItems.end();
 }

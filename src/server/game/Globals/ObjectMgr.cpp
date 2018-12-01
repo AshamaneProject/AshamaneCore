@@ -10924,3 +10924,117 @@ void ObjectMgr::LoadPlayerChoicesLocale()
         TC_LOG_INFO("server.loading", ">> Loaded " SZFMTD " Player Choice Response locale strings in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
     }
 }
+
+std::set<uint32> ObjectMgr::GetItemBonusTree(uint32 ItemID, uint32 itemBonusTreeMod, uint32 ownerLevel, int32 levelBonus, int32 needLevel)
+{
+    auto itemTemplate = GetItemTemplate(ItemID);
+    auto bonusListIDs = GetItemBonusForLevel(ItemID, itemBonusTreeMod, needLevel);
+    if (!itemTemplate)
+        return bonusListIDs;
+
+    uint8 quality = 0;
+    if (levelBonus != 0)
+    {
+        auto bonusLevel = GetItemBonusLevel(ItemID, ownerLevel, quality, bonusListIDs) + levelBonus;
+        if (auto bonus = sDB2Manager.GetItemBonusListForItemLevelDelta(int16(bonusLevel - itemTemplate->GetBaseItemLevel())))
+            bonusListIDs.insert(bonus);
+    }
+
+    return bonusListIDs;
+}
+
+std::set<uint32> ObjectMgr::GetItemBonusForLevel(uint32 itemID, uint32 itemBonusTreeMod, int32 needLevel)
+{
+    auto itemTemplate = GetItemTemplate(itemID);
+    uint32 itemLevelFromBonus = 0;
+
+    auto bonusListIDs = sDB2Manager.GetItemBonusTree(itemID, itemBonusTreeMod, itemLevelFromBonus);
+    if (!needLevel)
+        needLevel = itemLevelFromBonus;
+
+    if (!itemTemplate || !needLevel)
+        return bonusListIDs;
+
+    int16 delta = needLevel - itemTemplate->GetBaseItemLevel();
+    if (auto bonus = sDB2Manager.GetItemBonusListForItemLevelDelta(delta))
+        bonusListIDs.insert(bonus);
+
+    return bonusListIDs;
+}
+
+uint32 ObjectMgr::GetItemBonusLevel(uint32 ItemID, uint32 ownerLevel, uint8& quality, std::set<uint32>& bonusListIDs)
+{
+    auto itemTemplate = GetItemTemplate(ItemID);
+    if (!itemTemplate)
+        return 0;
+
+    std::set<uint32> bonusSetIDs;
+    for (auto bonusListID : bonusListIDs)
+        bonusSetIDs.insert(bonusListID);
+
+    auto copyBonusSetIDs(bonusSetIDs);
+
+    quality = itemTemplate->GetQuality();
+    auto itemLevel = itemTemplate->GetBaseItemLevel();
+    auto ScalingStatDistribution = itemTemplate->GetScalingStatDistribution();
+    auto ItemLevelBonus = 0;
+
+    auto ScalingStatDistributionPriority = std::numeric_limits<int32>::max();
+    auto HasQualityBonus = false;
+
+    for (auto bonusListID : copyBonusSetIDs)
+    {
+        auto bonuses = sDB2Manager.GetItemBonusList(bonusListID);
+        if (!bonuses)
+            continue;
+
+        for (auto bonus : *bonuses)
+        {
+            switch (bonus->Type)
+            {
+            case ITEM_BONUS_ITEM_LEVEL:
+                ItemLevelBonus += bonus->Value[0];
+                break;
+            case ITEM_BONUS_QUALITY:
+                if (!HasQualityBonus)
+                {
+                    quality = static_cast<uint32>(bonus->Value[0]);
+                    HasQualityBonus = true;
+                }
+                else if (quality < static_cast<uint32>(bonus->Value[0]))
+                    quality = static_cast<uint32>(bonus->Value[0]);
+                break;
+            case ITEM_BONUS_SCALING_STAT_DISTRIBUTION:
+                if (bonus->Value[1] < ScalingStatDistributionPriority)
+                {
+                    ScalingStatDistribution = static_cast<uint32>(bonus->Value[0]);
+                    ScalingStatDistributionPriority = bonus->Value[1];
+                }
+                bonusSetIDs.erase(bonusListID);
+                break;
+            case ITEM_BONUS_SCALING_STAT_DISTRIBUTION_FIXED:
+                if (bonus->Value[1] < ScalingStatDistributionPriority)
+                {
+                    ScalingStatDistribution = static_cast<uint32>(bonus->Value[0]);
+                    ScalingStatDistributionPriority = bonus->Value[1];
+                }
+                bonusSetIDs.erase(bonusListID);
+                break;
+            default:
+                break;
+            }
+        }
+    }
+
+    if (auto ssd = sScalingStatDistributionStore.LookupEntry(ScalingStatDistribution))
+        if (auto scaleLvl = uint32(sDB2Manager.GetCurveValueAt(ssd->PlayerLevelToItemLevelCurveID, ownerLevel)))
+            itemLevel = scaleLvl;
+
+    itemLevel += ItemLevelBonus;
+
+    bonusListIDs.clear();
+    for (auto bonusListID : bonusSetIDs)
+        bonusListIDs.insert(bonusListID);
+
+    return std::min(std::max(itemLevel, uint32(MIN_ITEM_LEVEL)), uint32(MAX_ITEM_LEVEL));
+}
