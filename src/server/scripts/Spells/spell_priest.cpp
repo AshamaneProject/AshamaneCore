@@ -174,9 +174,8 @@ enum PriestSpells
     SPELL_PRIEST_SPIRIT_OF_REDEMPTION_UNTRANS_HERO  = 25100,
     SPELL_PRIEST_SPIRIT_SHELL_ABSORPTION            = 114908,
     SPELL_PRIEST_SPIRIT_SHELL_AURA                  = 109964,
-    SPELL_PRIEST_STRENGTH_OF_SOUL                   = 89488,
-    SPELL_PRIEST_STRENGTH_OF_SOUL_AURA              = 89488,
-    SPELL_PRIEST_STRENGTH_OF_SOUL_REDUCE_TIME       = 89490,
+    SPELL_PRIEST_STRENGTH_OF_SOUL                   = 197535,
+    SPELL_PRIEST_STRENGTH_OF_SOUL_AURA              = 197548,
     SPELL_PRIEST_SURGE_OF_DARKNESS                  = 87160,
     SPELL_PRIEST_SURGE_OF_LIGHT                     = 114255,
     SPELL_PRIEST_T9_HEALING_2P                      = 67201,
@@ -253,7 +252,7 @@ class spell_pri_power_word_shield_AuraScript : public AuraScript
 
     void CalculateAmount(AuraEffect const* aurEff, int32& amount, bool& /*canBeRecalculated*/)
     {
-        if (Unit* caster = aurEff->GetCaster())
+        if (Unit* caster = GetCaster())
         {
             if (Player* player = caster->ToPlayer())
             {
@@ -273,9 +272,25 @@ class spell_pri_power_word_shield_AuraScript : public AuraScript
         }
     }
 
+    void OnApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+    {
+        if (Unit* caster = GetCaster())
+        {
+            if (caster->HasAura(SPELL_PRIEST_STRENGTH_OF_SOUL))
+                caster->CastSpell(GetTarget(), SPELL_PRIEST_STRENGTH_OF_SOUL_AURA, true);
+        }
+    }
+
+    void OnRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+    {
+        GetTarget()->RemoveAurasDueToSpell(SPELL_PRIEST_STRENGTH_OF_SOUL_AURA);
+    }
+
     void Register() override
     {
         DoEffectCalcAmount += AuraEffectCalcAmountFn(spell_pri_power_word_shield_AuraScript::CalculateAmount, EFFECT_0, SPELL_AURA_SCHOOL_ABSORB);
+        OnEffectApply += AuraEffectApplyFn(spell_pri_power_word_shield_AuraScript::OnApply, EFFECT_0, SPELL_AURA_SCHOOL_ABSORB, AURA_EFFECT_HANDLE_REAL);
+        OnEffectRemove += AuraEffectRemoveFn(spell_pri_power_word_shield_AuraScript::OnRemove, EFFECT_0, SPELL_AURA_SCHOOL_ABSORB, AURA_EFFECT_HANDLE_REAL);
     }
 };
 
