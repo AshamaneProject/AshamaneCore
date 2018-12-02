@@ -18,6 +18,7 @@
 #include "Conversation.h"
 #include "GameObject.h"
 #include "GameObjectAI.h"
+#include "ObjectAccessor.h"
 #include "Player.h"
 #include "ScriptedCreature.h"
 #include "ScriptedEscortAI.h"
@@ -578,10 +579,11 @@ struct npc_taelia_get_your_bearings : public FollowerAI
         if (Player* player = unit->ToPlayer())
         {
             player->PlayConversation(5360);
+            ObjectGuid playerGuid = player->GetGUID();
 
-            player->GetScheduler().Schedule(1s, [this](TaskContext context)
+            me->GetScheduler().Schedule(1s, [this, playerGuid](TaskContext context)
             {
-                Player* player = GetContextPlayer();
+                Player* player = ObjectAccessor::GetPlayer(*me, playerGuid);
                 if (!player)
                     return;
 
