@@ -358,7 +358,11 @@ LootItem const* Loot::GetItemInSlot(uint32 lootSlot, Player const* player) const
 
 LootItem* Loot::LootItemInSlot(uint32 lootSlot, Player* player)
 {
-    LootItemList& playerItems = items.at(player->GetGUID());
+    auto itr = items.find(player->GetGUID());
+    if (itr == items.end())
+        return nullptr;
+
+    LootItemList& playerItems = itr->second;
     if (lootSlot >= playerItems.size())
         return nullptr;
 
