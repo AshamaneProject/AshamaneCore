@@ -27087,7 +27087,7 @@ bool Player::AddPvpTalent(PvpTalentEntry const* talent, uint8 activeTalentGroup,
         return false;
     }
 
-    if (HasPvpRulesEnabled())
+    if (IsInWarMode())
         LearnSpell(talent->SpellID, false);
 
     // Move this to toggle ?
@@ -27119,6 +27119,9 @@ void Player::RemovePvpTalent(PvpTalentEntry const* talent)
 
 void Player::TogglePvpTalents(bool enable)
 {
+    if (!HasSpell(195710)) // Honorable Medallion
+        CastSpell(this, 208682, true); // Learn Gladiator's Medallion
+
     PlayerPvpTalentMap const& pvpTalents = GetPvpTalentMap(GetActiveTalentGroup());
     for (uint32 pvpTalentId : pvpTalents)
     {
@@ -27145,8 +27148,10 @@ void Player::EnablePvpRules(bool dueToCombat /*= false*/)
             CastSpell(this, 208682, true); // Learn Gladiator's Medallion
 
         CastSpell(this, SPELL_PVP_RULES_ENABLED, true);
-    }
 
+        TogglePvpTalents(true);
+    }
+    
     if (!dueToCombat)
     {
         if (Aura* aura = GetAura(SPELL_PVP_RULES_ENABLED))
@@ -27164,14 +27169,15 @@ void Player::EnablePvpRules(bool dueToCombat /*= false*/)
 
 void Player::DisablePvpRules()
 {
-    // Don't disable pvp rules when in pvp zone.
-    if (IsInAreaThatActivatesPvpTalents())
+    // Don't disable pvp rules when in pvp zone or when in warmode
+    if (IsInAreaThatActivatesPvpTalents() || IsInWarMode())
         return;
 
     if (!GetCombatTimer())
     {
         RemoveAurasDueToSpell(SPELL_PVP_RULES_ENABLED);
         UpdateItemLevelAreaBasedScaling();
+        TogglePvpTalents(false);
     }
     else if (Aura* aura = GetAura(SPELL_PVP_RULES_ENABLED))
         aura->SetDuration(aura->GetSpellInfo()->GetMaxDuration());
