@@ -35,3 +35,14 @@ INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES
 DELETE FROM `command` WHERE `name`='reload spell_script_names';
 INSERT INTO `command` (`name`, `permission`, `help`) VALUES 
 ('reload spell_script_names', 2009, 'Syntax: .reload spell_script_names');
+
+DELETE FROM `spell_script_names` WHERE `ScriptName` IN ('spell_pri_penance_heal_damage', 'spell_pri_penance_triggered', 'spell_pri_penance');
+INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES 
+(47750, 'spell_pri_penance_heal_damage'),
+(47666, 'spell_pri_penance_heal_damage'),
+
+(47757, 'spell_pri_penance_triggered'),
+(47758, 'spell_pri_penance_triggered'),
+
+(47540, 'spell_pri_penance');
+

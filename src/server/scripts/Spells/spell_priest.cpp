@@ -73,6 +73,7 @@ enum PriestSpells
     SPELL_PRIEST_EVANGELISM_STACK                   = 81661,
     SPELL_PRIEST_FOCUSED_WILL_BUFF                  = 45242,
     SPELL_PRIEST_FROM_DARKNESS_COMES_LIGHT_AURA     = 109186,
+    SPELL_PRIEST_GRACE                              = 271534,
     SPELL_PRIEST_GLYPH_OF_CIRCLE_OF_HEALING         = 55675,
     SPELL_PRIEST_GLYPH_OF_DISPEL_MAGIC              = 55677,
     SPELL_PRIEST_GLYPH_OF_DISPEL_MAGIC_HEAL         = 56131,
@@ -119,13 +120,14 @@ enum PriestSpells
     SPELL_PRIEST_NPC_SHADOWY_APPARITION             = 46954,
     SPELL_PRIEST_NPC_VOID_TENDRILS                  = 65282,
     SPELL_PRIEST_PENANCE                            = 47540,
-    SPELL_PRIEST_PENANCE_DAMAGE                     = 47758,
-    SPELL_PRIEST_PENANCE_HEAL                       = 47757,
-    SPELL_PRIEST_PENANCE_R1                         = 47540,
-    SPELL_PRIEST_PENANCE_R1_DAMAGE                  = 47758,
-    SPELL_PRIEST_PENANCE_R1_HEAL                    = 47757,
+    SPELL_PRIEST_PENANCE_DAMAGE                     = 47666,
+    SPELL_PRIEST_PENANCE_HEAL                       = 47750,
+    SPELL_PRIEST_PENANCE_TARGET_ALLY                = 47757,
+    SPELL_PRIEST_PENANCE_TARGET_ENEMY               = 47758,
     SPELL_PRIEST_PHANTASM_AURA                      = 108942,
     SPELL_PRIEST_PHANTASM_PROC                      = 114239,
+    SPELL_PRIEST_POWER_OF_THE_DARK_SIDE_AURA        = 198069,
+    SPELL_PRIEST_POWER_OF_THE_DARK_SIDE_MARKER      = 225795,
     SPELL_PRIEST_PIETY                              = 197034,
     SPELL_PRIEST_PLEA                               = 200829,
     SPELL_PRIEST_PLEA_MANA                          = 212100,
@@ -140,6 +142,8 @@ enum PriestSpells
     SPELL_PRIEST_POWER_WORD_RADIANCE                = 194509,
     SPELL_PRIEST_RAPID_RENEWAL_AURA                 = 95649,
     SPELL_PRIEST_PURGE_THE_WICKED                   = 204197,
+    SPELL_PRIEST_PURGE_THE_WICKED_DOT               = 204213,
+    SPELL_PRIEST_PURGE_THE_WICKED_SEARCHER          = 204215,
     SPELL_PRIEST_RAPTURE                            = 47536,
     SPELL_PRIEST_RAPTURE_ENERGIZE                   = 47755,
     SPELL_PRIEST_REFLECTIVE_SHIELD_R1               = 33201,
@@ -254,6 +258,11 @@ class spell_pri_power_word_shield_AuraScript : public AuraScript
                 if (Aura* rapture = player->GetAura(SPELL_PRIEST_RAPTURE))
                     if (AuraEffect* eff0 = rapture->GetEffect(EFFECT_0))
                         absorbAmount += CalculatePct(absorbAmount, eff0->GetAmount());
+
+                Unit::AuraEffectList const& absorbBonus = caster->GetAuraEffectsByType(SPELL_AURA_MOD_ABSORB_EFFECTS_AMOUNT_PCT);
+                for (auto bonus : absorbBonus)
+                    AddPct(amount, bonus->GetAmount());
+
                 if (player->HasAura(SPELL_SHADOW_PRIEST_BASE_AURA))
                     absorbAmount *= 1.36f;
                 amount += absorbAmount;
@@ -1291,49 +1300,43 @@ class spell_pri_penance : public SpellScript
 
     bool Load() override
     {
-        return GetCaster()->IsPlayer();
+        return GetCaster()->GetTypeId() == TYPEID_PLAYER;
     }
 
-    bool Validate(SpellInfo const* spellInfo) override
+    bool Validate(SpellInfo const* /*spellInfo*/) override
     {
-        SpellInfo const* firstRankSpellInfo = sSpellMgr->GetSpellInfo(SPELL_PRIEST_PENANCE_R1);
-        if (!firstRankSpellInfo)
-            return false;
-
-        // can't use other spell than this penance due to spell_ranks dependency
-        if (!spellInfo->IsRankOf(firstRankSpellInfo))
-            return false;
-
-        uint8 rank = spellInfo->GetRank();
-        if (!sSpellMgr->GetSpellWithRank(SPELL_PRIEST_PENANCE_R1_DAMAGE, rank, true))
-            return false;
-        if (!sSpellMgr->GetSpellWithRank(SPELL_PRIEST_PENANCE_R1_HEAL, rank, true))
-            return false;
-
-        return true;
+        return ValidateSpellInfo(
+            {
+                SPELL_PRIEST_PENANCE_TARGET_ALLY,
+                SPELL_PRIEST_PENANCE_TARGET_ENEMY,
+                SPELL_PRIEST_PURGE_THE_WICKED_DOT,
+                SPELL_PRIEST_PURGE_THE_WICKED_SEARCHER
+            });
     }
 
     void HandleDummy(SpellEffIndex /*effIndex*/)
     {
         Unit* caster = GetCaster();
-        if (Unit* unitTarget = GetHitUnit())
+        Unit* target = GetHitUnit();
+
+        if (Unit* target = GetExplTargetUnit())
         {
-            if (!unitTarget->IsAlive())
-                return;
-
-            uint8 rank = GetSpellInfo()->GetRank();
-
-            if (caster->IsFriendlyTo(unitTarget))
-                caster->CastSpell(unitTarget, sSpellMgr->GetSpellWithRank(SPELL_PRIEST_PENANCE_R1_HEAL, rank), false);
+            if (!caster->IsFriendlyTo(target))
+                caster->CastSpell(target, SPELL_PRIEST_PENANCE_TARGET_ENEMY);
             else
-                caster->CastSpell(unitTarget, sSpellMgr->GetSpellWithRank(SPELL_PRIEST_PENANCE_R1_DAMAGE, rank), false);
+                caster->CastSpell(target, SPELL_PRIEST_PENANCE_TARGET_ALLY);
         }
+
+        if (target->HasAura(SPELL_PRIEST_PURGE_THE_WICKED_DOT, GetCaster()->GetGUID()))
+            caster->CastSpell(target, SPELL_PRIEST_PURGE_THE_WICKED_SEARCHER, true);
     }
 
     SpellCastResult CheckCast()
     {
         Player* caster = GetCaster()->ToPlayer();
+
         if (Unit* target = GetExplTargetUnit())
+        {
             if (!caster->IsFriendlyTo(target))
             {
                 if (!caster->IsValidAttackTarget(target))
@@ -1341,6 +1344,8 @@ class spell_pri_penance : public SpellScript
                 if (!caster->isInFront(target))
                     return SPELL_FAILED_UNIT_NOT_INFRONT;
             }
+        }
+
         return SPELL_CAST_OK;
     }
 
@@ -1351,20 +1356,102 @@ class spell_pri_penance : public SpellScript
     }
 };
 
-// 47666 - Penance Damage
-class spell_pri_penance_damage :public SpellScript
+class DelayedAuraRemoveEvent : public BasicEvent
 {
-    PrepareSpellScript(spell_pri_penance_damage);
+public:
+    DelayedAuraRemoveEvent(Unit* owner, uint32 spellId) : _owner(owner), _spellId(spellId) {}
 
-    void CheckTarget(WorldObject*& target)
+    bool Execute(uint64 /*time*/, uint32 /*diff*/) override
     {
-        if (target == GetCaster())
-            target = nullptr;
+        _owner->RemoveAurasDueToSpell(_spellId);
+        return true;
+    }
+
+private:
+    Unit* _owner;
+    uint32 _spellId;
+};
+
+// 47757 - Penance
+// 47758 - Penance
+class spell_pri_penance_triggered : public AuraScript
+{
+    PrepareAuraScript(spell_pri_penance_triggered);
+
+    bool Validate(SpellInfo const* /*spellInfo*/) override
+    {
+        return ValidateSpellInfo(
+            {
+                SPELL_PRIEST_POWER_OF_THE_DARK_SIDE_AURA,
+                SPELL_PRIEST_POWER_OF_THE_DARK_SIDE_MARKER
+            });
+    }
+
+    void ApplyEffect(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+    {
+        if (Unit* caster = GetCaster())
+        {
+            if (caster->HasAura(SPELL_PRIEST_POWER_OF_THE_DARK_SIDE_AURA))
+            {
+                caster->RemoveAurasDueToSpell(SPELL_PRIEST_POWER_OF_THE_DARK_SIDE_AURA);
+                caster->CastSpell(caster, SPELL_PRIEST_POWER_OF_THE_DARK_SIDE_MARKER, true);
+            }
+        }
+    }
+
+    void RemoveEffect(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+    {
+        if (Unit* caster = GetCaster()) // Penance has travel time we need to delay the aura remove a little bit...
+            caster->m_Events.AddEvent(new DelayedAuraRemoveEvent(caster, SPELL_PRIEST_POWER_OF_THE_DARK_SIDE_MARKER), caster->m_Events.CalculateTime(1000));
     }
 
     void Register() override
     {
-        OnObjectTargetSelect += SpellObjectTargetSelectFn(spell_pri_penance_damage::CheckTarget, EFFECT_0, TARGET_UNIT_CHANNEL_TARGET);
+        OnEffectApply += AuraEffectApplyFn(spell_pri_penance_triggered::ApplyEffect, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+        OnEffectRemove += AuraEffectRemoveFn(spell_pri_penance_triggered::RemoveEffect, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+    }
+};
+
+// 47750 - Penance
+// 47666 - Penance
+class spell_pri_penance_heal_damage : public SpellScript
+{
+    PrepareSpellScript(spell_pri_penance_heal_damage);
+
+    bool Validate(SpellInfo const* /*spellInfo*/) override
+    {
+        return ValidateSpellInfo(
+            {
+                SPELL_PRIEST_POWER_OF_THE_DARK_SIDE_MARKER,
+                SPELL_PRIEST_PENANCE_HEAL
+            });
+    }
+
+    void HandleDummy(SpellEffIndex /*effIndex*/)
+    {
+        if (AuraEffect* powerOfTheDarkSide = GetCaster()->GetAuraEffect(SPELL_PRIEST_POWER_OF_THE_DARK_SIDE_MARKER, EFFECT_0))
+        {
+            if (GetSpellInfo()->Id == SPELL_PRIEST_PENANCE_HEAL)
+            {
+                int32 heal = GetHitHeal();
+                AddPct(heal, powerOfTheDarkSide->GetAmount());
+                SetHitHeal(heal);
+            }
+            else
+            {
+                int32 damage = GetHitDamage();
+                AddPct(damage, powerOfTheDarkSide->GetAmount());
+                SetHitDamage(damage);
+            }
+        }
+    }
+
+    void Register() override
+    {
+        if (m_scriptSpellId == SPELL_PRIEST_PENANCE_HEAL)
+            OnEffectHitTarget += SpellEffectFn(spell_pri_penance_heal_damage::HandleDummy, EFFECT_0, SPELL_EFFECT_HEAL);
+        if (m_scriptSpellId == SPELL_PRIEST_PENANCE_DAMAGE)
+            OnEffectHitTarget += SpellEffectFn(spell_pri_penance_heal_damage::HandleDummy, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
     }
 };
 
@@ -2829,7 +2916,8 @@ void AddSC_priest_spell_scripts()
     new spell_pri_mind_sear();
     new spell_pri_pain_and_suffering_proc();
     RegisterSpellScript(spell_pri_penance);
-    RegisterSpellScript(spell_pri_penance_damage);
+    RegisterAuraScript(spell_pri_penance_triggered);
+    RegisterSpellScript(spell_pri_penance_heal_damage);
     new spell_pri_phantasm();
     new spell_pri_power_word_solace();
     new spell_pri_prayer_of_mending_divine_insight();
