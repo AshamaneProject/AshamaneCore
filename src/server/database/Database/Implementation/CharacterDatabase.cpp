@@ -698,7 +698,7 @@ void CharacterDatabaseConnection::DoPrepareStatements()
 
     // Archaeology
     PrepareStatement(CHAR_INS_ARCHAEOLOGY_BRANCH, "INSERT INTO character_archaeology_branchs (guid, projectId) VALUES (?, ?)", CONNECTION_ASYNC);
-    PrepareStatement(CHAR_INS_ARCHAEOLOGY_DIGSITE, "INSERT INTO character_archaeology_digsites (guid, digsiteId, point_x, point_y, count) VALUES (?, ?, ?, ?, ?)", CONNECTION_ASYNC);
+    PrepareStatement(CHAR_INS_ARCHAEOLOGY_DIGSITE, "INSERT IGNORE INTO character_archaeology_digsites (guid, digsiteId, point_x, point_y, count) VALUES (?, ?, ?, ?, ?)", CONNECTION_ASYNC);
     PrepareStatement(CHAR_SEL_ARCHAEOLOGY_ARTIFACT, "SELECT time, projectId, count FROM character_archaeology_history WHERE guid = ? AND projectId = ?", CONNECTION_ASYNC);
     PrepareStatement(CHAR_INS_ARCHAEOLOGY_HISTORY, "INSERT INTO character_archaeology_history (guid, projectId, time, count) VALUES (?, ?, ?, ?)", CONNECTION_ASYNC);
     PrepareStatement(CHAR_DEL_ARCHAEOLOGY_DIGSITES, "DELETE FROM character_archaeology_digsites WHERE guid = ?", CONNECTION_ASYNC);
