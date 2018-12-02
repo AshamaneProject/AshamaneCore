@@ -15682,7 +15682,7 @@ uint32 Player::GetQuestXPReward(Quest const* quest)
         return 0;
 
     float questXpRate = GetPersonnalXpRate() ? GetPersonnalXpRate(): sWorld->getRate(RATE_XP_QUEST);
-    uint32 XP = quest->XPValue(this) * sWorld->getRate(RATE_XP_QUEST);
+    uint32 XP = quest->XPValue(this) * questXpRate;
 
     // handle SPELL_AURA_MOD_XP_QUEST_PCT auras
     Unit::AuraEffectList const& ModXPPctAuras = GetAuraEffectsByType(SPELL_AURA_MOD_XP_QUEST_PCT);
@@ -16739,7 +16739,7 @@ void Player::RemoveRewardedQuest(uint32 questId, bool update /*= true*/)
         SendQuestUpdate(questId);
 }
 
-void Player::SendQuestUpdate(uint32 questId)
+void Player::SendQuestUpdate(uint32 /*questId*/)
 {
     if (!GetArea())
         return;
@@ -27151,7 +27151,7 @@ void Player::EnablePvpRules(bool dueToCombat /*= false*/)
 
         TogglePvpTalents(true);
     }
-    
+
     if (!dueToCombat)
     {
         if (Aura* aura = GetAura(SPELL_PVP_RULES_ENABLED))
