@@ -2782,6 +2782,18 @@ void SpellMgr::LoadSpellInfoCorrections()
         const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->TargetB = SpellImplicitTargetInfo(TARGET_UNIT_PET);
     });
 
+    // Penance Damage
+    ApplySpellFix({ 47758 }, [](SpellInfo* spellInfo)
+    {
+        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_1))->TargetA = SpellImplicitTargetInfo(TARGET_UNIT_TARGET_ENEMY);
+    });
+
+    // Penance Heal
+    ApplySpellFix({47757}, [](SpellInfo* spellInfo)
+    {
+        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_1))->TargetA = SpellImplicitTargetInfo(TARGET_UNIT_TARGET_ALLY);
+    });
+
     // Ride Carpet
     ApplySpellFix({ 45602 }, [](SpellInfo* spellInfo)
     {

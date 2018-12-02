@@ -2575,7 +2575,7 @@ SpellMissInfo Unit::MagicSpellHitResult(Unit* victim, SpellInfo const* spellInfo
     int32 tmp = 10000 - HitChance;
 
     int32 rand = irand(0, 9999);
-    if (rand < tmp)
+    if (rand < tmp && !spellInfo->HasAttribute(SPELL_ATTR8_CANT_MISS))
         return SPELL_MISS_MISS;
 
     // Chance resist mechanic (select max value from every mechanic spell effect)

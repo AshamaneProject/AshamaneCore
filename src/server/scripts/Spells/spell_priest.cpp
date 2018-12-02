@@ -55,6 +55,7 @@ enum PriestSpells
     SPELL_PRIEST_CURE_DISEASE                       = 528,
     SPELL_PRIEST_DEVOURING_PLAGUE                   = 2944,
     SPELL_PRIEST_DEVOURING_PLAGUE_HEAL              = 127626,
+    SPELL_PRIEST_DARK_ARCHANGEL_BUFF                = 197874,
     SPELL_PRIEST_DISPEL_MAGIC_FRIENDLY              = 97690,
     SPELL_PRIEST_DISPEL_MAGIC_HOSTILE               = 97691,
     SPELL_PRIEST_DISPERSION_SPRINT                  = 129960,
@@ -1322,9 +1323,9 @@ class spell_pri_penance : public SpellScript
         if (Unit* target = GetExplTargetUnit())
         {
             if (!caster->IsFriendlyTo(target))
-                caster->CastSpell(target, SPELL_PRIEST_PENANCE_TARGET_ENEMY);
+                caster->CastSpell(target, SPELL_PRIEST_PENANCE_TARGET_ENEMY, TriggerCastFlags(TRIGGERED_FULL_MASK & ~TRIGGERED_DISALLOW_PROC_EVENTS));
             else
-                caster->CastSpell(target, SPELL_PRIEST_PENANCE_TARGET_ALLY);
+                caster->CastSpell(target, SPELL_PRIEST_PENANCE_TARGET_ALLY, TriggerCastFlags(TRIGGERED_FULL_MASK & ~TRIGGERED_DISALLOW_PROC_EVENTS));
         }
 
         if (target->HasAura(SPELL_PRIEST_PURGE_THE_WICKED_DOT, GetCaster()->GetGUID()))
@@ -1370,6 +1371,40 @@ public:
 private:
     Unit* _owner;
     uint32 _spellId;
+};
+
+// 204215 - Purge the Wicked
+class spell_pri_purge_the_wicked_selector : public SpellScript
+{
+    PrepareSpellScript(spell_pri_purge_the_wicked_selector);
+
+    bool Validate(SpellInfo const* /*spellInfo*/) override
+    {
+        return ValidateSpellInfo(
+            {
+                SPELL_PRIEST_PURGE_THE_WICKED_DOT,
+                SPELL_PRIEST_PURGE_THE_WICKED
+            });
+    }
+
+    void FilterTargets(std::list<WorldObject*>& targets)
+    {
+        targets.remove_if(Trinity::UnitAuraCheck(true, SPELL_PRIEST_PURGE_THE_WICKED_DOT, GetCaster()->GetGUID()));
+        targets.sort(Trinity::ObjectDistanceOrderPred(GetExplTargetUnit()));
+        if (targets.size() > 1)
+            targets.resize(1);
+    }
+
+    void HandleDummy(SpellEffIndex /*effIndex*/)
+    {
+        GetCaster()->AddAura(SPELL_PRIEST_PURGE_THE_WICKED_DOT, GetHitUnit());
+    }
+
+    void Register() override
+    {
+        OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_pri_purge_the_wicked_selector::FilterTargets, EFFECT_1, TARGET_UNIT_DEST_AREA_ENEMY);
+        OnEffectHitTarget += SpellEffectFn(spell_pri_purge_the_wicked_selector::HandleDummy, EFFECT_1, SPELL_EFFECT_DUMMY);
+    }
 };
 
 // 47757 - Penance
@@ -1452,6 +1487,67 @@ class spell_pri_penance_heal_damage : public SpellScript
             OnEffectHitTarget += SpellEffectFn(spell_pri_penance_heal_damage::HandleDummy, EFFECT_0, SPELL_EFFECT_HEAL);
         if (m_scriptSpellId == SPELL_PRIEST_PENANCE_DAMAGE)
             OnEffectHitTarget += SpellEffectFn(spell_pri_penance_heal_damage::HandleDummy, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
+    }
+};
+
+// 197862 - Archangel
+class spell_pri_archangel : public SpellScript
+{
+    PrepareSpellScript(spell_pri_archangel);
+
+    bool Validate(SpellInfo const* /*spellInfo*/) override
+    {
+        return ValidateSpellInfo(
+            {
+                SPELL_PRIEST_ATONEMENT_AURA
+            });
+    }
+
+    void FilterTargets(std::list<WorldObject*>& targets)
+    {
+        targets.remove_if(Trinity::UnitAuraCheck(false, SPELL_PRIEST_ATONEMENT_AURA, GetCaster()->GetGUID()));
+    }
+
+    void HandleScriptEffect(SpellEffIndex /*effIndex*/)
+    {
+        if (Aura* aura = GetHitUnit()->GetAura(SPELL_PRIEST_ATONEMENT_AURA, GetCaster()->GetGUID()))
+            aura->RefreshDuration();
+    }
+
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_pri_archangel::HandleScriptEffect, EFFECT_2, SPELL_EFFECT_SCRIPT_EFFECT);
+    }
+};
+
+// 197871 - Dark Archangel
+class spell_pri_dark_archangel : public SpellScript
+{
+    PrepareSpellScript(spell_pri_dark_archangel);
+
+    bool Validate(SpellInfo const* /*spellInfo*/) override
+    {
+        return ValidateSpellInfo(
+            {
+                SPELL_PRIEST_DARK_ARCHANGEL_BUFF
+            });
+    }
+
+    void FilterTargets(std::list<WorldObject*>& targets)
+    {
+        targets.remove(GetCaster());
+        targets.remove_if(Trinity::UnitAuraCheck(false, SPELL_PRIEST_ATONEMENT_AURA, GetCaster()->GetGUID()));
+    }
+
+    void HandleScriptEffect(SpellEffIndex /*effIndex*/)
+    {
+        GetCaster()->CastSpell(GetHitUnit(), SPELL_PRIEST_DARK_ARCHANGEL_BUFF, true);
+    }
+
+    void Register() override
+    {
+        OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_pri_dark_archangel::FilterTargets, EFFECT_1, TARGET_UNIT_DEST_AREA_ALLY);
+        OnEffectHitTarget += SpellEffectFn(spell_pri_dark_archangel::HandleScriptEffect, EFFECT_1, SPELL_EFFECT_SCRIPT_EFFECT);
     }
 };
 
@@ -2918,6 +3014,7 @@ void AddSC_priest_spell_scripts()
     RegisterSpellScript(spell_pri_penance);
     RegisterAuraScript(spell_pri_penance_triggered);
     RegisterSpellScript(spell_pri_penance_heal_damage);
+    RegisterSpellScript(spell_pri_purge_the_wicked_selector);
     new spell_pri_phantasm();
     new spell_pri_power_word_solace();
     new spell_pri_prayer_of_mending_divine_insight();
@@ -2946,11 +3043,12 @@ void AddSC_priest_spell_scripts()
     RegisterSpellScript(spell_pri_prayer_of_healing);
     RegisterSpellScript(spell_pri_binding_heal);
     RegisterSpellScript(spell_pri_void_bolt);
-
+    RegisterSpellScript(spell_pri_archangel);
     RegisterAuraScript(spell_pri_clarity_of_will);
     RegisterAuraScript(spell_pri_twist_of_fate);
     RegisterAuraScript(spell_pri_mind_bomb);
     RegisterAuraScript(aura_pri_void_torrent);
+    RegisterSpellScript(spell_pri_dark_archangel);
 
     RegisterSpellAndAuraScriptPair(spell_pri_power_word_shield, spell_pri_power_word_shield_AuraScript);
 }

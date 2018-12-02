@@ -36,7 +36,10 @@ DELETE FROM `command` WHERE `name`='reload spell_script_names';
 INSERT INTO `command` (`name`, `permission`, `help`) VALUES 
 ('reload spell_script_names', 2009, 'Syntax: .reload spell_script_names');
 
-DELETE FROM `spell_script_names` WHERE `ScriptName` IN ('spell_pri_penance_heal_damage', 'spell_pri_penance_triggered', 'spell_pri_penance');
+DELETE FROM `spell_script_names` WHERE `ScriptName` IN (
+'spell_pri_penance_heal_damage', 'spell_pri_penance_triggered',
+'spell_pri_penance', 'spell_pri_purge_the_wicked_selector',
+'spell_pri_archangel', 'spell_pri_dark_archangel');
 INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES 
 (47750, 'spell_pri_penance_heal_damage'),
 (47666, 'spell_pri_penance_heal_damage'),
@@ -44,5 +47,10 @@ INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES
 (47757, 'spell_pri_penance_triggered'),
 (47758, 'spell_pri_penance_triggered'),
 
-(47540, 'spell_pri_penance');
+(47540, 'spell_pri_penance'),
 
+(204215, 'spell_pri_purge_the_wicked_selector'),
+
+(197862, 'spell_pri_archangel'),
+
+(197871, 'spell_pri_dark_archangel');
