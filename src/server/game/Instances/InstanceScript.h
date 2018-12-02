@@ -221,7 +221,7 @@ class TC_GAME_API InstanceScript : public ZoneScript
         void OnPlayerExit(Player*) override;
         void OnPlayerDeath(Player*) override;
 
-        virtual void OnCreatureGroupWipe(uint32 creatureGroupId) { }
+        virtual void OnCreatureGroupWipe(uint32 /*creatureGroupId*/) { }
 
         virtual void OnCompletedCriteriaTree(CriteriaTree const* /*tree*/) { }
 

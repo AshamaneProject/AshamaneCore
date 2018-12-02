@@ -250,7 +250,7 @@ class spell_pri_power_word_shield_AuraScript : public AuraScript
         return ValidateSpellInfo({ SPELL_PRIEST_POWER_WORD_SHIELD, SPELL_PRIEST_RAPTURE, SPELL_SHADOW_PRIEST_BASE_AURA });
     }
 
-    void CalculateAmount(AuraEffect const* aurEff, int32& amount, bool& /*canBeRecalculated*/)
+    void CalculateAmount(AuraEffect const* /*aurEff*/, int32& amount, bool& /*canBeRecalculated*/)
     {
         if (Unit* caster = GetCaster())
         {
@@ -1481,7 +1481,7 @@ class spell_pri_penance_heal_damage : public SpellScript
 
     void HandleDummy(SpellEffIndex /*effIndex*/)
     {
-        if (AuraEffect* contrition = GetCaster()->GetAuraEffect(SPELL_PRIEST_CONTRITION, EFFECT_0))
+        if (GetCaster()->GetAuraEffect(SPELL_PRIEST_CONTRITION, EFFECT_0))
             for (AuraApplication* auApp : GetCaster()->GetTargetAuraApplications(SPELL_PRIEST_ATONEMENT_AURA))
                 GetCaster()->CastSpell(auApp->GetTarget(), SPELL_PRIEST_CONTRITION_HEAL, true);
 
@@ -2407,7 +2407,7 @@ class spell_pri_shadow_mend : public SpellScript
 
         if (caster->HasAura(SPELL_PRIEST_MASOCHISM) && caster == target)
         {
-            if (SpellEffectInfo const* eff0 = sSpellMgr->GetSpellInfo(SPELL_PRIEST_MASOCHISM_HEAL)->GetEffect(EFFECT_0))
+            if (sSpellMgr->GetSpellInfo(SPELL_PRIEST_MASOCHISM_HEAL)->GetEffect(EFFECT_0))
             {
                 int32 heal = int32(backfireDamage / sSpellMgr->GetSpellInfo(SPELL_PRIEST_MASOCHISM_HEAL)->GetMaxTicks(DIFFICULTY_NONE));
                 caster->CastCustomSpell(SPELL_PRIEST_MASOCHISM_HEAL, SPELLVALUE_BASE_POINT0, heal, caster, TRIGGERED_FULL_MASK);
@@ -2461,7 +2461,7 @@ class spell_pri_shadow_mend_aura : public AuraScript
             target->CastCustomSpell(SPELL_PRIEST_SHADOW_MEND_DAMAGE, SPELLVALUE_BASE_POINT0, aurEff->GetAmount(), target, TRIGGERED_FULL_MASK, NULL, NULL, caster->GetGUID());
     }
 
-    void DoProc(AuraEffect const* aurEff, ProcEventInfo& procInfo)
+    void DoProc(AuraEffect const* /*aurEff*/, ProcEventInfo& procInfo)
     {
         if (AuraEffect const* eff0 = GetEffect(EFFECT_0))
         {
@@ -2511,7 +2511,7 @@ public:
         void FilterTargets(std::list<WorldObject*>& targets)
         {
             if (SpellEffectInfo const* eff2 = GetSpellInfo()->GetEffect(EFFECT_2))
-                if (targets.size() > eff2->CalcValue())
+                if (int32(targets.size()) > eff2->CalcValue())
                     targets.resize(std::max(1, eff2->CalcValue()));
         }
 
@@ -2874,7 +2874,7 @@ class aura_pri_void_torrent : public AuraScript
         GetTarget()->CastSpell(GetTarget(), SPELL_PRIEST_VOID_TORRENT_PREVENT_REGEN, true);
     }
 
-    void HandleRemove(AuraEffect const* aurEff, AuraEffectHandleModes /*mode*/)
+    void HandleRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
     {
         GetTarget()->RemoveAurasDueToSpell(SPELL_PRIEST_VOID_TORRENT_PREVENT_REGEN);
     }

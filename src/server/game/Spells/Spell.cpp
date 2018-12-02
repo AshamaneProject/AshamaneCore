@@ -1423,9 +1423,15 @@ void Spell::SelectImplicitCasterDestTargets(SpellEffIndex effIndex, SpellImplici
         }
         case TARGET_DEST_LAST_QUEST_GIVER:
         {
-            if (Player* casterPlayer = m_caster->ToPlayer())
-                if (WorldObject* target = casterPlayer->GetLastQuestGiver())
-                    dest = SpellDestination(*target);
+            if (SpellEffectInfo const* effect = GetEffect(effIndex))
+            {
+                float dist = effect->CalcRadius(m_caster);
+
+                if (Player* casterPlayer = m_caster->ToPlayer())
+                    if (WorldObject* target = casterPlayer->GetLastQuestGiver())
+                        if (casterPlayer->GetDistance(target) < dist)
+                            dest = SpellDestination(*target);
+            }
             break;
         }
         default:

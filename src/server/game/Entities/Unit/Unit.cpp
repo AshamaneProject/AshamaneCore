@@ -11391,9 +11391,6 @@ void Unit::Kill(Unit* victim, bool durabilityLoss)
         // call kill spell proc event (before real die and combat stop to triggering auras removed at death/combat stop)
         if (isLootRewardAllowed)
         {
-            Player* looter = player;
-            bool hasLooterGuid = false;
-
             Loot* loot = &creature->loot;
             loot->clear();
 

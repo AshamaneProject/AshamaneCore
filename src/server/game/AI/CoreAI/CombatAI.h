@@ -52,7 +52,7 @@ class TC_GAME_API CombatAI : public CreatureAI
         void UpdateAI(uint32 diff) override;
         void SpellInterrupted(uint32 spellId, uint32 unTimeMs) override;
         bool UpdateVictim();
-        void MoveInLineOfSight(Unit* who) override { }
+        void MoveInLineOfSight(Unit* /*who*/) override { }
         void MoveCombat(Position destination);
         void MovementInform(uint32 type, uint32 id) override;
         void EnterEvadeMode(EvadeReason why) override;

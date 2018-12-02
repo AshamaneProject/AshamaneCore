@@ -850,9 +850,6 @@ public:
             KillCreditMe(player);
         }
     }
-
-private:
-    uint8 m_talkId = 0;
 };
 
 void AddSC_zone_tiragarde_sound()

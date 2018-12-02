@@ -62,7 +62,7 @@ class TC_GAME_API GameObjectAI
         virtual void OnStateChanged(uint32 /*state*/, Unit* /*unit*/) { }
         virtual void EventInform(uint32 /*eventId*/) { }
 
-        virtual bool IsNeverVisibleFor(WorldObject const* seer) { return false; }
+        virtual bool IsNeverVisibleFor(WorldObject const* /*seer*/) { return false; }
 };
 
 class TC_GAME_API NullGameObjectAI : public GameObjectAI
