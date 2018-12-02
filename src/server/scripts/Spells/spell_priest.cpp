@@ -2465,7 +2465,7 @@ class spell_pri_shadow_mend_aura : public AuraScript
     {
         if (AuraEffect const* eff0 = GetEffect(EFFECT_0))
         {
-            int32 amountRemaining = procInfo.GetDamageInfo()->GetDamage() / int32(eff0->GetTotalTicks() - eff0->GetTickNumber());
+            int32 amountRemaining = procInfo.GetDamageInfo()->GetDamage() / std::max(1, int32(eff0->GetTotalTicks() - eff0->GetTickNumber()));
             amountRemaining = eff0->GetAmount() - amountRemaining;
             if (amountRemaining <= 0)
                 GetAura()->Remove();
