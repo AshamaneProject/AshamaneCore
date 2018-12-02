@@ -52,6 +52,8 @@ enum PriestSpells
     SPELL_PRIEST_BODY_AND_SOUL_AURA                 = 64129,
     SPELL_PRIEST_BODY_AND_SOUL_SPEED                = 65081,
     SPELL_PRIEST_CENSURE                            = 200199,
+    SPELL_PRIEST_CONTRITION                         = 197419,
+    SPELL_PRIEST_CONTRITION_HEAL                    = 270501,
     SPELL_PRIEST_CURE_DISEASE                       = 528,
     SPELL_PRIEST_DEVOURING_PLAGUE                   = 2944,
     SPELL_PRIEST_DEVOURING_PLAGUE_HEAL              = 127626,
@@ -1464,6 +1466,10 @@ class spell_pri_penance_heal_damage : public SpellScript
 
     void HandleDummy(SpellEffIndex /*effIndex*/)
     {
+        if (AuraEffect* contrition = GetCaster()->GetAuraEffect(SPELL_PRIEST_CONTRITION, EFFECT_0))
+            for (AuraApplication* auApp : GetCaster()->GetTargetAuraApplications(SPELL_PRIEST_ATONEMENT_AURA))
+                GetCaster()->CastSpell(auApp->GetTarget(), SPELL_PRIEST_CONTRITION_HEAL, true);
+
         if (AuraEffect* powerOfTheDarkSide = GetCaster()->GetAuraEffect(SPELL_PRIEST_POWER_OF_THE_DARK_SIDE_MARKER, EFFECT_0))
         {
             if (GetSpellInfo()->Id == SPELL_PRIEST_PENANCE_HEAL)
