@@ -132,8 +132,12 @@ public:
 
     void OnSceneEnd(Player* player, uint32 /*sceneInstanceID*/, SceneTemplate const* /*sceneTemplate*/) override
     {
-        player->GetScheduler().Schedule(1s, [player](TaskContext /*context*/)
+        player->GetScheduler().Schedule(3s, [](TaskContext context)
         {
+            Player* player = GetContextPlayer();
+            if (!player)
+                return;
+
             player->CastSpell(player, SPELL_SCENARIO_COMPLETE, true);
 
             player->AddMovieDelayedAction(857, [player]
