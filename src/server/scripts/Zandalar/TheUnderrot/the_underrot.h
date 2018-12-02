@@ -15,27 +15,27 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-void AddSC_zone_nazmir();
-void AddSC_zone_voldun();
-void AddSC_zone_zuldazar();
+#ifndef THE_UNDERROT_H
+#define THE_UNDERROT_H
 
-void AddSC_boss_elder_leaxa();
-void AddSC_boss_cragmaw_infested();
-void AddSC_boss_sporecaller_zancha();
-void AddSC_boss_unbound_abomination();
-void AddSC_the_underrot();
-void AddSC_instance_shrine_of_the_storm();
+#define DataHeader "TU"
 
-void AddZandalarScripts()
+uint32 const EncounterCount = 4;
+
+enum EncounterData
 {
-    AddSC_zone_nazmir();
-    AddSC_zone_voldun();
-    AddSC_zone_zuldazar();
+    DATA_ELDER_LEAXA            = 0,
+    DATA_CRAGMAW_THE_INFESTED   = 1,
+    DATA_SPORECALLER_ZANCHA     = 2,
+    DATA_UNBOUND_ABOMINATION    = 3,
+};
 
-    AddSC_boss_elder_leaxa();
-    AddSC_boss_cragmaw_infested();
-    AddSC_boss_sporecaller_zancha();
-    AddSC_boss_unbound_abomination();
-    AddSC_the_underrot();
-    AddSC_instance_shrine_of_the_storm();
-}
+enum CreatureIds
+{
+    NPC_ELDER_LEAXA             = 131318,
+    NPC_CRAGMAW_THE_INFESTED    = 131817,
+    NPC_SPORECALLER_ZANCHA      = 131383,
+    NPC_UNBOUND_ABOMINATION     = 133007,
+};
+
+#endif // THE_UNDERROT_H

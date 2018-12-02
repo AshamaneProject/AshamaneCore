@@ -15,27 +15,10 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-void AddSC_zone_nazmir();
-void AddSC_zone_voldun();
-void AddSC_zone_zuldazar();
+#include "ScriptMgr.h"
+#include "the_underrot.h"
 
-void AddSC_boss_elder_leaxa();
-void AddSC_boss_cragmaw_infested();
-void AddSC_boss_sporecaller_zancha();
-void AddSC_boss_unbound_abomination();
-void AddSC_the_underrot();
-void AddSC_instance_shrine_of_the_storm();
-
-void AddZandalarScripts()
+void AddSC_boss_cragmaw_infested()
 {
-    AddSC_zone_nazmir();
-    AddSC_zone_voldun();
-    AddSC_zone_zuldazar();
 
-    AddSC_boss_elder_leaxa();
-    AddSC_boss_cragmaw_infested();
-    AddSC_boss_sporecaller_zancha();
-    AddSC_boss_unbound_abomination();
-    AddSC_the_underrot();
-    AddSC_instance_shrine_of_the_storm();
 }
