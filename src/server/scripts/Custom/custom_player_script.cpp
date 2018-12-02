@@ -99,7 +99,7 @@ public:
         CONVERSATION_MAGNI_DYING_WORLD      = 9316,
     };
 
-    void OnLogin(Player* player, bool firstLogin) override
+    void OnLogin(Player* player, bool /*firstLogin*/) override
     {
         if (player->getLevel() >= 110)
             HandleBFAStart(player);

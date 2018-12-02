@@ -71,7 +71,7 @@ class spell_seal_dream : public SpellScript
     void HandleAfterCast()
     {
         if (Creature* portal = GetCaster()->FindNearestCreature(creature_portal_bunny, 5))
-            GetCaster()->ToPlayer()->KilledMonsterCredit(creature_portal_bunny);
+            GetCaster()->ToPlayer()->KilledMonsterCredit(creature_portal_bunny, portal->GetGUID());
     }
 
     void Register() override

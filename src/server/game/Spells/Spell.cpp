@@ -6959,7 +6959,7 @@ void Spell::DelayedChannel()
 
     //check pushback reduce
     // should be affected by modifiers, not take the dbc duration.
-    int32 duration = ((m_channeledDuration > 0) ? m_channeledDuration : m_spellInfo->GetDuration());
+    //int32 duration = ((m_channeledDuration > 0) ? m_channeledDuration : m_spellInfo->GetDuration());
 
     // needs some more research, sniff shows anywhere from 130 to 189, it is not a pct of duration
     // https://gist.github.com/EPS1L0N/fa8977a74918ba4b9c63

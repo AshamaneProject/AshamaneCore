@@ -1114,7 +1114,7 @@ bool Creature::IsTappedBy(Player const* player) const
         return true;
 
     if (Group const* playerGroup = player->GetGroup())
-        if (std::find(m_lootRecipients.begin(), m_lootRecipients.end(), player->GetGUID()) != m_lootRecipients.end())
+        if (std::find(m_lootRecipients.begin(), m_lootRecipients.end(), playerGroup->GetGUID()) != m_lootRecipients.end())
             return true;
 
     // Todo : Check player team

@@ -942,7 +942,7 @@ public:
         return true;
     }
 
-    static bool HandleReloadScriptNamesCommand(ChatHandler* handler, const char* args)
+    static bool HandleReloadScriptNamesCommand(ChatHandler* handler, const char* /*args*/)
     {
         TC_LOG_INFO("misc", "Reloading spell_script_names...");
         sObjectMgr->LoadSpellScriptNames();

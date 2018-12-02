@@ -688,22 +688,22 @@ void CriteriaHandler::UpdateCriteria(CriteriaTypes type, uint64 miscValue1 /*= 0
                 SetCriteriaProgress(criteria, miscValue1, referencePlayer);
                 break;
             case CRITERIA_TYPE_TRANSMOG_SET_UNLOCKED:
-                if (miscValue1 != criteria->Entry->Asset.TransmogSetGroupID)
+                if (miscValue1 != uint64(criteria->Entry->Asset.TransmogSetGroupID))
                     continue;
                 SetCriteriaProgress(criteria, 1, referencePlayer, PROGRESS_ACCUMULATE);
                 break;
             case CRITERIA_TYPE_APPEARANCE_UNLOCKED_BY_SLOT:
-                if (!miscValue2 /*login case*/ || miscValue1 != criteria->Entry->Asset.EquipmentSlot)
+                if (!miscValue2 /*login case*/ || miscValue1 != uint64(criteria->Entry->Asset.EquipmentSlot))
                     continue;
                 SetCriteriaProgress(criteria, 1, referencePlayer, PROGRESS_ACCUMULATE);
                 break;
             case CRITERIA_TYPE_COMPLETE_DUNGEON_ENCOUNTER:
-                if (miscValue1 != criteria->Entry->Asset.DungeonEncounterID)
+                if (miscValue1 != uint64(criteria->Entry->Asset.DungeonEncounterID))
                     continue;
                 SetCriteriaProgress(criteria, 1, referencePlayer, PROGRESS_ACCUMULATE);
                 break;
             case CRITERIA_TYPE_SEND_EVENT_SCENARIO:
-                if (miscValue1 != criteria->Entry->Asset.ScenarioEventID)
+                if (miscValue1 != uint64(criteria->Entry->Asset.ScenarioEventID))
                     continue;
                 SetCriteriaProgress(criteria, 1, referencePlayer);
                 break;
