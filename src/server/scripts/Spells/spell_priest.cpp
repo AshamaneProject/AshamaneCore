@@ -2492,26 +2492,32 @@ public:
     {
         PrepareSpellScript(spell_pri_power_word_radiance_SpellScript);
 
-        int8 hitCount = 0;
-
         void ApplyAtonement(SpellEffIndex /*effIndex*/)
         {
-            if (hitCount > 2)
-                return;
-
             Unit* caster = GetCaster();
             Unit* target = GetHitUnit();
             if (!caster || !target)
                 return;
 
             if (caster->HasAura(SPELL_PRIEST_ATONEMENT))
-                caster->CastSpell(target, SPELL_PRIEST_ATONEMENT_AURA, true);
+                if (SpellInfo const* atonementInfo = sSpellMgr->GetSpellInfo(SPELL_PRIEST_ATONEMENT_AURA))
+                    if (SpellEffectInfo const* eff3 = GetSpellInfo()->GetEffect(EFFECT_3))
+                    {
+                        int32 newDuration = CalculatePct(atonementInfo->GetDuration(), eff3->CalcValue());
+                        caster->CastCustomSpell(SPELL_PRIEST_ATONEMENT_AURA, SPELLVALUE_DURATION, newDuration, target, TRIGGERED_FULL_MASK);
+                    }
+        }
 
-            hitCount++;
+        void FilterTargets(std::list<WorldObject*>& targets)
+        {
+            if (SpellEffectInfo const* eff2 = GetSpellInfo()->GetEffect(EFFECT_2))
+                if (targets.size() > eff2->CalcValue())
+                    targets.resize(std::max(1, eff2->CalcValue()));
         }
 
         void Register() override
         {
+            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_pri_power_word_radiance_SpellScript::FilterTargets, EFFECT_1, TARGET_UNIT_DEST_AREA_ALLY);
             OnEffectHitTarget += SpellEffectFn(spell_pri_power_word_radiance_SpellScript::ApplyAtonement, EFFECT_1, SPELL_EFFECT_HEAL);
         }
     };
