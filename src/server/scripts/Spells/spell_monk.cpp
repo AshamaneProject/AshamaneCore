@@ -1352,13 +1352,14 @@ class spell_monk_touch_of_death_amplifier : public AuraScript
     void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
     {
         if (AuraEffect* aurEff = GetTarget()->GetAuraEffect(SPELL_MONK_TOUCH_OF_DEATH, EFFECT_0))
-            if (eventInfo.GetDamageInfo()->GetDamage() > 0)
-                if (AuraEffect* aurEffAmplifier = eventInfo.GetActor()->GetAuraEffect(SPELL_MONK_TOUCH_OF_DEATH_AMPLIFIER, EFFECT_0))
-                {
-                    int32 damage = aurEff->GetAmount() + CalculatePct(eventInfo.GetDamageInfo()->GetDamage(), aurEffAmplifier->GetAmount());
-                    aurEff->SetDamage(damage);
-                    aurEff->SetAmount(damage);
-                }
+            if (eventInfo.GetDamageInfo())
+                if (eventInfo.GetDamageInfo()->GetDamage() > 0)
+                    if (AuraEffect* aurEffAmplifier = eventInfo.GetActor()->GetAuraEffect(SPELL_MONK_TOUCH_OF_DEATH_AMPLIFIER, EFFECT_0))
+                    {
+                        int32 damage = aurEff->GetAmount() + CalculatePct(eventInfo.GetDamageInfo()->GetDamage(), aurEffAmplifier->GetAmount());
+                        aurEff->SetDamage(damage);
+                        aurEff->SetAmount(damage);
+                    }
     }
 
     void Register() override
