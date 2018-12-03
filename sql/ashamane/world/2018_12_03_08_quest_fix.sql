@@ -1,4 +1,4 @@
-UPDATE npc_spellclick_Spells SET cast_flags = 1 WHERE npc_entry = 129540;
+UPDATE npc_spellclick_spells SET cast_flags = 1 WHERE npc_entry = 129540;
 -- Skykiller Ballista SAI
 SET @ENTRY := 129540;
 UPDATE `creature_template` SET `AIName`="SmartAI" WHERE `entry`=@ENTRY;
