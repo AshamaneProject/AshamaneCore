@@ -265,6 +265,9 @@ void ArchaeologyMgr::GenerateRandomPosition(Player* player, uint8 count)
 int ArchaeologyMgr::GetCurrencyId(uint16 digsiteId)
 {
     DigsitesMap::iterator itr = mResearchDigsitesMap.find(digsiteId);
+    if (itr == mResearchDigsitesMap.end())
+        return 0;
+
     return uint16(itr->second.currencyId);
 }
 
