@@ -3565,7 +3565,7 @@ void SpellMgr::LoadSpellInfoCorrections()
     });
 
     // Shaman Healing rain & Rainfall
-    ApplySpellFix({ 73920, 215864 }, [](SpellInfo* spellInfo)
+    ApplySpellFix({ 73920 }, [](SpellInfo* spellInfo)
     {
         const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->TargetB = SpellImplicitTargetInfo();
     });
