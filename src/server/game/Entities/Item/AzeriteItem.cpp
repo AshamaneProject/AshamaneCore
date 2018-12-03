@@ -206,10 +206,13 @@ void AzeriteEmpoweredItem::SaveToDB(SQLTransaction& trans)
 {
     Item::SaveToDB(trans);
 
+    ObjectGuid ownerGuid = GetOwnerGUID();
+    ObjectGuid guid = GetGUID();
+
     uint8 index = 0;
     auto stmt = CharacterDatabase.GetPreparedStatement(CHAR_REP_AZERITE_EMPOWERED_ITEM);
-    stmt->setUInt64(index++, GetOwnerGUID().GetCounter());
-    stmt->setUInt64(index++, GetGUID().GetCounter());
+    stmt->setUInt64(index++, ownerGuid.GetCounter());
+    stmt->setUInt64(index++, guid.GetCounter());
     stmt->setUInt32(index++, _powerIds[0].PowerId);
     stmt->setUInt32(index++, _powerIds[1].PowerId);
     stmt->setUInt32(index++, _powerIds[2].PowerId);
