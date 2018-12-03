@@ -773,12 +773,13 @@ void CharacterDatabaseConnection::DoPrepareStatements()
 
     PrepareStatement(CHAR_SEL_RECOVERY, "SELECT id, race, class, level, skill1, skill1_value, skill2, skill2_value, items, spells, at_login FROM character_recovery WHERE account = ? and delivered = 0", CONNECTION_SYNCH);
     PrepareStatement(CHAR_UPD_RECOVERY_DELIVERED, "UPDATE character_recovery SET delivered = 1 WHERE id = ?", CONNECTION_ASYNC);
-    
+
     PrepareStatement(CHAR_SEL_AZERITE_ITEM_XP, "SELECT Level, Xp FROM item_azerite where CharacterGuid = ? AND ItemGuid = ?", CONNECTION_SYNCH);
     PrepareStatement(CHAR_REP_AZERITE_ITEM_XP, "REPLACE INTO item_azerite (CharacterGuid, ItemGuid, Level, Xp) VALUES (?, ?, ?, ?)", CONNECTION_ASYNC);
 
     PrepareStatement(CHAR_SEL_AZERITE_EMPOWERED_ITEM, "SELECT PowereId1, PowereId2, PowereId3, PowereId4 FROM item_azerite_empowered where CharacterGuid = ? AND ItemGuid = ?", CONNECTION_SYNCH);
     PrepareStatement(CHAR_REP_AZERITE_EMPOWERED_ITEM, "REPLACE INTO item_azerite_empowered (CharacterGuid, ItemGuid, PowereId1, PowereId2, PowereId3, PowereId4) VALUES (?, ?, ?, ?, ?, ?)", CONNECTION_ASYNC);
+    PrepareStatement(CHAR_DEL_AZERITE_EMPOWERED_ITEM, "DELETE FROM item_azerite_empowered WHERE ItemGuid = ?", CONNECTION_ASYNC);
 }
 
 CharacterDatabaseConnection::CharacterDatabaseConnection(MySQLConnectionInfo& connInfo) : MySQLConnection(connInfo)

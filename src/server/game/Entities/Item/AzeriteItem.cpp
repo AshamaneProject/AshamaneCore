@@ -204,20 +204,26 @@ bool AzeriteEmpoweredItem::LoadFromDB(ObjectGuid::LowType guid, ObjectGuid owner
 
 void AzeriteEmpoweredItem::SaveToDB(SQLTransaction& trans)
 {
+    if (GetState() == ITEM_REMOVED)
+    {
+        auto stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_AZERITE_EMPOWERED_ITEM);
+        stmt->setUInt64(0, GetGUID().GetCounter());
+        trans->Append(stmt);
+    }
+    else
+    {
+        uint8 index = 0;
+        auto stmt = CharacterDatabase.GetPreparedStatement(CHAR_REP_AZERITE_EMPOWERED_ITEM);
+        stmt->setUInt64(index++, GetOwnerGUID().GetCounter());
+        stmt->setUInt64(index++, GetGUID().GetCounter());
+        stmt->setUInt32(index++, _powerIds[0].PowerId);
+        stmt->setUInt32(index++, _powerIds[1].PowerId);
+        stmt->setUInt32(index++, _powerIds[2].PowerId);
+        stmt->setUInt32(index++, _powerIds[3].PowerId);
+        trans->Append(stmt);
+    }
+
     Item::SaveToDB(trans);
-
-    ObjectGuid ownerGuid = GetOwnerGUID();
-    ObjectGuid guid = GetGUID();
-
-    uint8 index = 0;
-    auto stmt = CharacterDatabase.GetPreparedStatement(CHAR_REP_AZERITE_EMPOWERED_ITEM);
-    stmt->setUInt64(index++, ownerGuid.GetCounter());
-    stmt->setUInt64(index++, guid.GetCounter());
-    stmt->setUInt32(index++, _powerIds[0].PowerId);
-    stmt->setUInt32(index++, _powerIds[1].PowerId);
-    stmt->setUInt32(index++, _powerIds[2].PowerId);
-    stmt->setUInt32(index++, _powerIds[3].PowerId);
-    trans->Append(stmt);
 }
 
 void AzeriteEmpoweredItem::SelectPower(int32 powerId, int32 tier)
