@@ -2510,9 +2510,14 @@ public:
 
         void FilterTargets(std::list<WorldObject*>& targets)
         {
-            if (SpellEffectInfo const* eff2 = GetSpellInfo()->GetEffect(EFFECT_2))
-                if (int32(targets.size()) > eff2->CalcValue())
-                    targets.resize(std::max(1, eff2->CalcValue()));
+            if (Unit* explTarget = GetExplTargetUnit())
+            {
+                targets.remove(explTarget);
+                if (SpellEffectInfo const* eff2 = GetSpellInfo()->GetEffect(EFFECT_2))
+                    if (int32(targets.size()) > eff2->CalcValue())
+                        targets.resize(std::max(1, eff2->CalcValue()));
+                targets.push_back(explTarget);
+            }
         }
 
         void Register() override
