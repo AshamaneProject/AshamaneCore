@@ -303,6 +303,8 @@ bool Item::Create(ObjectGuid::LowType guidlow, uint32 itemId, Player const* owne
         SetOwnerGUID(owner->GetGUID());
         SetGuidValue(ITEM_FIELD_CONTAINED, owner->GetGUID());
     }
+    else
+        SetOwnerGUID(ObjectGuid::Empty);
 
     ItemTemplate const* itemProto = sObjectMgr->GetItemTemplate(itemId);
     if (!itemProto)
