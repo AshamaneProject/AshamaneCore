@@ -1257,13 +1257,9 @@ void Creature::SelectLevel()
 {
     CreatureTemplate const* cInfo = GetCreatureTemplate();
 
-    // level
-    uint8 minlevel = std::min(cInfo->maxlevel, cInfo->minlevel);
-    uint8 maxlevel = std::max(cInfo->maxlevel, cInfo->minlevel);
-
     if (HasScalableLevels())
     {
-        SetLevel(maxlevel);
+        SetLevel(cInfo->levelScaling->MaxLevel);
 
         SetUInt32Value(UNIT_FIELD_SCALING_LEVEL_MIN, cInfo->levelScaling->MinLevel);
         SetUInt32Value(UNIT_FIELD_SCALING_LEVEL_MAX, cInfo->levelScaling->MaxLevel);
@@ -1276,6 +1272,10 @@ void Creature::SelectLevel()
     }
     else
     {
+        // level
+        uint8 minlevel = std::min(cInfo->maxlevel, cInfo->minlevel);
+        uint8 maxlevel = std::max(cInfo->maxlevel, cInfo->minlevel);
+
         uint8 level = minlevel == maxlevel ? minlevel : urand(minlevel, maxlevel);
         SetLevel(level);
     }
