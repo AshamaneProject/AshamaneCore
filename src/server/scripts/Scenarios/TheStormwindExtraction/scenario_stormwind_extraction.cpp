@@ -208,6 +208,7 @@ struct scenario_stormwind_extraction : public InstanceScript
             {
                 DespawnCreatureGroup(SUMMON_GROUP_ALL_AFTER_FREED);
                 SummonCreatureGroup(SUMMON_GROUP_END_HARBOR_HACKFIX);
+                SummonCreatureGroup(SUMMON_GROUP_END_HARBOR_JAINA);
 
                 Creature* thalyssra = GetThalyssra();
                 if (!thalyssra)
@@ -220,6 +221,7 @@ struct scenario_stormwind_extraction : public InstanceScript
                 }).Schedule(24s, [this](TaskContext /*context*/)
                 {
                     DoCastSpellOnPlayers(SPELL_SCENE_JAINA_AND_ZUL);
+                    DespawnCreatureGroup(SUMMON_GROUP_END_HARBOR_JAINA);
                 });
             });
         }

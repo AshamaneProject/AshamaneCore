@@ -93,6 +93,7 @@ enum SummonGroups
     SUMMON_GROUP_HARBOR             = 60,
 
     SUMMON_GROUP_END_HARBOR_HACKFIX = 70,
+    SUMMON_GROUP_END_HARBOR_JAINA   = 80,
 };
 
 enum Conversations

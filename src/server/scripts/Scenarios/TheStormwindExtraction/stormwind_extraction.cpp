@@ -15,6 +15,8 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "AreaTrigger.h"
+#include "AreaTriggerAI.h"
 #include "CombatAI.h"
 #include "GameObjectAI.h"
 #include "Scenario.h"
@@ -148,6 +150,25 @@ public:
     }
 };
 
+struct at_se_boat_final : AreaTriggerAI
+{
+    at_se_boat_final(AreaTrigger* areatrigger) : AreaTriggerAI(areatrigger) { }
+
+    void OnUnitEnter(Unit* unit) override
+    {
+        Player* player = unit->ToPlayer();
+        if (!player)
+            return;
+
+        player->CastSpell(player, SPELL_SCENARIO_COMPLETE, true);
+
+        player->AddMovieDelayedAction(857, [player]
+        {
+            player->CastSpell(player, SPELL_SCENARIO_COMPLETE_TELEPORT, true);
+        });
+    }
+};
+
 void AddSC_stormwind_extraction()
 {
     RegisterGameObjectAI(go_se_sewer_access_portal);
@@ -155,4 +176,5 @@ void AddSC_stormwind_extraction()
     RegisterCreatureAI(npc_se_saurfang);
     RegisterGameObjectAI(go_se_talanji_zul_cell_door);
     RegisterSceneScript(scene_se_jaina_and_zul);
+    RegisterAreaTriggerAI(at_se_boat_final);
 }
