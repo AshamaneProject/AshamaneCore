@@ -119,12 +119,14 @@ struct scenario_stormwind_extraction : public InstanceScript
                 SummonCreatureGroup(SUMMON_GROUP_ALL_AFTER_FREED);
             });
 
-            saurfang->GetScheduler().Schedule(22s, [this, zul](TaskContext /*context*/)
+            saurfang->GetScheduler().Schedule(22s, [this](TaskContext /*context*/)
             {
                 DoPlayConversation(CONVERSATION_NULLIFICATION);
                 if (Creature* thalyssra = GetThalyssra())
                     thalyssra->AddAura(SPELL_NULLIFICATION_BARRIER);
-                zul->AddAura(SPELL_NULLIFICATION_BARRIER);
+
+                if (Creature* zul = GetZul())
+                    zul->AddAura(SPELL_NULLIFICATION_BARRIER);
 
             }).Schedule(34s, [this](TaskContext /*context*/)
             {
