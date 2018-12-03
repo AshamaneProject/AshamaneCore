@@ -1016,7 +1016,7 @@ class spell_mage_firestarter : public SpellScript
     void HandleCritChance(Unit* victim, float& chance)
     {
         if (Aura* aura = GetCaster()->GetAura(SPELL_MAGE_FIRESTARTER))
-            if (victim->GetHealthPct() >= aura->GetEffect(EFFECT_0)->GetAmount());
+            if (victim->GetHealthPct() >= aura->GetEffect(EFFECT_0)->GetAmount())
                 chance = 100.f;
     }
 
