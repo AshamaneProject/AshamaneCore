@@ -64,7 +64,7 @@ struct scenario_stormwind_extraction : public InstanceScript
             HandleGameObject(GetObjectGuid(GOB_SEWER_ACCESS_GATE), true);
     }
 
-    void SetData(uint32 type, uint32 value) override
+    void SetData(uint32 type, uint32 /*value*/) override
     {
         if (type == SCENARIO_EVENT_ENTER_STOCKADE)
         {
@@ -78,13 +78,18 @@ struct scenario_stormwind_extraction : public InstanceScript
         {
             DoSendScenarioEvent(SCENARIO_EVENT_FIND_ROKHAN);
 
-            GetRokhan()->RemoveAurasDueToSpell(SPELL_ROKHAN_SOLO_STEALTH);
-            GetRokhan()->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC);
+            if (Creature* rokhan = GetRokhan())
+            {
+                rokhan->RemoveAurasDueToSpell(SPELL_ROKHAN_SOLO_STEALTH);
+                rokhan->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC);
+            }
         }
         else if (type == SCENARIO_EVENT_FREE_SAURFANG)
         {
             static_cast<CombatAI*>(GetRokhan()->AI())->MoveCombat(Position(-8743.460938f, 883.260620f, 52.815895f));
-            GetThalyssra()->AI()->DoAction(2);
+
+            if (Creature* thalyssra = GetThalyssra())
+                thalyssra->AI()->DoAction(2);
         }
         else if (type == EVENT_FIND_PRISONNERS)
         {
@@ -93,13 +98,19 @@ struct scenario_stormwind_extraction : public InstanceScript
         else if (type == SCENARIO_EVENT_FREE_PRISONNERS)
         {
             DoPlayConversation(CONVERSATION_THANK_YOU_PRISON);
-            GetTalanji()->GetScheduler().Schedule(2s, [this](TaskContext /*context*/)
-            {
-                GetTalanji()->GetMotionMaster()->MovePoint(1, -8745.711914f, 886.244446f, 52.815662f);
+            Creature* talanji   = GetTalanji();
+            Creature* zul       = GetZul();
+            Creature* saurfang  = GetSaurfang();
+            if (!talanji || !zul || !saurfang)
+                return;
 
-                GetZul()->SetAIAnimKitId(0);
-                GetZul()->HandleEmoteCommand(EMOTE_ONESHOT_NONE);
-                GetZul()->GetMotionMaster()->MovePoint(1, -8743.465820f, 888.028198f, 52.815895f);
+            talanji->GetScheduler().Schedule(2s, [this, talanji, zul](TaskContext /*context*/)
+            {
+                talanji->GetMotionMaster()->MovePoint(1, -8745.711914f, 886.244446f, 52.815662f);
+
+                zul->SetAIAnimKitId(0);
+                zul->HandleEmoteCommand(EMOTE_ONESHOT_NONE);
+                zul->GetMotionMaster()->MovePoint(1, -8743.465820f, 888.028198f, 52.815895f);
             }).Schedule(20s, [this](TaskContext /*context*/)
             {
                 DespawnCreatureGroup(SUMMON_GROUP_INSIDE_PRISON);
@@ -108,11 +119,12 @@ struct scenario_stormwind_extraction : public InstanceScript
                 SummonCreatureGroup(SUMMON_GROUP_ALL_AFTER_FREED);
             });
 
-            GetSaurfang()->GetScheduler().Schedule(22s, [this](TaskContext /*context*/)
+            saurfang->GetScheduler().Schedule(22s, [this, zul](TaskContext /*context*/)
             {
                 DoPlayConversation(CONVERSATION_NULLIFICATION);
-                GetThalyssra()->AddAura(SPELL_NULLIFICATION_BARRIER);
-                GetZul()->AddAura(SPELL_NULLIFICATION_BARRIER);
+                if (Creature* thalyssra = GetThalyssra())
+                    thalyssra->AddAura(SPELL_NULLIFICATION_BARRIER);
+                zul->AddAura(SPELL_NULLIFICATION_BARRIER);
 
             }).Schedule(34s, [this](TaskContext /*context*/)
             {
@@ -152,14 +164,17 @@ struct scenario_stormwind_extraction : public InstanceScript
 
             }).Schedule(53s, [this](TaskContext /*context*/)
             {
-                GetTalanji()->CastSpell(nullptr, SPELL_TALANJI_OPEN_ARCANE_BARRIER, false);
+                if (Creature* talanji = GetTalanji())
+                    talanji->CastSpell(nullptr, SPELL_TALANJI_OPEN_ARCANE_BARRIER, false);
 
             }).Schedule(56s, [this](TaskContext /*context*/)
             {
                 magicWalls[6]->DespawnOrUnsummon();
             }).Schedule(58s, [this](TaskContext /*context*/)
             {
-                GetThalyssra()->AI()->DoAction(3);
+                if (Creature* thalyssra = GetThalyssra())
+                    thalyssra->AI()->DoAction(3);
+
                 if (CreatureGroup* creGroup = GetCreatureGroup(SUMMON_GROUP_ALL_AFTER_FREED))
                     creGroup->MoveGroupTo(-8645.526367f, 773.394714f, 45.399426f, true);
             });
@@ -168,7 +183,11 @@ struct scenario_stormwind_extraction : public InstanceScript
         {
             DoPlayConversation(CONVERSATION_BEFORE_ESCAPE);
 
-            GetThalyssra()->GetScheduler().Schedule(15s, [this](TaskContext context)
+            Creature* thalyssra = GetThalyssra();
+            if (!thalyssra)
+                return;
+
+            thalyssra->GetScheduler().Schedule(15s, [this](TaskContext /*context*/)
             {
                 if (Creature* escapeStockade = GetCreature(NPC_ESCAPE_STOCKADE))
                 {
@@ -178,22 +197,27 @@ struct scenario_stormwind_extraction : public InstanceScript
 
                     // TEMP FIX
                     if (ScenarioStepEntry const* step = sScenarioStepStore.LookupEntry(3731))
-                        GetThalyssra()->GetScenario()->SetStep(step);
+                        if (Creature* thalyssra = GetThalyssra())
+                            thalyssra->GetScenario()->SetStep(step);
 
                     if (CreatureGroup* creGroup = GetCreatureGroup(SUMMON_GROUP_ALL_AFTER_FREED))
                         creGroup->MoveGroupTo(escapeStockade->GetPositionX(), escapeStockade->GetPositionY(), escapeStockade->GetPositionZ());
                 }
 
-            }).Schedule(16s, [this](TaskContext context)
+            }).Schedule(16s, [this](TaskContext /*context*/)
             {
                 DespawnCreatureGroup(SUMMON_GROUP_ALL_AFTER_FREED);
                 SummonCreatureGroup(SUMMON_GROUP_END_HARBOR_HACKFIX);
 
-                GetThalyssra()->GetScheduler().Schedule(4s, [this](TaskContext context)
+                Creature* thalyssra = GetThalyssra();
+                if (!thalyssra)
+                    return;
+
+                thalyssra->GetScheduler().Schedule(4s, [this](TaskContext /*context*/)
                 {
                     DoPlayConversation(CONVERSATION_JAINA_END_OF_ESCAPE);
 
-                }).Schedule(24s, [this](TaskContext context)
+                }).Schedule(24s, [this](TaskContext /*context*/)
                 {
                     DoCastSpellOnPlayers(SPELL_SCENE_JAINA_AND_ZUL);
                 });

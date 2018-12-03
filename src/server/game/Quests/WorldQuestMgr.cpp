@@ -451,7 +451,7 @@ std::vector<CriteriaEntry const*> WorldQuestMgr::GetCriteriasForQuest(uint32 que
 
     CriteriaList criterias = sCriteriaMgr->GetPlayerCriteriaByType(CRITERIA_TYPE_COMPLETE_QUEST);
     for (Criteria const* criteria : criterias)
-        if (criteria->Entry->Asset.QuestID == quest_id && criteria->Entry->Flags & 0x20) // guessed for World Quest related stuff
+        if (criteria->Entry->Asset.QuestID == uint64(quest_id) && criteria->Entry->Flags & 0x20) // guessed for World Quest related stuff
             gets.push_back(criteria->Entry);
 
     return gets;
