@@ -112,6 +112,11 @@ class TC_GAME_API Creature : public Unit, public GridObject<Creature>, public Ma
         bool HasReactState(ReactStates state) const { return (m_reactState == state); }
         void InitializeReactState();
 
+        bool IsStopMovingAndAttacking;
+        uint32 stopTimer;
+        void StopMovingAndAttacking(uint32 timer = 0);
+        void FaceTargetAndStopMoving(Unit* target, uint32 timer);
+
         /// @todo Rename these properly
         bool isCanInteractWithBattleMaster(Player* player, bool msg) const;
         bool CanResetTalents(Player* player) const;

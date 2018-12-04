@@ -4500,7 +4500,7 @@ void Spell::EffectChargeDest(SpellEffIndex effIndex)
     else if (effectHandleMode == SPELL_EFFECT_HANDLE_HIT)
     {
         if (m_spellValue->EffectTriggerSpell[effIndex])
-            m_caster->CastSpell(destTarget->GetPositionX(), destTarget->GetPositionY(), destTarget->GetPositionZ(), m_spellValue->EffectTriggerSpell[effIndex], true, nullptr, nullptr, m_originalCasterGUID);
+            m_caster->CastSpell(destTarget->GetPositionX(), destTarget->GetPositionY(), destTarget->GetPositionZ(), m_spellValue->EffectTriggerSpell[effIndex], TRIGGERED_NONE, nullptr, nullptr, m_originalCasterGUID);
     }
 }
 

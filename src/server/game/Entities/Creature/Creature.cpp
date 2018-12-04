@@ -211,6 +211,9 @@ m_focusSpell(nullptr), m_focusDelay(0), m_shouldReacquireTarget(false), m_suppre
     ResetLootMode(); // restore default loot mode
     m_TriggerJustRespawned = false;
     m_isTempWorldObject = false;
+
+    IsStopMovingAndAttacking = false;
+    stopTimer = 0;
 }
 
 Creature::~Creature()
@@ -712,7 +715,45 @@ void Creature::Update(uint32 diff)
             break;
     }
 
+    if (IsStopMovingAndAttacking)
+    {
+        if (stopTimer <= diff)
+        {
+            stopTimer = 0;
+            IsStopMovingAndAttacking = false;
+            StopMovingAndAttacking();
+        }
+        else stopTimer -= diff;
+    }
+
     sScriptMgr->OnCreatureUpdate(this, diff);
+}
+
+void Creature::StopMovingAndAttacking(uint32 timer)
+{
+    if (timer)
+    {
+        SetReactState(REACT_PASSIVE);
+        AttackStop();
+        StopMoving();
+        IsStopMovingAndAttacking = true;
+        stopTimer = timer;
+    }
+    else {
+        SetReactState(REACT_AGGRESSIVE);
+        IsStopMovingAndAttacking = false;
+        stopTimer = 0;
+    }
+}
+
+void Creature::FaceTargetAndStopMoving(Unit* target, uint32 timer)
+{
+    if (target)
+    {
+        StopMovingAndAttacking(timer);
+        SetFacingToObject(target);
+        SetOrientation(GetAngle(target));
+    }
 }
 
 void Creature::RegenerateMana()
