@@ -3,6 +3,9 @@ UPDATE creature_template SET scriptname = "npc_underrot_titan_keeper_hezrel" WHE
 UPDATE creature_template SET scriptname = "npc_underrot_blood_visage" WHERE entry = 137103;
 UPDATE creature_template SET scriptname = "npc_underrot_rotting_spore" WHERE entry = 137458;
 
+UPDATE creature_template SET scriptname = "boss_sporecaller_zancha" WHERE entry = 131383;
+UPDATE creature_template SET scriptname = "npc_underrot_spore_pod" WHERE entry = 131597;
+
 DELETE FROM spell_script_names WHERE scriptname IN ("aura_unbound_abomination_blood_barrier", "spell_underrot_vile_expulsion", "spell_underrot_cleansing_light");
 INSERT INTO spell_script_names VALUES
 (269185, "aura_unbound_abomination_blood_barrier"),

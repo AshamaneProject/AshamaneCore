@@ -451,6 +451,11 @@ struct npc_mardum_doom_commander_beliash : public ScriptedAI
         SAY_ONDEATH = 1,
     };
 
+    void Reset() override
+    {
+        me->GetScheduler().CancelAll();
+    }
+
     void EnterCombat(Unit*) override
     {
         Talk(SAY_ONCOMBAT_BELIASH);

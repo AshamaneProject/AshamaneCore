@@ -381,7 +381,8 @@ struct at_underrot_vile_expulsion : AreaTriggerAI
         at->SetDuration(0);
 
         if (Unit* caster = at->GetCaster())
-            caster->SummonCreature(NPC_ROTTING_SPORE, at->GetPosition(), TEMPSUMMON_CORPSE_DESPAWN);
+            if (caster->GetMap()->IsHeroic())
+                caster->SummonCreature(NPC_ROTTING_SPORE, at->GetPosition(), TEMPSUMMON_CORPSE_DESPAWN);
     }
 };
 
