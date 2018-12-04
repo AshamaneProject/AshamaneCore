@@ -36,8 +36,8 @@ struct WorldQuestTemplate;
 struct ActiveWorldQuest;
 struct WorldQuestReward;
 
-typedef std::unordered_map<uint32, WorldQuestTemplate*> WorldQuestTemplateMap;
-typedef std::unordered_map<uint32, ActiveWorldQuest*> ActiveWorldQuestMap;
+typedef std::unordered_map<uint8 /*expansion*/, std::unordered_map<uint32, WorldQuestTemplate*>> WorldQuestTemplateMap;
+typedef std::unordered_map<uint8 /*expansion*/, std::unordered_map<uint32 /*questId*/, ActiveWorldQuest*>> ActiveWorldQuestMap;
 
 typedef std::unordered_map<uint32 /*RewardId*/, std::vector<WorldQuestReward>> WorldQuestRewardMap;
 typedef std::unordered_map<uint32 /*QuestInfo*/, std::vector<uint32 /*RewardId*/>> WorldQuestRewardByQuestInfoMap;
@@ -56,6 +56,7 @@ public:
     ~WorldQuestMgr();
 
     static WorldQuestMgr* instance();
+    static const std::vector<uint8> WorldQuestsExpansions = { EXPANSION_LEGION, EXPANSION_BATTLE_FOR_AZEROTH };
 
     void LoadWorldQuestTemplates();
     void LoadWorldQuestRewardTemplates();
@@ -70,10 +71,10 @@ public:
 
     void RewardQuestForPlayer(Player* player, uint32 questId);
 
-    WorldQuestTemplate* GetWorldQuestTemplate(uint32 questId);
+    WorldQuestTemplate* GetWorldQuestTemplate(uint8 expansion, uint32 questId);
 
-    uint8 GetActiveEmissaryQuestsCount();
-    uint32 GetActiveQuestsCount();
+    uint8 GetActiveEmissaryQuestsCount(uint8 expansion);
+    uint32 GetActiveQuestsCount(uint8 expansion);
 
     uint32 GetRandomRewardForQuestType(uint32 questType);
     std::vector<WorldQuestReward const*> GetRewardsForPlayerById(Player* player, uint32 rewardId);
@@ -87,7 +88,7 @@ public:
     void RefreshEmissaryQuests();
     void AddEmissaryQuestsOnPlayerIfNeeded(Player* player);
 
-    uint32 GetTimerForQuest(uint32 questId);
+    uint32 GetTimerForQuest(uint32 expansion, uint32 questId);
 
 private:
     WorldQuestTemplateMap _worldQuestTemplates;
