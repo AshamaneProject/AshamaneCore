@@ -59,6 +59,12 @@ struct TC_GAME_API ScriptedAI : public CreatureAI
     //Called at World update tick
     virtual void UpdateAI(uint32 diff) override;
 
+    // Hook used to execute events scheduled into EventMap without the need
+    // to override UpdateAI
+    // note: You must re-schedule the event within this method if the event
+    // is supposed to run more than once
+    virtual void ExecuteEvent(uint32 /*eventId*/) { }
+
     //Called at creature death
     void JustDied(Unit* /*killer*/) override { }
 
@@ -261,14 +267,6 @@ class TC_GAME_API BossAI : public ScriptedAI
         void JustSummoned(Creature* summon) override;
         void SummonedCreatureDespawn(Creature* summon) override;
 
-        virtual void UpdateAI(uint32 diff) override;
-
-        // Hook used to execute events scheduled into EventMap without the need
-        // to override UpdateAI
-        // note: You must re-schedule the event within this method if the event
-        // is supposed to run more than once
-        virtual void ExecuteEvent(uint32 /*eventId*/) { }
-
         virtual void ScheduleTasks() { }
 
         void Reset() override { _Reset(); }
@@ -318,14 +316,6 @@ class TC_GAME_API WorldBossAI : public ScriptedAI
 
         void JustSummoned(Creature* summon) override;
         void SummonedCreatureDespawn(Creature* summon) override;
-
-        virtual void UpdateAI(uint32 diff) override;
-
-        // Hook used to execute events scheduled into EventMap without the need
-        // to override UpdateAI
-        // note: You must re-schedule the event within this method if the event
-        // is supposed to run more than once
-        virtual void ExecuteEvent(uint32 /*eventId*/) { }
 
         virtual void ScheduleTasks() { }
 

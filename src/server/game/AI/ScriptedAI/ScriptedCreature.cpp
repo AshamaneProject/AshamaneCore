@@ -156,6 +156,16 @@ void ScriptedAI::UpdateAI(uint32 diff)
 
     events.Update(diff);
 
+    if (me->HasUnitState(UNIT_STATE_CASTING))
+        return;
+
+    while (uint32 eventId = events.ExecuteEvent())
+    {
+        ExecuteEvent(eventId);
+        if (me->HasUnitState(UNIT_STATE_CASTING))
+            return;
+    }
+
     DoMeleeAttackIfReady();
 }
 
@@ -546,26 +556,6 @@ void BossAI::SummonedCreatureDespawn(Creature* summon)
     summons.Despawn(summon);
 }
 
-void BossAI::UpdateAI(uint32 diff)
-{
-    if (!UpdateVictim())
-        return;
-
-    events.Update(diff);
-
-    if (me->HasUnitState(UNIT_STATE_CASTING))
-        return;
-
-    while (uint32 eventId = events.ExecuteEvent())
-    {
-        ExecuteEvent(eventId);
-        if (me->HasUnitState(UNIT_STATE_CASTING))
-            return;
-    }
-
-    DoMeleeAttackIfReady();
-}
-
 bool BossAI::CanAIAttack(Unit const* target) const
 {
     return CheckBoundary(target);
@@ -685,26 +675,6 @@ void WorldBossAI::JustSummoned(Creature* summon)
 void WorldBossAI::SummonedCreatureDespawn(Creature* summon)
 {
     summons.Despawn(summon);
-}
-
-void WorldBossAI::UpdateAI(uint32 diff)
-{
-    if (!UpdateVictim())
-        return;
-
-    events.Update(diff);
-
-    if (me->HasUnitState(UNIT_STATE_CASTING))
-        return;
-
-    while (uint32 eventId = events.ExecuteEvent())
-    {
-        ExecuteEvent(eventId);
-        if (me->HasUnitState(UNIT_STATE_CASTING))
-            return;
-    }
-
-    DoMeleeAttackIfReady();
 }
 
 void GetPositionWithDistInOrientation(Position* pUnit, float dist, float orientation, float& x, float& y)

@@ -27,6 +27,24 @@ struct instance_the_underrot : public InstanceScript
         SetHeaders(DataHeader);
         SetBossNumber(EncounterCount);
     }
+
+    void OnCreatureCreate(Creature* creature) override
+    {
+        InstanceScript::OnCreatureCreate(creature);
+
+        switch (creature->GetEntry())
+        {
+            case NPC_TITAN_KEEPER_HEZREL:
+            {
+                if (creature->GetPositionZ() < -100.f)
+                    AddObject(creature, DATA_BOSS_HERZEL, true);
+
+                break;
+            }
+            default:
+                break;
+        }
+    }
 };
 
 void AddSC_instance_shrine_of_the_storm()

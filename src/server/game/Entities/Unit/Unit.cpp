@@ -9887,6 +9887,10 @@ void Unit::SetPower(Powers power, int32 val)
 
     uint32 oldPower = GetUInt32Value(UNIT_FIELD_POWER + powerIndex);
 
+    if (Creature* creature = ToCreature())
+        if (creature->IsAIEnabled)
+            creature->AI()->OnPowerChanged(power, oldPower, val);
+
     _lastUpdatePower[powerIndex] = GetInt32Value(UNIT_FIELD_POWER + powerIndex);
     SetInt32Value(UNIT_FIELD_POWER + powerIndex, val);
 

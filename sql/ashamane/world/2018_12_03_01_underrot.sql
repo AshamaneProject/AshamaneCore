@@ -1,8 +1,8 @@
 SET @CGUID = 280001343;
 SET @OGUID = 210407188;
 SET @PHASEID = 0;
-SET @CDIFFS = 1;
-SET @ODIFFS = 1;
+SET @CDIFFS = '1,2,23,8';
+SET @ODIFFS = '1,2,23,8';
 
 
 DELETE FROM creature WHERE guid BETWEEN @CGUID AND @CGUID+507;
@@ -626,11 +626,11 @@ INSERT IGNORE INTO gameobject_template (entry, type, displayId, name, IconName, 
 INSERT IGNORE INTO gameobject_template (entry, type, displayId, name, IconName, castBarCaption, unk1, size, Data0, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10, Data11, Data12, Data13, Data14, Data15, Data16, Data17, Data18, Data19, Data20, Data21, Data22, Data23, Data24, Data25, Data26, Data27, Data28, Data29, Data30, Data31, Data32, Data33, RequiredLevel) VALUES (290752, 5, 46058, 'Zul\'s Ire', '', '', '', 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
 DELETE FROM creature_text WHERE CreatureID = 131318;
-INSERT INTO creature_text (CreatureID, GroupID, ID, Text, Type, Language, Probability, Emote, Duration, Sound, BroadcastTextId, comment) VALUES (131318, 0, 0, 'For de glory of G\'huun!', 14, 0, 100, 0, 0, 101028, 148173, 'Elder Leaxa');
+INSERT INTO creature_text (CreatureID, GroupID, ID, Text, Type, Language, Probability, Emote, Duration, Sound, BroadcastTextId, comment) VALUES (131318, 200, 0, 'For de glory of G\'huun!', 14, 0, 100, 0, 0, 101028, 148173, 'Elder Leaxa');
 INSERT INTO creature_text (CreatureID, GroupID, ID, Text, Type, Language, Probability, Emote, Duration, Sound, BroadcastTextId, comment) VALUES (131318, 1, 0, 'Rot and wither!', 14, 0, 100, 0, 0, 101026, 148211, 'Elder Leaxa');
 INSERT INTO creature_text (CreatureID, GroupID, ID, Text, Type, Language, Probability, Emote, Duration, Sound, BroadcastTextId, comment) VALUES (131318, 2, 0, 'G\'huun be everywhere!', 14, 0, 100, 0, 0, 101025, 148212, 'Elder Leaxa');
 INSERT INTO creature_text (CreatureID, GroupID, ID, Text, Type, Language, Probability, Emote, Duration, Sound, BroadcastTextId, comment) VALUES (131318, 3, 0, '|TINTERFACE\\ICONS\\INV_TikiMan2_Bloodtroll.blp:20|t Elder Leaxa begins to cast |cFFF00000|Hspell:264603|h[Blood Mirror]|h|r!', 41, 0, 100, 0, 0, 101025, 157334, 'Elder Leaxa');
-INSERT INTO creature_text (CreatureID, GroupID, ID, Text, Type, Language, Probability, Emote, Duration, Sound, BroadcastTextId, comment) VALUES (131318, 4, 0, 'My blood for G\'huun...', 14, 0, 100, 0, 0, 101030, 148175, 'Elder Leaxa');
+INSERT INTO creature_text (CreatureID, GroupID, ID, Text, Type, Language, Probability, Emote, Duration, Sound, BroadcastTextId, comment) VALUES (131318, 202, 0, 'My blood for G\'huun...', 14, 0, 100, 0, 0, 101030, 148175, 'Elder Leaxa');
 INSERT INTO creature_text (CreatureID, GroupID, ID, Text, Type, Language, Probability, Emote, Duration, Sound, BroadcastTextId, comment) VALUES (131318, 5, 0, 'Time for de sacrifice!', 14, 0, 100, 0, 0, 101029, 148174, 'Elder Leaxa');
 DELETE FROM creature_text WHERE CreatureID = 131383;
 INSERT INTO creature_text (CreatureID, GroupID, ID, Text, Type, Language, Probability, Emote, Duration, Sound, BroadcastTextId, comment) VALUES (131383, 0, 0, 'Harvest!', 14, 0, 100, 0, 0, 109965, 143939, 'Sporecaller Zancha');
@@ -650,9 +650,9 @@ INSERT INTO creature_text (CreatureID, GroupID, ID, Text, Type, Language, Probab
 INSERT INTO creature_text (CreatureID, GroupID, ID, Text, Type, Language, Probability, Emote, Duration, Sound, BroadcastTextId, comment) VALUES (134419, 7, 0, 'Contagion detected. Sanitize.', 14, 0, 100, 0, 0, 104790, 151941, 'Titan Keeper Hezrel');
 INSERT INTO creature_text (CreatureID, GroupID, ID, Text, Type, Language, Probability, Emote, Duration, Sound, BroadcastTextId, comment) VALUES (134419, 8, 0, 'Engaging final safeguard. Destroy virulent source.', 14, 0, 100, 0, 0, 104791, 151939, 'Titan Keeper Hezrel');
 DELETE FROM creature_text WHERE CreatureID = 133007;
-INSERT INTO creature_text (CreatureID, GroupID, ID, Text, Type, Language, Probability, Emote, Duration, Sound, BroadcastTextId, comment) VALUES (133007, 0, 0, 'Devour! Consume! Spread!', 14, 0, 100, 0, 0, 102970, 151959, 'Unbound Abomination');
-INSERT INTO creature_text (CreatureID, GroupID, ID, Text, Type, Language, Probability, Emote, Duration, Sound, BroadcastTextId, comment) VALUES (133007, 1, 0, 'Infected!', 14, 0, 100, 0, 0, 102967, 151928, 'Unbound Abomination');
-INSERT INTO creature_text (CreatureID, GroupID, ID, Text, Type, Language, Probability, Emote, Duration, Sound, BroadcastTextId, comment) VALUES (133007, 2, 0, 'Must... spread...', 14, 0, 100, 0, 0, 102966, 151930, 'Unbound Abomination');
+INSERT INTO creature_text (CreatureID, GroupID, ID, Text, Type, Language, Probability, Emote, Duration, Sound, BroadcastTextId, comment) VALUES (133007, 200, 0, 'Devour! Consume! Spread!', 14, 0, 100, 0, 0, 102970, 151959, 'Unbound Abomination');
+INSERT INTO creature_text (CreatureID, GroupID, ID, Text, Type, Language, Probability, Emote, Duration, Sound, BroadcastTextId, comment) VALUES (133007, 201, 0, 'Infected!', 14, 0, 100, 0, 0, 102967, 151928, 'Unbound Abomination');
+INSERT INTO creature_text (CreatureID, GroupID, ID, Text, Type, Language, Probability, Emote, Duration, Sound, BroadcastTextId, comment) VALUES (133007, 202, 0, 'Must... spread...', 14, 0, 100, 0, 0, 102966, 151930, 'Unbound Abomination');
 
 
 UPDATE creature_template SET scriptname = "boss_elder_leaxa" WHERE entry = 131318;

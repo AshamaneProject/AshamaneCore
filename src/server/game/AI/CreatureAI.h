@@ -309,6 +309,9 @@ class TC_GAME_API CreatureAI : public UnitAI
         // Called when the Creature reach spline end
         virtual void OnSplineEndReached() { }
 
+        // Called when the Creature power changed
+        virtual void OnPowerChanged(Powers /*power*/, int32 /*oldValue*/, int32& /*newValue*/) { }
+
         /// == Triggered Actions Requested ==================
 
         // Called when creature attack expected (if creature can and no have current victim)
