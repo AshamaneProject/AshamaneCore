@@ -2675,6 +2675,16 @@ class spell_mage_ebonbolt : public SpellScript
 {
     PrepareSpellScript(spell_mage_ebonbolt);
 
+    bool Validate(SpellInfo const* /*spellInfo*/) override
+    {
+        return ValidateSpellInfo(
+            {
+                SPELL_MAGE_SPLITTING_ICE,
+                SPELL_MAGE_EBONBOLT_DAMAGE,
+                SPELL_MAGE_BRAIN_FREEZE_AURA
+            });
+    }
+
     void DoCast()
     {
         GetCaster()->CastSpell(GetCaster(), SPELL_MAGE_BRAIN_FREEZE_AURA, true);
@@ -2704,6 +2714,14 @@ class spell_mage_ebonbolt : public SpellScript
 class spell_mage_ebonbolt_damage : public SpellScript
 {
     PrepareSpellScript(spell_mage_ebonbolt_damage);
+
+    bool Validate(SpellInfo const* /*spellInfo*/) override
+    {
+        return ValidateSpellInfo(
+            {
+                SPELL_MAGE_SPLITTING_ICE
+            });
+    }
 
     void DoEffectHitTarget(SpellEffIndex /*effIndex*/)
     {

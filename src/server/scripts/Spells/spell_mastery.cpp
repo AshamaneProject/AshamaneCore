@@ -343,6 +343,17 @@ class spell_mastery_icicles_glacial_spike : public SpellScript
 
     int32 IcicleDamage;
 
+    bool Validate(SpellInfo const* /*spellInfo*/) override
+    {
+        return ValidateSpellInfo(
+            {
+                SPELL_MAGE_SPLITTING_ICE,
+                SPELL_MAGE_GLACIAL_SPIKE_DAMAGE,
+                SPELL_MAGE_ICICLE_AURA,
+                SPELL_MAGE_GLACIAL_SPIKE_PROC
+            });
+    }
+
     void HandleOnCast()
     {
         Player* player = GetCaster()->ToPlayer();
@@ -365,7 +376,6 @@ class spell_mastery_icicles_glacial_spike : public SpellScript
 
     void HandleOnHit(SpellEffIndex /*effIndex*/)
     {
-
         Unit* caster = GetCaster();
         Unit* target = GetHitUnit();
         Unit* explTarget = GetExplTargetUnit();
@@ -400,6 +410,14 @@ class spell_mastery_icicles_glacial_spike : public SpellScript
 class spell_mage_icicle_damage : public SpellScript
 {
     PrepareSpellScript(spell_mage_icicle_damage);
+
+    bool Validate(SpellInfo const* /*spellInfo*/) override
+    {
+        return ValidateSpellInfo(
+            {
+                SPELL_MAGE_SPLITTING_ICE
+            });
+    }
 
     void DoEffectHitTarget(SpellEffIndex /*effIndex*/)
     {
