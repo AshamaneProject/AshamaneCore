@@ -541,6 +541,14 @@ public:
                 // In Pandaria with Wisdom of the Four Winds
                 if (!_player->HasSpell(115913) && (_player->GetMapId() == 870))
                     return SPELL_FAILED_NOT_HERE;
+
+                // Legion, Broken Isles
+                if (_player->GetMapId() == 1220)
+                    return SPELL_FAILED_NOT_HERE;
+
+                // In BfA Content not yet
+                if (_player->GetMapId() == 1642 || _player->GetMapId() == 1643)
+                    return SPELL_FAILED_NOT_HERE;
             }
 
             return SPELL_CAST_OK;
