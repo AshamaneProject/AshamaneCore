@@ -56,8 +56,6 @@ enum UnboundAbominationSpells
     SPELL_PERMANENT_FEIGN_DEATH             = 29266,
 };
 
-Position centerPos = { 1199.420044f, 1481.939941f, -181.505997f };
-
 // 133007
 struct boss_unbound_abomination : public BossAI
 {
@@ -122,8 +120,9 @@ struct boss_unbound_abomination : public BossAI
     {
         if (power == POWER_ENERGY && newValue == 100)
         {
-            Position summonPosition = centerPos;
-            GetRandPosFromCenterInDist(&centerPos, 40.f, summonPosition);
+            Position centerPosition = { 1199.420044f, 1481.939941f, -181.505997f };
+            Position summonPosition = centerPosition;
+            GetRandPosFromCenterInDist(&centerPosition, 40.f, summonPosition);
 
             me->SetPower(POWER_ENERGY, 0);
             me->SummonCreature(NPC_BLOOD_VISAGE, summonPosition, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 2000);
