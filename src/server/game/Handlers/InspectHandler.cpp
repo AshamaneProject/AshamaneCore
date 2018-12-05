@@ -36,9 +36,6 @@ void WorldSession::HandleInspectOpcode(WorldPackets::Inspect::Inspect& inspect)
 
     TC_LOG_DEBUG("network", "WorldSession::HandleInspectOpcode: Target %s.", inspect.Target.ToString().c_str());
 
-    if (!GetPlayer()->IsWithinDistInMap(player, INSPECT_DISTANCE, false))
-        return;
-
     if (GetPlayer()->IsValidAttackTarget(player))
         return;
 
@@ -93,9 +90,6 @@ void WorldSession::HandleRequestHonorStatsOpcode(WorldPackets::Inspect::RequestH
 
     TC_LOG_DEBUG("network", "WorldSession::HandleRequestHonorStatsOpcode: Target %s.", request.TargetGUID.ToString().c_str());
 
-    if (!GetPlayer()->IsWithinDistInMap(player, INSPECT_DISTANCE, false))
-        return;
-
     if (GetPlayer()->IsValidAttackTarget(player))
         return;
 
@@ -121,9 +115,6 @@ void WorldSession::HandleInspectPVP(WorldPackets::Inspect::InspectPVPRequest& re
     }
 
     TC_LOG_DEBUG("network", "WorldSession::HandleInspectPVP: Target %s, InspectRealmAddress %u.", request.InspectTarget.ToString().c_str(), request.InspectRealmAddress);
-
-    if (!GetPlayer()->IsWithinDistInMap(player, INSPECT_DISTANCE, false))
-        return;
 
     if (GetPlayer()->IsValidAttackTarget(player))
         return;

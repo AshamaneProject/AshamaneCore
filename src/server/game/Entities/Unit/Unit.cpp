@@ -6838,6 +6838,12 @@ float Unit::SpellDamagePctDone(Unit* victim, SpellInfo const* spellProto, Damage
         return false;
     });
 
+    // bonus against target aura mechanic
+    AuraEffectList const& mDamageDoneVersusMechanic = GetAuraEffectsByType(SPELL_AURA_MOD_DAMAGE_PERCENT_DONE_BY_TARGET_AURA_MECHANIC);
+    for (AuraEffect const* aurEff : mDamageDoneVersusMechanic)
+        if (victim->HasAuraWithMechanic(1 << aurEff->GetMiscValue()))
+            AddPct(DoneTotalMod, aurEff->GetAmount());
+
     // Add SPELL_AURA_MOD_DAMAGE_DONE_FOR_MECHANIC percent bonus
     AddPct(DoneTotalMod, GetTotalAuraModifierByMiscValue(SPELL_AURA_MOD_DAMAGE_DONE_FOR_MECHANIC, spellProto->Mechanic));
 
@@ -7187,10 +7193,14 @@ uint32 Unit::SpellCriticalDamageBonus(SpellInfo const* spellProto, uint32 damage
     return crit_bonus;
 }
 
-uint32 Unit::SpellCriticalHealingBonus(SpellInfo const* /*spellProto*/, uint32 damage, Unit* /*victim*/)
+uint32 Unit::SpellCriticalHealingBonus(SpellInfo const* spellProto, uint32 damage, Unit* /*victim*/)
 {
     // Calculate critical bonus
     int32 crit_bonus = damage;
+
+    // adds additional damage to critBonus (from talents)
+    if (Player* modOwner = GetSpellModOwner())
+        modOwner->ApplySpellMod(spellProto->Id, SPELLMOD_CRIT_DAMAGE_BONUS, crit_bonus);
 
     damage += crit_bonus;
 
@@ -7696,6 +7706,12 @@ uint32 Unit::MeleeDamageBonusDone(Unit* victim, uint32 pdamage, WeaponAttackType
         if (IsPet() && GetOwner())
             AddPct(DoneTotalMod, GetOwner()->GetTotalAuraMultiplierByMiscMask(SPELL_AURA_MOD_DAMAGE_DONE_BY_PETS_PCT, spellProto->GetSchoolMask()));
     }
+    else // melee attack
+    {
+        AuraEffectList const& mModAutoAttack = GetAuraEffectsByType(SPELL_AURA_MOD_AUTOATTACK_DAMAGE);
+        for (AuraEffectList::const_iterator i = mModAutoAttack.begin(); i != mModAutoAttack.end(); ++i)
+            AddPct(DoneTotalMod, (*i)->GetAmount());
+    }
 
     DoneTotalMod *= GetTotalAuraMultiplierByMiscMask(SPELL_AURA_MOD_DAMAGE_DONE_VERSUS, creatureTypeMask);
 
@@ -7710,6 +7726,12 @@ uint32 Unit::MeleeDamageBonusDone(Unit* victim, uint32 pdamage, WeaponAttackType
     // Versatility
     if (GetSpellModOwner())
         AddPct(DoneTotalMod, GetSpellModOwner()->GetRatingBonusValue(CR_VERSATILITY_DAMAGE_DONE) + GetSpellModOwner()->GetTotalAuraModifier(SPELL_AURA_MOD_VERSATILITY));
+
+    // bonus against target aura mechanic
+    AuraEffectList const& mDamageDoneVersusMechanic = GetAuraEffectsByType(SPELL_AURA_MOD_DAMAGE_PERCENT_DONE_BY_TARGET_AURA_MECHANIC);
+    for (AuraEffect const* aurEff : mDamageDoneVersusMechanic)
+        if (victim->HasAuraWithMechanic(1 << aurEff->GetMiscValue()))
+            AddPct(DoneTotalMod, aurEff->GetAmount());
 
     // Add SPELL_AURA_MOD_DAMAGE_DONE_FOR_MECHANIC percent bonus
     if (spellProto)
@@ -8711,7 +8733,8 @@ void Unit::UpdateSpeed(UnitMoveType mtype)
     }
 
     // Apply strongest slow aura mod to speed
-    int32 slow = GetMaxNegativeAuraModifier(SPELL_AURA_MOD_DECREASE_SPEED);
+    // Some spells (example: 209749) with SPELL_AURA_MOD_DECREASE_SPEED use positive values for tooltips... they are ignored without GetMaxPositiveAuraModifier
+    int32 slow = std::min(GetMaxNegativeAuraModifier(SPELL_AURA_MOD_DECREASE_SPEED), -(GetMaxPositiveAuraModifier(SPELL_AURA_MOD_DECREASE_SPEED)));
     if (slow)
         AddPct(speed, slow);
 

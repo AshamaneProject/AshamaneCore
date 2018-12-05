@@ -325,7 +325,7 @@ enum AuraType : uint32
     SPELL_AURA_MOD_AURA_DURATION_BY_DISPEL_NOT_STACK        = 246,
     SPELL_AURA_CLONE_CASTER                                 = 247,
     SPELL_AURA_MOD_COMBAT_RESULT_CHANCE                     = 248,
-    SPELL_AURA_MOD_DAMAGE_PERCENT_DONE_BY_TARGET_AURA_MECHANIC = 249, // NYI
+    SPELL_AURA_MOD_DAMAGE_PERCENT_DONE_BY_TARGET_AURA_MECHANIC = 249,
     SPELL_AURA_MOD_INCREASE_HEALTH_2                        = 250,
     SPELL_AURA_MOD_ENEMY_DODGE                              = 251,
     SPELL_AURA_MOD_SPEED_SLOW_ALL                           = 252,
@@ -420,7 +420,7 @@ enum AuraType : uint32
     SPELL_AURA_MOD_SPELL_CATEGORY_COOLDOWN                  = 341,  // Modifies cooldown of all spells using affected category
     SPELL_AURA_MOD_MELEE_RANGED_HASTE_2                     = 342,
     SPELL_AURA_MOD_MELEE_DAMAGE_FROM_CASTER                 = 343,  // NYI
-    SPELL_AURA_MOD_AUTOATTACK_DAMAGE                        = 344,  // NYI
+    SPELL_AURA_MOD_AUTOATTACK_DAMAGE                        = 344,
     SPELL_AURA_BYPASS_ARMOR_FOR_CASTER                      = 345,
     SPELL_AURA_ENABLE_ALT_POWER                             = 346,
     SPELL_AURA_MOD_SPELL_COOLDOWN_BY_HASTE                  = 347,
@@ -497,8 +497,8 @@ enum AuraType : uint32
     SPELL_AURA_MOD_MAX_POWER                                = 418,
     SPELL_AURA_MOD_BASE_MANA_PCT                            = 419,
     SPELL_AURA_MOD_BATTLE_PET_XP_PCT                        = 420,  // NYI
-    SPELL_AURA_MOD_ABSORB_EFFECTS_AMOUNT_PCT                = 421,  // NYI
-    SPELL_AURA_MOD_ABSORB_EFFECTS_AMOUNT_PCT_2              = 422,  // NYI
+    SPELL_AURA_MOD_ABSORB_EFFECTS_AMOUNT_PCT                = 421,
+    SPELL_AURA_MOD_ABSORB_EFFECTS_AMOUNT_PCT_2              = 422,
     SPELL_AURA_423                                          = 423,  // Not used in 7.3.5
     SPELL_AURA_424                                          = 424,  // Not used in 7.3.5
     SPELL_AURA_425                                          = 425,  // Not used in 7.3.5

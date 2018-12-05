@@ -2254,7 +2254,29 @@ void Spell::EffectDispel(SpellEffIndex effIndex)
     DispelChargesList dispelList;
     unitTarget->GetDispellableAuraList(m_caster, dispelMask, dispelList, targetMissInfo == SPELL_MISS_REFLECT);
     if (dispelList.empty())
+    {
+        // Shield Slam shouldn't reset the cooldown if dispel list is empty...
+        if (m_spellInfo->Id == 23922)
+            return;
+
+        uint32 lastDispellEffect = effIndex;
+        for (uint32 i = 0; i < MAX_SPELL_EFFECTS; i++)
+            if (SpellEffectInfo const* effInfo = GetEffect(i))
+                if (effInfo->IsEffect(SPELL_EFFECT_DISPEL))
+                    lastDispellEffect = effInfo->EffectIndex;
+
+        if (!dispellSuccess && lastDispellEffect == effIndex)
+        {
+            if (!m_spellInfo->IsAffectingArea(DIFFICULTY_NONE))
+            {
+                if (m_spellInfo->ChargeCategoryId)
+                    m_caster->GetSpellHistory()->RestoreCharge(m_spellInfo->ChargeCategoryId);
+                else
+                    m_caster->GetSpellHistory()->ResetCooldown(m_spellInfo->Id, true);
+            }
+        }
         return;
+    }
 
     size_t remaining = dispelList.size();
 
@@ -2333,6 +2355,7 @@ void Spell::EffectDispel(SpellEffIndex effIndex)
 
     m_caster->SendMessageToSet(spellDispellLog.Write(), true);
 
+    dispellSuccess = true;
     CallScriptSuccessfulDispel(effIndex);
 }
 

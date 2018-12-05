@@ -786,6 +786,7 @@ class TC_GAME_API Spell
         float variance;
         SpellEffectHandleMode effectHandleMode;
         SpellEffectInfo const* effectInfo;
+        bool dispellSuccess;
         // used in effects handlers
         Aura* m_spellAura;
 

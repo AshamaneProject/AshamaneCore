@@ -660,6 +660,8 @@ m_spellValue(new SpellValue(caster->GetMap()->GetDifficultyID(), m_spellInfo))
 
     for (uint8 i = 0; i < MAX_SPELL_EFFECTS; ++i)
         m_destTargets[i] = SpellDestination(*m_caster);
+
+    dispellSuccess = false;
 }
 
 Spell::~Spell()
@@ -1419,6 +1421,12 @@ void Spell::SelectImplicitCasterDestTargets(SpellEffIndex effIndex, SpellImplici
             }
 
             dest = SpellDestination(x, y, liquidLevel, m_caster->GetOrientation());
+            break;
+        }
+        case TARGET_DEST_CASTER_GROUND:
+        {
+            float groundZ = m_caster->GetMap()->GetHeight(m_caster->GetPhaseShift(), m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ(), true, MAX_HEIGHT);
+            dest = SpellDestination(m_caster->GetPositionX(), m_caster->GetPositionY(), groundZ, m_caster->GetOrientation());
             break;
         }
         case TARGET_DEST_LAST_QUEST_GIVER:

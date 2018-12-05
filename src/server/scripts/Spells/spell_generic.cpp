@@ -4805,6 +4805,145 @@ public:
     }
 };
 
+// 214027 - Adaptation
+class spell_pvp_honor_adaptation : public SpellScriptLoader
+{
+public:
+    spell_pvp_honor_adaptation() : SpellScriptLoader("spell_pvp_honor_adaptation") { }
+
+    enum AdaptionSpells
+    {
+        SPELL_ADAPTATION_DEBUFF = 195901,
+        SPELL_PVP_TRINKET = 42292
+    };
+
+    class spell_pvp_honor_adaptation_AuraScript : public AuraScript
+    {
+        PrepareAuraScript(spell_pvp_honor_adaptation_AuraScript);
+
+        bool Validate(SpellInfo const* spellInfo) override
+        {
+            return spellInfo->GetEffect(EFFECT_0) && ValidateSpellInfo(
+                {
+                    SPELL_ADAPTATION_DEBUFF,
+                    SPELL_PVP_TRINKET
+                });
+        }
+
+        bool CheckProc(ProcEventInfo& eventInfo)
+        {
+            if (!eventInfo.GetActionTarget())
+                return false;
+
+            if (eventInfo.GetActionTarget()->HasAura(SPELL_ADAPTATION_DEBUFF))
+                return false;
+
+            auto isLossOfControlSpell = [](SpellInfo const* spellInfo) -> bool
+            {
+                return (spellInfo->GetAllEffectsMechanicMask() & IMMUNE_TO_MOVEMENT_IMPAIRMENT_AND_LOSS_CONTROL_MASK) != 0;
+            };
+
+            if (!eventInfo.GetSpellInfo() || !isLossOfControlSpell(eventInfo.GetSpellInfo()))
+                return false;
+
+            int32 durationLimit = GetEffect(EFFECT_0)->GetAmount() * IN_MILLISECONDS;
+
+            /// @workaround: we need to check the entire spell instead of the auras on the unit
+            auto hasLossOfControlAuras = [&]() -> bool
+            {
+                Unit::AuraApplicationMap const& appliedAuras = eventInfo.GetActionTarget()->GetAppliedAuras();
+                for (auto itr = appliedAuras.begin(); itr != appliedAuras.end(); ++itr)
+                {
+                    Aura const* aura = itr->second->GetBase();
+
+                    if (aura->GetDuration() < durationLimit)
+                        continue;
+
+                    if (isLossOfControlSpell(aura->GetSpellInfo()))
+                        return true;
+                }
+
+                return false;
+            };
+
+            return hasLossOfControlAuras();
+        }
+
+        void Proc(ProcEventInfo& /*eventInfo*/)
+        {
+            Unit* target = GetTarget();
+            target->CastSpell(target, SPELL_ADAPTATION_DEBUFF, true);
+            target->CastSpell(target, SPELL_PVP_TRINKET, true);
+        }
+
+        void Register() override
+        {
+            DoCheckProc += AuraCheckProcFn(spell_pvp_honor_adaptation_AuraScript::CheckProc);
+            OnProc += AuraProcFn(spell_pvp_honor_adaptation_AuraScript::Proc);
+        }
+    };
+
+    AuraScript* GetAuraScript() const override
+    {
+        return new spell_pvp_honor_adaptation_AuraScript();
+    }
+};
+
+// 42292 - PvP Trinket
+// 195710 - Honorable Medallion
+// 208683 - Gladiator's Medallion
+class spell_pvp_honor_medallion : public SpellScriptLoader
+{
+public:
+    spell_pvp_honor_medallion() : SpellScriptLoader("spell_pvp_honor_medallion") { }
+
+    enum MedallionDummys
+    {
+        SPELL_GENERIC_PVP_TRINKET_DUMMY_ALLIANCE = 97403,
+        SPELL_GENERIC_PVP_TRINKET_DUMMY_HORDE = 97404,
+
+        VISUAL_KIT_ACTIVE_TRINKET = 701
+    };
+
+    class spell_pvp_honor_medallion_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_pvp_honor_medallion_SpellScript);
+
+        bool Validate(SpellInfo const* /*spellInfo*/) override
+        {
+            return ValidateSpellInfo(
+                {
+                    SPELL_GENERIC_PVP_TRINKET_DUMMY_ALLIANCE,
+                    SPELL_GENERIC_PVP_TRINKET_DUMMY_HORDE
+                });
+        }
+
+        void TriggerDummy()
+        {
+            if (Player* player = GetCaster()->ToPlayer())
+            {
+                if (player->GetTeamId() == TEAM_ALLIANCE)
+                    player->CastSpell(player, SPELL_GENERIC_PVP_TRINKET_DUMMY_ALLIANCE, true);
+                else
+                    player->CastSpell(player, SPELL_GENERIC_PVP_TRINKET_DUMMY_HORDE, true);
+
+                // send to caster only
+                player->SendPlaySpellVisualKit(VISUAL_KIT_ACTIVE_TRINKET, 0, 0);
+            }
+        }
+
+        void Register() override
+        {
+            AfterCast += SpellCastFn(spell_pvp_honor_medallion_SpellScript::TriggerDummy);
+        }
+    };
+
+    SpellScript* GetSpellScript() const override
+    {
+        return new spell_pvp_honor_medallion_SpellScript();
+    }
+};
+
 void AddSC_generic_spell_scripts()
 {
     new spell_gen_absorb0_hitlimit1();
@@ -4918,4 +5057,7 @@ void AddSC_generic_spell_scripts()
     RegisterSpellScript(spell_spatial_rift_despawn);
     RegisterSpellScript(spell_light_judgement);
     new playerscript_light_reckoning();
+
+    new spell_pvp_honor_adaptation();
+    new spell_pvp_honor_medallion();
 }

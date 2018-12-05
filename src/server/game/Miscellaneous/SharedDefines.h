@@ -2350,7 +2350,7 @@ enum Targets
     TARGET_UNIT_CASTER_AREA_ENEMY      = 122,
     TARGET_UNIT_CASTER_LOOT_RECIPIENTS = 123,
     TARGET_UNK_124                     = 124,
-    TARGET_UNK_125                     = 125,
+    TARGET_DEST_CASTER_GROUND          = 125,
     TARGET_UNK_126                     = 126,
     TARGET_DEST_CASTER_ENEMY_CENTROID  = 127,
     TARGET_UNK_128                     = 128,

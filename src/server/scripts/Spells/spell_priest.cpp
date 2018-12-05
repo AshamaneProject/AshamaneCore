@@ -261,10 +261,6 @@ class spell_pri_power_word_shield_AuraScript : public AuraScript
                     if (AuraEffect* eff0 = rapture->GetEffect(EFFECT_0))
                         absorbAmount += CalculatePct(absorbAmount, eff0->GetAmount());
 
-                Unit::AuraEffectList const& absorbBonus = caster->GetAuraEffectsByType(SPELL_AURA_MOD_ABSORB_EFFECTS_AMOUNT_PCT);
-                for (auto bonus : absorbBonus)
-                    AddPct(amount, bonus->GetAmount());
-
                 if (player->HasAura(SPELL_SHADOW_PRIEST_BASE_AURA))
                     absorbAmount *= 1.36f;
                 amount += absorbAmount;

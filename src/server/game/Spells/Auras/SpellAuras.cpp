@@ -223,6 +223,19 @@ void AuraApplication::BuildUpdatePacket(WorldPackets::Spells::AuraInfo& auraInfo
         for (AuraEffect const* effect : GetBase()->GetAuraEffects())
             if (effect && HasEffect(effect->GetEffIndex()))       // Not all of aura's effects have to be applied on every target
                 auraData.Points[effect->GetEffIndex()] = float(effect->GetAmount());
+
+        float tempCount = 0;
+        auraData.EstimatedPoints.resize(aura->GetAuraEffects().size(), 0.0f);
+        for (AuraEffect const* effect : GetBase()->GetAuraEffects())
+            if (effect && HasEffect(effect->GetEffIndex()))
+            {
+                auraData.EstimatedPoints[effect->GetEffIndex()] = float(effect->GetDamage());
+                tempCount += effect->GetDamage();
+            }
+
+        // Don't send EstimatedPoints if all values are 0 this breaks some tooltip display values!
+        if (tempCount == 0)
+            auraData.EstimatedPoints.clear();
     }
 }
 
