@@ -37,7 +37,8 @@ enum MasterySpells
     SPELL_MAGE_GLACIAL_SPIKE_DAMAGE          = 228600,
     SPELL_MAGE_GLACIAL_SPIKE_AMOUNT          = 214325,
     SPELL_MAGE_IGNITE                        = 12846,
-    SPELL_MAGE_IGNITE_AURA                   = 12654
+    SPELL_MAGE_IGNITE_AURA                   = 12654,
+    SPELL_MAGE_SPLITTING_ICE                 = 56377
 };
 
 const int IcicleAuras[5] = { 214124, 214125, 214126, 214127, 214130 };
@@ -132,7 +133,7 @@ class spell_mastery_icicles_proc : public AuraScript
                             if (roll_chance_i(20))
                                 basePoints *= 2;
                         }
-                            
+
                         player->CastSpell(target, IcicleHits[smallestIcicle], true);
                         player->CastCustomSpell(target, SPELL_MAGE_ICICLE_DAMAGE, &basePoints, NULL, NULL, true);
                         player->RemoveAura(IcicleAuras[smallestIcicle]);
@@ -244,7 +245,7 @@ class spell_mastery_icicles_proc : public AuraScript
     }
 };
 
-// Icicles (Aura Remove) - (214124, 214125, 214126, 214127, 214130) 
+// Icicles (Aura Remove) - (214124, 214125, 214126, 214127, 214130)
 class spell_mastery_icicles_mod_aura : public AuraScript
 {
     PrepareAuraScript(spell_mastery_icicles_mod_aura);
@@ -358,20 +359,26 @@ class spell_mastery_icicles_glacial_spike : public SpellScript
                 player->RemoveAura(IcicleAuras[l_I]);
 
                 IcicleDamage += basePoints;
-            }    
+            }
         }
     }
 
     void HandleOnHit(SpellEffIndex /*effIndex*/)
     {
-        
+
         Unit* caster = GetCaster();
         Unit* target = GetHitUnit();
-        if (!caster || !target)
+        Unit* explTarget = GetExplTargetUnit();
+        if (!caster || !target || !explTarget)
             return;
 
         int32 damage = GetHitDamage();
         damage += IcicleDamage;
+
+        if (GetCaster()->HasAura(SPELL_MAGE_SPLITTING_ICE))
+            if (SpellEffectInfo const* eff1 = sSpellMgr->GetSpellInfo(SPELL_MAGE_SPLITTING_ICE)->GetEffect(EFFECT_1))
+                if (target != explTarget)
+                    damage = CalculatePct(damage, eff1->CalcValue());
 
         caster->CastCustomSpell(target, SPELL_MAGE_GLACIAL_SPIKE_DAMAGE, &damage, NULL, NULL, true);
 
@@ -386,6 +393,30 @@ class spell_mastery_icicles_glacial_spike : public SpellScript
     {
         OnCast += SpellCastFn(spell_mastery_icicles_glacial_spike::HandleOnCast);
         OnEffectHitTarget += SpellEffectFn(spell_mastery_icicles_glacial_spike::HandleOnHit, EFFECT_0, SPELL_EFFECT_DUMMY);
+    }
+};
+
+// 148022 - Icicle Damage
+class spell_mage_icicle_damage : public SpellScript
+{
+    PrepareSpellScript(spell_mage_icicle_damage);
+
+    void DoEffectHitTarget(SpellEffIndex /*effIndex*/)
+    {
+        Unit* explTarget = GetExplTargetUnit();
+        Unit* hitUnit = GetHitUnit();
+        if (!hitUnit || !explTarget)
+            return;
+
+        if (GetCaster()->HasAura(SPELL_MAGE_SPLITTING_ICE))
+            if (SpellEffectInfo const* eff1 = sSpellMgr->GetSpellInfo(SPELL_MAGE_SPLITTING_ICE)->GetEffect(EFFECT_1))
+                if (hitUnit != explTarget)
+                    SetHitDamage(CalculatePct(GetHitDamage(), eff1->CalcValue()));
+    }
+
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_mage_icicle_damage::DoEffectHitTarget, EFFECT_0, SPELL_EFFECT_DUMMY);
     }
 };
 
@@ -615,12 +646,12 @@ public:
 void AddSC_mastery_spell_scripts()
 {
     new spell_mastery_ignite();
-    
+
     RegisterAuraScript(spell_mastery_icicles_proc);
     RegisterAuraScript(spell_mastery_icicles_periodic);
     RegisterAuraScript(spell_mastery_icicles_mod_aura);
     RegisterAuraScript(spell_mage_mastery_ignite);
-    
+    RegisterSpellScript(spell_mage_icicle_damage);
     RegisterSpellScript(spell_mastery_icicles_glacial_spike);
 
     new warlock_mastery_chaotic_energy();

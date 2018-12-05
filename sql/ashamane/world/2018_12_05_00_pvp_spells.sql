@@ -13,3 +13,7 @@ DELETE FROM `spell_script_names` WHERE `ScriptName` IN ('spell_mage_ebonbolt', '
 INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES 
 (257537, 'spell_mage_ebonbolt'),
 (257538, 'spell_mage_ebonbolt_damage');
+
+DELETE FROM `spell_script_names` WHERE `ScriptName` IN ('spell_mage_icicle_damage');
+INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES 
+(148022, 'spell_mage_icicle_damage');
