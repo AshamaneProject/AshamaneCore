@@ -68,6 +68,7 @@ enum MageSpells
     SPELL_MAGE_BRAIN_FREEZE                      = 190447,
     SPELL_MAGE_BRAIN_FREEZE_AURA                 = 190446,
     SPELL_MAGE_BRAIN_FREEZE_IMPROVED             = 231584,
+    SPELL_MAGE_EBONBOLT_DAMAGE                   = 257538,
     SPELL_MAGE_JOUSTER                           = 214626,
     SPELL_MAGE_CHAIN_REACTION                    = 195419,
     SPELL_MAGE_CHILLED_TO_THE_CORE               = 195448,
@@ -171,7 +172,8 @@ enum MageSpells
     SPELL_MAGE_MANA_SHIELD_TALENT                = 235463,
     SPELL_MAGE_MANA_SHIELD_BURN                  = 235470,
     SPELL_MAGE_RULE_OF_THREES                    = 264354,
-    SPELL_MAGE_RULE_OF_THREES_BUFF               = 264774
+    SPELL_MAGE_RULE_OF_THREES_BUFF               = 264774,
+    SPELL_MAGE_SPLITTING_ICE                     = 56377
 };
 
 enum TemporalDisplacementSpells
@@ -2668,6 +2670,60 @@ class spell_mage_cinderstorm : public SpellScript
     }
 };
 
+// 257537 - Ebonbolt
+class spell_mage_ebonbolt : public SpellScript
+{
+    PrepareSpellScript(spell_mage_ebonbolt);
+
+    void DoCast()
+    {
+        GetCaster()->CastSpell(GetCaster(), SPELL_MAGE_BRAIN_FREEZE_AURA, true);
+    }
+
+    void DoEffectHitTarget(SpellEffIndex /*effIndex*/)
+    {
+        Unit* explTarget = GetExplTargetUnit();
+        Unit* hitUnit = GetHitUnit();
+        if (!hitUnit || !explTarget)
+            return;
+
+        if (GetCaster()->HasAura(SPELL_MAGE_SPLITTING_ICE))
+            GetCaster()->Variables.Set<ObjectGuid>("explTarget", explTarget->GetGUID());
+
+        GetCaster()->CastSpell(hitUnit, SPELL_MAGE_EBONBOLT_DAMAGE, true);
+    }
+
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_mage_ebonbolt::DoEffectHitTarget, EFFECT_0, SPELL_EFFECT_DUMMY);
+        OnCast += SpellCastFn(spell_mage_ebonbolt::DoCast);
+    }
+};
+
+// 257538 - Ebonbolt Damage
+class spell_mage_ebonbolt_damage : public SpellScript
+{
+    PrepareSpellScript(spell_mage_ebonbolt_damage);
+
+    void DoEffectHitTarget(SpellEffIndex /*effIndex*/)
+    {
+        Unit* hitUnit = GetHitUnit();
+        ObjectGuid& primaryTarget = GetCaster()->Variables.GetValue<ObjectGuid>("explTarget");
+        int32 damage = GetHitDamage();
+        if (!hitUnit || !primaryTarget)
+            return;
+
+        if (SpellEffectInfo const* eff1 = sSpellMgr->GetSpellInfo(SPELL_MAGE_SPLITTING_ICE)->GetEffect(EFFECT_1))
+            if (hitUnit->GetGUID() != primaryTarget)
+                SetHitDamage(CalculatePct(damage, eff1->CalcValue()));
+    }
+
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_mage_ebonbolt_damage::DoEffectHitTarget, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
+    }
+};
+
 void AddSC_mage_spell_scripts()
 {
     new playerscript_mage_arcane();
@@ -2682,6 +2738,9 @@ void AddSC_mage_spell_scripts()
     new spell_mage_cauterize();
     new spell_mage_conjure_refreshment();
     RegisterAuraScript(spell_mage_ice_floes);
+
+    RegisterSpellScript(spell_mage_ebonbolt);
+    RegisterSpellScript(spell_mage_ebonbolt_damage);
 
     //7.3.2.25549
     RegisterSpellScript(spell_mage_cold_snap);
