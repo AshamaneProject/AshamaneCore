@@ -2743,6 +2743,14 @@ void SpellMgr::LoadSpellInfoCorrections()
         const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->ApplyAuraName = SPELL_AURA_DUMMY; // proc debuff, and summon infinite fiends
     });
 
+    // BfA Dungeon Underrot
+    // Boss 1: Creeping Rot Visual
+    ApplySpellFix({ 260891 }, [](SpellInfo* spellInfo)
+    {
+        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->TargetA = SpellImplicitTargetInfo(TARGET_DEST_CASTER_FRONT);
+        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->RadiusEntry = sSpellRadiusStore.LookupEntry(EFFECT_RADIUS_3_YARDS);
+    });
+
     ApplySpellFix({
         27892, // To Anchor 1
         27928, // To Anchor 1

@@ -26,12 +26,14 @@ enum Spells
     SPELL_BLOOD_BOLT = 260879,
 
     SPELL_CREEPING_ROT = 260894,
-    //SPELL_CREEPING_ROT_TARGET_SELECTOR = 260889,
+    SPELL_CREEPING_ROT_TARGET_SELECTOR = 260889,
     SPELL_CREEPING_ROT_TRIGGER = 261496,
     SPELL_CREEPING_ROT_DOT = 261498,
-    //SPELL_CREEPING_ROT_VISUAL = 260891,
+    SPELL_CREEPING_ROT_VISUAL = 260891,
 
     SPELL_SANGUINE_FEAST = 264753,
+    SPELL_SANGUINE_FEAST_TARGET_SELECTOR = 264747,
+    SPELL_SANGUINE_FEAST_JUMP = 264753,
 
     SPELL_BLOOD_MIRROR = 264603,
     SPELL_BLOOD_MIRROR_MISSILE = 264609,
@@ -70,7 +72,7 @@ public:
         Initialize();
     }
 
-    uint32 mirrorCount;
+    int32 mirrorCount;
 
     void Initialize()
     {
@@ -127,8 +129,9 @@ public:
             switch (eventID)
             {
             case EVENT_SANGUINE_FEAST:
-                DoCastRandom(SPELL_SANGUINE_FEAST, 100);
-                events.DelayEvents(3000); // if antoher cast happens while jumping, no landing spell is cast
+                Talk(YELL_FEAST);
+                events.DelayEvents(1000);
+                DoCastAOE(SPELL_SANGUINE_FEAST_TARGET_SELECTOR);
                 events.ScheduleEvent(EVENT_SANGUINE_FEAST, 30000);
                 break;
             case EVENT_BLOOD_BOLT:
@@ -136,18 +139,17 @@ public:
                 events.ScheduleEvent(EVENT_BLOOD_BOLT, 6100);
                 break;
             case EVENT_CREEPING_ROT:
-                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 40, true))
-                {
-                    Talk(YELL_CREEPING_ROT);
-                    me->FaceTargetAndStopMoving(target, 4000);
-                    DoCast(SPELL_CREEPING_ROT);
-                }
+                // me->StopMovingAndAttacking(1000);  Might be needed because of buggy movement core side
+                Talk(YELL_CREEPING_ROT);
+                DoCastAOE(SPELL_CREEPING_ROT_TARGET_SELECTOR);
                 events.ScheduleEvent(EVENT_CREEPING_ROT, 15800);
                 break;
             case EVENT_BLOOD_MIRROR:
                 Talk(YELL_BLOOD_MIRROR_EMOTE);
                 Talk(YELL_BLOOD_MIRROR_CAST);
-                DoCastSelf(SPELL_BLOOD_MIRROR);
+                me->CastCustomSpell(SPELL_BLOOD_MIRROR, SPELLVALUE_BASE_POINT0, std::min(mirrorCount, 3), me);
+                if (IsMythic())
+                    ++mirrorCount;
                 events.ScheduleEvent(EVENT_BLOOD_MIRROR, 47400);
                 break;
             default:
@@ -157,8 +159,6 @@ public:
 
         DoMeleeAttackIfReady();
     }
-
-    //private
 };
 
 // 132398 Blood Wave Stalker
@@ -180,9 +180,9 @@ struct npc_blood_wave_stalker : public ScriptedAI
         float x = me->GetPositionX() + distance * cos(ori);
         float y = me->GetPositionY() + distance * sin(ori);
         float z = me->GetPositionZ();
-        me->UpdateGroundPositionZ(x, y, z);
+        me->GetNearPoint2D(x, y, distance, ori);
         movePos = { x, y, z };
-        me->GetMotionMaster()->MovePoint(1, movePos);
+        me->GetMotionMaster()->MovePoint(1, movePos, false);
     }
 
     void UpdateAI(uint32 /*diff*/) override { }
@@ -195,7 +195,8 @@ struct npc_blood_effigy : public ScriptedAI
 
     void Reset() override
     {
-        events.ScheduleEvent(EVENT_BLOOD_BOLT, urand(1000, 3000));
+        events.ScheduleEvent(EVENT_BLOOD_BOLT, 0);
+        events.ScheduleEvent(EVENT_CREEPING_ROT, urand(3200, 5200));
         if (IsHeroic() || IsMythic())
             events.ScheduleEvent(EVENT_SANGUINE_FEAST, urand(6800, 8800));
 
@@ -217,13 +218,17 @@ struct npc_blood_effigy : public ScriptedAI
             switch (eventID)
             {
             case EVENT_SANGUINE_FEAST:
-                DoCastRandom(SPELL_SANGUINE_FEAST, 100);
-                events.DelayEvents(3000); // if antoher cast happens while jumping, no landing spell is cast
+                events.DelayEvents(1000);
+                DoCastAOE(SPELL_SANGUINE_FEAST_TARGET_SELECTOR);
                 events.ScheduleEvent(EVENT_SANGUINE_FEAST, 30000);
                 break;
             case EVENT_BLOOD_BOLT:
                 DoCastVictim(SPELL_BLOOD_BOLT);
-                events.ScheduleEvent(EVENT_BLOOD_BOLT, 6100);
+                events.ScheduleEvent(EVENT_BLOOD_BOLT, 2000);
+                break;
+            case EVENT_CREEPING_ROT:
+                DoCastAOE(SPELL_CREEPING_ROT_TARGET_SELECTOR);
+                events.ScheduleEvent(EVENT_CREEPING_ROT, 15800);
                 break;
             default:
                 break;
@@ -263,6 +268,56 @@ public:
     }
 };
 
+// 260889 - Creeping Rot Target Selector
+class spell_creeping_rot_target_selector : public SpellScript
+{
+    PrepareSpellScript(spell_creeping_rot_target_selector);
+
+    void DoEffectHitTarget(SpellEffIndex /*effIndex*/)
+    {
+        if (Unit* target = GetHitUnit())
+            GetCaster()->CastSpell(target, SPELL_CREEPING_ROT);
+    }
+
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_creeping_rot_target_selector::DoEffectHitTarget, EFFECT_0, SPELL_EFFECT_DUMMY);
+    }
+};
+
+// 264747 - Sanguine Feast Target Selector
+class spell_sanguine_feast_target_selector : public SpellScript
+{
+    PrepareSpellScript(spell_sanguine_feast_target_selector);
+
+    void DoEffectHitTarget(SpellEffIndex /*effIndex*/)
+    {
+        if (Unit* target = GetHitUnit())
+            GetCaster()->CastSpell(target, GetEffectValue());
+    }
+
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_sanguine_feast_target_selector::DoEffectHitTarget, EFFECT_0, SPELL_EFFECT_DUMMY);
+    }
+};
+
+// 260894 - Creeping Rot Summon
+class spell_creeping_rot_summon : public SpellScript
+{
+    PrepareSpellScript(spell_creeping_rot_summon);
+
+    void DoCast()
+    {
+        GetCaster()->CastSpell(GetCaster(), SPELL_CREEPING_ROT_VISUAL, true);
+    }
+
+    void Register() override
+    {
+        OnPrepare += SpellOnPrepareFn(spell_creeping_rot_summon::DoCast);
+    }
+};
+
 // 264603 - Blood Mirror
 class spell_blood_mirror : public SpellScriptLoader
 {
@@ -273,25 +328,20 @@ public:
     {
         PrepareSpellScript(spell_blood_mirror_SpellScript);
 
+        // Guessed values from videos
+        const Position spawnPoints[3] =
+        {
+            {875.113159f, 1240.381958f, 56.332645f},
+            {879.703979f, 1224.49646f, 56.33368f},
+            {858.541931f, 1221.745239f, 56.347778f}
+        };
+
         void HandleDummy(SpellEffIndex /*effIndex*/)
         {
-            if (Unit* caster = GetCaster())
+            for (int32 i = 0; i < GetEffectValue(); ++i)
             {
-                if (Creature* leaxa = caster->ToCreature())
-                {
-                    if (boss_elder_leaxa* pAI = CAST_AI(boss_elder_leaxa, leaxa->AI()))
-                    {
-                        for (uint32 i = 0; i < pAI->mirrorCount; ++i)
-                        {
-                            if (Unit* target = caster->GetAI()->SelectTarget(SELECT_TARGET_RANDOM, 0, 40, true))
-                            {
-                                caster->CastSpell(target, SPELL_BLOOD_MIRROR_MISSILE, true);
-                            }
-                        }
-                        if (pAI->IsHeroic() || pAI->IsMythic())
-                            pAI->mirrorCount++;
-                    }
-                }
+                Position targetDest = Trinity::Containers::SelectRandomContainerElement(spawnPoints);
+                GetCaster()->CastSpell(targetDest, SPELL_BLOOD_MIRROR_MISSILE, true);
             }
         }
 
@@ -319,11 +369,8 @@ public:
 
         void HandleDummy(SpellEffIndex /*effIndex*/)
         {
-            Unit* caster = GetCaster();
-            Unit* target = GetExplTargetUnit();
-            if (!caster || !target)
-                return;
-            caster->CastSpell(target, SPELL_TAINT_OF_GHUUN, true);
+            if (Unit* target = GetExplTargetUnit())
+                GetCaster()->CastSpell(target, SPELL_TAINT_OF_GHUUN, true);
         }
 
         void Register() override
@@ -351,10 +398,8 @@ public:
         void OnTick(AuraEffect const* aurEff)
         {
             if (Unit* target = GetTarget())
-            {
-                if (Unit* leaxa = target->FindNearestCreature(NPC_ELDER_LEAXA, 100))
+                if (Creature* leaxa = target->GetInstanceScript()->GetCreature(DATA_ELDER_LEAXA))
                     leaxa->CastSpell(target, SPELL_TAINT_OF_GHUUN, true);
-            }
         }
 
         void Register() override
@@ -374,6 +419,9 @@ void AddSC_boss_elder_leaxa()
     RegisterCreatureAI(boss_elder_leaxa);
     RegisterCreatureAI(npc_blood_wave_stalker);
     RegisterCreatureAI(npc_blood_effigy);
+    RegisterSpellScript(spell_creeping_rot_target_selector);
+    RegisterSpellScript(spell_creeping_rot_summon);
+    RegisterSpellScript(spell_sanguine_feast_target_selector);
     new at_creeping_rot();
     new spell_blood_mirror();
     new spell_blood_bolt();
