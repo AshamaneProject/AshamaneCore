@@ -99,6 +99,7 @@ public:
         BossAI::EnterCombat(who);
         Talk(YELL_ENTER_COMBAT);
         instance->SetBossState(DATA_ELDER_LEAXA, IN_PROGRESS);
+        me->SetAIAnimKitId(0);
     }
 
     void JustDied(Unit* killer) override

@@ -63,3 +63,18 @@ INSERT INTO `areatrigger_teleport` (`ID`, `PortLocID`, `Name`) VALUES
 ('-52', '6378', 'The Underrot - Entrance Target');
 
 UPDATE creature_template_addon SET auras = "" WHERE entry = 134419;
+
+DELETE FROM `creature_template_journal` WHERE entry IN (131318, 131817, 131383, 133007);
+INSERT INTO `creature_template_journal` VALUES
+(131318, 2157),
+(131817, 2131),
+(131383, 2130),
+(133007, 2158);
+
+DELETE FROM creature WHERE id = 132137;
+
+INSERT IGNORE INTO creature_template_scaling VALUES
+(132051, 110, 120, 0, 0, 28153);
+
+UPDATE creature_template SET DamageModifier = 4 WHERE entry IN (SELECT id FROM creature WHERE map = 1841) AND minlevel > 100;
+UPDATE creature_template SET DamageModifier = 5 WHERE entry IN (131318, 131817, 131383, 133007);

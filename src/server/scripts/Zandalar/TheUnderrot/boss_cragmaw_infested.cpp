@@ -38,8 +38,8 @@ enum CragmawInfestedSpells
     SPELL_LARVA_DESTROY                 = 260418,
 
     SPELL_BLOOD_TICK_SPAWN              = 260768,
-    SPELL_BLOOD_TICK_SERRATED_FANGS     = 260768,
-    SPELL_BLOOD_TICK_BLOOD_BURST        = 260768,
+    SPELL_BLOOD_TICK_SERRATED_FANGS     = 260455,
+    SPELL_BLOOD_TICK_BLOOD_BURST        = 278641,
     SPELL_BLOOD_TICK_BLOOD_BURST_DAMAGE = 278637,
 };
 
@@ -68,7 +68,6 @@ struct boss_cragmaw_infested : public BossAI
                     me->CastSpell(target, SPELL_INDIGESTION, false);
 
                 events.Repeat(30s);
-                break;
                 break;
             case SPELL_CHARGE:
                 if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 1))
@@ -102,13 +101,27 @@ struct npc_cragmaw_blood_tick : public ScriptedAI
     void Reset() override
     {
         DoZoneInCombat();
-        me->CastSpell(me, SPELL_LARVA_SUMMON_VISUAL, true);
+        me->CastSpell(me, SPELL_BLOOD_TICK_SPAWN, true);
         me->CastSpell(me, SPELL_BLOOD_TICK_BLOOD_BURST, true);
+
+        events.ScheduleEvent(SPELL_BLOOD_TICK_SERRATED_FANGS, 1s);
+    }
+
+    void ExecuteEvent(uint32 eventId) override
+    {
+        if (eventId == SPELL_BLOOD_TICK_SERRATED_FANGS)
+        {
+            if (Unit* target = me->GetVictim())
+                me->CastSpell(target, SPELL_BLOOD_TICK_SERRATED_FANGS, false);
+
+            events.Repeat(10s);
+        }
     }
 
     void JustDied(Unit* /*killer*/) override
     {
-        me->CastSpell(nullptr, SPELL_BLOOD_TICK_BLOOD_BURST_DAMAGE, true);
+        if (IsHeroic())
+            me->CastSpell(me, SPELL_BLOOD_TICK_BLOOD_BURST_DAMAGE, true);
     }
 };
 

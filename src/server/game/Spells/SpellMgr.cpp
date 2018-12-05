@@ -2751,6 +2751,12 @@ void SpellMgr::LoadSpellInfoCorrections()
         const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->RadiusEntry = sSpellRadiusStore.LookupEntry(EFFECT_RADIUS_3_YARDS);
     });
 
+    // Boss 3: Boundless Rot summon
+    ApplySpellFix({ 259845 }, [](SpellInfo* spellInfo)
+    {
+        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->MaxRadiusEntry = spellInfo->GetEffect(EFFECT_0)->RadiusEntry;
+    });
+
     ApplySpellFix({
         27892, // To Anchor 1
         27928, // To Anchor 1

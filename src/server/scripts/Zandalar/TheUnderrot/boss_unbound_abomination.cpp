@@ -108,7 +108,7 @@ struct boss_unbound_abomination : public BossAI
         }
     }
 
-    void JustDied(Unit* /*killer*/)
+    void JustDied(Unit* /*killer*/) override
     {
         _JustDied();
 
@@ -162,6 +162,11 @@ struct npc_underrot_titan_keeper_hezrel : public ScriptedAI
 
     enum Talks
     {
+        TALK_BREACH_DETECTED        = 0,
+        TALK_MOTHER_NO_RESPONDING   = 1,
+        TALK_PLANETARY_INFECTION    = 2,
+        TALK_SPECIMEN_DETECTED      = 3,
+
         TALK_CLEANSING_LIGHT        = 4,
         TALK_CLEANSING_AREA         = 5,
         TALK_PURGE_PROTOCOL_ENGAGED = 6,
@@ -169,7 +174,7 @@ struct npc_underrot_titan_keeper_hezrel : public ScriptedAI
         TALK_DEATH                  = 8,
     };
 
-    void Reset()
+    void Reset() override
     {
         if (me->GetPositionZ() > -100.f)
             me->CastSpell(me, SPELL_SHADOW_VISUAL, true);
@@ -183,12 +188,16 @@ struct npc_underrot_titan_keeper_hezrel : public ScriptedAI
         {
             if (action == 1)
             {
+                Talk(TALK_BREACH_DETECTED);
                 me->GetMotionMaster()->MoveSmoothPath(1, firstWaypoints, 8);
                 me->RemoveAurasDueToSpell(SPELL_SHADOW_VISUAL);
                 me->SetAIAnimKitId(0);
             }
             else
+            {
+                Talk(TALK_PLANETARY_INFECTION);
                 me->GetMotionMaster()->MoveSmoothPath(2, secondWaypoints, 3);
+            }
         }
         else if (type == DATA_UNBOUND_ABOMINATION)
         {
@@ -216,8 +225,14 @@ struct npc_underrot_titan_keeper_hezrel : public ScriptedAI
 
     void MovementInform(uint32 type, uint32 pointId) override
     {
+        if (pointId == 1)
+            Talk(TALK_MOTHER_NO_RESPONDING);
+
         if (pointId == 2)
+        {
+            Talk(TALK_SPECIMEN_DETECTED);
             me->CastSpell(nullptr, SPELL_OPEN_WEB_DOOR, false);
+        }
     }
 
     void UpdateAI(uint32 diff) override

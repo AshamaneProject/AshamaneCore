@@ -62,8 +62,8 @@ struct boss_sporecaller_zancha : public BossAI
     {
         if (power == POWER_ENERGY && newValue == 100)
         {
-            events.ScheduleEvent(SPELL_FESTERING_HARVEST_DAMAGE, 1s);
-            me->SetPower(POWER_ENERGY, 0);
+            me->RemoveAurasDueToSpell(SPELL_FESTERING_HARVEST);
+            events.RescheduleEvent(SPELL_FESTERING_HARVEST_DAMAGE, 1s);
         }
     }
 
@@ -73,11 +73,14 @@ struct boss_sporecaller_zancha : public BossAI
         {
             case SPELL_FESTERING_HARVEST_DAMAGE:
             {
+                me->SetPower(POWER_ENERGY, 0);
                 me->CastSpell(me, SPELL_FESTERING_HARVEST_DAMAGE, false);
 
                 me->GetScheduler().Schedule(6s, [](TaskContext context)
                 {
+                    GetContextCreature()->AI()->Talk(5);
                     GetContextUnit()->CastSpell(nullptr, SPELL_BOUNDLESS_ROT, true);
+                    GetContextUnit()->CastSpell(GetContextUnit(), SPELL_FESTERING_HARVEST, true);
                 });
                 break;
             }
@@ -90,8 +93,13 @@ struct boss_sporecaller_zancha : public BossAI
             case SPELL_UPHEAVAL_TARGET:
             {
                 for (uint8 i = 0; i < 2; ++i)
+                {
                     if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 1, 0.f, true, -SPELL_UPHEAVAL_TARGET))
+                    {
                         me->CastSpell(target, SPELL_UPHEAVAL_TARGET, true);
+                        Talk(4, target);
+                    }
+                }
 
                 events.ScheduleEvent(SPELL_UPHEAVAL, 5s);
                 events.Repeat(26s);
