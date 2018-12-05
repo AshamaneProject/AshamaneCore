@@ -57,12 +57,20 @@ enum Yells
     YELL_KILL = 5,
 };
 
+enum AnimKit
+{
+    AnimKitPreFight = 13325
+};
+
 struct boss_elder_leaxa : public BossAI
 {
+public:
     boss_elder_leaxa(Creature* creature) : BossAI(creature, DATA_ELDER_LEAXA)
     {
         Initialize();
     }
+
+    uint32 mirrorCount;
 
     void Initialize()
     {
@@ -75,6 +83,8 @@ struct boss_elder_leaxa : public BossAI
 
     void Reset() override
     {
+        //me->SetAIAnimKitId(AnimKit::AnimKitPreFight);
+        mirrorCount = 1;
         BossAI::Reset();
         events.Reset();
         Initialize();
@@ -83,6 +93,7 @@ struct boss_elder_leaxa : public BossAI
 
     void EnterCombat(Unit* who) override
     {
+        //me->SetAIAnimKitId(0);
         BossAI::EnterCombat(who);
         Talk(YELL_ENTER_COMBAT);
         instance->SetBossState(DATA_ELDER_LEAXA, IN_PROGRESS);
@@ -184,15 +195,43 @@ struct npc_blood_effigy : public ScriptedAI
 
     void Reset() override
     {
+        events.ScheduleEvent(EVENT_BLOOD_BOLT, urand(1000, 3000));
+        if (IsHeroic() || IsMythic())
+            events.ScheduleEvent(EVENT_SANGUINE_FEAST, urand(6800, 8800));
+
         me->CastSpell(me, SPELL_BLOOD_MIRROR_VISUAL, true);
-        me->GetScheduler().Schedule(2s, [this](TaskContext context)
-        {
-            DoCastVictim(SPELL_BLOOD_BOLT);
-            context.Repeat();
-        });
     }
 
-    void UpdateAI(uint32 /*diff*/) override { }
+    void UpdateAI(uint32 diff) override
+    {
+        if (!UpdateVictim())
+            return;
+
+        events.Update(diff);
+
+        if (me->HasUnitState(UNIT_STATE_CASTING))
+            return;
+
+        while (uint32 eventID = events.ExecuteEvent())
+        {
+            switch (eventID)
+            {
+            case EVENT_SANGUINE_FEAST:
+                DoCastRandom(SPELL_SANGUINE_FEAST, 100);
+                events.DelayEvents(3000); // if antoher cast happens while jumping, no landing spell is cast
+                events.ScheduleEvent(EVENT_SANGUINE_FEAST, 30000);
+                break;
+            case EVENT_BLOOD_BOLT:
+                DoCastVictim(SPELL_BLOOD_BOLT);
+                events.ScheduleEvent(EVENT_BLOOD_BOLT, 6100);
+                break;
+            default:
+                break;
+            }
+        }
+
+        DoMeleeAttackIfReady();
+    }
 };
 
 // 17135
@@ -238,9 +277,20 @@ public:
         {
             if (Unit* caster = GetCaster())
             {
-                if (Unit* target = caster->GetAI()->SelectTarget(SELECT_TARGET_RANDOM, 0, 40, true))
+                if (Creature* leaxa = caster->ToCreature())
                 {
-                    caster->CastSpell(target, SPELL_BLOOD_MIRROR_MISSILE, true);
+                    if (boss_elder_leaxa* pAI = CAST_AI(boss_elder_leaxa, leaxa->AI()))
+                    {
+                        for (uint32 i = 0; i < pAI->mirrorCount; ++i)
+                        {
+                            if (Unit* target = caster->GetAI()->SelectTarget(SELECT_TARGET_RANDOM, 0, 40, true))
+                            {
+                                caster->CastSpell(target, SPELL_BLOOD_MIRROR_MISSILE, true);
+                            }
+                        }
+                        if (pAI->IsHeroic() || pAI->IsMythic())
+                            pAI->mirrorCount++;
+                    }
                 }
             }
         }
