@@ -433,7 +433,6 @@ void OpcodeTable::Initialize()
     DEFINE_HANDLER(CMSG_GUILD_BANK_QUERY_TAB,                               STATUS_LOGGEDIN,  PROCESS_THREADUNSAFE, &WorldSession::HandleGuildBankQueryTab);
     DEFINE_HANDLER(CMSG_GUILD_BANK_REMAINING_WITHDRAW_MONEY_QUERY,          STATUS_LOGGEDIN,  PROCESS_THREADUNSAFE, &WorldSession::HandleGuildBankMoneyWithdrawn);
     DEFINE_HANDLER(CMSG_GUILD_BANK_SET_TAB_TEXT,                            STATUS_LOGGEDIN,  PROCESS_THREADUNSAFE, &WorldSession::HandleGuildBankSetTabText);
-    DEFINE_HANDLER(CMSG_GUILD_BANK_SWAP_ITEMS_LEGACY,                       STATUS_LOGGEDIN,  PROCESS_THREADUNSAFE, &WorldSession::HandleGuildBankSwapItemsLegacy);
     DEFINE_HANDLER(CMSG_GUILD_BANK_MOVE_ITEMS_PLAYER_BANK,                  STATUS_LOGGEDIN,  PROCESS_THREADUNSAFE, &WorldSession::HandleGuildBankMoveItemsPlayerBank);
     DEFINE_HANDLER(CMSG_GUILD_BANK_MOVE_ITEMS_BANK_PLAYER,                  STATUS_LOGGEDIN,  PROCESS_THREADUNSAFE, &WorldSession::HandleGuildBankMoveItemsBankPlayer);
     DEFINE_HANDLER(CMSG_GUILD_BANK_MOVE_ITEMS_BANK_BANK,                    STATUS_LOGGEDIN,  PROCESS_THREADUNSAFE, &WorldSession::HandleGuildBankMoveItemsBankBank);
