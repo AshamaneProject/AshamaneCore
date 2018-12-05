@@ -87,16 +87,17 @@ struct npc_enforcer_pterrordax : public npc_escortAI
 
     void IsSummonedBy(Unit* summoner) override
     {
-        if (Player* player = summoner->ToPlayer())
+        Player* player = summoner->ToPlayer();
+        if (!player || player->GetQuestStatus(QUEST_RASTAKHAN) != QUEST_STATUS_INCOMPLETE)
         {
-            if (player->GetQuestStatus(QUEST_RASTAKHAN) == QUEST_STATUS_INCOMPLETE)
-            {
-                KillCreditMe(player);
-                me->SetSpeed(MOVE_RUN, 21.f);
-                player->EnterVehicle(me);
-                Start(false, true, player->GetGUID());
-            }
+            me->ForcedDespawn();
+            return;
         }
+
+        KillCreditMe(player);
+        me->SetSpeed(MOVE_RUN, 21.f);
+        player->EnterVehicle(me);
+        Start(false, true, player->GetGUID());
     }
 
     void LastWaypointReached() override

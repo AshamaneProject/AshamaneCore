@@ -21,13 +21,14 @@
 enum SporecallerZanchaSpells
 {
     SPELL_FESTERING_HARVEST         = 259888,
-    SPELL_FESTERING_HARVEST_DAMAGE  = 259732, // Need conditions
+    SPELL_FESTERING_HARVEST_DAMAGE  = 259732,
     SPELL_BOUNDLESS_ROT_ENTER_COMBAT= 277732,
     SPELL_BOUNDLESS_ROT             = 259830,
     SPELL_BOUNDLESS_ROT_AT          = 259727,
     SPELL_SHOCKWAVE                 = 272457,
+    SPELL_UPHEAVAL_TARGET           = 259718,
     SPELL_UPHEAVAL                  = 274213,
-    SPELL_UPHEAVAL_DAMAGE           = 259720, // Need conditions
+    SPELL_UPHEAVAL_DAMAGE           = 259720,
 
     SPELL_SPORE_HIT_VISUAL          = 259862,
     SPELL_SPORE_BEAM                = 259968,
@@ -53,15 +54,16 @@ struct boss_sporecaller_zancha : public BossAI
         me->CastSpell(me, SPELL_FESTERING_HARVEST, true);
         me->CastSpell(me, SPELL_BOUNDLESS_ROT_ENTER_COMBAT, true);
 
-        events.ScheduleEvent(10s, SPELL_SHOCKWAVE);
-        events.ScheduleEvent(20s, SPELL_UPHEAVAL);
+        events.ScheduleEvent(SPELL_SHOCKWAVE, 10s);
+        events.ScheduleEvent(SPELL_UPHEAVAL_TARGET, 13s);
     }
 
     void OnPowerChanged(Powers power, int32 /*oldValue*/, int32& newValue) override
     {
         if (power == POWER_ENERGY && newValue == 100)
         {
-            events.Schedule(1s, SPELL_FESTERING_HARVEST_DAMAGE);
+            events.ScheduleEvent(SPELL_FESTERING_HARVEST_DAMAGE, 1s);
+            me->SetPower(POWER_ENERGY, 0);
         }
     }
 
@@ -73,20 +75,36 @@ struct boss_sporecaller_zancha : public BossAI
             {
                 me->CastSpell(me, SPELL_FESTERING_HARVEST_DAMAGE, false);
 
-                me->GetScheduler(6s, [](TaskContext context)
+                me->GetScheduler().Schedule(6s, [](TaskContext context)
                 {
                     GetContextUnit()->CastSpell(nullptr, SPELL_BOUNDLESS_ROT, true);
                 });
                 break;
             }
             case SPELL_SHOCKWAVE:
-                if (Unit* target = SelectTarget(TARGET_SELECT_TOPAGGRO))
+                if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
                     me->CastSpell(target, SPELL_SHOCKWAVE, false);
+
+                events.Repeat(15s);
                 break;
+            case SPELL_UPHEAVAL_TARGET:
+            {
+                for (uint8 i = 0; i < 2; ++i)
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 1, 0.f, true, -SPELL_UPHEAVAL_TARGET))
+                        me->CastSpell(target, SPELL_UPHEAVAL_TARGET, true);
+
+                events.ScheduleEvent(SPELL_UPHEAVAL, 5s);
+                events.Repeat(26s);
+                break;
+            }
             case SPELL_UPHEAVAL:
-                if (Unit* target = SelectTarget(TARGET_SELECT_RANDOM, 1))
-                    me->CastSpell(me, SPELL_UPHEAVAL, false);
+            {
+                for (uint8 i = 0; i < 2; ++i)
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0.f, true, SPELL_UPHEAVAL_TARGET))
+                        me->CastSpell(target, SPELL_UPHEAVAL, true);
+
                 break;
+            }
         }
     }
 };
@@ -98,12 +116,14 @@ struct npc_underrot_spore_pod : public ScriptedAI
 
     void Reset() override
     {
+        me->SetReactState(REACT_PASSIVE);
+        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
         me->CastSpell(me, SPELL_BOUNDLESS_ROT_AT, true);
     }
 
     void MoveInLineOfSight(Unit* seer) override
     {
-        if (seer->IsPlayer() && me->GetDistance(seer) <= 2.f)
+        if (seer->IsPlayer() && me->GetDistance(seer) <= 0.5f)
         {
             me->CastSpell(nullptr, SPELL_SPORE_DETONATION, true);
             me->ForcedDespawn();
@@ -135,10 +155,8 @@ class aura_zancha_festering_harvest : public AuraScript
 
     void HandlePeriodicTick(AuraEffect const* /*aurEff*/)
     {
-        if (!GetCaster())
-            return;
-
-        GetCaster()->ModifyPower(POWER_ENERGY, 2);
+        if (Unit* caster = GetCaster())
+            caster->ModifyPower(POWER_ENERGY, 2);
     }
 
     void Register() override
