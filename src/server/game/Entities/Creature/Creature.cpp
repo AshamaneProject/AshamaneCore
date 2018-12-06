@@ -2706,7 +2706,7 @@ uint32 Creature::GetScriptId() const
 
 ScriptParam Creature::GetScriptParam(uint8 index) const
 {
-    ScriptParams guidParams = sObjectMgr->GetScriptParam(GetGUID().GetCounter());
+    ScriptParams guidParams = sObjectMgr->GetScriptParam(GetSpawnId());
     auto guidItr = guidParams.find(index);
     if (guidItr != guidParams.end())
         return guidItr->second;

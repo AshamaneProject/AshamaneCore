@@ -1730,9 +1730,6 @@ void World::SetInitialWorldSettings()
     TC_LOG_INFO("server.loading", "Loading Creature template scaling...");
     sObjectMgr->LoadCreatureScalingData();
 
-    TC_LOG_INFO("server.loading", "Loading Script Params...");
-    sObjectMgr->LoadScriptParams();
-
     TC_LOG_INFO("server.loading", "Loading Reputation Reward Rates...");
     sObjectMgr->LoadReputationRewardRate();
 
@@ -1753,6 +1750,9 @@ void World::SetInitialWorldSettings()
 
     TC_LOG_INFO("server.loading", "Loading Temporary Summon Data...");
     sObjectMgr->LoadTempSummons();                               // must be after LoadCreatureTemplates() and LoadGameObjectTemplates()
+
+    TC_LOG_INFO("server.loading", "Loading Script Params...");
+    sObjectMgr->LoadScriptParams();                              // must be after LoadCreatures()
 
     TC_LOG_INFO("server.loading", "Loading pet levelup spells...");
     sSpellMgr->LoadPetLevelupSpellMap();
