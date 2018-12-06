@@ -15,8 +15,9 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ScriptMgr.h"
+#include "GameObject.h"
 #include "Player.h"
+#include "ScriptMgr.h"
 #include "InstanceScript.h"
 #include "the_underrot.h"
 
@@ -38,12 +39,49 @@ struct instance_the_underrot : public InstanceScript
             {
                 if (creature->GetPositionZ() < -100.f)
                     AddObject(creature, DATA_BOSS_HERZEL, true);
+                else
+                    AddObject(creature, DATA_EVENT_HERZEL, true);
 
                 break;
             }
             default:
                 break;
         }
+    }
+
+    void SetData(uint32 type, uint32 data) override
+    {
+        switch (type)
+        {
+            case DATA_EVENT_HERZEL:
+            {
+                if (data == DONE)
+                {
+                    if (GameObject* web = GetGameObject(GOB_PYRAMID_WEB))
+                        web->DestroyForNearbyPlayers();
+
+                    HandleGameObject(ObjectGuid::Empty, true, GetGameObject(GOB_PYRAMID_DOOR));
+                }
+                break;
+            }
+            case DATA_FACELESS_CORRUPTOR_1:
+            {
+                if (Creature* hezrel = GetCreature(DATA_EVENT_HERZEL))
+                    hezrel->AI()->SetData(DATA_EVENT_HERZEL, 1);
+
+                break;
+            }
+            case DATA_FACELESS_CORRUPTOR_2:
+            {
+                if (GetData(DATA_FACELESS_CORRUPTOR_2) > 0)
+                    if (Creature* hezrel = GetCreature(DATA_EVENT_HERZEL))
+                        hezrel->AI()->SetData(DATA_EVENT_HERZEL, 2);
+
+                break;
+            }
+        }
+
+        InstanceScript::SetData(type, data);
     }
 };
 

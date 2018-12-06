@@ -44,10 +44,10 @@ enum UnboundAbominationSpells
 
     // Titan Keeper Hezrel
     // Pre-boss event
+    SPELL_SHADOW_VISUAL                     = 279551,
     SPELL_HOLY_CHANNEL                      = 279250,
     SPELL_OPEN_WEB_DOOR                     = 279271,
     SPELL_UPDATE_INTERACTIONS               = 187114,
-    SPELL_GATEWAY                           = 253773,
 
     // Boss fight
     SPELL_HOLY_BOLT                         = 269312,
@@ -141,6 +141,25 @@ struct npc_underrot_titan_keeper_hezrel : public ScriptedAI
 {
     npc_underrot_titan_keeper_hezrel(Creature* creature) : ScriptedAI(creature) { }
 
+    Position firstWaypoints[8] =
+    {
+        { 1034.255737f, 1169.260742f, 12.140393f },
+        { 1034.920898f, 1164.862305f, 14.614284f },
+        { 1042.535156f, 1145.444458f, 14.607360f },
+        { 1063.567749f, 1144.828491f, 14.760351f },
+        { 1077.910767f, 1157.091553f, 14.991093f },
+        { 1077.984619f, 1160.333862f, 17.224142f },
+        { 1077.937378f, 1188.073486f, 20.141348f },
+        { 1075.895142f, 1226.188599f, 15.822451f },
+    };
+
+    Position secondWaypoints[3] =
+    {
+        { 1056.437012f, 1260.391968f, 11.439587f },
+        { 1068.353882f, 1286.912842f,  9.131060f },
+        { 1100.847412f, 1331.036255f,  5.608679f },
+    };
+
     enum Talks
     {
         TALK_CLEANSING_LIGHT        = 4,
@@ -152,12 +171,26 @@ struct npc_underrot_titan_keeper_hezrel : public ScriptedAI
 
     void Reset()
     {
-        me->CastSpell(me, SPELL_HOLY_CHANNEL, true);
+        if (me->GetPositionZ() > -100.f)
+            me->CastSpell(me, SPELL_SHADOW_VISUAL, true);
+        else
+            me->CastSpell(me, SPELL_HOLY_CHANNEL, true);
     }
 
     void SetData(uint32 type, uint32 action) override
     {
-        if (type == DATA_UNBOUND_ABOMINATION)
+        if (type == DATA_EVENT_HERZEL)
+        {
+            if (action == 1)
+            {
+                me->GetMotionMaster()->MoveSmoothPath(1, firstWaypoints, 8);
+                me->RemoveAurasDueToSpell(SPELL_SHADOW_VISUAL);
+                me->SetAIAnimKitId(0);
+            }
+            else
+                me->GetMotionMaster()->MoveSmoothPath(2, secondWaypoints, 3);
+        }
+        else if (type == DATA_UNBOUND_ABOMINATION)
         {
             switch (action)
             {
@@ -179,6 +212,12 @@ struct npc_underrot_titan_keeper_hezrel : public ScriptedAI
                     break;
             }
         }
+    }
+
+    void MovementInform(uint32 type, uint32 pointId) override
+    {
+        if (pointId == 2)
+            me->CastSpell(nullptr, SPELL_OPEN_WEB_DOOR, false);
     }
 
     void UpdateAI(uint32 diff) override

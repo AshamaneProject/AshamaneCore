@@ -338,11 +338,9 @@ public:
 
         void HandleDummy(SpellEffIndex /*effIndex*/)
         {
+            int32 spawnPointsIndex = irand(0, 2);
             for (int32 i = 0; i < GetEffectValue(); ++i)
-            {
-                Position targetDest = Trinity::Containers::SelectRandomContainerElement(spawnPoints);
-                GetCaster()->CastSpell(targetDest, SPELL_BLOOD_MIRROR_MISSILE, true);
-            }
+                GetCaster()->CastSpell(spawnPoints[(spawnPointsIndex + i) % 3], SPELL_BLOOD_MIRROR_MISSILE, true);
         }
 
         void Register() override

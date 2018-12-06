@@ -28,8 +28,12 @@ enum EncounterData
     DATA_CRAGMAW_THE_INFESTED   = 1,
     DATA_SPORECALLER_ZANCHA     = 2,
     DATA_UNBOUND_ABOMINATION    = 3,
+    
+    DATA_FACELESS_CORRUPTOR_1   = 4,
+    DATA_FACELESS_CORRUPTOR_2   = 5,
 
-    DATA_BOSS_HERZEL            = 4,
+    DATA_EVENT_HERZEL           = 6,
+    DATA_BOSS_HERZEL            = 7,
 };
 
 enum CreatureIds
@@ -42,6 +46,12 @@ enum CreatureIds
     NPC_TITAN_KEEPER_HEZREL     = 134419,
     NPC_BLOOD_VISAGE            = 137103,
     NPC_ROTTING_SPORE           = 137458,
+};
+
+enum GameObjectIds
+{
+    GOB_PYRAMID_WEB             = 296384,
+    GOB_PYRAMID_DOOR            = 296385,
 };
 
 #endif // THE_UNDERROT_H
