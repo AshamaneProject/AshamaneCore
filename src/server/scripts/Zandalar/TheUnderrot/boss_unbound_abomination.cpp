@@ -258,7 +258,7 @@ struct npc_underrot_titan_keeper_hezrel : public ScriptedAI
             case SPELL_CLEANSING_LIGHT:
                 if (Creature* abomination = instance->GetCreature(NPC_UNBOUND_ABOMINATION))
                 {
-                    if (Unit* player = abomination->AI()->SelectTarget(SELECT_TARGET_RANDOM, 0))
+                    if (Unit* player = abomination->AI()->SelectTarget(SELECT_TARGET_RANDOM, 0, 0.f, true))
                     {
                         Talk(TALK_CLEANSING_LIGHT);
                         me->CastSpell(player, SPELL_CLEANSING_LIGHT, false);

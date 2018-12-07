@@ -78,3 +78,9 @@ INSERT IGNORE INTO creature_template_scaling VALUES
 
 UPDATE creature_template SET DamageModifier = 4 WHERE entry IN (SELECT id FROM creature WHERE map = 1841) AND minlevel > 100;
 UPDATE creature_template SET DamageModifier = 5 WHERE entry IN (131318, 131817, 131383, 133007);
+
+DELETE FROM `scenarios` WHERE `map` = 1841;
+INSERT INTO `scenarios` (`map`, `scenario_A`, `scenario_H`) VALUES
+('1841', '1563', '1563'); 
+
+UPDATE `instance_template` SET `insideResurrection` = '1' WHERE `map` = '1841';
