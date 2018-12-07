@@ -27211,7 +27211,7 @@ void Player::EnablePvpRules(bool dueToCombat /*= false*/)
 void Player::DisablePvpRules()
 {
     // Don't disable pvp rules when in pvp zone or when in warmode
-    if (IsInAreaThatActivatesPvpTalents() || IsInWarMode())
+    if (IsInAreaThatActivatesPvpTalents())
         return;
 
     if (!GetCombatTimer())
@@ -27237,16 +27237,16 @@ bool Player::IsInAreaThatActivatesPvpTalents() const
 
 bool Player::IsAreaThatActivatesPvpTalents(AreaTableEntry const* area) const
 {
-    if (InBattleground())
+    if (GetMap()->IsDungeon())
+        return false;
+
+    if (InBattleground() || InArena())
         return true;
 
     while (area)
     {
         if (area->IsSanctuary())
             return false;
-
-        if (area->Flags[0] & AREA_FLAG_ARENA)
-            return true;
 
         if (sBattlefieldMgr->GetBattlefieldToZoneId(area->ID))
             return true;
