@@ -11448,10 +11448,10 @@ void Unit::Kill(Unit* victim, bool durabilityLoss)
                                  !sDB2Manager.HasItemContext(item->ItemID)))
                                 potentialItems.push_back(item);
 
-                        Trinity::Containers::RandomResize(potentialItems, 2);
+                        Trinity::Containers::RandomResize(potentialItems, 1);
 
                         for (JournalEncounterItemEntry const* item : potentialItems)
-                            loot->AddItem(LootStoreItem(item->ItemID, LOOT_ITEM_TYPE_ITEM, 0, 10, 0, LOOT_MODE_DEFAULT, 0, 1, 1));
+                            loot->AddItem(LootStoreItem(item->ItemID, LOOT_ITEM_TYPE_ITEM, 0, 10, 0, LOOT_MODE_DEFAULT, 0, 1, 1), looter);
                     }
                 }
             }
