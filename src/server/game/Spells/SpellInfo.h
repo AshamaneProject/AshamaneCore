@@ -388,6 +388,7 @@ public:
     SpellEffectImplicitTargetTypes GetImplicitTargetType() const;
     SpellTargetObjectTypes GetUsedTargetObjectType() const;
     ExpectedStatType GetScalingExpectedStat() const;
+    bool IsStatCompatible(Unit const* caster, ExpectedStatType type) const;
 
     ImmunityInfo const* GetImmunityInfo() const { return &_immunityInfo; }
 

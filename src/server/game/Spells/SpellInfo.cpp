@@ -552,7 +552,8 @@ int32 SpellEffectInfo::CalcValue(Unit const* caster /*= nullptr*/, int32 const* 
                 stat = ExpectedStatType::CreatureAutoAttackDps;
 
             // TODO - add expansion and content tuning id args?
-            value = sDB2Manager.EvaluateExpectedStat(stat, level, -2, 0, CLASS_NONE) * value / 100.0f;
+            if (!caster || IsStatCompatible(caster, stat))
+                value = sDB2Manager.EvaluateExpectedStat(stat, level, -2, 0, CLASS_NONE) * value / 100.0f;
         }
 
         if (Scaling.Variance)
@@ -781,6 +782,27 @@ ExpectedStatType SpellEffectInfo::GetScalingExpectedStat() const
     }
 
     return ExpectedStatType::None;
+}
+
+bool SpellEffectInfo::IsStatCompatible(Unit const* caster, ExpectedStatType type) const
+{
+    switch (type)
+    {
+        case ExpectedStatType::CreatureHealth:
+        case ExpectedStatType::CreatureAutoAttackDps:
+        case ExpectedStatType::CreatureArmor:
+        case ExpectedStatType::CreatureSpellDamage:
+            return !caster->IsPlayer();
+        case ExpectedStatType::PlayerHealth:
+        case ExpectedStatType::PlayerMana:
+        case ExpectedStatType::PlayerPrimaryStat:
+        case ExpectedStatType::PlayerSecondaryStat:
+            return caster->IsPlayer();
+        default:
+            break;
+    }
+
+    return true;
 }
 
 SpellEffectInfo::StaticData SpellEffectInfo::_data[TOTAL_SPELL_EFFECTS] =
