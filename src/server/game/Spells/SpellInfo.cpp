@@ -556,7 +556,7 @@ int32 SpellEffectInfo::CalcValue(Unit const* caster /*= nullptr*/, int32 const* 
                 value = sDB2Manager.EvaluateExpectedStat(stat, level, -2, 0, CLASS_NONE) * value / 100.0f;
         }
 
-        if (Scaling.Variance)
+        if (Scaling.Variance && Effect != SPELL_EFFECT_LEARN_SPELL)
         {
             float delta = fabs(Scaling.Variance * 0.5f);
             float valueVariance = frand(-delta, delta);
