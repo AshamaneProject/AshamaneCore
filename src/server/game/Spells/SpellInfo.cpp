@@ -634,6 +634,7 @@ bool SpellEffectInfo::HasMaxRadius() const
 float SpellEffectInfo::CalcRadius(Unit* caster, Spell* spell) const
 {
     const SpellRadiusEntry* entry = RadiusEntry;
+
     if (!HasRadius() && HasMaxRadius())
         entry = MaxRadiusEntry;
 
@@ -653,6 +654,9 @@ float SpellEffectInfo::CalcRadius(Unit* caster, Spell* spell) const
         if (Player* modOwner = caster->GetSpellModOwner())
             modOwner->ApplySpellMod(_spellInfo->Id, SPELLMOD_RADIUS, radius, spell);
     }
+
+    if (HasMaxRadius())
+        radius = std::max(std::min(radius, MaxRadiusEntry->RadiusMax), MaxRadiusEntry->RadiusMin);
 
     return radius;
 }
