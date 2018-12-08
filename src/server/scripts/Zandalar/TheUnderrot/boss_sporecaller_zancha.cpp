@@ -101,7 +101,7 @@ struct boss_sporecaller_zancha : public BossAI
                     }
                 }
 
-                events.ScheduleEvent(SPELL_UPHEAVAL, 5s);
+                events.ScheduleEvent(SPELL_UPHEAVAL, 6s); // Needs to be handle with spellscripts/aurascripts !!!
                 events.Repeat(26s);
                 break;
             }

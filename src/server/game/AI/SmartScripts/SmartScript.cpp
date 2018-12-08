@@ -4221,6 +4221,12 @@ void SmartScript::FillScript(SmartAIEventList e, WorldObject* obj, AreaTriggerEn
                         if (i->event.event_flags & SMART_EVENT_FLAG_DIFFICULTY_3)
                             mEvents.emplace_back(std::move(*i));
                         break;
+                    case DIFFICULTY_MYTHIC:
+                        if (i->event.event_flags & SMART_EVENT_FLAG_DIFFICULTY_4)
+                            mEvents.emplace_back(std::move(*i));
+                    case DIFFICULTY_MYTHIC_KEYSTONE:
+                        if (i->event.event_flags & SMART_EVENT_FLAG_DIFFICULTY_5)
+                            mEvents.emplace_back(std::move(*i));
                     default:
                         break;
                 }

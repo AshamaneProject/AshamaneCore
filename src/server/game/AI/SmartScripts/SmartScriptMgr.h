@@ -567,7 +567,7 @@ enum SMART_ACTION
     SMART_ACTION_PLAY_ANIMKIT                       = 128,    // id, type (0 = oneShot, 1 = aiAnim, 2 = meleeAnim, 3 = movementAnim, 4 = spellVisualKit)
     SMART_ACTION_SCENE_PLAY                         = 129,    // sceneId
     SMART_ACTION_SCENE_CANCEL                       = 130,    // sceneId
-    
+
     // Ashamane' specific actions
     SMART_ACTION_PLAY_SPELL_VISUAL_KIT              = 200,    // id, type, duration.
     SMART_ACTION_PLAY_SPELL_VISUAL                  = 201,    // id, travelSpeed, target type variation.
@@ -1129,34 +1129,34 @@ struct SmartAction
             uint32 visualType;
             uint32 visualDuration;
         } spellVisualKit;
-        
+
         struct
         {
             uint32 playVisualId;
             uint32 travelSpeed;
             uint32 variations;
         } playSpellVisual;
-        
+
         struct
         {
             uint32 playOrphanVisualId;
             uint32 travelSpeed;
             uint32 variations;
         } playOrphanSpellVisual;
-        
+
         struct
         {
             uint32 typeVisual;
             uint32 cancelVisualId;
         } cancelSpellVisual;
-        
+
         struct
         {
             uint32 radius;
             uint32 clockWise;
             uint32 stepCount;
         } moveCirclePath;
-        
+
         struct
         {
             uint32 zoneId;
@@ -1187,17 +1187,17 @@ struct SmartAction
             uint32 zoneId;
             uint32 musicId;
         } setOverrideZoneMusic;
-        
+
         struct
         {
             uint32 powerType;
         } powerType;
-        
+
         struct
         {
             uint32 variationMovementFlags;
         } SetMovementFlags;
-        
+
         struct
         {
             uint32 spellId;
@@ -1526,8 +1526,10 @@ enum SmartEventFlags
     SMART_EVENT_FLAG_DEBUG_ONLY            = 0x080,                     //Event only occurs in debug build
     SMART_EVENT_FLAG_DONT_RESET            = 0x100,                     //Event will not reset in SmartScript::OnReset()
     SMART_EVENT_FLAG_WHILE_CHARMED         = 0x200,                     //Event occurs even if AI owner is charmed
+    SMART_EVENT_FLAG_DIFFICULTY_4          = 0x400,                     //Event only occurs in instance difficulty mythic
+    SMART_EVENT_FLAG_DIFFICULTY_5          = 0x800,                     //Event only occurs in instance difficulty mythic keystone
 
-    SMART_EVENT_FLAG_DIFFICULTY_ALL        = (SMART_EVENT_FLAG_DIFFICULTY_0|SMART_EVENT_FLAG_DIFFICULTY_1|SMART_EVENT_FLAG_DIFFICULTY_2|SMART_EVENT_FLAG_DIFFICULTY_3),
+    SMART_EVENT_FLAG_DIFFICULTY_ALL        = (SMART_EVENT_FLAG_DIFFICULTY_0|SMART_EVENT_FLAG_DIFFICULTY_1|SMART_EVENT_FLAG_DIFFICULTY_2|SMART_EVENT_FLAG_DIFFICULTY_3|SMART_EVENT_FLAG_DIFFICULTY_4|SMART_EVENT_FLAG_DIFFICULTY_5),
     SMART_EVENT_FLAGS_ALL                  = (SMART_EVENT_FLAG_NOT_REPEATABLE|SMART_EVENT_FLAG_DIFFICULTY_ALL|SMART_EVENT_FLAG_RESERVED_5|SMART_EVENT_FLAG_RESERVED_6|SMART_EVENT_FLAG_DEBUG_ONLY|SMART_EVENT_FLAG_DONT_RESET|SMART_EVENT_FLAG_WHILE_CHARMED)
 };
 
