@@ -15,11 +15,20 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "AreaBoundary.h"
 #include "GameObject.h"
 #include "Player.h"
 #include "ScriptMgr.h"
 #include "InstanceScript.h"
 #include "the_underrot.h"
+
+BossBoundaryData const boundaries =
+{
+    { DATA_ELDER_LEAXA,             new ZRangeBoundary(44.181206f, 63.479584f)                                  },
+    { DATA_CRAGMAW_THE_INFESTED,    new CircleBoundary(Position(862.497009f, 982.315979f, 39.231701f), 90.f)    },
+    { DATA_SPORECALLER_ZANCHA,      new ZRangeBoundary(20.f, 40.f)                                              },
+    { DATA_UNBOUND_ABOMINATION,     new ZRangeBoundary(-200.f, -150.f)                                          },
+};
 
 struct instance_the_underrot : public InstanceScript
 {
@@ -27,6 +36,7 @@ struct instance_the_underrot : public InstanceScript
     {
         SetHeaders(DataHeader);
         SetBossNumber(EncounterCount);
+        LoadBossBoundaries(boundaries);
     }
 
     void OnCreatureCreate(Creature* creature) override
