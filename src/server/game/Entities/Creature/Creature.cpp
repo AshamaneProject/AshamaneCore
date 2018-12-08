@@ -1103,13 +1103,21 @@ bool Creature::CanResetTalents(Player* player) const
 
 std::vector<Player*> Creature::GetLootRecipients() const
 {
-    std::vector<Player*> recipients;
+    std::set<Player*> recipients;
     for (ObjectGuid guid : m_lootRecipients)
+    {
         if (guid.IsPlayer())
             if (Player* player = ObjectAccessor::FindConnectedPlayer(guid))
-                recipients.push_back(player);
+                recipients.insert(player);
 
-    return recipients;
+        if (guid.IsParty())
+            if (Group* group = sGroupMgr->GetGroupByGUID(guid))
+                for (Group::MemberSlot const& slot : group->GetMemberSlots())
+                    if (Player* player = ObjectAccessor::FindConnectedPlayer(slot.guid))
+                        recipients.insert(player);
+    }
+
+    return std::vector<Player*>(recipients.begin(), recipients.end());
 }
 
 std::vector<Group*> Creature::GetLootRecipientGroups() const
