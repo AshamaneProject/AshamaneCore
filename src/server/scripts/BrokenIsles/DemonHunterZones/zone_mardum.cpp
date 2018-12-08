@@ -466,17 +466,17 @@ struct npc_mardum_doom_commander_beliash : public ScriptedAI
             context.Repeat(Milliseconds(2500));
         });
 
-        me->GetScheduler().Schedule(Seconds(10), [this](TaskContext context)
+        /*me->GetScheduler().Schedule(Seconds(10), [this](TaskContext context)
         {
             me->CastSpell(me, SPELL_SHADOW_RETREAT);
             context.Repeat(Seconds(15));
 
             // During retreat commander make blaze appear
-            me->GetScheduler().Schedule({ Milliseconds(500), Milliseconds(1000) }, [this](TaskContext /*context*/)
+            me->GetScheduler().Schedule({ Milliseconds(500), Milliseconds(1000) }, [this](TaskContext /*context*//*)
             {
                 me->CastSpell(me, SPELL_SHADOW_RETREAT_AT, true);
             });
-        });
+        });*/
     }
 
     void JustDied(Unit* /*killer*/) override
