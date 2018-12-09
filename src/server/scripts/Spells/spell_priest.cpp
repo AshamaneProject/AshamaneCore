@@ -313,7 +313,7 @@ class spell_pri_clarity_of_will : public AuraScript
     }
 };
 
-// 109142 - Twist of Fate
+// 265259 - Twist of Fate
 class spell_pri_twist_of_fate : public AuraScript
 {
     PrepareAuraScript(spell_pri_twist_of_fate);
@@ -321,10 +321,12 @@ class spell_pri_twist_of_fate : public AuraScript
     bool CheckProc(ProcEventInfo& /*eventInfo*/)
     {
         Unit* target = GetTarget();
-        int32 targetPct = target->GetHealthPct();
+        if (!target)
+            return false;
 
-        if (targetPct < 35)
-            return true;
+        if (SpellEffectInfo const* eff0 = GetSpellInfo()->GetEffect(EFFECT_0))
+            if (target->GetHealthPct() < eff0->CalcValue())
+                return true;
 
         return false;
     }
@@ -2766,10 +2768,17 @@ public:
                 {
                     if (AuraEffect* aurEff = aur->GetEffect(EFFECT_0))
                     {
-                        aurEff->SetAmount(aurEff->GetAmount() - dmgInfo.GetDamage());
-                        aur->SetNeedClientUpdateForTargets();
-                        if (aurEff->GetAmount() <= 0)
-                            aur->SetDuration(1);
+                        int32 absorb = std::max(0, aurEff->GetAmount() - int32(dmgInfo.GetDamage()));
+                        if (absorb <= 0)
+                        {
+                            absorbAmount = aurEff->GetAmount();
+                            aur->Remove();
+                        }
+                        else
+                        {
+                            aurEff->SetAmount(absorb);
+                            aur->SetNeedClientUpdateForTargets();
+                        }
                     }
                 }
             }

@@ -768,44 +768,50 @@ class spell_warl_seed_of_corruption_damage : public SpellScript
     }
 };
 
-// Soul Leech aura - 228974
-class spell_warl_soul_leech_aura : public AuraScript
+// 228974 - Soul Leech Base
+class spell_warl_soul_leech_base : public AuraScript
 {
-    PrepareAuraScript(spell_warl_soul_leech_aura);
+    PrepareAuraScript(spell_warl_soul_leech_base);
 
-    bool Validate(SpellInfo const* /*spellInfo*/) override
+    bool CheckProc(ProcEventInfo& eventInfo)
     {
-        return ValidateSpellInfo({ SPELL_WARLOCK_DEMONSKIN });
+        return GetSpellInfo() && eventInfo.GetDamageInfo() && eventInfo.GetDamageInfo()->GetDamage();
     }
 
-    bool OnCheckProc(ProcEventInfo& eventInfo)
+    void OnProc(AuraEffect const* aurEff, ProcEventInfo& procInfo)
     {
         Unit* caster = GetCaster();
         if (!caster)
-            return false;
+            return;
 
-        int32 basePoints = GetSpellInfo()->GetEffect(EFFECT_0)->CalcValue();
-        int32 absorb = ((eventInfo.GetDamageInfo() ? eventInfo.GetDamageInfo()->GetDamage(): 0) * basePoints) / 100.f;
+        int32 amountAbsorbed = 0;
+        int32 maxAbsorbPct = 10;
+
+        // Absorb 8% of damage
+        if (SpellInfo const* soulLeechInfo = sSpellMgr->GetSpellInfo(SPELL_WARLOCK_SOUL_LEECH_AURA))
+            if (SpellEffectInfo const* eff0 = soulLeechInfo->GetEffect(EFFECT_0))
+                amountAbsorbed = CalculatePct(procInfo.GetDamageInfo()->GetDamage(), eff0->CalcValue());
+        // Max Absorb 10% of max hp
+        if (AuraEffect const* eff1 = caster->GetAuraEffect(SPELL_WARLOCK_SOUL_LEECH_AURA, EFFECT_1))
+            maxAbsorbPct = eff1->GetAmount();
+        // or 15 with aura
+        if (AuraEffect const* eff1 = caster->GetAuraEffect(SPELL_WARLOCK_DEMONSKIN, EFFECT_1))
+            maxAbsorbPct = eff1->GetAmount();
+
+        int32 maxAbsorb = int32(caster->CountPctFromMaxHealth(maxAbsorbPct));
 
         // Add remaining amount if already applied
         if (Aura* aur = caster->GetAura(SPELL_WARLOCK_SOUL_LEECH_ABSORB))
             if (AuraEffect* aurEff = aur->GetEffect(EFFECT_0))
-                absorb += aurEff->GetAmount();
+                amountAbsorbed += aurEff->GetAmount();
 
-        // Cannot go over 15% (or 20% with Demonskin) max health
-        int32 basePointNormal = GetSpellInfo()->GetEffect(EFFECT_1)->CalcValue();
-        int32 basePointDS = sSpellMgr->GetSpellInfo(SPELL_WARLOCK_DEMONSKIN)->GetEffect(EFFECT_1)->CalcValue();
-        int32 totalBP = caster->HasAura(SPELL_WARLOCK_DEMONSKIN) ? basePointDS : basePointNormal;
-        int32 threshold = (caster->GetMaxHealth() * totalBP) / 100.f;
-        absorb = std::min(absorb, threshold);
-
-        caster->CastCustomSpell(SPELL_WARLOCK_SOUL_LEECH_ABSORB, SPELLVALUE_BASE_POINT0, absorb, caster, TRIGGERED_FULL_MASK);
-        return true;
+        caster->CastCustomSpell(SPELL_WARLOCK_SOUL_LEECH_ABSORB, SPELLVALUE_BASE_POINT0, std::min(maxAbsorb, amountAbsorbed), caster, TRIGGERED_FULL_MASK);
     }
 
     void Register() override
     {
-        DoCheckProc += AuraCheckProcFn(spell_warl_soul_leech_aura::OnCheckProc);
+        DoCheckProc += AuraCheckProcFn(spell_warl_soul_leech_base::CheckProc);
+        OnEffectProc += AuraEffectProcFn(spell_warl_soul_leech_base::OnProc, EFFECT_0, SPELL_AURA_DUMMY);
     }
 };
 
@@ -863,8 +869,8 @@ class aura_warl_unstable_affliction : public AuraScript
             if (SpellEffectInfo const* eff0Ua = sSpellMgr->GetSpellInfo(SPELL_WARLOCK_UNSTABLE_AFFLICTION)->GetEffect(EFFECT_0))
                 if (SpellEffectInfo const* eff0 = GetSpellInfo()->GetEffect(EFFECT_0))
                 {
-                    int32 damage = int32(eff0->CalcValue() * eff0Ua->CalcValue() / 100.0f);
-                    caster->CastCustomSpell(dispelInfo->GetDispeller(), SPELL_WARLOCK_UNSTABLE_AFFLICTION_DISPEL, &damage, nullptr, nullptr, true);
+                    int32 damage = int32(eff0->CalcValue(GetCaster()) * eff0Ua->CalcValue(GetCaster()) / 100.0f);
+                    caster->CastCustomSpell(SPELL_WARLOCK_UNSTABLE_AFFLICTION_DISPEL, SPELLVALUE_BASE_POINT0, damage, dispelInfo->GetDispeller(), TRIGGERED_FULL_MASK);
                 }
         }
     }
@@ -3285,7 +3291,7 @@ void AddSC_warlock_spell_scripts()
     new spell_warl_shadow_bulwark();
     new spell_warl_shadowburn();
     new spell_warl_soul_leach_applier();
-    RegisterAuraScript(spell_warl_soul_leech_aura);
+    RegisterAuraScript(spell_warl_soul_leech_base);
     new spell_warl_twilight_ward_s12();
     RegisterSpellScript(spell_warl_unstable_affliction);
     RegisterAuraScript(aura_warl_unstable_affliction);

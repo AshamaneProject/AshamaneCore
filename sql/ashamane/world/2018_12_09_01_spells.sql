@@ -1,0 +1,11 @@
+-- 108370 - Soul Leech Base
+DELETE FROM `spell_script_names` WHERE `ScriptName` = 'spell_warl_soul_leech_base';
+INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES 
+(108370, 'spell_warl_soul_leech_base');
+
+DELETE FROM `spell_script_names` WHERE `ScriptName` = 'spell_warl_soul_leech_aura';
+
+-- 265259 - Twist of fate
+DELETE FROM `spell_script_names` WHERE `ScriptName` = 'spell_pri_twist_of_fate';
+INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES 
+(265259, 'spell_pri_twist_of_fate');
