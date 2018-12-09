@@ -121,6 +121,7 @@ enum PriestSpells
     SPELL_PRIEST_MISERY                             = 238558,
     SPELL_PRIEST_NPC_PSYFIEND                       = 59190,
     SPELL_PRIEST_NPC_SHADOWY_APPARITION             = 46954,
+    SPELL_PRIEST_SHADOWY_APPARITION_MISSILE         = 147193,
     SPELL_PRIEST_NPC_VOID_TENDRILS                  = 65282,
     SPELL_PRIEST_PENANCE                            = 47540,
     SPELL_PRIEST_PENANCE_DAMAGE                     = 47666,
@@ -210,8 +211,10 @@ enum PriestSpellIcons
 
 enum MiscSpells
 {
-    SPELL_GEN_REPLENISHMENT                         = 57669
+    SPELL_VISUAL_SHADOWY_APPARITION = 33584,
+    SHADOWY_APPARITION_TRAVEL_SPEED = 6
 };
+
 
 //7.3.2.25549
 // 17 - Power Word: Shield
@@ -334,6 +337,53 @@ class spell_pri_twist_of_fate : public AuraScript
     void Register() override
     {
         DoCheckProc += AuraCheckProcFn(spell_pri_twist_of_fate::CheckProc);
+    }
+};
+
+// 78203 - Shadowy Apparitions
+class spell_pri_shadowy_apparitions : public SpellScriptLoader
+{
+public:
+    spell_pri_shadowy_apparitions() : SpellScriptLoader("spell_pri_shadowy_apparitions") { }
+
+    class spell_pri_shadowy_apparitions_AuraScript : public AuraScript
+    {
+        PrepareAuraScript(spell_pri_shadowy_apparitions_AuraScript);
+
+        bool Validate(SpellInfo const* /*spellInfo*/) override
+        {
+            return ValidateSpellInfo(
+                {
+                    SPELL_PRIEST_SHADOWY_APPARITION_MISSILE,
+                    SPELL_PRIEST_SHADOW_WORD_PAIN
+                });
+        }
+
+        bool CheckProc(ProcEventInfo& eventInfo)
+        {
+            if (eventInfo.GetSpellInfo()->Id == SPELL_PRIEST_SHADOW_WORD_PAIN)
+                if ((eventInfo.GetHitMask() & PROC_HIT_CRITICAL))
+                    return true;
+
+            return false;
+        }
+
+        void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
+        {
+            GetTarget()->CastSpell(eventInfo.GetActionTarget(), SPELL_PRIEST_SHADOWY_APPARITION_MISSILE, true);
+            GetTarget()->SendPlaySpellVisual(eventInfo.GetActionTarget()->GetGUID(), SPELL_VISUAL_SHADOWY_APPARITION, SPELL_MISS_NONE, SPELL_MISS_NONE, SHADOWY_APPARITION_TRAVEL_SPEED, false);
+        }
+
+        void Register() override
+        {
+            OnEffectProc += AuraEffectProcFn(spell_pri_shadowy_apparitions_AuraScript::HandleProc, EFFECT_0, SPELL_AURA_DUMMY);
+            DoCheckProc += AuraCheckProcFn(spell_pri_shadowy_apparitions_AuraScript::CheckProc);
+        }
+    };
+
+    AuraScript* GetAuraScript() const override
+    {
+        return new spell_pri_shadowy_apparitions_AuraScript();
     }
 };
 
@@ -1809,24 +1859,13 @@ class spell_pri_vampiric_touch : public AuraScript
 
     bool Validate(SpellInfo const* /*spellInfo*/) override
     {
-        return ValidateSpellInfo({ SPELL_PRIEST_VAMPIRIC_TOUCH_DISPEL, SPELL_GEN_REPLENISHMENT, SPELL_PRIEST_MISERY, SPELL_PRIEST_SHADOW_WORD_PAIN });
+        return ValidateSpellInfo({ SPELL_PRIEST_SIN_AND_PUNISHMENT, SPELL_PRIEST_MISERY, SPELL_PRIEST_SHADOW_WORD_PAIN });
     }
 
-    void HandleDispel(DispelInfo* /*dispelInfo*/)
+    void HandleDispel(DispelInfo* dispelInfo)
     {
         if (Unit* caster = GetCaster())
-            if (Unit* target = GetUnitOwner())
-                caster->CastSpell(target, SPELL_PRIEST_VAMPIRIC_TOUCH_DISPEL, true);
-    }
-
-    bool CheckProc(ProcEventInfo& eventInfo)
-    {
-        return eventInfo.GetProcTarget() == GetCaster();
-    }
-
-    void HandleEffectProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
-    {
-        eventInfo.GetProcTarget()->CastSpell((Unit*)NULL, SPELL_GEN_REPLENISHMENT, true, NULL, aurEff);
+            dispelInfo->GetDispeller()->CastSpell(dispelInfo->GetDispeller(), SPELL_PRIEST_SIN_AND_PUNISHMENT, true, nullptr, nullptr, caster->GetGUID());
     }
 
     void OnApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
@@ -1839,8 +1878,6 @@ class spell_pri_vampiric_touch : public AuraScript
     void Register() override
     {
         AfterDispel += AuraDispelFn(spell_pri_vampiric_touch::HandleDispel);
-        DoCheckProc += AuraCheckProcFn(spell_pri_vampiric_touch::CheckProc);
-        OnEffectProc += AuraEffectProcFn(spell_pri_vampiric_touch::HandleEffectProc, EFFECT_2, SPELL_AURA_DUMMY);
         AfterEffectApply += AuraEffectApplyFn(spell_pri_vampiric_touch::OnApply, EFFECT_1, SPELL_AURA_PERIODIC_LEECH, AURA_EFFECT_HANDLE_REAL);
     }
 };
@@ -3071,6 +3108,7 @@ void AddSC_priest_spell_scripts()
     new spell_pri_void_tendrils();
     new spell_pri_voidform();
     new spell_priest_angelic_bulwark();
+    new spell_pri_shadowy_apparitions();
     RegisterAuraScript(spell_pri_spirit_of_redemption);
     RegisterAuraScript(spell_pri_spirit_of_redemption_form);
     RegisterSpellScript(spell_pri_holy_word_chastise);

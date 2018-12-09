@@ -9,3 +9,7 @@ DELETE FROM `spell_script_names` WHERE `ScriptName` = 'spell_warl_soul_leech_aur
 DELETE FROM `spell_script_names` WHERE `ScriptName` = 'spell_pri_twist_of_fate';
 INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES 
 (265259, 'spell_pri_twist_of_fate');
+
+DELETE FROM `spell_script_names` WHERE `ScriptName`='spell_pri_shadowy_apparitions';
+INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES 
+(78203, 'spell_pri_shadowy_apparitions');
