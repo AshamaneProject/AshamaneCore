@@ -869,7 +869,9 @@ class aura_warl_unstable_affliction : public AuraScript
             if (SpellEffectInfo const* eff0Ua = sSpellMgr->GetSpellInfo(SPELL_WARLOCK_UNSTABLE_AFFLICTION)->GetEffect(EFFECT_0))
                 if (SpellEffectInfo const* eff0 = GetSpellInfo()->GetEffect(EFFECT_0))
                 {
-                    int32 damage = int32(eff0->CalcValue(GetCaster()) * eff0Ua->CalcValue(GetCaster()) / 100.0f);
+                    //@TODO Hack eff0->CalcValue() returns 0, should return SP*0.16
+                    int32 eff0Bp = 0.16f * caster->GetTotalSpellPowerValue(SPELL_SCHOOL_MASK_ALL, true);
+                    int32 damage = eff0Bp * eff0Ua->CalcValue() / 100.0f;
                     caster->CastCustomSpell(SPELL_WARLOCK_UNSTABLE_AFFLICTION_DISPEL, SPELLVALUE_BASE_POINT0, damage, dispelInfo->GetDispeller(), TRIGGERED_FULL_MASK);
                 }
         }

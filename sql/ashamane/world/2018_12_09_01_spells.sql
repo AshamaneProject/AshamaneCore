@@ -1,7 +1,7 @@
--- 108370 - Soul Leech Base
+-- 228974 - Soul Leech Base
 DELETE FROM `spell_script_names` WHERE `ScriptName` = 'spell_warl_soul_leech_base';
 INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES 
-(108370, 'spell_warl_soul_leech_base');
+(228974, 'spell_warl_soul_leech_base');
 
 DELETE FROM `spell_script_names` WHERE `ScriptName` = 'spell_warl_soul_leech_aura';
 
