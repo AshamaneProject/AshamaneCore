@@ -32,3 +32,8 @@ INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES
 DELETE FROM `spell_script_names` WHERE `ScriptName` = 'spell_pri_mind_sear_base';
 INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES 
 (48045, 'spell_pri_mind_sear_base');
+
+-- Exploit
+DELETE FROM conditions WHERE SourceTypeOrReferenceId = 17 AND SourceEntry IN (252804);
+INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceEntry`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`) VALUES
+(17, 252804, 31, 1, 5, 127253);
