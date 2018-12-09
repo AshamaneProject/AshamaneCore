@@ -233,9 +233,6 @@ void WorldSession::HandleQuestgiverQueryQuestOpcode(WorldPackets::Quest::QuestGi
         if (!_player->CanTakeQuest(quest, true))
             return;
 
-        if (quest->IsAutoAccept() && _player->CanAddQuest(quest, true))
-            _player->AddQuestAndCheckCompletion(quest, object);
-
         if (_player->PlayerTalkClass)
         {
             if (quest->IsAutoComplete())
@@ -243,6 +240,9 @@ void WorldSession::HandleQuestgiverQueryQuestOpcode(WorldPackets::Quest::QuestGi
             else
                 _player->PlayerTalkClass->SendQuestGiverQuestDetails(quest, object->GetGUID(), true, false);
         }
+
+        if (quest->IsAutoAccept() && _player->CanAddQuest(quest, true))
+            _player->AddQuestAndCheckCompletion(quest, object);
     }
 }
 
