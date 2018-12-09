@@ -795,6 +795,16 @@ CreatureGroup* InstanceScript::GetCreatureGroup(uint32 creatureGroupID)
     return nullptr;
 }
 
+bool InstanceScript::IsCreatureGroupWiped(uint32 creatureGroupID)
+{
+    for (ObjectGuid guid : summonBySummonGroupIDs[creatureGroupID])
+        if (Creature* summon = instance->GetCreature(guid))
+            if (summon->IsAlive())
+                return false;
+
+    return true;
+}
+
 void InstanceScript::DespawnCreatureGroup(uint32 creatureGroupID)
 {
     for (ObjectGuid guid : summonBySummonGroupIDs[creatureGroupID])

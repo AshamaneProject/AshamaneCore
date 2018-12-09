@@ -37,6 +37,8 @@ struct instance_the_underrot : public InstanceScript
         SetHeaders(DataHeader);
         SetBossNumber(EncounterCount);
         LoadBossBoundaries(boundaries);
+
+        instance->SummonCreatureGroup(SUMMON_GROUP_BLOODSWORN_DEFILER);
     }
 
     void OnCreatureCreate(Creature* creature) override
@@ -51,6 +53,23 @@ struct instance_the_underrot : public InstanceScript
                     AddObject(creature, DATA_BOSS_HERZEL, true);
                 else
                     AddObject(creature, DATA_EVENT_HERZEL, true);
+
+                break;
+            }
+            default:
+                break;
+        }
+    }
+
+    void OnUnitDeath(Unit* unit) override
+    {
+        switch (unit->GetEntry())
+        {
+            case NPC_BLOODSWORN_DEFILER:
+            {
+                if (IsCreatureGroupWiped(SUMMON_GROUP_BLOODSWORN_DEFILER))
+                    if (Creature* zancha = GetCreature(NPC_SPORECALLER_ZANCHA))
+                        zancha->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
 
                 break;
             }

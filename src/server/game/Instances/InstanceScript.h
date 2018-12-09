@@ -294,6 +294,7 @@ class TC_GAME_API InstanceScript : public ZoneScript
 
         CreatureGroup* SummonCreatureGroup(uint32 creatureGroupID, std::list<TempSummon*>* list = nullptr);
         CreatureGroup* GetCreatureGroup(uint32 creatureGroupID);
+        bool IsCreatureGroupWiped(uint32 creatureGroupID);
         void DespawnCreatureGroup(uint32 creatureGroupID);
 
         virtual bool SetBossState(uint32 id, EncounterState state);

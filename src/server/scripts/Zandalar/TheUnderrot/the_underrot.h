@@ -28,7 +28,7 @@ enum EncounterData
     DATA_CRAGMAW_THE_INFESTED   = 1,
     DATA_SPORECALLER_ZANCHA     = 2,
     DATA_UNBOUND_ABOMINATION    = 3,
-    
+
     DATA_FACELESS_CORRUPTOR_1   = 4,
     DATA_FACELESS_CORRUPTOR_2   = 5,
 
@@ -38,14 +38,18 @@ enum EncounterData
 
 enum CreatureIds
 {
-    NPC_ELDER_LEAXA             = 131318,
-    NPC_CRAGMAW_THE_INFESTED    = 131817,
-    NPC_SPORECALLER_ZANCHA      = 131383,
+    NPC_ELDER_LEAXA                 = 131318,
+    NPC_CRAGMAW_THE_INFESTED        = 131817,
 
-    NPC_UNBOUND_ABOMINATION     = 133007,
-    NPC_TITAN_KEEPER_HEZREL     = 134419,
-    NPC_BLOOD_VISAGE            = 137103,
-    NPC_ROTTING_SPORE           = 137458,
+    NPC_BLOODSWORN_DEFILER          = 144306,
+    NPC_SPORECALLER_ZANCHA          = 131383,
+
+    NPC_UNBOUND_ABOMINATION         = 133007,
+    NPC_TITAN_KEEPER_HEZREL         = 134419,
+    NPC_BLOOD_VISAGE                = 137103,
+    NPC_ROTTING_SPORE               = 137458,
+
+    SUMMON_GROUP_BLOODSWORN_DEFILER = 1
 };
 
 enum GameObjectIds

@@ -116,9 +116,9 @@ struct boss_unbound_abomination : public BossAI
             hezrel->AI()->SetData(DATA_UNBOUND_ABOMINATION, DONE);
     }
 
-    void OnPowerChanged(Powers power, int32 /*oldValue*/, int32& newValue) override
+    void DoAction(int32 action) override
     {
-        if (power == POWER_ENERGY && newValue == 100)
+        if (action == NPC_BLOOD_VISAGE)
         {
             Position centerPosition = { 1199.420044f, 1481.939941f, -181.505997f };
             Position summonPosition = centerPosition;
@@ -228,16 +228,24 @@ struct npc_underrot_titan_keeper_hezrel : public ScriptedAI
         if (pointId == 1)
             Talk(TALK_MOTHER_NO_RESPONDING);
 
-        if (pointId == 2)
+        else if (pointId == 2)
         {
             Talk(TALK_SPECIMEN_DETECTED);
             me->CastSpell(nullptr, SPELL_OPEN_WEB_DOOR, false);
+        }
+        else if (pointId == SPELL_PURGE_CORRUPTION)
+        {
+            if (Creature* bloodVisage = me->FindNearestCreature(NPC_BLOOD_VISAGE, 25.f, true))
+                me->CastSpell(bloodVisage, SPELL_PURGE_CORRUPTION, true);
         }
     }
 
     void UpdateAI(uint32 diff) override
     {
         events.Update(diff);
+
+        if (me->HasUnitState(UNIT_STATE_CASTING))
+            return;
 
         switch (events.ExecuteEvent())
         {
@@ -246,11 +254,22 @@ struct npc_underrot_titan_keeper_hezrel : public ScriptedAI
                 events.Repeat(5s);
                 break;
             case SPELL_PURGE_CORRUPTION:
-                if (Creature* bloodVisage = me->FindNearestCreature(NPC_BLOOD_VISAGE, 20.f, true))
+                if (Creature* bloodVisage = me->FindNearestCreature(NPC_BLOOD_VISAGE, 25.f, true))
                 {
-                    Talk(TALK_CONTAGION_DETECTED);
-                    me->CastSpell(bloodVisage, SPELL_PURGE_CORRUPTION, true);
-                    events.Repeat(15s);
+                    if (me->GetDistance(bloodVisage) < 10.f)
+                    {
+                        Talk(TALK_CONTAGION_DETECTED);
+                        me->CastSpell(bloodVisage, SPELL_PURGE_CORRUPTION, true);
+                        events.Repeat(15s);
+                    }
+                    else
+                    {
+                        float x, y, z;
+                        me->GetContactPoint(bloodVisage, x, y, z, 5.f);
+                        me->GetMotionMaster()->MovePoint(SPELL_PURGE_CORRUPTION, x, y, z);
+
+                        events.Repeat(20s);
+                    }
                 }
                 else
                     events.Repeat(5s);
@@ -360,9 +379,20 @@ class aura_unbound_abomination_blood_barrier : public AuraScript
         absorbAmount = dmgInfo.GetDamage();
     }
 
+    void AfterRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+    {
+        if (GetTargetApplication()->GetRemoveMode() == AURA_REMOVE_BY_DEATH)
+            return;
+
+        if (Creature* targetCreature = GetTarget()->ToCreature())
+            if (targetCreature->IsAIEnabled)
+                targetCreature->AI()->DoAction(NPC_BLOOD_VISAGE);
+    }
+
     void Register() override
     {
         OnEffectAbsorb += AuraEffectAbsorbFn(aura_unbound_abomination_blood_barrier::HandleAbsorb, EFFECT_0);
+        AfterEffectRemove += AuraEffectRemoveFn(aura_unbound_abomination_blood_barrier::AfterRemove, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
     }
 };
 

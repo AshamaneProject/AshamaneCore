@@ -39,12 +39,21 @@ enum SporecallerZanchaSpells
 // 131383
 struct boss_sporecaller_zancha : public BossAI
 {
-    boss_sporecaller_zancha(Creature* creature) : BossAI(creature, DATA_SPORECALLER_ZANCHA) { }
+    boss_sporecaller_zancha(Creature* creature) : BossAI(creature, DATA_SPORECALLER_ZANCHA)
+    {
+        if (!instance->IsCreatureGroupWiped(SUMMON_GROUP_BLOODSWORN_DEFILER))
+            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+    }
 
     void Reset() override
     {
+        _Reset();
+
         me->SetPowerType(POWER_ENERGY);
         me->SetPower(POWER_ENERGY, 25);
+
+        me->RemoveAurasDueToSpell(SPELL_BOUNDLESS_ROT_ENTER_COMBAT);
+        me->RemoveAurasDueToSpell(SPELL_BOUNDLESS_ROT);
     }
 
     void EnterCombat(Unit* /*attacker*/) override
@@ -58,9 +67,9 @@ struct boss_sporecaller_zancha : public BossAI
         events.ScheduleEvent(SPELL_UPHEAVAL_TARGET, 13s);
     }
 
-    void OnPowerChanged(Powers power, int32 /*oldValue*/, int32& newValue) override
+    void DoAction(int32 action) override
     {
-        if (power == POWER_ENERGY && newValue == 100)
+        if (action == SPELL_FESTERING_HARVEST_DAMAGE)
         {
             me->RemoveAurasDueToSpell(SPELL_FESTERING_HARVEST);
             events.RescheduleEvent(SPELL_FESTERING_HARVEST_DAMAGE, 1s);
@@ -73,8 +82,8 @@ struct boss_sporecaller_zancha : public BossAI
         {
             case SPELL_FESTERING_HARVEST_DAMAGE:
             {
-                me->SetPower(POWER_ENERGY, 0);
                 me->CastSpell(me, SPELL_FESTERING_HARVEST_DAMAGE, false);
+                me->SetPower(POWER_ENERGY, 0);
 
                 me->GetScheduler().Schedule(6s, [](TaskContext context)
                 {
@@ -164,7 +173,14 @@ class aura_zancha_festering_harvest : public AuraScript
     void HandlePeriodicTick(AuraEffect const* /*aurEff*/)
     {
         if (Unit* caster = GetCaster())
+        {
+            bool had100Energy = caster->GetPower(POWER_ENERGY) == 100;
+
             caster->ModifyPower(POWER_ENERGY, 2);
+
+            if (!had100Energy && caster->IsCreature() && caster->IsAIEnabled && caster->GetPower(POWER_ENERGY) == 100)
+                caster->ToCreature()->AI()->DoAction(SPELL_FESTERING_HARVEST_DAMAGE);
+        }
     }
 
     void Register() override
