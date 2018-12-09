@@ -33,7 +33,7 @@ INSERT INTO spell_script_names VALUES
 (279271, "aura_underrot_open_web_door");
 
 DELETE FROM creature WHERE guid = 280001732;
-UPDATE creature_template SET mechanic_immune_mask = 2147483647 WHERE entry IN (131318, 131817, 131383, 137103, 137458, 133007);
+UPDATE creature_template SET mechanic_immune_mask = 2147467263  WHERE entry IN (131318, 131817, 131383, 137103, 137458, 133007);
 
 UPDATE areatrigger_template SET scriptname = "at_underrot_vile_expulsion" WHERE id = 17928;
 UPDATE areatrigger_template SET scriptname = "at_cragmaw_charge" WHERE id = 17014;
