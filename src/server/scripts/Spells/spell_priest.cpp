@@ -1325,6 +1325,25 @@ class spell_pri_mana_leech : public SpellScriptLoader
         }
 };
 
+// 48045 - Mind_Sear_Base
+class spell_pri_mind_sear_base : public SpellScript
+{
+    PrepareSpellScript(spell_pri_mind_sear_base);
+
+    SpellCastResult CheckCast()
+    {
+        if (Unit* explTarget = GetExplTargetUnit())
+            if (explTarget == GetCaster())
+                return SPELL_FAILED_BAD_TARGETS;
+        return SPELL_CAST_OK;
+    }
+
+    void Register() override
+    {
+        OnCheckCast += SpellCheckCastFn(spell_pri_mind_sear_base::CheckCast);
+    }
+};
+
 // 49821 - Mind Sear
 class spell_pri_mind_sear : public SpellScriptLoader
 {
@@ -1344,11 +1363,7 @@ public:
 
         void HandleInsanity(SpellEffIndex /*effIndex*/)
         {
-            Unit* caster = GetCaster();
-            if (!caster)
-                return;
-
-            caster->CastSpell(caster, SPELL_PRIEST_MIND_SEAR_INSANITY, true);
+            GetCaster()->CastSpell(GetCaster(), SPELL_PRIEST_MIND_SEAR_INSANITY, true);
         }
 
         void Register() override
@@ -3131,6 +3146,7 @@ void AddSC_priest_spell_scripts()
     RegisterAuraScript(spell_pri_penance_triggered);
     RegisterSpellScript(spell_pri_penance_heal_damage);
     RegisterSpellScript(spell_pri_purge_the_wicked_selector);
+    RegisterSpellScript(spell_pri_mind_sear_base);
     new spell_pri_phantasm();
     new spell_pri_power_word_solace();
     new spell_pri_prayer_of_mending_divine_insight();

@@ -18,7 +18,17 @@ DELETE FROM `spell_script_names` WHERE `ScriptName`='spell_pri_mind_blast';
 INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES 
 (8092, 'spell_pri_mind_blast');
 
--- 124430 - Shadowy Insight
+-- 162452 - Shadowy Insight
 DELETE FROM `spell_script_names` WHERE `ScriptName` = 'spell_pri_shadowy_insight';
 INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES 
-(124430, 'spell_pri_shadowy_insight');
+(162452, 'spell_pri_shadowy_insight');
+
+-- 49821 - Shadowy Insight
+DELETE FROM `spell_script_names` WHERE `ScriptName` = 'spell_pri_mind_sear';
+INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES 
+(49821, 'spell_pri_mind_sear');
+
+-- 48045 - Mind_Sear_Base
+DELETE FROM `spell_script_names` WHERE `ScriptName` = 'spell_pri_mind_sear_base';
+INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES 
+(48045, 'spell_pri_mind_sear_base');
