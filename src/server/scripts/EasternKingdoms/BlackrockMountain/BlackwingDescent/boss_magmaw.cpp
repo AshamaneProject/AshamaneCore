@@ -277,8 +277,9 @@ class boss_magmaw : public CreatureScript
                     }
                     else if(pincer)
                     {
-                        if(Unit * passenger = pincer->GetVehicleKit()->GetPassenger(0))
-                            passenger->ExitVehicle(&ejectPos);
+                        if (Vehicle* pincerVehicle = pincer->GetVehicleKit())
+                            if (Unit* passenger = pincerVehicle->GetPassenger(0))
+                                passenger->ExitVehicle(&ejectPos);
                         pincer->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
                     }
                 }
