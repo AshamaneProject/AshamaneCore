@@ -712,6 +712,55 @@ enum FactionMasks
 #define MAX_ITEM_PROTO_SOCKETS 3
 #define MAX_ITEM_PROTO_STATS  10
 
+// LockType.dbc (8.0.1)
+enum LockType
+{
+    LOCKTYPE_LOCKPICKING           = 1,
+    LOCKTYPE_HERBALISM             = 2,
+    LOCKTYPE_MINING                = 3,
+    LOCKTYPE_DISARM_TRAP           = 4,
+    LOCKTYPE_OPEN                  = 5,
+    LOCKTYPE_TREASURE              = 6,
+    LOCKTYPE_CALCIFIED_ELVEN_GEMS  = 7,
+    LOCKTYPE_CLOSE                 = 8,
+    LOCKTYPE_ARM_TRAP              = 9,
+    LOCKTYPE_QUICK_OPEN            = 10,
+    LOCKTYPE_QUICK_CLOSE           = 11,
+    LOCKTYPE_OPEN_TINKERING        = 12,
+    LOCKTYPE_OPEN_KNEELING         = 13,
+    LOCKTYPE_OPEN_ATTACKING        = 14,
+    LOCKTYPE_GAHZRIDIAN            = 15,
+    LOCKTYPE_BLASTING              = 16,
+    LOCKTYPE_PVP_OPEN              = 17,
+    LOCKTYPE_PVP_CLOSE             = 18,
+    LOCKTYPE_FISHING               = 19,
+    LOCKTYPE_INSCRIPTION           = 20,
+    LOCKTYPE_OPEN_FROM_VEHICLE     = 21,
+    LOCKTYPE_ARCHAEOLOGY           = 22,
+    LOCKTYPE_PVP_OPEN_FAST         = 23,
+    LOCKTYPE_LUMBER_MILL           = 28,
+    LOCKTYPE_SKINNING              = 29,
+    LOCKTYPE_ANCIENT_MANA          = 30,
+    LOCKTYPE_WARBOARD              = 31,
+    LOCKTYPE_CLASSIC_HERBALISM     = 32,
+    LOCKTYPE_OUTLAND_HERBALISM     = 33,
+    LOCKTYPE_NORTHREND_HERBALISM   = 34,
+    LOCKTYPE_CATACLYSM_HERBALISM   = 35,
+    LOCKTYPE_PANDARIA_HERBALISM    = 36,
+    LOCKTYPE_DRAENOR_HERBALISM     = 37,
+    LOCKTYPE_LEGION_HERBALISM      = 38,
+    LOCKTYPE_KUL_TIRAN_HERBALISM   = 39,
+    LOCKTYPE_CLASSIC_MINING        = 40,
+    LOCKTYPE_OUTLAND_MINING        = 41,
+    LOCKTYPE_NORTHREND_MINING      = 42,
+    LOCKTYPE_CATACLYSM_MINING      = 43,
+    LOCKTYPE_PANDARIA_MINING       = 44,
+    LOCKTYPE_DRAENOR_MINING        = 45,
+    LOCKTYPE_LEGION_MINING         = 46,
+    LOCKTYPE_KUL_TIRAN_MINING      = 47,
+    LOCKTYPE_SKINNING_2            = 48
+};
+
 enum MapTypes                                               // Lua_IsInInstance
 {
     MAP_COMMON          = 0,                                // none
