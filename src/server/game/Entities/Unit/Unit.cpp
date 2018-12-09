@@ -714,7 +714,7 @@ bool Unit::HasBreakableByDamageCrowdControlAura(Unit* excludeCasterChannel) cons
             || HasBreakableByDamageAuraType(SPELL_AURA_TRANSFORM, excludeAura));
 }
 
-void Unit::DealDamageMods(Unit const* victim, uint32 &damage, uint32* absorb) const
+void Unit::DealDamageMods(Unit const* victim, uint32& damage, uint32* absorb, DamageEffectType damagetype) const
 {
     if (!victim || !victim->IsAlive() || victim->HasUnitState(UNIT_STATE_IN_FLIGHT) || (victim->GetTypeId() == TYPEID_UNIT && victim->ToCreature()->IsEvadingAttacks()))
     {
@@ -725,6 +725,14 @@ void Unit::DealDamageMods(Unit const* victim, uint32 &damage, uint32* absorb) co
     }
 
     damage *= GetDamageMultiplierForTarget(victim);
+
+    if (damagetype == DIRECT_DAMAGE)
+    {
+        Difficulty difficulty = GetMap()->GetDifficultyID();
+        if (difficulty != DIFFICULTY_NONE)
+            if (InstanceDifficultyMultiplier const* multiplier = sObjectMgr->GetInstanceDifficultyMultiplier(GetMapId(), difficulty))
+                damage *= multiplier->damageMultiplier;
+    }
 
     // Damage increase with expansion/level difference, except in DK start zone
     if (sWorld->getBoolConfig(CONFIG_LEGACY_BUFF_ENABLED))
@@ -811,7 +819,7 @@ uint32 Unit::DealDamage(Unit* victim, uint32 damage, CleanDamage const* cleanDam
             uint32 share = CalculatePct(damage, (*i)->GetAmount());
 
             /// @todo check packets if damage is done by victim, or by attacker of victim
-            DealDamageMods(shareDamageTarget, share, NULL);
+            DealDamageMods(shareDamageTarget, share, NULL, NODAMAGE);
             DealDamage(shareDamageTarget, share, NULL, NODAMAGE, spell->GetSchoolMask(), spell, false);
         }
     }
@@ -1592,7 +1600,7 @@ void Unit::DealMeleeDamage(CalcDamageInfo* damageInfo, bool durabilityLoss)
             DamageInfo damageInfo(this, victim, damage, spellInfo, spellInfo->GetSchoolMask(), SPELL_DIRECT_DAMAGE, BASE_ATTACK);
             victim->CalcAbsorbResist(damageInfo);
             damage = damageInfo.GetDamage();
-            victim->DealDamageMods(this, damage, nullptr);
+            victim->DealDamageMods(this, damage, nullptr, SPELL_DIRECT_DAMAGE);
 
             WorldPackets::CombatLog::SpellDamageShield damageShield;
             damageShield.Attacker = victim->GetGUID();
@@ -1953,7 +1961,7 @@ void Unit::CalcAbsorbResist(DamageInfo& damageInfo)
             }
 
             uint32 split_absorb = 0;
-            DealDamageMods(caster, splitDamage, &split_absorb);
+            DealDamageMods(caster, splitDamage, &split_absorb, DIRECT_DAMAGE);
 
             SpellNonMeleeDamage log(this, caster, (*itr)->GetSpellInfo()->Id, (*itr)->GetBase()->GetSpellXSpellVisualId(), damageInfo.GetSchoolMask(), (*itr)->GetBase()->GetCastGUID());
             CleanDamage cleanDamage = CleanDamage(splitDamage, 0, BASE_ATTACK, MELEE_HIT_NORMAL);
@@ -2056,7 +2064,7 @@ void Unit::AttackerStateUpdate(Unit* victim, WeaponAttackType attType, bool extr
         CalcDamageInfo damageInfo;
         CalculateMeleeDamage(victim, 0, &damageInfo, attType);
         // Send log damage message to client
-        DealDamageMods(victim, damageInfo.damage, &damageInfo.absorb);
+        DealDamageMods(victim, damageInfo.damage, &damageInfo.absorb, DIRECT_DAMAGE);
         SendAttackStateUpdate(&damageInfo);
 
         DealMeleeDamage(&damageInfo, true);

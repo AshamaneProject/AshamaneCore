@@ -11038,3 +11038,39 @@ uint32 ObjectMgr::GetItemBonusLevel(uint32 ItemID, uint32 ownerLevel, uint8& qua
 
     return std::min(std::max(itemLevel, uint32(MIN_ITEM_LEVEL)), uint32(MAX_ITEM_LEVEL));
 }
+
+void ObjectMgr::LoadInstanceDifficultyMultiplier()
+{
+    uint32 oldMSTime = getMSTime();
+
+    // need for reload case
+    _instanceDifficultyMultipliers.clear();
+
+    std::size_t count = 0;
+
+    //                                               0      1             2                 3
+    QueryResult result = WorldDatabase.Query("SELECT mapId, difficultyId, healthMultiplier, damageMultiplier FROM instance_difficulty_multiplier");
+
+    if (!result)
+    {
+        TC_LOG_INFO("server.loading", ">> Loaded 0 instance difficulty multiplier. DB table `instance_difficulty_multiplier` is empty.");
+        return;
+    }
+
+    do
+    {
+        Field* fields = result->Fetch();
+
+        uint32 mapId            = fields[0].GetUInt32();
+        uint32 difficultyId     = fields[1].GetUInt32();
+
+        auto& multipliers = _instanceDifficultyMultipliers[std::pair<uint32, uint32>(mapId, difficultyId)];
+        multipliers.mapId            = mapId;
+        multipliers.difficultyId     = difficultyId;
+        multipliers.healthMultiplier = fields[2].GetFloat();
+        multipliers.damageMultiplier = fields[3].GetFloat();
+
+    } while (result->NextRow());
+
+    TC_LOG_INFO("server.loading", ">> Loaded " SZFMTD " Player Choice Response locale strings in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
+}

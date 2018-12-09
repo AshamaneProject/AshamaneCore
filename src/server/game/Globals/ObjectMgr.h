@@ -486,6 +486,14 @@ struct ScriptParam
     std::string stringValue = "";
 };
 
+struct InstanceDifficultyMultiplier
+{
+    uint32 mapId;
+    uint32 difficultyId;
+    float healthMultiplier;
+    float damageMultiplier;
+};
+
 typedef std::map<ObjectGuid, ObjectGuid> LinkedRespawnContainer;
 typedef std::unordered_map<uint32, CreatureTemplate> CreatureTemplateContainer;
 typedef std::unordered_map<uint32, CreatureAddon> CreatureTemplateAddonContainer;
@@ -511,6 +519,7 @@ typedef std::unordered_map<uint32, QuestObjectivesLocale> QuestObjectivesLocaleC
 typedef std::unordered_map<uint32, QuestOfferRewardLocale> QuestOfferRewardLocaleContainer;
 typedef std::unordered_map<uint32, QuestRequestItemsLocale> QuestRequestItemsLocaleContainer;
 typedef std::unordered_map<uint32, PageTextLocale> PageTextLocaleContainer;
+typedef std::unordered_map<std::pair<uint32, uint32>, InstanceDifficultyMultiplier> InstanceDifficultyMultiplierContainer;
 
 typedef std::unordered_map<uint8 /*index*/, ScriptParam> ScriptParams;
 typedef std::unordered_map<ObjectGuid::LowType, ScriptParams> ScriptParamContainer;
@@ -1298,6 +1307,8 @@ class TC_GAME_API ObjectMgr
         void LoadPlayerChoices();
         void LoadPlayerChoicesLocale();
 
+        void LoadInstanceDifficultyMultiplier();
+
         std::set<uint32> GetItemBonusTree(uint32 ItemID, uint32 itemBonusTreeMod, uint32 ownerLevel, int32 levelBonus, int32 needLevel);
         std::set<uint32> GetItemBonusForLevel(uint32 itemID, uint32 itemBonusTreeMod, int32 needLevel);
         uint32 GetItemBonusLevel(uint32 ItemID, uint32 ownerLevel, uint8& quality, std::set<uint32>& bonusListIDs);
@@ -1467,6 +1478,12 @@ class TC_GAME_API ObjectMgr
         }
         GameObjectData& NewGOData(ObjectGuid::LowType guid) { return _gameObjectDataStore[guid]; }
         void DeleteGOData(ObjectGuid::LowType guid);
+        InstanceDifficultyMultiplier const* GetInstanceDifficultyMultiplier(uint32 mapId, uint32 difficultyId) const
+        {
+            auto itr = _instanceDifficultyMultipliers.find(std::pair<uint32, uint32>(mapId, difficultyId));
+            if (itr == _instanceDifficultyMultipliers.end()) return nullptr;
+            return &itr->second;
+        }
 
         TrinityString const* GetTrinityString(uint32 entry) const
         {
@@ -1796,6 +1813,8 @@ class TC_GAME_API ObjectMgr
         PointOfInterestLocaleContainer _pointOfInterestLocaleStore;
 
         std::unordered_map<int32, PlayerChoiceLocale> _playerChoiceLocales;
+
+        InstanceDifficultyMultiplierContainer _instanceDifficultyMultipliers;
 
         TrinityStringContainer _trinityStringStore;
 

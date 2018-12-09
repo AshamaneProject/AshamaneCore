@@ -2620,7 +2620,7 @@ void Spell::DoAllEffectOnTarget(TargetInfo* target)
         {
             // Add bonuses and fill damageInfo struct
             caster->CalculateSpellDamageTaken(&damageInfo, m_damage, m_spellInfo, m_attackType, target->crit);
-            caster->DealDamageMods(damageInfo.target, damageInfo.damage, &damageInfo.absorb);
+            caster->DealDamageMods(damageInfo.target, damageInfo.damage, &damageInfo.absorb, SPELL_DIRECT_DAMAGE);
 
             hitMask |= createProcHitMask(&damageInfo, missInfo);
             procVictim |= PROC_FLAG_TAKEN_DAMAGE;

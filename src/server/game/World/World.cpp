@@ -1885,6 +1885,9 @@ void World::SetInitialWorldSettings()
     TC_LOG_INFO("server.loading", "Loading Player Choices Locales...");
     sObjectMgr->LoadPlayerChoicesLocale();
 
+    TC_LOG_INFO("server.loading", "Loading Instance difficulty multipliers...");
+    sObjectMgr->LoadInstanceDifficultyMultiplier();
+
     CharacterDatabaseCleaner::CleanDatabase();
 
     TC_LOG_INFO("server.loading", "Loading the max pet number...");

@@ -100,6 +100,11 @@ void InstanceScript::OnCreatureCreate(Creature* creature)
     AddObject(creature, true);
     AddMinion(creature, true);
 
+    Difficulty difficulty = instance->GetDifficultyID();
+    if (difficulty != DIFFICULTY_NONE)
+        if (InstanceDifficultyMultiplier const* multiplier = sObjectMgr->GetInstanceDifficultyMultiplier(instance->GetId(), difficulty))
+            creature->SetBaseHealth(creature->GetMaxHealth() * multiplier->healthMultiplier);
+
     if (IsChallengeModeStarted())
         if (!creature->IsPet())
             CastChallengeCreatureSpell(creature);
