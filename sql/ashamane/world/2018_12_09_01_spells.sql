@@ -13,3 +13,12 @@ INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES
 DELETE FROM `spell_script_names` WHERE `ScriptName`='spell_pri_shadowy_apparitions';
 INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES 
 (78203, 'spell_pri_shadowy_apparitions');
+
+DELETE FROM `spell_script_names` WHERE `ScriptName`='spell_pri_mind_blast';
+INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES 
+(8092, 'spell_pri_mind_blast');
+
+-- 124430 - Shadowy Insight
+DELETE FROM `spell_script_names` WHERE `ScriptName` = 'spell_pri_shadowy_insight';
+INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES 
+(124430, 'spell_pri_shadowy_insight');

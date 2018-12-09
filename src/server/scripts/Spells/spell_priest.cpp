@@ -59,6 +59,7 @@ enum PriestSpells
     SPELL_PRIEST_DEVOURING_PLAGUE_HEAL              = 127626,
     SPELL_PRIEST_DARK_ARCHANGEL_BUFF                = 197874,
     SPELL_PRIEST_DISPEL_MAGIC_FRIENDLY              = 97690,
+    SPELL_PRIEST_SHADOWY_INSIGHTS                   = 124430,
     SPELL_PRIEST_DISPEL_MAGIC_HOSTILE               = 97691,
     SPELL_PRIEST_DISPERSION_SPRINT                  = 129960,
     SPELL_PRIEST_DIVINE_AEGIS                       = 47753,
@@ -411,6 +412,47 @@ class spell_pri_mind_bomb : public AuraScript
     void Register() override
     {
         AfterEffectRemove += AuraEffectRemoveFn(spell_pri_mind_bomb::HandleEffectRemove, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+    }
+};
+
+// 162452 - Shadowy Insight
+class spell_pri_shadowy_insight : public AuraScript
+{
+    PrepareAuraScript(spell_pri_shadowy_insight);
+
+    bool Validate(SpellInfo const* /*spellInfo*/) override
+    {
+        return ValidateSpellInfo(
+            {
+                SPELL_PRIEST_MIND_BLAST
+            });
+    }
+
+    void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
+    {
+        GetTarget()->GetSpellHistory()->ResetCharges(sSpellMgr->AssertSpellInfo(SPELL_PRIEST_MIND_BLAST)->ChargeCategoryId);
+    }
+
+    void Register() override
+    {
+        OnEffectProc += AuraEffectProcFn(spell_pri_shadowy_insight::HandleProc, EFFECT_0, SPELL_AURA_PROC_TRIGGER_SPELL);
+    }
+};
+
+// Mind Blast - 8092
+class spell_pri_mind_blast : public SpellScript
+{
+    PrepareSpellScript(spell_pri_mind_blast);
+
+    void HandleOnHit(SpellEffIndex /*effIndex*/)
+    {
+        if (GetCaster()->HasAura(SPELL_PRIEST_SHADOWY_INSIGHTS))
+            GetCaster()->RemoveAurasDueToSpell(SPELL_PRIEST_SHADOWY_INSIGHTS);
+    }
+
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_pri_mind_blast::HandleOnHit, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
     }
 };
 
@@ -3124,6 +3166,8 @@ void AddSC_priest_spell_scripts()
     RegisterAuraScript(spell_pri_mind_bomb);
     RegisterAuraScript(aura_pri_void_torrent);
     RegisterSpellScript(spell_pri_dark_archangel);
+    RegisterSpellScript(spell_pri_mind_blast);
+    RegisterAuraScript(spell_pri_shadowy_insight);
 
     RegisterSpellAndAuraScriptPair(spell_pri_power_word_shield, spell_pri_power_word_shield_AuraScript);
 }
