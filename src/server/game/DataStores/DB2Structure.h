@@ -2152,7 +2152,7 @@ struct LockEntry
     bool HasMining() const
     {
         for (uint8 type : Type)
-            if (type == LOCKTYPE_MINING_1 || (type >= LOCKTYPE_MINING_2 && type <= LOCKTYPE_MINING_9))
+            if (type == LOCKTYPE_MINING || (type >= LOCKTYPE_CLASSIC_MINING && type <= LOCKTYPE_KUL_TIRAN_MINING))
                 return true;
 
         return false;
@@ -2161,7 +2161,7 @@ struct LockEntry
     bool HasHerbalism() const
     {
         for (uint8 type : Type)
-            if (type == LOCKTYPE_HERBALISM_1 || (type >= LOCKTYPE_HERBALISM_2 && type <= LOCKTYPE_HERBALISM_9))
+            if (type == LOCKTYPE_HERBALISM || (type >= LOCKTYPE_CLASSIC_HERBALISM && type <= LOCKTYPE_KUL_TIRAN_HERBALISM))
                 return true;
 
         return false;
