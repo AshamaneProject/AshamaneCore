@@ -43,6 +43,7 @@ enum CreatureIds
 
     NPC_BLOODSWORN_DEFILER          = 144306,
     NPC_SPORECALLER_ZANCHA          = 131383,
+    NPC_VOLATILE_POD                = 139127,
 
     NPC_UNBOUND_ABOMINATION         = 133007,
     NPC_TITAN_KEEPER_HEZREL         = 134419,

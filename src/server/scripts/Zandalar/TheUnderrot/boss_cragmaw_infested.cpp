@@ -29,6 +29,9 @@ enum CragmawInfestedSpells
     SPELL_CHARGE                        = 260292,
     SPELL_CHARGE_DAMAGE                 = 260312,
     SPELL_INDIGESTION                   = 260793,
+
+    SPELL_TANTRUM_ENERGY_VISUAL         = 271771,
+    SPELL_TANTRUM_ENERGY_PERIODIC       = 271775,
     SPELL_TANTRUM                       = 260333,
 
     SPELL_LARVA_SUMMON_VISUAL           = 260411,
@@ -50,13 +53,27 @@ struct boss_cragmaw_infested : public BossAI
 
     void Reset() override
     {
+        me->CastSpell(me, SPELL_TANTRUM_ENERGY_VISUAL, true);
         me->CastSpell(me, SPELL_INFESTED, true);
+
+        me->RemoveAurasDueToSpell(SPELL_TANTRUM_ENERGY_PERIODIC);
     }
 
     void EnterCombat(Unit* /*unit*/) override
     {
+        me->SetPowerType(POWER_ENERGY);
+
+        if (IsHeroic())
+            me->CastSpell(me, SPELL_TANTRUM_ENERGY_PERIODIC, true);
+
         events.ScheduleEvent(SPELL_INDIGESTION, 8s);
         events.ScheduleEvent(SPELL_CHARGE, 20s);
+    }
+
+    void DoAction(int32 action) override
+    {
+        if (action == SPELL_TANTRUM)
+            events.RescheduleEvent(SPELL_TANTRUM, 1s);
     }
 
     void ExecuteEvent(uint32 eventId) override
@@ -74,6 +91,9 @@ struct boss_cragmaw_infested : public BossAI
                     me->CastSpell(target, SPELL_CHARGE, false);
 
                 events.Repeat(20s);
+                break;
+            case SPELL_TANTRUM:
+                me->CastSpell(nullptr, SPELL_TANTRUM, false);
                 break;
         }
     }
@@ -151,6 +171,30 @@ class aura_cragmaw_larva_transformation : public AuraScript
     }
 };
 
+// 271775
+class aura_cragmaw_tantrum_energy : public AuraScript
+{
+    PrepareAuraScript(aura_cragmaw_tantrum_energy);
+
+    void HandlePeriodicTick(AuraEffect const* /*aurEff*/)
+    {
+        if (Unit* caster = GetCaster())
+        {
+            bool had100Energy = caster->GetPower(POWER_ENERGY) == 100;
+
+            caster->ModifyPower(POWER_ENERGY, 2);
+
+            if (!had100Energy && caster->IsCreature() && caster->IsAIEnabled && caster->GetPower(POWER_ENERGY) == 100)
+                caster->ToCreature()->AI()->DoAction(SPELL_TANTRUM);
+        }
+    }
+
+    void Register() override
+    {
+        OnEffectPeriodic += AuraEffectPeriodicFn(aura_cragmaw_tantrum_energy::HandlePeriodicTick, EFFECT_0, SPELL_AURA_PERIODIC_DUMMY);
+    }
+};
+
 // Charge - 260292
 // at 17014
 struct at_cragmaw_charge : AreaTriggerAI
@@ -190,6 +234,7 @@ void AddSC_boss_cragmaw_infested()
     RegisterCreatureAI(npc_cragmaw_blood_tick);
 
     RegisterAuraScript(aura_cragmaw_larva_transformation);
+    RegisterAuraScript(aura_cragmaw_tantrum_energy);
 
     RegisterAreaTriggerAI(at_cragmaw_charge);
     RegisterAreaTriggerAI(at_cragmaw_larva);
