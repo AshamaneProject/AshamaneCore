@@ -942,4 +942,4 @@ INSERT INTO creature_text (CreatureID, GroupID, ID, Text, Type, Language, Probab
 
 DELETE FROM `creature` WHERE `id` = 137143; -- Sunken Tentacle
 UPDATE creature SET spawntimesecs = 86400 WHERE map = 1864;
-UPDATE creature_template SET mechanic_immune_mask = 2147483647 WHERE entry IN (134056, 134063, 139737, 134067);
+UPDATE creature_template SET mechanic_immune_mask = 2147467263 WHERE entry IN (134056, 134063, 139737, 134067);

@@ -849,7 +849,7 @@ INSERT INTO `creature_template_journal` VALUES
 (122963, 2083); -- Rezan
 
 UPDATE creature SET spawntimesecs = 86400 WHERE map = 1763;
-UPDATE creature_template SET mechanic_immune_mask = 2147483647 WHERE entry IN (122968, 122965, 122967, 122963);
+UPDATE creature_template SET mechanic_immune_mask = 2147467263 WHERE entry IN (122968, 122965, 122967, 122963);
 
 DELETE FROM conditions WHERE SourceTypeOrReferenceId = 13 AND SourceEntry IN (250229);
 INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `ConditionTypeOrReference`, `ConditionValue1`, `ConditionValue2`) VALUES

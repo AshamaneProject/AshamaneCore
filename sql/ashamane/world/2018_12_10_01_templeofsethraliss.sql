@@ -948,7 +948,7 @@ INSERT INTO creature_text (CreatureID, GroupID, ID, Text, Type, Language, Probab
 
 UPDATE `creature_template` SET `InhabitType` = 4, `flags_extra`=128 WHERE `entry` IN (139778, 139733);
 UPDATE creature SET spawntimesecs = 86400 WHERE map = 1877;
-UPDATE creature_template SET mechanic_immune_mask = 2147483647 WHERE entry IN (133379, 133944, 133384, 133389, 133392);
+UPDATE creature_template SET mechanic_immune_mask = 2147467263 WHERE entry IN (133379, 133944, 133384, 133389, 133392);
 
 DELETE FROM conditions WHERE SourceTypeOrReferenceId = 13 AND SourceEntry IN (274385);
 INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionValue1`, `ConditionValue2`) VALUES

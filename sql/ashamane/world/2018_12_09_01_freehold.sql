@@ -970,4 +970,4 @@ INSERT INTO `creature_template_journal` VALUES
 (126832, 2102); -- Skycap'n Kragg
 
 UPDATE creature SET spawntimesecs = 86400 WHERE map = 1754;
-UPDATE creature_template SET mechanic_immune_mask = 2147483647 WHERE entry IN (126847, 126983, 126832);
+UPDATE creature_template SET mechanic_immune_mask = 2147467263 WHERE entry IN (126847, 126983, 126832);
