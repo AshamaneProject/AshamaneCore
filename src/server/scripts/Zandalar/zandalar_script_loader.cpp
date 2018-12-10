@@ -26,6 +26,13 @@ void AddSC_boss_unbound_abomination();
 void AddSC_the_underrot();
 void AddSC_instance_shrine_of_the_storm();
 
+void AddSC_boss_adderis_and_aspix();
+void AddSC_boss_avatar_of_sethraliss();
+void AddSC_boss_galvazzt();
+void AddSC_boss_merektha();
+void AddSC_temple_of_sethraliss();
+void AddSC_instance_temple_of_sethraliss();
+
 void AddZandalarScripts()
 {
     AddSC_zone_nazmir();
@@ -38,4 +45,11 @@ void AddZandalarScripts()
     AddSC_boss_unbound_abomination();
     AddSC_the_underrot();
     AddSC_instance_shrine_of_the_storm();
+
+    AddSC_boss_adderis_and_aspix();
+    AddSC_boss_avatar_of_sethraliss();
+    AddSC_boss_galvazzt();
+    AddSC_boss_merektha();
+    AddSC_temple_of_sethraliss();
+    AddSC_instance_temple_of_sethraliss();
 }
