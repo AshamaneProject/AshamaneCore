@@ -16,20 +16,9 @@
  */
 
 #include "ScriptMgr.h"
-#include "Player.h"
-#include "InstanceScript.h"
-#include "temple_of_sethraliss.h"
+#include "freehold.h"
 
-struct instance_temple_of_sethraliss : public InstanceScript
+void AddSC_boss_ring_of_booty()
 {
-    instance_temple_of_sethraliss(InstanceMap* map) : InstanceScript(map)
-    {
-        SetHeaders(DataHeader);
-        SetBossNumber(EncounterCount);
-    }
-};
 
-void AddSC_instance_temple_of_sethraliss()
-{
-    RegisterInstanceScript(instance_temple_of_sethraliss, 1877);
 }

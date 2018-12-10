@@ -24,7 +24,7 @@ void AddSC_boss_cragmaw_infested();
 void AddSC_boss_sporecaller_zancha();
 void AddSC_boss_unbound_abomination();
 void AddSC_the_underrot();
-void AddSC_instance_shrine_of_the_storm();
+void AddSC_instance_underrot();
 
 void AddSC_boss_adderis_and_aspix();
 void AddSC_boss_avatar_of_sethraliss();
@@ -32,6 +32,13 @@ void AddSC_boss_galvazzt();
 void AddSC_boss_merektha();
 void AddSC_temple_of_sethraliss();
 void AddSC_instance_temple_of_sethraliss();
+
+void AddSC_boss_priestess_alunza();
+void AddSC_boss_rezan();
+void AddSC_boss_volkaal();
+void AddSC_boss_yazma();
+void AddSC_atal_dazar();
+void AddSC_instance_atal_dazar();
 
 void AddZandalarScripts()
 {
@@ -44,7 +51,7 @@ void AddZandalarScripts()
     AddSC_boss_sporecaller_zancha();
     AddSC_boss_unbound_abomination();
     AddSC_the_underrot();
-    AddSC_instance_shrine_of_the_storm();
+    AddSC_instance_underrot();
 
     AddSC_boss_adderis_and_aspix();
     AddSC_boss_avatar_of_sethraliss();
@@ -52,4 +59,11 @@ void AddZandalarScripts()
     AddSC_boss_merektha();
     AddSC_temple_of_sethraliss();
     AddSC_instance_temple_of_sethraliss();
+
+    AddSC_boss_priestess_alunza();
+    AddSC_boss_rezan();
+    AddSC_boss_volkaal();
+    AddSC_boss_yazma();
+    AddSC_atal_dazar();
+    AddSC_instance_atal_dazar();
 }

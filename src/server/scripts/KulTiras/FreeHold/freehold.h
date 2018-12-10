@@ -15,21 +15,30 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ScriptMgr.h"
-#include "Player.h"
-#include "InstanceScript.h"
-#include "temple_of_sethraliss.h"
+#ifndef FREEHOLD_H
+#define FREEHOLD_H
 
-struct instance_temple_of_sethraliss : public InstanceScript
+#define DataHeader "FH"
+
+uint32 const EncounterCount = 4;
+
+enum EncounterData
 {
-    instance_temple_of_sethraliss(InstanceMap* map) : InstanceScript(map)
-    {
-        SetHeaders(DataHeader);
-        SetBossNumber(EncounterCount);
-    }
+    DATA_SKYCAPN_KRAGG          = 0,
+    DATA_COUNCIL_O_CAPTAINS     = 1,
+    DATA_RING_OF_BOOTY          = 2,
+    DATA_HARLAN_SWEETE          = 3,
 };
 
-void AddSC_instance_temple_of_sethraliss()
+enum CreatureIds
 {
-    RegisterInstanceScript(instance_temple_of_sethraliss, 1877);
-}
+    NPC_SKYCAPN_KRAGG           = 126832,
+    NPC_CAPTAIN_RAOUL           = 126847,
+    NPC_CAPTAIN_EUDORA          = 126848,
+    NPC_CAPTAIN_JOLLY           = 126845,
+    NPC_LUDWIG_VON_TOROLLAN     = 129699,
+    NPC_TROTHAK                 = 129696,
+    NPC_HARLAN_SWEETE           = 126983,
+};
+
+#endif // FREEHOLD_H

@@ -15,21 +15,27 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ScriptMgr.h"
-#include "Player.h"
-#include "InstanceScript.h"
-#include "temple_of_sethraliss.h"
+#ifndef ATAL_DAZAR_H
+#define ATAL_DAZAR_H
 
-struct instance_temple_of_sethraliss : public InstanceScript
+#define DataHeader "AD"
+
+uint32 const EncounterCount = 4;
+
+enum EncounterData
 {
-    instance_temple_of_sethraliss(InstanceMap* map) : InstanceScript(map)
-    {
-        SetHeaders(DataHeader);
-        SetBossNumber(EncounterCount);
-    }
+    DATA_PRIESTESS_ALUNZA       = 0,
+    DATA_VOLKAAL                = 1,
+    DATA_REZAN                  = 2,
+    DATA_YAZMA                  = 3,
 };
 
-void AddSC_instance_temple_of_sethraliss()
+enum CreatureIds
 {
-    RegisterInstanceScript(instance_temple_of_sethraliss, 1877);
-}
+    NPC_PRIESTESS_ALUNZA        = 122967,
+    NPC_VOLKAAL                 = 122965,
+    NPC_REZAN                   = 122963,
+    NPC_YAZMA                   = 122968,
+};
+
+#endif // ATAL_DAZAR_H

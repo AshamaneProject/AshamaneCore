@@ -18,18 +18,18 @@
 #include "ScriptMgr.h"
 #include "Player.h"
 #include "InstanceScript.h"
-#include "temple_of_sethraliss.h"
+#include "freehold.h"
 
-struct instance_temple_of_sethraliss : public InstanceScript
+struct instance_freehold : public InstanceScript
 {
-    instance_temple_of_sethraliss(InstanceMap* map) : InstanceScript(map)
+    instance_freehold(InstanceMap* map) : InstanceScript(map)
     {
         SetHeaders(DataHeader);
         SetBossNumber(EncounterCount);
     }
 };
 
-void AddSC_instance_temple_of_sethraliss()
+void AddSC_instance_freehold()
 {
-    RegisterInstanceScript(instance_temple_of_sethraliss, 1877);
+    RegisterInstanceScript(instance_freehold, 1754);
 }

@@ -18,18 +18,18 @@
 #include "ScriptMgr.h"
 #include "Player.h"
 #include "InstanceScript.h"
-#include "temple_of_sethraliss.h"
+#include "atal_dazar.h"
 
-struct instance_temple_of_sethraliss : public InstanceScript
+struct instance_atal_dazar : public InstanceScript
 {
-    instance_temple_of_sethraliss(InstanceMap* map) : InstanceScript(map)
+    instance_atal_dazar(InstanceMap* map) : InstanceScript(map)
     {
         SetHeaders(DataHeader);
         SetBossNumber(EncounterCount);
     }
 };
 
-void AddSC_instance_temple_of_sethraliss()
+void AddSC_instance_atal_dazar()
 {
-    RegisterInstanceScript(instance_temple_of_sethraliss, 1877);
+    RegisterInstanceScript(instance_atal_dazar, 1763);
 }
