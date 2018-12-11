@@ -41,6 +41,14 @@ void AddSC_boss_the_sand_queen();
 void AddSC_tol_dagor();
 void AddSC_instance_tol_dagor();
 
+void AddSC_boss_gorak_tul();
+void AddSC_boss_heartsbane_triad();
+void AddSC_boss_lord_and_lady_waycrest();
+void AddSC_boss_raal_the_gluttonous();
+void AddSC_boss_soulbound_goliath();
+void AddSC_waycrest_manor();
+void AddSC_instance_waycrest_manor();
+
 // The name of this function should match:
 // void Add${NameOfDirectory}Scripts()
 void AddKulTirasScripts()
@@ -69,4 +77,12 @@ void AddKulTirasScripts()
     AddSC_boss_the_sand_queen();
     AddSC_tol_dagor();
     AddSC_instance_tol_dagor();
+
+    AddSC_boss_gorak_tul();
+    AddSC_boss_heartsbane_triad();
+    AddSC_boss_lord_and_lady_waycrest();
+    AddSC_boss_raal_the_gluttonous();
+    AddSC_boss_soulbound_goliath();
+    AddSC_waycrest_manor();
+    AddSC_instance_waycrest_manor();
 }

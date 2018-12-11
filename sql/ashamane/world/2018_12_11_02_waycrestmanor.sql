@@ -1111,7 +1111,7 @@ INSERT INTO `creature_template_journal` VALUES
 (131864, 2129); -- Gorak Tul
 
 UPDATE creature SET spawntimesecs = 86400 WHERE map = 1862;
-UPDATE creature_template SET mechanic_immune_mask = 2147467263 WHERE entry IN (131667, 131863, 122967, 131864, 131527, 131545, 131825, 131824, 131823, 135329);
+UPDATE creature_template SET mechanic_immune_mask = 2147467263 WHERE entry IN (131667, 131863, 131864, 131527, 131545, 131825, 131824, 131823, 135329);
 
 
 
