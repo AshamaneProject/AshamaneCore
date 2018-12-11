@@ -2,7 +2,7 @@ DELETE FROM `instance_template` WHERE `map` = 1763;
 INSERT INTO `instance_template` (`map`, `parent`, `script`, `allowMount`, `insideResurrection`) VALUES (1763, 0, 'instance_atal_dazar', 1, 1);
 
 DELETE FROM `game_tele` WHERE `id` = 1873;
-INSERT INTO `game_tele` (`id`, `position_x`, `position_y`, `position_z`, `orientation`, `map`, `name`) VALUES (1873, -847.769, 2048.39, 726.123, 1.55071, 1763, 'ataldazardungeon');
+INSERT INTO `game_tele` (`id`, `position_x`, `position_y`, `position_z`, `orientation`, `map`, `name`) VALUES (1873, -848.182129, 2073.235596, 725.144592, 1.517881, 1763, 'ataldazardungeon');
 
 DELETE FROM `areatrigger` WHERE `guid` IN (53, 54);
 INSERT INTO `areatrigger` (`guid`, `id`, `map_id`, `spawn_mask`, `position_x`, `position_y`, `position_z`, `ScriptName`) VALUES
@@ -835,7 +835,6 @@ DELETE FROM creature_text WHERE CreatureID = 130912;
 INSERT INTO creature_text (CreatureID, GroupID, ID, Text, Type, Language, Probability, Emote, Duration, Sound, BroadcastTextId, comment) VALUES (130912, 0, 0, 'You will not take my head today!', 14, 0, 100, 7, 0, 97368, 142721, 'Shadowblade Razi');
 
 UPDATE `creature_template` SET `InhabitType` = 4 WHERE `entry` = 122986;
-UPDATE `creature` SET `spawntimesecs` = 86400 WHERE `map` = 1763;
 
 DELETE FROM `scenarios` WHERE `map` = 1763;
 INSERT INTO `scenarios` (`map`, `scenario_A`, `scenario_H`) VALUES
