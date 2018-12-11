@@ -34,6 +34,13 @@ void AddSC_boss_harlan_sweete();
 void AddSC_freehold();
 void AddSC_instance_freehold();
 
+void AddSC_boss_jes_howlis();
+void AddSC_boss_knight_captain_valyri();
+void AddSC_boss_overseer_korgus();
+void AddSC_boss_the_sand_queen();
+void AddSC_tol_dagor();
+void AddSC_instance_tol_dagor();
+
 // The name of this function should match:
 // void Add${NameOfDirectory}Scripts()
 void AddKulTirasScripts()
@@ -55,4 +62,11 @@ void AddKulTirasScripts()
     AddSC_boss_harlan_sweete();
     AddSC_freehold();
     AddSC_instance_freehold();
+
+    AddSC_boss_jes_howlis();
+    AddSC_boss_knight_captain_valyri();
+    AddSC_boss_overseer_korgus();
+    AddSC_boss_the_sand_queen();
+    AddSC_tol_dagor();
+    AddSC_instance_tol_dagor();
 }
