@@ -33,10 +33,6 @@ enum EncounterData
 
 enum CreatureIds
 {
-    NPC_THE_SAND_QUEEN          = 127479,
-    NPC_JES_HOWLIS              = 127484,
-    NPC_KNIGHT_CAPTAIN_VALYRI   = 127490,
-    NPC_gorak_tul = 127503,
     NPC_SOULBOUND_GOLIATH       = 131667,
     NPC_RAAL_THE_GLUTTONOUS     = 131863,
     NPC_GORAK_TUL               = 131864,
