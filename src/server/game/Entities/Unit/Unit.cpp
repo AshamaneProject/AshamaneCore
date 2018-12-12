@@ -7571,11 +7571,13 @@ bool Unit::IsImmunedToSpell(SpellInfo const* spellInfo, Unit* caster) const
     SpellImmuneContainer const& schoolList = m_spellImmune[IMMUNITY_SCHOOL];
     for (auto itr = schoolList.begin(); itr != schoolList.end(); ++itr)
     {
+        if (!(itr->first & spellInfo->GetSchoolMask()))
+            continue;
+
         SpellInfo const* immuneSpellInfo = sSpellMgr->GetSpellInfo(itr->second);
-        if ((itr->first & spellInfo->GetSchoolMask())
-            && !(immuneSpellInfo && immuneSpellInfo->IsPositive() && spellInfo->IsPositive() && (caster && IsFriendlyTo(caster)))
-            && !spellInfo->CanPierceImmuneAura(immuneSpellInfo))
-            return true;
+        if (!(immuneSpellInfo && immuneSpellInfo->IsPositive() && spellInfo->IsPositive() && caster && IsFriendlyTo(caster)))
+            if (!spellInfo->CanPierceImmuneAura(immuneSpellInfo))
+                return true;
     }
 
     return false;
@@ -7926,6 +7928,11 @@ void Unit::Mount(uint32 mount, uint32 VehicleId, uint32 creatureEntry)
                 player->UnsummonPetTemporaryIfAny();
         }
 
+        // if we have charmed npc, stun him also (everywhere)
+        if (Unit* charm = player->GetCharm())
+            if (charm->GetTypeId() == TYPEID_UNIT)
+                charm->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_STUNNED);
+
         player->SendMovementSetCollisionHeight(player->GetCollisionHeight(true));
     }
 
@@ -7968,6 +7975,11 @@ void Unit::Dismount()
         }
         else
             player->ResummonPetTemporaryUnSummonedIfAny();
+
+        // if we have charmed npc, remove stun also
+        if (Unit* charm = player->GetCharm())
+            if (charm->GetTypeId() == TYPEID_UNIT && charm->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_STUNNED) && !charm->HasUnitState(UNIT_STATE_STUNNED))
+                charm->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_STUNNED);
     }
 }
 
@@ -13464,7 +13476,8 @@ bool Unit::UpdatePosition(float x, float y, float z, float orientation, bool tel
         return false;
     }
 
-    bool const turn = (GetOrientation() != orientation);
+    // Check if angular distance changed
+    bool const turn = G3D::fuzzyGt(M_PI - fabs(fabs(GetOrientation() - orientation) - M_PI), 0.0f);
 
     // G3D::fuzzyEq won't help here, in some cases magnitudes differ by a little more than G3D::eps, but should be considered equal
     bool const relocated = (teleport ||
