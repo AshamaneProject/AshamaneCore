@@ -114,7 +114,7 @@ struct instance_the_underrot : public InstanceScript
     }
 };
 
-void AddSC_instance_shrine_of_the_storm()
+void AddSC_instance_underrot()
 {
     RegisterInstanceScript(instance_the_underrot, 1841);
 }
