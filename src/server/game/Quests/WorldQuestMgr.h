@@ -56,7 +56,7 @@ public:
     ~WorldQuestMgr();
 
     static WorldQuestMgr* instance();
-    static const std::vector<uint8> WorldQuestsExpansions = { EXPANSION_LEGION, EXPANSION_BATTLE_FOR_AZEROTH };
+    const std::vector<uint8> WorldQuestsExpansions = { EXPANSION_LEGION, EXPANSION_BATTLE_FOR_AZEROTH };
 
     void LoadWorldQuestTemplates();
     void LoadWorldQuestRewardTemplates();
@@ -71,7 +71,7 @@ public:
 
     void RewardQuestForPlayer(Player* player, uint32 questId);
 
-    WorldQuestTemplate* GetWorldQuestTemplate(uint8 expansion, uint32 questId);
+    WorldQuestTemplate* GetWorldQuestTemplate(uint32 questId);
 
     uint8 GetActiveEmissaryQuestsCount(uint8 expansion);
     uint32 GetActiveQuestsCount(uint8 expansion);

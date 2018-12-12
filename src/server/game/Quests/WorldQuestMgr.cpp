@@ -140,7 +140,7 @@ void WorldQuestMgr::LoadActiveWorldQuests()
             continue;
         }
 
-        WorldQuestTemplate* worldQuestTemplate = GetWorldQuestTemplate(quest->Expansion, questId);
+        WorldQuestTemplate* worldQuestTemplate = GetWorldQuestTemplate(questId);
         if (!worldQuestTemplate)
         {
             TC_LOG_ERROR("server.loading", "World Quest: Quest %u has world quest duration but quest is not a world quest.", questId);
@@ -340,9 +340,16 @@ void WorldQuestMgr::RewardQuestForPlayer(Player* player, uint32 questId)
     }
 }
 
-WorldQuestTemplate* WorldQuestMgr::GetWorldQuestTemplate(uint8 expansion, uint32 questId)
+WorldQuestTemplate* WorldQuestMgr::GetWorldQuestTemplate(uint32 questId)
 {
-    auto expansionTemplates = _worldQuestTemplates.find(expansion);
+    Quest const* quest = sObjectMgr->GetQuestTemplate(questId);
+    if (!quest)
+    {
+        TC_LOG_ERROR("server.loading", "World Quest: Quest %u has world quest duration but quest does not exist.", questId);
+        return nullptr;
+    }
+
+    auto expansionTemplates = _worldQuestTemplates.find(quest->Expansion);
     if (expansionTemplates == _worldQuestTemplates.end())
         return nullptr;
 
