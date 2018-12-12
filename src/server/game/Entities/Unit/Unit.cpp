@@ -14376,6 +14376,15 @@ void Unit::BuildValuesUpdate(uint8 updateType, ByteBuffer* data, Player* target)
 
                 *data << uint32(appendValue);
             }
+            // Gamemasters should be always able to select units - remove not selectable flag
+            else if (index == UNIT_FIELD_FLAGS_2)
+            {
+                uint32 appendValue = m_uint32Values[UNIT_FIELD_FLAGS_2];
+                if (target->IsGameMaster())
+                    appendValue &= ~UNIT_FLAG2_SELECTION_DISABLED;
+
+                *data << uint32(appendValue);
+            }
             // use modelid_a if not gm, _h if gm for CREATURE_FLAG_EXTRA_TRIGGER creatures
             else if (index == UNIT_FIELD_DISPLAYID)
             {
@@ -14401,8 +14410,15 @@ void Unit::BuildValuesUpdate(uint8 updateType, ByteBuffer* data, Player* target)
                                 }
 
                     if (cinfo->flags_extra & CREATURE_FLAG_EXTRA_TRIGGER)
+                    {
                         if (target->IsGameMaster())
                             displayId = cinfo->GetFirstVisibleModel()->CreatureDisplayID;
+                    }
+                    else if (target->IsGameMaster())
+                    {
+                        if (displayId == cinfo->GetFirstInvisibleModel()->CreatureDisplayID)
+                            displayId = cinfo->GetFirstVisibleModel()->CreatureDisplayID; // get default model, only if in gm mode and trigger npc does not have extra flags set, this way its easy to find them ingame
+                    }
                 }
 
                 *data << uint32(displayId);
