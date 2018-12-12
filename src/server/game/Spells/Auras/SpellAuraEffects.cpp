@@ -4995,7 +4995,10 @@ void AuraEffect::HandleTriggerSpellOnPowerPercent(AuraApplication const* aurApp,
 
     Unit* target = aurApp->GetTarget();
 
-    float powerAmountPct = GetPctOf(target->GetPower(Powers(GetMiscValue())), target->GetMaxPower(Powers(GetMiscValue())));
+    uint32 powerAmount = target->GetPower(Powers(GetMiscValue()));
+    uint32 maxPowerAmount = target->GetMaxPower(Powers(GetMiscValue()));
+
+    float powerAmountPct = GetPctOf(powerAmount, std::max(powerAmount, maxPowerAmount));
 
     if ((GetMiscValueB() == POWER_PROC_UPPER && powerAmountPct >= GetAmount()) ||
         (GetMiscValueB() == POWER_PROC_LOWER && powerAmountPct <= GetAmount()))
