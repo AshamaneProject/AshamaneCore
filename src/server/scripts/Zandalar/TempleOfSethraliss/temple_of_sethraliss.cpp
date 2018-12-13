@@ -16,7 +16,7 @@
  */
 
 #include "AreaTrigger.h"
-#include "AreaTriggerAi.h"
+#include "AreaTriggerAI.h"
 #include "ScriptMgr.h"
 #include "temple_of_sethraliss.h"
 
