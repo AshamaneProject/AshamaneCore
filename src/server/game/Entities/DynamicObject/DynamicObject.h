@@ -49,6 +49,7 @@ class TC_GAME_API DynamicObject : public WorldObject, public GridObject<DynamicO
         int32 GetDuration() const;
         void Delay(int32 delaytime);
         void SetAura(Aura* aura);
+        Aura* GetAura() const { return _aura; }
         void RemoveAura();
         void SetCasterViewpoint();
         void RemoveCasterViewpoint();

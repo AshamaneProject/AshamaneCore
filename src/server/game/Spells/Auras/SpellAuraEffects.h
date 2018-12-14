@@ -79,11 +79,27 @@ class TC_GAME_API AuraEffect
         void  SetDonePct(float val) { m_donePct = val; }
         float GetDonePct() const { return m_donePct; }
 
+        int32 GetRemainingDamage(int32 maxDurationIfPermanent = 0) const
+        {
+            int32 ticks = GetTotalTicks(maxDurationIfPermanent);
+            if (!GetBase()->IsPermanent())
+                ticks -= GetTickNumber();
+            return GetDamage() * ticks;
+        }
+
         void Update(uint32 diff, Unit* caster);
         void UpdatePeriodic(Unit* caster);
 
         uint32 GetTickNumber() const { return m_tickNumber; }
-        int32 GetTotalTicks() const { return m_period ? (GetBase()->GetMaxDuration() / m_period) : 1;}
+        int32 GetTotalTicks(int32 overrideIfPermanent = 0) const
+        {
+            if (GetPeriod())
+            {
+                int32 maxDuration = (GetBase()->IsPermanent() && overrideIfPermanent != 0) ? overrideIfPermanent : GetBase()->GetMaxDuration();
+                return maxDuration / GetPeriod();
+            }
+            return 1;
+        }
         void ResetPeriodic(bool resetPeriodicTimer = false) { if (resetPeriodicTimer) m_periodicTimer = m_period; m_tickNumber = 0;}
 
         bool IsPeriodic() const { return m_isPeriodic; }

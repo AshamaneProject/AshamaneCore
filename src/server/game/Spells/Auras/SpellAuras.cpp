@@ -2049,6 +2049,20 @@ void Aura::CallScriptEffectUpdatePeriodicHandlers(AuraEffect* aurEff)
     }
 }
 
+void Aura::CallScriptEffectDamageHandlers(AuraEffect const* aurEff, Unit * target, uint32 & damage)
+{
+    for (auto scritr = m_loadedScripts.begin(); scritr != m_loadedScripts.end(); ++scritr)
+    {
+        (*scritr)->_PrepareScriptCall(AURA_SCRIPT_HOOK_EFFECT_DAMAGE);
+        auto effEndItr = (*scritr)->OnDamage.end(), effItr = (*scritr)->OnDamage.begin();
+        for (; effItr != effEndItr; ++effItr)
+            if (effItr->IsEffectAffected(m_spellInfo, aurEff->GetEffIndex()))
+                effItr->Call(*scritr, aurEff, target, damage);
+
+        (*scritr)->_FinishScriptCall();
+    }
+}
+
 void Aura::CallScriptAuraUpdateHandlers(uint32 diff)
 {
     for (auto scritr = m_loadedScripts.begin(); scritr != m_loadedScripts.end(); ++scritr)

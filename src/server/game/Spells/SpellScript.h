@@ -584,6 +584,7 @@ enum AuraScriptHookType
     AURA_SCRIPT_HOOK_EFFECT_PERIODIC,
     AURA_SCRIPT_HOOK_ON_UPDATE,
     AURA_SCRIPT_HOOK_EFFECT_UPDATE_PERIODIC,
+    AURA_SCRIPT_HOOK_EFFECT_DAMAGE,
     AURA_SCRIPT_HOOK_EFFECT_CALC_AMOUNT,
     AURA_SCRIPT_HOOK_EFFECT_CALC_PERIODIC,
     AURA_SCRIPT_HOOK_EFFECT_CALC_SPELLMOD,
@@ -623,6 +624,7 @@ class TC_GAME_API AuraScript : public _SpellScript
         typedef void(CLASSNAME::*AuraDispelFnType)(DispelInfo* dispelInfo); \
         typedef void(CLASSNAME::*AuraEffectApplicationModeFnType)(AuraEffect const*, AuraEffectHandleModes); \
         typedef void(CLASSNAME::*AuraEffectPeriodicFnType)(AuraEffect const*); \
+        typedef void(CLASSNAME::*AuraEffectDamageFnType)(AuraEffect const*, Unit*, uint32 &); \
         typedef void(CLASSNAME::*AuraUpdateFnType)(uint32); \
         typedef void(CLASSNAME::*AuraEffectUpdatePeriodicFnType)(AuraEffect*); \
         typedef void(CLASSNAME::*AuraEffectCalcAmountFnType)(AuraEffect const*, int32 &, bool &); \
@@ -668,6 +670,14 @@ class TC_GAME_API AuraScript : public _SpellScript
                 void Call(AuraScript* auraScript, AuraEffect const* _aurEff);
             private:
                 AuraEffectPeriodicFnType pEffectHandlerScript;
+        };
+        class TC_GAME_API EffectDamageHandler : public EffectBase
+        {
+            public:
+                EffectDamageHandler(AuraEffectDamageFnType _pEffectHandlerScript, uint8 _effIndex, uint16 _effName);
+                void Call(AuraScript* auraScript, AuraEffect const* _aurEff, Unit * target, uint32 & damage);
+            private:
+                AuraEffectDamageFnType pEffectHandlerScript;
         };
         class TC_GAME_API AuraUpdateHandler
         {
@@ -787,6 +797,7 @@ class TC_GAME_API AuraScript : public _SpellScript
         class CheckAreaTargetFunction : public AuraScript::CheckAreaTargetHandler { public: CheckAreaTargetFunction(AuraCheckAreaTargetFnType _pHandlerScript) : AuraScript::CheckAreaTargetHandler((AuraScript::AuraCheckAreaTargetFnType)_pHandlerScript) { } }; \
         class AuraDispelFunction : public AuraScript::AuraDispelHandler { public: AuraDispelFunction(AuraDispelFnType _pHandlerScript) : AuraScript::AuraDispelHandler((AuraScript::AuraDispelFnType)_pHandlerScript) { } }; \
         class EffectPeriodicHandlerFunction : public AuraScript::EffectPeriodicHandler { public: EffectPeriodicHandlerFunction(AuraEffectPeriodicFnType _pEffectHandlerScript, uint8 _effIndex, uint16 _effName) : AuraScript::EffectPeriodicHandler((AuraScript::AuraEffectPeriodicFnType)_pEffectHandlerScript, _effIndex, _effName) { } }; \
+        class EffectDamageHandlerFunction : public AuraScript::EffectDamageHandler { public: EffectDamageHandlerFunction(AuraEffectDamageFnType _pEffectHandlerScript, uint8 _effIndex, uint16 _effName) : AuraScript::EffectDamageHandler((AuraScript::AuraEffectDamageFnType)_pEffectHandlerScript, _effIndex, _effName) { } }; \
         class AuraUpdateHandlerFunction : public AuraScript::AuraUpdateHandler { public: AuraUpdateHandlerFunction(AuraUpdateFnType _pEffectHandlerScript) : AuraScript::AuraUpdateHandler((AuraScript::AuraUpdateFnType)_pEffectHandlerScript) {} }; \
         class EffectUpdatePeriodicHandlerFunction : public AuraScript::EffectUpdatePeriodicHandler { public: EffectUpdatePeriodicHandlerFunction(AuraEffectUpdatePeriodicFnType _pEffectHandlerScript, uint8 _effIndex, uint16 _effName) : AuraScript::EffectUpdatePeriodicHandler((AuraScript::AuraEffectUpdatePeriodicFnType)_pEffectHandlerScript, _effIndex, _effName) { } }; \
         class EffectCalcAmountHandlerFunction : public AuraScript::EffectCalcAmountHandler { public: EffectCalcAmountHandlerFunction(AuraEffectCalcAmountFnType _pEffectHandlerScript, uint8 _effIndex, uint16 _effName) : AuraScript::EffectCalcAmountHandler((AuraScript::AuraEffectCalcAmountFnType)_pEffectHandlerScript, _effIndex, _effName) { } }; \
@@ -878,6 +889,12 @@ class TC_GAME_API AuraScript : public _SpellScript
         // where function is: void function (AuraEffect const* aurEff);
         HookList<EffectPeriodicHandler> OnEffectPeriodic;
         #define AuraEffectPeriodicFn(F, I, N) EffectPeriodicHandlerFunction(&F, I, N)
+
+        // executed when periodic aura effect deals damage on target
+        // example: OnDamage += AuraDamageFn(class::function, EffectIndexSpecifier, EffectAuraNameSpecifier);
+        // where function is: void function (AuraEffect const* aurEff, Unit * target, uint32 & damage);
+        HookList<EffectDamageHandler> OnDamage;
+        #define AuraDamageFn(F, I, N) EffectDamageHandlerFunction(&F, I, N)
 
         // executed when aura is updated
         // example: OnAuraUpdate += AuraUpdateFn(class::function);
@@ -1038,7 +1055,7 @@ class TC_GAME_API AuraScript : public _SpellScript
         // stack amount manipulation
         uint8 GetStackAmount() const;
         void SetStackAmount(uint8 num);
-        bool ModStackAmount(int32 num, AuraRemoveMode removeMode = AURA_REMOVE_BY_DEFAULT);
+        bool ModStackAmount(int32 num, AuraRemoveMode removeMode = AURA_REMOVE_BY_DEFAULT, bool resetPeriodicTimer = true, bool refresh = true);
 
         // passive - "working in background", not saved, not removed by immunities, not seen by player
         bool IsPassive() const;

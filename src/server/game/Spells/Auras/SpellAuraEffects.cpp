@@ -5686,6 +5686,8 @@ void AuraEffect::HandlePeriodicDamageAurasTick(Unit* target, Unit* caster) const
         }
     }
 
+    GetBase()->CallScriptEffectDamageHandlers(this, target, damage);
+
     bool crit = roll_chance_f(isAreaAura ? caster->GetUnitSpellCriticalChance(target, nullptr, this, m_spellInfo->GetSchoolMask()) : m_critChance);
 
     if (crit)
@@ -5786,6 +5788,8 @@ void AuraEffect::HandlePeriodicHealthLeechAuraTick(Unit* target, Unit* caster) c
             if (caster->GetTypeId() != TYPEID_PLAYER)
                 damage = int32(float(damage) * target->GetTotalAuraMultiplierByMiscMask(SPELL_AURA_MOD_CREATURE_AOE_DAMAGE_AVOIDANCE, m_spellInfo->SchoolMask));
         }
+
+    GetBase()->CallScriptEffectDamageHandlers(this, target, damage);
 
     bool crit = roll_chance_f(isAreaAura ? caster->GetUnitSpellCriticalChance(target, nullptr, this, m_spellInfo->GetSchoolMask()) : m_critChance);
 

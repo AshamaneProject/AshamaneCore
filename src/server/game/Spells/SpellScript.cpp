@@ -910,6 +910,17 @@ void AuraScript::EffectPeriodicHandler::Call(AuraScript* auraScript, AuraEffect 
     (auraScript->*pEffectHandlerScript)(_aurEff);
 }
 
+AuraScript::EffectDamageHandler::EffectDamageHandler(AuraEffectDamageFnType _pEffectHandlerScript, uint8 _effIndex, uint16 _effName)
+    : AuraScript::EffectBase(_effIndex, _effName)
+{
+    pEffectHandlerScript = _pEffectHandlerScript;
+}
+
+void AuraScript::EffectDamageHandler::Call(AuraScript* auraScript, AuraEffect const* _aurEff, Unit * target, uint32 & damage)
+{
+    (auraScript->*pEffectHandlerScript)(_aurEff, target, damage);
+}
+
 AuraScript::AuraUpdateHandler::AuraUpdateHandler(AuraUpdateFnType _pEffectHandlerScript)
 {
     pEffectHandlerScript = _pEffectHandlerScript;
@@ -1275,9 +1286,9 @@ void AuraScript::SetStackAmount(uint8 num)
     m_aura->SetStackAmount(num);
 }
 
-bool AuraScript::ModStackAmount(int32 num, AuraRemoveMode removeMode)
+bool AuraScript::ModStackAmount(int32 num, AuraRemoveMode removeMode /*= AURA_REMOVE_BY_DEFAULT*/, bool resetPeriodicTimer /*= true*/, bool refresh /*= true*/)
 {
-    return m_aura->ModStackAmount(num, removeMode);
+    return m_aura->ModStackAmount(num, removeMode, resetPeriodicTimer, refresh);
 }
 
 bool AuraScript::IsPassive() const

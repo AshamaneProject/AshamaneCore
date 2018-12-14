@@ -703,6 +703,7 @@ class TC_GAME_API Spell
         SpellInfo const* GetSpellInfo() const { return m_spellInfo; }
         std::vector<SpellPowerCost> const& GetPowerCost() const { return m_powerCost; }
         SpellPowerCost const* GetPowerCost(Powers power) const;
+        float GetSpellPowerCostModifier(Powers power) const;
 
         bool UpdatePointers();                              // must be used at call Spell code after time delay (non triggered spell cast/update spell call/etc)
 
