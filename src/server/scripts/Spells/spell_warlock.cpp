@@ -4292,7 +4292,9 @@ class spell_warlock_havoc : public SpellScriptLoader
                 if (!caster || !target)
                     return;
 
-                caster->Variables.GetValue<std::vector<ObjectGuid>>("Spells.HavocTargetGUID").push_back(target->GetGUID());
+                std::vector<ObjectGuid> targets = caster->Variables.GetValue<std::vector<ObjectGuid>>("Spells.HavocTargetGUID");
+                targets.push_back(target->GetGUID());
+                caster->Variables.Set("Spells.HavocTargetGUID", targets);
             }
 
             void OnRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
@@ -4302,11 +4304,12 @@ class spell_warlock_havoc : public SpellScriptLoader
                 if (!caster || !target)
                     return;
 
-                std::vector<ObjectGuid>& targets = caster->Variables.GetValue<std::vector<ObjectGuid>>("Spells.HavocTargetGUID");
+                std::vector<ObjectGuid> targets = caster->Variables.GetValue<std::vector<ObjectGuid>>("Spells.HavocTargetGUID");
                 targets.erase(std::remove_if(targets.begin(), targets.end(), [target](ObjectGuid guid)
                 {
                     return target->GetGUID() == guid;
                 }));
+                caster->Variables.Set("Spells.HavocTargetGUID", targets);
             }
 
             void Register()
