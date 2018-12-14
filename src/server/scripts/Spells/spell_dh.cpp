@@ -22,7 +22,6 @@
  * Scriptnames of files in this file should be prefixed with "spell_dh_".
  */
 
-#include "util.h"
 #include "AreaTrigger.h"
 #include "AreaTriggerAI.h"
 #include "AreaTriggerTemplate.h"

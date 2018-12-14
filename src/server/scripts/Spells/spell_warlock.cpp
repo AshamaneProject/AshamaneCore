@@ -42,6 +42,7 @@
 #include "SpellAuraEffects.h"
 #include "SpellAuras.h"
 #include "Spell.h"
+#include "PetAI.h"
 #include "Player.h"
 #include "ScriptedCreature.h"
 #include "SpellHistory.h"
@@ -198,6 +199,8 @@ enum ProjectWarlockSpells
 
 
     // ADDED IN LEGION
+    SPELL_WARLOCK_DARKGLARE_EYE_BEAM                = 205231,
+    SPELL_WARLOCK_DARKGLARE_SUMMON                  = 205180,
     SPELL_WARLOCK_TEAR_CHAOS_BARRAGE                = 187394,
     SPELL_WARLOCK_TEAR_CHAOS_BOLT                   = 215279,
     SPELL_WARLOCK_TEAR_SHADOW_BOLT                  = 196657,
@@ -4815,39 +4818,86 @@ class spell_warlock_grimoir_of_synergy : public SpellScriptLoader
         }
 };
 
-// 103673 - Darkglare
-class npc_warlock_darkglare : public CreatureScript
+// Summon Darkglare - 205180
+class spell_warlock_summon_darkglare : public SpellScript
 {
-public:
-    npc_warlock_darkglare() : CreatureScript("npc_warlock_darkglare") { }
+    PrepareSpellScript(spell_warlock_summon_darkglare);
 
-    CreatureAI* GetAI(Creature* creature) const
+    void HandleOnHitTarget(SpellEffIndex /*effIndex*/)
     {
-        return new npc_warlock_darkglareAI(creature);
+        if (Unit* target = GetHitUnit())
+        {
+            Player::AuraEffectList effectList = target->GetAuraEffectsByTypes({ SPELL_AURA_PERIODIC_DAMAGE, SPELL_AURA_PERIODIC_DAMAGE_PERCENT }, GetCaster()->GetGUID());
+
+            for (AuraEffect* effect : effectList)
+                if (Aura* aura = effect->GetBase())
+                    aura->ModDuration(GetEffectInfo(EFFECT_1)->CalcValue() * IN_MILLISECONDS);
+        }
     }
 
-    struct npc_warlock_darkglareAI : public CreatureAI
+    void Register() override
     {
-        npc_warlock_darkglareAI(Creature* creature) : CreatureAI(creature) { }
+        OnEffectHitTarget += SpellEffectFn(spell_warlock_summon_darkglare::HandleOnHitTarget, EFFECT_1, SPELL_EFFECT_SCRIPT_EFFECT);
+    }
+};
 
-        void UpdateAI(uint32 diff) override
+// 103673 - Darkglare
+struct npc_warlock_darkglare : public PetAI
+{
+    npc_warlock_darkglare(Creature* creature) : PetAI(creature) {}
+
+    void UpdateAI(uint32 /*diff*/) override
+    {
+        Unit* owner = me->GetOwner();
+        if (!owner)
+            return;
+
+        Unit* target = GetTarget();
+        ObjectGuid newtargetGUID = owner->GetTarget();
+        if (newtargetGUID.IsEmpty() || newtargetGUID == _targetGUID)
         {
-            if (me->HasUnitState(UNIT_STATE_CASTING))
-                return;
-
-            Unit* owner = me->ToTempSummon()->GetSummoner();
-            if (!owner)
-                return;
-
-            std::list<Unit*> enemies;
-            owner->GetAttackableUnitListInRange(enemies, 40.f);
-            enemies.remove_if(Trinity::UnitAuraCheck(false, SPELL_WARLOCK_DOOM, owner->GetGUID()));
-            if (enemies.empty())
-                return;
-
-            me->CastSpell(Trinity::Containers::SelectRandomContainerElement(enemies), SPELL_WARLOCK_EYE_LASER, false, nullptr, nullptr, owner->GetGUID());
+            CastSpellOnTarget(owner, target);
+            return;
         }
-    };
+
+        if (Unit* newTarget = ObjectAccessor::GetUnit(*me, newtargetGUID))
+            if (target != newTarget && me->IsValidAttackTarget(newTarget))
+                target = newTarget;
+
+        CastSpellOnTarget(owner, target);
+    }
+
+    void DamageDealt(Unit* /*victim*/, uint32& damage, DamageEffectType /*damageType*/) override
+    {
+        Unit* owner = me->GetOwner();
+        if (!owner)
+            return;
+
+        uint32 baseDamageMultiplier = 0;
+        if (Aura* darkGlareSummonAura = owner->GetAura(SPELL_WARLOCK_DARKGLARE_SUMMON))
+            baseDamageMultiplier = darkGlareSummonAura->GetEffect(EFFECT_2)->GetBaseAmount();
+
+        auto ownedAuras = owner->GetOwnedAurasByTypes({ SPELL_AURA_PERIODIC_DAMAGE, SPELL_AURA_PERIODIC_DAMAGE_PERCENT });
+
+        AddPct(damage, ownedAuras.size() * baseDamageMultiplier);
+    }
+
+private:
+    Unit* GetTarget() const
+    {
+        return ObjectAccessor::GetUnit(*me, _targetGUID);
+    }
+
+    void CastSpellOnTarget(Unit* owner, Unit* target)
+    {
+        if (target && me->IsValidAttackTarget(target))
+        {
+            _targetGUID = target->GetGUID();
+            me->CastSpell(target, SPELL_WARLOCK_DARKGLARE_EYE_BEAM, false);
+        }
+    }
+
+    ObjectGuid _targetGUID;
 };
 
 // 205231 - Eye Laser
@@ -6336,6 +6386,7 @@ void AddSC_warlock_spell_scripts()
     new spell_warlock_soul_fire();
     new spell_warlock_rain_of_fire_damage();
     new spell_warlock_unending_resolve();
+    RegisterSpellScript(spell_warlock_summon_darkglare);
 
     RegisterAreaTriggerAI(at_warlock_casting_circle);
     RegisterAreaTriggerAI(at_warlock_artifact_thalkiels_discord);
@@ -6348,6 +6399,6 @@ void AddSC_warlock_spell_scripts()
     new npc_warlock_shadowy_tear();
     new npc_warlock_chaos_tear();
     new npc_warlock_soul_effigy();
-    new npc_warlock_darkglare();
+    RegisterCreatureAI(npc_warlock_darkglare);
     new npc_warlock_fel_lord();
 }

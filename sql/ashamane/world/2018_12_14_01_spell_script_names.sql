@@ -199,7 +199,8 @@ INSERT IGNORE INTO spell_script_names (scriptname, spell_id) VALUES
 ("spell_warlock_demonbolt", 264178),
 ("spell_warlock_soul_fire", 6353),
 ("spell_warlock_rain_of_fire_damage", 42223),
-("spell_warlock_unending_resolve", 104773);
+("spell_warlock_unending_resolve", 104773),
+("spell_warlock_summon_darkglare", 205180);
 
 UPDATE creature_template SET scriptname = "npc_warlock_infernal" WHERE entry = 47319;
 UPDATE creature_template SET scriptname = "npc_warlock_demonic_gateway" WHERE entry = 59271;
