@@ -852,6 +852,58 @@ public:
     }
 };
 
+// 143096
+class npc_riding_macaw_patrol : public npc_escortAI
+{
+public:
+    enum
+    {
+        SPELL_SUMMON_RIDING_MACAW = 279049,
+        QUEST_RODRIGO_REVENGE = 49403
+    };
+
+    npc_riding_macaw_patrol(Creature* creature) : npc_escortAI(creature)
+    {
+        me->SetCanFly(true);
+    }
+
+    void OnCharmed(bool /*apply*/) override
+    {
+        // Make sure the basic cleanup of OnCharmed is done to avoid looping problems
+        if (me->NeedChangeAI)
+            me->NeedChangeAI = false;
+    }
+
+    void EnterEvadeMode(EvadeReason /*why*/) override { }
+
+    void IsSummonedBy(Unit* summoner) override
+    {
+        if (summoner)
+        {
+            me->AddAura(SPELL_SUMMON_RIDING_MACAW, me); // Add the phase shift aura
+            me->GetScheduler().Schedule(1s, [this, summoner](TaskContext /*context*/)
+            {
+                summoner->CastSpell(me, VEHICLE_SPELL_RIDE_HARDCODED);
+            }).Schedule(2s, [this, summoner](TaskContext /*context*/)
+            {
+                Start(false, true, summoner->GetGUID(), (const Quest *)0, false, false, true);
+            });
+        }
+    }
+
+    void PassengerBoarded(Unit* passenger, int8 /*seatId*/, bool apply) override
+    {
+        if (!apply)
+        {
+            if (passenger)
+            {
+                passenger->RemoveAurasDueToSpell(SPELL_SUMMON_RIDING_MACAW);
+                me->ForcedDespawn();
+            }
+        }
+    }
+};
+
 void AddSC_zone_tiragarde_sound()
 {
     RegisterCreatureAI(npc_jaina_boralus_intro);
@@ -878,4 +930,5 @@ void AddSC_zone_tiragarde_sound()
     RegisterCreatureAI(npc_flynn_allured);
     RegisterCreatureAI(npc_lugeia);
     RegisterCreatureAI(npc_flynn_lovesick_escort);
+    RegisterCreatureAI(npc_riding_macaw_patrol);
 }
