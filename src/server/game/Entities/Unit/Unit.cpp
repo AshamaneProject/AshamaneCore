@@ -14409,15 +14409,12 @@ void Unit::BuildValuesUpdate(uint8 updateType, ByteBuffer* data, Player* target)
                                     break;
                                 }
 
-                    if (cinfo->flags_extra & CREATURE_FLAG_EXTRA_TRIGGER)
+                    if (target->IsGameMaster())
                     {
-                        if (target->IsGameMaster())
+                        if (cinfo->flags_extra & CREATURE_FLAG_EXTRA_TRIGGER)
                             displayId = cinfo->GetFirstVisibleModel()->CreatureDisplayID;
-                    }
-                    else if (target->IsGameMaster())
-                    {
-                        if (displayId == cinfo->GetFirstInvisibleModel()->CreatureDisplayID)
-                            displayId = cinfo->GetFirstVisibleModel()->CreatureDisplayID; // get default model, only if in gm mode and trigger npc does not have extra flags set, this way its easy to find them ingame
+                        else if (displayId == cinfo->GetFirstInvisibleModel()->CreatureDisplayID)
+                            displayId = cinfo->GetFirstVisibleModel()->CreatureDisplayID;
                     }
                 }
 
