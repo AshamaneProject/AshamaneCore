@@ -1,6 +1,7 @@
 -- Cleanup near Ashenvale - The Morshan Rampart and Burning Blade Mount(wolfs)on road towards The Crossroads
 
-DELETE FROM `creature` WHERE `guid` IN ( 238329
+DELETE FROM `creature` WHERE `guid` IN ( 
+238329,
 238385,
 238349,
 238591,
