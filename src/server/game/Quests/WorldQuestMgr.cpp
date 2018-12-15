@@ -87,6 +87,23 @@ void WorldQuestMgr::LoadWorldQuestTemplates()
 
     } while (result->NextRow());
 
+    WorldQuestContainer worldQuests = sObjectMgr->GetWorldQuestStore();
+    for (auto quests : worldQuests)
+    {
+        for (uint32 questId : quests.second)
+        {
+            if (Quest const* quest = sObjectMgr->GetQuestTemplate(questId))
+            {
+                auto itr = _worldQuestTemplates[quest->Expansion].find(questId);
+                if (itr == _worldQuestTemplates[quest->Expansion].end())
+                {
+                    WorldQuestTemplate* worldQuestTemplate = new WorldQuestTemplate(questId, 7200, 12506, 1);
+                    _worldQuestTemplates[quest->Expansion][questId] = worldQuestTemplate;
+                }
+            }
+        }
+    }
+
     if (_emissaryWorldQuestTemplates.size() < WORLD_QUEST_EMISSARY)
         TC_LOG_ERROR("server.loading", "World Quest: There is %lu emissary quests but %u needed...", _emissaryWorldQuestTemplates.size(), uint32(WORLD_QUEST_EMISSARY));
 }
