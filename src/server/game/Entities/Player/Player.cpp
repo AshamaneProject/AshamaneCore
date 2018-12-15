@@ -2137,7 +2137,12 @@ void Player::Regenerate(Powers power)
     if (m_regenTimerCount >= 2000)
         SetPower(power, curValue);
     else
-        UpdateUInt32Value(UNIT_FIELD_POWER + powerIndex, curValue);
+    {
+        if (curValue == 0)
+            SetPower(power, curValue);
+        else
+            UpdateUInt32Value(UNIT_FIELD_POWER + powerIndex, curValue);
+    }
 }
 
 void Player::SendPowerUpdate(Powers power, int32 amount)
