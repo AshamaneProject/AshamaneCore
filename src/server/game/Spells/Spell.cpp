@@ -7013,6 +7013,20 @@ SpellPowerCost const* Spell::GetPowerCost(Powers power) const
     return nullptr;
 }
 
+float Spell::GetSpellPowerCostModifier(Powers power) const
+{
+    float maxCost = 0.f;
+
+    for (SpellPowerEntry const* powerEntry : GetSpellInfo()->PowerCosts)
+        if (powerEntry->PowerType == power)
+            maxCost += powerEntry->ManaCost + powerEntry->OptionalCost;
+
+    if (SpellPowerCost const* powerCost = GetPowerCost(power))
+        return powerCost->Amount / maxCost;
+
+    return 0.f;
+}
+
 CurrentSpellTypes Spell::GetCurrentContainer() const
 {
     if (m_spellInfo->IsNextMeleeSwingSpell())

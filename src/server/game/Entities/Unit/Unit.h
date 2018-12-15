@@ -1539,6 +1539,9 @@ class TC_GAME_API Unit : public WorldObject
         AuraEffect* GetAuraEffect(AuraType type, SpellFamilyNames name, uint32 iconId, uint8 effIndex) const;
         AuraEffect* GetDummyAuraEffect(SpellFamilyNames name, uint32 iconId, uint8 effIndex) const;
 
+        int32 GetAuraEffectAmount(AuraType auraType, SpellFamilyNames spellFamilyName, uint32 IconFileDataId, uint8 effIndex) const;
+        int32 GetAuraEffectAmount(uint32 spellId, uint8 effIndex, ObjectGuid casterGuid = ObjectGuid::Empty) const;
+
         AuraApplication * GetAuraApplication(uint32 spellId, ObjectGuid casterGUID = ObjectGuid::Empty, ObjectGuid itemCasterGUID = ObjectGuid::Empty, uint32 reqEffMask = 0, AuraApplication * except = NULL) const;
         Aura* GetAura(uint32 spellId, ObjectGuid casterGUID = ObjectGuid::Empty, ObjectGuid itemCasterGUID = ObjectGuid::Empty, uint32 reqEffMask = 0) const;
 

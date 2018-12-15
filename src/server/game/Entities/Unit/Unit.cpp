@@ -4492,6 +4492,22 @@ AuraEffect* Unit::GetDummyAuraEffect(SpellFamilyNames name, uint32 iconId, uint8
     return GetAuraEffect(SPELL_AURA_DUMMY, name, iconId, effIndex);
 }
 
+int32 Unit::GetAuraEffectAmount(AuraType auraType, SpellFamilyNames spellFamilyName, uint32 IconFileDataId, uint8 effIndex) const
+{
+    if (AuraEffect * aurEff = GetAuraEffect(auraType, spellFamilyName))
+        return aurEff->GetAmount();
+
+    return 0;
+}
+
+int32 Unit::GetAuraEffectAmount(uint32 spellId, uint8 effIndex, ObjectGuid casterGuid) const
+{
+    if (AuraEffect * aurEff = GetAuraEffect(spellId, effIndex, casterGuid))
+        return aurEff->GetAmount();
+
+    return 0;
+}
+
 AuraApplication * Unit::GetAuraApplication(uint32 spellId, ObjectGuid casterGUID, ObjectGuid itemCasterGUID, uint32 reqEffMask, AuraApplication * except) const
 {
     AuraApplicationMapBounds range = m_appliedAuras.equal_range(spellId);
