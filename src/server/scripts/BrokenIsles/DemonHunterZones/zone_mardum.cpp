@@ -460,10 +460,10 @@ struct npc_mardum_doom_commander_beliash : public ScriptedAI
     {
         Talk(SAY_ONCOMBAT_BELIASH);
 
-        me->GetScheduler().Schedule(Milliseconds(2500), [this](TaskContext context)
+        me->GetScheduler().Schedule(2500ms, [this](TaskContext context)
         {
-            me->CastSpell(me, SPELL_SHADOW_BOLT_VOLLEY, true);
-            context.Repeat(Milliseconds(2500));
+            me->CastSpell(me, SPELL_SHADOW_BOLT_VOLLEY, false);
+            context.Repeat(20s);
         });
 
         /*me->GetScheduler().Schedule(Seconds(10), [this](TaskContext context)
