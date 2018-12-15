@@ -31,11 +31,20 @@ WorldQuestMgr::WorldQuestMgr()
 
 WorldQuestMgr::~WorldQuestMgr()
 {
-    for (auto& worldQuestTemplate : _worldQuestTemplates)
-        delete worldQuestTemplate.second;
+    for (auto expansionTemplates : _worldQuestTemplates)
+        for (auto teamTemplates : expansionTemplates.second)
+            for (auto itr : teamTemplates.second)
+                delete itr.second;
 
-    for (auto& activeWorldQuest : _activeWorldQuests)
-        delete activeWorldQuest.second;
+    for (auto expansionEmissaryTemplates : _emissaryWorldQuestTemplates)
+        for (auto teamEmissaryTemplates : expansionEmissaryTemplates.second)
+            for (auto itr : teamEmissaryTemplates.second)
+                delete itr.second;
+
+    for (auto expansionWorldQuests : _activeWorldQuests)
+        for (auto teamWorldQuest : expansionWorldQuests.second)
+            for (auto activeWorldQuest : teamWorldQuest.second)
+                delete activeWorldQuest.second;
 }
 
 WorldQuestMgr* WorldQuestMgr::instance()
@@ -47,10 +56,17 @@ WorldQuestMgr* WorldQuestMgr::instance()
 void WorldQuestMgr::LoadWorldQuestTemplates()
 {
     // For reload case
-    for (WorldQuestTemplateMap::const_iterator itr = _worldQuestTemplates.begin(); itr != _worldQuestTemplates.end(); ++itr)
-        delete itr->second;
+    for (auto expansionTemplates : _worldQuestTemplates)
+        for (auto teamTemplates : expansionTemplates.second)
+            for (auto itr : teamTemplates.second)
+                delete itr.second;
     _worldQuestTemplates.clear();
-    _emissaryWorldQuestTemplates.clear();    /// pointers previously deleted
+
+    for (auto expansionEmissaryTemplates : _emissaryWorldQuestTemplates)
+        for (auto teamEmissaryTemplates : expansionEmissaryTemplates.second)
+            for (auto itr : teamEmissaryTemplates.second)
+                delete itr.second;
+    _emissaryWorldQuestTemplates.clear();
 
     QueryResult result = WorldDatabase.Query("SELECT id, duration, variable, value FROM world_quest");
     if (!result)
@@ -65,19 +81,63 @@ void WorldQuestMgr::LoadWorldQuestTemplates()
         if (!quest)
         {
             TC_LOG_ERROR("server.loading", "World Quest: %u exist but no quest template found. Skip.", questId);
-            return;
+            continue;
         }
 
         WorldQuestTemplate* worldQuestTemplate = new WorldQuestTemplate(questId, fields[1].GetUInt32(), fields[2].GetUInt32(), fields[3].GetUInt8());
-        _worldQuestTemplates[questId] = worldQuestTemplate;
-
-        if (quest->IsEmissaryQuest())
-            _emissaryWorldQuestTemplates[questId] = worldQuestTemplate;
+        AddWorldQuestTemplate(quest, worldQuestTemplate);
 
     } while (result->NextRow());
 
+    WorldQuestContainer worldQuests = sObjectMgr->GetWorldQuestStore();
+    for (auto quests : worldQuests)
+    {
+        for (uint32 questId : quests.second)
+        {
+            if (Quest const* quest = sObjectMgr->GetQuestTemplate(questId))
+            {
+                auto itr = _worldQuestTemplates[quest->Expansion].find(questId);
+                if (itr == _worldQuestTemplates[quest->Expansion].end())
+                {
+                    WorldQuestTemplate* worldQuestTemplate = new WorldQuestTemplate(questId, 7200, 12506, 1);
+                    AddWorldQuestTemplate(quest, worldQuestTemplate);
+                }
+            }
+        }
+    }
+
     if (_emissaryWorldQuestTemplates.size() < WORLD_QUEST_EMISSARY)
         TC_LOG_ERROR("server.loading", "World Quest: There is %lu emissary quests but %u needed...", _emissaryWorldQuestTemplates.size(), uint32(WORLD_QUEST_EMISSARY));
+}
+
+void WorldQuestMgr::AddWorldQuestTemplate(Quest const* quest, WorldQuestTemplate* worldQuestTemplate)
+{
+    uint8 questTeamId = GetQuestTeamId(quest);
+    switch (questTeamId)
+    {
+        case TEAM_NEUTRAL:
+        {
+            _worldQuestTemplates[quest->Expansion][TEAM_ALLIANCE][quest->ID] = worldQuestTemplate;
+            _worldQuestTemplates[quest->Expansion][TEAM_HORDE][quest->ID] = worldQuestTemplate;
+
+            if (quest->IsEmissaryQuest())
+            {
+                _emissaryWorldQuestTemplates[quest->Expansion][TEAM_ALLIANCE][quest->ID] = worldQuestTemplate;
+                _emissaryWorldQuestTemplates[quest->Expansion][TEAM_HORDE][quest->ID] = worldQuestTemplate;
+            }
+
+            break;
+        }
+        default:
+        {
+            _worldQuestTemplates[quest->Expansion][questTeamId][quest->ID] = worldQuestTemplate;
+
+            if (quest->IsEmissaryQuest())
+                _emissaryWorldQuestTemplates[quest->Expansion][questTeamId][quest->ID] = worldQuestTemplate;
+
+            break;
+        }
+    }
 }
 
 void WorldQuestMgr::LoadWorldQuestRewardTemplates()
@@ -114,13 +174,20 @@ void WorldQuestMgr::LoadActiveWorldQuests()
         return;
     }
 
-    do 
+    do
     {
         Field* fields = result->Fetch();
 
         uint32 questId      = fields[0].GetUInt32();
         uint32 rewardId     = fields[1].GetUInt32();
         uint32 startTime    = fields[2].GetUInt32();
+
+        Quest const* quest = sObjectMgr->GetQuestTemplate(questId);
+        if (!quest)
+        {
+            TC_LOG_ERROR("server.loading", "World Quest: Quest %u has world quest duration but quest does not exist.", questId);
+            continue;
+        }
 
         WorldQuestTemplate* worldQuestTemplate = GetWorldQuestTemplate(questId);
         if (!worldQuestTemplate)
@@ -130,49 +197,70 @@ void WorldQuestMgr::LoadActiveWorldQuests()
         }
 
         ActiveWorldQuest* activeWorldQuest = new ActiveWorldQuest(questId, rewardId, startTime);
-        _activeWorldQuests[worldQuestTemplate->QuestId] = activeWorldQuest;
+
+        uint8 questTeamId = GetQuestTeamId(quest);
+        if (questTeamId == TEAM_NEUTRAL)
+        {
+            _activeWorldQuests[quest->Expansion][TEAM_ALLIANCE][worldQuestTemplate->QuestId] = activeWorldQuest;
+            _activeWorldQuests[quest->Expansion][TEAM_HORDE][worldQuestTemplate->QuestId] = activeWorldQuest;
+        }
+        else
+            _activeWorldQuests[quest->Expansion][questTeamId][worldQuestTemplate->QuestId] = activeWorldQuest;
+
 
     } while (result->NextRow());
 }
 
 void WorldQuestMgr::Update()
 {
-    for (auto itr = _activeWorldQuests.begin(); itr != _activeWorldQuests.end();)
+    for (auto& expansionWorldQuest : _activeWorldQuests)
     {
-        if (itr->second->GetRemainingTime() <= 0)
+        for (auto& teamWorldQuest : expansionWorldQuest.second)
         {
-            DisableQuest(itr->second, false);
-            itr = _activeWorldQuests.erase(itr);
+            for (auto itr = teamWorldQuest.second.begin(); itr != teamWorldQuest.second.end();)
+            {
+                if (itr->second->GetRemainingTime() <= 0)
+                {
+                    DisableQuest(itr->second, false);
+                    itr = teamWorldQuest.second.erase(itr);
+                }
+                else
+                    ++itr;
+            }
         }
-        else
-            ++itr;
     }
 
-    if (_worldQuestTemplates.size())
+    for (uint8 expansion : WorldQuestsExpansions)
     {
-        int32 questDiff = WORLD_QUEST_MAX_FILL - GetActiveQuestsCount() + GetActiveEmissaryQuestsCount();
-
-        if (questDiff > 0)
+        for (uint8 teamId : WorldQuestsTeams)
         {
-            WorldQuestTemplateMap inactiveWorldQuestTemplates;
-            for (auto it : _worldQuestTemplates)
+            if (_worldQuestTemplates[expansion][teamId].size())
             {
-                if (!IsQuestActive(it.first)) // Do not add already active quests
-                    if (!it.second->GetQuest()->IsEmissaryQuest()) /// do not add emissay quest as world quest during roll
-                        inactiveWorldQuestTemplates[it.first] = it.second;
-            }
+                int32 questDiff = WORLD_QUEST_MAX_FILL - GetActiveQuestsCount(expansion, teamId) + GetActiveEmissaryQuestsCount(expansion, teamId);
 
-            while (questDiff && inactiveWorldQuestTemplates.size())
-            {
-                auto it = Trinity::Containers::SelectRandomContainerElement(inactiveWorldQuestTemplates);
+                if (questDiff > 0)
+                {
+                    WorldQuestTemplateMap inactiveWorldQuestTemplates;
+                    for (auto it : _worldQuestTemplates[expansion][teamId])
+                    {
+                        if (!IsQuestActive(it.first)) // Do not add already active quests
+                            if (!it.second->GetQuest()->IsEmissaryQuest()) /// do not add emissay quest as world quest during roll
+                                inactiveWorldQuestTemplates[expansion][teamId][it.first] = it.second;
+                    }
 
-                ActivateQuest(it.second);
-                inactiveWorldQuestTemplates.erase(it.first);
-                --questDiff;
+                    while (questDiff && inactiveWorldQuestTemplates.size())
+                    {
+                        auto it = Trinity::Containers::SelectRandomContainerElement(inactiveWorldQuestTemplates[expansion][teamId]);
+
+                        ActivateQuest(it.second);
+                        inactiveWorldQuestTemplates.erase(it.first);
+                        --questDiff;
+                    }
+                }
+
+                RefreshEmissaryQuests();
             }
         }
-
-        RefreshEmissaryQuests();
     }
 }
 
@@ -189,7 +277,15 @@ void WorldQuestMgr::ActivateQuest(WorldQuestTemplate* worldQuestTemplate)
     uint32 rewardId = GetRandomRewardForQuestType(quest->GetQuestInfoID());
 
     ActiveWorldQuest* activeWorldQuest = new ActiveWorldQuest(worldQuestTemplate->QuestId, rewardId, time(nullptr));
-    _activeWorldQuests[worldQuestTemplate->QuestId] = activeWorldQuest;
+
+    uint8 questTeamId = GetQuestTeamId(quest);
+    if (questTeamId == TEAM_NEUTRAL)
+    {
+        _activeWorldQuests[quest->Expansion][TEAM_ALLIANCE][worldQuestTemplate->QuestId] = activeWorldQuest;
+        _activeWorldQuests[quest->Expansion][TEAM_HORDE][worldQuestTemplate->QuestId] = activeWorldQuest;
+    }
+    else
+        _activeWorldQuests[quest->Expansion][questTeamId][worldQuestTemplate->QuestId] = activeWorldQuest;
 
     // We add Emissary Quests to all eligible players
     if (quest->IsEmissaryQuest())
@@ -197,7 +293,7 @@ void WorldQuestMgr::ActivateQuest(WorldQuestTemplate* worldQuestTemplate)
         SessionMap const& smap = sWorld->GetAllSessions();
         for (SessionMap::const_iterator iter = smap.begin(); iter != smap.end(); ++iter)
             if (Player* player = iter->second->GetPlayer())
-                if (player->HasWorldQuestEnabled())
+                if (player->HasWorldQuestEnabled(quest->GetExpansion()))
                     if (player->GetQuestStatus(worldQuestTemplate->QuestId) == QUEST_STATUS_NONE)
                         player->AddQuest(quest, nullptr);
     }
@@ -257,23 +353,14 @@ void WorldQuestMgr::DisableQuest(ActiveWorldQuest* activeWorldQuest, bool delete
         _activeWorldQuests.erase(activeWorldQuest->QuestId);
 }
 
-ActiveWorldQuest const* WorldQuestMgr::GetQuestActive(uint32 questId)
-{
-    auto activeWorldQuestItr = _activeWorldQuests.find(questId);
-    if (activeWorldQuestItr != _activeWorldQuests.end())
-        return activeWorldQuestItr->second;
-
-    return nullptr;
-}
-
 bool WorldQuestMgr::IsQuestActive(uint32 questId)
 {
-    return GetQuestActive(questId) != nullptr;
+    return GetActiveWorldQuest(questId) != nullptr;
 }
 
 void WorldQuestMgr::RewardQuestForPlayer(Player* player, uint32 questId)
 {
-    ActiveWorldQuest const* activeWorldQuest = sWorldQuestMgr->GetQuestActive(questId);
+    ActiveWorldQuest const* activeWorldQuest = sWorldQuestMgr->GetActiveWorldQuest(questId);
     if (!activeWorldQuest)
         return;
 
@@ -315,23 +402,63 @@ void WorldQuestMgr::RewardQuestForPlayer(Player* player, uint32 questId)
 
 WorldQuestTemplate* WorldQuestMgr::GetWorldQuestTemplate(uint32 questId)
 {
-    if (_worldQuestTemplates.find(questId) == _worldQuestTemplates.end())
+    Quest const* quest = sObjectMgr->GetQuestTemplate(questId);
+    if (!quest)
         return nullptr;
 
-    return _worldQuestTemplates.find(questId)->second;
+    auto expansionTemplates = _worldQuestTemplates.find(quest->Expansion);
+    if (expansionTemplates == _worldQuestTemplates.end())
+        return nullptr;
+
+    uint8 questTeamId = GetQuestTeamId(quest);
+    questTeamId = questTeamId == TEAM_NEUTRAL ? TEAM_ALLIANCE : questTeamId;
+
+    auto teamTemplates = expansionTemplates->second.find(questTeamId);
+    if (teamTemplates == expansionTemplates->second.end())
+        return nullptr;
+
+    auto questTemplate = teamTemplates->second.find(questId);
+    if (questTemplate == teamTemplates->second.end())
+        return nullptr;
+
+    return questTemplate->second;
 }
 
-uint8 WorldQuestMgr::GetActiveEmissaryQuestsCount()
+ActiveWorldQuest* WorldQuestMgr::GetActiveWorldQuest(uint32 questId)
 {
-    return std::count_if(_activeWorldQuests.begin(), _activeWorldQuests.end(), [](auto pair) -> bool
+    Quest const* quest = sObjectMgr->GetQuestTemplate(questId);
+    if (!quest)
+        return nullptr;
+
+    auto expansionTemplates = _activeWorldQuests.find(quest->Expansion);
+    if (expansionTemplates == _activeWorldQuests.end())
+        return nullptr;
+
+    uint8 questTeamId = GetQuestTeamId(quest);
+    questTeamId = questTeamId == TEAM_NEUTRAL ? TEAM_ALLIANCE : questTeamId;
+
+    auto teamTemplates = expansionTemplates->second.find(questTeamId);
+    if (teamTemplates == expansionTemplates->second.end())
+        return nullptr;
+
+    auto questTemplate = teamTemplates->second.find(questId);
+    if (questTemplate == teamTemplates->second.end())
+        return nullptr;
+
+    return questTemplate->second;
+}
+
+uint8 WorldQuestMgr::GetActiveEmissaryQuestsCount(uint8 expansion, uint8 teamId)
+{
+    return std::count_if(_activeWorldQuests[expansion][teamId].begin(), _activeWorldQuests[expansion][teamId].end(), [](auto pair) -> bool
     {
         return pair.second->IsEmissaryQuest();
     });
 }
 
-uint32 WorldQuestMgr::GetActiveQuestsCount()
+uint32 WorldQuestMgr::GetActiveQuestsCount(uint8 expansion, uint8 teamId)
 {
-    return _activeWorldQuests.size();
+    return _activeWorldQuests[expansion][teamId].size();
 }
 
 uint32 WorldQuestMgr::GetRandomRewardForQuestType(uint32 questType)
@@ -373,27 +500,30 @@ std::vector<WorldQuestReward const*> WorldQuestMgr::GetRewardsForPlayerById(Play
 void WorldQuestMgr::BuildPacket(Player* player, WorldPackets::Quest::WorldQuestUpdate& packet)
 {
     WorldPackets::Quest::WorldQuestUpdateInfo quest;
-    for (auto itr : _activeWorldQuests)
+    for (auto expansionWorldQuests : _activeWorldQuests)
     {
-        ActiveWorldQuest* activeWorldQuest = itr.second;
-        if (player->IsQuestRewarded(itr.first))
-            continue;
-
-        if (WorldQuestTemplate const* worldQuestTemplate = activeWorldQuest->GetTemplate())
+        for (auto itr : expansionWorldQuests.second[player->GetTeamId()])
         {
-            quest.QuestID       = activeWorldQuest->QuestId;
-            quest.LastUpdate    = activeWorldQuest->StartTime;
-            quest.VariableID    = worldQuestTemplate->VariableId;
-            quest.Timer         = worldQuestTemplate->Duration;
-            quest.Value         = worldQuestTemplate->Value;
-            packet.WorldQuestUpdates.push_back(quest);
+            ActiveWorldQuest* activeWorldQuest = itr.second;
+            if (player->IsQuestRewarded(itr.first))
+                continue;
+
+            if (WorldQuestTemplate const* worldQuestTemplate = activeWorldQuest->GetTemplate())
+            {
+                quest.QuestID = activeWorldQuest->QuestId;
+                quest.LastUpdate = activeWorldQuest->StartTime;
+                quest.VariableID = worldQuestTemplate->VariableId;
+                quest.Timer = worldQuestTemplate->Duration;
+                quest.Value = worldQuestTemplate->Value;
+                packet.WorldQuestUpdates.push_back(quest);
+            }
         }
     }
 }
 
 void WorldQuestMgr::BuildRewardPacket(Player* player, uint32 questId, WorldPackets::Quest::QueryQuestRewardResponse& packet)
 {
-    ActiveWorldQuest const* activeWorldQuest = GetQuestActive(questId);
+    ActiveWorldQuest const* activeWorldQuest = GetActiveWorldQuest(questId);
     if (!activeWorldQuest)
         return;
 
@@ -437,9 +567,11 @@ void WorldQuestMgr::BuildRewardPacket(Player* player, uint32 questId, WorldPacke
 
 void WorldQuestMgr::FillInitWorldStates(WorldPackets::WorldState::InitWorldStates& packet)
 {
-    for (auto itr : _activeWorldQuests)
-        if (WorldQuestTemplate const* worldQuestTemplate = itr.second->GetTemplate())
-            packet.Worldstates.emplace_back(worldQuestTemplate->VariableId, worldQuestTemplate->Value);
+    for (auto expansionWorldQuests : _activeWorldQuests)
+        for (auto teamWorldQuests : expansionWorldQuests.second)
+            for (auto itr : teamWorldQuests.second)
+                if (WorldQuestTemplate const* worldQuestTemplate = itr.second->GetTemplate())
+                    packet.Worldstates.emplace_back(worldQuestTemplate->VariableId, worldQuestTemplate->Value);
 }
 
 std::vector<CriteriaEntry const*> WorldQuestMgr::GetCriteriasForQuest(uint32 quest_id)
@@ -459,35 +591,57 @@ std::vector<CriteriaEntry const*> WorldQuestMgr::GetCriteriasForQuest(uint32 que
 
 void WorldQuestMgr::RefreshEmissaryQuests()
 {
-    if (GetActiveEmissaryQuestsCount() >= WORLD_QUEST_EMISSARY)
-        return;
+    for (uint8 expansion : WorldQuestsExpansions)
+    {
+        for (uint8 teamId : WorldQuestsTeams)
+        {
+            if (GetActiveEmissaryQuestsCount(expansion, teamId) >= WORLD_QUEST_EMISSARY)
+                return;
 
-    if (_emissaryWorldQuestTemplates.size() < WORLD_QUEST_EMISSARY)
-        return;
+            if (_emissaryWorldQuestTemplates[expansion][teamId].size() < WORLD_QUEST_EMISSARY)
+                return;
 
-    auto it = Trinity::Containers::SelectRandomContainerElement(_emissaryWorldQuestTemplates);
-    if (!IsQuestActive(it.first))
-        ActivateQuest(it.second);
+            auto it = Trinity::Containers::SelectRandomContainerElement(_emissaryWorldQuestTemplates[expansion][teamId]);
+            if (!IsQuestActive(it.first))
+                ActivateQuest(it.second);
+        }
+    }
 }
 
 void WorldQuestMgr::AddEmissaryQuestsOnPlayerIfNeeded(Player* player)
 {
-    if (!player->HasWorldQuestEnabled())
-        return;
+    for (uint8 expansion : WorldQuestsExpansions)
+    {
+        if (!player->HasWorldQuestEnabled(expansion))
+            continue;
 
-    for (auto itr : _activeWorldQuests)
-        if (WorldQuestTemplate const* worldQuestTemplate = itr.second->GetTemplate())
-            if (Quest const* quest = worldQuestTemplate->GetQuest())
-                if (quest->IsEmissaryQuest())
-                    if (player->GetQuestStatus(itr.first) == QUEST_STATUS_NONE)
-                        player->AddQuest(quest, nullptr);
+        for (auto itr : _activeWorldQuests[expansion][player->GetTeamId()])
+            if (WorldQuestTemplate const* worldQuestTemplate = itr.second->GetTemplate())
+                if (Quest const* quest = worldQuestTemplate->GetQuest())
+                    if (quest->IsEmissaryQuest())
+                        if (player->GetQuestStatus(itr.first) == QUEST_STATUS_NONE)
+                            player->AddQuest(quest, nullptr);
+    }
 }
 
 uint32 WorldQuestMgr::GetTimerForQuest(uint32 questId)
 {
-    auto itr = _activeWorldQuests.find(questId);
-    if (itr == _activeWorldQuests.end())
-        return 0;
+    if (ActiveWorldQuest const* wq = GetActiveWorldQuest(questId))
+        return wq->GetRemainingTime();
 
-    return std::max(0, itr->second->GetRemainingTime());
+    return 0;
+}
+
+TeamId WorldQuestMgr::GetQuestTeamId(Quest const* quest)
+{
+    if (quest->GetAllowableRaces() == uint64(-1))
+        return TEAM_NEUTRAL;
+
+    if (quest->GetAllowableRaces() & RACEMASK_ALLIANCE)
+        return TEAM_ALLIANCE;
+
+    if (quest->GetAllowableRaces() & RACEMASK_HORDE)
+        return TEAM_HORDE;
+
+    return TEAM_NEUTRAL;
 }
