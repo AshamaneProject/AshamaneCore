@@ -36,8 +36,8 @@ struct WorldQuestTemplate;
 struct ActiveWorldQuest;
 struct WorldQuestReward;
 
-typedef std::unordered_map<uint8 /*expansion*/, std::unordered_map<uint32, WorldQuestTemplate*>> WorldQuestTemplateMap;
-typedef std::unordered_map<uint8 /*expansion*/, std::unordered_map<uint32 /*questId*/, ActiveWorldQuest*>> ActiveWorldQuestMap;
+typedef std::unordered_map<uint8 /*expansion*/, std::unordered_map<uint8 /*teamId*/, std::unordered_map<uint32 /*questId*/, WorldQuestTemplate*>>> WorldQuestTemplateMap;
+typedef std::unordered_map<uint8 /*expansion*/, std::unordered_map<uint8 /*teamId*/, std::unordered_map<uint32 /*questId*/, ActiveWorldQuest*>>> ActiveWorldQuestMap;
 
 typedef std::unordered_map<uint32 /*RewardId*/, std::vector<WorldQuestReward>> WorldQuestRewardMap;
 typedef std::unordered_map<uint32 /*QuestInfo*/, std::vector<uint32 /*RewardId*/>> WorldQuestRewardByQuestInfoMap;
@@ -57,24 +57,26 @@ public:
 
     static WorldQuestMgr* instance();
     const std::vector<uint8> WorldQuestsExpansions = { EXPANSION_LEGION, EXPANSION_BATTLE_FOR_AZEROTH };
+    const std::vector<uint8> WorldQuestsTeams = { TEAM_ALLIANCE, TEAM_HORDE };
 
     void LoadWorldQuestTemplates();
     void LoadWorldQuestRewardTemplates();
+    void AddWorldQuestTemplate(Quest const* quest, WorldQuestTemplate* worldQuestTemplate);
     void LoadActiveWorldQuests();
     void Update();
 
     void ActivateQuest(WorldQuestTemplate* worldQuestTemplate);
     void DisableQuest(ActiveWorldQuest* activeWorldQuest, bool deleteFromMap = true);
 
-    ActiveWorldQuest const* GetQuestActive(uint32 questId);
     bool IsQuestActive(uint32 questId);
 
     void RewardQuestForPlayer(Player* player, uint32 questId);
 
     WorldQuestTemplate* GetWorldQuestTemplate(uint32 questId);
+    ActiveWorldQuest* GetActiveWorldQuest(uint32 questId);
 
-    uint8 GetActiveEmissaryQuestsCount(uint8 expansion);
-    uint32 GetActiveQuestsCount(uint8 expansion);
+    uint8 GetActiveEmissaryQuestsCount(uint8 expansion, uint8 teamId);
+    uint32 GetActiveQuestsCount(uint8 expansion, uint8 teamId);
 
     uint32 GetRandomRewardForQuestType(uint32 questType);
     std::vector<WorldQuestReward const*> GetRewardsForPlayerById(Player* player, uint32 rewardId);
@@ -88,7 +90,8 @@ public:
     void RefreshEmissaryQuests();
     void AddEmissaryQuestsOnPlayerIfNeeded(Player* player);
 
-    uint32 GetTimerForQuest(uint32 expansion, uint32 questId);
+    uint32 GetTimerForQuest(uint32 questId);
+    TeamId GetQuestTeamId(Quest const* quest);
 
 private:
     WorldQuestTemplateMap _worldQuestTemplates;

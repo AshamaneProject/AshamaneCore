@@ -4008,7 +4008,7 @@ void ObjectMgr::LoadQuests()
         Quest* newQuest = new Quest(fields);
         _questTemplates[newQuest->GetQuestId()] = newQuest;
 
-        if (newQuest->IsWorldQuest())
+        if (newQuest->IsWorldQuest() || newQuest->IsEmissaryQuest())
             _worldQuestStore[newQuest->QuestInfoID].push_back(newQuest->GetQuestId());
     } while (result->NextRow());
 

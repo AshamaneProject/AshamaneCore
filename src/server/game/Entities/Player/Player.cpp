@@ -6096,9 +6096,15 @@ bool Player::UpdatePosition(float x, float y, float z, float orientation, bool t
     return true;
 }
 
-bool Player::HasWorldQuestEnabled() const
+bool Player::HasWorldQuestEnabled(uint8 expansion) const
 {
-    return MeetPlayerCondition(41005);
+    if (expansion == EXPANSION_LEGION)
+        return MeetPlayerCondition(41005);
+    else if (expansion == EXPANSION_BATTLE_FOR_AZEROTH)
+        return GetQuestStatus(51918) == QUEST_STATUS_REWARDED || // Union of Kul'Tiras
+               GetQuestStatus(51916) == QUEST_STATUS_REWARDED;   // Union of Zandalar
+
+    return false;
 }
 
 void Player::UpdateWorldQuestPosition(float x, float y)
@@ -6139,7 +6145,7 @@ void Player::UpdateWorldQuestPosition(float x, float y)
             if (quest->IsWorldQuest())
             {
                 // Uniting the Isles, required for Legion world quests
-                if (!HasWorldQuestEnabled())
+                if (!HasWorldQuestEnabled(quest->GetExpansion()))
                     continue;
 
                 if (!sWorldQuestMgr->IsQuestActive(quest->GetQuestId()))
@@ -15558,7 +15564,7 @@ void Player::AddQuest(Quest const* quest, Object* questGiver)
             limittime = questGiver->ToPlayer()->getQuestStatusMap()[quest_id].Timer / IN_MILLISECONDS;
 
         if (quest->IsWorldQuest())
-            limittime = sWorldQuestMgr->GetTimerForQuest(quest->Expansion, quest_id);
+            limittime = sWorldQuestMgr->GetTimerForQuest(quest_id);
 
         AddTimedQuest(quest_id);
         questStatusData.Timer = limittime * IN_MILLISECONDS;
