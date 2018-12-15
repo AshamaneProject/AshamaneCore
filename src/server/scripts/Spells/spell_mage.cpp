@@ -173,7 +173,8 @@ enum MageSpells
     SPELL_MAGE_MANA_SHIELD_BURN                  = 235470,
     SPELL_MAGE_RULE_OF_THREES                    = 264354,
     SPELL_MAGE_RULE_OF_THREES_BUFF               = 264774,
-    SPELL_MAGE_SPLITTING_ICE                     = 56377
+    SPELL_MAGE_SPLITTING_ICE                     = 56377,
+    SPELL_ARCANE_CHARGE                          = 36032,
 };
 
 enum TemporalDisplacementSpells
@@ -191,14 +192,9 @@ class playerscript_mage_arcane : public PlayerScript
 public:
     playerscript_mage_arcane() : PlayerScript("playerscript_mage_arcane") {}
 
-    enum eSpells
-    {
-        AURA_ARCANIC_CHARGE = 36032,
-    };
-
     void OnModifyPower(Player* player, Powers power, int32 oldValue, int32& newValue, bool /*regen*/, bool after)
     {
-        if (after)
+        if (!after)
             return;
 
         if (power != POWER_ARCANE_CHARGES)
@@ -206,12 +202,14 @@ public:
 
         // Going up in charges is handled by aura 190427
         // Decreasing power seems weird clientside does not always match serverside power amount (client stays at 1, server is at 0)
-        if (oldValue >= newValue)
+        if (newValue)
         {
-            player->RemoveAurasDueToSpell(AURA_ARCANIC_CHARGE);
-            for (int32 i = 0; i < newValue; ++i)
-                player->CastSpell(player, AURA_ARCANIC_CHARGE, true);
+            if (Aura* arcaneCharge = player->GetAura(SPELL_ARCANE_CHARGE))
+                arcaneCharge->SetStackAmount(newValue);
         }
+        else
+            player->RemoveAurasDueToSpell(SPELL_ARCANE_CHARGE);
+
         if (player->HasAura(SPELL_MAGE_RULE_OF_THREES))
             if (newValue == 3 && oldValue == 2)
                 player->CastSpell(player, SPELL_MAGE_RULE_OF_THREES_BUFF, true);

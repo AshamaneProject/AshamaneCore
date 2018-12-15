@@ -9923,10 +9923,10 @@ void Unit::SetPower(Powers power, int32 val)
         SendMessageToSet(packet.Write(), GetTypeId() == TYPEID_PLAYER);
     }
 
+    CheckPowerProc(power, oldPower, val);
+
     if (ToPlayer())
         sScriptMgr->OnModifyPower(ToPlayer(), power, oldPower, val, false, true);
-
-    CheckPowerProc(power, oldPower, val);
 
     // group update
     if (Player* player = ToPlayer())
