@@ -76,7 +76,7 @@ void WorldQuestMgr::LoadWorldQuestTemplates()
         if (!quest)
         {
             TC_LOG_ERROR("server.loading", "World Quest: %u exist but no quest template found. Skip.", questId);
-            return;
+            continue;
         }
 
         WorldQuestTemplate* worldQuestTemplate = new WorldQuestTemplate(questId, fields[1].GetUInt32(), fields[2].GetUInt32(), fields[3].GetUInt8());
