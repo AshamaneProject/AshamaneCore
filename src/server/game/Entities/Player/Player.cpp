@@ -15569,7 +15569,7 @@ void Player::AddQuest(Quest const* quest, Object* questGiver)
             limittime = questGiver->ToPlayer()->getQuestStatusMap()[quest_id].Timer / IN_MILLISECONDS;
 
         if (quest->IsWorldQuest())
-            limittime = sWorldQuestMgr->GetTimerForQuest(quest->Expansion, quest_id);
+            limittime = sWorldQuestMgr->GetTimerForQuest(quest_id);
 
         AddTimedQuest(quest_id);
         questStatusData.Timer = limittime * IN_MILLISECONDS;
