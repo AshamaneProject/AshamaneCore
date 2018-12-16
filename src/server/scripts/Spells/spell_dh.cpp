@@ -1680,7 +1680,8 @@ public:
 
         bool CheckProc(ProcEventInfo& eventInfo)
         {
-            if (eventInfo.GetDamageInfo()->GetAttackType() == BASE_ATTACK ||
+            if (eventInfo.GetDamageInfo() &&
+                eventInfo.GetDamageInfo()->GetAttackType() == BASE_ATTACK ||
                 eventInfo.GetDamageInfo()->GetAttackType() == OFF_ATTACK)
             {
                 Unit* caster = eventInfo.GetDamageInfo()->GetAttacker();
@@ -2287,7 +2288,7 @@ public:
         {
             Unit* caster = GetCaster();
             Unit* target = eventInfo.GetActor();
-            if (!caster)
+            if (!caster || !eventInfo.GetDamageInfo())
                 return;
             if (caster->IsFriendlyTo(target))
                 return;
@@ -3003,7 +3004,7 @@ class spell_dh_chaos_cleave : public SpellScriptLoader
             {
                 PreventDefaultAction();
                 Unit* caster = GetCaster();
-                if (!caster)
+                if (!caster || !eventInfo.GetDamageInfo())
                     return;
 
                 int32 damage = CalculatePct(eventInfo.GetDamageInfo()->GetDamage(), aurEff->GetAmount());
@@ -3036,7 +3037,7 @@ class spell_dh_desperate_instincts : public SpellScriptLoader
             {
                 PreventDefaultAction();
                 Unit* caster = GetCaster();
-                if (!caster)
+                if (!caster || !eventInfo.GetDamageInfo())
                     return;
 
                 if (caster->GetSpellHistory()->HasCooldown(SPELL_DH_BLUR_BUFF))
@@ -3334,7 +3335,7 @@ class spell_dh_frailty : public SpellScriptLoader
             {
                 PreventDefaultAction();
                 Unit* caster = GetCaster();
-                if (!caster || caster != eventInfo.GetActor())
+                if (!caster || caster != eventInfo.GetActor() || !eventInfo.GetDamageInfo())
                     return;
 
                 uint32 damage = CalculatePct(eventInfo.GetDamageInfo()->GetDamage(), aurEff->GetAmount());
@@ -3535,7 +3536,7 @@ class spell_dh_artifact_rage_of_the_illidari : public SpellScriptLoader
             void OnProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
             {
                 Unit* caster = GetCaster();
-                if (!caster)
+                if (!caster || !eventInfo.GetDamageInfo())
                     return;
 
                 int32 damage = CalculatePct(eventInfo.GetDamageInfo()->GetDamage(), aurEff->GetSpellEffectInfo()->BasePoints);
@@ -3662,7 +3663,7 @@ class spell_dh_artifact_charred_warblades : public SpellScriptLoader
             void OnProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
             {
                 Unit* caster = GetCaster();
-                if (!caster)
+                if (!caster || !eventInfo.GetDamageInfo())
                     return;
 
                 if (!eventInfo.GetDamageInfo()->GetDamage() || !(eventInfo.GetDamageInfo()->GetSchoolMask() & SPELL_SCHOOL_MASK_FIRE))
@@ -3933,7 +3934,7 @@ class spell_demon_hunter_pain : public SpellScriptLoader
             void OnProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
             {
                 Unit* caster = GetCaster();
-                if (!caster)
+                if (!caster || !eventInfo.GetDamageInfo())
                     return;
 
                 if (eventInfo.GetSpellInfo() && eventInfo.GetSpellInfo()->IsPositive())
