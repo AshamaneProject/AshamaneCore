@@ -660,6 +660,11 @@ uint32 SpellHistory::GetRemainingCooldown(SpellInfo const* spellInfo) const
     return uint32(std::chrono::duration_cast<std::chrono::milliseconds>(remaining).count());
 }
 
+uint32 SpellHistory::GetRemainingCooldown(uint32 spellId) const
+{
+    return GetRemainingCooldown(sSpellMgr->GetSpellInfo(spellId));
+}
+
 void SpellHistory::LockSpellSchool(SpellSchoolMask schoolMask, uint32 lockoutTime)
 {
     Clock::time_point now = Clock::now();

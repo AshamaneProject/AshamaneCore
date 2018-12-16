@@ -128,6 +128,7 @@ public:
     bool HasCooldown(SpellInfo const* spellInfo, uint32 itemId = 0, bool ignoreCategoryCooldown = false) const;
     bool HasCooldown(uint32 spellId, uint32 itemId = 0, bool ignoreCategoryCooldown = false) const;
     uint32 GetRemainingCooldown(SpellInfo const* spellInfo) const;
+    uint32 GetRemainingCooldown(uint32 spellId) const;
 
     // School lockouts
     void LockSpellSchool(SpellSchoolMask schoolMask, uint32 lockoutTime);
