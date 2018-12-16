@@ -1673,19 +1673,20 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/)
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_DH_RAZOR_SPIKES_SLOW))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_DH_RAZOR_SPIKES_SLOW });
         }
 
         bool CheckProc(ProcEventInfo& eventInfo)
         {
-            if (eventInfo.GetDamageInfo() &&
-                eventInfo.GetDamageInfo()->GetAttackType() == BASE_ATTACK ||
-                eventInfo.GetDamageInfo()->GetAttackType() == OFF_ATTACK)
+            DamageInfo* damageInfo = eventInfo.GetDamageInfo();
+            if (!damageInfo)
+                return false;
+
+            if (damageInfo->GetAttackType() == BASE_ATTACK ||
+                damageInfo->GetAttackType() == OFF_ATTACK)
             {
-                Unit* caster = eventInfo.GetDamageInfo()->GetAttacker();
-                Unit* target = eventInfo.GetDamageInfo()->GetVictim();
+                Unit* caster = damageInfo->GetAttacker();
+                Unit* target = damageInfo->GetVictim();
                 if (!caster || !target || !caster->ToPlayer())
                     return false;
 
