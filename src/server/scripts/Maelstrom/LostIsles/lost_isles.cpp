@@ -286,7 +286,7 @@ struct npc_bomb_monkey : public ScriptedAI
 enum MinerTroublesQuest
 {
     QUEST_MINER_TROUBLES                = 14021,
-    
+
     SPELL_MINER_TROUBLESQUEST_ACCEPT    = 68061,
     SPELL_MINER_TROUBLESQUEST_COMPLETE  = 68063,
     SPELL_SUMMON_ORE_CART               = 68064,
@@ -307,7 +307,7 @@ enum CapturingTheUnknown
     SPELL_CTU_SEE_INVIS_2               = 70678,
     SPELL_CTU_SEE_INVIS_3               = 70680,
     SPELL_CTU_SEE_INVIS_4               = 70681,
-    
+
     NPC_CTU_BUNNY_1                     = 37872,
     NPC_CTU_BUNNY_2                     = 37895,
     NPC_CTU_BUNNY_3                     = 37896,
@@ -751,7 +751,7 @@ struct npc_warchief_revenge_cyclone : public npc_escortAI
 enum UpUpAndAway
 {
     QUEST_UP_UP_AND_AWAY            = 14244,
-    
+
     SPELL_ROCKET_BLAST              = 66110,
     SPELL_SUMMON_CHARACTER_ROCKET   = 68806,
     SPELL_UUAA_KILL_CREDIT          = 68813,
@@ -880,9 +880,8 @@ class spell_tiab_effect2 : public SpellScript
     {
         PreventHitDefaultEffect(effIndex);
 
-        if (Unit* unit = GetHitUnit())
-            if (Player* casterPlayer = GetCaster()->ToPlayer())
-                casterPlayer->KilledMonsterCredit(38024);
+        if (Player* casterPlayer = GetCaster()->ToPlayer())
+            casterPlayer->KilledMonsterCredit(38024);
     }
 
     void Register() override

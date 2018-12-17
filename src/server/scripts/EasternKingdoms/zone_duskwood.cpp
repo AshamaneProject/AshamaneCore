@@ -409,7 +409,7 @@ class spell_sacred_cleansing : public SpellScript
 
     SpellCastResult CheckRequirement()
     {
-        if (Creature* fel = GetCaster()->FindNearestCreature(NPC_MORBENT_FEL, 15.0f, true))
+        if (GetCaster()->FindNearestCreature(NPC_MORBENT_FEL, 15.0f, true))
             return SPELL_CAST_OK;
 
         return SPELL_FAILED_INCORRECT_AREA;
@@ -504,7 +504,7 @@ struct npc_ebenlocke : public ScriptedAI
         QUEST_EMBALMERS_REVENGE    = 26727,
         NPC_STITCHES               = 43862
     };
-    
+
     npc_ebenlocke(Creature* creature) : ScriptedAI(creature) { }
 
     void sQuestAccept(Player* /*player*/, Quest const* quest) override

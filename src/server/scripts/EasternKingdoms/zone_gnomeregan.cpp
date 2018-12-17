@@ -330,7 +330,7 @@ struct npc_multi_bot : public ScriptedAI
         {
             if (GameObject* gobject = me->FindNearestGameObject(203975, 5))
             {
-                if (Player* owner = me->GetOwner()->ToPlayer())
+                if (me->GetOwner()->IsPlayer())
                 {
                     Talk(0);
                     gobject->SetGoState(GO_STATE_ACTIVE);
@@ -338,7 +338,7 @@ struct npc_multi_bot : public ScriptedAI
                     me->CastSpell(me, 79422, true);
                 }
             }
-            
+
             context.Repeat();
         });
     }

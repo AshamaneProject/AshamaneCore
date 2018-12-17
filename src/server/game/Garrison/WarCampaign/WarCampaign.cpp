@@ -60,7 +60,7 @@ void WarCampaign::Delete()
     Garrison::Delete();
 }
 
-bool WarCampaign::IsAllowedArea(AreaTableEntry const* area) const
+bool WarCampaign::IsAllowedArea(AreaTableEntry const* /*area*/) const
 {
     return false;
 }

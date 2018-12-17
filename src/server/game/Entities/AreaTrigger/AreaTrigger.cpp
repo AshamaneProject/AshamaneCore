@@ -235,11 +235,12 @@ AreaTrigger* AreaTrigger::CreateAreaTrigger(uint32 spellMiscId, Unit* caster, ui
 
     AreaTrigger* at = new AreaTrigger();
     AreaTriggerCircularMovementInfo* cmi = new AreaTriggerCircularMovementInfo();
-    cmi->CanLoop = true;
+    cmi->CanLoop = canLoop;
     cmi->Center = pos;
     cmi->Radius = radius;
     cmi->CounterClockwise = counterClockwise;
     cmi->InitialAngle = angle;
+    cmi->TimeToTarget = timeToTarget;
     if (!at->Create(spellMiscId, caster, caster, spellEntry, pos, duration, spellEntry->GetSpellVisual(), ObjectGuid::Empty, nullptr, cmi))
     {
         delete at;

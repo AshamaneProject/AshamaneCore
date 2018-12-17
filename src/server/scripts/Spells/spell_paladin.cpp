@@ -1005,7 +1005,7 @@ class spell_pal_word_of_glory : public SpellScript
 
     WorldObject* m_mainTarget;
 
-    void HandleDummy(SpellEffIndex effIndex)
+    void HandleDummy(SpellEffIndex /*effIndex*/)
     {
         m_mainTarget = GetHitUnit();
     }

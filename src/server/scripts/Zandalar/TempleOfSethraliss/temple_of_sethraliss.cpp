@@ -45,13 +45,13 @@ struct npc_loose_spark : public ScriptedAI
         {
             float angle = -circularAddition + i*circularAddition;
             // Clockwise
-            for (int32 j = 0; i < 3; ++j)
+            for (int32 j = 0; j < 3; ++j)
             {
                 float radius = 10.0f - j * 4;
                 AreaTrigger::CreateAreaTrigger(AT_SPELL_MISC_ID, me, SPELL_LOOSE_SPARKS, spawnPosition, -1, radius, angle, 12000, true, false);
             }
             // Counterclockwise
-            for (int32 j = 0; i < 2; ++j)
+            for (int32 j = 0; j < 2; ++j)
             {
                 float radius = 8.0f - j * 4;
                 AreaTrigger::CreateAreaTrigger(AT_SPELL_MISC_ID, me, SPELL_LOOSE_SPARKS, spawnPosition, -1, radius, angle, 12000, true, true);
@@ -61,8 +61,6 @@ struct npc_loose_spark : public ScriptedAI
 
     void UpdateAI(uint32 diff) override { }
 };
-
-
 
 // 17715
 class at_loose_sparks : public AreaTriggerEntityScript

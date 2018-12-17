@@ -222,7 +222,7 @@ public:
             return false;
         }
 
-        void HandleProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+        void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
         {
             Unit* caster = GetCaster();
             Unit* target = eventInfo.GetActionTarget();
@@ -352,7 +352,7 @@ public:
     {
         PrepareAuraScript(spell_dh_felblade_AuraScript);
 
-        void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
+        void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
         {
             Unit* caster = GetCaster();
             if (!caster)
@@ -385,7 +385,7 @@ public:
 
         bool targetHit;
 
-        bool Validate(SpellInfo const* spellInfo)
+        bool Validate(SpellInfo const* /*spellInfo*/) override
         {
             if (!sSpellMgr->GetSpellInfo(SPELL_DH_PREPARED_FURY))
                 return false;
@@ -444,7 +444,7 @@ public:
 
         bool targetHit;
 
-        bool Validate(SpellInfo const* spellInfo)
+        bool Validate(SpellInfo const* /*spellInfo*/) override
         {
             if (!sSpellMgr->GetSpellInfo(SPELL_DH_FEL_MASTERY_FURY))
                 return false;
@@ -556,7 +556,7 @@ public:
     {
         PrepareAuraScript(spell_dh_metamorphosis_immunity_AuraScript);
 
-        void HandleRemove(AuraEffect const* aurEff, AuraEffectHandleModes mode)
+        void HandleRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
         {
             Unit* caster = GetCaster();
             if (!caster)
@@ -597,7 +597,7 @@ public:
                 });
         }
 
-        void CalcSpeed(AuraEffect const* aurEff, int32& amount, bool& canBeRecalculated)
+        void CalcSpeed(AuraEffect const* /*aurEff*/, int32& amount, bool& /*canBeRecalculated*/)
         {
             amount = 1250;
             RefreshDuration();
@@ -656,7 +656,7 @@ public:
             }
         }
 
-        void CalcSpeed(AuraEffect const* aurEff, int32& amount, bool& canBeRecalculated)
+        void CalcSpeed(AuraEffect const* /*aurEff*/, int32& amount, bool& /*canBeRecalculated*/)
         {
             amount = 1250;
             RefreshDuration();
@@ -757,7 +757,7 @@ public:
             return true;
         }
 
-        void HandlePeriodic(AuraEffect const* aurEff)
+        void HandlePeriodic(AuraEffect const* /*aurEff*/)
         {
             if (Unit* caster = GetCaster())
             {
@@ -772,13 +772,13 @@ public:
             firstTick = false;
         }
 
-        void HandleRemove(AuraEffect const* aurEff, AuraEffectHandleModes mode)
+        void HandleRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
         {
             if (Unit* caster = GetCaster())
                 caster->RemoveAurasDueToSpell(SPELL_DH_EYE_BEAM_VISUAL);
         }
 
-        void HandleApply(AuraEffect const* aurEff, AuraEffectHandleModes mode)
+        void HandleApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
         {
             if (Unit* caster = GetCaster())
             {
@@ -866,7 +866,7 @@ public:
             return true;
         }
 
-        void HandleEffectProc(AuraEffect const* aurEff, ProcEventInfo& /*eventInfo*/)
+        void HandleEffectProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
         {
             PreventDefaultAction();
 
@@ -1040,19 +1040,19 @@ public:
     {
         PrepareAuraScript(spell_dh_last_resort_AuraScript);
 
-        bool Validate(SpellInfo const* /*spellInfo*/)
+        bool Validate(SpellInfo const* /*spellInfo*/) override
         {
             if (!sSpellMgr->GetSpellInfo(SPELL_DH_LAST_RESORT_DEBUFF))
                 return false;
             return true;
         }
 
-        void CalcAmount(AuraEffect const* aurEff, int32& amount, bool& canBeRecalculated)
+        void CalcAmount(AuraEffect const* /*aurEff*/, int32& amount, bool& /*canBeRecalculated*/)
         {
             amount = -1;
         }
 
-        void HandleAbsorb(AuraEffect* aurEff, DamageInfo& dmgInfo, uint32& absorbAmount)
+        void HandleAbsorb(AuraEffect* /*aurEff*/, DamageInfo& dmgInfo, uint32& absorbAmount)
         {
             Unit* target = GetTarget();
             if (!target)
@@ -1124,7 +1124,7 @@ public:
             return true;
         }
 
-        void HandleTrigger(AuraEffect const* aurEff)
+        void HandleTrigger(AuraEffect const* /*aurEff*/)
         {
             Unit* caster = GetCaster();
             Unit* target = GetTarget();
@@ -1156,7 +1156,7 @@ public:
     {
         PrepareSpellScript(spell_dh_fel_barrage_damage_SpellScript);
 
-        void HandleHit(SpellEffIndex effIndex)
+        void HandleHit(SpellEffIndex /*effIndex*/)
         {
             int32 chargesUsed = GetSpellValue()->EffectBasePoints[0];
             int32 dmg = GetHitDamage();
@@ -1198,7 +1198,7 @@ public:
             return std::find(removeSpellIds.begin(), removeSpellIds.end(), eventInfo.GetSpellInfo()->Id) == removeSpellIds.end();
         }
 
-        void HandleProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+        void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
         {
             PreventDefaultAction();
 
@@ -1210,7 +1210,7 @@ public:
             if (SpellCategoryEntry const* barrage = sSpellCategoryStore.LookupEntry(chargeCatId))
             {
                 caster->GetSpellHistory()->RestoreCharge(chargeCatId);
-                caster->GetSpellHistory()->ForceSendSpellCharges();
+                caster->GetSpellHistory()->ForceSendSpellCharge(barrage);
             }
         }
 
@@ -1237,7 +1237,7 @@ public:
     {
         PrepareAuraScript(spell_dh_nemesis_AuraScript);
 
-        void HandleAfterRemove(AuraEffect const* aurEff, AuraEffectHandleModes /*mode*/)
+        void HandleAfterRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
         {
             if (!GetTargetApplication())
                 return;
@@ -1405,7 +1405,7 @@ public:
                 caster->CastSpell(caster, SPELL_DH_FEAST_OF_SOULS_HEAL, true);
         }
 
-        void HandleDummy(SpellEffIndex effIndex)
+        void HandleDummy(SpellEffIndex /*effIndex*/)
         {
             Unit* caster = GetCaster();
             if (!caster)
@@ -1528,7 +1528,7 @@ public:
     {
         PrepareSpellScript(spell_dh_fiery_brand_SpellScript);
 
-        bool Validate(SpellInfo const* /*spellInfo*/)
+        bool Validate(SpellInfo const* /*spellInfo*/) override
         {
             if (!sSpellMgr->GetSpellInfo(SPELL_DH_FIERY_BRAND_DOT))
                 return false;
@@ -1632,7 +1632,7 @@ public:
     {
         PrepareAuraScript(spell_dh_fiery_brand_absorb_AuraScript);
 
-        void CalcAmount(AuraEffect const* aurEff, int32& amount, bool& canBeRecalculated)
+        void CalcAmount(AuraEffect const* /*aurEff*/, int32& amount, bool& /*canBeRecalculated*/)
         {
             amount = -1;
         }
@@ -1671,7 +1671,7 @@ public:
     {
         PrepareAuraScript(spell_dh_razor_spikes_AuraScript);
 
-        bool Validate(SpellInfo const* /*spellInfo*/)
+        bool Validate(SpellInfo const* /*spellInfo*/) override
         {
             return ValidateSpellInfo({ SPELL_DH_RAZOR_SPIKES_SLOW });
         }
@@ -1695,7 +1695,7 @@ public:
 
                 if (caster->HasAura(SPELL_DH_DEMON_SPIKES_BUFF))
                 {
-                    caster->GetScheduler().Schedule(750ms, [caster, target](TaskContext context)
+                    caster->GetScheduler().Schedule(750ms, [caster, target](TaskContext /*context*/)
                     {
                         caster->CastSpell(target, SPELL_DH_RAZOR_SPIKES_SLOW, true);
                     });
@@ -1727,7 +1727,7 @@ public:
     {
         PrepareAuraScript(spell_dh_soul_barrier_AuraScript);
 
-        void CalcAmount(AuraEffect const* aurEff, int32& amount, bool& canBeRecalculated)
+        void CalcAmount(AuraEffect const* /*aurEff*/, int32& amount, bool& /*canBeRecalculated*/)
         {
             Unit* caster = GetCaster();
             if (!caster)
@@ -1832,7 +1832,7 @@ public:
     {
         PrepareSpellScript(spell_dh_nether_bond_SpellScript);
 
-        bool Validate(SpellInfo const* /*spellInfo*/)
+        bool Validate(SpellInfo const* /*spellInfo*/) override
         {
             if (!sSpellMgr->GetSpellInfo(SPELL_DH_NETHER_BOND_DAMAGE) ||
                 !sSpellMgr->GetSpellInfo(SPELL_DH_NETHER_BOND_PERIODIC))
@@ -1873,7 +1873,7 @@ public:
 
         Unit* m_BondUnit;
 
-        void HandlePeriodic(AuraEffect const* aurEff)
+        void HandlePeriodic(AuraEffect const* /*aurEff*/)
         {
             Unit* caster = GetCaster();
             if (!caster)
@@ -1936,7 +1936,7 @@ public:
             return nullptr;
         }
 
-        void HandleApply(AuraEffect const* aurEff, AuraEffectHandleModes mode)
+        void HandleApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
         {
             Unit* caster = GetCaster();
             if (!caster)
@@ -1970,14 +1970,14 @@ public:
     {
         PrepareAuraScript(spell_dh_solitude_AuraScript);
 
-        bool Validate(SpellInfo const* spellInfo)
+        bool Validate(SpellInfo const* /*spellInfo*/) override
         {
             if (!sSpellMgr->GetSpellInfo(SPELL_DH_SOLITUDE_BUFF))
                 return false;
             return true;
         }
 
-        void HandlePeriodic(AuraEffect const* aurEff)
+        void HandlePeriodic(AuraEffect const* /*aurEff*/)
         {
             PreventDefaultAction();
 
@@ -2029,8 +2029,8 @@ public:
             if (!GetSpellInfo()->GetEffect(EFFECT_1) || !GetSpellInfo()->GetEffect(EFFECT_2))
                 return;
 
-            int32 threshold1 = caster->CountPctFromMaxHealth(aurEff->GetBaseAmount());
-            int32 threshold2 = caster->CountPctFromMaxHealth(GetSpellInfo()->GetEffect(EFFECT_1)->BasePoints);
+            uint64 threshold1 = caster->CountPctFromMaxHealth(aurEff->GetBaseAmount());
+            uint64 threshold2 = caster->CountPctFromMaxHealth(GetSpellInfo()->GetEffect(EFFECT_1)->BasePoints);
             int32 duration = GetSpellInfo()->GetEffect(EFFECT_2)->BasePoints;
 
             if (caster->GetHealth() - eventInfo.GetDamageInfo()->GetDamage() < threshold1)
@@ -2099,7 +2099,6 @@ public:
             Trinity::AnyFriendlyUnitInObjectRangeCheck check(_player, _player, 10.f, true);
             Trinity::UnitListSearcher<Trinity::AnyFriendlyUnitInObjectRangeCheck> searcher(_player, allies, check);
             Cell::VisitAllObjects(_player, searcher, 10.f);
-            uint32 dispel_mask = 1;
 
             for (Unit* unit : allies)
             {
@@ -2195,7 +2194,7 @@ public:
     {
         PrepareAuraScript(spell_dh_eye_of_leotheras_AuraScript);
 
-        bool Validate(SpellInfo const* spellInfo)
+        bool Validate(SpellInfo const* /*spellInfo*/) override
         {
             if (!sSpellMgr->GetSpellInfo(SPELL_DH_EYE_OF_LEOTHERAS_DAMAGE))
                 return false;
@@ -2248,7 +2247,7 @@ public:
     {
         PrepareSpellScript(spell_dh_immolation_aura_SpellScript);
 
-        bool Validate(SpellInfo const* spellInfo)
+        bool Validate(SpellInfo const* /*spellInfo*/) override
         {
             if (!sSpellMgr->GetSpellInfo(SPELL_DH_CLEANSED_BY_FLAME) ||
                 !sSpellMgr->GetSpellInfo(SPELL_DH_CLEANSED_BY_FLAME_DISPEL))
@@ -2285,7 +2284,7 @@ public:
     {
         PrepareAuraScript(spell_dh_jagged_spikes_AuraScript);
 
-        void HandleProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+        void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
         {
             Unit* caster = GetCaster();
             Unit* target = eventInfo.GetActor();
@@ -2323,7 +2322,7 @@ class spell_dh_fel_lance : public SpellScriptLoader
         {
             PrepareSpellScript(spell_dh_fel_lance_SpellScript);
 
-            void HandleHit(SpellEffIndex effIndex)
+            void HandleHit(SpellEffIndex /*effIndex*/)
             {
                 Unit* caster = GetCaster();
                 Unit* target = GetHitUnit();
@@ -2356,7 +2355,7 @@ class spell_dh_intimidated : public SpellScriptLoader
         {
             PrepareAuraScript(spell_dh_intimidated_AuraScript);
 
-            void OnProc(AuraEffect const*  aurEff, ProcEventInfo& eventInfo)
+            void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
             {
                 Unit* attacker = eventInfo.GetActor();
                 WorldObject* auraOwner = GetAura()->GetOwner();
@@ -2467,7 +2466,7 @@ class spell_dh_artifact_deceivers_fury : public SpellScriptLoader
         {
             PrepareAuraScript(spell_dh_artifact_deceivers_fury_AuraScript);
 
-            void OnProc(AuraEffect const*  aurEff, ProcEventInfo& eventInfo)
+            void OnProc(AuraEffect const* aurEff, ProcEventInfo& /*eventInfo*/)
             {
                 Unit* caster = GetCaster();
                 if (!caster)
@@ -2530,7 +2529,7 @@ class spell_dh_artifact_anguish_damage : public SpellScriptLoader
         {
             PrepareSpellScript(spell_dh_artifact_anguish_damage_SpellScript);
 
-            void HandleHit(SpellEffIndex effIndex)
+            void HandleHit(SpellEffIndex /*effIndex*/)
             {
                 int32 stacks = GetSpellValue()->AuraStackAmount;
                 SetHitDamage(GetHitDamage() * stacks);
@@ -2593,7 +2592,7 @@ class spell_dh_shattered_souls_havoc : public SpellScriptLoader
         {
             PrepareAuraScript(spell_dh_shattered_souls_havoc_AuraScript);
 
-            void OnProc(AuraEffect const*  aurEff, ProcEventInfo& eventInfo)
+            void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
             {
                 PreventDefaultAction();
                 Unit* caster = GetCaster();
@@ -2630,7 +2629,7 @@ class spell_dh_shear_proc : public SpellScriptLoader
         {
             PrepareAuraScript(spell_dh_shear_proc_AuraScript);
 
-            void OnProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+            void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
             {
                 PreventDefaultAction();
                 Unit* caster = GetCaster();
@@ -2835,7 +2834,7 @@ class spell_dh_darkness_absorb : public SpellScriptLoader
                 amount = -1;
             }
 
-            void OnAbsorb(AuraEffect * aurEff, DamageInfo& dmgInfo, uint32& absorbAmount)
+            void OnAbsorb(AuraEffect* /*aurEff*/, DamageInfo& dmgInfo, uint32& absorbAmount)
             {
                 Unit* caster = GetCaster();
                 if (!caster)
@@ -2926,7 +2925,7 @@ class spell_dh_demonic_appetite : public SpellScriptLoader
         {
             PrepareAuraScript(spell_dh_demonic_appetite_AuraScript);
 
-            void OnProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+            void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
             {
                 PreventDefaultAction();
                 Unit* caster = GetCaster();
@@ -2964,7 +2963,7 @@ public:
                 PreventHitDefaultEffect(effIndex);
         }
 
-        void HandleHeal(SpellEffIndex effIndex)
+        void HandleHeal(SpellEffIndex /*effIndex*/)
         {
             Unit* caster = GetCaster();
             if (!caster)
@@ -3073,7 +3072,7 @@ class spell_dh_immolation_aura_initial : public SpellScriptLoader
         {
             PrepareSpellScript(spell_dh_immolation_aura_initial_SpellScript);
 
-            void HandleHit(SpellEffIndex effIndex)
+            void HandleHit(SpellEffIndex /*effIndex*/)
             {
                 Unit* caster = GetCaster();
                 Unit* target = GetHitUnit();
@@ -3106,7 +3105,7 @@ class spell_dh_felblade_dummy : public SpellScriptLoader
         {
             PrepareSpellScript(spell_dh_felblade_dummy_SpellScript);
 
-            void HandleHit(SpellEffIndex effIndex)
+            void HandleHit(SpellEffIndex /*effIndex*/)
             {
                 Unit* caster = GetCaster();
                 Unit* target = GetHitUnit();
@@ -3142,7 +3141,7 @@ class spell_dh_fracture : public SpellScriptLoader
         {
             PrepareSpellScript(spell_dh_fracture_SpellScript);
 
-            void HandleHit(SpellEffIndex effIndex)
+            void HandleHit(SpellEffIndex /*effIndex*/)
             {
                 Unit* caster = GetCaster();
                 if (!caster)
@@ -3238,7 +3237,7 @@ class spell_dh_fel_devastation_damage : public SpellScriptLoader
 
             bool firstHit = true;
 
-            void HandleHit(SpellEffIndex effIndex)
+            void HandleHit(SpellEffIndex /*effIndex*/)
             {
                 Unit* caster = GetCaster();
                 if (!caster)
@@ -3285,7 +3284,7 @@ class spell_dh_spirit_bomb : public SpellScriptLoader
                 return false;
             }
 
-            void HandleHit(SpellEffIndex effIndex)
+            void HandleHit(SpellEffIndex /*effIndex*/)
             {
                 Unit* caster = GetCaster();
                 Unit* target = GetHitUnit();
@@ -3410,7 +3409,7 @@ struct at_dh_artifact_fury_of_the_illidari : AreaTriggerAI
 {
     at_dh_artifact_fury_of_the_illidari(AreaTrigger* areatrigger) : AreaTriggerAI(areatrigger) { }
 
-    void OnInitialize()
+    void OnInitialize() override
     {
         at->Variables.Set<int32>("_timer", 500);
     }
@@ -3466,7 +3465,7 @@ class spell_dh_artifact_inner_demons : public SpellScriptLoader
         {
             PrepareAuraScript(spell_dh_artifact_inner_demons_AuraScript);
 
-            void OnProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+            void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
             {
                 Unit* caster = GetCaster();
                 Unit* target = eventInfo.GetActionTarget();
@@ -3494,7 +3493,7 @@ struct at_dh_artifact_inner_demons : AreaTriggerAI
 {
     at_dh_artifact_inner_demons(AreaTrigger* areatrigger) : AreaTriggerAI(areatrigger) { }
 
-    void OnInitialize()
+    void OnInitialize() override
     {
         Unit* caster = at->GetCaster();
         if (!caster)
@@ -3604,7 +3603,7 @@ class spell_dh_artifact_soul_carver : public SpellScriptLoader
         {
             PrepareSpellScript(spell_dh_artifact_soul_carver_SpellScript);
 
-            void HandleHit(SpellEffIndex effIndex)
+            void HandleHit(SpellEffIndex /*effIndex*/)
             {
                 Unit* caster = GetCaster();
                 if (!caster)
@@ -3696,7 +3695,7 @@ class spell_dh_artifact_fueled_by_pain : public SpellScriptLoader
         {
             PrepareAuraScript(spell_dh_artifact_fueled_by_pain_AuraScript);
 
-            void OnProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+            void OnProc(AuraEffect const* aurEff, ProcEventInfo& /*eventInfo*/)
             {
                 Unit* caster = GetCaster();
                 if (!caster)
@@ -3932,7 +3931,7 @@ class spell_demon_hunter_pain : public SpellScriptLoader
         {
             PrepareAuraScript(spell_demon_hunter_pain_AuraScript);
 
-            void OnProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+            void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
             {
                 Unit* caster = GetCaster();
                 if (!caster || !eventInfo.GetDamageInfo())
@@ -3972,7 +3971,7 @@ public:
     public:
         PrepareSpellScript(spell_demon_hunter_mana_break_SpellScript);
 
-        void HandleHit(SpellEffIndex effIndex)
+        void HandleHit(SpellEffIndex /*effIndex*/)
         {
             Unit* caster = GetCaster();
             Unit* target = GetHitUnit();
@@ -4073,7 +4072,6 @@ public:
         int32 GetPointsGained(Player* caster, uint32 damage)
         {
             float damagePct = (float) damage / caster->GetMaxHealth() * 100.f / 2;
-            uint32 min = 1;
             int32 max = GetSpellInfo()->GetEffect(EFFECT_0)->BasePoints;
             if (damagePct > max)
                 return max;

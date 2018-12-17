@@ -394,7 +394,7 @@ public:
     {
         PrepareAuraScript(spell_creeping_rot_AuraScript);
 
-        void OnTick(AuraEffect const* aurEff)
+        void OnTick(AuraEffect const* /*aurEff*/)
         {
             if (Unit* target = GetTarget())
                 if (Creature* leaxa = target->GetInstanceScript()->GetCreature(DATA_ELDER_LEAXA))

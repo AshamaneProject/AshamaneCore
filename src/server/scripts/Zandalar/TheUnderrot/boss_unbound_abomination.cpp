@@ -223,7 +223,7 @@ struct npc_underrot_titan_keeper_hezrel : public ScriptedAI
         }
     }
 
-    void MovementInform(uint32 type, uint32 pointId) override
+    void MovementInform(uint32 /*type*/, uint32 pointId) override
     {
         if (pointId == 1)
             Talk(TALK_MOTHER_NO_RESPONDING);

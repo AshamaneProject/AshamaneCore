@@ -269,7 +269,7 @@ void Loot::GenerateJournalEncounterLoot(Player* looter, uint32 journalEncounterI
 }
 
 // Calls processor of corresponding LootTemplate (which handles everything including references)
-bool Loot::FillLoot(uint32 lootId, LootStore const& store, Player* lootOwner, bool personal, bool noEmptyError, uint16 lootMode /*= LOOT_MODE_DEFAULT*/, bool specOnly /*= false*/)
+bool Loot::FillLoot(uint32 lootId, LootStore const& store, Player* lootOwner, bool /*personal*/, bool noEmptyError, uint16 lootMode /*= LOOT_MODE_DEFAULT*/, bool specOnly /*= false*/)
 {
     // Must be provided
     if (!lootOwner)
@@ -376,7 +376,11 @@ LootItem* Loot::LootItemInSlot(uint32 lootSlot, Player* player)
 
 uint32 Loot::GetMaxSlotInLootFor(Player* player) const
 {
-    return items.size();
+    auto itr = items.find(player->GetGUID());
+    if (itr == items.end())
+        return 0;
+
+    return itr->second.size();
 }
 
 // return true if there is any item that is lootable for any player (not quest item, FFA or conditional)

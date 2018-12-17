@@ -479,10 +479,10 @@ public:
                 if (Creature* Troll2 = me->SummonCreature(NPC_FROSTMANE_RAIDER, -5552.03f, -1308.41f, 398.271f, 6.02804f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 90000,true))
                 if (Creature* Troll3 = me->SummonCreature(NPC_FROSTMANE_RAIDER, -5551.05f, -1314.46f, 398.581f, 0.157184f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 90000,true))
                 if (Creature* Troll4 = me->SummonCreature(NPC_FROSTMANE_RAIDER, -5547.3f, -1318.42f, 398.635f, 0.565593f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 90000,true))
-                if (Creature* Guard1 = me->SummonCreature(NPC_AMBERSTILL_MOUNTAINEER, -5541.07f, -1317.56f, 398.805f, 2.62334f, TEMPSUMMON_TIMED_DESPAWN, 90000,true))
-                if (Creature* Guard2 = me->SummonCreature(NPC_AMBERSTILL_MOUNTAINEER, -5540.12f, -1314.39f, 398.721f, 2.69402f, TEMPSUMMON_TIMED_DESPAWN, 90000,true))
-                if (Creature* Guard3 = me->SummonCreature(NPC_AMBERSTILL_MOUNTAINEER, -5540.65f, -1310.12f, 398.374f, 3.14955f, TEMPSUMMON_TIMED_DESPAWN, 90000,true))
-                if (Creature* Guard4 = me->SummonCreature(NPC_AMBERSTILL_MOUNTAINEER, -5542.06f, -1305.57f, 398.801f, 3.41266f, TEMPSUMMON_TIMED_DESPAWN, 90000,true))
+                if (me->SummonCreature(NPC_AMBERSTILL_MOUNTAINEER, -5541.07f, -1317.56f, 398.805f, 2.62334f, TEMPSUMMON_TIMED_DESPAWN, 90000,true))
+                if (me->SummonCreature(NPC_AMBERSTILL_MOUNTAINEER, -5540.12f, -1314.39f, 398.721f, 2.69402f, TEMPSUMMON_TIMED_DESPAWN, 90000,true))
+                if (me->SummonCreature(NPC_AMBERSTILL_MOUNTAINEER, -5540.65f, -1310.12f, 398.374f, 3.14955f, TEMPSUMMON_TIMED_DESPAWN, 90000,true))
+                if (me->SummonCreature(NPC_AMBERSTILL_MOUNTAINEER, -5542.06f, -1305.57f, 398.801f, 3.41266f, TEMPSUMMON_TIMED_DESPAWN, 90000,true))
                     {
                         TrollGUIDs[0] = Troll1->GetGUID();
                         TrollGUIDs[1] = Troll2->GetGUID();

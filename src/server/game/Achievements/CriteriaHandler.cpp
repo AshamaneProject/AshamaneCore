@@ -1641,7 +1641,7 @@ bool CriteriaHandler::AdditionalRequirementsSatisfied(ModifierTreeNode const* tr
     return conditionMet;
 }
 
-bool CriteriaHandler::AdditionalRequirementsConditionSatisfied(ModifierTreeNode const* tree, uint64 miscValue1, uint64 miscValue2, Unit const* unit, Player* referencePlayer) const
+bool CriteriaHandler::AdditionalRequirementsConditionSatisfied(ModifierTreeNode const* tree, uint64 miscValue1, uint64 /*miscValue2*/, Unit const* unit, Player* referencePlayer) const
 {
     uint32 reqType = tree->Entry->Type;
     if (!reqType)

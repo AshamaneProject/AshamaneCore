@@ -468,7 +468,7 @@ class spell_mage_arcane_barrage : public SpellScript
 
     void FilterTargets(std::list<WorldObject*>& targets)
     {
-        if (targets.size() > GetCaster()->GetPower(POWER_ARCANE_CHARGES))
+        if (targets.size() > uint64(GetCaster()->GetPower(POWER_ARCANE_CHARGES)))
             targets.resize(GetCaster()->GetPower(POWER_ARCANE_CHARGES));
         _chainTargetCount = targets.size();
     }
@@ -508,7 +508,7 @@ class spell_mage_arcane_barrier : public AuraScript
                 amount = int32(CalculatePct(caster->GetMaxHealth(), eff4->CalcValue()));
     }
 
-    void CalcAbsorb(AuraEffect* aurEff, DamageInfo& dmgInfo, uint32& absorbAmount)
+    void CalcAbsorb(AuraEffect* /*aurEff*/, DamageInfo& dmgInfo, uint32& /*absorbAmount*/)
     {
         if (AuraEffect const* eff0 = GetCaster()->GetAuraEffect(SPELL_MAGE_MANA_SHIELD_TALENT, EFFECT_0))
         {
@@ -2149,7 +2149,7 @@ public:
         {
             if (Player* player = GetCaster()->ToPlayer())
             {
-                if (Group* group = player->GetGroup())
+                if (player->GetGroup())
                     player->CastSpell(player, SPELL_MAGE_CONJURE_REFRESHMENT_GROUP, true);
                 else
                     player->CastSpell(player, SPELL_MAGE_CONJURE_REFRESHMENT_SOLO, true);

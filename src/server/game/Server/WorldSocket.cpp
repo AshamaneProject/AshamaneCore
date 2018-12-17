@@ -888,9 +888,9 @@ void WorldSocket::HandleAuthContinuedSessionCallback(std::shared_ptr<WorldPacket
 
     if (memcmp(hmac.GetDigest(), authSession->Digest.data(), authSession->Digest.size()))
     {
-        /*TC_LOG_ERROR("network", "WorldSocket::HandleAuthContinuedSession: Authentication failed for account: %u ('%s') address: %s", accountId, login.c_str(), GetRemoteIpAddress().to_string().c_str());
+        TC_LOG_ERROR("network", "WorldSocket::HandleAuthContinuedSession: Authentication failed for account: %u ('%s') address: %s", accountId, login.c_str(), GetRemoteIpAddress().to_string().c_str());
         DelayedCloseSocket();
-        return;*/
+        return;
     }
 
     SendPacketAndLogOpcode(*WorldPackets::Auth::EnableEncryption().Write());

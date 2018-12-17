@@ -380,7 +380,7 @@ struct dummy_dragonAI : public ScriptedAI
         }
     }
 
-    void ExecuteEvent(uint32 eventId)
+    void ExecuteEvents(uint32 eventId)
     {
         switch (eventId)
         {
@@ -453,7 +453,7 @@ public:
                         events.ScheduleEvent(EVENT_HATCH_EGGS, 30000);
                         break;
                     default:
-                        dummy_dragonAI::ExecuteEvent(eventId);
+                        dummy_dragonAI::ExecuteEvents(eventId);
                         break;
                 }
             }
@@ -532,7 +532,7 @@ public:
                         }
                         break;
                     default:
-                        dummy_dragonAI::ExecuteEvent(eventId);
+                        dummy_dragonAI::ExecuteEvents(eventId);
                         break;
                 }
             }
@@ -598,7 +598,7 @@ public:
                         }
                         break;
                     default:
-                        dummy_dragonAI::ExecuteEvent(eventId);
+                        dummy_dragonAI::ExecuteEvents(eventId);
                         break;
                 }
             }

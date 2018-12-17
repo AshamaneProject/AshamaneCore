@@ -3070,7 +3070,6 @@ class spell_monk_renewing_mist_jump : public SpellScript
         PreventHitDefaultEffect(effIndex);
         Unit* caster = GetCaster();
         Unit* previousTarget = ObjectAccessor::GetUnit(*caster, _previousTargetGuid);
-        Unit* additionalTarget = ObjectAccessor::GetUnit(*caster, _additionalTargetGuid);
 
         if (previousTarget)
         {
