@@ -7339,8 +7339,8 @@ void Player::UpdateArea(uint32 newAreaId)
     pvpInfo.IsInFFAPvPArea = areaEntry && (areaEntry->Flags[0] & AREA_FLAG_ARENA);
     UpdatePvPState(true);
 
-    UpdateAreaDependentAuras();
     PhasingHandler::OnAreaChange(this);
+    UpdateAreaDependentAuras();
 
     if (IsAreaThatActivatesPvpTalents(areaEntry))
         EnablePvpRules();
