@@ -210,6 +210,9 @@ bool WorldSocket::Update()
     MessageBuffer buffer(_sendBufferSize);
     while (_bufferQueue.Dequeue(queued))
     {
+        if (!queued)
+            continue;
+
         uint32 packetSize = queued->size();
         if (packetSize > MinSizeForCompression && queued->NeedsEncryption())
             packetSize = compressBound(packetSize) + sizeof(CompressedWorldPacket);
