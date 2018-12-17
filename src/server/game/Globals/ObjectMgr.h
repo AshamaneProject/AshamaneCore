@@ -926,6 +926,18 @@ struct RaceUnlockRequirement
     uint32 AchievementId;
 };
 
+struct ItemScrappingLoot
+{
+    uint32 Id;
+    uint32 Class;
+    uint32 Subclass;
+    int32 InventoryType;
+    uint32 MinLevel;
+    uint32 MaxLevel;
+    int32 Quality;
+    int32 IsCrafted;
+};
+
 class PlayerDumpReader;
 
 class TC_GAME_API ObjectMgr
@@ -985,6 +997,9 @@ class TC_GAME_API ObjectMgr
         CreatureAddon const* GetCreatureTemplateAddon(uint32 entry) const;
         ItemTemplate const* GetItemTemplate(uint32 entry) const;
         ItemTemplateContainer const* GetItemTemplateStore() const { return &_itemTemplateStore; }
+
+        ItemScrappingLoot const* GetItemScrappingLoot(Item* item) const;
+        std::vector<ItemScrappingLoot> const* GetItemScrappingLootStore() const { return &_itemScrappingLootStore; }
 
         ScriptParams const& GetScriptParam(ObjectGuid::LowType lowGuid) { return _scriptParamContainer[lowGuid]; }
         ScriptParams const& GetTemplateScriptParam(uint32 entry) { return _templateScriptParamContainer[entry]; }
@@ -1233,6 +1248,7 @@ class TC_GAME_API ObjectMgr
         void LoadGameobjects();
         void LoadItemTemplates();
         void LoadItemTemplateAddon();
+        void LoadItemScrappingLoot();
         void LoadItemScriptNames();
         void LoadQuestTemplateLocale();
         void LoadQuestObjectivesLocale();
@@ -1835,6 +1851,8 @@ class TC_GAME_API ObjectMgr
         SceneTemplateContainer _sceneTemplateStore;
 
         WorldQuestContainer _worldQuestStore;
+
+        std::vector<ItemScrappingLoot> _itemScrappingLootStore;
 
         enum CreatureLinkedRespawnType
         {

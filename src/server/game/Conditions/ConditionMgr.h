@@ -164,7 +164,8 @@ enum ConditionSourceType
     CONDITION_SOURCE_TYPE_TERRAIN_SWAP                   = 25,
     CONDITION_SOURCE_TYPE_PHASE                          = 26,
     CONDITION_SOURCE_TYPE_GRAVEYARD                      = 27,
-    CONDITION_SOURCE_TYPE_MAX                            = 28  // MAX
+    CONDITION_SOURCE_TYPE_SCRAPPING_LOOT_TEMPLATE        = 28,
+    CONDITION_SOURCE_TYPE_MAX                            = 29  // MAX
 };
 
 enum RelationType

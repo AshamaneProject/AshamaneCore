@@ -1714,6 +1714,9 @@ void World::SetInitialWorldSettings()
     TC_LOG_INFO("server.loading", "Loading Item set names...");                // must be after LoadItemPrototypes
     sObjectMgr->LoadItemTemplateAddon();
 
+    TC_LOG_INFO("server.loading", "Loading Item scrapping loots...");
+    sObjectMgr->LoadItemScrappingLoot();
+
     TC_LOG_INFO("misc", "Loading Item Scripts...");                            // must be after LoadItemPrototypes
     sObjectMgr->LoadItemScriptNames();
 

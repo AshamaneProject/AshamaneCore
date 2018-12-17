@@ -270,6 +270,11 @@ enum ItemFlags3
     ITEM_FLAG3_CAN_STORE_ENCHANTS                           = 0x01000000
 };
 
+enum ItemFlags4
+{
+    ITEM_FLAG4_SCRAPPABLE                                   = 0x00000020
+};
+
 enum ItemFlagsCustom
 {
     ITEM_FLAGS_CU_UNUSED                = 0x0001,

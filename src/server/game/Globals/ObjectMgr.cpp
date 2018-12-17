@@ -3170,6 +3170,38 @@ void ObjectMgr::LoadItemTemplateAddon()
     TC_LOG_INFO("server.loading", ">> Loaded %u item addon templates in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
 }
 
+void ObjectMgr::LoadItemScrappingLoot()
+{
+    uint32 oldMSTime = getMSTime();
+    uint32 count = 0;
+
+    _itemScrappingLootStore.clear();
+
+    QueryResult result = WorldDatabase.Query("SELECT id, class, subclass, inventoryType, minLevel, maxLevel, quality, isCrafted FROM item_scrapping_loot");
+    if (result)
+    {
+        do
+        {
+            Field* fields = result->Fetch();
+
+            ItemScrappingLoot itemScrappingLoot;
+
+            itemScrappingLoot.Id = fields[0].GetUInt32();
+            itemScrappingLoot.Class = fields[1].GetUInt32();
+            itemScrappingLoot.Subclass = fields[2].GetUInt32();
+            itemScrappingLoot.InventoryType = fields[3].GetInt32();
+            itemScrappingLoot.MinLevel = fields[4].GetUInt32();
+            itemScrappingLoot.MaxLevel = fields[5].GetUInt32();
+            itemScrappingLoot.Quality = fields[6].GetInt32();
+            itemScrappingLoot.IsCrafted = fields[7].GetInt32();
+
+            _itemScrappingLootStore.push_back(itemScrappingLoot);
+            ++count;
+        } while (result->NextRow());
+    }
+    TC_LOG_INFO("server.loading", ">> Loaded %u item scrapping loot in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
+}
+
 void ObjectMgr::LoadItemScriptNames()
 {
     uint32 oldMSTime = getMSTime();
@@ -3201,6 +3233,30 @@ ItemTemplate const* ObjectMgr::GetItemTemplate(uint32 entry) const
     ItemTemplateContainer::const_iterator itr = _itemTemplateStore.find(entry);
     if (itr != _itemTemplateStore.end())
         return &(itr->second);
+    return nullptr;
+}
+
+ItemScrappingLoot const* ObjectMgr::GetItemScrappingLoot(Item* item) const
+{
+    for (auto& itemScrappingloot : _itemScrappingLootStore)
+    {
+        ItemTemplate const* iT = item->GetTemplate();
+        if (itemScrappingloot.Class != iT->GetClass())
+            continue;
+        if (!(itemScrappingloot.Subclass & 1 << iT->GetSubClass()))
+            continue;
+        if (itemScrappingloot.InventoryType != -1 && itemScrappingloot.InventoryType & 1 << iT->GetInventoryType())
+            continue;
+        if (itemScrappingloot.MinLevel > item->GetItemLevel(item->GetOwner()))
+            continue;
+        if (itemScrappingloot.MaxLevel < item->GetItemLevel(item->GetOwner()))
+            continue;
+        if (itemScrappingloot.Quality != -1 && itemScrappingloot.Quality != iT->GetQuality())
+            continue;
+        if (itemScrappingloot.IsCrafted != -1 && ((itemScrappingloot.IsCrafted == 1) == !(iT->GetFlags() & ITEM_FLAG_NO_CREATOR)))
+            continue;
+        return &itemScrappingloot;
+    }
     return nullptr;
 }
 

@@ -52,6 +52,7 @@ LootStore LootTemplates_Milling("milling_loot_template",             "item entry
 LootStore LootTemplates_Pickpocketing("pickpocketing_loot_template", "creature pickpocket lootid",      true);
 LootStore LootTemplates_Prospecting("prospecting_loot_template",     "item entry (ore)",                true);
 LootStore LootTemplates_Reference("reference_loot_template",         "reference id",                    false);
+LootStore LootTemplates_Scrapping("scrapping_loot_template",         "scrapping id",                    true);
 LootStore LootTemplates_Skinning("skinning_loot_template",           "creature skinning id",            true);
 LootStore LootTemplates_Spell("spell_loot_template",                 "spell id (random item creating)", false);
 
@@ -1066,6 +1067,36 @@ void LoadLootTemplates_Mail()
         TC_LOG_ERROR("server.loading", ">> Loaded 0 mail loot templates. DB table `mail_loot_template` is empty");
 }
 
+void LoadLootTemplates_Scrapping()
+{
+    TC_LOG_INFO("server.loading", "Loading scrapping loot templates...");
+
+    uint32 oldMSTime = getMSTime();
+
+    LootIdSet lootIdSet, lootIdSetUsed;
+    uint32 count = LootTemplates_Scrapping.LoadAndCollectLootIds(lootIdSet);
+
+    for (auto const& itemScrappingLoot : *sObjectMgr->GetItemScrappingLootStore())
+    {
+        uint32 lootid = itemScrappingLoot.Id;
+        if (lootIdSet.find(lootid) == lootIdSet.end())
+            LootTemplates_Scrapping.ReportNonExistingId(lootid);
+        else
+            lootIdSetUsed.insert(lootid);
+    }
+
+    for (LootIdSet::const_iterator itr = lootIdSetUsed.begin(); itr != lootIdSetUsed.end(); ++itr)
+        lootIdSet.erase(*itr);
+
+    // output error for any still listed (not referenced from appropriate table) ids
+    LootTemplates_Scrapping.ReportUnusedIds(lootIdSet);
+
+    if (count)
+        TC_LOG_INFO("server.loading", ">> Loaded %u scrapping loot templates in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
+    else
+        TC_LOG_ERROR("server.loading", ">> Loaded 0 scrapping loot templates. DB table `disenchant_loot_template` is empty");
+}
+
 void LoadLootTemplates_Skinning()
 {
     TC_LOG_INFO("server.loading", "Loading skinning loot templates...");
@@ -1157,6 +1188,7 @@ void LoadLootTemplates_Reference()
     LootTemplates_Item.CheckLootRefs(&lootIdSet);
     LootTemplates_Milling.CheckLootRefs(&lootIdSet);
     LootTemplates_Pickpocketing.CheckLootRefs(&lootIdSet);
+    LootTemplates_Scrapping.CheckLootRefs(&lootIdSet);
     LootTemplates_Skinning.CheckLootRefs(&lootIdSet);
     LootTemplates_Disenchant.CheckLootRefs(&lootIdSet);
     LootTemplates_Prospecting.CheckLootRefs(&lootIdSet);
@@ -1178,6 +1210,7 @@ void LoadLootTables()
     LoadLootTemplates_Mail();
     LoadLootTemplates_Milling();
     LoadLootTemplates_Pickpocketing();
+    LoadLootTemplates_Scrapping();
     LoadLootTemplates_Skinning();
     LoadLootTemplates_Disenchant();
     LoadLootTemplates_Prospecting();

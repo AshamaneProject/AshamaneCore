@@ -342,7 +342,7 @@ pEffect SpellEffects[TOTAL_SPELL_EFFECTS]=
     &Spell::EffectNULL,                                     //258 SPELL_EFFECT_MODIFY_KEYSTONE
     &Spell::EffectNULL,                                     //259 SPELL_EFFECT_RESPEC_AZERITE_EMPOWERED_ITEM
     &Spell::EffectNULL,                                     //260 SPELL_EFFECT_SUMMON_STABLED_PET
-    &Spell::EffectNULL,                                     //261 SPELL_EFFECT_SCRAP_ITEM
+    &Spell::EffectScrapItem,                                //261 SPELL_EFFECT_SCRAP_ITEM
 };
 
 void Spell::EffectNULL(SpellEffIndex /*effIndex*/)
@@ -6215,4 +6215,28 @@ void Spell::EffectLearnTransmogSet(SpellEffIndex /*effIndex*/)
         return;
 
     unitTarget->ToPlayer()->GetSession()->GetCollectionMgr()->AddTransmogSet(effectInfo->MiscValue);
+}
+
+void Spell::EffectScrapItem(SpellEffIndex /*effIndex*/)
+{
+    if (effectHandleMode != SPELL_EFFECT_HANDLE_HIT_TARGET)
+        return;
+
+    if (!itemTarget)
+        return;
+
+    if (!(itemTarget->GetTemplate()->GetFlags4() & ITEM_FLAG4_SCRAPPABLE))
+        return;
+
+    ItemScrappingLoot const* iSL = sObjectMgr->GetItemScrappingLoot(itemTarget);
+
+    if (!iSL)
+        return;
+
+    if (Player* player = GetCaster()->ToPlayer())
+    {
+        player->DestroyItem(itemTarget->GetBagSlot(), itemTarget->GetSlot(), true);
+        player->AutoStoreLoot(iSL->Id, LootTemplates_Scrapping);
+    }
+
 }

@@ -1050,6 +1050,7 @@ void ConditionMgr::LoadConditions(bool isReload)
         LootTemplates_Disenchant.ResetConditions();
         LootTemplates_Prospecting.ResetConditions();
         LootTemplates_Spell.ResetConditions();
+        LootTemplates_Scrapping.ResetConditions();
 
         TC_LOG_INFO("misc", "Re-Loading `gossip_menu` Table for Conditions!");
         sObjectMgr->LoadGossipMenu();
@@ -1209,6 +1210,9 @@ void ConditionMgr::LoadConditions(bool isReload)
                     break;
                 case CONDITION_SOURCE_TYPE_REFERENCE_LOOT_TEMPLATE:
                     valid = addToLootTemplate(cond, LootTemplates_Reference.GetLootForConditionFill(cond->SourceGroup));
+                    break;
+                case CONDITION_SOURCE_TYPE_SCRAPPING_LOOT_TEMPLATE:
+                    valid = addToLootTemplate(cond, LootTemplates_Scrapping.GetLootForConditionFill(cond->SourceGroup));
                     break;
                 case CONDITION_SOURCE_TYPE_SKINNING_LOOT_TEMPLATE:
                     valid = addToLootTemplate(cond, LootTemplates_Skinning.GetLootForConditionFill(cond->SourceGroup));
@@ -1651,6 +1655,23 @@ bool ConditionMgr::isSourceTypeValid(Condition* cond) const
             }
 
             LootTemplate* loot = LootTemplates_Reference.GetLootForConditionFill(cond->SourceGroup);
+            ItemTemplate const* pItemProto = sObjectMgr->GetItemTemplate(cond->SourceEntry);
+            if (!pItemProto && !loot->isReference(cond->SourceEntry))
+            {
+                TC_LOG_ERROR("sql.sql", "%s SourceType, SourceEntry in `condition` table, does not exist in `item_template`, ignoring.", cond->ToString().c_str());
+                return false;
+            }
+            break;
+        }
+        case CONDITION_SOURCE_TYPE_SCRAPPING_LOOT_TEMPLATE:
+        {
+            if (!LootTemplates_Scrapping.HaveLootFor(cond->SourceGroup))
+            {
+                TC_LOG_ERROR("sql.sql", "%s SourceGroup in `condition` table, does not exist in `scrapping_loot_template`, ignoring.", cond->ToString().c_str());
+                return false;
+            }
+
+            LootTemplate* loot = LootTemplates_Scrapping.GetLootForConditionFill(cond->SourceGroup);
             ItemTemplate const* pItemProto = sObjectMgr->GetItemTemplate(cond->SourceEntry);
             if (!pItemProto && !loot->isReference(cond->SourceEntry))
             {

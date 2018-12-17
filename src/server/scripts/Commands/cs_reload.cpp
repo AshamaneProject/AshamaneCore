@@ -143,6 +143,7 @@ public:
             { "skill_extra_item_template",     rbac::RBAC_PERM_COMMAND_RELOAD_SKILL_EXTRA_ITEM_TEMPLATE,        true,  &HandleReloadSkillExtraItemTemplateCommand,     "" },
             { "skill_fishing_base_level",      rbac::RBAC_PERM_COMMAND_RELOAD_SKILL_FISHING_BASE_LEVEL,         true,  &HandleReloadSkillFishingBaseLevelCommand,      "" },
             { "skinning_loot_template",        rbac::RBAC_PERM_COMMAND_RELOAD_SKINNING_LOOT_TEMPLATE,           true,  &HandleReloadLootTemplatesSkinningCommand,      "" },
+            { "scrapping_loot_template",       rbac::RBAC_PERM_COMMAND_RELOAD_SKINNING_LOOT_TEMPLATE,           true,  &HandleReloadLootTemplatesScrappingCommand,     "" },
             { "smart_scripts",                 rbac::RBAC_PERM_COMMAND_RELOAD_SMART_SCRIPTS,                    true,  &HandleReloadSmartScripts,                      "" },
             { "spell_required",                rbac::RBAC_PERM_COMMAND_RELOAD_SPELL_REQUIRED,                   true,  &HandleReloadSpellRequiredCommand,              "" },
             { "spell_area",                    rbac::RBAC_PERM_COMMAND_RELOAD_SPELL_AREA,                       true,  &HandleReloadSpellAreaCommand,                  "" },
@@ -646,6 +647,17 @@ public:
         TC_LOG_INFO("misc", "Re-Loading Loot Tables... (`reference_loot_template`)");
         LoadLootTemplates_Reference();
         handler->SendGlobalGMSysMessage("DB table `reference_loot_template` reloaded.");
+        sConditionMgr->LoadConditions(true);
+        return true;
+    }
+
+    static bool HandleReloadLootTemplatesScrappingCommand(ChatHandler* handler, const char* /*args*/)
+    {
+        TC_LOG_INFO("misc", "Re-Loading Loot Tables... (`scrapping_loot_template`)");
+        sObjectMgr->LoadItemScrappingLoot();
+        LoadLootTemplates_Scrapping();
+        LootTemplates_Scrapping.CheckLootRefs();
+        handler->SendGlobalGMSysMessage("DB table `scrapping_loot_template` reloaded.");
         sConditionMgr->LoadConditions(true);
         return true;
     }
