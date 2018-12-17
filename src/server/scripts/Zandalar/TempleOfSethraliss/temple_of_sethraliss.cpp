@@ -59,7 +59,7 @@ struct npc_loose_spark : public ScriptedAI
         }
     }
 
-    void UpdateAI(uint32 diff) override { }
+    void UpdateAI(uint32 /*diff*/) override { }
 };
 
 // 17715

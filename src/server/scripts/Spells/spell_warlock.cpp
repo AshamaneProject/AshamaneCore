@@ -655,7 +655,7 @@ class npc_warlock_demonic_gateway : public CreatureScript
                 }
             }
 
-            void OnSpellClick(Unit* player, bool& result) override
+            void OnSpellClick(Unit* player, bool& /*result*/) override
             {
                 // don't allow using the gateway while having specific auras
                 uint32 aurasToCheck[4] = { 121164, 121175, 121176, 121177 }; // Orbs of Power @ Temple of Kotmogu
@@ -879,7 +879,7 @@ class npc_warlock_wild_imp : public CreatureScript
 
             uint32 attacks;
             float maxDistance;
-            void Reset()
+            void Reset() override
             {
                 me->SetControlled(true, UNIT_STATE_ROOT);
                 maxDistance = sSpellMgr->GetSpellInfo(SPELL_WARLOCK_PET_FEL_FIREBOLT)->RangeEntry->RangeMax[0];
@@ -1544,7 +1544,7 @@ class npc_warlock_infernal : public CreatureScript
 
             Position spawnPos;
 
-            void Reset()
+            void Reset() override
             {
                 spawnPos = me->GetPosition();
 
@@ -1844,7 +1844,7 @@ class spell_warlock_dark_apotheosis : public SpellScriptLoader
             PrepareAuraScript(spell_warlock_dark_apotheosis_AuraScript);
 
             int32 initialDemonicFury;
-            bool Load()
+            bool Load() override
             {
                 initialDemonicFury = 0;
 
@@ -2242,7 +2242,7 @@ class spell_warlock_soul_swap_buff : public SpellScriptLoader
         {
             PrepareAuraScript(spell_warlock_soul_swap_buff_AuraScript);
 
-            bool Load()
+            bool Load() override
             {
                 originalTarget = ObjectGuid::Empty;
                 return true;
@@ -2298,7 +2298,7 @@ class spell_warlock_soul_swap : public SpellScriptLoader
 
             std::vector<uint32> eligibleDots;
 
-            bool Load()
+            bool Load() override
             {
                 eligibleDots.push_back(SPELL_WARLOCK_AGONY);
                 eligibleDots.push_back(SPELL_WARLOCK_CORRUPTION_TRIGGERED);
@@ -2964,7 +2964,7 @@ public:
             GetAura()->Variables.Remove("Spells.AffectedByRoaringBlaze");
         }
 
-        void HandleRemove(AuraEffect const* aurEff, AuraEffectHandleModes mode)
+        void HandleRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
         {
             Unit* caster = GetCaster();
             if (!caster)
@@ -3445,7 +3445,7 @@ class spell_warlock_conflagrate : public SpellScriptLoader
         {
             PrepareSpellScript(spell_warlock_conflagrate_SpellScript);
 
-            void HandleHit(SpellEffIndex effIndex)
+            void HandleHit(SpellEffIndex /*effIndex*/)
             {
                 Unit* caster = GetCaster();
                 Unit* target = GetHitUnit();
@@ -3493,7 +3493,7 @@ class spell_warlock_artifact_soul_snatcher : public SpellScriptLoader
         {
             PrepareAuraScript(spell_warlock_artifact_soul_snatcher_AuraScript);
 
-            void OnProc(AuraEffect const*  aurEff, ProcEventInfo& eventInfo)
+            void OnProc(AuraEffect const* aurEff, ProcEventInfo& /*eventInfo*/)
             {
                 PreventDefaultAction();
                 Unit* caster = GetCaster();
@@ -3526,7 +3526,7 @@ class spell_warlock_artifact_dimension_ripper : public SpellScriptLoader
         {
             PrepareAuraScript(spell_warlock_artifact_dimension_ripper_AuraScript);
 
-            void OnProc(AuraEffect const*  aurEff, ProcEventInfo& eventInfo)
+            void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
             {
                 PreventDefaultAction();
                 Unit* caster = GetCaster();
@@ -3558,7 +3558,7 @@ class spell_warlock_drain_soul : public SpellScriptLoader
         {
             PrepareAuraScript(spell_warlock_drain_soul_AuraScript);
 
-            void OnPeriodicDamage(AuraEffect const* aurEff, Unit * target, uint32 & damage)
+            void OnPeriodicDamage(AuraEffect const* /*aurEff*/, Unit * /*target*/, uint32 & damage)
             {
                 if (GetTarget() && GetTarget()->HealthBelowPct(GetSpellInfo()->GetEffect(EFFECT_2)->BasePoints)) {
                     damage *= (100.f + GetSpellInfo()->GetEffect(EFFECT_1)->BasePoints) / 100.f;
@@ -3632,7 +3632,7 @@ class spell_warlock_seed_of_corruption_damage : public SpellScriptLoader
         {
             PrepareSpellScript(spell_warlock_seed_of_corruption_damage_SpellScript);
 
-            void HandleHit(SpellEffIndex effIndex)
+            void HandleHit(SpellEffIndex /*effIndex*/)
             {
                 Unit* caster = GetCaster();
                 Unit* target = GetHitUnit();
@@ -3782,7 +3782,7 @@ class spell_warlock_unstable_affliction_dispel : public SpellScriptLoader
                 }
             }
 
-            void HandleRemove(AuraEffect const* aurEff, AuraEffectHandleModes mode)
+            void HandleRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
             {
                 Unit* caster = GetCaster();
                 Unit* target = GetUnitOwner();
@@ -3906,13 +3906,13 @@ public:
     {
         PrepareSpellScript(spell_warlock_call_dreadstalkers_SpellScript);
 
-        void HandleHit(SpellEffIndex effIndex)
+        void HandleHit(SpellEffIndex /*effIndex*/)
         {
             Unit* caster = GetCaster();
             if (!caster)
                 return;
 
-            for (uint32 i = 0 ; i < GetEffectValue() ; ++i)
+            for (int32 i = 0 ; i < GetEffectValue() ; ++i)
                 caster->CastSpell(caster, SPELL_WARLOCK_CALL_DREADSTALKERS_SUMMON, true);
         }
 
@@ -3969,7 +3969,7 @@ public:
 
         bool firstTick = true;
 
-        void UpdateAI(uint32 diff)
+        void UpdateAI(uint32 /*diff*/) override
         {
             if (firstTick)
             {
@@ -4133,7 +4133,7 @@ class spell_warlock_demonwrath_damage : public SpellScriptLoader
                 });
             }
 
-            void HandleHit(SpellEffIndex effIndex)
+            void HandleHit(SpellEffIndex /*effIndex*/)
             {
                 Unit* caster = GetCaster();
                 if (!caster)
@@ -4207,7 +4207,7 @@ class spell_warlock_hand_of_guldan : public SpellScriptLoader
         {
             PrepareSpellScript(spell_warlock_hand_of_guldan_SpellScript);
 
-            void HandleHit(SpellEffIndex effIndex)
+            void HandleHit(SpellEffIndex /*effIndex*/)
             {
                 Unit* caster = GetCaster();
                 Unit* target = GetHitUnit();
@@ -4242,7 +4242,7 @@ class spell_warlock_hand_of_guldan_damage : public SpellScriptLoader
         {
             PrepareSpellScript(spell_warlock_hand_of_guldan_damage_SpellScript);
 
-            void HandleHit(SpellEffIndex effIndex)
+            void HandleHit(SpellEffIndex /*effIndex*/)
             {
                 Unit* caster = GetCaster();
                 Unit* target = GetHitUnit();
@@ -4375,7 +4375,7 @@ class spell_warlock_chaotic_energies : public SpellScriptLoader
                 amount = -1;
             }
 
-            void OnAbsorb(AuraEffect * aurEff, DamageInfo& dmgInfo, uint32& absorbAmount)
+            void OnAbsorb(AuraEffect* /*aurEff*/, DamageInfo& /*dmgInfo*/, uint32& /*absorbAmount*/)
             {
                 Unit* caster = GetCaster();
                 if (!caster)
@@ -4557,7 +4557,7 @@ public:
     {
         npc_warlock_soul_effigyAI(Creature* creature) : CreatureAI(creature) { }
 
-        void Reset()
+        void Reset() override
         {
             me->SetControlled(true, UNIT_STATE_ROOT);
             me->CastSpell(me, SPELL_WARLOCK_SOUL_EFFIGY_AURA, true);
@@ -4743,7 +4743,7 @@ class spell_warlock_implosion : public SpellScriptLoader
         {
             PrepareSpellScript(spell_warlock_implosion_SpellScript);
 
-            void HandleHit(SpellEffIndex effIndex)
+            void HandleHit(SpellEffIndex /*effIndex*/)
             {
                 Unit* caster = GetCaster();
                 Unit* target = GetHitUnit();
@@ -4791,7 +4791,7 @@ class spell_warlock_grimoir_of_synergy : public SpellScriptLoader
         {
             PrepareAuraScript(spell_warlock_grimoir_of_synergy_AuraScript);
 
-            void OnProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+            void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
             {
                 Unit* caster = GetCaster();
                 if (!caster)
@@ -4897,7 +4897,7 @@ private:
         return ObjectAccessor::GetUnit(*me, _targetGUID);
     }
 
-    void CastSpellOnTarget(Unit* owner, Unit* target)
+    void CastSpellOnTarget(Unit* /*owner*/, Unit* target)
     {
         if (target && me->IsValidAttackTarget(target))
         {
@@ -4950,7 +4950,7 @@ class spell_warlock_demonbolt_old : public SpellScriptLoader
         {
             PrepareSpellScript(spell_warlock_demonbolt_old_SpellScript);
 
-            void HandleHit(SpellEffIndex effIndex)
+            void HandleHit(SpellEffIndex /*effIndex*/)
             {
                 Unit* caster = GetCaster();
                 if (!caster)
@@ -4984,7 +4984,7 @@ class spell_warlock_shadowburn : public SpellScriptLoader
         {
             PrepareSpellScript(spell_warlock_shadowburn_SpellScript);
 
-            void HandleHit(SpellEffIndex effIndex)
+            void HandleHit(SpellEffIndex /*effIndex*/)
             {
                 Unit* caster = GetCaster();
                 Unit* target = GetHitUnit();
@@ -5056,7 +5056,7 @@ class spell_warlock_eye_of_kilrogg : public SpellScriptLoader
                 if (!caster || !caster->ToPlayer())
                     return;
 
-                if (Pet* pet = caster->ToPlayer()->GetPet())
+                if (caster->ToPlayer()->GetPet())
                 {
                     caster->GetScheduler().Schedule(250ms, [caster](TaskContext /*context*/)
                     {
@@ -5180,7 +5180,7 @@ class spell_warlock_soul_shatter : public SpellScriptLoader
                     unitList.resize(5);
             }
 
-            void HandleHit(SpellEffIndex effIndex)
+            void HandleHit(SpellEffIndex /*effIndex*/)
             {
                 Unit* caster = GetCaster();
                 Unit* target = GetHitUnit();
@@ -5309,7 +5309,7 @@ class spell_warlock_singe_magic : public SpellScriptLoader
         {
             PrepareSpellScript(spell_warlock_singe_magic_SpellScript);
 
-            void HandleHit(SpellEffIndex effIndex)
+            void HandleHit(SpellEffIndex /*effIndex*/)
             {
                 Unit* caster = GetCaster();
                 Unit* target = GetHitUnit();
@@ -5360,7 +5360,7 @@ public:
     {
         npc_warlock_fel_lordAI(Creature* creature) : CreatureAI(creature) { }
 
-        void Reset()
+        void Reset() override
         {
             Unit* owner = me->GetOwner();
             if (!owner)
@@ -5371,7 +5371,7 @@ public:
             me->SetControlled(true, UNIT_STATE_ROOT);
         }
 
-        void UpdateAI(uint32 diff) override
+        void UpdateAI(uint32 /*diff*/) override
         {
             if (me->HasUnitState(UNIT_STATE_CASTING))
                 return;
@@ -5421,7 +5421,7 @@ class spell_warlock_eye_of_the_observer : public SpellScriptLoader
         {
             PrepareAuraScript(spell_warlock_eye_of_the_observer_AuraScript);
 
-            void OnProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+            void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
             {
                 PreventDefaultAction();
                 Unit* caster = GetCaster();
@@ -5548,7 +5548,7 @@ class spell_warlock_backdraft : public SpellScriptLoader
         {
             PrepareAuraScript(spell_warlock_backdraft_AuraScript);
 
-            bool OnCheckProc(ProcEventInfo& eventInfo)
+            bool OnCheckProc(ProcEventInfo& /*eventInfo*/)
             {
                 Unit* caster = GetCaster();
                 if (!caster)
@@ -5583,7 +5583,7 @@ class spell_warlock_compounding_horror : public SpellScriptLoader
         {
             PrepareSpellScript(spell_warlock_compounding_horror_SpellScript);
 
-            void HandleHit(SpellEffIndex effIndex)
+            void HandleHit(SpellEffIndex /*effIndex*/)
             {
                 Unit* caster = GetCaster();
                 if (!caster)
@@ -5621,7 +5621,7 @@ class spell_warlock_soul_link : public SpellScriptLoader
         {
             PrepareAuraScript(spell_warlock_soul_link_AuraScript);
 
-            void HandleSplit(AuraEffect* aurEff, DamageInfo& dmgInfo, uint32& splitAmount)
+            void HandleSplit(AuraEffect* /*aurEff*/, DamageInfo& /*dmgInfo*/, uint32& splitAmount)
             {
                 Unit* pet = GetUnitOwner();
                 if (!pet)
@@ -5826,7 +5826,7 @@ public:
         return 0.1618958f;
     }
 
-    void SetData(uint32 type, int64 data)
+    void SetData(uint32 type, int64 /*data*/)
     {
         if (type == DATA_AGONY_TICK)
         {
@@ -5867,20 +5867,20 @@ public:
     public:
         spell_warlock_agony_AuraScript() {  }
 
-        void HandleApply(AuraEffect const* aurEff, AuraEffectHandleModes mode)
+        void HandleApply(AuraEffect const* aurEff, AuraEffectHandleModes /*mode*/)
         {
             aurEff->GetBase()->Variables.Set<bool>("DontModifyStackAmountOnReapply", true);
             if (aura_warlock_soul_shard_driver* driver = getSoulShardDriverOfCaster())
                 driver->SetData(DATA_AGONY_ADD, GetTarget()->GetGUID().GetCounter());
         }
 
-        void HandleRemove(AuraEffect const* aurEff, AuraEffectHandleModes mode)
+        void HandleRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
         {
             if (aura_warlock_soul_shard_driver* driver = getSoulShardDriverOfCaster())
                 driver->SetData(DATA_AGONY_REMOVE, GetTarget()->GetGUID().GetCounter());
         }
 
-        void HandleDummyTick(AuraEffect const* aurEff)
+        void HandleDummyTick(AuraEffect const* /*aurEff*/)
         {
             ModStackAmount(1, AURA_REMOVE_BY_DEFAULT, false, false);
 
@@ -5980,7 +5980,7 @@ public:
     {
         PrepareAuraScript(spell_warlock_dark_pact_AuraScript);
 
-        void CalculateAmount(AuraEffect const* aurEff, int32 & amount, bool &)
+        void CalculateAmount(AuraEffect const* /*aurEff*/, int32 & amount, bool &)
         {
             int32 sacrifiedHealth = GetCaster()->CountPctFromCurHealth(GetSpellInfo()->GetEffect(EFFECT_1)->BasePoints);
             GetCaster()->ModifyHealth(-sacrifiedHealth);
@@ -6039,7 +6039,7 @@ public:
     {
         PrepareAuraScript(spell_warlock_nightfall_AuraScript);
 
-        void OnAuraProc(ProcEventInfo& eventInfo)
+        void OnAuraProc(ProcEventInfo& /*eventInfo*/)
         {
             GetCaster()->CastSpell(GetCaster(), SPELL_NIGHTFALL_BUFF, true);
         }
@@ -6087,7 +6087,7 @@ public:
             }
         }
 
-        void HandleHit(SpellEffIndex effIndex)
+        void HandleHit(SpellEffIndex /*effIndex*/)
         {
             if (GetCaster())
                 GetCaster()->CastSpell(GetCaster(), SPELL_INCINERATE_NORMAL_ENERGIZE, true);
@@ -6150,7 +6150,7 @@ public:
     {
         PrepareSpellScript(spell_warlock_demonbolt_SpellScript);
 
-        void HandleHit(SpellEffIndex effIndex)
+        void HandleHit(SpellEffIndex /*effIndex*/)
         {
             if (GetCaster())
             {
@@ -6181,7 +6181,7 @@ public:
     {
         PrepareSpellScript(spell_warlock_soul_fire_SpellScript);
 
-        void HandleHit(SpellEffIndex effIndex)
+        void HandleHit(SpellEffIndex /*effIndex*/)
         {
             if (GetCaster())
                 GetCaster()->CastSpell(GetCaster(), SPELL_SOULFIRE_ENERGIZE, true);
@@ -6209,7 +6209,7 @@ public:
     {
         PrepareSpellScript(spell_warlock_rain_of_fire_damage_SpellScript);
 
-        void HandleHit(SpellEffIndex effIndex)
+        void HandleHit(SpellEffIndex /*effIndex*/)
         {
             Unit* caster = GetCaster();
             if (!caster)
@@ -6241,7 +6241,7 @@ public:
     {
         PrepareAuraScript(spell_warlock_unending_resolve_AuraScript);
 
-        void PreventEffectIfCastingCircle(AuraEffect const* aurEff, AuraEffectHandleModes mode)
+        void PreventEffectIfCastingCircle(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
         {
             Unit* caster = GetCaster();
             if (!caster || caster->ToPlayer())
