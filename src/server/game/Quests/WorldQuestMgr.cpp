@@ -31,29 +31,38 @@ WorldQuestMgr::WorldQuestMgr()
 
 WorldQuestMgr::~WorldQuestMgr()
 {
-    std::set<WorldQuestTemplate*> templates;
-    std::set<ActiveWorldQuest*> activeTemplates;
+    CleanWorldQuestTemplates();
+}
+
+void WorldQuestMgr::CleanWorldQuestTemplates()
+{
+    std::set<WorldQuestTemplate*> toDeleteTemplates;
+    std::set<ActiveWorldQuest*> toDeleteActiveTemplates;
 
     for (auto expansionTemplates : _worldQuestTemplates)
         for (auto teamTemplates : expansionTemplates.second)
             for (auto itr : teamTemplates.second)
-                templates.insert(itr.second);
+                toDeleteTemplates.insert(itr.second);
 
     for (auto expansionEmissaryTemplates : _emissaryWorldQuestTemplates)
         for (auto teamEmissaryTemplates : expansionEmissaryTemplates.second)
             for (auto itr : teamEmissaryTemplates.second)
-                templates.insert(itr.second);
+                toDeleteTemplates.insert(itr.second);
 
     for (auto expansionWorldQuests : _activeWorldQuests)
         for (auto teamWorldQuest : expansionWorldQuests.second)
             for (auto activeWorldQuest : teamWorldQuest.second)
-                activeTemplates.insert(activeWorldQuest.second);
+                toDeleteActiveTemplates.insert(activeWorldQuest.second);
 
-    for (auto worldQuest : templates)
+    for (auto worldQuest : toDeleteTemplates)
         delete worldQuest;
 
-    for (auto activeWorldQuest : activeTemplates)
+    for (auto activeWorldQuest : toDeleteActiveTemplates)
         delete activeWorldQuest;
+
+    _worldQuestTemplates.clear();
+    _emissaryWorldQuestTemplates.clear();
+    _activeWorldQuests.clear();
 }
 
 WorldQuestMgr* WorldQuestMgr::instance()
@@ -64,18 +73,7 @@ WorldQuestMgr* WorldQuestMgr::instance()
 
 void WorldQuestMgr::LoadWorldQuestTemplates()
 {
-    // For reload case
-    for (auto expansionTemplates : _worldQuestTemplates)
-        for (auto teamTemplates : expansionTemplates.second)
-            for (auto itr : teamTemplates.second)
-                delete itr.second;
-    _worldQuestTemplates.clear();
-
-    for (auto expansionEmissaryTemplates : _emissaryWorldQuestTemplates)
-        for (auto teamEmissaryTemplates : expansionEmissaryTemplates.second)
-            for (auto itr : teamEmissaryTemplates.second)
-                delete itr.second;
-    _emissaryWorldQuestTemplates.clear();
+    CleanWorldQuestTemplates();
 
     QueryResult result = WorldDatabase.Query("SELECT id, duration, variable, value FROM world_quest");
     if (!result)
