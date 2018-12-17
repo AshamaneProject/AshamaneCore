@@ -31,20 +31,29 @@ WorldQuestMgr::WorldQuestMgr()
 
 WorldQuestMgr::~WorldQuestMgr()
 {
+    std::set<WorldQuestTemplate*> templates;
+    std::set<ActiveWorldQuest*> activeTemplates;
+
     for (auto expansionTemplates : _worldQuestTemplates)
         for (auto teamTemplates : expansionTemplates.second)
             for (auto itr : teamTemplates.second)
-                delete itr.second;
+                templates.insert(itr.second);
 
     for (auto expansionEmissaryTemplates : _emissaryWorldQuestTemplates)
         for (auto teamEmissaryTemplates : expansionEmissaryTemplates.second)
             for (auto itr : teamEmissaryTemplates.second)
-                delete itr.second;
+                templates.insert(itr.second);
 
     for (auto expansionWorldQuests : _activeWorldQuests)
         for (auto teamWorldQuest : expansionWorldQuests.second)
             for (auto activeWorldQuest : teamWorldQuest.second)
-                delete activeWorldQuest.second;
+                activeTemplates.insert(activeWorldQuest.second);
+
+    for (auto worldQuest : templates)
+        delete worldQuest;
+
+    for (auto activeWorldQuest : activeTemplates)
+        delete activeWorldQuest;
 }
 
 WorldQuestMgr* WorldQuestMgr::instance()
