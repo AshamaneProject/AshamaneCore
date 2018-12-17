@@ -348,9 +348,10 @@ void WorldQuestMgr::DisableQuest(ActiveWorldQuest* activeWorldQuest, bool delete
         CharacterDatabase.PExecute("DELETE FROM character_queststatus_objectives_criteria_progress WHERE criteriaId = %u", objective.ObjectID);
     }
 
-    delete activeWorldQuest;
     if (deleteFromMap)
         _activeWorldQuests.erase(activeWorldQuest->QuestId);
+
+    delete activeWorldQuest;
 }
 
 bool WorldQuestMgr::IsQuestActive(uint32 questId)
