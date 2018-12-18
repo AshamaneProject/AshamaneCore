@@ -868,8 +868,17 @@ bool Guardian::InitStatsForLevel(uint8 petlevel)
     }
     else
     {
-        SetMaxHealth(stats->GenerateHealth(cinfo));
-        SetCreateMana(stats->GenerateMana(cinfo));
+        // remove elite bonuses included in DB values
+        CreatureBaseStats const* stats = sObjectMgr->GetCreatureBaseStats(petlevel, cinfo->unit_class);
+        CreatureLevelScaling const* scaling = cinfo->GetLevelScaling(GetMap()->GetDifficultyID());
+
+        SetCreateHealth(sDB2Manager.EvaluateExpectedStat(ExpectedStatType::CreatureHealth, petlevel, cinfo->HealthScalingExpansion, scaling->ContentTuningID, Classes(cinfo->unit_class)) * cinfo->ModHealth * cinfo->ModHealthExtra);
+        SetCreateMana(stats->BaseMana);
+
+        SetCreateStat(STAT_STRENGTH, 22);
+        SetCreateStat(STAT_AGILITY, 22);
+        SetCreateStat(STAT_STAMINA, 25);
+        SetCreateStat(STAT_INTELLECT, 28);
     }
 
     // Power

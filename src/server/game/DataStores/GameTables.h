@@ -22,11 +22,6 @@
 #include "Common.h"
 #include <vector>
 
-struct GtArmorMitigationByLvlEntry
-{
-    float Mitigation = 0.0f;
-};
-
 struct GtAzeriteKnowledgeMultiplierEntry
 {
     float Multiplier = 0.f;
@@ -230,7 +225,6 @@ private:
     std::vector<T> _data;
 };
 
-TC_GAME_API extern GameTable<GtArmorMitigationByLvlEntry>           sArmorMitigationByLvlGameTable;
 TC_GAME_API extern GameTable<GtArtifactKnowledgeMultiplierEntry>    sArtifactKnowledgeMultiplierGameTable;
 TC_GAME_API extern GameTable<GtArtifactLevelXPEntry>                sArtifactLevelXPGameTable;
 TC_GAME_API extern GameTable<GtAzeriteBaseExperiencePerLevelEntry>  sAzeriteBaseExperiencePerLevelTable;

@@ -22,7 +22,6 @@
 #include <boost/filesystem/path.hpp>
 #include <fstream>
 
-GameTable<GtArmorMitigationByLvlEntry>          sArmorMitigationByLvlGameTable;
 GameTable<GtArtifactKnowledgeMultiplierEntry>   sArtifactKnowledgeMultiplierGameTable;
 GameTable<GtArtifactLevelXPEntry>               sArtifactLevelXPGameTable;
 GameTable<GtAzeriteBaseExperiencePerLevelEntry> sAzeriteBaseExperiencePerLevelTable;
@@ -114,7 +113,6 @@ void LoadGameTables(std::string const& dataPath)
 
 #define LOAD_GT(store, file) gameTableCount += LoadGameTable(bad_gt_files, store, gtPath / file); ++expectedGameTableCount;
 
-    LOAD_GT(sArmorMitigationByLvlGameTable, "ArmorMitigationByLvl.txt");
     LOAD_GT(sArtifactKnowledgeMultiplierGameTable, "ArtifactKnowledgeMultiplier.txt");
     LOAD_GT(sArtifactLevelXPGameTable, "ArtifactLevelXP.txt");
     LOAD_GT(sAzeriteBaseExperiencePerLevelTable, "AzeriteBaseExperiencePerLevel.txt");
