@@ -662,7 +662,10 @@ uint32 SpellHistory::GetRemainingCooldown(SpellInfo const* spellInfo) const
 
 uint32 SpellHistory::GetRemainingCooldown(uint32 spellId) const
 {
-    return GetRemainingCooldown(sSpellMgr->GetSpellInfo(spellId));
+    if (SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(spellId))
+        return GetRemainingCooldown(spellInfo);
+
+    return 0;
 }
 
 void SpellHistory::LockSpellSchool(SpellSchoolMask schoolMask, uint32 lockoutTime)
