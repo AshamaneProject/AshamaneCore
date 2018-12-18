@@ -339,30 +339,16 @@ public:
 
     static bool HandleUnAuraCommand(ChatHandler* handler, char const* args)
     {
-        Unit* target = nullptr;
-        Player* player;
-        ObjectGuid targetGuid;
-        std::string targetName;
-        std::string argstr;
+        std::string argstr = strtok((char*)args, " ");
+        Unit* target = ObjectAccessor::FindPlayerByName(argstr);
 
-        if (!handler->extractPlayerTarget((char*)args, &player, nullptr, nullptr, false) || !player)
-        {
+        if (!target)
             target = handler->getSelectedUnit();
-
-            if (!target)
-            {
-                handler->SendSysMessage(LANG_SELECT_CHAR_OR_CREATURE);
-                handler->SetSentErrorMessage(true);
-                return false;
-            }
-
-            argstr = strtok((char*)args, " ");
-        }
         else
-        {
-            target = player;
             argstr = strtok(NULL, " ");
-        }
+
+        if (!target)
+            return false;
 
         if (argstr == "all")
         {
@@ -371,7 +357,7 @@ public:
         }
 
         // number or [name] Shift-click form |color|Hspell:spell_id|h[name]|h|r or Htalent form
-        uint32 spellId = handler->extractSpellIdFromLink((char*)args);
+        uint32 spellId = handler->extractSpellIdFromLink((char*)argstr.c_str());
         if (!spellId)
             return false;
 
