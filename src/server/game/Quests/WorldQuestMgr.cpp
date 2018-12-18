@@ -645,10 +645,10 @@ TeamId WorldQuestMgr::GetQuestTeamId(Quest const* quest)
     if (quest->GetAllowableRaces() == uint64(-1))
         return TEAM_NEUTRAL;
 
-    if (quest->GetAllowableRaces() & RACEMASK_ALLIANCE)
+    if (quest->GetAllowableRaces() & RACEMASK_HUMAN)
         return TEAM_ALLIANCE;
 
-    if (quest->GetAllowableRaces() & RACEMASK_HORDE)
+    if (quest->GetAllowableRaces() & RACEMASK_ORC)
         return TEAM_HORDE;
 
     return TEAM_NEUTRAL;

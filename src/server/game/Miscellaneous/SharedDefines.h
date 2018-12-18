@@ -181,6 +181,9 @@ enum Races
 // max+1 for player race
 #define MAX_RACES         37
 
+#define RACEMASK_HUMAN      1
+#define RACEMASK_ORC        2
+
 #define RACEMASK_ALL_PLAYABLE                     \
     ((UI64LIT(1)<<(RACE_HUMAN-1))               | \
      (UI64LIT(1)<<(RACE_ORC-1))                 | \
