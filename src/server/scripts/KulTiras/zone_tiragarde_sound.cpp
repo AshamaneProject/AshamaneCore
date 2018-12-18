@@ -655,8 +655,9 @@ struct conversation_cyrus_story : public ConversationScript
 
     void OnConversationRemove(Conversation* /*conversation*/, Unit* creator) override
     {
-        if (Player* player = creator->ToPlayer())
-            player->KilledMonsterCredit(137877);
+        if (creator)
+            if (Player* player = creator->ToPlayer())
+                player->KilledMonsterCredit(137877);
     }
 };
 
