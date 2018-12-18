@@ -489,14 +489,14 @@ INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `
 /* All other weapons */
 -- id 61 all other weapons uncommon
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`, `isCrafted`) VALUES
-								  (2, 		-1,			-1, 			 266, 		 350, 		 2,			-1);
+								  (2, 		1284603,	-1, 			 266, 		 350, 		 2,			-1);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (61, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
 									  (61, 		152512, 0, 			 100,	   0, 				1, 			0, 		   1, 		   2),
 									  (61, 		160298, 0, 			 100,	   0, 				1, 			0, 		   1, 		   1);
 -- id 62 all other weapons rare
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`, `isCrafted`) VALUES
-								  (2, 		-1,			-1,				 266, 		 350, 		 3,			-1);
+								  (2, 		1284603,	-1,				 266, 		 350, 		 3,			-1);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (62, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
 									  (62, 		152513, 0, 			 10,	   0, 				1, 			0, 		   1, 		   5),
@@ -505,7 +505,7 @@ INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `
 									  (62, 		160298, 0, 			 100,	   0, 				1, 			0, 		   1, 		   1);
 -- id 63 all other weapons epic
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`, `isCrafted`) VALUES
-								  (2, 		-1,			-1,				 280, 		 350, 		 4,			-1);
+								  (2, 		1284603,	-1,				 280, 		 350, 		 4,			-1);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (63, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
 									  (63, 		152542, 0, 			 100,	   0, 				1, 			0, 		   1, 		   2),
