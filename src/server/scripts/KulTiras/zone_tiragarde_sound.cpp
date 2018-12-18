@@ -258,9 +258,9 @@ struct npc_flynn_fairwind : public ScriptedAI
             {
                 GetContextUnit()->HandleEmoteCommand(EMOTE_ONESHOT_USE_STANDING);
             })
-                .Schedule(7s, [caster](TaskContext /*context*/)
+                .Schedule(7s, [](TaskContext context)
             {
-                if (GameObject* gob = caster->GetGameObjectByEntry(GOB_PRISON_BARS))
+                if (GameObject* gob = GetContextUnit()->GetGameObjectByEntry(GOB_PRISON_BARS))
                     gob->UseDoorOrButton();
             })
                 .Schedule(8s, [](TaskContext context)
