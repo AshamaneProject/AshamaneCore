@@ -460,9 +460,9 @@ struct npc_mardum_doom_commander_beliash : public ScriptedAI
     {
         Talk(SAY_ONCOMBAT_BELIASH);
 
-        me->GetScheduler().Schedule(2500ms, [this](TaskContext context)
+        me->GetScheduler().Schedule(2500ms, [](TaskContext context)
         {
-            me->CastSpell(me, SPELL_SHADOW_BOLT_VOLLEY, false);
+            GetContextUnit()->CastSpell(nullptr, SPELL_SHADOW_BOLT_VOLLEY, false);
             context.Repeat(20s);
         });
 
@@ -481,6 +481,7 @@ struct npc_mardum_doom_commander_beliash : public ScriptedAI
 
     void JustDied(Unit* /*killer*/) override
     {
+        me->GetScheduler().CancelAll();
         Talk(SAY_ONDEATH);
 
         std::list<Player*> players;
