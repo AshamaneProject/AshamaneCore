@@ -481,6 +481,7 @@ uint32 WorldQuestMgr::GetRandomRewardForQuestType(uint32 questType)
 std::vector<WorldQuestReward const*> WorldQuestMgr::GetRewardsForPlayerById(Player* player, uint32 rewardId)
 {
     std::vector<WorldQuestReward const*> rewards;
+    return rewards;
 
     auto rewardsItr = _worldQuestRewards.find(rewardId);
     if (rewardsItr == _worldQuestRewards.end())

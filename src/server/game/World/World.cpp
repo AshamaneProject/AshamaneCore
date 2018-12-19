@@ -2424,7 +2424,7 @@ void World::Update(uint32 diff)
 
     if (m_timers[WUPDATE_WORLD_QUEST].Passed())
     {
-        sWorldQuestMgr->Update();
+        //sWorldQuestMgr->Update();
         m_timers[WUPDATE_WORLD_QUEST].Reset();
     }
 

@@ -671,21 +671,21 @@ void WorldSession::HandleQuestgiverStatusMultipleQuery(WorldPackets::Quest::Ques
 
 void WorldSession::HandleRequestWorldQuestUpdate(WorldPackets::Quest::RequestWorldQuestUpdate& /*packet*/)
 {
-    if (!GetPlayer())
+    /*if (!GetPlayer())
         return;
 
     WorldPackets::Quest::WorldQuestUpdate response;
     sWorldQuestMgr->BuildPacket(GetPlayer(), response);
-    SendPacket(response.Write());
+    SendPacket(response.Write());*/
 }
 
 void WorldSession::HandleQueryQuestRewards(WorldPackets::Quest::QueryQuestReward& packet)
 {
-    WorldPackets::Quest::QueryQuestRewardResponse response;
+    /*WorldPackets::Quest::QueryQuestRewardResponse response;
     response.QuestID    = packet.QuestID;
     response.Unk1       = packet.Unk;
     sWorldQuestMgr->BuildRewardPacket(GetPlayer(), response.QuestID, response);
-    SendPacket(response.Write());
+    SendPacket(response.Write());*/
 }
 
 void WorldSession::HandlePlayerChoiceResponse(WorldPackets::Quest::ChoiceResponse& choiceResponse)
