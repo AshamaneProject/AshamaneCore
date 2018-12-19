@@ -34,21 +34,21 @@ INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `
 /* Bow & Crossbows */
 -- id 2 Bow & Crossbows uncommon
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`, `isCrafted`) VALUES
-								  (2, 		262148, 	-1 , 			 266, 		 280, 		 2,			-1);
+								  (2, 		262148, 	-1 , 			 0, 		 280, 		 2,			-1);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (2, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
 									  (2, 		154165, 0, 			 100,	   0, 				1, 			0, 		   1, 		   8),
 									  (2, 		11291,  0, 			 100,	   0, 				1, 			0, 		   1, 		   3);
 -- id 3 Bow & Crossbows rare
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`, `isCrafted`) VALUES
-								  (2, 		262148, 	-1 , 			 266, 		 280, 		 3, 		-1);
+								  (2, 		262148, 	-1 , 			 0, 		 280, 		 3, 		-1);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (3, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
 									  (3, 		154165, 0, 			 100,	   0, 				1, 			0, 		   2, 		   8),
 									  (3, 		11291,  0, 			 100,	   0, 				1, 			0, 		   1, 		   4);
 -- id 4 Bow & Crossbows epic
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`, `isCrafted`) VALUES
-								  (2, 		262148, 	-1 , 			 266, 		 280, 		 4, 		-1);
+								  (2, 		262148, 	-1 , 			 0, 		 280, 		 4, 		-1);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (4, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
 									  (4, 		154165, 0, 			 100,	   0, 				1, 			0, 		   4, 		   8),
@@ -56,14 +56,14 @@ INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `
 /* Cloth Armor */
 -- id 5 cloth armor uncommon
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`, `isCrafted`) VALUES
-								  (4, 		2,			-1 , 			 266, 		 350, 		 2, 		-1);
+								  (4, 		2,			-1 , 			 0, 		 350, 		 2, 		-1);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (5, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
 									  (5, 		152576, 0, 			 100,	   0, 				1, 			0, 		   1, 		   3),
 									  (5, 		159959, 0, 			 100,	   0, 				1, 			0, 		   1, 		   5);
 -- id 6 cloth armor azerith rare
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`) VALUES
-								  (4, 		2,			42 , 			 266, 		 350, 		 3);
+								  (4, 		2,			42 , 			 0, 		 350, 		 3);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (6, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
 									  (6, 		152576, 0, 			 100,	   0, 				1, 			0, 		   1, 		   3),
@@ -72,7 +72,7 @@ INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `
 									  (6, 		159959, 0, 			 100,	   0, 				1, 			0, 		   1, 		   8);
 -- id 7 cloth armor non azerith rare
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`) VALUES
-								  (4, 		2,			536870869 ,		 266, 		 350, 		 3);
+								  (4, 		2,			536870869 ,		 0, 		 350, 		 3);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (7, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
 									  (7, 		152576, 0, 			 100,	   0, 				1, 			0, 		   1, 		   3),
@@ -81,7 +81,7 @@ INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `
 									  (7, 		159959, 0, 			 100,	   0, 				1, 			0, 		   1, 		   8);
 -- id 8 cloth armor azerith epic
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`) VALUES
-								  (4, 		2,			42 , 			 280, 		 350, 		 4);
+								  (4, 		2,			42 , 			 0, 		 350, 		 4);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (8, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
 									  (8, 		152577, 0, 			 100, 	   0, 				1, 			0, 		   8, 		   21),
@@ -89,7 +89,7 @@ INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `
 									  (8, 		159959, 0, 			 100,	   0, 				1, 			0, 		   5, 		   10);
 -- id 9 cloth armor non azerith epic
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`) VALUES
-								  (4, 		2,			536870869 ,		 280, 		 350, 		 4);
+								  (4, 		2,			536870869 ,		 0, 		 350, 		 4);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (9, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
 									  (9, 		152577, 0, 			 100, 	   0, 				1, 			0, 		   4, 		   10),
@@ -113,14 +113,14 @@ INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `
 /* Leather Armor */
 -- id 13 leather armor uncommon
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`, `isCrafted`) VALUES
-								  (4, 		4,			-1 , 			 266, 		 350, 		 2, 		-1);
+								  (4, 		4,			-1 , 			 0, 		 350, 		 2, 		-1);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (13, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
 									  (13, 		152541, 0, 			 100,	   0, 				1, 			0, 		   1, 		   3),
 									  (13, 		154164, 0, 			 100,	   0, 				1, 			0, 		   1, 		   2);
 -- id 14 leather armor azerith rare
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`) VALUES
-								  (4, 		4,			42 , 			 266, 		 350, 		 3);
+								  (4, 		4,			42 , 			 0, 		 350, 		 3);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (14, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
 									  (14, 		152541, 0, 			 100,	   0, 				1, 			0, 		   2, 		   5),
@@ -129,7 +129,7 @@ INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `
 									  (14, 		154165, 0, 			 20, 	   0, 				1, 			0, 		   3, 		   9);
 -- id 15 leather armor non azerith rare
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`) VALUES
-								  (4, 		4,			536870869 ,		 266, 		 350, 		 3);
+								  (4, 		4,			536870869 ,		 0, 		 350, 		 3);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (15, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
 									  (15, 		152541, 0, 			 100,	   0, 				1, 			0, 		   2, 		   5),
@@ -138,7 +138,7 @@ INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `
 									  (15, 		154165, 0, 			 5, 	   0, 				1, 			0, 		   2, 		   7);
 -- id 16 leather armor azerith epic
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`) VALUES
-								  (4, 		4,			42 , 			 280, 		 350, 		 4);
+								  (4, 		4,			42 , 			 0, 		 350, 		 4);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (16, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
 									  (16, 		152542, 0, 			 100, 	   0, 				1, 			0, 		   4, 		   9),
@@ -146,7 +146,7 @@ INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `
 									  (16, 		154722, 0, 			 100, 	   0, 				1, 			0, 		   3, 		   21);
 -- id 17 leather armor non azerith epic
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`) VALUES
-								  (4, 		4,			536870869 ,		 280, 		 350, 		 4);
+								  (4, 		4,			536870869 ,		 0, 		 350, 		 4);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (17, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
 									  (17, 		152542, 0, 			 100, 	   0, 				1, 			0, 		   1, 		   4),
@@ -170,14 +170,14 @@ INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `
 /* Mail Armor */
 -- id 21 mail armor uncommon
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`, `isCrafted`) VALUES
-								  (4, 		8,			-1 , 			 266, 		 350, 		 2, 		-1);
+								  (4, 		8,			-1 , 			 0, 		 350, 		 2, 		-1);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (21, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
 									  (21, 		153050, 0, 			 100,	   0, 				1, 			0, 		   1, 		   3),
 									  (21, 		154164, 0, 			 100,	   0, 				1, 			0, 		   1, 		   2);
 -- id 22 mail armor azerith rare
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`) VALUES
-								  (4, 		8,			42 , 			 266, 		 350, 		 3);
+								  (4, 		8,			42 , 			 0, 		 350, 		 3);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (22, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
 									  (22, 		153051, 0, 			 10,	   0, 				1, 			0, 		   8, 		   17),
@@ -186,7 +186,7 @@ INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `
 									  (22, 		154164, 0, 			 100,	   0, 				1, 			0, 		   2, 		   3);
 -- id 23 mail armor non azerith rare
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`) VALUES
-								  (4, 		8,			536870869 ,		 266, 		 350, 		 3);
+								  (4, 		8,			536870869 ,		 0, 		 350, 		 3);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (23, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
 									  (23, 		153051, 0, 			 10,	   0, 				1, 			0, 		   4, 		   9),
@@ -195,7 +195,7 @@ INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `
 									  (23, 		154164, 0, 			 100,	   0, 				1, 			0, 		   2, 		   3);
 -- id 24 mail armor azerith epic
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`) VALUES
-								  (4, 		8,			42 , 			 280, 		 350, 		 4);
+								  (4, 		8,			42 , 			 0, 		 350, 		 4);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (24, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
 									  (24, 		152542, 0, 			 100,	   0, 				1, 			0, 		   4, 		   8),
@@ -204,7 +204,7 @@ INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `
 									  (24, 		160059, 0, 			 100,	   0, 				1, 			0, 		   6, 		   10);
 -- id 25 mail armor non azerith epic
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`) VALUES
-								  (4, 		8,			536870869 ,		 280, 		 350, 		 4);
+								  (4, 		8,			536870869 ,		 0, 		 350, 		 4);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (25, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
 									  (25, 		152542, 0, 			 100,	   0, 				1, 			0, 		   1, 		   2),
@@ -229,14 +229,14 @@ INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `
 /* Plate Armor */
 -- id 29 plate armor uncommon
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`, `isCrafted`) VALUES
-								  (4, 		16,			-1 , 			 266, 		 350, 		 2,			-1);
+								  (4, 		16,			-1 , 			 0, 		 350, 		 2,			-1);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (29, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
 									  (29, 		152512, 0, 			 100,	   0, 				1, 			0, 		   1, 		   2),
 									  (29, 		160298, 0, 			 100,	   0, 				1, 			0, 		   1, 		   1);
 -- id 30 plate armor azerith rare
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`) VALUES
-								  (4, 		16,			42 , 			 266, 		 350, 		 3);
+								  (4, 		16,			42 , 			 0, 		 350, 		 3);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (30, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
 									  (30, 		152513, 0, 			 10,	   0, 				1, 			0, 		   2, 		   7),
@@ -245,7 +245,7 @@ INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `
 									  (30, 		160298, 0, 			 100,	   0, 				1, 			0, 		   1, 		   1);
 -- id 31 plate armor non azerith rare
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`) VALUES
-								  (4, 		16,			536870869 ,		 266, 		 350, 		 3);
+								  (4, 		16,			536870869 ,		 0, 		 350, 		 3);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (31, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
 									  (31, 		152513, 0, 			 10,	   0, 				1, 			0, 		   1, 		   5),
@@ -254,7 +254,7 @@ INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `
 									  (31, 		160298, 0, 			 100,	   0, 				1, 			0, 		   1, 		   1);
 -- id 32 plate armor azerith epic
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`) VALUES
-								  (4, 		16,			42 , 			 280, 		 350, 		 4);
+								  (4, 		16,			42 , 			 0, 		 350, 		 4);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (32, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
 									  (32, 		152542, 0, 			 100,	   0, 				1, 			0, 		   4, 		   8),
@@ -263,7 +263,7 @@ INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `
 									  (32, 		160059, 0, 			 100,	   0, 				1, 			0, 		   6, 		   10);
 -- id 33 plate armor non azerith epic
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`) VALUES
-								  (4, 		16,			536870869 ,		 280, 		 350, 		 4);
+								  (4, 		16,			536870869 ,		 0, 		 350, 		 4);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (33, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
 									  (33, 		152542, 0, 			 100,	   0, 				1, 			0, 		   1, 		   2),
@@ -288,14 +288,14 @@ INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `
 /* Cloaks */
 -- id 37 cloaks uncommon
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`, `isCrafted`) VALUES
-								  (4, 		1,			65536 , 		 266, 		 350, 		 2, 		-1);
+								  (4, 		1,			65536 , 		 0, 		 350, 		 2, 		-1);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (37, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
 									  (37, 		152576, 0, 			 100,	   0, 				1, 			0, 		   1, 		   3),
 									  (37, 		159959, 0, 			 100,	   0, 				1, 			0, 		   1, 		   5);
 -- id 38 cloaks rare
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`, `isCrafted`) VALUES
-								  (4, 		1,			65536 ,		 266, 		 350, 		 3, 		-1);
+								  (4, 		1,			65536 ,			 0, 		 350, 		 3, 		-1);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (38, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
 									  (38, 		152576, 0, 			 100,	   0, 				1, 			0, 		   1, 		   3),
@@ -304,7 +304,7 @@ INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `
 									  (38, 		159959, 0, 			 100,	   0, 				1, 			0, 		   1, 		   8);
 -- id 39 cloaks epic
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`, `isCrafted`) VALUES
-								  (4, 		1,			65536 ,		 280, 		 350, 		 4, 		-1);
+								  (4, 		1,			65536,			 0, 		 350, 		 4, 		-1);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (39, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
 									  (39, 		152577, 0, 			 100, 	   0, 				1, 			0, 		   4, 		   10),
@@ -313,7 +313,7 @@ INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `
 /* Rings */
 -- id 40 ring uncommon
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`, `isCrafted`) VALUES
-								  (4, 		1,			2048 , 			 266, 		 350, 		 2, 		-1);
+								  (4, 		1,			2048 , 			 0, 		 350, 		 2, 		-1);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (40, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
 									  (40, 		153700, 0, 			 5, 	   0, 				1, 			0, 		   1, 		   2),
@@ -325,27 +325,27 @@ INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `
 									  (40, 		152512, 0, 			 100,	   0, 				1, 			0, 		   1, 		   3);
 -- id 41 ring rare
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`, `isCrafted`) VALUES
-								  (4, 		1,			2048,			 266, 		 350, 		 3, 		-1);
+								  (4, 		1,			2048,			 0, 		 350, 		 3, 		-1);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (41, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
-									  (41, 		154120, 0, 			 12, 	   0, 				1, 			0, 		   1, 		   2),
-									  (41, 		154121, 0, 			 12, 	   0, 				1, 			0, 		   1, 		   2),
-									  (41, 		154122, 0, 			 12, 	   0, 				1, 			0, 		   1, 		   2),
-									  (41, 		154123, 0, 			 12, 	   0, 				1, 			0, 		   1, 		   2),
-									  (41, 		154124, 0, 			 12, 	   0, 				1, 			0, 		   1, 		   2),
-									  (41, 		154125, 0, 			 12, 	   0, 				1, 			0, 		   1, 		   2),
+									  (41, 		154120, 0, 			 5, 	   0, 				1, 			0, 		   1, 		   2),
+									  (41, 		154121, 0, 			 5, 	   0, 				1, 			0, 		   1, 		   2),
+									  (41, 		154122, 0, 			 5, 	   0, 				1, 			0, 		   1, 		   2),
+									  (41, 		154123, 0, 			 5, 	   0, 				1, 			0, 		   1, 		   2),
+									  (41, 		154124, 0, 			 5, 	   0, 				1, 			0, 		   1, 		   2),
+									  (41, 		154125, 0, 			 5, 	   0, 				1, 			0, 		   1, 		   2),
 									  (41, 		152579, 0, 			 100,	   0, 				1, 			0, 		   1, 		   5);
 -- id 42 ring epic
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`, `isCrafted`) VALUES
-								  (4, 		1,			2048,			 280, 		 350, 		 4, 		-1);
+								  (4, 		1,			2048,			 0, 		 350, 		 4, 		-1);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (42, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
-									  (42, 		154120, 0, 			 24, 	   0, 				1, 			0, 		   1, 		   2),
-									  (42, 		154121, 0, 			 24, 	   0, 				1, 			0, 		   1, 		   2),
-									  (42, 		154122, 0, 			 24, 	   0, 				1, 			0, 		   1, 		   2),
-									  (42, 		154123, 0, 			 24, 	   0, 				1, 			0, 		   1, 		   2),
-									  (42, 		154124, 0, 			 24, 	   0, 				1, 			0, 		   1, 		   2),
-									  (42, 		154125, 0, 			 24, 	   0, 				1, 			0, 		   1, 		   2),
+									  (42, 		154120, 0, 			 10, 	   0, 				1, 			0, 		   1, 		   2),
+									  (42, 		154121, 0, 			 10, 	   0, 				1, 			0, 		   1, 		   2),
+									  (42, 		154122, 0, 			 10, 	   0, 				1, 			0, 		   1, 		   2),
+									  (42, 		154123, 0, 			 10, 	   0, 				1, 			0, 		   1, 		   2),
+									  (42, 		154124, 0, 			 10, 	   0, 				1, 			0, 		   1, 		   2),
+									  (42, 		154125, 0, 			 10, 	   0, 				1, 			0, 		   1, 		   2),
 									  (42, 		152513, 0, 			 100,	   0, 				1, 			0, 		   1, 		   5);
 -- id 43 plate armor crafted 355
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`, `isCrafted`) VALUES
@@ -380,135 +380,135 @@ INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `
 									  (47, 		152506, 0, 			 100,	   0, 				1, 			0, 		   1, 		   8),
 									  (47, 		152508, 0, 			 100,	   0, 				1, 			0, 		   1, 		   12);
 /* Off-hands */
--- id 49 Off-hands uncommon
+-- id 48 Off-hands uncommon
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`, `isCrafted`) VALUES
-								  (4, 		1,			4194304 , 		 266, 		 350, 		 2, 		-1);
+								  (4, 		1,			4194304 , 		 0, 		 350, 		 2, 		-1);
+INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
+									  (48, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
+									  (48, 		158188, 0, 			 50, 	   0, 				1, 			0, 		   2, 		   8),
+									  (48, 		158187, 0, 			 100, 	   0, 				1, 			0, 		   5, 		   10);
+-- id 49 Off-hands rare
+INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`, `isCrafted`) VALUES
+								  (4, 		1,			4194304 , 		 0, 		 350, 		 3, 		-1);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (49, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
-									  (49, 		158188, 0, 			 50, 	   0, 				1, 			0, 		   2, 		   8),
+									  (49, 		158188, 0, 			 50, 	   0, 				1, 			0, 		   5, 		   11),
 									  (49, 		158187, 0, 			 100, 	   0, 				1, 			0, 		   5, 		   10);
--- id 50 Off-hands rare
+-- id 50 Off-hands epic
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`, `isCrafted`) VALUES
-								  (4, 		1,			4194304 , 		 266, 		 350, 		 3, 		-1);
+								  (4, 		1,			4194304 , 		 0, 		 350, 		 4, 		-1);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (50, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
-									  (50, 		158188, 0, 			 50, 	   0, 				1, 			0, 		   5, 		   11),
+									  (50, 		158189, 0, 			 25, 	   0, 				1, 			0, 		   1, 		   4),
+									  (50, 		158188, 0, 			 50, 	   0, 				1, 			0, 		   5, 		   13),
 									  (50, 		158187, 0, 			 100, 	   0, 				1, 			0, 		   5, 		   10);
--- id 51 Off-hands epic
+/* Wands */
+-- id 51 wands uncommon
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`, `isCrafted`) VALUES
-								  (4, 		1,			4194304 , 		 266, 		 350, 		 4, 		-1);
+								  (2, 		524288, 	-1 , 			 0, 		 350, 		 2,			-1);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (51, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
-									  (51, 		158189, 0, 			 25, 	   0, 				1, 			0, 		   1, 		   4),
-									  (51, 		158188, 0, 			 50, 	   0, 				1, 			0, 		   5, 		   13),
-									  (51, 		158187, 0, 			 100, 	   0, 				1, 			0, 		   5, 		   10);
-/* Wands */
--- id 52 wands uncommon
+									  (51, 		11291,  0, 			 50,	   0, 				1, 			0, 		   1, 		   1),
+									  (51, 		152875, 0, 			 100,	   0, 				1, 			0, 		   1, 		   3);
+-- id 52 wands rare
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`, `isCrafted`) VALUES
-								  (2, 		524288, 	-1 , 			 266, 		 350, 		 2,			-1);
+								  (2, 		524288, 	-1 , 			 0, 		 350, 		 3, 		-1);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (52, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
 									  (52, 		11291,  0, 			 50,	   0, 				1, 			0, 		   1, 		   1),
 									  (52, 		152875, 0, 			 100,	   0, 				1, 			0, 		   1, 		   3);
--- id 53 wands rare
+-- id 53 wands epic
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`, `isCrafted`) VALUES
-								  (2, 		524288, 	-1 , 			 266, 		 350, 		 3, 		-1);
+								  (2, 		524288, 	-1 , 			 0, 		 350, 		 4, 		-1);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (53, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
 									  (53, 		11291,  0, 			 50,	   0, 				1, 			0, 		   1, 		   1),
-									  (53, 		152875, 0, 			 100,	   0, 				1, 			0, 		   1, 		   3);
--- id 54 wands epic
+									  (53, 		152876, 0, 			 100,	   0, 				1, 			0, 		   1, 		   1);
+/* Fist weapons */
+-- id 54 fist weapons uncommon
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`, `isCrafted`) VALUES
-								  (2, 		524288, 	-1 , 			 266, 		 350, 		 4, 		-1);
+								  (2, 		8192,	 	-1 , 			 0, 		 350, 		 2, 		-1);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (54, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
-									  (54, 		11291,  0, 			 50,	   0, 				1, 			0, 		   1, 		   1),
-									  (54, 		152876, 0, 			 100,	   0, 				1, 			0, 		   1, 		   1);
-/* Fist weapons */
--- id 55 fist weapons uncommon
+									  (54, 		153050, 0, 			 80,	   0, 				1, 			0, 		   1, 		   4),
+									  (54, 		154164, 0, 			 80,	   0, 				1, 			0, 		   1, 		   2),
+									  (54, 		152512, 0, 			 100,	   0, 				1, 			0, 		   1, 		   3);
+-- id 55 fist weapons rare
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`, `isCrafted`) VALUES
-								  (2, 		8192, 	-1 , 			 266, 		 350, 		 2, 		-1);
+								  (2, 		8192, 		-1 , 			 0, 		 350, 		 3, 		-1);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (55, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
-									  (55, 		153050, 0, 			 80,	   0, 				1, 			0, 		   1, 		   4),
-									  (55, 		154164, 0, 			 80,	   0, 				1, 			0, 		   1, 		   2),
-									  (55, 		152512, 0, 			 100,	   0, 				1, 			0, 		   1, 		   3);
--- id 56 fist weapons rare
+									  (55, 		154165, 0, 			 80,	   0, 				1, 			0, 		   5, 		   10),
+									  (55, 		153051, 0, 			 80,	   0, 				1, 			0, 		   5, 		   10),
+									  (55, 		160059, 0, 			 100,	   0, 				1, 			0, 		   4, 		   10);
+-- id 56 fist weapons epic
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`, `isCrafted`) VALUES
-								  (2, 		8192, 	-1 , 			 266, 		 350, 		 3, 		-1);
+								  (2, 		8192,	 	-1 , 			 0, 		 350, 		 4, 		-1);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (56, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
-									  (56, 		154165, 0, 			 80,	   0, 				1, 			0, 		   5, 		   10),
-									  (56, 		153051, 0, 			 80,	   0, 				1, 			0, 		   5, 		   10),
-									  (56, 		160059, 0, 			 100,	   0, 				1, 			0, 		   4, 		   10);
--- id 57 fist weapons epic
+									  (56, 		154165, 0, 			 80,	   0, 				1, 			0, 		   9, 		   12),
+									  (56, 		153051, 0, 			 80,	   0, 				1, 			0, 		   7, 		   17),
+									  (56, 		160059, 0, 			 100,	   0, 				1, 			0, 		   4, 		   15);
+/* Staves */
+-- id 57 staves uncommon
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`, `isCrafted`) VALUES
-								  (2, 		8192, 	-1 , 			 266, 		 350, 		 4, 		-1);
+								  (2, 		1024,	 	-1,	 			 0, 		 350, 		 2, 		-1);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (57, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
-									  (57, 		154165, 0, 			 80,	   0, 				1, 			0, 		   9, 		   12),
-									  (57, 		153051, 0, 			 80,	   0, 				1, 			0, 		   7, 		   17),
-									  (57, 		160059, 0, 			 100,	   0, 				1, 			0, 		   4, 		   15);
-/* Staves */
--- id 58 staves uncommon
+									  (57, 		153700, 0, 			 5, 	   0, 				1, 			0, 		   1, 		   2),
+									  (57, 		153701, 0, 			 5, 	   0, 				1, 			0, 		   1, 		   2),
+									  (57, 		153702, 0, 			 5, 	   0, 				1, 			0, 		   1, 		   2),
+									  (57, 		153703, 0, 			 5, 	   0, 				1, 			0, 		   1, 		   2),
+									  (57, 		153704, 0, 			 5, 	   0, 				1, 			0, 		   1, 		   2),
+									  (57, 		153705, 0, 			 5, 	   0, 				1, 			0, 		   1, 		   2),
+									  (57, 		152512, 0, 			 100,	   0, 				1, 			0, 		   1, 		   3);
+-- id 58 staves rare
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`, `isCrafted`) VALUES
-								  (2, 		1024, 	-1,		 			 266, 		 350, 		 2, 		-1);
+								  (2, 		1024,	 	-1 , 			 0, 		 350, 		 3, 		-1);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (58, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
-									  (58, 		153700, 0, 			 5, 	   0, 				1, 			0, 		   1, 		   2),
-									  (58, 		153701, 0, 			 5, 	   0, 				1, 			0, 		   1, 		   2),
-									  (58, 		153702, 0, 			 5, 	   0, 				1, 			0, 		   1, 		   2),
-									  (58, 		153703, 0, 			 5, 	   0, 				1, 			0, 		   1, 		   2),
-									  (58, 		153704, 0, 			 5, 	   0, 				1, 			0, 		   1, 		   2),
-									  (58, 		153705, 0, 			 5, 	   0, 				1, 			0, 		   1, 		   2),
-									  (58, 		152512, 0, 			 100,	   0, 				1, 			0, 		   1, 		   3);
--- id 59 staves rare
+									  (58, 		154120, 0, 			 5, 	   0, 				1, 			0, 		   1, 		   2),
+									  (58, 		154121, 0, 			 5, 	   0, 				1, 			0, 		   1, 		   2),
+									  (58, 		154122, 0, 			 5, 	   0, 				1, 			0, 		   1, 		   2),
+									  (58, 		154123, 0, 			 5, 	   0, 				1, 			0, 		   1, 		   2),
+									  (58, 		154124, 0, 			 5, 	   0, 				1, 			0, 		   1, 		   2),
+									  (58, 		154125, 0, 			 5, 	   0, 				1, 			0, 		   1, 		   2),
+									  (58, 		152579, 0, 			 100,	   0, 				1, 			0, 		   1, 		   5);
+-- id 59 staves epic
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`, `isCrafted`) VALUES
-								  (2, 		1024, 	-1 , 			 266, 		 350, 		 3, 		-1);
+								  (2, 		1024,	 	-1 , 			 0, 		 350, 		 4, 		-1);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (59, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
-									  (59, 		154120, 0, 			 12, 	   0, 				1, 			0, 		   1, 		   2),
-									  (59, 		154121, 0, 			 12, 	   0, 				1, 			0, 		   1, 		   2),
-									  (59, 		154122, 0, 			 12, 	   0, 				1, 			0, 		   1, 		   2),
-									  (59, 		154123, 0, 			 12, 	   0, 				1, 			0, 		   1, 		   2),
-									  (59, 		154124, 0, 			 12, 	   0, 				1, 			0, 		   1, 		   2),
-									  (59, 		154125, 0, 			 12, 	   0, 				1, 			0, 		   1, 		   2),
+									  (59, 		154120, 0, 			 10, 	   0, 				1, 			0, 		   1, 		   2),
+									  (59, 		154121, 0, 			 10, 	   0, 				1, 			0, 		   1, 		   2),
+									  (59, 		154122, 0, 			 10, 	   0, 				1, 			0, 		   1, 		   2),
+									  (59, 		154123, 0, 			 10, 	   0, 				1, 			0, 		   1, 		   2),
+									  (59, 		154124, 0, 			 10, 	   0, 				1, 			0, 		   1, 		   2),
+									  (59, 		154125, 0, 			 10, 	   0, 				1, 			0, 		   1, 		   2),
 									  (59, 		152579, 0, 			 100,	   0, 				1, 			0, 		   1, 		   5);
--- id 60 staves epic
+/* All other weapons */
+-- id 60 all other weapons uncommon
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`, `isCrafted`) VALUES
-								  (2, 		1024, 	-1 , 			 266, 		 350, 		 4, 		-1);
+								  (2, 		1285115,	-1, 			 0, 		 350, 		 2,			-1);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (60, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
-									  (60, 		154120, 0, 			 24, 	   0, 				1, 			0, 		   1, 		   2),
-									  (60, 		154121, 0, 			 24, 	   0, 				1, 			0, 		   1, 		   2),
-									  (60, 		154122, 0, 			 24, 	   0, 				1, 			0, 		   1, 		   2),
-									  (60, 		154123, 0, 			 24, 	   0, 				1, 			0, 		   1, 		   2),
-									  (60, 		154124, 0, 			 24, 	   0, 				1, 			0, 		   1, 		   2),
-									  (60, 		154125, 0, 			 24, 	   0, 				1, 			0, 		   1, 		   2),
-									  (60, 		152579, 0, 			 100,	   0, 				1, 			0, 		   1, 		   5);
-/* All other weapons */
--- id 61 all other weapons uncommon
+									  (60, 		152512, 0, 			 100,	   0, 				1, 			0, 		   1, 		   2),
+									  (60, 		160298, 0, 			 100,	   0, 				1, 			0, 		   1, 		   1);
+-- id 61 all other weapons rare
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`, `isCrafted`) VALUES
-								  (2, 		1284603,	-1, 			 266, 		 350, 		 2,			-1);
+								  (2, 		1285115,	-1,				 0, 		 350, 		 3,			-1);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (61, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
-									  (61, 		152512, 0, 			 100,	   0, 				1, 			0, 		   1, 		   2),
+									  (61, 		152513, 0, 			 10,	   0, 				1, 			0, 		   1, 		   5),
+									  (61, 		152579, 0, 			 10, 	   0, 				1, 			0, 		   2, 		   5),
+									  (61, 		152512, 0, 			 100,	   0, 				1, 			0, 		   1, 		   3),
 									  (61, 		160298, 0, 			 100,	   0, 				1, 			0, 		   1, 		   1);
--- id 62 all other weapons rare
+-- id 62 all other weapons epic
 INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`, `isCrafted`) VALUES
-								  (2, 		1284603,	-1,				 266, 		 350, 		 3,			-1);
+								  (2, 		1285115,	-1,				 0, 		 350, 		 4,			-1);
 INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
 									  (62, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
-									  (62, 		152513, 0, 			 10,	   0, 				1, 			0, 		   1, 		   5),
-									  (62, 		152579, 0, 			 10, 	   0, 				1, 			0, 		   2, 		   5),
-									  (62, 		152512, 0, 			 100,	   0, 				1, 			0, 		   1, 		   3),
-									  (62, 		160298, 0, 			 100,	   0, 				1, 			0, 		   1, 		   1);
--- id 63 all other weapons epic
-INSERT INTO `item_scrapping_loot` (`class`, `subclass`, `inventoryType`, `minLevel`, `maxLevel`, `quality`, `isCrafted`) VALUES
-								  (2, 		1284603,	-1,				 280, 		 350, 		 4,			-1);
-INSERT INTO `scrapping_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES
-									  (63, 		152668, 0, 			 16,	   0, 				1, 			0, 		   1, 		   1),
-									  (63, 		152542, 0, 			 100,	   0, 				1, 			0, 		   1, 		   2),
-									  (63, 		154165, 0, 			 100, 	   0, 				1, 			0, 		   6, 		   8),
-									  (63, 		153051, 0, 			 100,	   0, 				1, 			0, 		   10, 		   14),
-									  (63, 		160059, 0, 			 100,	   0, 				1, 			0, 		   3, 		   7);
+									  (62, 		152542, 0, 			 100,	   0, 				1, 			0, 		   1, 		   2),
+									  (62, 		154165, 0, 			 100, 	   0, 				1, 			0, 		   6, 		   8),
+									  (62, 		153051, 0, 			 100,	   0, 				1, 			0, 		   10, 		   14),
+									  (62, 		160059, 0, 			 100,	   0, 				1, 			0, 		   3, 		   7);

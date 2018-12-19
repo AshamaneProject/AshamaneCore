@@ -3250,7 +3250,7 @@ ItemScrappingLoot const* ObjectMgr::GetItemScrappingLoot(Item* item) const
             continue;
         if (!(itemScrappingloot.Subclass & 1 << iT->GetSubClass()))
             continue;
-        if (itemScrappingloot.InventoryType != -1 && itemScrappingloot.InventoryType & 1 << iT->GetInventoryType())
+        if (itemScrappingloot.InventoryType != -1 && !(itemScrappingloot.InventoryType & 1 << iT->GetInventoryType()))
             continue;
         if (itemScrappingloot.MinLevel > item->GetItemLevel(item->GetOwner()))
             continue;
