@@ -2160,9 +2160,9 @@ float WorldObject::GetVisibilityRange() const
 
 float WorldObject::GetSightRange(const WorldObject* target) const
 {
-    if (ToUnit())
+    if (IsUnit())
     {
-        if (ToPlayer())
+        if (IsPlayer())
         {
             if (target && target->isActiveObject() && !target->ToPlayer())
                 return MAX_VISIBILITY_DISTANCE;
@@ -2171,13 +2171,13 @@ float WorldObject::GetSightRange(const WorldObject* target) const
             else
                 return GetMap()->GetVisibilityRange();
         }
-        else if (ToCreature())
+        else if (IsCreature())
             return ToCreature()->m_SightDistance;
         else
             return SIGHT_RANGE_UNIT;
     }
 
-    if (ToDynObject() && isActiveObject())
+    if (IsDynObject() && isActiveObject())
     {
         return GetMap()->GetVisibilityRange();
     }
