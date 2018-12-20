@@ -203,16 +203,14 @@ void WorldQuestMgr::LoadActiveWorldQuests()
             continue;
         }
 
-        ActiveWorldQuest* activeWorldQuest = new ActiveWorldQuest(questId, rewardId, startTime);
-
         uint8 questTeamId = GetQuestTeamId(quest);
         if (questTeamId == TEAM_NEUTRAL)
         {
-            _activeWorldQuests[quest->Expansion][TEAM_ALLIANCE][worldQuestTemplate->QuestId] = activeWorldQuest;
-            _activeWorldQuests[quest->Expansion][TEAM_HORDE][worldQuestTemplate->QuestId] = activeWorldQuest;
+            _activeWorldQuests[quest->Expansion][TEAM_ALLIANCE][worldQuestTemplate->QuestId]    = new ActiveWorldQuest(questId, rewardId, startTime);
+            _activeWorldQuests[quest->Expansion][TEAM_HORDE][worldQuestTemplate->QuestId]       = new ActiveWorldQuest(questId, rewardId, startTime);
         }
         else
-            _activeWorldQuests[quest->Expansion][questTeamId][worldQuestTemplate->QuestId] = activeWorldQuest;
+            _activeWorldQuests[quest->Expansion][questTeamId][worldQuestTemplate->QuestId]      = new ActiveWorldQuest(questId, rewardId, startTime);
 
 
     } while (result->NextRow());
@@ -228,7 +226,7 @@ void WorldQuestMgr::Update()
             {
                 if (itr->second->GetRemainingTime() <= 0)
                 {
-                    DisableQuest(itr->second, false);
+                    DisableQuest(itr->second);
                     itr = teamWorldQuest.second.erase(itr);
                 }
                 else
@@ -313,7 +311,7 @@ void WorldQuestMgr::ActivateQuest(WorldQuestTemplate* worldQuestTemplate)
     CharacterDatabase.Execute(stmt);
 }
 
-void WorldQuestMgr::DisableQuest(ActiveWorldQuest* activeWorldQuest, bool deleteFromMap/* = true*/)
+void WorldQuestMgr::DisableQuest(ActiveWorldQuest* activeWorldQuest)
 {
     Quest const* quest = sObjectMgr->GetQuestTemplate(activeWorldQuest->QuestId);
     if (!quest)
@@ -354,9 +352,6 @@ void WorldQuestMgr::DisableQuest(ActiveWorldQuest* activeWorldQuest, bool delete
         CharacterDatabase.PExecute("DELETE FROM character_queststatus_objectives_criteria WHERE questObjectiveId = %u", objective.ID);
         CharacterDatabase.PExecute("DELETE FROM character_queststatus_objectives_criteria_progress WHERE criteriaId = %u", objective.ObjectID);
     }
-
-    if (deleteFromMap)
-        _activeWorldQuests.erase(activeWorldQuest->QuestId);
 
     delete activeWorldQuest;
 }

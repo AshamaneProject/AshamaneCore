@@ -68,7 +68,7 @@ public:
     void CleanWorldQuestTemplates();
 
     void ActivateQuest(WorldQuestTemplate* worldQuestTemplate);
-    void DisableQuest(ActiveWorldQuest* activeWorldQuest, bool deleteFromMap = true);
+    void DisableQuest(ActiveWorldQuest* activeWorldQuest);
 
     bool IsQuestActive(uint32 questId);
 
