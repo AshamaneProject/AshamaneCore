@@ -6103,18 +6103,18 @@ bool Player::UpdatePosition(float x, float y, float z, float orientation, bool t
 
 bool Player::HasWorldQuestEnabled(uint8 expansion) const
 {
-    /*if (expansion == EXPANSION_LEGION)
+    if (expansion == EXPANSION_LEGION)
         return MeetPlayerCondition(41005);
     else if (expansion == EXPANSION_BATTLE_FOR_AZEROTH)
         return GetQuestStatus(51918) == QUEST_STATUS_REWARDED || // Union of Kul'Tiras
-               GetQuestStatus(51916) == QUEST_STATUS_REWARDED;   // Union of Zandalar*/
+               GetQuestStatus(51916) == QUEST_STATUS_REWARDED;   // Union of Zandalar
 
     return false;
 }
 
 void Player::UpdateWorldQuestPosition(float x, float y)
 {
-    //if (time(nullptr) < m_areaQuestTimer)
+    if (time(nullptr) < m_areaQuestTimer)
         return;
 
     m_areaQuestTimer = time(nullptr) + 2;
@@ -9656,7 +9656,7 @@ void Player::SendInitWorldStates()
             break;
     }
 
-    //sWorldQuestMgr->FillInitWorldStates(packet);
+    sWorldQuestMgr->FillInitWorldStates(packet);
     GetSession()->SendPacket(packet.Write());
     SendBGWeekendWorldStates();
     SendBattlefieldWorldStates();
@@ -18919,7 +18919,7 @@ bool Player::LoadFromDB(ObjectGuid guid, SQLQueryHolder *holder)
     m_achievementMgr->CheckAllAchievementCriteria(this);
 
     // Add active emissary quests on player at login
-    //sWorldQuestMgr->AddEmissaryQuestsOnPlayerIfNeeded(this);
+    sWorldQuestMgr->AddEmissaryQuestsOnPlayerIfNeeded(this);
 
     UpdateAverageItemLevel();
 
