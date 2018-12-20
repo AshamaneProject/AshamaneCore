@@ -60,7 +60,7 @@ void ArchaeologyPlayerMgr::LoadArchaeologyBranchs(PreparedQueryResult result)
     {
         Field* fields = result->Fetch();
         uint16 branch = fields[0].GetUInt16();
-        GetPlayer()->SetUInt16Value(ACTIVE_PLAYER_DYNAMIC_FIELD_RESERACH + mpos / 2, mpos % 2, branch);
+        GetPlayer()->SetDynamicValue(ACTIVE_PLAYER_DYNAMIC_FIELD_RESERACH, mpos, branch);
         ++mpos;
     }
     while (result->NextRow());
@@ -114,10 +114,10 @@ void ArchaeologyPlayerMgr::SaveArchaeologyBranchs(SQLTransaction& trans)
 
     for(uint32 i=0; i < 9; ++i)
     {
-        if (GetPlayer()->GetUInt16Value(ACTIVE_PLAYER_DYNAMIC_FIELD_RESERACH + i / 2, i % 2))
-        {
-            uint16 projectId = GetPlayer()->GetUInt16Value(ACTIVE_PLAYER_DYNAMIC_FIELD_RESERACH + i / 2, i % 2);
+        uint16 projectId = GetPlayer()->GetDynamicValue(ACTIVE_PLAYER_DYNAMIC_FIELD_RESERACH, i);
 
+        if (projectId)
+        {
             PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_INS_ARCHAEOLOGY_BRANCH);
             stmt->setUInt64(0, GetPlayer()->GetGUID().GetCounter());
             stmt->setUInt16(1, projectId);
@@ -285,11 +285,11 @@ bool ArchaeologyPlayerMgr::IsCurrentArtifactSpell(int32 spellId)
 {
     for (uint32 i = 0; i < 9; ++i)
     {
-        if (GetPlayer()->GetUInt16Value(ACTIVE_PLAYER_DYNAMIC_FIELD_RESERACH + i / 2, i % 2))
+        if (GetPlayer()->GetDynamicValue(ACTIVE_PLAYER_DYNAMIC_FIELD_RESERACH, i))
         {
-            for (uint32 i = 0; i < sResearchProjectStore.GetNumRows(); ++i)
+            for (uint32 j = 0; j < sResearchProjectStore.GetNumRows(); ++j)
             {
-                ResearchProjectEntry const* rs = sResearchProjectStore.LookupEntry(i);
+                ResearchProjectEntry const* rs = sResearchProjectStore.LookupEntry(j);
 
                 if (!rs || rs->SpellId != spellId)
                     continue;
@@ -308,10 +308,10 @@ void ArchaeologyPlayerMgr::CompleteArtifact(uint32 spellId)
 
     for (uint32 memId = 0; memId < 9; ++memId)
     {
-        if (GetPlayer()->GetUInt16Value(ACTIVE_PLAYER_DYNAMIC_FIELD_RESERACH + memId / 2, memId % 2))
-        {
-            uint16 artifactId = GetPlayer()->GetUInt16Value(ACTIVE_PLAYER_DYNAMIC_FIELD_RESERACH + memId / 2, memId % 2);
+        uint16 artifactId = GetPlayer()->GetDynamicValue(ACTIVE_PLAYER_DYNAMIC_FIELD_RESERACH, memId);
 
+        if (artifactId)
+        {
             for (uint32 i = 0; i < sResearchProjectStore.GetNumRows(); ++i)
             {
                 ResearchProjectEntry const* rs = sResearchProjectStore.LookupEntry(i);
@@ -360,7 +360,7 @@ void ArchaeologyPlayerMgr::CompleteArtifact(uint32 spellId)
                     }
 
                     uint16 selectProject = BranchProjects[urand(0, BranchProjects.size() - 1)];
-                    GetPlayer()->SetUInt16Value(ACTIVE_PLAYER_DYNAMIC_FIELD_RESERACH + memId / 2, memId % 2, selectProject);
+                    GetPlayer()->SetDynamicValue(ACTIVE_PLAYER_DYNAMIC_FIELD_RESERACH, memId, selectProject);
                     BranchProjects.clear();
                     return;
                 }

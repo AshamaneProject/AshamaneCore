@@ -10051,7 +10051,7 @@ void Unit::RemoveFromWorld()
 
         if (!GetCharmerGUID().IsEmpty())
         {
-            TC_LOG_FATAL("entities.unit", "Unit %u in map %u has charmer low guid " UI64FMTD " (charmer entry %u) when removed from world", GetEntry(), GetMapId(), GetCharmerGUID().GetCounter(), GetCharmerGUID().GetEntry());
+            TC_LOG_FATAL("entities.unit", "Unit " UI64FMTD " (Entry %u) in map %u has charmer low guid " UI64FMTD " (charmer entry %u) when removed from world", GetGUID().GetCounter(), GetEntry(), GetMapId(), GetCharmerGUID().GetCounter(), GetCharmerGUID().GetEntry());
             ABORT();
         }
 
