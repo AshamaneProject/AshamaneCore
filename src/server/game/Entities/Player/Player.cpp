@@ -24693,6 +24693,9 @@ void Player::ApplyEquipCooldown(Item* pItem)
         if (effectData->TriggerType != ITEM_SPELLTRIGGER_ON_USE)
             continue;
 
+        if (!sSpellMgr->GetSpellInfo(effectData->SpellID))
+            continue;
+
         // Don't replace longer cooldowns by equip cooldown if we have any.
         if (GetSpellHistory()->GetRemainingCooldown(sSpellMgr->AssertSpellInfo(effectData->SpellID)) > 30 * IN_MILLISECONDS)
             continue;
