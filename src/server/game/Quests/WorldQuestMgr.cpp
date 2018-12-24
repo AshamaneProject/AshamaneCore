@@ -222,7 +222,9 @@ void WorldQuestMgr::Update()
     {
         for (auto& teamWorldQuest : expansionWorldQuest.second)
         {
-            for (auto itr = teamWorldQuest.second.begin(); itr != teamWorldQuest.second.end();)
+            auto& worldQuests = teamWorldQuest.second;
+
+            for (auto itr = worldQuests.begin(); itr != worldQuests.end();)
             {
                 if (itr->second->GetRemainingTime() <= 0)
                 {
@@ -245,20 +247,21 @@ void WorldQuestMgr::Update()
 
                 if (questDiff > 0)
                 {
-                    WorldQuestTemplateMap inactiveWorldQuestTemplates;
+                    std::set<WorldQuestTemplate*> inactiveWorldQuestTemplates;
                     for (auto it : _worldQuestTemplates[expansion][teamId])
                     {
-                        if (!IsQuestActive(it.first)) // Do not add already active quests
-                            if (!it.second->GetQuest()->IsEmissaryQuest()) /// do not add emissay quest as world quest during roll
-                                inactiveWorldQuestTemplates[expansion][teamId][it.first] = it.second;
+                        if (WorldQuestTemplate* wqTemplate = it.second)
+                            if (!IsQuestActive(wqTemplate->QuestId)) // Do not add already active quests
+                                if (!wqTemplate->GetQuest()->IsEmissaryQuest()) /// do not add emissay quest as world quest during roll
+                                    inactiveWorldQuestTemplates.insert(wqTemplate);
                     }
 
                     while (questDiff && inactiveWorldQuestTemplates.size())
                     {
-                        auto it = Trinity::Containers::SelectRandomContainerElement(inactiveWorldQuestTemplates[expansion][teamId]);
+                        WorldQuestTemplate* wqTemplate = Trinity::Containers::SelectRandomContainerElement(inactiveWorldQuestTemplates);
 
-                        ActivateQuest(it.second);
-                        inactiveWorldQuestTemplates.erase(it.first);
+                        ActivateQuest(wqTemplate);
+                        inactiveWorldQuestTemplates.erase(wqTemplate);
                         --questDiff;
                     }
                 }
@@ -279,18 +282,18 @@ void WorldQuestMgr::ActivateQuest(WorldQuestTemplate* worldQuestTemplate)
     if (IsQuestActive(worldQuestTemplate->QuestId))
         return;
 
-    uint32 rewardId = GetRandomRewardForQuestType(quest->GetQuestInfoID());
-
-    ActiveWorldQuest* activeWorldQuest = new ActiveWorldQuest(worldQuestTemplate->QuestId, rewardId, time(nullptr));
+    uint32 questId      = worldQuestTemplate->QuestId;
+    uint32 rewardId     = GetRandomRewardForQuestType(quest->GetQuestInfoID());
+    uint32 startTime    = time(nullptr);
 
     uint8 questTeamId = GetQuestTeamId(quest);
     if (questTeamId == TEAM_NEUTRAL)
     {
-        _activeWorldQuests[quest->Expansion][TEAM_ALLIANCE][worldQuestTemplate->QuestId] = activeWorldQuest;
-        _activeWorldQuests[quest->Expansion][TEAM_HORDE][worldQuestTemplate->QuestId] = activeWorldQuest;
+        _activeWorldQuests[quest->Expansion][TEAM_ALLIANCE][worldQuestTemplate->QuestId]    = new ActiveWorldQuest(questId, rewardId, startTime);
+        _activeWorldQuests[quest->Expansion][TEAM_HORDE][worldQuestTemplate->QuestId]       = new ActiveWorldQuest(questId, rewardId, startTime);
     }
     else
-        _activeWorldQuests[quest->Expansion][questTeamId][worldQuestTemplate->QuestId] = activeWorldQuest;
+        _activeWorldQuests[quest->Expansion][questTeamId][worldQuestTemplate->QuestId]      = new ActiveWorldQuest(questId, rewardId, startTime);
 
     // We add Emissary Quests to all eligible players
     if (quest->IsEmissaryQuest())
@@ -305,9 +308,9 @@ void WorldQuestMgr::ActivateQuest(WorldQuestTemplate* worldQuestTemplate)
 
     PreparedStatement* stmt = nullptr;
     stmt = CharacterDatabase.GetPreparedStatement(CHAR_REP_WORLD_QUEST);
-    stmt->setUInt32(0, activeWorldQuest->QuestId);
-    stmt->setUInt32(1, activeWorldQuest->RewardId);
-    stmt->setUInt32(2, activeWorldQuest->StartTime);
+    stmt->setUInt32(0, questId);
+    stmt->setUInt32(1, rewardId);
+    stmt->setUInt32(2, startTime);
     CharacterDatabase.Execute(stmt);
 }
 
