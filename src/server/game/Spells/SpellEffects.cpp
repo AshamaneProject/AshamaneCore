@@ -1541,6 +1541,9 @@ void Spell::EffectCreateItem2(SpellEffIndex effIndex)
             if (!player->HasItemCount(item_id))
                 return;
 
+            if (!LootTemplates_Spell.HaveLootFor(m_spellInfo->Id))
+                return;
+
             // remove reagent
             uint32 count = 1;
             player->DestroyItemCount(item_id, count, true);
