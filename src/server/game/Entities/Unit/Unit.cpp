@@ -546,7 +546,7 @@ void Unit::UpdateSplineMovement(uint32 t_diff)
             ToCreature()->AI()->OnSplineEndReached();
         }
     }
-    else if (IsAIEnabled && movespline->_lastSplineIdx() != movespline->_currentSplineIdx())
+    else if (IsCreature() && IsAIEnabled && movespline->_lastSplineIdx() != movespline->_currentSplineIdx())
         ToCreature()->AI()->OnSplineIndexReached(movespline->_lastSplineIdx());
 
     m_movesplineTimer.Update(t_diff);
