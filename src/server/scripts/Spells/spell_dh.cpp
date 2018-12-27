@@ -3113,9 +3113,12 @@ class spell_dh_felblade_dummy : public SpellScriptLoader
                     return;
 
                 caster->CastSpell(target, SPELL_DH_FELBLADE_CHARGE, true);
-                caster->GetScheduler().Schedule(500ms, [caster, target](TaskContext /*context*/)
+
+                ObjectGuid targetGUID = target->GetGUID();
+                caster->GetScheduler().Schedule(500ms, [caster, targetGUID](TaskContext /*context*/)
                 {
-                    caster->CastSpell(target, SPELL_DH_FELBLADE_DAMAGE, true);
+                    if (Unit* target = ObjectAccessor::GetUnit(*caster, targetGUID))
+                        caster->CastSpell(target, SPELL_DH_FELBLADE_DAMAGE, true);
                 });
             }
 
