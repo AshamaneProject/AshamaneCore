@@ -2310,7 +2310,7 @@ enum Targets
     TARGET_UNK_126                     = 126,
     TARGET_DEST_CASTER_ENEMY_CENTROID  = 127,
     TARGET_UNK_128                     = 128,
-    TARGET_UNIT_CASTER_AREA_ENEMY_FRONT= 129,
+    TARGET_UNIT_CONE_ENTRY_129         = 129,
     TARGET_ENNEMY_IN_LINE              = 130,
     TARGET_UNK_131                     = 131,
     TARGET_DEST_TARGET_ALLY            = 132,
