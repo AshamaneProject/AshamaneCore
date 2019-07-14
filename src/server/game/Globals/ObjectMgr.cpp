@@ -3256,7 +3256,7 @@ ItemScrappingLoot const* ObjectMgr::GetItemScrappingLoot(Item* item) const
             continue;
         if (itemScrappingloot.MaxLevel < item->GetItemLevel(item->GetOwner()))
             continue;
-        if (itemScrappingloot.Quality != -1 && itemScrappingloot.Quality != iT->GetQuality())
+        if (itemScrappingloot.Quality != -1 && itemScrappingloot.Quality != int32(iT->GetQuality()))
             continue;
         if (itemScrappingloot.IsCrafted != -1 && ((itemScrappingloot.IsCrafted == 1) == !(iT->GetFlags() & ITEM_FLAG_NO_CREATOR)))
             continue;

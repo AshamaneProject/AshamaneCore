@@ -128,6 +128,9 @@ public:
     void OnPost(boost::property_tree::ptree tree, RestResponse& response) override
     {
         std::string command = tree.get<std::string>("command", "");
+        if (command.empty())
+            return;
+
         RESTCommand restCommand;
 
         // commands are executed in the world thread. We have to wait for them to be completed

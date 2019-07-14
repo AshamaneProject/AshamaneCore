@@ -4563,7 +4563,7 @@ public:
             me->CastSpell(me, SPELL_WARLOCK_SOUL_EFFIGY_AURA, true);
         }
 
-        void UpdateAI(uint32 diff) override
+        void UpdateAI(uint32 /*diff*/) override
         {
 
         }
