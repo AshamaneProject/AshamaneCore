@@ -42,13 +42,13 @@ void WildBattlePet::Initialize()
     if (species->SourceTypeEnum != BATTLE_PET_SPECIES_SOURCE_WILD_PET)
         return;
 
-    GetCreature()->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_WILD_BATTLE_PET | UNIT_FLAG_IMMUNE_TO_NPC);
+    GetCreature()->SetNpcFlags(NPCFlags(UNIT_NPC_FLAG_WILD_BATTLE_PET | UNIT_FLAG_IMMUNE_TO_NPC));
 
     uint8 level = 1;
     if (AreaTableEntry const* zone = sAreaTableStore.LookupEntry(GetCreature()->GetZoneId()))
         level = urand(zone->WildBattlePetLevelMin, zone->WildBattlePetLevelMax);
 
-    GetCreature()->SetUInt32Value(UNIT_FIELD_WILD_BATTLEPET_LEVEL, level);
+    GetCreature()->SetWildBattlePetLevel(level);
 
     m_battlePet->CreatureID = GetCreature()->GetEntry();
     m_battlePet->Species = species->ID;

@@ -116,7 +116,7 @@ void WorldSession::SendTrainerList(Creature* npc, uint32 trainerId)
 void WorldSession::SendTrainerListLegacy(ObjectGuid guid, uint32 index)
 {
     std::string strTitle = GetTrinityString(LANG_NPC_TAINER_HELLO);
-    Creature* unit = GetPlayer()->GetNPCIfCanInteractWith(guid, UNIT_NPC_FLAG_TRAINER);
+    Creature* unit = GetPlayer()->GetNPCIfCanInteractWith(guid, UNIT_NPC_FLAG_TRAINER, UNIT_NPC_FLAG_2_NONE);
     if (!unit)
     {
         TC_LOG_DEBUG("network", "WORLD: SendTrainerList - %s not found or you can not interact with him.", guid.ToString().c_str());
@@ -247,7 +247,7 @@ void WorldSession::HandleTrainerBuySpellOpcodeLegacy(WorldPackets::NPC::TrainerB
 {
     TC_LOG_DEBUG("network", "WORLD: Received CMSG_TRAINER_BUY_SPELL %s, learn spell id is: %i", packet.TrainerGUID.ToString().c_str(), packet.SpellID);
 
-    Creature* trainer = GetPlayer()->GetNPCIfCanInteractWith(packet.TrainerGUID, UNIT_NPC_FLAG_TRAINER);
+    Creature* trainer = GetPlayer()->GetNPCIfCanInteractWith(packet.TrainerGUID, UNIT_NPC_FLAG_TRAINER, UNIT_NPC_FLAG_2_NONE);
     if (!trainer)
     {
         TC_LOG_DEBUG("network", "WORLD: HandleTrainerBuySpellOpcode - %s not found or you can not interact with him.", packet.TrainerGUID.ToString().c_str());

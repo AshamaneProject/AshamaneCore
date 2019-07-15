@@ -19,6 +19,17 @@ public:
 
     void SetLevel(uint32 level, bool loading = false);
     void AddExperience(uint32 value);
+
+    void BuildUpdate(UpdateDataMapType&) override;
+    UF::UpdateFieldFlag GetUpdateFieldFlagsFor(Player const* target) const override;
+    void BuildValuesCreate(ByteBuffer* data, Player const* target) const override;
+    void BuildValuesUpdate(ByteBuffer* data, Player const* target) const override;
+    void BuildValuesUpdateWithFlag(ByteBuffer* data, UF::UpdateFieldFlag flags, Player const* target) const override;
+    void ClearUpdateMask(bool remove) override;
+    void AddToObjectUpdate() override;
+    void RemoveFromObjectUpdate() override;
+
+    UF::UpdateField<UF::AzeriteItemData, 0, TYPEID_AZERITE_ITEM> m_azeriteItemData;
 };
 
 struct PowerData
@@ -42,6 +53,17 @@ public:
     void SaveToDB(SQLTransaction& trans) override;
     void SetPower(uint32 spellId, bool apply, Player* owner = nullptr);
     void ApplyPowers(Player* player, bool apply);
+
+    void BuildUpdate(UpdateDataMapType&) override;
+    UF::UpdateFieldFlag GetUpdateFieldFlagsFor(Player const* target) const override;
+    void BuildValuesCreate(ByteBuffer* data, Player const* target) const override;
+    void BuildValuesUpdate(ByteBuffer* data, Player const* target) const override;
+    void ClearUpdateMask(bool remove) override;
+    void AddToObjectUpdate() override;
+    void RemoveFromObjectUpdate() override;
+
+private:
+    UF::UpdateField<UF::AzeriteEmpoweredItemData, 0, TYPEID_AZERITE_EMPOWERED_ITEM> m_azeriteEmpoweredItemData;
 };
 
 #endif

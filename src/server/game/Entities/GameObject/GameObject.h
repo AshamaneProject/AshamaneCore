@@ -195,6 +195,8 @@ class TC_GAME_API GameObject : public WorldObject, public GridObject<GameObject>
         uint8 GetGoAnimProgress() const { return m_gameObjectData->PercentHealth; }
         void SetGoAnimProgress(uint8 animprogress) { SetUpdateFieldValue(m_values.ModifyValue(&GameObject::m_gameObjectData).ModifyValue(&UF::GameObjectData::PercentHealth), animprogress); }
         static void SetGoArtKit(uint8 artkit, GameObject* go, ObjectGuid::LowType lowguid = UI64LIT(0));
+        uint32 GetSpellVisualID() { return m_gameObjectData->SpellVisualID; }
+        void SetSpellVisualID(uint32 spellVisualID) { SetUpdateFieldValue(m_values.ModifyValue(&GameObject::m_gameObjectData).ModifyValue(&UF::GameObjectData::SpellVisualID), spellVisualID); }
 
         void EnableCollision(bool enable);
 

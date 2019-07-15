@@ -491,6 +491,14 @@ enum MirrorTimerType
 #define MAX_TIMERS      3
 #define DISABLED_MIRROR_TIMER   -1
 
+enum PlayerAvgItemLevelOffsets
+{
+    PLAYER_AVG_ITEM_LEVEL_EQUIPPED_AND_BAG  = 0,
+    PLAYER_AVG_ITEM_LEVEL_EQUIPPED          = 1,
+    PLAYER_AVG_ITEM_LEVEL_UNK3              = 2,
+    PLAYER_AVG_ITEM_LEVEL_UNK4              = 3
+};
+
 // 2^n values
 enum PlayerExtraFlags
 {
@@ -1523,7 +1531,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         void SendRespecWipeConfirm(ObjectGuid const& guid, uint32 cost) const;
         void RegenerateAll();
         void Regenerate(Powers power);
-        void SendPowerUpdate(Powers power, int32 amount);
+        //void SendPowerUpdate(Powers power, int32 amount);
         void RegenerateHealth();
         void setRegenTimerCount(uint32 time) {m_regenTimerCount = time;}
         void setWeaponChangeTimer(uint32 time) {m_weaponChangeTimer = time;}
@@ -1636,7 +1644,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         uint8 GetActiveTalentGroup() const { return _specializationInfo.ActiveGroup; }
         void SetActiveTalentGroup(uint8 group){ _specializationInfo.ActiveGroup = group; }
         uint32 GetDefaultSpecId() const;
-        TalentSpecialization GetSpecializationId() const { return (TalentSpecialization)GetUInt32Value(PLAYER_FIELD_CURRENT_SPEC_ID); }
+        TalentSpecialization GetSpecializationId() const { return (TalentSpecialization)GetPrimarySpecialization(); }
         uint32 GetRoleForGroup() const;
         static uint32 GetRoleBySpecializationId(uint32 specializationId);
 
@@ -1661,7 +1669,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         bool HasPvpRulesEnabled() const;
         bool IsInAreaThatActivatesPvpTalents() const;
         bool IsAreaThatActivatesPvpTalents(AreaTableEntry const* area) const;
-        bool IsInWarMode() const { return HasFlag(ACTIVE_PLAYER_FIELD_LOCAL_FLAGS, PLAYER_LOCAL_FLAG_WAR_MODE); }
+        bool IsInWarMode() const { return HasPlayerLocalFlag(PLAYER_LOCAL_FLAG_WAR_MODE); }
 
         // Dual Spec
         void ActivateTalentGroup(ChrSpecializationEntry const* spec);
@@ -2577,6 +2585,8 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
 
         void AddAuraVision(PlayerFieldByte2Flags flags) { SetUpdateFieldFlagValue(m_values.ModifyValue(&Player::m_activePlayerData).ModifyValue(&UF::ActivePlayerData::AuraVision), flags); }
         void RemoveAuraVision(PlayerFieldByte2Flags flags) { RemoveUpdateFieldFlagValue(m_values.ModifyValue(&Player::m_activePlayerData).ModifyValue(&UF::ActivePlayerData::AuraVision), flags); }
+
+        void SetModPetHaste(float petHaste) { SetUpdateFieldValue(m_values.ModifyValue(&Player::m_activePlayerData).ModifyValue(&UF::ActivePlayerData::ModPetHaste), petHaste); }
 
         UF::UpdateField<UF::PlayerData, 0, TYPEID_PLAYER> m_playerData;
         UF::UpdateField<UF::ActivePlayerData, 0, TYPEID_ACTIVE_PLAYER> m_activePlayerData;

@@ -105,6 +105,9 @@ class TC_GAME_API AreaTrigger : public WorldObject, public GridObject<AreaTrigge
         bool HasCircularMovement() const;
         Optional<AreaTriggerCircularMovementInfo> const& GetCircularMovementInfo() const { return _circularMovementInfo; }
 
+        void SetDecalPropertiesID(uint32 decalPropertiesID) { SetUpdateFieldValue(m_values.ModifyValue(&AreaTrigger::m_areaTriggerData).ModifyValue(&UF::AreaTriggerData::DecalPropertiesID), decalPropertiesID); }
+        void SetSpellXSpellVisualId(uint32 spellXSpellVisualId) { SetUpdateFieldValue(m_values.ModifyValue(&AreaTrigger::m_areaTriggerData).ModifyValue(&UF::AreaTriggerData::SpellXSpellVisualID), spellXSpellVisualId); }
+
         void UpdateShape();
 
         UF::UpdateField<UF::AreaTriggerData, 0, TYPEID_AREATRIGGER> m_areaTriggerData;

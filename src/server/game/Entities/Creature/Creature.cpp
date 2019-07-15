@@ -1182,7 +1182,7 @@ void Creature::AddLootRecipient(Unit* unit)
 void Creature::ResetLootRecipients()
 {
     m_lootRecipients.clear();
-    RemoveFlag(OBJECT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE | UNIT_DYNFLAG_TAPPED);
+    RemoveDynamicFlag(UNIT_DYNFLAG_LOOTABLE | UNIT_DYNFLAG_TAPPED);
 }
 
 // return true if this creature is tapped by the player or by a member of his group.
@@ -3320,7 +3320,7 @@ void Creature::ReLoad(bool skipDB)
     //! Need to be called after LoadCreaturesAddon - MOVEMENTFLAG_HOVER is set there
     if (HasUnitMovementFlag(MOVEMENTFLAG_HOVER))
     {
-        float z = data->posZ + GetFloatValue(UNIT_FIELD_HOVERHEIGHT);
+        float z = data->posZ + m_unitData->HoverHeight;
 
         //! Relocate again with updated Z coord
         Relocate(data->posX, data->posY, z, data->orientation);
@@ -3332,7 +3332,7 @@ void Creature::ReLoad(bool skipDB)
     {
         SetDisplayId(display.CreatureDisplayID, display.DisplayScale);
         SetNativeDisplayId(display.CreatureDisplayID, display.DisplayScale);
-        SetByteValue(UNIT_FIELD_BYTES_0, UNIT_BYTES_0_OFFSET_GENDER, minfo->gender);
+        SetGender(minfo->gender);
     }
 
     LastUsedScriptID = GetScriptId();

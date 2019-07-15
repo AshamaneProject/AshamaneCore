@@ -48,7 +48,7 @@ public:
 
             if (Creature const* creature = object->ToCreature())
             {
-                if (creature->hasLootRecipient() && !creature->isTappedBy(receiver))
+                if (creature->HasLootRecipients() && !creature->IsTappedBy(receiver))
                     dynamicFlags |= UNIT_DYNFLAG_TAPPED;
 
                 if (!receiver->isAllowedToLoot(creature))

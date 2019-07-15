@@ -298,7 +298,7 @@ namespace WorldPackets
             uint8 ToastMethod = 1; // TOAST_METHOD_POPUP
             bool IsBonusRoll = false;
             bool Mailed = false;
-            std::vector<uint32> bonusListIDs;
+            std::vector<int32> bonusListIDs;
         };
     }
 }

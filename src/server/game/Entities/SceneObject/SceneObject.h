@@ -33,6 +33,10 @@ class TC_GAME_API SceneObject : public WorldObject, public GridObject<SceneObjec
         void AddToWorld() override;
         void RemoveFromWorld() override;
 
+        void BuildValuesCreate(ByteBuffer* data, Player const* target) const override;
+        void BuildValuesUpdate(ByteBuffer* data, Player const* target) const override;
+        void ClearUpdateMask(bool remove) override;
+
         bool IsNeverVisibleFor(WorldObject const* seer) const override;
 
         void Update(uint32 diff) override;
@@ -46,6 +50,8 @@ class TC_GAME_API SceneObject : public WorldObject, public GridObject<SceneObjec
         ObjectGuid const& GetCreatorGuid() const { return _creatorGuid; }
 
         uint32 GetScriptId() const;
+
+        UF::UpdateField<UF::SceneObjectData, 0, TYPEID_SCENEOBJECT> m_sceneObjectData;
 
     private:
         ObjectGuid _creatorGuid;

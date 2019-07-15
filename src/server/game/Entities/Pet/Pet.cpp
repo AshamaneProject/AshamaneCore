@@ -192,12 +192,12 @@ bool Pet::LoadPetData(Player* owner, uint32 petEntry, uint32 petnumber, bool cur
 
     m_charmInfo->SetPetNumber(petId, IsPermanentPetFor(owner));
 
-    SetDisplayId(fields[3].GetUInt32());
-    SetNativeDisplayId(fields[3].GetUInt32());
-    uint32 petlevel = fields[4].GetUInt16();
+    SetDisplayId(playerPetData->DisplayId);
+    SetNativeDisplayId(playerPetData->DisplayId);
+    uint32 petlevel = playerPetData->Petlevel;
     SetNpcFlags(UNIT_NPC_FLAG_NONE);
     SetNpcFlags2(UNIT_NPC_FLAG_2_NONE);
-    SetName(fields[8].GetString());
+    SetName(playerPetData->Name);
 
     switch (getPetType())
     {
@@ -210,7 +210,7 @@ bool Pet::LoadPetData(Player* owner, uint32 petEntry, uint32 petnumber, bool cur
             SetClass(CLASS_WARRIOR);
             SetGender(GENDER_NONE);
             SetSheath(SHEATH_STATE_MELEE);
-            SetPetFlags(fields[9].GetBool() ? UNIT_PET_FLAG_CAN_BE_ABANDONED : UnitPetFlag(UNIT_PET_FLAG_CAN_BE_RENAMED | UNIT_PET_FLAG_CAN_BE_ABANDONED));
+            SetPetFlags(playerPetData->Renamed ? UNIT_PET_FLAG_CAN_BE_ABANDONED : UnitPetFlag(UNIT_PET_FLAG_CAN_BE_RENAMED | UNIT_PET_FLAG_CAN_BE_ABANDONED));
             SetUnitFlags(UNIT_FLAG_PVP_ATTACKABLE); // this enables popup window (pet abandon, cancel)
             break;
         default:
@@ -223,7 +223,7 @@ bool Pet::LoadPetData(Player* owner, uint32 petEntry, uint32 petnumber, bool cur
     SetCreatorGUID(owner->GetGUID());
 
     InitStatsForLevel(petlevel);
-    SetPetExperience(fields[5].GetUInt32());
+    SetPetExperience(playerPetData->PetExp);
 
     SynchronizeLevelWithOwner();
 
@@ -449,17 +449,17 @@ void Pet::SavePetToDB(PetSaveMode mode)
         playerPetData->Owner = ownerLowGUID;
         playerPetData->DisplayId = GetNativeDisplayId();
         playerPetData->Petlevel = getLevel();
-        playerPetData->PetExp = GetUInt32Value(UNIT_FIELD_PETEXPERIENCE);
+        playerPetData->PetExp = m_unitData->PetExperience;
         playerPetData->Reactstate = GetReactState();
         playerPetData->Slot = m_petSlot;
         playerPetData->Name = m_name;
-        playerPetData->Renamed = HasByteFlag(UNIT_FIELD_BYTES_2, UNIT_BYTES_2_OFFSET_PET_FLAGS, UNIT_CAN_BE_RENAMED) ? 0 : 1;
+        playerPetData->Renamed = HasPetFlag(UNIT_PET_FLAG_CAN_BE_RENAMED) ? 0 : 1;
         playerPetData->Active = IsActive() ? 1 : 0;
         playerPetData->SavedHealth = curhealth;
         playerPetData->SavedMana = curmana;
         playerPetData->Actionbar = GenerateActionBarData();
         playerPetData->Timediff = time(nullptr);
-        playerPetData->SummonSpellId = GetUInt32Value(UNIT_CREATED_BY_SPELL);
+        playerPetData->SummonSpellId = m_unitData->CreatedBySpell;
         playerPetData->Type = getPetType();
         playerPetData->SpecId = m_petSpecialization;
 

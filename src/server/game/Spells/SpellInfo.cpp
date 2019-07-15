@@ -1386,7 +1386,7 @@ bool SpellInfo::CasterCanTurnDuringCast() const
     // Todo : Find more generic way ?
     if (HasTarget(TARGET_UNIT_CONE_ENEMY_54) ||
         HasTarget(TARGET_UNIT_CONE_ENEMY_104) ||
-        HasTarget(TARGET_UNIT_CASTER_AREA_ENEMY_FRONT))
+        HasTarget(TARGET_UNIT_CONE_ENTRY_129))
         return false;
 
     return true;

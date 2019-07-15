@@ -265,8 +265,8 @@ struct TC_GAME_API Loot
     void clear();
 
     bool empty() const { return items.empty() && gold == 0; }
-    bool isLooted(Player* player = nullptr) const { return gold == 0 && GetUnlootedCount(player) == 0; }
-    uint32 GetUnlootedCount(Player* player = nullptr) const;
+    bool isLooted(Player const* player = nullptr) const { return gold == 0 && GetUnlootedCount(player) == 0; }
+    uint32 GetUnlootedCount(Player const* player = nullptr) const;
 
     void NotifyItemRemoved(uint8 lootIndex);
     void NotifyMoneyRemoved();
@@ -285,8 +285,7 @@ struct TC_GAME_API Loot
     uint32 GetMaxSlotInLootFor(Player* player) const;
     uint8 GetItemContext() const { return _itemContext; }
     bool hasItemForAll() const;
-    bool hasItemFor(Player * player) const;
-    bool hasOverThresholdItem() const;
+    bool hasItemFor(Player const* player) const;
 
     // Builds data for SMSG_LOOT_RESPONSE
     void BuildLootResponse(WorldPackets::Loot::LootResponse& packet, Player* viewer, PermissionTypes permission = ALL_PERMISSION) const;

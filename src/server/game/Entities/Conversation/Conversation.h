@@ -25,6 +25,8 @@
 class Unit;
 class SpellInfo;
 
+#define CONVERSATION_RELOCATE_TICK 1000
+
 namespace UF
 {
     inline bool operator==(ConversationLine const& left, ConversationLine const& right)

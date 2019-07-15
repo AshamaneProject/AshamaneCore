@@ -230,8 +230,8 @@ class boss_wase_mari : public CreatureScript
                 events.Update(diff);
 
                 // Wise Mari don't rotate
-                if (me->GetUInt32Value(UNIT_FIELD_TARGET))
-                    me->SetUInt32Value(UNIT_FIELD_TARGET, 0);
+                if (!me->GetTarget().IsEmpty())
+                    me->SetTarget(ObjectGuid::Empty);
 
                 if (me->HasUnitState(UNIT_STATE_CASTING) && phase != 2)
                     return;

@@ -1049,7 +1049,7 @@ class TC_GAME_API Unit : public WorldObject
         bool IsVehicle() const  { return (m_unitTypeMask & UNIT_MASK_VEHICLE) != 0; }
 
         uint8 getLevel() const { return uint8(m_unitData->Level); }
-        uint8 GetEffectiveLevel() const { return uint8(GetUInt32Value(UNIT_FIELD_EFFECTIVE_LEVEL) != 0 ? GetUInt32Value(UNIT_FIELD_EFFECTIVE_LEVEL) : GetUInt32Value(UNIT_FIELD_LEVEL)); }
+        uint8 GetEffectiveLevel() const { return m_unitData->EffectiveLevel != 0 ? uint8(m_unitData->EffectiveLevel) : getLevel(); }
         uint8 GetLevelForTarget(WorldObject const* /*target*/) const override { return GetEffectiveLevel(); }
         void SetLevel(uint8 lvl);
         uint8 getRace() const { return m_unitData->Race; }
@@ -1673,13 +1673,7 @@ class TC_GAME_API Unit : public WorldObject
         float GetCreateStat(Stats stat) const { return m_createStats[stat]; }
 
         uint32 GetChannelSpellId() const { return m_unitData->ChannelData->SpellID; }
-        void SetChannelSpellId(uint32 channelSpellId)
-        {
-            SetUpdateFieldValue(m_values
-                .ModifyValue(&Unit::m_unitData)
-                .ModifyValue(&UF::UnitData::ChannelData)
-                .ModifyValue(&UF::UnitChannel::SpellID), channelSpellId);
-        }
+        void SetChannelSpellId(uint32 channelSpellId);
         uint32 GetChannelSpellXSpellVisualId() const { return m_unitData->ChannelData->SpellXSpellVisualID; }
         void SetChannelSpellXSpellVisualId(uint32 channelSpellXSpellVisualId)
         {
@@ -1688,7 +1682,7 @@ class TC_GAME_API Unit : public WorldObject
                 .ModifyValue(&UF::UnitData::ChannelData)
                 .ModifyValue(&UF::UnitChannel::SpellXSpellVisualID), channelSpellXSpellVisualId);
         }
-        DynamicFieldStructuredView<ObjectGuid> GetChannelObjects() const { return GetDynamicStructuredValues<ObjectGuid>(UNIT_DYNAMIC_FIELD_CHANNEL_OBJECTS); }
+        auto const& GetChannelObjects() const { return m_unitData->ChannelObjects; }
         void AddChannelObject(ObjectGuid guid) { AddDynamicUpdateFieldValue(m_values.ModifyValue(&Unit::m_unitData).ModifyValue(&UF::UnitData::ChannelObjects)) = guid; }
         void SetChannelObject(uint32 slot, ObjectGuid guid) { SetUpdateFieldValue(m_values.ModifyValue(&Unit::m_unitData).ModifyValue(&UF::UnitData::ChannelObjects, slot), guid); }
         void ClearChannelObjects() { ClearDynamicUpdateFieldValues(m_values.ModifyValue(&Unit::m_unitData).ModifyValue(&UF::UnitData::ChannelObjects)); }
@@ -1835,6 +1829,7 @@ class TC_GAME_API Unit : public WorldObject
         }
         void setTransForm(uint32 spellid) { m_transform = spellid;}
         uint32 getTransForm() const { return m_transform;}
+        void SetScaleDuration(uint32 scaleDuration) { SetUpdateFieldValue(m_values.ModifyValue(&Unit::m_unitData).ModifyValue(&UF::UnitData::ScaleDuration), scaleDuration); }
 
         // DynamicObject management
         void _RegisterDynObject(DynamicObject* dynObj);
@@ -1880,6 +1875,8 @@ class TC_GAME_API Unit : public WorldObject
         uint32 SpellHealingBonusDone(Unit* victim, SpellInfo const* spellProto, uint32 healamount, DamageEffectType damagetype, SpellEffectInfo const* effect, uint32 stack = 1) const;
         float SpellHealingPctDone(Unit* victim, SpellInfo const* spellProto) const;
         uint32 SpellHealingBonusTaken(Unit* caster, SpellInfo const* spellProto, uint32 healamount, DamageEffectType damagetype, SpellEffectInfo const* effect, uint32 stack = 1) const;
+
+        void SetInteractSpellId(uint32 interactSpellId) { SetUpdateFieldValue(m_values.ModifyValue(&Unit::m_unitData).ModifyValue(&UF::UnitData::InteractSpellID), interactSpellId); }
 
         uint32 MeleeDamageBonusDone(Unit* pVictim, uint32 damage, WeaponAttackType attType, SpellInfo const* spellProto = NULL);
         uint32 MeleeDamageBonusTaken(Unit* attacker, uint32 pdamage, WeaponAttackType attType, SpellInfo const* spellProto = NULL);
@@ -2086,6 +2083,8 @@ class TC_GAME_API Unit : public WorldObject
         uint32 GetCurrentPetBattle() const { return m_currentPetBattleId; }
         bool IsInPetBattle() const { return GetCurrentPetBattle() != 0; }
 
+        void SetWildBattlePetLevel(uint8 level) { SetUpdateFieldValue(m_values.ModifyValue(&Unit::m_unitData).ModifyValue(&UF::UnitData::WildBattlePetLevel), level); }
+
         UF::UpdateField<UF::UnitData, 0, TYPEID_UNIT> m_unitData;
 
     protected:
@@ -2095,7 +2094,6 @@ class TC_GAME_API Unit : public WorldObject
         void BuildValuesCreate(ByteBuffer* data, Player const* target) const override;
         void BuildValuesUpdate(ByteBuffer* data, Player const* target) const override;
         void BuildValuesUpdateWithFlag(ByteBuffer* data, UF::UpdateFieldFlag flags, Player const* target) const override;
-        void DestroyForPlayer(Player* target) const override;
         void ClearUpdateMask(bool remove) override;
 
         UnitAI* i_AI, *i_disabledAI;

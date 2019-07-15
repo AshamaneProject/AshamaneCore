@@ -147,15 +147,15 @@ void ChallengeModeMgr::Reward(Player* player, uint8 challengeLevel)
     }
 
     std::vector<int32> bonusListIds = GetBonusListIdsForRewards(randomStuffItem->GetBaseItemLevel(), challengeLevel);
-    Item* pItem = player->StoreNewItem(dest, itemId, true, GenerateItemRandomPropertyId(itemId), GuidSet(), 0, bonusListIds);
+    Item* pItem = player->StoreNewItem(dest, itemId, true, GenerateItemRandomBonusListId(itemId), GuidSet(), 0, bonusListIds);
     player->SendNewItem(pItem, 1, true, false, true);
 
     WorldPackets::Loot::DisplayToast displayToast;
     displayToast.EntityId = itemId;
     displayToast.ToastType = TOAST_ITEM;
     displayToast.Quantity = 1;
-    displayToast.RandomPropertiesID = pItem->GetItemRandomPropertyId();
+    displayToast.RandomPropertiesID = pItem->GetItemRandomBonusListId();
     displayToast.ToastMethod = TOAST_METHOD_POPUP;
-    displayToast.bonusListIDs = pItem->GetDynamicValues(ITEM_DYNAMIC_FIELD_BONUSLIST_IDS);
+    displayToast.bonusListIDs = pItem->m_itemData->BonusListIDs;
     player->SendDirectMessage(displayToast.Write());
 }

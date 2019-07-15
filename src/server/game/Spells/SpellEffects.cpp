@@ -2794,9 +2794,6 @@ void Spell::EffectTameCreature(SpellEffIndex /*effIndex*/)
 
     // "kill" original creature if everything worked
     creatureTarget->DespawnOrUnsummon();
-
-    // visual effect for levelup
-    pet->SetUInt32Value(UNIT_FIELD_LEVEL, level);
 }
 
 void Spell::EffectSummonPet(SpellEffIndex effIndex)
@@ -4159,7 +4156,7 @@ void Spell::EffectSummonSurveyTools(SpellEffIndex /*effIndex*/)
             int memId = player->GetArchaeologyMgr().GetDigsite(player->GetPositionX(), player->GetPositionY());
             uint32 digsiteId = 0;
 
-            std::vector<uint32> const& digsites = player->GetDynamicValues(ACTIVE_PLAYER_DYNAMIC_FIELD_RESERACH_SITE);
+            std::vector<uint32> const/*&*/ digsites;// = player->GetDynamicValues(ACTIVE_PLAYER_DYNAMIC_FIELD_RESERACH_SITE);
 
             for (auto const& digSite : digsites)
                 digsiteId = digSite;
@@ -4219,7 +4216,7 @@ void Spell::EffectSummonSurveyTools(SpellEffIndex /*effIndex*/)
                 if (digsite.digCount + 1 < 3)
                 {
                     player->GetArchaeologyMgr().SetDigsitePosition(memId, 0, 0, digsite.digCount + 1);
-                    player->AddDynamicValue(ACTIVE_PLAYER_DYNAMIC_FIELD_RESEARCH_SITE_PROGRESS, digsite.digCount + 1);
+                    //player->AddDynamicValue(ACTIVE_PLAYER_DYNAMIC_FIELD_RESEARCH_SITE_PROGRESS, digsite.digCount + 1);
                 }
                 else
                     sArchaeologyMgr->ChangeDigsite(player, memId);

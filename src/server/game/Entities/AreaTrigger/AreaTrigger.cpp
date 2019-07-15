@@ -189,7 +189,7 @@ bool AreaTrigger::Create(uint32 spellMiscId, Unit* caster, Unit* target, SpellIn
     }
     else if (GetTemplate()->HasFlag(AREATRIGGER_FLAG_HAS_CIRCULAR_MOVEMENT))
     {
-        m_uint32Values[AREATRIGGER_TIME_TO_TARGET] = timeToTarget;
+        SetUpdateFieldValue(areaTriggerData.ModifyValue(&UF::AreaTriggerData::TimeToTarget), timeToTarget);
     }
 
     // movement on transport of areatriggers on unit is handled by themself
@@ -292,7 +292,8 @@ bool AreaTrigger::CreateStaticAreaTrigger(uint32 entry, ObjectGuid::LowType guid
 
     SetObjectScale(1.0f);
 
-    SetFloatValue(AREATRIGGER_BOUNDS_RADIUS_2D, GetTemplate()->MaxSearchRadius);
+    auto areaTriggerData = m_values.ModifyValue(&AreaTrigger::m_areaTriggerData);
+    SetUpdateFieldValue(areaTriggerData.ModifyValue(&UF::AreaTriggerData::BoundsRadius2D), GetTemplate()->MaxSearchRadius);
 
     UpdateShape();
 

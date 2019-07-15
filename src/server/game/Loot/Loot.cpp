@@ -58,8 +58,6 @@ LootItem::LootItem(LootStoreItem const& li)
 
         needs_quest = li.needs_quest;
 
-        randomSuffix = GenerateEnchSuffixFactor(itemid);
-        randomPropertyId = GenerateItemRandomPropertyId(itemid);
         upgradeId = sDB2Manager.GetRulesetItemUpgrade(itemid);
     }
 
@@ -162,7 +160,7 @@ void Loot::clear()
     _itemContext = 0;
 }
 
-uint32 Loot::GetUnlootedCount(Player* player /*= nullptr*/) const
+uint32 Loot::GetUnlootedCount(Player const* player /*= nullptr*/) const
 {
     uint32 unlootedCount = 0;
 
@@ -401,7 +399,7 @@ bool Loot::hasItemForAll() const
 }
 
 // return true if there is any FFA, quest or conditional item for the player.
-bool Loot::hasItemFor(Player* player) const
+bool Loot::hasItemFor(Player const* player) const
 {
     return items.find(player->GetGUID()) != items.end();
 }

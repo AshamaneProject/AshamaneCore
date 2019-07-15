@@ -18,7 +18,7 @@
 #include "ScriptMgr.h"
 #include "court_of_stars.h"
 
-void AddSC_talixae_flamewreath()
+void AddSC_boss_talixae_flamewreath()
 {
 
 }

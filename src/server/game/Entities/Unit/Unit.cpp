@@ -2823,13 +2823,13 @@ float Unit::GetUnitCriticalChance(WeaponAttackType attackType, Unit const* victi
                 switch (attackType)
                 {
                     case BASE_ATTACK:
-                        chance = GetOwner()->GetFloatValue(ACTIVE_PLAYER_FIELD_CRIT_PERCENTAGE);
+                        chance = thisPlayer->m_activePlayerData->CritPercentage;
                         break;
                     case OFF_ATTACK:
-                        chance = GetOwner()->GetFloatValue(ACTIVE_PLAYER_FIELD_OFFHAND_CRIT_PERCENTAGE);
+                        chance = thisPlayer->m_activePlayerData->OffhandCritPercentage;
                         break;
                     case RANGED_ATTACK:
-                        chance = GetOwner()->GetFloatValue(ACTIVE_PLAYER_FIELD_RANGED_CRIT_PERCENTAGE);
+                        chance = thisPlayer->m_activePlayerData->RangedCritPercentage;
                         break;
                     default:
                         chance = 0.0f;
@@ -5018,16 +5018,19 @@ int32 Unit::GetTotalSpellPowerValue(SpellSchoolMask mask, bool heal) const
 {
     if (!IsPlayer())
     {
-        if (GetOwner() && GetOwner()->ToPlayer())
+        if (GetOwner())
         {
-            if (IsTotem())
-                return GetOwner()->GetTotalSpellPowerValue(mask, heal);
-            else
+            if (Player* ownerPlayer = GetOwner()->ToPlayer())
             {
-                if (IsPet())
-                    return GetOwner()->GetUInt32Value(ACTIVE_PLAYER_FIELD_PET_SPELL_POWER);
-                else if (IsGuardian())
-                    return ((Guardian*)this)->GetBonusDamage();
+                if (IsTotem())
+                    return GetOwner()->GetTotalSpellPowerValue(mask, heal);
+                else
+                {
+                    if (IsPet())
+                        return ownerPlayer->m_activePlayerData->PetSpellPower;
+                    else if (IsGuardian())
+                        return ((Guardian*)this)->GetBonusDamage();
+                }
             }
         }
 
@@ -5037,10 +5040,12 @@ int32 Unit::GetTotalSpellPowerValue(SpellSchoolMask mask, bool heal) const
             return SpellBaseDamageBonusDone(mask);
     }
 
+    Player const* thisPlayer = ToPlayer();
+
     int32 sp = 0;
 
     if (heal)
-        sp = GetInt32Value(ACTIVE_PLAYER_FIELD_MOD_HEALING_DONE_POS);
+        sp = thisPlayer->m_activePlayerData->ModHealingDonePos;
     else
     {
         int32 counter = 0;
@@ -5048,7 +5053,7 @@ int32 Unit::GetTotalSpellPowerValue(SpellSchoolMask mask, bool heal) const
         {
             if (mask & (1 << i))
             {
-                sp += GetInt32Value(ACTIVE_PLAYER_FIELD_MOD_DAMAGE_DONE_POS + i);
+                sp += thisPlayer->m_activePlayerData->ModDamageDonePos[i];
                 counter++;
             }
         }
@@ -9955,7 +9960,7 @@ void Unit::SetPower(Powers power, int32 val)
         if (creature->IsAIEnabled)
             creature->AI()->OnPowerChanged(power, oldPower, val);
 
-    _lastUpdatePower[powerIndex] = GetInt32Value(UNIT_FIELD_POWER + powerIndex);
+    _lastUpdatePower[powerIndex] = m_unitData->Power[powerIndex];
     SetUpdateFieldValue(m_values.ModifyValue(&Unit::m_unitData).ModifyValue(&UF::UnitData::Power, powerIndex), val);
 
     if (IsInWorld())
@@ -12880,7 +12885,7 @@ uint32 Unit::GetModelForForm(ShapeshiftForm form) const
                 }
                 else if (getRace() == RACE_HIGHMOUNTAIN_TAUREN)
                 {
-                    uint8 skinColor = GetByteValue(PLAYER_BYTES, PLAYER_BYTES_OFFSET_SKIN_ID);
+                    uint8 skinColor = thisPlayer->m_playerData->SkinID;
                     if (HasAura(210333)) // Glyph of the Feral Chameleon
                         skinColor = urand(0, 4);
 
@@ -13063,7 +13068,7 @@ uint32 Unit::GetModelForForm(ShapeshiftForm form) const
                 }
                 else if (getRace() == RACE_HIGHMOUNTAIN_TAUREN)
                 {
-                    uint8 skinColor = GetByteValue(PLAYER_BYTES, PLAYER_BYTES_OFFSET_SKIN_ID);
+                    uint8 skinColor = thisPlayer->m_playerData->SkinID;
                     if (HasAura(107059)) // Glyph of the Ursol Chameleon
                         skinColor = urand(0, 4);
 
@@ -14817,16 +14822,10 @@ bool Unit::VisibleAuraSlotCompare::operator()(AuraApplication* left, AuraApplica
 
 void Unit::SetChannelSpellId(uint32 channelSpellId)
 {
-    if (SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(channelSpellId))
-    {
-        SetUInt32Value(UNIT_FIELD_CHANNEL_DATA, spellInfo->Id);
-        SetUInt32Value(UNIT_FIELD_CHANNEL_DATA + 1, spellInfo->GetSpellXSpellVisualId(this));
-    }
-    else
-    {
-        SetUInt32Value(UNIT_FIELD_CHANNEL_DATA, 0);
-        SetUInt32Value(UNIT_FIELD_CHANNEL_DATA + 1, 0);
-    }
+    SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(channelSpellId);
+
+    SetUpdateFieldValue(m_values.ModifyValue(&Unit::m_unitData).ModifyValue(&UF::UnitData::ChannelData).ModifyValue(&UF::UnitChannel::SpellID), spellInfo ? spellInfo->Id: 0);
+    SetUpdateFieldValue(m_values.ModifyValue(&Unit::m_unitData).ModifyValue(&UF::UnitData::ChannelData).ModifyValue(&UF::UnitChannel::SpellXSpellVisualID), spellInfo ? spellInfo->GetSpellXSpellVisualId(this): 0);
 }
 
 void Unit::GetAttackableUnitListInRange(std::list<Unit*> &list, float fMaxSearchRange) const

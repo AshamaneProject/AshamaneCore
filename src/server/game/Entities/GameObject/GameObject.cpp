@@ -2487,13 +2487,13 @@ void GameObject::AddLootRecipient(Unit* unit)
     if (Group* group = player->GetGroup())
         m_lootRecipients.push_back(group->GetGUID());
 
-    SetFlag(OBJECT_DYNAMIC_FLAGS, UNIT_DYNFLAG_TAPPED);
+    AddDynamicFlag(UNIT_DYNFLAG_TAPPED);
 }
 
 void GameObject::ResetLootRecipients()
 {
     m_lootRecipients.clear();
-    RemoveFlag(OBJECT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE | UNIT_DYNFLAG_TAPPED);
+    RemoveDynamicFlag(UNIT_DYNFLAG_LOOTABLE | UNIT_DYNFLAG_TAPPED);
 }
 
 bool GameObject::IsLootAllowedFor(Player const* player) const

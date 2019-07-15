@@ -2272,7 +2272,7 @@ public:
       }
       else if (player->HasQuest(25266))
       {
-          player->TeleportTo(1, 1468, -5012, 13, 3.26);
+          player->TeleportTo(1468, -5012.f, 13.f, 3.26f);
       }
       return true;
   }

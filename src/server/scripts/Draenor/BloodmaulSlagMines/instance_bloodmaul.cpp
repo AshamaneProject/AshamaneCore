@@ -114,7 +114,7 @@ namespace Instances
                             case uint32(MobEntries::MinesBat):
                                 creature->SetDisableGravity(true);
                                 creature->SetCanFly(true);
-                                creature->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+                                creature->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
                                 break;
                             case uint32(MobEntries::AllianceMinerSpawn):
                                 m_MinerSpawnGuids[TEAM_ALLIANCE] = creature->GetGUID();

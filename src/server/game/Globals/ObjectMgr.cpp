@@ -542,7 +542,7 @@ void ObjectMgr::LoadCreatureTemplate(Field* fields)
     creatureTemplate.RegenHealth            = fields[74].GetBool();
     creatureTemplate.MechanicImmuneMask     = fields[75].GetUInt32();
     creatureTemplate.flags_extra            = fields[76].GetUInt32();
-    creatureTemplate.ScriptID               = GetScriptId(fields[77].GetString());
+    creatureTemplate.ScriptID               = GetScriptIdOrAdd(fields[77].GetString());
 }
 
 void ObjectMgr::LoadCreatureTemplateModels()

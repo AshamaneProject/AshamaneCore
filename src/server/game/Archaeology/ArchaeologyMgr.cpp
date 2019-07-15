@@ -77,7 +77,9 @@ void ArchaeologyMgr::LoadDigsites()
 
 void ArchaeologyMgr::InitBranch(Player* player, uint32 currencyId)
 {
-    if (!player->HasSkill(SKILL_ARCHAEOLOGY))
+    // TODO MERGE
+
+    /*if (!player->HasSkill(SKILL_ARCHAEOLOGY))
         return;
 
     if (IsActiveBranch(player, currencyId))
@@ -87,9 +89,11 @@ void ArchaeologyMgr::InitBranch(Player* player, uint32 currencyId)
     uint32 count = 0;
     std::vector<uint16> BranchProjects;
 
-    for(uint32 i = 0; i < 9; ++i)
+    for (uint32 i = 0; i < 9; ++i)
+    {
         if (player->GetUInt16Value(ACTIVE_PLAYER_DYNAMIC_FIELD_RESERACH + i / 2, i % 2))
             count = i + 1;
+    }
 
     for(uint32 i = 0; i < sResearchBranchStore.GetNumRows(); ++i)
     {
@@ -110,12 +114,12 @@ void ArchaeologyMgr::InitBranch(Player* player, uint32 currencyId)
         selectProject = BranchProjects[urand(0, BranchProjects.size()-1)];
         player->SetUInt16Value(ACTIVE_PLAYER_DYNAMIC_FIELD_RESERACH + count / 2, count % 2, selectProject);
         BranchProjects.clear();
-    }
+    }*/
 }
 
 void ArchaeologyMgr::ChangeDigsite(Player* player, uint8 memId)
 {
-    std::vector<uint16> SitesInMap;
+    /*std::vector<uint16> SitesInMap;
     std::vector<uint32> digsites = player->GetDynamicValues(ACTIVE_PLAYER_DYNAMIC_FIELD_RESERACH_SITE);
 
     for(DigsitesMap::iterator itr = mResearchDigsitesMap.begin(); itr != mResearchDigsitesMap.end(); ++itr)
@@ -165,12 +169,12 @@ void ArchaeologyMgr::ChangeDigsite(Player* player, uint8 memId)
 
     tempContainer.clear();
 
-    SitesInMap.clear();
+    SitesInMap.clear();*/
 }
 
 void ArchaeologyMgr::AddDigsitesToMap(Player* player, uint32 mapId)
 {
-    if (!player->HasSkill(SKILL_ARCHAEOLOGY))
+    /*if (!player->HasSkill(SKILL_ARCHAEOLOGY))
         return;
 
     std::vector<uint16> SitesInMap;
@@ -225,12 +229,12 @@ void ArchaeologyMgr::AddDigsitesToMap(Player* player, uint32 mapId)
         ++count;
     }
 
-    SitesInMap.clear();
+    SitesInMap.clear();*/
 }
 
 bool ArchaeologyMgr::IsActiveBranch(Player* player, uint32 currencyId)
 {
-    for(uint32 i=0; i < 9; ++i)
+    /*for(uint32 i=0; i < 9; ++i)
     {
         if (player->GetUInt16Value(ACTIVE_PLAYER_DYNAMIC_FIELD_RESERACH + i / 2, i % 2))
         {
@@ -241,7 +245,7 @@ bool ArchaeologyMgr::IsActiveBranch(Player* player, uint32 currencyId)
                     if (ab->CurrencyId == currencyId)
                         return true;
         }
-    }
+    }*/
     return false;
 }
 

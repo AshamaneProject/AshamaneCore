@@ -84,7 +84,7 @@ class spell_mastery_icicles_proc : public AuraScript
                     icilesAddSecond = true;
             }
 
-            hitDamage *= (player->GetFloatValue(ACTIVE_PLAYER_FIELD_MASTERY) * 2.25f) / 100.0f;
+            hitDamage *= (player->m_activePlayerData->Mastery * 2.25f) / 100.0f;
 
             // Prevent huge hits on player after hitting low level creatures
             if (player->getLevel() > target->getLevel())
@@ -460,7 +460,7 @@ public:
                         const SpellInfo* igniteAura = sSpellMgr->GetSpellInfo(SPELL_MAGE_IGNITE_AURA);
                         if (GetSpellInfo()->Id != SPELL_MAGE_IGNITE_AURA && igniteAura != nullptr)
                         {
-                            float masteryValue = caster->GetFloatValue(ACTIVE_PLAYER_FIELD_MASTERY) * 0.75f;
+                            float masteryValue = caster->ToPlayer()->m_activePlayerData->Mastery * 0.75f;
 
                             int32 basePoints = GetHitDamage() /*+ GetAbsorbedDamage()*/;
                             if (basePoints)

@@ -536,7 +536,7 @@ void Player::UpdateLeechPercentage()
 {
     float value = GetTotalAuraModifier(SPELL_AURA_MOD_LEECH);
     value += GetRatingBonusValue(CR_LIFESTEAL);
-    SetFloatValue(UNIT_FIELD_LIFESTEAL, value);
+    SetUpdateFieldValue(m_values.ModifyValue(&Player::m_unitData).ModifyValue(&UF::UnitData::Lifesteal), value);
 }
 
 void Player::UpdateAllCritPercentages()
@@ -612,8 +612,8 @@ void Player::UpdateHealingDonePercentMod()
 
 void Player::UpdateAverageItemLevel()
 {
-    SetFloatValue(PLAYER_FIELD_AVG_ITEM_LEVEL + PlayerAvgItemLevelOffsets::PLAYER_AVG_ITEM_LEVEL_EQUIPPED_AND_BAG, (float)GetAverageItemLevelEquippedAndBag());
-    SetFloatValue(PLAYER_FIELD_AVG_ITEM_LEVEL + PlayerAvgItemLevelOffsets::PLAYER_AVG_ITEM_LEVEL_EQUIPPED, (float)GetAverageItemLevelEquipped());
+    SetUpdateFieldValue(m_values.ModifyValue(&Player::m_playerData).ModifyValue(&UF::PlayerData::AvgItemLevel, PLAYER_AVG_ITEM_LEVEL_EQUIPPED_AND_BAG), GetAverageItemLevelEquippedAndBag());
+    SetUpdateFieldValue(m_values.ModifyValue(&Player::m_playerData).ModifyValue(&UF::PlayerData::AvgItemLevel, PLAYER_AVG_ITEM_LEVEL_EQUIPPED), GetAverageItemLevelEquipped());
     // @TODO : Possible old offsets for WoD itemlevel scaling
     //SetFloatValue(PLAYER_FIELD_AVG_ITEM_LEVEL + PlayerAvgItemLevelOffsets::PLAYER_AVG_ITEM_LEVEL_UNK3, equipped);
     //SetFloatValue(PLAYER_FIELD_AVG_ITEM_LEVEL + PlayerAvgItemLevelOffsets::PLAYER_AVG_ITEM_LEVEL_UNK4, equipped_bag);
@@ -1190,14 +1190,17 @@ void Guardian::UpdateMaxPower(Powers power)
 
 void Guardian::UpdateAttackPowerAndDamage(bool ranged)
 {
-    float value = 0.0f;
+    if (ranged)
+        return;
 
-    UnitMods unitMod = ranged ? UNIT_MOD_ATTACK_POWER_RANGED : UNIT_MOD_ATTACK_POWER;
+    float val = 0.0f;
+    float bonusAP = 0.0f;
+    UnitMods unitMod = UNIT_MOD_ATTACK_POWER;
 
-    uint16 index = UNIT_FIELD_ATTACK_POWER;
-    uint16 index_mult = UNIT_FIELD_ATTACK_POWER_MULTIPLIER;
-
-    PetType petType = IsHunterPet() ? HUNTER_PET : SUMMON_PET;
+    if (GetEntry() == ENTRY_IMP)                                   // imp's attack power
+        val = GetStat(STAT_STRENGTH) - 10.0f;
+    else
+        val = 2 * GetStat(STAT_STRENGTH) - 20.0f;
 
     Player* owner = GetOwner() ? GetOwner()->ToPlayer() : nullptr;
     if (owner)
@@ -1238,30 +1241,63 @@ void Guardian::UpdateAttackPowerAndDamage(bool ranged)
                 frost = 0;
             SetBonusDamage(int32(frost * 0.4f));
         }
-        case HUNTER_PET:
-            value = CalculatePct(m_owner->GetTotalAttackPowerValue(ranged ? RANGED_ATTACK : BASE_ATTACK), 60.f);
-            break;
-        default:
-            break;
     }
 
-    if (!value)
-        TC_LOG_ERROR("entities.pet", "Pet (%s, entry %d) has no pctFromOwnerAP defined. AttackPower set to 0.",
-            GetGUID().ToString().c_str(), GetEntry());
+    SetModifierValue(UNIT_MOD_ATTACK_POWER, BASE_VALUE, val + bonusAP);
 
-    SetModifierValue(unitMod, BASE_VALUE, value);
-
+    //in BASE_VALUE of UNIT_MOD_ATTACK_POWER for creatures we store data of meleeattackpower field in DB
     float base_attPower  = GetModifierValue(unitMod, BASE_VALUE) * GetModifierValue(unitMod, BASE_PCT);
     float attPowerMultiplier = GetModifierValue(unitMod, TOTAL_PCT) - 1.0f;
 
     SetAttackPower(int32(base_attPower));
     SetAttackPowerMultiplier(attPowerMultiplier);
 
+    //automatically update weapon damage after attack power modification
     UpdateDamagePhysical(BASE_ATTACK);
-    UpdateDamagePhysical(OFF_ATTACK);
-    if (IsHunterPet())
-        UpdateDamagePhysical(RANGED_ATTACK);
 }
+
+/*void Guardian::UpdateDamagePhysical(WeaponAttackType attType)
+{
+    if (attType > BASE_ATTACK)
+        return;
+
+    float bonusDamage = 0.0f;
+    if (Player* playerOwner = m_owner->ToPlayer())
+    {
+        //force of nature
+        if (GetEntry() == ENTRY_TREANT)
+        {
+            int32 spellDmg = playerOwner->m_activePlayerData->ModDamageDonePos[SPELL_SCHOOL_NATURE] - playerOwner->m_activePlayerData->ModDamageDoneNeg[SPELL_SCHOOL_NATURE];
+            if (spellDmg > 0)
+                bonusDamage = spellDmg * 0.09f;
+        }
+        //greater fire elemental
+        else if (GetEntry() == ENTRY_FIRE_ELEMENTAL)
+        {
+            int32 spellDmg = playerOwner->m_activePlayerData->ModDamageDonePos[SPELL_SCHOOL_FIRE] - playerOwner->m_activePlayerData->ModDamageDoneNeg[SPELL_SCHOOL_FIRE];
+            if (spellDmg > 0)
+                bonusDamage = spellDmg * 0.4f;
+        }
+    }
+
+    UnitMods unitMod = UNIT_MOD_DAMAGE_MAINHAND;
+
+    float att_speed = float(GetBaseAttackTime(BASE_ATTACK))/1000.0f;
+
+    float base_value  = GetModifierValue(unitMod, BASE_VALUE) + GetTotalAttackPowerValue(attType)/ 3.5f * att_speed  + bonusDamage;
+    float base_pct    = GetModifierValue(unitMod, BASE_PCT);
+    float total_value = GetModifierValue(unitMod, TOTAL_VALUE);
+    float total_pct   = GetModifierValue(unitMod, TOTAL_PCT);
+
+    float weapon_mindamage = GetWeaponDamageRange(BASE_ATTACK, MINDAMAGE);
+    float weapon_maxdamage = GetWeaponDamageRange(BASE_ATTACK, MAXDAMAGE);
+
+    float mindamage = ((base_value + weapon_mindamage) * base_pct + total_value) * total_pct;
+    float maxdamage = ((base_value + weapon_maxdamage) * base_pct + total_value) * total_pct;
+
+    SetUpdateFieldStatValue(m_values.ModifyValue(&Unit::m_unitData).ModifyValue(&UF::UnitData::MinDamage), mindamage);
+    SetUpdateFieldStatValue(m_values.ModifyValue(&Unit::m_unitData).ModifyValue(&UF::UnitData::MaxDamage), maxdamage);
+}*/
 
 void Guardian::UpdateDamagePhysical(WeaponAttackType attType)
 {
@@ -1308,24 +1344,24 @@ void Guardian::UpdateDamagePhysical(WeaponAttackType attType)
     {
         case BASE_ATTACK:
         default:
-            SetStatFloatValue(UNIT_FIELD_MINDAMAGE, mindamage);
-            SetStatFloatValue(UNIT_FIELD_MAXDAMAGE, maxdamage);
+            SetUpdateFieldStatValue(m_values.ModifyValue(&Unit::m_unitData).ModifyValue(&UF::UnitData::MinDamage), mindamage);
+            SetUpdateFieldStatValue(m_values.ModifyValue(&Unit::m_unitData).ModifyValue(&UF::UnitData::MaxDamage), maxdamage);
             break;
         case OFF_ATTACK:
-            SetStatFloatValue(UNIT_FIELD_MINOFFHANDDAMAGE, mindamage / 2.0f);
-            SetStatFloatValue(UNIT_FIELD_MAXOFFHANDDAMAGE, maxdamage / 2.0f);
+            SetUpdateFieldStatValue(m_values.ModifyValue(&Unit::m_unitData).ModifyValue(&UF::UnitData::MinOffHandDamage), mindamage);
+            SetUpdateFieldStatValue(m_values.ModifyValue(&Unit::m_unitData).ModifyValue(&UF::UnitData::MaxOffHandDamage), maxdamage);
             break;
         case RANGED_ATTACK:
-            SetStatFloatValue(UNIT_FIELD_MINRANGEDDAMAGE, mindamage);
-            SetStatFloatValue(UNIT_FIELD_MAXRANGEDDAMAGE, maxdamage);
+            SetUpdateFieldStatValue(m_values.ModifyValue(&Unit::m_unitData).ModifyValue(&UF::UnitData::MinRangedDamage), mindamage);
+            SetUpdateFieldStatValue(m_values.ModifyValue(&Unit::m_unitData).ModifyValue(&UF::UnitData::MaxRangedDamage), maxdamage);
             break;
     }
 }
 
 void Guardian::UpdateSpellPower()
 {
-    SetUpdateFieldStatValue(m_values.ModifyValue(&Unit::m_unitData).ModifyValue(&UF::UnitData::MinDamage), mindamage);
-    SetUpdateFieldStatValue(m_values.ModifyValue(&Unit::m_unitData).ModifyValue(&UF::UnitData::MaxDamage), maxdamage);
+    if (HasSameSpellPowerAsOwner())
+        SetBonusDamage(m_owner->SpellBaseDamageBonusDone(SPELL_SCHOOL_MASK_MAGIC));
 }
 
 void Guardian::SetBonusDamage(int32 damage)
@@ -1337,6 +1373,6 @@ void Guardian::SetBonusDamage(int32 damage)
 
 void Guardian::UpdatePlayerFieldModPetHaste()
 {
-    /*if (Player * playerOwner = GetOwner()->ToPlayer())
-        GetOwner()->SetUInt32Value(ACTIVE_PLAYER_FIELD_MOD_PET_HASTE, GetUInt32Value(UNIT_FIELD_MOD_RANGED_HASTE));*/
+    if (Player* playerOwner = GetOwner()->ToPlayer())
+        playerOwner->SetModPetHaste(m_unitData->ModRangedHaste);
 }

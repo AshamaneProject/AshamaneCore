@@ -2025,16 +2025,16 @@ void Item::ItemContainerSaveLootToDB()
 
             // container_id, item_id, item_count, follow_rules, ffa, blocked, counted, under_threshold, needs_quest, rnd_prop, context, bonus_list_ids
             stmt_items->setUInt64(0, loot.containerID.GetCounter());
-            stmt_items->setUInt32(1, _li->itemid);
-            stmt_items->setUInt32(2, _li->count);
-            stmt_items->setBool(3, _li->follow_loot_rules);
-            stmt_items->setBool(4, _li->freeforall);
-            stmt_items->setBool(5, _li->is_blocked);
-            stmt_items->setBool(6, _li->is_counted);
-            stmt_items->setBool(7, _li->is_underthreshold);
-            stmt_items->setBool(8, _li->needs_quest);
-            stmt_items->setUInt32(9, _li->randomBonusListId);
-            stmt_items->setUInt8(10, _li->context);
+            stmt_items->setUInt32(1, item.itemid);
+            stmt_items->setUInt32(2, item.count);
+            stmt_items->setBool(3, item.follow_loot_rules);
+            stmt_items->setBool(4, item.freeforall);
+            stmt_items->setBool(5, item.is_blocked);
+            stmt_items->setBool(6, item.is_counted);
+            stmt_items->setBool(7, item.is_underthreshold);
+            stmt_items->setBool(8, item.needs_quest);
+            stmt_items->setUInt32(9, item.randomBonusListId);
+            stmt_items->setUInt8(10, item.context);
             std::ostringstream bonusListIDs;
             for (int32 bonusListID : item.BonusListIDs)
                 bonusListIDs << bonusListID << ' ';

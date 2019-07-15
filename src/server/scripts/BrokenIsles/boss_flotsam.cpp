@@ -89,7 +89,7 @@ public:
             me->SetPowerType(POWER_MANA);
             me->SetMaxPower(POWER_MANA, 100);
             me->SetPower(POWER_MANA, 0);
-            me->RemoveFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_REGENERATE_POWER);
+            me->RemoveUnitFlag2(UNIT_FLAG2_REGENERATE_POWER);
             events.SetPhase(PHASE_ASLEEP);
             events.Reset();
         }
@@ -226,9 +226,9 @@ public:
             if (!hit || !caster)
                 return;
 
-            if (Creature* tempSumm = caster->SummonCreature(NPC_JETSAM, hit->GetPositionX(), hit->GetPositionY(), hit->GetPositionZ(), 0, TEMPSUMMON_TIMED_DESPAWN, 120000))
+            if (TempSummon* tempSumm = caster->SummonCreature(NPC_JETSAM, hit->GetPositionX(), hit->GetPositionY(), hit->GetPositionZ(), 0, TEMPSUMMON_TIMED_DESPAWN, 120000))
             {
-                tempSumm->SetGuidValue(UNIT_FIELD_SUMMONEDBY, caster->GetGUID());
+                tempSumm->SetSummonerGUID(caster->GetGUID());
                 PhasingHandler::InheritPhaseShift(tempSumm, caster);
                 tempSumm->SetName(caster->GetName());
                 caster->AddAura(SPELL_JETSAM_TARGET, tempSumm);

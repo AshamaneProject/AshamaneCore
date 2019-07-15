@@ -381,7 +381,7 @@ void WorldQuestMgr::RewardQuestForPlayer(Player* player, uint32 questId)
                 if (player->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, worldQuestReward->RewardId, worldQuestReward->RewardCount) == EQUIP_ERR_OK)
                 {
                     std::vector<int32> bonusListIDs = sDB2Manager.GetItemBonusTreeVector(worldQuestReward->RewardId, worldQuestReward->RewardContext);
-                    Item* item = player->StoreNewItem(dest, worldQuestReward->RewardId, true, GenerateItemRandomPropertyId(worldQuestReward->RewardId), GuidSet(), 0, bonusListIDs);
+                    Item* item = player->StoreNewItem(dest, worldQuestReward->RewardId, true, GenerateItemRandomBonusListId(worldQuestReward->RewardId), GuidSet(), 0, bonusListIDs);
                     player->SendNewItem(item, worldQuestReward->RewardCount, true, false);
                 }
                 break;

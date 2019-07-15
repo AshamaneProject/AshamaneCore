@@ -233,7 +233,7 @@ public:
             if (!caster)
                 return;
 
-            at->SetUInt32Value(AREATRIGGER_DECAL_PROPERTIES_ID, 13);
+            at->SetDecalPropertiesID(13);
 
             for (auto guid : at->GetInsideUnits())
                 if (Unit* unit = ObjectAccessor::GetUnit(*caster, guid))

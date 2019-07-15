@@ -130,7 +130,7 @@ ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Garrison::GarrisonTalent 
 ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Garrison::GarrisonInfo const& garrison)
 {
     ASSERT(garrison.Missions.size() == garrison.MissionRewards.size());
-    ASSERT(garrison.Missions.size() == garrison.MissionBonusRewards.size());
+    ASSERT(garrison.Missions.size() == garrison.MissionOvermaxRewards.size());
     ASSERT(garrison.Missions.size() == garrison.CanStartMission.size());
 
     data << int32(garrison.GarrTypeID);
@@ -141,7 +141,7 @@ ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Garrison::GarrisonInfo co
     data << uint32(garrison.Followers.size());
     data << uint32(garrison.Missions.size());
     data << uint32(garrison.MissionRewards.size());
-    data << uint32(garrison.MissionBonusRewards.size());
+    data << uint32(garrison.MissionOvermaxRewards.size());
     data << uint32(garrison.MissionAreaBonuses.size());
     data << uint32(garrison.Talents.size());
     data << uint32(garrison.CanStartMission.size());
@@ -162,7 +162,7 @@ ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Garrison::GarrisonInfo co
             data << missionRewardItem;
     }
 
-    for (std::vector<WorldPackets::Garrison::GarrisonMissionReward> const& missionReward : garrison.MissionBonusRewards)
+    for (std::vector<WorldPackets::Garrison::GarrisonMissionReward> const& missionReward : garrison.MissionOvermaxRewards)
     {
         data << uint32(missionReward.size());
         for (WorldPackets::Garrison::GarrisonMissionReward const& missionRewardItem : missionReward)

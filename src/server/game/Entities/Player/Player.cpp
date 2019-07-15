@@ -7368,8 +7368,8 @@ void Player::UpdateArea(uint32 newAreaId)
     pvpInfo.IsInFFAPvPArea = areaEntry && (areaEntry->Flags[0] & AREA_FLAG_ARENA);
     UpdatePvPState(true);
 
+    UpdateAreaDependentAuras();
     PhasingHandler::OnAreaChange(this);
-    UpdateAreaDependentAuras(newArea);
 
     if (IsAreaThatActivatesPvpTalents(areaEntry))
         EnablePvpRules();
@@ -26510,9 +26510,9 @@ void Player::AutoStoreLoot(uint8 bag, uint8 slot, uint32 loot_id, LootStore cons
             displayToast.EntityId = lootItem->itemid;
             displayToast.ToastType = TOAST_ITEM;
             displayToast.Quantity = lootItem->count;
-            displayToast.RandomPropertiesID = pItem->GetItemRandomPropertyId();
+            displayToast.RandomPropertiesID = pItem->GetItemRandomBonusListId();
             displayToast.ToastMethod = toastMethod;
-            displayToast.bonusListIDs = pItem->GetDynamicValues(ITEM_DYNAMIC_FIELD_BONUSLIST_IDS);
+            displayToast.bonusListIDs = pItem->m_itemData->BonusListIDs;
             SendDirectMessage(displayToast.Write());
         }
     }
@@ -26570,9 +26570,9 @@ void Player::StoreLootItem(uint8 lootSlot, Loot* loot, AELootResult* aeResult/* 
                 if (Guild* guild = GetGuild())
                     guild->AddGuildNews(GUILD_NEWS_ITEM_LOOTED, GetGUID(), 0, item->itemid);
 
-                TC_LOG_INFO("metric", "%s(%lu) looted item %u count %u",
+                /*TC_LOG_INFO("metric", "%s(%lu) looted item %u count %u",
                     GetName().c_str(), GetGUID().GetCounter(),
-                    item->itemid, item->count);
+                    item->itemid, item->count);*/
             }
         }
 
@@ -28044,7 +28044,7 @@ bool Player::AddChallengeKey(uint32 challengeId, uint32 challengeLevel/* = 2*/)
         return false;
     }
 
-    Item* item = StoreNewItem(dest, itemId, true, GenerateItemRandomPropertyId(itemId));
+    Item* item = StoreNewItem(dest, itemId, true, GenerateItemRandomBonusListId(itemId));
     if (item)
     {
         item->SetModifier(ITEM_MODIFIER_CHALLENGE_MAP_CHALLENGE_MODE_ID, challengeId);
@@ -28619,7 +28619,7 @@ void Player::SendGarrisonInfo() const
         {
             garrisonInfo.Missions.push_back(&p.second.PacketInfo);
             garrisonInfo.MissionRewards.push_back(p.second.Rewards);
-            garrisonInfo.MissionBonusRewards.push_back(p.second.BonusRewards);
+            garrisonInfo.MissionOvermaxRewards.push_back(p.second.BonusRewards);
             garrisonInfo.CanStartMission.push_back(p.second.CanStartMission);
         }
 
@@ -28929,6 +28929,8 @@ Pet* Player::SummonPet(uint32 entry, float x, float y, float z, float ang, PetTy
             return nullptr;
         }
 
+        uint32 pet_number = sObjectMgr->GeneratePetNumber();
+
         pet->SetCreatorGUID(GetGUID());
         pet->setFaction(getFaction());
 
@@ -28939,11 +28941,11 @@ Pet* Player::SummonPet(uint32 entry, float x, float y, float z, float ang, PetTy
         PhasingHandler::InheritPhaseShift(pet, this);
 
         pet->SetCreatorGUID(GetGUID());
-        pet->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, getFaction());
+        pet->setFaction(getFaction());
 
         pet->SetPowerType(POWER_MANA);
-        pet->SetUInt64Value(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_NONE);
-        pet->SetUInt32Value(UNIT_FIELD_BYTES_1, 0);
+        pet->SetNpcFlags(UNIT_NPC_FLAG_NONE);
+        pet->SetAnimTier(UNIT_BYTE1_FLAG_NONE, false);
         pet->InitStatsForLevel(getLevel());
         pet->SetReactState(REACT_ASSIST);
 
@@ -28953,12 +28955,12 @@ Pet* Player::SummonPet(uint32 entry, float x, float y, float z, float ang, PetTy
         {
             case SUMMON_PET:
                 pet->GetCharmInfo()->SetPetNumber(pet_number, true);
-                pet->SetByteValue(UNIT_FIELD_BYTES_0, UNIT_BYTES_0_OFFSET_CLASS, CLASS_MAGE);
-                pet->SetUInt32Value(UNIT_FIELD_PETEXPERIENCE, 0);
-                pet->SetUInt32Value(UNIT_FIELD_PETNEXTLEVELEXP, 1000);
+                pet->SetClass(CLASS_MAGE);
+                pet->SetPetExperience(0);
+                pet->SetPetNextLevelExperience(1000);
                 pet->SetFullHealth();
                 pet->SetFullPower(POWER_MANA);
-                pet->SetUInt32Value(UNIT_FIELD_PET_NAME_TIMESTAMP, uint32(time(nullptr))); // cast can't be helped in this case
+                pet->SetPetNameTimestamp(uint32(time(nullptr))); // cast can't be helped in this case)
                 break;
             default:
                 break;
@@ -29624,7 +29626,7 @@ void Player::UpdateShop(uint32 diff)
                 {
                     GiveLevel(newLevel);
                     InitTalentForLevel();
-                    SetUInt32Value(ACTIVE_PLAYER_FIELD_XP, 0);
+                    SetXP(0);
                     delivered = true;
                 }
                 break;
@@ -29681,8 +29683,8 @@ void Player::SetEffectiveLevelAndMaxItemLevel(uint32 effectiveLevel, uint32 maxI
     float healthPct = GetHealthPct();
     _RemoveAllItemMods();
 
-    SetUInt32Value(UNIT_FIELD_EFFECTIVE_LEVEL, effectiveLevel);
-    SetUInt32Value(UNIT_FIELD_MAXITEMLEVEL, maxItemLevel);
+    SetUpdateFieldValue(m_values.ModifyValue(&Unit::m_unitData).ModifyValue(&UF::UnitData::EffectiveLevel), effectiveLevel);
+    SetUpdateFieldValue(m_values.ModifyValue(&Unit::m_unitData).ModifyValue(&UF::UnitData::MaxItemLevel), maxItemLevel);
 
     _ApplyAllItemMods();
     UpdateAverageItemLevel();
@@ -29722,12 +29724,12 @@ void Player::UpdateItemLevelAreaBasedScaling()
 
 void Player::UnlockReagentBank()
 {
-    SetFlag(PLAYER_FLAGS_EX, PLAYER_FLAGS_EX_REAGENT_BANK_UNLOCKED);
+    AddPlayerFlagEx(PLAYER_FLAGS_EX_REAGENT_BANK_UNLOCKED);
 }
 
 bool Player::HasUnlockedReagentBank() const
 {
-    return HasFlag(PLAYER_FLAGS_EX, PLAYER_FLAGS_EX_REAGENT_BANK_UNLOCKED);
+    return HasPlayerFlagEx(PLAYER_FLAGS_EX_REAGENT_BANK_UNLOCKED);
 }
 
 uint8 Player::GetItemLimitCategoryQuantity(ItemLimitCategoryEntry const* limitEntry) const
