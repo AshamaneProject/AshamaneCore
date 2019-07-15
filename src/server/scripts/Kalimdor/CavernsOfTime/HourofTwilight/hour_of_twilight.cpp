@@ -136,7 +136,7 @@ public:
         }
 
         CloseGossipMenuFor(player);
-        creature->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+        creature->RemoveNpcFlag(UNIT_NPC_FLAG_GOSSIP);
         return true;
     }
 
@@ -167,7 +167,7 @@ public:
             SetDespawnAtEnd(false);
             SetDespawnAtFar(false);
             //SetEscortPaused(false);
-            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+            me->RemoveUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
             summons.DespawnAll();
         }
 
@@ -242,7 +242,7 @@ public:
                 case 3:
                     SetEscortPaused(true);
                     gossipStep = 1;
-                    me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                    me->AddNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                     break;
                 case 4:
                 {
@@ -251,12 +251,12 @@ public:
                         if (instance)
                             instance->SetData(DATA_TRASH_KILLED, 1);
                         me->SetHomePosition(HomePoints[2]);
-                        arcurion->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                        arcurion->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                         arcurion->SetVisible(true);
                         arcurion->CastSpell(arcurion, SPELL_ARCURION_SPAWN_VISUAL, false);
                         arcurion->SetReactState(REACT_AGGRESSIVE);
                         SetEscortPaused(true);
-                        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+                        me->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
                     }
                     events.CancelEvent(EVENT_CHECK_PLAYER);
                     break;
@@ -561,7 +561,7 @@ public:
             case 0:
                 ai->Start(true, true, player->GetGUID(), 0, false, false);
                 ai->SetDespawnAtEnd(false);
-                creature->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                creature->RemoveNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                 break;
             case 1:
                 player->NearTeleportTo(3933.69f, 297.74f, 10.14f, player->GetOrientation());
@@ -682,7 +682,7 @@ public:
                     {
                         me->SetReactState(REACT_PASSIVE);
                         me->SetHomePosition(HomePoints[3]);
-                        asira->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                        asira->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                         asira->SetVisible(true);
                         events.ScheduleEvent(EVENT_ASIRA_AGGRESSIVE, 2000);
                         if (instance)
@@ -697,7 +697,7 @@ public:
                     events.Reset();
                     SetEscortPaused(true);
                     gossipStep = 1;
-                    me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                    me->AddNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                     break;
             }
         }
@@ -1232,7 +1232,7 @@ public:
         }
 
         CloseGossipMenuFor(player);
-        creature->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+        creature->RemoveNpcFlag(UNIT_NPC_FLAG_GOSSIP);
         return true;
     }
 
@@ -1356,7 +1356,7 @@ public:
                 case 9:
                     if (instance)
                         instance->SetData(DATA_TRASH_KILLED, 1);
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+                    me->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
                     me->SetHomePosition(HomePoints[0]);
                     me->SetReactState(REACT_PASSIVE);
                     events.CancelEvent(EVENT_CHECK_PLAYER);

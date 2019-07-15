@@ -356,7 +356,7 @@ public:
                         break;
 
                     case EVENT_FLEE_TO_FROG:
-                        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_PACIFIED);
+                        me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_PACIFIED));
                         me->DoFleeToGetAssistance();
                         Talk(SAY_AUUUU);
                         events.RescheduleEvent(EVENT_SUMMON_VAPOR, 1000);
@@ -366,7 +366,7 @@ public:
                     case EVENT_SHOW_UP:
                         me->SetVisible(true);
                         vaporCount = 0;
-                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_PACIFIED);
+                        me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_PACIFIED));
                         events.ScheduleEvent(EVENT_SWIPE, 1000);
                         events.ScheduleEvent(EVENT_GO_FOR_THROAT, 3000);
                         events.ScheduleEvent(EVENT_THIRST_FOR_BLOOD, 0);

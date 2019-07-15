@@ -65,8 +65,8 @@ class instance_lost_city_of_the_tolvir : public InstanceMapScript
             {
                 if (GameObject* platform = instance->GetGameObject(uiSiamatPlatformGUID))
                 {
-                    platform->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_DAMAGED);
-                    platform->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_DESTROYED);
+                    platform->RemoveFlag(GO_FLAG_DAMAGED);
+                    platform->AddFlag(GO_FLAG_DESTROYED);
                 }
 
                 for (int i = 0; i < 6; ++i)

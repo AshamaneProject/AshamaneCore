@@ -228,7 +228,7 @@ private:
             {
                 if (Creature* naga = instance->GetCreature(guid))
                 {
-                    naga->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                    naga->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                     naga->RemoveAurasDueToSpell(SPELL_TEMPEST_ATTUNEMENT);
 
                     if (naga->IsAlive())
@@ -246,7 +246,7 @@ private:
     void removeNonAttackableFromWrath()
     {
         if (Creature* wrath = instance->GetCreature(_wrathGUID))
-            wrath->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+            wrath->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
     }
 
     void tryEnableViolentWinds()

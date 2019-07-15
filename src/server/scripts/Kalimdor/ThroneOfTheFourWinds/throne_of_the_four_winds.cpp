@@ -64,7 +64,7 @@ public:
     {
         npc_slipstream_raidAI(Creature* creature) : ScriptedAI(creature), SlipstreamPosition(8), isUltimate(false), isActive(true), linkedSlipstreamObject(nullptr), linkedBoss(nullptr)
         {
-            creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NOT_SELECTABLE);
+            creature->AddUnitFlag(UnitFlags(UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NOT_SELECTABLE));
 
             for (uint8 i = 0; i <= 7; i++)
             {
@@ -165,7 +165,7 @@ public:
         npc_wind_bridgeAI(Creature* creature) : ScriptedAI(creature)
         {
             instance = creature->GetInstanceScript();
-            creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NOT_SELECTABLE);
+            creature->AddUnitFlag(UnitFlags(UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NOT_SELECTABLE));
         }
 
         InstanceScript* instance;

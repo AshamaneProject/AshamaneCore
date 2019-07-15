@@ -411,7 +411,7 @@ public:
             switch (action)
             {
                 case ACTION_REPENTANCE_START:
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                    me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                     me->SetReactState(REACT_PASSIVE);
                     me->AttackStop();
                     events.SetPhase(PHASE_REPENTANCE);
@@ -429,7 +429,7 @@ public:
                             uiBirthTimer = 2500;
                             me->RemoveAura(SPELL_BLAZE_OF_THE_HEAVENS_TRANSFORM);
                             events.SetPhase(PHASE_BLAZE);
-                            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                            me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                         }
 
                     }
@@ -454,7 +454,7 @@ public:
         void SpellHit(Unit* /*caster*/, const SpellInfo* spell) override
         {
             if (spell->Id == SPELL_BLAZE_OF_THE_HEAVENS_TRANSFORM)
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                me->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
         }
 
         void HealReceived(Unit* /*healer*/, uint32& heal) override
@@ -480,7 +480,7 @@ public:
 
                 if (events.GetPhaseMask() & PHASE_BLAZE_MASK)
                 {
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                    me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                     me->SetReactState(REACT_PASSIVE);
                     me->AttackStop();
                     events.SetPhase(PHASE_EGG);
@@ -519,7 +519,7 @@ public:
                             break;
                         case 3:
                             Birth = false;
-                            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                            me->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                             me->SetReactState(REACT_AGGRESSIVE);
                             me->CastSpell(me, SPELL_BLAZE_OF_THE_HEAVENS_PERIODIC, false);
                             events.ScheduleEvent(EVENT_SUMMON_BLAZE_OF_THE_HEAVENS_GROUND, 3000, 0, PHASE_BLAZE);
@@ -707,7 +707,7 @@ public:
                     me->AttackStop();
                     me->SetHealth(1);
                     me->CastSpell(me, SPELL_WAIL_OF_DARKNESS_DEATH, false);
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                    me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                     me->SetDisplayId(INVISIBLE_CREATURE_MODEL);
                     me->DespawnOrUnsummon(2000);
                 }

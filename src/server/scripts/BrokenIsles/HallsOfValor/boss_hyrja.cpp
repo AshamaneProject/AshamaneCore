@@ -80,8 +80,8 @@ struct boss_hyrja : public BossAI
         me->SetReactState(REACT_DEFENSIVE);
         me->SetCanFly(false);
 
-        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+        me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
+        me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
     }
 
     std::list<Creature*> creatureList;
@@ -152,8 +152,8 @@ struct boss_hyrja : public BossAI
 
         if (count1 >= 2)
         {
-            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+            me->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
+            me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
             inCombat = true;
             EnterCombat(me);
         }

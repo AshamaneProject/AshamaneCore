@@ -327,7 +327,7 @@ class instance_heart_of_fear : public InstanceMapScript
 
                                 /// Basic settings
                                 l_Unit->SetVisible(false);
-                                l_Unit->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+                                l_Unit->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
                                 l_Unit->ToCreature()->SetReactState(REACT_PASSIVE);
                             }
 

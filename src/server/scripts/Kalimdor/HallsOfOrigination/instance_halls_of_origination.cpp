@@ -1,6 +1,6 @@
  /*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -67,7 +67,7 @@ class instance_halls_of_origination : public InstanceMapScript
                     creature->setActive(true);
                     anraphetGUID = creature->GetGUID();
                     if(slainElementals < 4)
-                        creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                        creature->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                     break;
                 case NPC_BRANN_ANRAPHET:
                     creature->setActive(true);
@@ -85,7 +85,7 @@ class instance_halls_of_origination : public InstanceMapScript
                 case GO_HOO_TELEPORTER:
                     teleporterSet.insert(go->GetGUID());
                     if (GetBossState(DATA_TEMPLE_GUARDIAN_ANHUUR) == DONE)
-                        go->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
+                        go->RemoveFlag(GO_FLAG_NOT_SELECTABLE);
                     break;
                 case GO_ULDUM_DOOR_14:
                 case GO_ANHUURS_BRIDGE:
@@ -127,7 +127,7 @@ class instance_halls_of_origination : public InstanceMapScript
                         if(Creature * anraphet = instance->GetCreature(anraphetGUID))
                         {
                             anraphet->AI()->SetData(DATA_ANRAPHET_INTRO, 1);
-                            anraphet->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                            anraphet->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                         }
                     }
                     SaveToDB();
@@ -146,7 +146,7 @@ class instance_halls_of_origination : public InstanceMapScript
                 {
                     for (std::set<ObjectGuid>::iterator itr = teleporterSet.begin(); itr != teleporterSet.end(); ++itr)
                         if (GameObject* teleporter = instance->GetGameObject((*itr)))
-                            teleporter->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
+                            teleporter->RemoveFlag(GO_FLAG_NOT_SELECTABLE);
                 }
                  return true;
             }

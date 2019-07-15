@@ -178,7 +178,7 @@ class boss_halfus_wyrmbreaker : public CreatureScript
                     me->AddAura(SPELL_DANCING_FLAMES, proto);
                     DoZoneInCombat(proto);
                     proto->SetReactState(REACT_PASSIVE);
-                    proto->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                    proto->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                     proto->Attack(me->GetVictim(), true);
                     proto->AttackStop();
                     proto->StopMoving();
@@ -335,10 +335,10 @@ class npc_halfus_dragon : public CreatureScript
                         if (me->GetMap() && !me->GetMap()->IsHeroic())
                             me->AddAura(SPELL_UNRESPONSIVE, me);
 
-                        me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                        me->AddNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                         return;
                     default:
-                        me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                        me->AddNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                         break;
                 }
             }
@@ -363,7 +363,7 @@ class npc_halfus_dragon : public CreatureScript
 
             void UpdateAI(uint32 /*uiDiff*/) override
             {
-                if (me->HasFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE))
+                if (me->HasUnitFlag(UNIT_FLAG_NON_ATTACKABLE))
                 {
                     me->SetReactState(REACT_PASSIVE);
                 }
@@ -388,7 +388,7 @@ class npc_halfus_dragon : public CreatureScript
             player->PlayerTalkClass->ClearMenus();
             CloseGossipMenuFor(player);
 
-            creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+            creature->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
             creature->setFaction(14);
             creature->SetReactState(REACT_AGGRESSIVE);
 
@@ -423,7 +423,7 @@ class npc_halfus_dragon : public CreatureScript
                     }
                 }
             }
-            creature->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+            creature->RemoveNpcFlag(UNIT_NPC_FLAG_GOSSIP);
             return true;
         }
 

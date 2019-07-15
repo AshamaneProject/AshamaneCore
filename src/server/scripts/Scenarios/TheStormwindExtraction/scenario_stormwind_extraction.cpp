@@ -81,7 +81,7 @@ struct scenario_stormwind_extraction : public InstanceScript
             if (Creature* rokhan = GetRokhan())
             {
                 rokhan->RemoveAurasDueToSpell(SPELL_ROKHAN_SOLO_STEALTH);
-                rokhan->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC);
+                rokhan->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_NPC);
             }
         }
         else if (type == SCENARIO_EVENT_FREE_SAURFANG)
@@ -140,7 +140,7 @@ struct scenario_stormwind_extraction : public InstanceScript
                 for (TempSummon* summon : battleMages)
                 {
                     summon->CastSpell(summon, SPELL_ARCANE_CHANNELING, true);
-                    summon->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
+                    summon->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC));
                 }
 
                 for (uint8 i = 0; i < 8; ++i)
@@ -193,7 +193,7 @@ struct scenario_stormwind_extraction : public InstanceScript
             {
                 if (Creature* escapeStockade = GetCreature(NPC_ESCAPE_STOCKADE))
                 {
-                    escapeStockade->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                    escapeStockade->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
 
                     //DoSendScenarioEvent(SCENARIO_EVENT_PRISON_ESCAPE);
 
@@ -242,7 +242,7 @@ struct scenario_stormwind_extraction : public InstanceScript
                     rokhan->SetWalk(false);
                     rokhan->SetSpeed(MOVE_RUN, 6.f);
 
-                    rokhan->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC);
+                    rokhan->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_NPC);
                     rokhan->CastSpell(rokhan, SPELL_ROKHAN_SOLO_STEALTH, true);
                     rokhan->GetMotionMaster()->MovePoint(1, -8692.569336f, 905.782898f, 53.733604f);
                 });

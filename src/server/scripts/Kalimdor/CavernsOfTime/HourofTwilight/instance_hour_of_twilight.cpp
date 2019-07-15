@@ -183,7 +183,7 @@ public:
                         if (Creature* thrall = instance->GetCreature(uiThrall))
                         {
                             thrall->AI()->DoAction(ACTION_MOVE);
-                            thrall->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+                            thrall->RemoveUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
                         }
                     }
 

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -1316,7 +1316,7 @@ public:
             if (Player* _player = GetCaster()->ToPlayer())
                 if (Unit* target = GetHitUnit())
                 {
-                    _player->CastCustomSpell(SPELL_WARRIOR_COLOSSUS_SMASH_BUFF, SPELLVALUE_BASE_POINT0, 15.0f + _player->GetFloatValue(ACTIVE_PLAYER_FIELD_MASTERY), target, true);
+                    _player->CastCustomSpell(SPELL_WARRIOR_COLOSSUS_SMASH_BUFF, SPELLVALUE_BASE_POINT0, 15.0f + _player->m_activePlayerData->Mastery, target, true);
                 }
         }
 
@@ -1994,7 +1994,11 @@ public:
 
         void HandleOnHit(SpellEffIndex effIndex)
         {
-            uint32 _spec = GetCaster()->GetUInt32Value(PLAYER_FIELD_CURRENT_SPEC_ID);
+            Player* caster = GetCaster()->ToPlayer();
+            if (!caster)
+                return;
+
+            uint32 _spec = caster->GetSpecializationId();
             if (_spec != TALENT_SPEC_WARRIOR_FURY) //only fury warriors should deal damage with offhand
             {
                 PreventHitDamage();
@@ -2068,8 +2072,8 @@ class aura_warr_ignore_pain : public AuraScript
             if (m_newRage < 0)
                 m_newRage = 0;
             caster->SetPower(POWER_RAGE, m_newRage);
-            if (Player* player = caster->ToPlayer())
-                player->SendPowerUpdate(POWER_RAGE, m_newRage);
+            /*if (Player* player = caster->ToPlayer())
+                player->SendPowerUpdate(POWER_RAGE, m_newRage);*/
         }
     }
 
@@ -2912,9 +2916,9 @@ struct npc_warr_ravager : public ScriptedAI
         me->CastSpell(me, SPELL_RAVAGER_VISUAL, true);
         me->SetReactState(ReactStates::REACT_PASSIVE);
         me->AddUnitState(UnitState::UNIT_STATE_ROOT);
-        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE |
+        me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE |
                                         UNIT_FLAG_UNK_15 |
-                                        UNIT_FLAG_PVP_ATTACKABLE);
+                                        UNIT_FLAG_PVP_ATTACKABLE));
 
         if (summoner == nullptr || !summoner->IsPlayer())
             return;

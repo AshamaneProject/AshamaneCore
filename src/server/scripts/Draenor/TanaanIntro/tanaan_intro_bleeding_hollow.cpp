@@ -227,8 +227,8 @@ public:
         {
             m_PlayerGuid = guid;
 
-            if (me->HasFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP))
-                me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+            if (me->HasNpcFlag(UNIT_NPC_FLAG_GOSSIP))
+                me->RemoveNpcFlag(UNIT_NPC_FLAG_GOSSIP);
 
             if (Player* p_Followed = ObjectAccessor::GetPlayer(*me, guid))
                 me->GetMotionMaster()->MoveFollow(p_Followed, 0.2f, 5.23f);

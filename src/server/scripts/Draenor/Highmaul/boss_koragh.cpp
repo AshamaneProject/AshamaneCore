@@ -169,14 +169,14 @@ class boss_koragh : public CreatureScript
                 if (m_RitualistGuids.empty() && m_Init)
                 {
                     me->SetReactState(ReactStates::REACT_AGGRESSIVE);
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                    me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
 
                     me->SetAIAnimKitId(0);
                 }
                 else
                 {
                     me->SetReactState(ReactStates::REACT_PASSIVE);
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                    me->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
 
                     me->SetAIAnimKitId(eAnimKit::AnimWaiting);
                 }
@@ -233,14 +233,14 @@ class boss_koragh : public CreatureScript
                     if (m_RitualistGuids.empty() && m_Init)
                     {
                         me->SetReactState(ReactStates::REACT_AGGRESSIVE);
-                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                        me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
 
                         me->SetAIAnimKitId(0);
                     }
                     else
                     {
                         me->SetReactState(ReactStates::REACT_PASSIVE);
-                        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                        me->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
 
                         me->SetAIAnimKitId(eAnimKit::AnimWaiting);
                     }
@@ -256,7 +256,7 @@ class boss_koragh : public CreatureScript
                         l_Flying->CastSpell(me, eSpells::RuneChargingPermanent, true);
 
                         l_Flying->SetReactState(ReactStates::REACT_PASSIVE);
-                        l_Flying->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                        l_Flying->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                     }
                 });
 
@@ -278,14 +278,14 @@ class boss_koragh : public CreatureScript
                 if (m_RitualistGuids.empty() && m_Init)
                 {
                     me->SetReactState(ReactStates::REACT_AGGRESSIVE);
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                    me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
 
                     me->SetAIAnimKitId(0);
                 }
                 else
                 {
                     me->SetReactState(ReactStates::REACT_PASSIVE);
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                    me->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
 
                     me->SetAIAnimKitId(eAnimKit::AnimWaiting);
                 }
@@ -306,7 +306,7 @@ class boss_koragh : public CreatureScript
                         l_Flying->RemoveAura(eSpells::RuneChargingPermanent);
 
                     me->SetReactState(ReactStates::REACT_AGGRESSIVE);
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                    me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
 
                     me->SetAIAnimKitId(0);
 
@@ -409,7 +409,7 @@ class boss_koragh : public CreatureScript
                         me->CastSpell(me, eSpells::KnockbackForRecharge, true);
                         me->CastSpell(me, eSpells::VulnerabilityAura, true);
 
-                        me->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN);
+                        me->AddUnitFlag2(UNIT_FLAG2_DISABLE_TURN);
 
                         m_Events.DelayEvent(eEvents::EventOverflowingEnergy, 20 * TimeConstants::IN_MILLISECONDS);
 
@@ -636,7 +636,7 @@ class boss_koragh : public CreatureScript
                         me->RemoveAura(eSpells::VulnerabilityAura);
                         me->SetReactState(ReactStates::REACT_AGGRESSIVE);
 
-                        me->RemoveFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN);
+                        me->RemoveUnitFlag2(UNIT_FLAG2_DISABLE_TURN);
 
                         me->GetMotionMaster()->Clear();
 
@@ -966,7 +966,7 @@ class npc_highmaul_wild_flames : public CreatureScript
             void Reset() override
             {
                 me->SetReactState(ReactStates::REACT_PASSIVE);
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
 
                 me->CastSpell(me, eSpells::WildFlamesAreaTrigger, true);
 
@@ -1108,7 +1108,7 @@ class npc_highmaul_koragh_volatile_anomaly : public CreatureScript
 
             void Reset() override
             {
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NOT_SELECTABLE);
+                me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NOT_SELECTABLE));
 
                 if (Player* target = me->SelectNearestPlayer(30.0f))
                     AttackStart(target);

@@ -224,11 +224,11 @@ class boss_the_butcher : public CreatureScript
                 me->SetCanDualWield(true);
 
                 /// Wrong flags remove
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISARMED | UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_PREPARATION);
+                me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_DISARMED | UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_PREPARATION));
 
                 me->SetPower(Powers::POWER_ENERGY, 0);
                 me->SetMaxPower(Powers::POWER_ENERGY, 100);
-                me->RemoveFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_REGENERATE_POWER);
+                me->RemoveUnitFlag2(UNIT_FLAG2_REGENERATE_POWER);
 
                 if (m_Instance != nullptr)
                 {
@@ -587,7 +587,7 @@ class npc_highmaul_night_twisted_cadaver : public CreatureScript
                 m_Explode = false;
 
                 me->SetReactState(ReactStates::REACT_PASSIVE);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
 
                 if (!me->IsSummon())
                     return;
@@ -671,7 +671,7 @@ class npc_highmaumaggot : public CreatureScript
             {
                 me->SetReactState(ReactStates::REACT_PASSIVE);
 
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC));
             }
 
             void JustDied(Unit* /*killer*/) override

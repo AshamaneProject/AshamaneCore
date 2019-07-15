@@ -287,14 +287,14 @@ class boss_kargath_bladefist : public CreatureScript
                 me->SetDisplayId(eDatas::MorphWithWeapon);
 
                 me->SetReactState(ReactStates::REACT_AGGRESSIVE);
-                me->RemoveFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN);
+                me->RemoveUnitFlag2(UNIT_FLAG2_DISABLE_TURN);
                 me->ClearUnitState(UnitState::UNIT_STATE_CANNOT_TURN);
 
                 if (m_InArena)
                 {
                     me->SetReactState(ReactStates::REACT_AGGRESSIVE);
 
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                    me->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                 }
 
                 m_BerserkerRushTarget = ObjectGuid::Empty;
@@ -366,7 +366,7 @@ class boss_kargath_bladefist : public CreatureScript
                 me->ClearUnitState(UnitState::UNIT_STATE_ROOT);
                 me->ClearUnitState(UnitState::UNIT_STATE_DISTRACTED);
                 me->ClearUnitState(UnitState::UNIT_STATE_STUNNED);
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_STUNNED);
+                me->RemoveUnitFlag(UNIT_FLAG_STUNNED);
 
                 _EnterCombat();
 
@@ -472,7 +472,7 @@ class boss_kargath_bladefist : public CreatureScript
                 if (p_Summon->GetEntry() == eCreatures::BladefistTarget)
                 {
                     me->Kill(p_Summon);
-                    p_Summon->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                    p_Summon->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                 }
 
                 summons.Summon(p_Summon);
@@ -507,7 +507,7 @@ class boss_kargath_bladefist : public CreatureScript
                             EndBerserkerRush(target, false);
 
                         me->SetReactState(ReactStates::REACT_PASSIVE);
-                        me->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN);
+                        me->AddUnitFlag2(UNIT_FLAG2_DISABLE_TURN);
                         me->AddUnitState(UnitState::UNIT_STATE_CANNOT_TURN);
 
                         AddTimedDelayedOperation(100, [this]() -> void
@@ -582,7 +582,7 @@ class boss_kargath_bladefist : public CreatureScript
 
                 me->SetReactState(ReactStates::REACT_AGGRESSIVE);
 
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                me->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
 
                 DeactivatePillars();
                 ResetAdds();
@@ -636,7 +636,7 @@ class boss_kargath_bladefist : public CreatureScript
                     case eMoves::MoveFrontGate:
                         me->SetFacingTo(0.855371f);
                         me->SetReactState(ReactStates::REACT_AGGRESSIVE);
-                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                        me->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                         me->SetWalk(false);
                         m_CosmeticEvents.ScheduleEvent(eCosmeticEvents::OrientationForFight, 500);
                         me->CastSpell(me, eSpells::KargathChantingSound, true);
@@ -889,7 +889,7 @@ class boss_kargath_bladefist : public CreatureScript
 
                         l_TigerList.remove_if([](Creature* creature) -> bool
                         {
-                            return !creature || !creature->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                            return !creature || !creature->HasUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                         });
 
                         if (l_TigerList.empty())
@@ -1135,7 +1135,7 @@ class npc_highmaul_vulgor : public CreatureScript
                 m_Summons.DespawnAll();
 
                 me->SetReactState(ReactStates::REACT_PASSIVE);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NON_ATTACKABLE);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NON_ATTACKABLE));
                 me->AddUnitState(UNIT_STATE_IGNORE_PATHFINDING);
             }
 
@@ -1207,14 +1207,14 @@ class npc_highmaul_vulgor : public CreatureScript
                         me->SetWalk(false);
                         me->SetHomePosition(g_VulgorMovePos);
                         me->SetReactState(ReactStates::REACT_AGGRESSIVE);
-                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NON_ATTACKABLE);
+                        me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NON_ATTACKABLE));
 
                         //me->HandleEmoteCommand(Emote::EMOTE_ONESHOT_BATTLEROAR);
 
                         AddTimedDelayedOperation(4 * TimeConstants::IN_MILLISECONDS, [this]() -> void
                         {
-                            me->SetUInt32Value(UNIT_NPC_EMOTESTATE, 0);
-                            me->SetUInt32Value(UNIT_NPC_EMOTESTATE, Emote::EMOTE_STATE_READY1H);
+                            me->SetEmoteState(EMOTE_ONESHOT_NONE);
+                            me->SetEmoteState(Emote::EMOTE_STATE_READY1H);
                         });
 
                         break;
@@ -1367,7 +1367,7 @@ class npc_highmaul_bladespire_sorcerer : public CreatureScript
             npc_highmaul_bladespire_sorcererAI(Creature* creature) : ScriptedAI(creature)
             {
                 creature->SetReactState(ReactStates::REACT_PASSIVE);
-                creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                creature->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
             }
 
             EventMap m_Events;
@@ -1392,8 +1392,8 @@ class npc_highmaul_bladespire_sorcerer : public CreatureScript
                     {
                         me->SetWalk(false);
                         me->SetReactState(ReactStates::REACT_AGGRESSIVE);
-                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
-                        me->SetUInt32Value(UNIT_NPC_EMOTESTATE, Emote::EMOTE_STATE_READY2H);
+                        me->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
+                        me->SetEmoteState(Emote::EMOTE_STATE_READY2H);
                         m_Position = me->GetPosition();
                         break;
                     }
@@ -1587,11 +1587,11 @@ class npc_highmaul_fire_pillar : public CreatureScript
             {
                 me->SetReactState(ReactStates::REACT_PASSIVE);
 
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC);
-                me->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC));
+                me->AddUnitFlag2(UNIT_FLAG2_DISABLE_TURN);
 
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_LOOTING | UNIT_FLAG_TAXI_FLIGHT);
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IN_COMBAT | UNIT_FLAG_PLAYER_CONTROLLED);
+                me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_LOOTING | UNIT_FLAG_TAXI_FLIGHT));
+                me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_IN_COMBAT | UNIT_FLAG_PLAYER_CONTROLLED));
 
                 me->RemoveAura(eSpells::FlameGoutPeriodic);
 
@@ -1617,7 +1617,7 @@ class npc_highmaul_fire_pillar : public CreatureScript
                         me->CastSpell(me, eSpells::FirePillarActivated, true);
                         me->CastSpell(me, eSpells::FirePillarKnockback, true, nullptr, nullptr, p_Caster->GetGUID());
 
-                        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IN_COMBAT);
+                        me->AddUnitFlag(UNIT_FLAG_IN_COMBAT);
                         me->SetAIAnimKitId(eData::AnimKit1, true);
                         AddTimedDelayedOperation(3 * TimeConstants::IN_MILLISECONDS, [this]() -> void { me->SetAIAnimKitId(eData::AnimKit2); });
                         AddTimedDelayedOperation(3 * TimeConstants::IN_MILLISECONDS, [this]() -> void { me->CastSpell(me, eSpells::FlameJet, true); });
@@ -1665,9 +1665,9 @@ class npc_highmaul_fire_pillar : public CreatureScript
                             if (Creature* l_Kargath = me->FindNearestCreature(eHighmaulCreatures::KargathBladefist, 15.0f))
                             {
                                 l_Kargath->SetControlled(false, UnitState::UNIT_STATE_ROOT);
-                                l_Kargath->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_STUNNED);
+                                l_Kargath->RemoveUnitFlag(UNIT_FLAG_STUNNED);
                                 l_Kargath->SetReactState(ReactStates::REACT_AGGRESSIVE);
-                                l_Kargath->RemoveFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN);
+                                l_Kargath->RemoveUnitFlag2(UNIT_FLAG2_DISABLE_TURN);
                                 l_Kargath->ClearUnitState(UnitState::UNIT_STATE_CANNOT_TURN);
                             }
                         });
@@ -1683,7 +1683,7 @@ class npc_highmaul_fire_pillar : public CreatureScript
             {
                 /// Deactivate Pillar
                 me->RemoveAllAreaTriggers();
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IN_COMBAT);
+                me->RemoveUnitFlag(UNIT_FLAG_IN_COMBAT);
                 me->RemoveAllAuras();
                 me->SetAIAnimKitId(0);
                 me->SetAIAnimKitId(eData::AnimKit3, true);
@@ -1736,7 +1736,7 @@ class npc_highmaul_ravenous_bloodmaw : public CreatureScript
             void Reset() override
             {
                 me->SetReactState(ReactStates::REACT_PASSIVE);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
 
                 m_Events.Reset();
                 m_Events.ScheduleEvent(eEvent::CheckPlayer, 500);
@@ -1766,7 +1766,7 @@ class npc_highmaul_ravenous_bloodmaw : public CreatureScript
 
                         me->SetSpeed(UnitMoveType::MOVE_RUN, 0.5f);
 
-                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+                        me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
 
                         me->GetMotionMaster()->Clear(true);
                         me->GetMotionMaster()->MoveChase(target);
@@ -1787,7 +1787,7 @@ class npc_highmaul_ravenous_bloodmaw : public CreatureScript
                             break;
 
                         m_Events.CancelEvent(eEvent::CheckPlayer);
-                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+                        me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
 
                         float l_X = me->GetPositionX() + (9.0f * cos(me->GetOrientation()));
                         float l_Y = me->GetPositionY() + (9.0f * sin(me->GetOrientation()));
@@ -1845,7 +1845,7 @@ class npc_highmaul_ravenous_bloodmaw : public CreatureScript
                     me->AddAura(eSpells::InThePitAura, target);
                     me->CastSpell(target, eSpells::SpellMaul, true);
                     target->RemoveAura(eSpells::InThePitAura);
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+                    me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
                 }
             }
 
@@ -1896,7 +1896,7 @@ class npc_highmaul_ravenous_bloodmaw : public CreatureScript
                         me->AddAura(eSpells::InThePitAura, player);
                         me->CastSpell(player, eSpells::SpellMaul, true);
                         player->RemoveAura(eSpells::InThePitAura);
-                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+                        me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
                         break;
                     }
 
@@ -1956,7 +1956,7 @@ class npc_highmaul_kargath_bladefist_trigger : public CreatureScript
             void Reset() override
             {
                 me->SetReactState(ReactStates::REACT_PASSIVE);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_PC);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_PC));
             }
 
             void SpellHit(Unit* p_Caster, SpellInfo const* spellInfo) override
@@ -2505,7 +2505,7 @@ class npc_highmaul_highmaul_sweeper : public CreatureScript
                 m_ComeBack      = false;
 
                 me->SetReactState(ReactStates::REACT_PASSIVE);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
                 me->SetSpeed(UnitMoveType::MOVE_RUN, 2.0f);
             }
 
@@ -2723,8 +2723,8 @@ class npc_highmauareaTrigger_for_crowd : public CreatureScript
             void Reset() override
             {
                 me->SetReactState(ReactStates::REACT_PASSIVE);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_IMMUNE_TO_PC);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_IMMUNE_TO_PC));
 
                 m_Events.Reset();
                 m_Events.ScheduleEvent(eEvent::InitObscured, 2000);
@@ -2885,8 +2885,8 @@ class spell_highmaul_earth_breaker : public SpellScriptLoader
 
             void Register() override
             {
-                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_highmaul_earth_breaker_SpellScript::CorrectTargets, EFFECT_1, TARGET_UNIT_CASTER_AREA_ENEMY_FRONT);
-                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_highmaul_earth_breaker_SpellScript::CorrectTargets, EFFECT_2, TARGET_UNIT_CASTER_AREA_ENEMY_FRONT);
+                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_highmaul_earth_breaker_SpellScript::CorrectTargets, EFFECT_1, TARGET_UNIT_CONE_ENTRY_129);
+                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_highmaul_earth_breaker_SpellScript::CorrectTargets, EFFECT_2, TARGET_UNIT_CONE_ENTRY_129);
                 BeforeCast += SpellCastFn(spell_highmaul_earth_breaker_SpellScript::HandleBeforeCast);
             }
         };

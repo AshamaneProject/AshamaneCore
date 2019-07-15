@@ -459,7 +459,7 @@ public:
                             return;
                         summoner->AddAura(SPELL_FIGMENT_OF_DOUBT_2, creature);
                         creature->SetDisplayId(summoner->GetDisplayId());
-                        creature->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_MIRROR_IMAGE);
+                        creature->AddUnitFlag2(UNIT_FLAG2_MIRROR_IMAGE);
                         summoner->CastSpell(creature, SPELL_COPY_WEAPON, false);
                         summoner->CastSpell(creature, SPELL_COPY_WEAPON_2, false);
 
@@ -542,7 +542,7 @@ public:
                 creature->RemoveAura(SPELL_JADE_ESSENCE);
                 creature->CastSpell(creature, SPELL_TRANSFORM_VISUAL, false);
                 creature->RemoveAura(SPELL_POSSESSED_BY_SHA);
-                creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                creature->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
 
                 if (creature->GetAI())
                     creature->GetAI()->DoAction(0);
@@ -593,7 +593,7 @@ public:
                         Creature* c = instance->GetCreature(scroll);
                         if (c == nullptr)
                             return;
-                        c->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                        c->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                     }
                     break;
                 case TYPE_SET_SUNS_SELECTABLE:
@@ -605,7 +605,7 @@ public:
                         if (!creature)
                             continue;
 
-                        creature->RemoveFlag(UNIT_NPC_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                        creature->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                         if (creature->GetAI())
                             creature->GetAI()->DoAction(TYPE_SET_SUNS_SELECTABLE);
                     }
@@ -648,7 +648,7 @@ public:
                             creature->Respawn(true);
                             if (creature->GetAI())
                                 creature->GetAI()->DoAction(0);
-                            creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                            creature->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                         }
                         //Stop the fire tornados.
                         for (auto GUID : sunfires)
@@ -686,7 +686,7 @@ public:
                     sun_triggers.push_back(creature->GetGUID());
                     break;
                 case CREATURE_SUN:
-                    creature->SetFlag(UNIT_NPC_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                    creature->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                     suns.push_back(creature->GetGUID());
                     break;
                 case CREATURE_ZAO_SUNSEEKER:
@@ -698,7 +698,7 @@ public:
                     break;
                 case CREATURE_SCROLL:
                     scroll = creature->GetGUID();
-                    creature->SetFlag(UNIT_NPC_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                    creature->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                     creature->CastSpell(creature, SPELL_SCROLL_FLOOR, false);
                     creature->CastSpell(creature, SPELL_JADE_ENERGY_2, false);
                     creature->CastSpell(creature, SPELL_GROW_LOW, false);
@@ -870,7 +870,7 @@ public:
                         unit->AddAura(SPELL_DRAW_SHA_2, c);
                         unit->AddAura(SPELL_DRAW_SHA_2, c);
                         c->CastSpell(unit, SPELL_DRAW_SHA_3, false);
-                        c->SetGuidValue(UNIT_DYNAMIC_FIELD_CHANNEL_OBJECTS, scroll);
+                        c->AddChannelObject(scroll);
                         c->SetChannelSpellId(42808);
                         c->ForcedDespawn(2000);
                     }
@@ -946,7 +946,7 @@ public:
                 creature->Respawn();
                 if (creature->GetAI())
                     creature->GetAI()->Reset();
-                creature->SetFlag(UNIT_NPC_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                creature->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                 creature->CastSpell(creature, SPELL_SCROLL_FLOOR, false);
                 creature->CastSpell(creature, SPELL_JADE_ENERGY_2, false);
                 creature->CastSpell(creature, SPELL_GROW_LOW, false);

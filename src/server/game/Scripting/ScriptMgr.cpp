@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -2434,6 +2434,11 @@ void ScriptMgr::OnSceneCancel(Player* player, uint32 sceneInstanceId)
 void ScriptMgr::OnSceneComplete(Player* player, uint32 sceneInstanceId)
 {
     FOREACH_SCRIPT(PlayerScript)->OnSceneComplete(player, sceneInstanceId);
+}
+
+void ScriptMgr::OnPlayerRepop(Player* player)
+{
+    FOREACH_SCRIPT(PlayerScript)->OnPlayerRepop(player);
 }
 
 void ScriptMgr::OnMovieComplete(Player* player, uint32 movieId)

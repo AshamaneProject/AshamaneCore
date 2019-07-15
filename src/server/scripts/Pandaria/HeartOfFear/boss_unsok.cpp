@@ -774,7 +774,7 @@ public:
                 p_Damage = me->GetHealth() - 1;
                 me->SetReactState(REACT_PASSIVE);
                 me->RemoveAurasDueToSpell(SPELL_CORROSIVE_AURA);
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                 me->CombatStop(true);
                 DoCast(IsHeroic() ? SPELL_TEMP_FEIGN_DEATH : SPELL_PERMANENT_FEIGN_DEATH);
                 // Removing debuff on initial target
@@ -800,7 +800,7 @@ public:
                 DoCast(me, SPELL_RESURRECT);
                 me->RemoveAura(SPELL_BURNING_AMBER);
                 me->SetReactState(REACT_AGGRESSIVE);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                 Reset();
             }
         }
@@ -832,7 +832,7 @@ class mob_amber_pool_stalker : public CreatureScript
             {
                 events.Reset();
                 me->SetReactState(REACT_PASSIVE);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
             }
 
             void DoAction(const int32 action) override
@@ -1086,7 +1086,7 @@ class mob_amber_scalpel : public CreatureScript
                 me->SetReactState(REACT_PASSIVE);
                 me->SetDisplayId(43164);
                 me->setFaction(2577);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                 events.ScheduleEvent(EVENT_SCALPEL_DESPAWN, 11000);
 
                 if (Creature* unsok = pInstance->GetCreature(NPC_UNSOK))

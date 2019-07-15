@@ -440,8 +440,8 @@ public:
 
             if (!rackList.empty())
                 for (std::list<GameObject*>::iterator itr = rackList.begin(); itr != rackList.end(); ++itr)
-                    if ((*itr)->HasFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE))
-                        (*itr)->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
+                    if ((*itr)->HasFlag(GO_FLAG_NOT_SELECTABLE))
+                        (*itr)->RemoveFlag(GO_FLAG_NOT_SELECTABLE);
 
             me->DeleteThreatList();
             me->CombatStop(true);
@@ -1280,7 +1280,7 @@ class npc_wind_bomb_meljarak : public CreatureScript
                 me->SetDisplayId(DISPLAYID_WINDBOMB);
                 canExplode = false;
                 me->SetInCombatWithZone();
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                 me->SetReactState(REACT_PASSIVE);
 
                 DoCast(me, SPELL_WIND_BOMB_THR_DMG);
@@ -1329,7 +1329,7 @@ public:
         void IsSummonedBy(Unit* /*summoner*/) override
         {
             me->SetInCombatWithZone();
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+            me->AddUnitFlag(UnitFlags(UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
             me->SetReactState(REACT_PASSIVE);
 
             me->AddAura(SPELL_CORR_RESIN_POOL_A, me); // Damage aura.
@@ -1677,7 +1677,7 @@ class go_krithik_weapon_rack : public GameObjectScript
             {
                 player->AddAura(SPELL_IMPALING_SPEAR, player);
                 go->SetGoState(GO_STATE_READY);
-                go->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
+                go->AddFlag(GO_FLAG_NOT_SELECTABLE);
                 return true;
             }
 

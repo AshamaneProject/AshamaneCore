@@ -232,7 +232,7 @@ class boss_elegon : public CreatureScript
             {
                 pInstance = creature->GetInstanceScript();
                 creature->SetDisplayId(11686);
-                creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_IMMUNE_TO_PC|UNIT_FLAG_UNK_15);
+                creature->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_IMMUNE_TO_PC|UNIT_FLAG_UNK_15));
             }
 
             InstanceScript* pInstance;
@@ -305,7 +305,7 @@ class boss_elegon : public CreatureScript
                     pInstance->SetBossState(DATA_ELEGON, IN_PROGRESS);
                 }
 
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_IMMUNE_TO_PC|UNIT_FLAG_UNK_15);
+                me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_IMMUNE_TO_PC|UNIT_FLAG_UNK_15));
                 me->RemoveAurasDueToSpell(SPELL_APPARITION_VISUAL);
                 me->SetReactState(REACT_AGGRESSIVE);
 
@@ -485,7 +485,7 @@ class boss_elegon : public CreatureScript
                         }
                         // Set invisible and unselectable
                         me->SetDisplayId(11686);
-                        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_IMMUNE_TO_PC|UNIT_FLAG_UNK_15);
+                        me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_IMMUNE_TO_PC|UNIT_FLAG_UNK_15));
 
                         me->RemoveAurasDueToSpell(SPELL_UNSTABLE_ENERGY);
                         me->RemoveAurasDueToSpell(SPELL_PHASE_SHIFTED);
@@ -898,7 +898,7 @@ class mob_empyreal_focus : public CreatureScript
 
                 me->SetReactState(REACT_PASSIVE);
                 me->AddAura(SPELL_FOCUS_INACTIVE, me);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
 
                 Position pos = me->GetPosition();
 
@@ -975,7 +975,7 @@ class mob_empyreal_focus : public CreatureScript
                         if (AreaTrigger* lightningWall = me->GetAreaTrigger(SPELL_FOCUS_LIGHT_AREATRIGGER))
                             lightningWall->SetDuration(0);
 
-                        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                        me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                         activationDone = false;
                         break;
                     }
@@ -991,7 +991,7 @@ class mob_empyreal_focus : public CreatureScript
                     damage = 0;
 
                     activationDone = false;
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                    me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                     me->RemoveAurasDueToSpell(SPELL_FOCUS_ACTIVATE_STATE);
                     me->RemoveAurasDueToSpell(SPELL_FOCUS_LIGHT_WALL_VISUAL);
                     me->RemoveAurasDueToSpell(SPELL_FOCUS_LIGHT_CASTBAR);
@@ -1025,7 +1025,7 @@ class mob_empyreal_focus : public CreatureScript
                     case EVENT_APPEAR_WALL_OF_LIGHTNING:
                         me->CastSpell(me, SPELL_FOCUS_LIGHT_AREATRIGGER, true);
                         me->CastSpell(me, SPELL_FOCUS_LIGHT_CASTBAR, true);
-                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                        me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                         break;
                     default:
                         break;
@@ -1305,7 +1305,7 @@ class mob_energy_charge : public CreatureScript
                 {
                     case POINT_EMPYEREAN_FOCUS:
                     {
-                        if (Unit* focus = ObjectAccessor::GetUnit(*me, me->GetGuidValue(UNIT_FIELD_TARGET)))
+                        if (Unit* focus = ObjectAccessor::GetUnit(*me, me->GetTarget()))
                         {
                             Position pos = focus->GetPosition();
 
@@ -1325,7 +1325,7 @@ class mob_energy_charge : public CreatureScript
                 {
                     case ACTION_ENERGIZE_EMPYREAL_FOCUS:
                     {
-                        if (Unit* focus = ObjectAccessor::GetUnit(*me, me->GetGuidValue(UNIT_FIELD_TARGET)))
+                        if (Unit* focus = ObjectAccessor::GetUnit(*me, me->GetTarget()))
                         {
                             if (focus->GetAI())
                                 focus->GetAI()->DoAction(ACTION_ACTIVATE_EMPYREAL_FOCUS);
@@ -1378,7 +1378,7 @@ class mob_infinite_energy : public CreatureScript
             void Reset() override
             {
                 events.Reset();
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_NOT_SELECTABLE);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_NOT_SELECTABLE));
             }
 
             void DoAction(const int32 action) override
@@ -1532,7 +1532,7 @@ class mob_infinite_energy : public CreatureScript
                     {
                         if (pInstance)
                             if (Creature* elegon = pInstance->GetCreature(NPC_ELEGON))
-                                elegon->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_IMMUNE_TO_PC|UNIT_FLAG_UNK_15);
+                                elegon->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_IMMUNE_TO_PC|UNIT_FLAG_UNK_15));
                         break;
                     }
                     case EVENT_BOSS_INTRO_2:

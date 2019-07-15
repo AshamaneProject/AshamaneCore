@@ -284,7 +284,7 @@ public:
         void Reset() override
         {
             me->SetReactState(REACT_PASSIVE);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+            me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
             me->SetVisible(false);
             ascendant[0] = instance->GetCreature(DATA_IGNACIOUS);
             ascendant[1] = instance->GetCreature(DATA_FELUDIUS);
@@ -365,10 +365,10 @@ public:
                             ascendant[3]->SetVisible(true);
                             ascendant[0]->AttackStop();
                             ascendant[1]->AttackStop();
-                            ascendant[0]->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
-                            ascendant[1]->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
-                            ascendant[2]->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
-                            ascendant[3]->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                            ascendant[0]->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
+                            ascendant[1]->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
+                            ascendant[2]->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
+                            ascendant[3]->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                             ascendant[2]->SetPosition(wayPos[0]);
                             ascendant[3]->SetPosition(wayPos[1]);
                             ascendant[3]->Yell(SAY_AGGRO4, LANG_UNIVERSAL);
@@ -434,10 +434,10 @@ public:
                                 ascendant[1]->SetVisible(false);
                                 ascendant[2]->SetVisible(false);
                                 ascendant[3]->SetVisible(false);
-                                ascendant[0]->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
-                                ascendant[1]->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
-                                ascendant[2]->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
-                                ascendant[3]->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                                ascendant[0]->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
+                                ascendant[1]->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
+                                ascendant[2]->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
+                                ascendant[3]->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                                 events.ScheduleEvent(EVENT_SAY, 500);
                                 instance->DoRemoveAurasDueToSpellOnPlayers(SPELL_ELEMENTAL_STASIS);
                                 break;
@@ -454,7 +454,7 @@ public:
                                 break;
                             case 6:
                                 me->SetReactState(REACT_AGGRESSIVE);
-                                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                                me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                                 me->SetVisible(true);
                                 //AI Schedules
                                 events.ScheduleEvent(EVENT_ZAP, 2000);
@@ -702,7 +702,7 @@ public:
                     case EVENT_TELEPORT:
                         if (ascendant[2] != NULL)
                         {
-                            ascendant[2]->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                            ascendant[2]->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                             ascendant[2]->SetVisible(false);
                         }
                         return;
@@ -712,7 +712,7 @@ public:
                         {
                             me->NearTeleportTo(urand(-1019,-975), urand(-624,-535), me->GetPositionZ(), me->GetOrientation());
                             ascendant[2]->SetVisible(true);
-                            ascendant[2]->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                            ascendant[2]->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                             ascendant[2]->CastSpell(prevtarget, SPELL_LIGHTNING_BLAST, false);
                         }
                         return;
@@ -939,10 +939,10 @@ public:
                 events.Reset();
                 //visibility
                 ascendant[2]->SetReactState(REACT_PASSIVE);
-                ascendant[2]->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                ascendant[2]->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                 ascendant[2]->SetVisible(false);
                 ascendant[3]->SetReactState(REACT_PASSIVE);
-                ascendant[3]->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                ascendant[3]->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                 ascendant[3]->SetVisible(false);
                 DoZoneInCombat(me);
                 DoZoneInCombat(ascendant[0]);
@@ -976,8 +976,8 @@ public:
                         ascendant[3]->CombatStart(ascendant[0]->GetVictim());
                         ascendant[3]->AddThreat(ascendant[0]->GetVictim(), 1);
                     }
-                    ascendant[2]->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
-                    ascendant[3]->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                    ascendant[2]->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
+                    ascendant[3]->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                     ascendant[2]->NearTeleportTo(wayPos[0].GetPositionX(), wayPos[0].GetPositionY(), wayPos[0].GetPositionZ(), wayPos[0].GetOrientation());
                     ascendant[3]->NearTeleportTo(wayPos[1].GetPositionX(), wayPos[1].GetPositionY(), wayPos[1].GetPositionZ(), wayPos[1].GetOrientation());
                     ascendant[2]->SetVisible(true);
@@ -1039,10 +1039,10 @@ public:
                     ascendant[1]->SetVisible(true);
                     ascendant[2]->SetVisible(true);
                     ascendant[3]->SetVisible(true);
-                    ascendant[0]->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
-                    ascendant[1]->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
-                    ascendant[2]->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
-                    ascendant[3]->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                    ascendant[0]->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
+                    ascendant[1]->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
+                    ascendant[2]->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
+                    ascendant[3]->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                     ascendant[0]->NearTeleportTo(center[2].GetPositionX(), center[2].GetPositionY(), center[2].GetPositionZ(), center[2].GetOrientation());
                     ascendant[1]->NearTeleportTo(center[1].GetPositionX(), center[1].GetPositionY(), center[1].GetPositionZ(), center[1].GetOrientation());
                     ascendant[2]->NearTeleportTo(center[3].GetPositionX(), center[3].GetPositionY(), center[3].GetPositionZ(), center[3].GetOrientation());
@@ -1084,8 +1084,8 @@ public:
                 ascendant[0]->NearTeleportTo(wayPos[1].GetPositionX(), wayPos[1].GetPositionY(), wayPos[1].GetPositionZ(), wayPos[1].GetOrientation());
                 ascendant[2]->NearTeleportTo(wayPos[0].GetPositionX(), wayPos[0].GetPositionY(), wayPos[0].GetPositionZ(), wayPos[0].GetOrientation());
                 ascendant[3]->NearTeleportTo(wayPos[1].GetPositionX(), wayPos[1].GetPositionY(), wayPos[1].GetPositionZ(), wayPos[1].GetOrientation());
-                ascendant[0]->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
-                ascendant[1]->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                ascendant[0]->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
+                ascendant[1]->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                 ascendant[0]->SetReactState(REACT_AGGRESSIVE);
                 ascendant[1]->SetReactState(REACT_AGGRESSIVE);
                 ascendant[2]->SetReactState(REACT_PASSIVE);
@@ -1319,7 +1319,7 @@ public: npc_council_violent_cyclone() : CreatureScript("npc_council_violent_cycl
             checkMovement = 100;
             chase         =   0;
 
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+            me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
             me->SetReactState(REACT_PASSIVE);
             me->SetVisible(true);
             me->AddAura(32332, me); //cyclone visual effect
@@ -1430,7 +1430,7 @@ public: npc_council_frozen_orb() : CreatureScript("npc_council_frozen_orb") { }
             checkTimer = 100;
             dying = false;
 
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+            me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
             me->SetReactState(REACT_PASSIVE);
             me->SetCanFly(true);
             me->SetDisableGravity(true);
@@ -1501,7 +1501,7 @@ public: npc_council_gravity_well() : CreatureScript("npc_council_gravity_well") 
         {
             checkTimer = 100;
             me->AddAura(83579, me);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+            me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
             me->SetReactState(REACT_PASSIVE);
             //me->AddUnitMovementFlag(MOVEMENTFLAG_FLYING);
             //me->SetCanFly(true);
@@ -1569,8 +1569,8 @@ public: npc_council_water_bomb() : CreatureScript("npc_council_water_bomb") {}
             feludius->CastSpell(me, SPELL_WATER_BOMB_VISUAL, true);
             me->AddAura(76406, me);
             me->SetReactState(REACT_PASSIVE);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+            me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
+            me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
 
         }
 
@@ -1626,8 +1626,8 @@ public: npc_council_lava_seed() : CreatureScript("npc_council_lava_seed") {}
             timer = 5000;
             me->AddAura(SPELL_LAVA_SEED_AURA, me);
             me->SetReactState(REACT_PASSIVE);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+            me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
+            me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
             me->SetUnitMovementFlags(MOVEMENTFLAG_FLYING);
             me->SetSpeed(MOVE_WALK,   3.0f);
             me->SetSpeed(MOVE_RUN,    3.0f);
@@ -1680,8 +1680,8 @@ public: npc_council_inferno_rush() : CreatureScript("npc_council_inferno_rush") 
                 me->DespawnOrUnsummon();
             me->setFaction(igna->getFaction());
             me->SetReactState(REACT_PASSIVE);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+            me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
+            me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
         }
 
         void UpdateAI(uint32 diff) override
@@ -1744,7 +1744,7 @@ public: npc_council_flamestrike() : CreatureScript("npc_council_flamestrike") {}
         me->setFaction(monstrosity->getFaction());
         timer = 5000;
         me->SetReactState(REACT_PASSIVE);
-        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+        me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
         me->AddAura(SPELL_FLAMESTRIKE_VISUAL, me);
     }
 
@@ -1788,8 +1788,8 @@ public: npc_council_liquid_ice() : CreatureScript("npc_council_liquid_ice") {}
             me->setFaction(monstrosity->getFaction());
             me->AddAura(SPELL_LIQUID_ICE, me);
             me->SetReactState(REACT_PASSIVE);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+            me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
+            me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
 
         }
     };

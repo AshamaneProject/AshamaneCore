@@ -160,7 +160,7 @@ public:
         {
             _clicker = nullptr;
 
-            me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+            me->AddNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
             me->SetStandState(UNIT_STAND_STATE_DEAD);
         }
 
@@ -171,7 +171,7 @@ public:
 
             _clicker = Clicker;
             me->CastSpell(me, SPELL_HEAL_VISUAL, true);
-            me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+            me->RemoveNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
             me->SetStandState(UNIT_STAND_STATE_STAND);
 
             me->GetScheduler().Schedule(Milliseconds(1000), [this](TaskContext /*task*/)
@@ -535,7 +535,7 @@ struct npc_hogger : public ScriptedAI
         _alreadyEaten = false;
         _isEating = false;
 
-        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+        me->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
         me->SetReactState(REACT_AGGRESSIVE);
         me->SetWalk(false);
     }
@@ -594,7 +594,7 @@ struct npc_hogger : public ScriptedAI
         _events.Reset();
 
         me->SetReactState(REACT_PASSIVE);
-        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+        me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
         me->StopMoving();
         me->AttackStop();
 

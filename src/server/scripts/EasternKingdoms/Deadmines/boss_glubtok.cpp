@@ -154,9 +154,9 @@ public:
             me->SetDisableGravity(false);
             me->SetCanFly(false);
 
-            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_PC);
-            me->RemoveFlag(OBJECT_DYNAMIC_FLAGS, UNIT_DYNFLAG_DEAD);
-            me->RemoveFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH);
+            me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_PC));
+            me->RemoveDynamicFlag(UNIT_DYNFLAG_DEAD);
+            me->RemoveUnitFlag2(UNIT_FLAG2_FEIGN_DEATH);
             me->ClearUnitState(UNIT_STATE_CANNOT_TURN);
 
             platter->AI()->DoAction(ACTION_STOP_FIREWALL);
@@ -298,7 +298,7 @@ public:
 
             if (id == POINT_FALL_GROUND)
             {
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                 DoCast(SPELL_FEIGN_DEATH);
 
                 me->GetScheduler().Schedule(Seconds(1), [this](TaskContext /*context*/)

@@ -200,8 +200,8 @@ class boss_theralion : public CreatureScript
                     DoZoneInCombat(summon);
                     summon->setFaction(me->getFaction());
                     summon->SetReactState(REACT_PASSIVE);
-                    summon->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-                    summon->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                    summon->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
+                    summon->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                     summon->AttackStop();
                     summon->StopMoving();
                 }
@@ -716,8 +716,8 @@ class boss_valiona : public CreatureScript
                     summon->CastSpell(summon, SPELL_DAZZLING_DESTRUCTION_VISUAL, true);
                     DoZoneInCombat(summon);
                     summon->SetReactState(REACT_PASSIVE);
-                    summon->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-                    summon->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                    summon->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
+                    summon->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                     summon->AttackStop();
                     summon->StopMoving();
                 }
@@ -727,8 +727,8 @@ class boss_valiona : public CreatureScript
                     summon->AddAura(SPELL_TWILIGHT_FLAME, summon);
                     summon->setFaction(me->getFaction());
                     summon->SetReactState(REACT_PASSIVE);
-                    summon->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-                    summon->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                    summon->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
+                    summon->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                     summon->AttackStop();
                     summon->StopMoving();
                 }
@@ -770,7 +770,7 @@ class boss_valiona : public CreatureScript
                                 {
                                     spTarget->setFaction(target->getFaction());
                                     spTarget->SetReactState(REACT_AGGRESSIVE);
-                                    spTarget->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+                                    spTarget->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
                                     me->AddThreat(spTarget, 100000000.0f, SPELL_SCHOOL_MASK_NORMAL);
                                     spTarget->AddThreat(me, 100000000.0f, SPELL_SCHOOL_MASK_NORMAL);
                                     me->Attack(spTarget, true);

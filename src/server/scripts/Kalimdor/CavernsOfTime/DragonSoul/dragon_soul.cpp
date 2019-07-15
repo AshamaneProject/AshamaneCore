@@ -1274,7 +1274,7 @@ class npc_dragon_soul_thrall : public CreatureScript
                             PhasingHandler::RemovePhase(pUltraxion, 169);
                             PhasingHandler::AddPhase(pUltraxion, 173);
                         }
-                        pCreature->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                        pCreature->RemoveNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                     }
                     else if (Creature* pUltraxion = pCreature->FindNearestCreature(NPC_ULTRAXION, 500.0f, true))
                         pUltraxion->AI()->DoAction(2); //Start Event
@@ -1327,7 +1327,7 @@ class npc_dragon_soul_thrall : public CreatureScript
                             if (InstanceScript* pInstance = me->GetInstanceScript())
                             {
                                 if (GameObject* pShip = pInstance->GetGameObject(DATA_ALLIANCE_SHIP))
-                                    pShip->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_DESTROYED);
+                                    pShip->RemoveFlag(GO_FLAG_DESTROYED);
                             }
                             events.ScheduleEvent(EVENT_SPAWN_NPC, 8000);
                             break;
@@ -1537,9 +1537,9 @@ public:
         void Reset() override
         {
             me->SetReactState(REACT_PASSIVE);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+            me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
             me->SetCanFly(true);
-            me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, 0x02);
+            me->SetAnimTier(UNIT_BYTE1_FLAG_HOVER, true);
             me->AddUnitMovementFlag(MOVEMENTFLAG_CAN_FLY | MOVEMENTFLAG_FLYING);
             me->AddAura(SPELL_DEFEND_WYRMREST, me);
             me->SetSpeed(MOVE_FLIGHT, 1.0f);
@@ -1657,9 +1657,9 @@ public:
         void Reset() override
         {
             me->SetReactState(REACT_PASSIVE);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+            me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
             me->SetCanFly(true);
-            me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, 0x02);
+            me->SetAnimTier(UNIT_BYTE1_FLAG_HOVER, true);
             me->AddUnitMovementFlag(MOVEMENTFLAG_CAN_FLY | MOVEMENTFLAG_FLYING);
             me->AddAura(SPELL_ATTACK_WYRMREST, me);
             me->SetSpeed(MOVE_FLIGHT, 1.0f);
@@ -1789,9 +1789,9 @@ public:
         void Reset() override
         {
             me->SetReactState(REACT_PASSIVE);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+            me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
             me->SetCanFly(true);
-            me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, 0x02);
+            me->SetAnimTier(UNIT_BYTE1_FLAG_HOVER, true);
             me->AddUnitMovementFlag(MOVEMENTFLAG_CAN_FLY | MOVEMENTFLAG_FLYING);
             me->SetSpeed(MOVE_FLIGHT, 5.0f);
             pointFly = 0;

@@ -164,7 +164,7 @@ class instance_highmaul : public InstanceMapScript
                         break;
                     case eHighmaulCreatures::IronBomberSpawner:
                         creature->SetReactState(ReactStates::REACT_PASSIVE);
-                        creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+                        creature->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
                         break;
                     case eHighmaulCreatures::IronBomber:
                         if (!m_IronBombersCount)
@@ -209,8 +209,8 @@ class instance_highmaul : public InstanceMapScript
                     case eHighmaulCreatures::GorianCivilian:
                     case eHighmaulCreatures::RuneOfNullification:
                         creature->SetReactState(ReactStates::REACT_PASSIVE);
-                        creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
-                        creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                        creature->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC));
+                        creature->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                         break;
                     case eHighmaulCreatures::ImperatorMargok:
                         m_ImperatorMargokGuid = creature->GetGUID();

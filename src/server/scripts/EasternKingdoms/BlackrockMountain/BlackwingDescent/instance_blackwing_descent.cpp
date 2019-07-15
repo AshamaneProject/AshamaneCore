@@ -148,7 +148,7 @@ public:
                 {
                     if(uidrakonidCount < 2)
                     {
-                        magmaw->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+                        magmaw->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
                         magmaw->SetReactState(REACT_PASSIVE);
                         if(creature->isDead())
                             SetData(DATA_DRAKONID, 1);
@@ -266,7 +266,7 @@ public:
                     {
                         if(Creature * magmaw = instance->GetCreature(uiMagmaw))
                         {
-                            magmaw->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+                            magmaw->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
                             magmaw->SetReactState(REACT_AGGRESSIVE);
                         }
                     }

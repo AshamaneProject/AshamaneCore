@@ -144,7 +144,7 @@ public:
             bAchieve = false;
 
             me->SetReactState(REACT_PASSIVE);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+            me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
             DoCast(me, SPELL_CAMOUFLAGE, true);
         }
 
@@ -167,7 +167,7 @@ public:
             if (instance->GetData(DATA_EVENT_ILLIDAN_1) == IN_PROGRESS)
             {
                 me->SetReactState(REACT_AGGRESSIVE);
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+                me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
                 me->RemoveAura(SPELL_CAMOUFLAGE);
             }
         }
@@ -177,13 +177,13 @@ public:
             if (action == ACTION_START)
             {
                 me->SetReactState(REACT_AGGRESSIVE);
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+                me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
                 DoCast(me, SPELL_CAMOUFLAGE_REMOVE, true);
             } else if (action == ACTION_EASY_PREY)
             {
                 summons.DespawnEntry(NPC_EYE_OF_PEROTHARN_1);
                 summons.DespawnEntry(NPC_HUNTING_SUMMON_CIRCLE);
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+                me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
                 Talk(SAY_FOUND);
                 me->RemoveAura(SPELL_HUNTING_CHANNEL);
                 events.ScheduleEvent(EVENT_EASY_PREY, 2000);
@@ -269,7 +269,7 @@ public:
                 events.CancelEvent(EVENT_CORRUPTING_TOUCH);
                 me->AttackStop();
                 me->RemoveAllAuras();
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
                 Talk(SAY_SPELL_1);
                 DoCastAOE(SPELL_DRAIN_ESSENCE);
                 events.ScheduleEvent(EVENT_ILLIDAN_BREAK, 4000);
@@ -336,7 +336,7 @@ public:
                     events.CancelEvent(EVENT_END_HUNT);
                     me->SetReactState(REACT_AGGRESSIVE);
                     DoCast(me, SPELL_CAMOUFLAGE_REMOVE, true);
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+                    me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
                     if (!targetGUID.IsEmpty())
                     {
                         if (Player* pPlayer = ObjectAccessor::GetPlayer(*me, targetGUID))
@@ -356,7 +356,7 @@ public:
                     summons.DespawnEntry(NPC_HUNTING_SUMMON_CIRCLE);
                     me->SetReactState(REACT_AGGRESSIVE);
                     DoCast(me, SPELL_CAMOUFLAGE_REMOVE, true);
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+                    me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
                     Talk(SAY_ACHIEVE);
                     bAchieve = true;
                     DoCast(me, SPELL_ENFEEBLED, true);

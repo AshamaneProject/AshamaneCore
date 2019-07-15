@@ -728,7 +728,7 @@ class npc_brann_bronzebeard_hoo : public CreatureScript
             if(!EventInProgress && uiType == DATA_BRANN_EVENT)
             {
                 me->AddUnitMovementFlag(MOVEMENTFLAG_WALKING);
-                me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                me->RemoveNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                 EventInProgress = true;
                 Talk(SAY_BRANN_INTRO_1);
                 events.ScheduleEvent(EVENT_OPEN_DOOR, 3000);

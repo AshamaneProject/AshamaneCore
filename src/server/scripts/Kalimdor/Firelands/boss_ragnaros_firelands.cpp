@@ -427,8 +427,8 @@ class boss_ragnaros_firelands: public CreatureScript
                 {
                     _Reset();
 
-                    if (!me->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL))
-                        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+                    if (!me->HasUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL))
+                        me->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
 
                     if (!introDone)
                         me->AddAura(SPELL_SUBMERGE_SELF, me);
@@ -467,8 +467,8 @@ class boss_ragnaros_firelands: public CreatureScript
                     me->GetMotionMaster()->MoveTargetedHome();
                     me->SetHealth(me->GetMaxHealth());
                     me->AddAura(SPELL_BASE_VISUAL, me);
-                    if (me->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE))
-                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                    if (me->HasUnitFlag(UNIT_FLAG_NON_ATTACKABLE))
+                        me->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
 
                     if (instance)
                     {
@@ -486,7 +486,7 @@ class boss_ragnaros_firelands: public CreatureScript
                         Talk(SAY_AGGRO);
                         introDone = true;
                         me->AddAura(SPELL_BASE_VISUAL, me);
-                        me->SetByteFlag(UNIT_FIELD_BYTES_1, UNIT_BYTES_1_OFFSET_ANIM_TIER, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+                        me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
                         me->RemoveAura(SPELL_SUBMERGE_SELF);
                     }
                 }
@@ -538,8 +538,8 @@ class boss_ragnaros_firelands: public CreatureScript
                     {
                         case ACTION_START_DANCE:
                         {
-                            me->SetFlag(UNIT_FIELD_FLAGS_2, 0x20);
-                            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+                            me->AddUnitFlag2(UNIT_FLAG2_INSTANTLY_APPEAR_MODEL);
+                            me->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
                             me->SetDisableGravity(true);
                             Movement::MoveSplineInit init(me);
                             init.SetOrientationFixed(true);
@@ -560,7 +560,7 @@ class boss_ragnaros_firelands: public CreatureScript
                     switch (summon->GetEntry())
                     {
                         case NPC_ENGULFING_FLAMES:
-                            summon->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                            summon->AddUnitFlag(UnitFlags(UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                             summon->CastSpell(summon, SPELL_VISUAL_ENGULFING, false);
                             break;
 
@@ -570,22 +570,22 @@ class boss_ragnaros_firelands: public CreatureScript
 
                         case NPC_PLATFORM_STALKER:
                             summon->SetInCombatWithZone();
-                            summon->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                            summon->AddUnitFlag(UnitFlags(UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                             if (Creature* ragnaros = me->FindNearestCreature(NPC_RAGNAROS, 40.0f, true))
                                 ragnaros->CastSpell(summon, SPELL_DREADFLAME, true);
                             summon->SetReactState(REACT_PASSIVE);
                             break;
 
                         case NPC_DREADFLAME_SPAWN:
-                            summon->SetFlag(UNIT_FIELD_FLAGS,
-                                    UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                            summon->AddUnitFlag(
+                                UnitFlags(UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                             summon->CastSpell(summon, SPELL_DREADFLAME_SUMMON, false);
                             summon->SetReactState(REACT_PASSIVE);
                             break;
 
                         case NPC_DREADFLAME:
-                            summon->SetFlag(UNIT_FIELD_FLAGS,
-                                    UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                            summon->AddUnitFlag(
+                                UnitFlags(UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                             summon->CastSpell(summon, SPELL_DREADFLAME_VISUAL, false);
                             summon->CastSpell(summon, SPELL_DREADFLAME_DAMAGE, false);
                             summon->SetReactState(REACT_PASSIVE);
@@ -594,7 +594,7 @@ class boss_ragnaros_firelands: public CreatureScript
                         case NPC_CENARIUS:
                         case NPC_MALFURION:
                         case NPC_HAMUUL:
-                            summon->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NON_ATTACKABLE);
+                            summon->AddUnitFlag(UnitFlags(UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NON_ATTACKABLE));
                             break;
 
                         default:
@@ -620,7 +620,7 @@ class boss_ragnaros_firelands: public CreatureScript
                 void PrepareTransition()
                 {
                     me->RemoveAurasDueToSpell(SPELL_BASE_VISUAL);
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                    me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                     me->GetMotionMaster()->Clear();
                     me->AttackStop();
                     me->SetReactState(REACT_PASSIVE);
@@ -673,7 +673,7 @@ class boss_ragnaros_firelands: public CreatureScript
                         me->AttackStop();
                         me->CastStop();
                         me->SetReactState(REACT_PASSIVE);
-                        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                        me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                         me->RemoveAllAuras();
                         if (instance->GetData(DATA_TEAM) == ALLIANCE)
                         {
@@ -833,7 +833,7 @@ class boss_ragnaros_firelands: public CreatureScript
 
                             case EVENT_INTERMISSION_1:
                                 me->RemoveAurasDueToSpell(SPELL_BASE_VISUAL);
-                                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                                me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                                 me->GetMotionMaster()->Clear();
                                 me->AttackStop();
                                 me->SetReactState(REACT_PASSIVE);
@@ -865,7 +865,7 @@ class boss_ragnaros_firelands: public CreatureScript
                                 me->RemoveAurasDueToSpell(SPELL_DISABLE_ANIM);
                                 me->RemoveAurasDueToSpell(SPELL_SUBMERGE);
                                 me->AddAura(SPELL_BASE_VISUAL, me);
-                                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                                me->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                                 Talk(SAY_NEW_PHASE);
                                 if (Unit* target = SelectTarget(SELECT_TARGET_NEAREST, 0, 80.0f, true))
                                     me->AI()->AttackStart(target);
@@ -995,7 +995,7 @@ class boss_ragnaros_firelands: public CreatureScript
                                 me->RemoveAurasDueToSpell(SPELL_DISABLE_ANIM);
                                 me->RemoveAurasDueToSpell(SPELL_SUBMERGE);
                                 me->AddAura(SPELL_BASE_VISUAL, me);
-                                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                                me->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                                 Talk(SAY_NEW_PHASE);
                                 if (Unit* target = SelectTarget(SELECT_TARGET_NEAREST, 0, 80.0f, true))
                                     me->AI()->AttackStart(target);
@@ -1032,7 +1032,7 @@ class boss_ragnaros_firelands: public CreatureScript
                                 Talk(SAY_PHASE_HEROIC_TEXT);
                                 me->RemoveAurasDueToSpell(SPELL_BASE_VISUAL);
                                 me->SetHealth(me->GetMaxHealth() / 2);
-                                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+                                me->RemoveUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
                                 me->SetObjectScale(1.2f);
                                 events.ScheduleEvent(EVENT_SUPERHEATED, 10000);
                                 events.ScheduleEvent(EVENT_EMPOWER, 12000);
@@ -1096,7 +1096,7 @@ class npc_sulfuras_smash_trigger: public CreatureScript // 53266
                 npc_sulfuras_smash_triggerAI(Creature* creature) : ScriptedAI(creature)
                 {
                     instance = creature->GetInstanceScript();
-                    creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                    creature->AddUnitFlag(UnitFlags(UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                     creature->AddAura(SPELL_SULFURAS_SMASH_VISUAL, creature);
                     creature->SetReactState(REACT_PASSIVE);
                     Movement::MoveSplineInit init(creature);
@@ -1158,7 +1158,7 @@ class npc_sulfuras_lava_wave: public CreatureScript // 53363
             {
                 me->SetReactState(REACT_PASSIVE);
                 me->AddAura(SPELL_LAVA_WAVE, me);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
 
                 Position pos = me->GetPosition();
                 GetPositionWithDistInOrientation(me, 200.0f, me->GetOrientation(), pos);
@@ -1196,7 +1196,7 @@ class npc_magma_trap: public CreatureScript
                         ScriptedAI(creature)
                 {
                     instance = creature->GetInstanceScript();
-                    creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                    creature->AddUnitFlag(UnitFlags(UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                     creature->AddAura(SPELL_MAGMA_TRAP_VISUAL, creature);
                     creature->SetReactState(REACT_PASSIVE);
                     Movement::MoveSplineInit init(creature);
@@ -1256,7 +1256,7 @@ class npc_splitting_blow: public CreatureScript
             npc_splitting_blowAI(Creature* creature) : ScriptedAI(creature)
             {
                 instance = creature->GetInstanceScript();
-                creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                creature->AddUnitFlag(UnitFlags(UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                 creature->SetReactState(REACT_PASSIVE);
                 Movement::MoveSplineInit init(creature);
                 init.SetOrientationFixed(true);
@@ -1296,7 +1296,7 @@ class npc_sulfuras: public CreatureScript
             npc_sulfurasAI(Creature* creature) : ScriptedAI(creature)
             {
                 instance = creature->GetInstanceScript();
-                creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                creature->AddUnitFlag(UnitFlags(UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                 creature->AddAura(SPELL_SULFURAS_AURA, creature);
                 Talk(SAY_SONS);
                 creature->SetReactState(REACT_PASSIVE);
@@ -1340,7 +1340,7 @@ class npc_son_of_flame_firelands: public CreatureScript
             npc_son_of_flame_firelandsAI(Creature* creature) : ScriptedAI(creature)
             {
                 instance = creature->GetInstanceScript();
-                creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                creature->AddUnitFlag(UnitFlags(UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                 creature->SetSpeed(MOVE_RUN, 0.1f);
                 creature->SetSpeed(MOVE_WALK, 0.1f);
                 creature->SetWalk(true);
@@ -1380,7 +1380,7 @@ class npc_son_of_flame_firelands: public CreatureScript
                     if (m_uiEmergeTimer <= diff)
                     {
                         me->RemoveAurasDueToSpell(SPELL_VISUAL_PRESPAWN);
-                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                        me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                         me->AddAura(SPELL_BURNING_SPEED, me);
                         me->SetAuraStack(SPELL_BURNING_SPEED, me, 10);
                         me->AddAura(SPELL_HIT_ME, me);
@@ -1425,7 +1425,7 @@ class npc_molten_seed: public CreatureScript
             npc_molten_seedAI(Creature* creature) : ScriptedAI(creature)
             {
                 instance = creature->GetInstanceScript();
-                creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                creature->AddUnitFlag(UnitFlags(UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                 creature->SetReactState(REACT_PASSIVE);
                 Movement::MoveSplineInit init(creature);
                 init.SetOrientationFixed(true);
@@ -1580,7 +1580,7 @@ class npc_engulfing_flames: public CreatureScript
             npc_engulfing_flamesAI(Creature* creature) : ScriptedAI(creature)
             {
                 instance = creature->GetInstanceScript();
-                creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                creature->AddUnitFlag(UnitFlags(UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                 //creature->CastSpell(creature, SPELL_ENGULFING_FLAMES_DAMAGE, false); // <= Will be set by Ragnaros from 99172
                 creature->SetReactState(REACT_PASSIVE);
                 Movement::MoveSplineInit init(creature);
@@ -1621,8 +1621,7 @@ class npc_dreadflame: public CreatureScript
             npc_dreadflameAI(Creature* creature) : ScriptedAI(creature)
             {
                 instance = creature->GetInstanceScript();
-                creature->SetFlag(UNIT_FIELD_FLAGS,
-                        UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+                creature->AddUnitFlag(UnitFlags(UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
                 creature->SetReactState(REACT_PASSIVE);
                 creature->DespawnOrUnsummon(60000);
                 m_uiDreadTimer = 3000;
@@ -1831,8 +1830,8 @@ class npc_entrapping_roots: public CreatureScript
 
             void Reset() override
             {
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
+                me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                 me->DespawnOrUnsummon(60000);
                 searchragnaros = 1000;
                 DoStartNoMovement(me);
@@ -1872,8 +1871,7 @@ class npc_cloudburst: public CreatureScript
             npc_cloudburstAI(Creature* creature) : ScriptedAI(creature)
             {
                 instance = creature->GetInstanceScript();
-                creature->SetFlag(UNIT_FIELD_FLAGS,
-                    UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                creature->AddUnitFlag(UnitFlags(UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                 creature->SetReactState(REACT_PASSIVE);
                 creature->DespawnOrUnsummon(60000);
                 _cloudburstCounter = 0;
@@ -1915,8 +1913,7 @@ class npc_breathoffrost: public CreatureScript
             npc_breathoffrostAI(Creature* creature) : ScriptedAI(creature)
             {
                 instance = creature->GetInstanceScript();
-                creature->SetFlag(UNIT_FIELD_FLAGS,
-                        UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                creature->AddUnitFlag(UnitFlags(UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                 creature->SetReactState(REACT_PASSIVE);
                 creature->DespawnOrUnsummon(20000);
             }
@@ -1962,7 +1959,7 @@ class npc_malfurion: public CreatureScript
 
             void Reset() override
             {
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                 DoStartNoMovement(me);
                 me->SetInCombatWithZone();
                 me->SetReactState(REACT_PASSIVE);
@@ -2013,7 +2010,7 @@ class npc_cenarius: public CreatureScript
 
             void Reset() override
             {
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                 DoStartNoMovement(me);
                 me->SetInCombatWithZone();
                 me->SetReactState(REACT_PASSIVE);
@@ -2066,7 +2063,7 @@ class npc_heartofragnaros: public CreatureScript
 
             void Reset() override
             {
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                 me->DespawnOrUnsummon(150000);
                 DoStartNoMovement(me);
                 me->SetReactState(REACT_PASSIVE);
@@ -2122,7 +2119,7 @@ class npc_hamuul: public CreatureScript
 
             void Reset() override
             {
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                 DoStartNoMovement(me);
                 me->SetInCombatWithZone();
                 me->SetReactState(REACT_PASSIVE);
@@ -2168,7 +2165,7 @@ class npc_blazing_heat: public CreatureScript
             {
                 me->SetReactState(REACT_PASSIVE);
                 me->AddAura(SPELL_BLAZING_HEAT_VISUAL, me);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
             }
 
             void EnterCombat(Unit* /*pWho*/)  override {}

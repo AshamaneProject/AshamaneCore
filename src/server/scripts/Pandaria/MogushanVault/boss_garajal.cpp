@@ -414,7 +414,7 @@ class mob_garajal_ghost : public CreatureScript
             void Reset() override
             {
                 me->SetReactState(REACT_PASSIVE);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                 me->AddAura(SPELL_GHOST_VISUAL, me);
                 me->AddAura(SPELL_STRONG_MOJO, me);
                 me->AddAura(SPELL_SPIRIT_HOVER, me);
@@ -433,7 +433,7 @@ class mob_garajal_ghost : public CreatureScript
                 {
                     summon->CastSpell(summon, SPELL_VISUAL_PORTAL, true);
                     summon->SetReactState(REACT_PASSIVE);
-                    summon->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                    summon->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                 }
             }
 
@@ -584,7 +584,7 @@ class mob_shadowy_minion : public CreatureScript
                             spirit->GetPhaseShift().AddPhase(170, PhaseFlags::None, nullptr);
                         }
                     }
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_NOT_SELECTABLE);
+                    me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_NOT_SELECTABLE));
                     events.ScheduleEvent(EVENT_SPIRITUAL_GRASP, urand(2000, 5000));
                 }
                 else

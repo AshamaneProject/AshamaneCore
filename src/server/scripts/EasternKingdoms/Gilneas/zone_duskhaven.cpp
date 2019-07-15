@@ -224,7 +224,7 @@ public:
         if (quest->GetQuestId() == QUEST_LAST_CHANCE_AT_HUMANITY)
         {
             player->CastSpell(player, SPELL_PHASE_QUEST_ZONE_SPECIFIC_06, true);
-            player->SetUInt32Value(UNIT_FIELD_FLAGS_2, 2048);
+            player->SetUnitFlags2(UNIT_FLAG2_REGENERATE_POWER);
             player->RemoveAura(42716);
             player->RemoveAura(50220);
             player->RemoveAura(58284);
@@ -275,7 +275,7 @@ public:
                             {
                                 player->CastSpell(player, SPELL_IN_STOCKS, true);
                                 player->CastSpell(player, SPELL_SELF_ROOT, true);
-                                player->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN);
+                                player->AddUnitFlag2(UNIT_FLAG2_DISABLE_TURN);
                                 m_videoStarted = true;
 
                                 m_events.ScheduleEvent(EVENT_TALK_PART_00, 4000);
@@ -292,7 +292,7 @@ public:
                         if (Player* player = ObjectAccessor::GetPlayer(*me, m_playerGUID))
                             Talk(0, player);
                         if (Creature* king = ObjectAccessor::GetCreature(*me, m_kingGUID))
-                            king->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
+                            king->RemoveNpcFlag(UNIT_NPC_FLAG_QUESTGIVER);
 
                         m_events.ScheduleEvent(EVENT_TALK_PART_01, 14000);
                         break;
@@ -338,7 +338,7 @@ public:
                             AddPlayer();
                         }
                         if (Creature* king = ObjectAccessor::GetCreature(*me, m_kingGUID))
-                            king->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
+                            king->AddNpcFlag(UNIT_NPC_FLAG_QUESTGIVER);
 
                         m_videoStarted = false;
                         m_playerGUID = ObjectGuid::Empty;
@@ -580,7 +580,7 @@ public:
 
         void Reset() override
         {
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_NOT_SELECTABLE);
+            me->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_NOT_SELECTABLE));
             me->SetReactState(REACT_PASSIVE);
             me->setFaction(1735);
         }
@@ -598,11 +598,11 @@ public:
                 else if (Creature* npc = passenger->ToCreature())
                 {
                     m_forsakenGUID = npc->GetGUID();
-                    npc->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_NOT_SELECTABLE);
+                    npc->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_NOT_SELECTABLE));
                     m_events.ScheduleEvent(EVENT_CAST_BOULDER, urand(100, 5000));
                     m_events.ScheduleEvent(EVENT_CHECK_PLAYER, 1000);
                     me->setFaction(1735);
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                    me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                 }
             }
             else
@@ -615,14 +615,14 @@ public:
                 else if (Creature* npc = passenger->ToCreature())
                 {
                     m_forsakenGUID = ObjectGuid::Empty;
-                    npc->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_NOT_SELECTABLE);
+                    npc->RemoveUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_NOT_SELECTABLE));
                     m_events.CancelEvent(EVENT_CAST_BOULDER);
                     m_events.CancelEvent(EVENT_CHECK_PLAYER);
                     m_events.ScheduleEvent(EVENT_MASTER_RESET, 180000);
                     me->setFaction(35);
                     me->RemoveAllAuras();
                     me->HandleEmoteCommand(EMOTE_ONESHOT_NONE);
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                    me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                 }
             }
         }

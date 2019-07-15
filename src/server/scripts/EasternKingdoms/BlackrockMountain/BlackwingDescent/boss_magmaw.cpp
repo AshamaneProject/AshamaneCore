@@ -114,7 +114,7 @@ class boss_magmaw : public CreatureScript
         boss_magmawAI(Creature * c) : BossAI(c, DATA_MAGMAW)
         {
             me->AddUnitMovementFlag(MOVEMENTFLAG_DISABLE_GRAVITY);
-            me->SetFloatValue(UNIT_FIELD_HOVERHEIGHT, 213.0f);
+            me->SetHoverHeight(213.f);
             me->ApplySpellImmune(0, IMMUNITY_ID, 80035, true); // immune to vengeful rage
         }
 
@@ -122,7 +122,7 @@ class boss_magmaw : public CreatureScript
         {
             below30 = false;
             enrageTimer = 600000;
-            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+            me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
             me->SetReactState(REACT_AGGRESSIVE);
             SetPincers(false);
             veh = me->GetVehicleKit();
@@ -147,8 +147,8 @@ class boss_magmaw : public CreatureScript
 
         void JustDied(Unit* /*killer*/) override
         {
-            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-            me->SetFlag(OBJECT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE);
+            me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
+            me->AddDynamicFlag(UNIT_DYNFLAG_LOOTABLE);
             _JustDied();
         }
 
@@ -170,7 +170,7 @@ class boss_magmaw : public CreatureScript
                 events.SetPhase(PHASE_HEAD);
                 Movement::MoveSplineInit init(me);
                 init.SetFacing(me->GetHomePosition().GetOrientation());
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
 
                 if(Unit * passenger = veh->GetPassenger(2)) // Eject the tank
                 {
@@ -180,7 +180,7 @@ class boss_magmaw : public CreatureScript
                 }
                 if(Unit * head = veh->GetPassenger(4)) // Make the head Visible
                 {
-                    head->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                    head->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                     head->RemoveAurasDueToSpell(SPELL_QUEST_INVIS_5);
                     if(!head->IsInCombat())
                         if(Unit * victim = me->GetVictim())
@@ -207,8 +207,8 @@ class boss_magmaw : public CreatureScript
                 return;
             case NPC_MAGMAWS_HEAD2:
                 me->CastSpell(summon, SPELL_POINT_OF_VULNERABILITY, true);
-                summon->SetFloatValue(UNIT_FIELD_BOUNDINGRADIUS, 50.0f);
-                summon->SetFloatValue(UNIT_FIELD_COMBATREACH, 50.0f);
+                summon->SetBoundingRadius(50.0f);
+                summon->SetCombatReach(50.0f);
                 break;
             case NPC_MAGMAWS_HEAD:
             case NPC_MAGMAWS_PINCER:
@@ -271,16 +271,16 @@ class boss_magmaw : public CreatureScript
                     if(pincer && on)
                     {
                         pincer->SetDisplayId(34532);
-                        pincer->SetFloatValue(UNIT_FIELD_BOUNDINGRADIUS, 50.0f);
-                        pincer->SetFloatValue(UNIT_FIELD_COMBATREACH, 50.0f);
-                        pincer->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+                        pincer->SetBoundingRadius(50.0f);
+                        pincer->SetCombatReach(50.0f);
+                        pincer->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
                     }
                     else if(pincer)
                     {
                         if (Vehicle* pincerVehicle = pincer->GetVehicleKit())
                             if (Unit* passenger = pincerVehicle->GetPassenger(0))
                                 passenger->ExitVehicle(&ejectPos);
-                        pincer->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+                        pincer->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
                     }
                 }
             }
@@ -356,14 +356,14 @@ class boss_magmaw : public CreatureScript
                     case EVENT_MASSIVE_CRASH:
                         Talk(EMOTE_CRASH);
                         DoCast(SPELL_MASSIVE_CRASH);
-                        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                        me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                         SetPincers(true);
                         events.ScheduleEvent(EVENT_MASSIVE_CRASH_END, 10000);
                         break;
                     case EVENT_IMPALE_END:
                         if(Unit * head = veh->GetPassenger(4)) // make the head unattackable
                         {
-                            head->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                            head->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                             head->CastSpell(head, SPELL_QUEST_INVIS_5, true);
                         }
                         me->RemoveAurasDueToSpell(SPELL_CHAIN_R);
@@ -374,7 +374,7 @@ class boss_magmaw : public CreatureScript
                         events.RescheduleEvent(EVENT_PILLAR_OF_FLAME, urand(8000, 12000));
                         events.RescheduleEvent(EVENT_MANGLE, urand(25000, 30000));
                     case EVENT_MASSIVE_CRASH_END:
-                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                        me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                         me->SetReactState(REACT_AGGRESSIVE);
                         events.SetPhase(PHASE_NORMAL);
                         if(Unit * victim = me->GetVictim()) // resume combat
@@ -556,7 +556,7 @@ class npc_drakonid_drudge : public CreatureScript
         void Reset() override
         {
             DoCast(SPELL_CHAIN_VISUAL);
-            me->SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_CHANNEL);
+            me->SetEmoteState(EMOTE_STATE_SPELL_CHANNEL_OMNI);
             chargeTimer = 20000;
             thunderclapTimer = 10000;
             whirlwindTimer = 30000;
@@ -577,7 +577,7 @@ class npc_drakonid_drudge : public CreatureScript
 
         void EnterCombat(Unit* who) override
         {
-            me->SetUInt32Value(UNIT_NPC_EMOTESTATE, 0);
+            me->SetEmoteState(EMOTE_ONESHOT_NONE);
             if(Unit * magmaw = me->FindNearestCreature(BOSS_MAGMAW, 100.0f))
                 magmaw->RemoveAurasDueToSpell(SPELL_CHAIN_VISUAL);
             DoStartMovement(who);
@@ -645,8 +645,8 @@ public:
         if (Unit* unit = veh->GetBase())
         {
             unit->SetDisplayId(11686);
-            unit->SetFloatValue(UNIT_FIELD_BOUNDINGRADIUS, 0.5f);
-            unit->SetFloatValue(UNIT_FIELD_COMBATREACH, 0.5f);
+            unit->SetBoundingRadius(0.5f);
+            unit->SetCombatReach(0.5f);
         }
     }
 };

@@ -191,7 +191,7 @@ class boss_setesh : public CreatureScript
                     {
                         if (!chaosPortal->IsAlive())
                             chaosPortal->Respawn();
-                        chaosPortal->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+                        chaosPortal->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
                         chaosPortal->AI()->SetData(DATA_CHAOS_PORTAL, 1);
                         DoCast(chaosPortal, SPELL_CHAOS_PORTAL_CHANNEL, false);
                     }
@@ -275,9 +275,9 @@ class npc_chaos_portal : public CreatureScript
         void Reset() override
         {
             done = false;
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+            me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
             events.Reset();
-            me->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
+            me->SetObjectScale(1.0f);
             me->SetReactState(REACT_PASSIVE);
         }
 
@@ -327,8 +327,8 @@ class npc_chaos_portal : public CreatureScript
                 {
                 case EVENT_ENABLE_VISUAL:
                     DoCast(SPELL_PORTAL_VISUAL);
-                    me->SetFloatValue(OBJECT_FIELD_SCALE_X, 3.0f);
-                    //me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+                    me->SetObjectScale(3.0f);
+                    //me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
                     break;
                 case EVENT_SUMMON_WURMS:
                     for (uint8 i = 0; i < 2; ++i)

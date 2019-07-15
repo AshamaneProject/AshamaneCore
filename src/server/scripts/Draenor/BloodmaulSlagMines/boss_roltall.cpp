@@ -126,7 +126,7 @@ namespace Instances { namespace Bloodmaul
                     m_BurningSlagCount  = eDatas::MaxBurningSlag;
 
                     me->AddUnitState(UnitState::UNIT_STATE_ROOT);
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+                    me->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
                     //me->RemoveAllAreaTriggers();
                 }
 
@@ -231,11 +231,11 @@ namespace Instances { namespace Bloodmaul
                             {
                                 lavaHeatTrigger->CastSpell(lavaHeatTrigger, eSpells::SpellHeatWaveAreaTrigger, true);
                                 lavaHeatTrigger->CastSpell(lavaHeatTrigger, eSpells::SpellHeatWaveVisual, true);  ///< Heat wind visual
-                                lavaHeatTrigger->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN);
+                                lavaHeatTrigger->AddUnitFlag2(UNIT_FLAG2_DISABLE_TURN);
                             }
 
                             me->SetFacingTo(me->GetHomePosition().GetOrientation());
-                            me->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN);
+                            me->AddUnitFlag2(UNIT_FLAG2_DISABLE_TURN);
                             m_Events.ScheduleEvent(eEvents::EventHeatWaveEnd, 8 * TimeConstants::IN_MILLISECONDS);
                             break;
                         }
@@ -275,7 +275,7 @@ namespace Instances { namespace Bloodmaul
                             m_Events.ScheduleEvent(eEvents::EventHeatWave, 40 * TimeConstants::IN_MILLISECONDS);
                             break;
                         case eEvents::EventHeatWaveEnd:
-                            me->RemoveFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN);
+                            me->RemoveUnitFlag2(UNIT_FLAG2_DISABLE_TURN);
                             break;
                         case eEvents::EventFieryBoulder:
                         {
@@ -372,7 +372,7 @@ namespace Instances { namespace Bloodmaul
                 void Reset() override
                 {
                     me->SetReactState(ReactStates::REACT_PASSIVE);
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+                    me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
 
                     m_Events.ScheduleEvent(eEvents::EventMovePoint, 2 * TimeConstants::IN_MILLISECONDS);
                 }

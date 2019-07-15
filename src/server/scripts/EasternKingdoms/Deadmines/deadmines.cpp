@@ -133,7 +133,7 @@ public:
                 {
                     if (!GetSupporter())
                     {
-                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                        me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                         Phase++;
                     } else if (Creature* target = ObjectAccessor::GetCreature(*me, TargetGUID))
                     {
@@ -206,8 +206,8 @@ public:
                     {
                         if (me->IsInRange(victim, 0, 35.0f, true))
                         {
-                            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
-                            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_STUNNED);
+                            me->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+                            me->AddUnitFlag(UNIT_FLAG_STUNNED);
                             if (uiTimer <= uiDiff)
                             {
                                 me->CastSpell(victim, IsHeroic() ? SPELL_THROW_H : SPELL_THROW);
@@ -216,14 +216,14 @@ public:
                                 uiTimer -= uiDiff;
                         } else
                         {
-                            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
-                            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_STUNNED);
+                            me->RemoveUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+                            me->RemoveUnitFlag(UNIT_FLAG_STUNNED);
                         }
                     }
                     break;
                 case 2:
                     Talk(0);
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                    me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                     Phase++;
                     break;
                 default:

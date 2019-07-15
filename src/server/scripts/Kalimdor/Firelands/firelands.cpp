@@ -369,7 +369,7 @@ public:
             me->ApplySpellImmune(0, IMMUNITY_MECHANIC, MECHANIC_SAPPED, true);
             me->ApplySpellImmune(0, IMMUNITY_MECHANIC, MECHANIC_CHARM, true);
             me->ApplySpellImmune(0, IMMUNITY_MECHANIC, MECHANIC_DISORIENTED, true);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+            me->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
         }
         EventMap events;
         void Reset() override
@@ -433,7 +433,7 @@ public:
             me->ApplySpellImmune(0, IMMUNITY_MECHANIC, MECHANIC_SAPPED, true);
             me->ApplySpellImmune(0, IMMUNITY_MECHANIC, MECHANIC_CHARM, true);
             me->ApplySpellImmune(0, IMMUNITY_MECHANIC, MECHANIC_DISORIENTED, true);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+            me->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
         }
         EventMap events;
         void Reset() override
@@ -691,9 +691,9 @@ public:
             me->ApplySpellImmune(0, IMMUNITY_MECHANIC, MECHANIC_CHARM, true);
             me->ApplySpellImmune(0, IMMUNITY_MECHANIC, MECHANIC_DISORIENTED, true);
             me->ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_CONFUSE, true);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_STUNNED);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PREPARATION);
+            me->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+            me->AddUnitFlag(UNIT_FLAG_STUNNED);
+            me->AddUnitFlag(UNIT_FLAG_PREPARATION);
 
             magma = nullptr;
         }
@@ -1208,8 +1208,8 @@ public:
                     events.ScheduleEvent(EVENT_MOVE_BACK, 100);
                     break;
                 case KAR_ACTION_ATTACK:
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+                    me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
+                    me->RemoveUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
                     events.ScheduleEvent(EVENT_SOUL_BURN, 1000);
                     events.ScheduleEvent(EVENT_SUMMON_LAVA, 3000);
                     break;
@@ -2399,7 +2399,7 @@ public:
                         _events.ScheduleEvent(EVENT_GO_AWAY, 5000);
                         break;
                     case EVENT_GO_AWAY:
-                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+                        me->RemoveUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
                         me->SetDisplayId(MI_HAWK);
                         me->SetCanFly(true);
                         me->SetDisableGravity(true);
@@ -2465,7 +2465,7 @@ class npc_harbinger_of_flame : public CreatureScript
             }
             void EnterCombat(Unit* /*target*/) override
             {
-                if (Creature* bird = ObjectAccessor::GetCreature(*me, me->GetGuidValue(UNIT_DYNAMIC_FIELD_CHANNEL_OBJECTS)))
+                if (Creature* bird = ObjectAccessor::GetCreature(*me, me->GetChannelObjects()[0]))
                     DoZoneInCombat(bird, 200.0f);
 
                 me->InterruptSpell(CURRENT_CHANNELED_SPELL);
@@ -2734,8 +2734,8 @@ class npc_firelands_volcanus : public CreatureScript
 
             void Reset() override
             {
-                me->SetFloatValue(UNIT_FIELD_BOUNDINGRADIUS, 7);
-                me->SetFloatValue(UNIT_FIELD_COMBATREACH, 7);
+                me->SetBoundingRadius(7);
+                me->SetCombatReach(7);
                 events.Reset();
             }
 

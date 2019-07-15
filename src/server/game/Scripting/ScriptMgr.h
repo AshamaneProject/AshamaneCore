@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -810,6 +810,9 @@ class TC_GAME_API PlayerScript : public UnitScript
         // Called when a player complete some scene
         virtual void OnSceneComplete(Player* /*player*/, uint32 /*sceneInstanceID*/) { }
 
+        // Called when a player presses release when he died
+        virtual void OnPlayerRepop(Player* /*player*/) { }
+
         // Called when a player completes a movie
         virtual void OnMovieComplete(Player* /*player*/, uint32 /*movieId*/) { }
 
@@ -1255,6 +1258,7 @@ class TC_GAME_API ScriptMgr
         void OnSceneTriggerEvent(Player* player, uint32 sceneInstanceId, std::string event);
         void OnSceneCancel(Player* player, uint32 sceneInstanceId);
         void OnSceneComplete(Player* player, uint32 sceneInstanceId);
+        void OnPlayerRepop(Player* player);
         void OnMovieComplete(Player* player, uint32 movieId);
         void OnPlayerChoiceResponse(Player* player, uint32 choiceId, uint32 responseId);
         void OnCooldownStart(Player* player, SpellInfo const* spellInfo, uint32 itemId, int32& cooldown, uint32& categoryId, int32& categoryCooldown);

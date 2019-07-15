@@ -188,7 +188,7 @@ class boss_brackenspore : public CreatureScript
                 me->SetPower(Powers::POWER_RAGE, 0);
                 me->SetMaxPower(Powers::POWER_RAGE, 500);
 
-                me->RemoveFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_REGENERATE_POWER);
+                me->RemoveUnitFlag2(UNIT_FLAG2_REGENERATE_POWER);
 
                 me->RemoveAura(eSpells::EnergyRegen);
 
@@ -207,7 +207,7 @@ class boss_brackenspore : public CreatureScript
 
                 if (!m_IntroDone)
                 {
-                    me->SetUInt32Value(UNIT_NPC_EMOTESTATE, 438);
+                    me->SetEmoteState(EMOTE_STATE_ATTACK_UNARMED);
 
                     AddTimedDelayedOperation(1 * TimeConstants::IN_MILLISECONDS, [this]() -> void
                     {
@@ -217,7 +217,7 @@ class boss_brackenspore : public CreatureScript
                 }
                 else
                 {
-                    me->SetUInt32Value(UNIT_NPC_EMOTESTATE, 0);
+                    me->SetEmoteState(EMOTE_ONESHOT_NONE);
 
                     RespawnFlamethrowers();
                 }
@@ -316,7 +316,7 @@ class boss_brackenspore : public CreatureScript
                                 if (Creature* l_Trigger = l_Creature->FindNearestCreature(eCreatures::WorldTrigger, 100.0f))
                                 {
                                     l_Trigger->SetReactState(ReactStates::REACT_PASSIVE);
-                                    l_Trigger->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+                                    l_Trigger->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
 
                                     l_Creature->InterruptNonMeleeSpells(true);
                                     l_Creature->GetMotionMaster()->MovePoint(0, *l_Trigger);
@@ -885,8 +885,8 @@ class npc_highmaul_fungal_flesh_eater : public CreatureScript
                 AddTimedDelayedOperation(1 * TimeConstants::IN_MILLISECONDS, [this]() -> void
                 {
                     me->SetObjectScale(1.f);
-                    me->SetFloatValue(UNIT_FIELD_BOUNDINGRADIUS, 0.31f);
-                    me->SetFloatValue(UNIT_FIELD_COMBATREACH, 7.0f);
+                    me->SetBoundingRadius(0.31f);
+                    me->SetCombatReach(7.0f);
                 });
 
                 AddTimedDelayedOperation(5 * TimeConstants::IN_MILLISECONDS, [this]() -> void { me->SetAIAnimKitId(eData::AnimKit, true); });
@@ -1133,8 +1133,8 @@ class npc_highmaul_bfc9000 : public CreatureScript
 
             void Reset() override
             {
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_NPC);
-                me->SetFlag(UNIT_NPC_FLAGS, NPCFlags::UNIT_NPC_FLAG_SPELLCLICK);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_NPC));
+                me->AddNpcFlag(NPCFlags::UNIT_NPC_FLAG_SPELLCLICK);
 
                 me->SetReactState(ReactStates::REACT_PASSIVE);
                 me->CastSpell(me, eSpells::BFC9000, true);

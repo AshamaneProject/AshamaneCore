@@ -268,8 +268,8 @@ public:
                 me->SetWalk(true);
 
                 me->SetAIAnimKitId(ANIMKIT, true);
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC);
+                me->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
+                me->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_NPC);
 
                 std::list<Creature*> listMage;
                 GetCreatureListWithEntryInGrid(listMage, me, NPC_MAGE, 500.0f);
@@ -542,8 +542,8 @@ public:
                     me->RemoveAurasDueToSpell(SPELL_SUBMERGED);
                     me->RemoveAurasDueToSpell(SPELL_GENESIS_LASHER);
 
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC);
+                    me->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
+                    me->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_NPC);
                 }
                 else
                     sproutsTimer -= diff;
@@ -774,7 +774,7 @@ public:
             if (!attack)
             {
                 attack = true;
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                 DoCast(me, SPELL_ENTANGLEMENT_PLAYER_DAMAGE);
             }
 
@@ -816,7 +816,7 @@ public:
             if (!attack)
             {
                 attack = true;
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                 DoCast(me, SPELL_ENTANGLEMENT_PLAYER_DAMAGE);
             }
 

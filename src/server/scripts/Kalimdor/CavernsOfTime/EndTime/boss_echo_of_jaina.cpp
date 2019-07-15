@@ -103,7 +103,7 @@ class boss_echo_of_jaina : public CreatureScript
 
                 DoZoneInCombat();
                 i = 0;
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+                me->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
 
                 events.ScheduleEvent(EVENT_PYROBLAST, 1000);
                 events.ScheduleEvent(EVENT_BLINK, 3500); // 20 seconds

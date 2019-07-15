@@ -58,6 +58,8 @@ struct npc_defiant_troll : public ScriptedAI
 
     void MovementInform(uint32 /*type*/, uint32 /*id*/) override
     {
+        if (GameObject* Deposit = me->FindNearestGameObject(GO_DEPOSIT, 20.f))
+            me->SetFacingToObject(Deposit);
         me->HandleEmoteCommand(EMOTE_STATE_WORK_MINING);
         me->LoadEquipment(3, true);
     }
@@ -82,6 +84,8 @@ struct npc_defiant_troll : public ScriptedAI
                 me->GetMotionMaster()->MovePoint(1, Deposit->GetPositionX() - 2.f, Deposit->GetPositionY(), Deposit->GetPositionZ());
         }
     }
+
+
 
     void UpdateAI(uint32 diff) override
     {
@@ -1008,7 +1012,7 @@ struct npc_shark_gob : public ScriptedAI
     void Reset() override
     {
         me->SetReactState(REACT_PASSIVE);
-        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+        me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
         me->SetWalk(true);
 
         me->GetScheduler().Schedule(3s, [this](TaskContext /*context*/)

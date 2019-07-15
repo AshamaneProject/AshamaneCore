@@ -69,7 +69,7 @@ struct instance_the_underrot : public InstanceScript
             {
                 if (IsCreatureGroupWiped(SUMMON_GROUP_BLOODSWORN_DEFILER))
                     if (Creature* zancha = GetCreature(NPC_SPORECALLER_ZANCHA))
-                        zancha->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                        zancha->RemoveUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
 
                 break;
             }

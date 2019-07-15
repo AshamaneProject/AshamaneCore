@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -162,14 +162,13 @@ struct TC_GAME_API LootItem
 {
     uint32  itemid;
     uint8   type;
-    uint32  randomSuffix;
-    ItemRandomEnchantmentId randomPropertyId;
+    ItemRandomBonusListId randomBonusListId;
     int32   upgradeId;
     std::vector<int32> BonusListIDs;
     uint8   context;
     ConditionContainer conditions;                               // additional loot condition
     GuidSet allowedGUIDs;
-    uint32  count;
+    uint8   count             : 8;
     bool    currency          : 1;
     bool    is_looted         : 1;
     bool    is_blocked        : 1;
@@ -185,7 +184,7 @@ struct TC_GAME_API LootItem
     explicit LootItem(LootStoreItem const& li);
 
     // Empty constructor for creating an empty LootItem to be filled in with DB data
-    LootItem() : itemid(0), type(LOOT_ITEM_TYPE_ITEM), randomSuffix(0), randomPropertyId(), upgradeId(0), context(0), count(0), is_looted(false), is_blocked(false),
+    LootItem() : itemid(0), type(LOOT_ITEM_TYPE_ITEM), randomBonusListId(0), upgradeId(0), context(0), count(0), is_looted(false), is_blocked(false),
                  freeforall(false), is_underthreshold(false), is_counted(false), needs_quest(false), follow_loot_rules(false),
                  canSave(true){ };
 
@@ -286,7 +285,8 @@ struct TC_GAME_API Loot
     uint32 GetMaxSlotInLootFor(Player* player) const;
     uint8 GetItemContext() const { return _itemContext; }
     bool hasItemForAll() const;
-    bool hasItemFor(Player* player) const;
+    bool hasItemFor(Player * player) const;
+    bool hasOverThresholdItem() const;
 
     // Builds data for SMSG_LOOT_RESPONSE
     void BuildLootResponse(WorldPackets::Loot::LootResponse& packet, Player* viewer, PermissionTypes permission = ALL_PERMISSION) const;

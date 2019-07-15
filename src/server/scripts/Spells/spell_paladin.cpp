@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -532,7 +532,7 @@ class spell_pal_shield_of_the_righteous : public SpellScript
                     dmg += dmg / 5;
                     SetHitDamage(dmg); //damage is increased by 20%
 
-                    float mastery = player->GetFloatValue(ACTIVE_PLAYER_FIELD_MASTERY);
+                    float mastery = player->m_activePlayerData->Mastery;
 
                     int32 reduction = int32(((-25 - int32(mastery / 2.0f)) * 120.0f) / 100.0f); //damage reduction is increased by 20%
                     player->CastCustomSpell(player, SPELL_PALADIN_SHIELD_OF_THE_RIGHTEOUS_PROC, &reduction, NULL, NULL, true);
@@ -1128,9 +1128,13 @@ class spell_pal_judgment : public SpellScript
 
     void HandleDummy(SpellEffIndex /*effIndex*/)
     {
-        Unit* caster = GetCaster();
+        Player* caster = GetCaster()->ToPlayer();
         Unit* target = GetExplTargetUnit();
-        uint32 spec = caster->GetUInt32Value(PLAYER_FIELD_CURRENT_SPEC_ID);
+
+        if (!caster || !target)
+            return;
+
+        uint32 spec = caster->GetSpecializationId();
         switch (spec)
         {
             case TALENT_SPEC_PALADIN_RETRIBUTION:
@@ -1182,7 +1186,7 @@ class spell_pal_divine_purpose_proc : public SpellScript
         {
             if (player->HasSpell(SPELL_PALADIN_DIVINE_PURPOSE_RET) || player->HasSpell(SPELL_PALADIN_DIVINE_PURPOSE_HOLY))
             {
-                uint32 spec = player->GetUInt32Value(PLAYER_FIELD_CURRENT_SPEC_ID);
+                uint32 spec = player->GetSpecializationId();
                 uint32 activateSpell = GetSpellInfo()->Id;
 
                 switch (spec)
@@ -1630,7 +1634,7 @@ public:
         {
             int32 dmg = GetHitHeal();
 
-            dmg += GetCaster()->GetUInt32Value(UNIT_FIELD_ATTACK_POWER) * 1.8f;
+            dmg += GetCaster()->m_unitData->AttackPower * 1.8f;
 
             SetHitHeal(dmg);
         }
@@ -1956,7 +1960,7 @@ public:
     void Reset() override
     {
         me->CastSpell(me, SPELL_PALADIN_LIGHT_HAMMER_COSMETIC, true);
-        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+        me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_REMOVE_CLIENT_CONTROL));
     }
 };
 

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -1514,7 +1514,7 @@ public:
             if (target->HasAura(SPELL_MONK_CRACKLING_JADE_LIGHTNING_KNOCKBACK_CD))
                 return false;
 
-            DynamicFieldStructuredView<ObjectGuid> channelObjects = target->GetChannelObjects();
+            auto const& channelObjects = target->GetChannelObjects();
             if (Unit* channelTarget = (channelObjects.size() == 1 ? ObjectAccessor::GetUnit(*target, *channelObjects.begin()) : nullptr))
                 if (eventInfo.GetActor()->GetGUID() != channelTarget->GetGUID())
                     return false;
@@ -2581,7 +2581,7 @@ public:
         void SelectTarget(WorldObject*& target)
         {
             Unit* caster = GetCaster();
-            DynamicFieldStructuredView<ObjectGuid> channelObjects = caster->GetChannelObjects();
+            auto const& channelObjects = caster->GetChannelObjects();
 
             if (caster->GetChannelSpellId() == SPELL_MONK_SOOTHING_MIST)
                 if (Unit* soothingMistTarget = (channelObjects.size() == 1 ? ObjectAccessor::GetUnit(*target, *channelObjects.begin()) : nullptr))
@@ -2632,7 +2632,7 @@ public:
             if (caster->GetChannelSpellId() == SPELL_MONK_SOOTHING_MIST)
             {
                 targets.clear();
-                DynamicFieldStructuredView<ObjectGuid> channelObjects = caster->GetChannelObjects();
+                auto const& channelObjects = caster->GetChannelObjects();
 
                 if (Unit* soothingMistTarget = (channelObjects.size() == 1 ? ObjectAccessor::GetUnit(*caster, *channelObjects.begin()) : nullptr))
                     targets.push_back(soothingMistTarget);
@@ -2806,7 +2806,7 @@ public:
 
         void HandleOnHit(SpellEffIndex /*effIndex*/)
         {
-            Unit* caster = GetCaster();
+            Player* caster = GetCaster()->ToPlayer();
             Unit* target = GetHitUnit();
             if (!target || !caster)
                 return;
@@ -2814,7 +2814,7 @@ public:
             if (caster->HasAura(SPELL_MONK_RISING_THUNDER))
                 caster->ToPlayer()->GetSpellHistory()->ResetCooldown(SPELL_MONK_THUNDER_FOCUS_TEA, true);
 
-            if (caster->GetUInt32Value(PLAYER_FIELD_CURRENT_SPEC_ID) == TALENT_SPEC_MONK_BATTLEDANCER)
+            if (caster->GetSpecializationId() == TALENT_SPEC_MONK_BATTLEDANCER)
                 caster->CastSpell(target, SPELL_MONK_MORTAL_WOUNDS, true);
         }
 

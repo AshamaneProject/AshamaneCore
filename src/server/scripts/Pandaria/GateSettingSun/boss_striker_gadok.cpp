@@ -504,7 +504,7 @@ public:
         {
             isAttackerStriker = true;
 
-            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+            me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
 
             Map::PlayerList const &PlayerList = pInstance->instance->GetPlayers();
             Map::PlayerList::const_iterator it = PlayerList.begin();

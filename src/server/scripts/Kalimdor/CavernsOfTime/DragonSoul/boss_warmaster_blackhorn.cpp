@@ -236,7 +236,7 @@ class boss_warmaster_blackhorn: public CreatureScript
             {
                 _Reset();
 
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                 me->SetReactState(REACT_PASSIVE);
                 me->SetVisible(false);
 
@@ -476,7 +476,7 @@ class boss_warmaster_blackhorn: public CreatureScript
                         case EVENT_SECOND_PHASE_4:
                         {
                             me->SetVisible(true);
-                            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                            me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                             me->SetReactState(REACT_AGGRESSIVE);
 
                             std::list<Creature*> creatures;
@@ -608,11 +608,11 @@ class npc_warmaster_blackhorn_goriona: public CreatureScript
                 me->SetReactState(REACT_PASSIVE);
                 me->setActive(true);
                 phase = 0;
-                me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, 0x02);
+                me->SetAnimTier(UNIT_BYTE1_FLAG_HOVER, true);
                 me->AddUnitMovementFlag(MOVEMENTFLAG_CAN_FLY | MOVEMENTFLAG_FLYING);
                 me->SetCanFly(true);
                 me->SetDisableGravity(true);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
             }
 
             void MovementInform(uint32 type, uint32 data) override
@@ -622,7 +622,7 @@ class npc_warmaster_blackhorn_goriona: public CreatureScript
                     {
                         me->SetCanFly(false);
                         me->SetDisableGravity(false);
-                        me->RemoveByteFlag(UNIT_FIELD_BYTES_1, 3, 0x02);
+                        me->SetAnimTier(UNIT_BYTE1_FLAG_NONE, true);
                         me->RemoveUnitMovementFlag(MOVEMENTFLAG_CAN_FLY | MOVEMENTFLAG_FLYING);
                         events.ScheduleEvent(EVENT_CONTINUE, 1000);
                         events.ScheduleEvent(EVENT_TWILIGHT_BREATH, urand(10000, 20000));
@@ -635,11 +635,11 @@ class npc_warmaster_blackhorn_goriona: public CreatureScript
                 me->SetReactState(REACT_PASSIVE);
                 me->setActive(true);
                 phase = 0;
-                me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, 0x02);
+                me->SetAnimTier(UNIT_BYTE1_FLAG_HOVER, true);
                 me->AddUnitMovementFlag(MOVEMENTFLAG_CAN_FLY | MOVEMENTFLAG_FLYING);
                 me->SetCanFly(true);
                 me->SetDisableGravity(true);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
             }
 
             void JustSummoned(Creature* summon) override
@@ -666,7 +666,7 @@ class npc_warmaster_blackhorn_goriona: public CreatureScript
                     init.SetWalk(false);
                     init.Launch();
 
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+                    me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
                     events.ScheduleEvent(EVENT_TWILIGHT_ONSLAUGHT, 46000);
                     if (IsHeroic())
                         events.ScheduleEvent(EVENT_BROADSIDE, 57000);
@@ -722,12 +722,12 @@ class npc_warmaster_blackhorn_goriona: public CreatureScript
 
                     me->SetReactState(REACT_PASSIVE);
                     me->AttackStop();
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                    me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                     me->RemoveAllAuras();
 
                     me->SetCanFly(true);
                     me->SetDisableGravity(true);
-                    me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, 0x02);
+                    me->SetAnimTier(UNIT_BYTE1_FLAG_HOVER, true);
                     me->AddUnitMovementFlag(MOVEMENTFLAG_CAN_FLY | MOVEMENTFLAG_FLYING);
 
                     Movement::MoveSplineInit init(me);
@@ -964,8 +964,9 @@ class npc_warmaster_blackhorn_twilight_assault_drake: public CreatureScript
                 if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
 
-                if (!me->HasFlag(UNIT_FIELD_BYTES_1, 0x02)){
-                    me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, 0x02);
+                if (!(me->m_unitData->AnimTier & UNIT_BYTE1_FLAG_HOVER))
+                {
+                    me->SetAnimTier(UNIT_BYTE1_FLAG_HOVER, true);
                     me->AddUnitMovementFlag(MOVEMENTFLAG_CAN_FLY | MOVEMENTFLAG_FLYING);
                 }
 
@@ -1252,7 +1253,7 @@ class npc_warmaster_blackhorn_twilight_infiltrator: public CreatureScript
             {
                 me->SetSpeed(MOVE_RUN, 2.0f);
                 me->SetSpeed(MOVE_FLIGHT, 2.0f);
-                me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, 0x02);
+                me->SetAnimTier(UNIT_BYTE1_FLAG_HOVER, true);
                 me->AddUnitMovementFlag(MOVEMENTFLAG_CAN_FLY | MOVEMENTFLAG_FLYING);
                 me->SetCanFly(true);
                 me->SetDisableGravity(true);
@@ -1544,7 +1545,7 @@ class npc_dragon_soul_sky_captain_swayze : public CreatureScript
                     {
                         pCreature->SummonCreature(NPC_GORIONA, gorionaPos[0]);
                         pCreature->SummonCreature(NPC_BLACKHORN, blackhornPos);
-                        pCreature->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                        pCreature->RemoveNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                         pCreature->AI()->DoAction(ACTION_START);
                     }
                 }
@@ -1658,7 +1659,7 @@ class npc_dragon_soul_sky_captain_swayze : public CreatureScript
                 {
                     events.Reset();
                     summons.DespawnEntry(NPC_ENGINE_STALKER);
-                    me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                    me->AddNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                 }
             }
 
@@ -1674,7 +1675,7 @@ class npc_dragon_soul_sky_captain_swayze : public CreatureScript
                             if (Creature* pTrigger = me->SummonCreature(NPC_MASSIVE_EXPLOSION, skyfirePos, TEMPSUMMON_TIMED_DESPAWN, 5000))
                                 pTrigger->CastSpell(pTrigger, SPELL_MASSIVE_EXPLOSION);
                             events.Reset();
-                            me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                            me->AddNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                             if (Creature* pBlackhorn = me->FindNearestCreature(NPC_BLACKHORN, 300.0f))
                                 pBlackhorn->AI()->DoAction(ACTION_END_BATTLE);
                             summons.DespawnEntry(NPC_ENGINE_STALKER);
@@ -1686,7 +1687,7 @@ class npc_dragon_soul_sky_captain_swayze : public CreatureScript
                             if (!CheckPlayers())
                             {
                                 events.Reset();
-                                me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                                me->AddNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                                 if (Creature* pBlackhorn = me->FindNearestCreature(NPC_BLACKHORN, 300.0f))
                                     pBlackhorn->AI()->DoAction(ACTION_END_BATTLE);
                                 summons.DespawnEntry(NPC_ENGINE_STALKER);

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -580,7 +580,7 @@ class spell_pri_smite : public SpellScript
 
     void HandleHit(SpellEffIndex /*effIndex*/)
     {
-        Unit* caster = GetCaster();
+        Player* caster = GetCaster()->ToPlayer();
         Unit* target = GetHitUnit();
         if (!caster || !target)
             return;
@@ -590,7 +590,7 @@ class spell_pri_smite : public SpellScript
 
         int32 dmg = GetHitDamage();
 
-        if (caster->GetUInt32Value(PLAYER_FIELD_CURRENT_SPEC_ID) == TALENT_SPEC_PRIEST_DISCIPLINE)
+        if (caster->GetSpecializationId() == TALENT_SPEC_PRIEST_DISCIPLINE)
         {
             caster->CastCustomSpell(SPELL_PRIEST_SMITE_AURA, SPELLVALUE_BASE_POINT0, dmg, target, TRIGGERED_FULL_MASK);
             caster->CastCustomSpell(SPELL_PRIEST_SMITE_ABSORB, SPELLVALUE_BASE_POINT0, dmg, caster, TRIGGERED_FULL_MASK);
@@ -599,11 +599,11 @@ class spell_pri_smite : public SpellScript
 
     void HandleAfterCast()
     {
-        Unit* caster = GetCaster();
+        Player* caster = GetCaster()->ToPlayer();
         if (!caster)
             return;
 
-        if (caster->GetUInt32Value(PLAYER_FIELD_CURRENT_SPEC_ID) == TALENT_SPEC_PRIEST_HOLY)
+        if (caster->GetSpecializationId() == TALENT_SPEC_PRIEST_HOLY)
         {
             if (caster->GetSpellHistory()->HasCooldown(SPELL_PRIEST_HOLY_WORD_CHASTISE))
                 caster->GetSpellHistory()->ModifyCooldown(SPELL_PRIEST_HOLY_WORD_CHASTISE, -6 * IN_MILLISECONDS);

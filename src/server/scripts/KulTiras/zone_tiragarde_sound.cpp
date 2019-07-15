@@ -196,7 +196,7 @@ struct npc_flynn_fairwind : public ScriptedAI
     void SetGUID(ObjectGuid guid, int32 /*action*/) override
     {
         m_playerGUID = guid;
-        me->RemoveFlag64(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
+        me->RemoveNpcFlag(UNIT_NPC_FLAG_QUESTGIVER);
         me->SetAIAnimKitId(0);
 
         if (Creature* ashvaneJailer = me->SummonCreature(NPC_ASHVANE_JAILER_EVENT, 144.839996f, -2702.790039f, 28.961100f, 0.799371f, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 2000, true))
@@ -218,7 +218,7 @@ struct npc_flynn_fairwind : public ScriptedAI
             .Schedule(5s, [this](TaskContext /*context*/)
         {
             Talk(TALK_HIT_ME, GetPlayer());
-            me->SetFlag64(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+            me->AddNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
         });
     }
 
@@ -227,7 +227,7 @@ struct npc_flynn_fairwind : public ScriptedAI
         if (spell->Id != SPELL_PUNCH_FLYNN)
             return;
 
-        me->RemoveFlag64(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+        me->RemoveNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
         me->HandleEmoteCommand(EMOTE_ONESHOT_BEG);
         Talk(TALK_YOU_BRUTE);
 
@@ -238,7 +238,7 @@ struct npc_flynn_fairwind : public ScriptedAI
             me->GetScheduler().Schedule(2s, [this](TaskContext /*context*/)
             {
                 Talk(TALK_GUARD);
-                me->SetByteValue(UNIT_FIELD_BYTES_1, UNIT_BYTES_1_OFFSET_STAND_STATE, UNIT_STAND_STATE_DEAD);
+                me->SetStandState(UNIT_STAND_STATE_DEAD);
             });
 
             ashvaneJailer->GetScheduler().Schedule(3s, [](TaskContext context)
@@ -272,7 +272,7 @@ struct npc_flynn_fairwind : public ScriptedAI
 
             me->GetScheduler().Schedule(9s, [this, ashvaneJailer](TaskContext /*context*/)
             {
-                me->SetByteValue(UNIT_FIELD_BYTES_1, UNIT_BYTES_1_OFFSET_STAND_STATE, UNIT_STAND_STATE_STAND);
+                me->SetStandState(UNIT_STAND_STATE_STAND);
                 ashvaneJailer->AI()->Talk(TALK_WHAT);
             })
                 .Schedule(10s, [this, ashvaneJailer](TaskContext /*context*/)
@@ -574,7 +574,7 @@ struct npc_taelia_get_your_bearings : public FollowerAI
 
     void IsSummonedBy(Unit* unit) override
     {
-        me->SetFlag64(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
+        me->AddNpcFlag(UNIT_NPC_FLAG_QUESTGIVER);
 
         if (Player* player = unit->ToPlayer())
         {
@@ -602,7 +602,7 @@ struct npc_taelia_get_your_bearings : public FollowerAI
                     if (justCompletedObjective && player->GetQuestStatus(QUEST_GET_YOUR_BEARINGS) == QUEST_STATUS_COMPLETE)
                     {
                         player->PlayConversation(9556);
-                        me->SetFlag64(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
+                        me->AddNpcFlag(UNIT_NPC_FLAG_QUESTGIVER);
                     }
                 }
 
@@ -853,6 +853,227 @@ public:
     }
 };
 
+//128349 Hilde Firebreaker
+class npc_hilde_firebreaker_queststarter : public ScriptedAI
+{
+public:
+    enum
+    {
+        QUEST_BACKUP_WILL_I_PACK = 49260,
+        NPC_DEFEND_FIREBREAKER_KILLCREDIT = 128709
+    };
+
+    npc_hilde_firebreaker_queststarter(Creature* creature) : ScriptedAI(creature) { }
+
+    void sQuestAccept(Player* player, Quest const* quest) override
+    {
+        if (quest->ID != QUEST_BACKUP_WILL_I_PACK)
+            return;
+
+        players.push_back(player);
+
+        if (_ongoing)
+            return;
+
+        players.clear();
+        players.push_back(player);
+
+        me->SetUnitFlags(UNIT_FLAG_IMMUNE_TO_NPC);
+        me->SummonCreature(129841, me->GetPosition(), TEMPSUMMON_CORPSE_DESPAWN);
+
+        _ongoing = true;
+    }
+
+    void SummonedCreatureDespawn(Creature* /*creature*/) override
+    {
+        // killcredit
+        for each (auto player in players)
+        {
+            if (player && player->IsInWorld() && player->IsInRange2d(me->GetPositionX(), me->GetPositionY(), 0, 50))
+                player->KilledMonsterCredit(NPC_DEFEND_FIREBREAKER_KILLCREDIT);
+        }
+        _ongoing = false;
+    }
+
+    void SummonedCreatureDies(Creature* /*creature*/, Unit* /*unit*/) override
+    {
+        // Fail the quest
+        for each (auto player in players)
+        {
+            if (player && player->IsInWorld())
+                player->FailQuest(QUEST_BACKUP_WILL_I_PACK);
+        }
+        _ongoing = false;
+    }
+
+private:
+    bool _ongoing = false;
+    std::vector<Player*> players;
+};
+
+//129841 Hilde Firebreaker
+class npc_hilde_firebreaker_protect : public npc_escortAI
+{
+public:
+    enum
+    {
+        QUEST_BACKUP_WILL_I_PACK = 49260,
+        NPC_LIVING_ARTEFACT = 128405,
+        NPC_ANGERED_REVENANT = 128591,
+        NPC_FALLEN_KEEPER = 128608
+    };
+
+    npc_hilde_firebreaker_protect(Creature* creature) : npc_escortAI(creature)
+    {
+        pos[0] = Position(1108.739990f, 261.151001f, 17.821600f, 1.603710f); // 128405
+        pos[1] = Position(1115.000000f, 261.557007f, 18.138300f, 1.946000f); // 128591
+        pos[2] = Position(1123.180054f, 269.458008f, 17.009701f, 1.762220f); // 128405
+        pos[3] = Position(1123.770020f, 275.671997f, 17.066000f, 3.344580f); // 128591
+        pos[4] = Position(1123.689941f, 278.740997f, 18.338100f, 3.654940f); // 128405
+        pos[5] = Position(1119.719971f, 265.915009f, 17.663000f, 2.204700f); // 128608
+    }
+
+    void IsSummonedBy(Unit* /*summoner*/) override
+    {
+        _numberOfSummonsAlive = 2;
+        if (TempSummon* ts = me->SummonCreature(NPC_LIVING_ARTEFACT, pos[0], TEMPSUMMON_CORPSE_DESPAWN)) ts->AI()->AttackStart(me);
+        if (TempSummon* ts = me->SummonCreature(NPC_ANGERED_REVENANT, pos[1], TEMPSUMMON_CORPSE_DESPAWN)) ts->AI()->AttackStart(me);
+        SetCanAttack(false);
+        //Start(false, false, summoner->GetGUID(), NULL, false, false, true);
+    }
+
+    void SummonedCreatureDies(Creature* /*creature*/, Unit* /*unit*/) override
+    {
+        _numberOfSummonsAlive--;
+        if (_numberOfSummonsAlive == 0)
+        {
+            // Next wave or despawn if finished
+            _numberOfWaveCleaned++;
+
+            switch (_numberOfWaveCleaned)
+            {
+            case 1:
+                _numberOfSummonsAlive = 3;
+                if (TempSummon* ts = me->SummonCreature(NPC_LIVING_ARTEFACT, pos[2], TEMPSUMMON_CORPSE_DESPAWN)) ts->AI()->AttackStart(me);
+                if (TempSummon* ts = me->SummonCreature(NPC_ANGERED_REVENANT, pos[3], TEMPSUMMON_CORPSE_DESPAWN)) ts->AI()->AttackStart(me);
+                if (TempSummon* ts = me->SummonCreature(NPC_LIVING_ARTEFACT, pos[4], TEMPSUMMON_CORPSE_DESPAWN)) ts->AI()->AttackStart(me);
+                break;
+            case 2:
+                _numberOfSummonsAlive = 1;
+                if (TempSummon* ts = me->SummonCreature(NPC_FALLEN_KEEPER, pos[5], TEMPSUMMON_CORPSE_DESPAWN)) ts->AI()->AttackStart(me);
+                break;
+            case 3:
+                me->ForcedDespawn();
+                break;
+            default:
+                break;
+            }
+        }
+    }
+    /*
+    void WaypointReached(uint32 pointId) override
+    {
+        if (pointId == 1)
+        {
+            _numberOfSummonsAlive = 2;
+            if (TempSummon* ts = me->SummonCreature(NPC_LIVING_ARTEFACT, pos[0], TEMPSUMMON_DEAD_DESPAWN)) ts->AI()->AttackStart(me);
+            if (TempSummon* ts = me->SummonCreature(NPC_ANGERED_REVENANT, pos[1], TEMPSUMMON_DEAD_DESPAWN)) ts->AI()->AttackStart(me);
+        }
+    }*/
+
+private:
+    int _numberOfWaveCleaned = 0;
+    int _numberOfSummonsAlive = 0;
+    Position pos[6];
+};
+
+// 131684
+class npc_penny_hardwick : public ScriptedAI
+{
+public:
+    npc_penny_hardwick(Creature* creature) : ScriptedAI(creature) { }
+
+    enum
+    {
+        QUEST_A_VERY_PRECIOUS_CARGO = 50002,
+        QUEST_HOLD_MY_HAND = 50005,
+        NPC_PENNY_KILLCREDIT = 132725,
+        SPELL_CANCEL_ESCORT_PENNY = 259926,
+        SPELL_ESCORTING_PENNY_HARDWICK = 259909
+    };
+
+    void MoveInLineOfSight(Unit* unit) override
+    {
+        if (Player* player = unit->ToPlayer())
+        {
+            float x = me->GetPositionX();
+            float y = me->GetPositionY();
+            float z = me->GetPositionZ();
+
+            if (abs(x - 534.932007) < .1 && abs(y - 870.984009) < .1 && abs(z - 7.821800) < .1) // ensuring we don't take the quest form ending npc
+                if (player->GetQuestStatus(QUEST_A_VERY_PRECIOUS_CARGO) == QUEST_STATUS_INCOMPLETE)
+                    player->KilledMonsterCredit(NPC_PENNY_KILLCREDIT);
+        }
+    }
+
+    void sQuestAccept(Player* player, Quest const* quest) override
+    {
+        if (quest->ID == QUEST_HOLD_MY_HAND)
+        {
+            player->CastSpell(player, SPELL_CANCEL_ESCORT_PENNY);
+            player->CastSpell(player, SPELL_ESCORTING_PENNY_HARDWICK);
+        }
+    }
+};
+
+///TODO Make Penny wait at far
+// 131748
+class npc_penny_hardwick_escort : public npc_escortAI
+{
+public:
+    npc_penny_hardwick_escort(Creature* creature) : npc_escortAI(creature) { }
+
+    enum
+    {
+        SPELL_CANCEL_ESCORT_PENNY = 259926,
+        QUEST_HOLD_MY_HAND = 50005
+    };
+
+    void IsSummonedBy(Unit* summoner) override
+    {
+        Start(false, false, summoner->GetGUID(), NULL, true);
+        SetDespawnAtFar(true);
+        SetDespawnAtEnd(true);
+    }
+
+    void LastWaypointReached() override
+    {
+        if (Player* player = GetPlayerForEscort())
+        {
+            KillCreditMe(player);
+        }
+    }
+
+    void JustDied(Unit* /*killer*/)
+    {
+        if (Player* player = GetPlayerForEscort())
+        {
+            if (player->GetQuestStatus(QUEST_HOLD_MY_HAND) != QUEST_STATUS_COMPLETE)
+                player->FailQuest(QUEST_HOLD_MY_HAND);
+            player->CastSpell(player, SPELL_CANCEL_ESCORT_PENNY);
+        }
+    }
+
+    void JustRespawned() override
+    {
+        if (Player* player = GetPlayerForEscort())
+        {
+            player->FailQuest(QUEST_HOLD_MY_HAND);
+            player->CastSpell(player, SPELL_CANCEL_ESCORT_PENNY);
+        }
+    }
+};
+
 // 143096
 class npc_riding_macaw_patrol : public npc_escortAI
 {
@@ -931,5 +1152,9 @@ void AddSC_zone_tiragarde_sound()
     RegisterCreatureAI(npc_flynn_allured);
     RegisterCreatureAI(npc_lugeia);
     RegisterCreatureAI(npc_flynn_lovesick_escort);
+    RegisterCreatureAI(npc_hilde_firebreaker_queststarter);
+    RegisterCreatureAI(npc_hilde_firebreaker_protect);
+    RegisterCreatureAI(npc_penny_hardwick);
+    RegisterCreatureAI(npc_penny_hardwick_escort);
     RegisterCreatureAI(npc_riding_macaw_patrol);
 }

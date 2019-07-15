@@ -118,8 +118,8 @@ public:
             me->SetCanFly(true);
 
             me->AddUnitMovementFlag(MovementFlags::MOVEMENTFLAG_ROOT);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
-            me->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN);
+            me->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+            me->AddUnitFlag2(UNIT_FLAG2_DISABLE_TURN);
 
             me->RemoveAllAuras();
         }
@@ -359,7 +359,7 @@ public:
                     events.ScheduleEvent(eBoneMawEvents::EventSubmerge, urand(70 * TimeConstants::IN_MILLISECONDS, 100 * TimeConstants::IN_MILLISECONDS));
 
                     me->RemoveAura(eBoneMawSpells::SpellVisualSubmerge);
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
+                    me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC));
                     break;
                 }
                 case eBoneMawEvents::EventCorpseBreath:
@@ -429,8 +429,8 @@ public:
             m_PoolDiff = 2 * TimeConstants::IN_MILLISECONDS;
 
             me->AddUnitMovementFlag(MovementFlags::MOVEMENTFLAG_ROOT);
-            me->SetFlag(UNIT_FIELD_FLAGS,  UNIT_FLAG_REMOVE_CLIENT_CONTROL);
-            me->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN);
+            me->AddUnitFlag( UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+            me->AddUnitFlag2(UNIT_FLAG2_DISABLE_TURN);
 
             me->AddAura(eBoneMawSpells::SpellVisualSubmerge, me);
         }
@@ -525,8 +525,8 @@ public:
             events.Reset();
 
             me->SetReactState(ReactStates::REACT_PASSIVE);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG2_DISABLE_TURN);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
+            me->AddUnitFlag2(UNIT_FLAG2_DISABLE_TURN);
+            me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC));
 
             me->setFaction(FriendlyFaction);
             me->SetDisplayId(InvisibleDisplay);
@@ -653,8 +653,8 @@ public:
 
         void Register() override
         {
-            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_shadowmoon_burial_grounds_body_slam_SpellScript::CorrectTargets, SpellEffIndex::EFFECT_0, Targets::TARGET_UNIT_CASTER_AREA_ENEMY_FRONT);
-            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_shadowmoon_burial_grounds_body_slam_SpellScript::CorrectTargets, SpellEffIndex::EFFECT_1, Targets::TARGET_UNIT_CASTER_AREA_ENEMY_FRONT);
+            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_shadowmoon_burial_grounds_body_slam_SpellScript::CorrectTargets, SpellEffIndex::EFFECT_0, Targets::TARGET_UNIT_CONE_ENTRY_129);
+            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_shadowmoon_burial_grounds_body_slam_SpellScript::CorrectTargets, SpellEffIndex::EFFECT_1, Targets::TARGET_UNIT_CONE_ENTRY_129);
         }
     };
 

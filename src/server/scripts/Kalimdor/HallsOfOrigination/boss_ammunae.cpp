@@ -286,7 +286,7 @@ class npc_ammunae_spore : public CreatureScript
                 me->RemoveAllAuras();
                 me->StopMoving();
                 me->SetReactState(REACT_PASSIVE);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                 DoCast(SPELL_SPORE_CLOUD);
                 me->SetHealth(0);
             }
@@ -320,7 +320,7 @@ public:
             events.Reset();
 
             if(Unit* passenger = me->GetVehicleKit()->GetPassenger(1))
-               passenger->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+               passenger->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
         }
 
         void EnterCombat(Unit* /*who*/) override
@@ -331,7 +331,7 @@ public:
         void JustDied(Unit* /*killer*/) override
         {
             if(Unit* passenger = me->GetVehicleKit()->GetPassenger(1))
-               passenger->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+               passenger->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
             me->DespawnOrUnsummon(100);
         }
 

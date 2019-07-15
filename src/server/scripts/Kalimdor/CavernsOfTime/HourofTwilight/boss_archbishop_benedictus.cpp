@@ -465,7 +465,7 @@ public:
         {
             me->SetObjectScale(0.1f);
             me->SetDisableGravity(true);
-            me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
             me->SetHover(true);
             me->SetCanFly(true);
             me->AddUnitMovementFlag(MOVEMENTFLAG_FLYING);
@@ -500,7 +500,7 @@ public:
                     case EVENT_PURIFIED:
                         me->CastSpell(me, SPELL_PURIFYING_BLAST_DAMAGE, false);
                         me->RemoveAura(SPELL_PURIFYING_LIGHT_VISUAL);
-                        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                        me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                         break;
                 }
             }
@@ -647,7 +647,7 @@ public:
         {
             me->SetObjectScale(0.1f);
             me->SetDisableGravity(true);
-            me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
             me->SetHover(true);
             me->SetCanFly(true);
             me->AddUnitMovementFlag(MOVEMENTFLAG_FLYING);
@@ -690,7 +690,7 @@ public:
                 case EVENT_TWILIGHT_BOLT:
                     me->CastSpell(me, SPELL_TWILIGHT_BOLT_DAMAGE, false);
                     me->RemoveAura(SPELL_CORRUPTING_TWILIGHT_VISUAL);
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                    me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                     break;
                 }
             }

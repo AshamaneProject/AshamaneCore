@@ -88,8 +88,8 @@ struct boss_lady_hatecoil : public BossAI
         {
             _arcanistsDead = true;
             me->RemoveAurasDueToSpell(SPELL_ARCANE_SHIELDING);
-            me->SetUInt32Value(UNIT_FIELD_BYTES_1, 0);
-            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+            me->SetStandState(UNIT_STAND_STATE_STAND);
+            me->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
         }
     }
 

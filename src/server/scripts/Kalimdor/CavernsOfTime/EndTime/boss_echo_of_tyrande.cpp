@@ -144,8 +144,8 @@ class boss_echo_of_tyrande : public CreatureScript
                 case ACTION_TYRANDE_START:
                     me->setActive(true);
                     me->SetReactState(REACT_AGGRESSIVE);
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                    me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
+                    me->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                     break;
                 }
             }
@@ -265,7 +265,7 @@ class npc_moonlance_single : public CreatureScript
 
                         float dist = 100.0f;
                         me->GetMotionMaster()->Clear();
-                        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                        me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                         me->SetReactState(REACT_PASSIVE);
                         me->GetMotionMaster()->MovePoint(0, targetPosX + dist * cos(targetOrie), targetPosY + dist * sin(targetOrie), targetPosZ);
                     }
@@ -360,7 +360,7 @@ class npc_eye_of_the_goddess : public CreatureScript
                 rotationStart = false;
 
                 me->GetMotionMaster()->Clear();
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                 me->SetReactState(REACT_PASSIVE);
 
                 if (me->GetEntry() == NPC_EYES_OF_THE_GODDESS_FIRST)

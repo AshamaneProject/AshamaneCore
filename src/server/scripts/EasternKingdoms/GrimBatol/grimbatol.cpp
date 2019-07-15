@@ -98,8 +98,8 @@ class npc_battered_red_drake: public CreatureScript
 
         void Reset() override
         {
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+            me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
+            me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
             me->CastSpell(me, SPELL_NET, false);
             Fly = false;
             FlyDisabled = false;
@@ -121,7 +121,7 @@ class npc_battered_red_drake: public CreatureScript
 
                     me->SetCanFly(true);
                     me->SetSpeed(MOVE_FLIGHT, 2.0f);
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                    me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                     me->GetMotionMaster()->MoveTakeoff(uiPoint, RedDrakeLandInstance[uiPoint]);
                     Talk(SAY_DRAGON_FREE);
                     boarded = true;
@@ -214,7 +214,7 @@ class npc_net_red_dragon: public CreatureScript
             {
                 if(me->GetPositionX() == pRedDrake->GetPositionX() && me->GetPositionY() == pRedDrake->GetPositionY())
                 {
-                    pRedDrake->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                    pRedDrake->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                     pRedDrake->RemoveAura(SPELL_NET);
                     switch(sDrakeSays)
                     {

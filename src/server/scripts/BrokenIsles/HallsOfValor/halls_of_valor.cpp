@@ -51,8 +51,8 @@ struct boss_king_ranulf : public BossAI
     {
         me->setFaction(14);
         me->SetReactState(REACT_DEFENSIVE);
-        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+        me->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
+        me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
         if (InstanceScript* instance = me->GetInstanceScript())
             instance->SetBossState(DATA_GODKING_SKOVALD, NOT_STARTED);
     }
@@ -110,8 +110,8 @@ struct boss_king_haldor : public BossAI
     {
         me->setFaction(14);
         me->SetReactState(REACT_DEFENSIVE);
-        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+        me->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
+        me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
         if (InstanceScript* instance = me->GetInstanceScript())
             instance->SetBossState(DATA_KING_HALDOR, NOT_STARTED);
     }
@@ -173,8 +173,8 @@ struct boss_king_bjorn : public BossAI
     {
         me->setFaction(14);
         me->SetReactState(REACT_DEFENSIVE);
-        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+        me->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
+        me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
         if (InstanceScript* instance = me->GetInstanceScript())
             instance->SetBossState(DATA_KING_BJORN, NOT_STARTED);
     }
@@ -231,8 +231,8 @@ struct boss_king_tor : public BossAI
     {
         me->setFaction(14);
         me->SetReactState(REACT_DEFENSIVE);
-        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+        me->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
+        me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
         if (InstanceScript* instance = me->GetInstanceScript())
             instance->SetBossState(DATA_KING_TOR, NOT_STARTED);
     }

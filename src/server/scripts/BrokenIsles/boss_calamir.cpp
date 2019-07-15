@@ -319,7 +319,7 @@ public:
 
         void Reset() override
         {
-            //me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+            //me->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
             ApplyBuff();
         }
 
@@ -459,7 +459,7 @@ public:
             if (!caster)
                 return;
 
-            at->SetUInt32Value(AREATRIGGER_DECAL_PROPERTIES_ID, 13);
+            at->SetDecalPropertiesID(13);
 
             for (auto guid : at->GetInsideUnits())
                 if (Unit* unit = ObjectAccessor::GetUnit(*caster, guid))

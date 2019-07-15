@@ -265,7 +265,7 @@ public:
         {
             me->setFaction(14);
 
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+            me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
             me->GetMotionMaster()->MovePoint(1, 4092.80f, -760.21f, 2.89f, false);
 
             if (Vehicle* meVehicle = me->GetVehicleKit())
@@ -282,7 +282,7 @@ public:
         {
             if (type == POINT_MOTION_TYPE && point == 1)
             {
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                me->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                 me->SetHomePosition(me->GetPosition());
             }
         }

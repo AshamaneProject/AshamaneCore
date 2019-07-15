@@ -312,7 +312,7 @@ struct npc_tanaan_yrel_summon : public FollowerAI
                     GetClosestCreatureWithEntry(me, TanaanCreatures::NpcLadyLiadrin, 50.0f)
                     || me->GetPositionX() < 4560.0f)
                 {
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC);
+                    me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_NPC);
                     SetFollowPaused(true);
 
                     m_Events.CancelEvent(eEvents::EventCheckStopFollow);

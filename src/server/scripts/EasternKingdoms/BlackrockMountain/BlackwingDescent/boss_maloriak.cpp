@@ -734,7 +734,7 @@ public:
     {
         mob_absolute_zeroAI(Creature* creature) : ScriptedAI(creature)
         {
-            creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE|UNIT_FLAG_NON_ATTACKABLE);
+            creature->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE|UNIT_FLAG_NON_ATTACKABLE));
             creature->SetSpeed(MOVE_RUN, 1.5f);
         }
 

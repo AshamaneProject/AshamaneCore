@@ -295,7 +295,7 @@ public:
             events.ScheduleEvent(EVENT_SUBMERGE, urand(13000, 30000));
             events.ScheduleEvent(EVENT_JETTISON, urand(8000, 18000));
 
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+            me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
         }
 
         void JustSummoned(Creature* summon) override
@@ -312,7 +312,7 @@ public:
                 return;
 
             summons.Despawn(summon);
-            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+            me->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
             me->RemoveAurasDueToSpell(SPELL_AQUATIC_BALL);
             me->SetDisplayId(DISPLAYID_ELEMENTARY);
         }
@@ -662,7 +662,7 @@ public:
                         {
                             xanGuid = Xan->GetGUID();
                             Xan->SetReactState(REACT_PASSIVE);
-                            Xan->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC);
+                            Xan->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC));
                         }
 
                         break;

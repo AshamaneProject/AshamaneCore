@@ -147,7 +147,7 @@ public:
             me->ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_CONFUSE, true);
             me->setActive(true);
 
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+            me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
         }
 
         void InitializeAI() override
@@ -264,7 +264,7 @@ public:
                         if (Creature* pAdd = ObjectAccessor::GetCreature(*me, addsGUIDs[i]))
                         {
                             pAdd->SetReactState(REACT_AGGRESSIVE);
-                            pAdd->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                            pAdd->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                             DoZoneInCombat(pAdd);
                             pAdd->AI()->DoAction(ACTION_ATTACK);
                         }

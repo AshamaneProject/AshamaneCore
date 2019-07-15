@@ -122,13 +122,13 @@ public:
             me->RemoveAura(SPELL_MORTALITY);
             me->RemoveAura(SPELL_MORTALITY_RAID_DEBUFF);
             me->AddAura(SPELL_ASLEEP, me);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+            me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
 
             if (instance)
                 instance->SetBossState(DATA_CHIMAERON, NOT_STARTED);
 
             if (Creature* finkle_einhorn = me->FindNearestCreature(NPC_FINKLE_EINHORN, 150.0f, true))
-                finkle_einhorn->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                finkle_einhorn->AddNpcFlag(UNIT_NPC_FLAG_GOSSIP);
 
             if (Creature* bilotron = me->FindNearestCreature(NPC_BILE_O_TRON, 150.0f, true))
                 bilotron->AI()->DoAction(ACTION_BILE_O_TRON_RESET);
@@ -363,7 +363,7 @@ public:
                     if(Creature* bilotron = creature->FindNearestCreature(NPC_BILE_O_TRON, 100.0f, true))
                     {
                         bilotron->AI()->DoAction(ACTION_BILE_O_TRON_EVENT_START);
-                        creature->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                        creature->RemoveNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                     }
                 }
                 SendGossipMenuFor(player, 66671, creature->GetGUID());
@@ -403,7 +403,7 @@ public:
             {
                 if (Player* target = me->SelectNearestPlayer(85.0f))
                 {
-                    if (target->GetDistance(me) < 85.0f  && me->HasFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP))
+                    if (target->GetDistance(me) < 85.0f  && me->HasNpcFlag(UNIT_NPC_FLAG_GOSSIP))
                     {
                         Talk(SAY_INTRO, me);
                         timer = 25000;
@@ -476,7 +476,7 @@ public:
                     chimaeron->RemoveAurasDueToSpell(SPELL_ASLEEP);
                     if (Unit*target = chimaeron->SelectNearestPlayer(50.0f))
                         chimaeron->AI()->AttackStart(target);
-                    chimaeron->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                    chimaeron->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                     chimaeronWaken = true;
                 }
             }

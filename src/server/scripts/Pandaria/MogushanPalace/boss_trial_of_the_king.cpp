@@ -220,7 +220,7 @@ public:
                 Talk(TALK_DEFEATED);
                 damage = 0;
                 me->SetReactState(REACT_PASSIVE);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                 me->GetMotionMaster()->MoveTargetedHome();
                 me->AttackStop();
                 events.Reset();
@@ -601,7 +601,7 @@ public:
                 Talk(TALK_DEFEATED);
                 damage = 0;
                 me->SetReactState(REACT_PASSIVE);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                 me->GetMotionMaster()->MoveTargetedHome();
                 me->AttackStop();
                 events.Reset();
@@ -691,7 +691,7 @@ public:
         mob_mu_shiba_AI(Creature* creature) : ScriptedAI(creature)
         {
             me->SetReactState(REACT_PASSIVE);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+            me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
         }
 
         EventMap events;
@@ -712,7 +712,7 @@ public:
             {
                 case ACTION_ATTACK:
                     me->SetReactState(REACT_AGGRESSIVE);
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                    me->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                     DoZoneInCombat();
 
                     if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM))
@@ -722,7 +722,7 @@ public:
                     events.Reset();
                     me->AttackStop();
                     me->SetReactState(REACT_PASSIVE);
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                    me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                     break;
             }
         }
@@ -846,7 +846,7 @@ public:
                 Talk(TALK_DEFEATED);
                 damage = 0;
                 me->SetReactState(REACT_PASSIVE);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                 me->GetMotionMaster()->MoveTargetedHome();
                 me->AttackStop();
                 events.Reset();

@@ -385,7 +385,7 @@ class boss_yorsahj_the_unsleeping: public CreatureScript
 
                                 if (Creature* pGlobule = me->SummonCreature((*itr), globulesPos[i], TEMPSUMMON_CORPSE_TIMED_DESPAWN, 3000))
                                 {
-                                    pGlobule->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                                    pGlobule->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                                     pGlobule->SetDisplayId(11686);
                                 }
                             }
@@ -677,7 +677,7 @@ class npc_yorsahj_the_unsleeping_globule: public CreatureScript
                     {
                         case EVENT_CONTINUE:
                             me->SetSpeed(MOVE_RUN, 0.47142876f);
-                            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                            me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                             me->SetDisplayId(me->GetNativeDisplayId());
                             DoCast(me, SPELL_FUSING_VAPORS, true);
                             if (Creature* pYorsahj = me->FindNearestCreature(NPC_YORSAHJ, 200.0f))

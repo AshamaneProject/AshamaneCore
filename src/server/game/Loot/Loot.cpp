@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -63,6 +63,8 @@ LootItem::LootItem(LootStoreItem const& li)
         upgradeId = sDB2Manager.GetRulesetItemUpgrade(itemid);
     }
 
+    randomBonusListId = GenerateItemRandomBonusListId(itemid);
+    upgradeId = sDB2Manager.GetRulesetItemUpgrade(itemid);
     context = 0;
     count = 0;
     is_looted = 0;

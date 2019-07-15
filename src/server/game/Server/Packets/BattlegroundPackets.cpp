@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -21,6 +21,7 @@ WorldPacket const* WorldPackets::Battleground::PVPSeason::Write()
 {
     _worldPacket << uint32(CurrentSeason);
     _worldPacket << uint32(PreviousSeason);
+    _worldPacket << uint32(PvpSeasonID);
 
     return &_worldPacket;
 }
@@ -125,10 +126,11 @@ WorldPacket const* WorldPackets::Battleground::PVPLogData::Write()
 
 void WorldPackets::Battleground::BattlemasterJoin::Read()
 {
-    _worldPacket >> QueueID;
+    QueueIDs.resize(_worldPacket.read<uint32>());
     _worldPacket >> Roles;
     _worldPacket >> BlacklistMap[0] >> BlacklistMap[1];
-    JoinAsGroup = _worldPacket.ReadBit();
+    for (uint64& queueId : QueueIDs)
+        _worldPacket >> queueId;
 }
 
 void WorldPackets::Battleground::BattlemasterJoinArena::Read()

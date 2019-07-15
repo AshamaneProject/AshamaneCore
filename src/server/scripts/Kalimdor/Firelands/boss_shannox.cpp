@@ -478,7 +478,7 @@ class npc_shannox_riplimb : public CreatureScript
                     me->SetReactState(REACT_PASSIVE);
                     me->AttackStop();
                     events.Reset();
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+                    me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_REMOVE_CLIENT_CONTROL));
                     me->SetStandState(UNIT_STAND_STATE_DEAD);
                     me->RemoveAllAuras();
                     events.ScheduleEvent(EVENT_RESURRECT, 30000);
@@ -592,7 +592,7 @@ class npc_shannox_riplimb : public CreatureScript
                             break;
                         case EVENT_RESURRECT:
                             me->SetReactState(REACT_AGGRESSIVE);
-                            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+                            me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_REMOVE_CLIENT_CONTROL));
                             me->SetStandState(UNIT_STAND_STATE_STAND);
                             me->SetHealth(me->GetMaxHealth());
                             me->GetMotionMaster()->MoveChase(me->GetVictim());
@@ -801,8 +801,8 @@ class npc_shannox_spear_of_shannox : public CreatureScript
                         {
                             if (Creature* pFocus = (*itr)->ToCreature())
                             {
-                                pFocus->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
-                                pFocus->SetFlag(UNIT_FIELD_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                                pFocus->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
+                                pFocus->AddNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                                 pFocus->CastSpell(pFocus, SPELL_TRANSFORM_CHARGED_EMBERSTONE_FOCUS, true);
                             }
                         }

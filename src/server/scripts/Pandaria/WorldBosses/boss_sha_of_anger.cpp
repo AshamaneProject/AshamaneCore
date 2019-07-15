@@ -96,7 +96,7 @@ class boss_sha_of_anger : public CreatureScript
                 me->SetPowerType(POWER_RAGE);
                 me->SetPower(POWER_RAGE, 0);
 
-                me->SetFloatValue(UNIT_FIELD_COMBATREACH, 5.0f);
+                me->SetCombatReach(5.0f);
 
                 summons.DespawnAll();
 
@@ -317,7 +317,7 @@ class mob_sha_of_anger_bunny : public CreatureScript
         {
             mob_sha_of_anger_bunnyAI(Creature* creature) : ScriptedAI(creature)
             {
-                creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+                creature->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
                 creature->GetMotionMaster()->Clear();
             }
 
@@ -325,7 +325,7 @@ class mob_sha_of_anger_bunny : public CreatureScript
             {
                 me->GetMotionMaster()->Clear();
                 me->SetReactState(REACT_PASSIVE);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+                me->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
 
                 if (me->AI())
                     me->AI()->SetCanSeeEvenInPassiveMode(true);
@@ -350,8 +350,8 @@ class mob_sha_of_anger_bunny : public CreatureScript
                 if (me->AI() && !me->AI()->CanSeeEvenInPassiveMode())
                     me->AI()->SetCanSeeEvenInPassiveMode(true);
 
-                if (!me->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL))
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+                if (!me->HasUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL))
+                    me->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
 
                 if (me->isMoving())
                     me->StopMoving();
@@ -390,7 +390,7 @@ class spell_sha_of_anger_aggressive_behaviour: public SpellScriptLoader
 
                     target->SetPvP(true);
                     target->setFaction(16);
-                    target->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED);
+                    target->AddUnitFlag(UNIT_FLAG_PLAYER_CONTROLLED);
                 }
 
             }
@@ -400,7 +400,7 @@ class spell_sha_of_anger_aggressive_behaviour: public SpellScriptLoader
                 if (Unit* target = GetTarget())
                 {
                     target->RestoreFaction();
-                    target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED);
+                    target->RemoveUnitFlag(UNIT_FLAG_PLAYER_CONTROLLED);
                 }
             }
 

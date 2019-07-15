@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -1595,10 +1595,10 @@ public:
             if (!caster)
                 return;
 
-            if (caster->GetTypeId() != TYPEID_PLAYER)
+            if (!caster->IsPlayer())
                 return;
 
-            int32 crit = caster->GetUInt32Value(ACTIVE_PLAYER_FIELD_COMBAT_RATING + CR_CRIT_SPELL);
+            int32 crit = caster->ToPlayer()->GetRatingBonusValue(CR_CRIT_SPELL);
             amount += crit;
         }
 
@@ -2189,7 +2189,7 @@ public:
             if (TempSummon* tempSumm = caster->SummonCreature(WORLD_TRIGGER, at->GetPosition(), TEMPSUMMON_TIMED_DESPAWN, 5 * IN_MILLISECONDS))
             {
                 tempSumm->setFaction(caster->getFaction());
-                tempSumm->SetGuidValue(UNIT_FIELD_SUMMONEDBY, caster->GetGUID());
+                tempSumm->SetSummonerGUID(caster->GetGUID());
                 PhasingHandler::InheritPhaseShift(tempSumm, caster);
                 caster->CastSpell(tempSumm, SPELL_MAGE_METEOR_VISUAL, true);
             }
@@ -2205,7 +2205,7 @@ public:
             if (TempSummon* tempSumm = caster->SummonCreature(WORLD_TRIGGER, at->GetPosition(), TEMPSUMMON_TIMED_DESPAWN, 5 * IN_MILLISECONDS))
             {
                 tempSumm->setFaction(caster->getFaction());
-                tempSumm->SetGuidValue(UNIT_FIELD_SUMMONEDBY, caster->GetGUID());
+                tempSumm->SetSummonerGUID(caster->GetGUID());
                 PhasingHandler::InheritPhaseShift(tempSumm, caster);
                 caster->CastSpell(tempSumm, SPELL_MAGE_METEOR_DAMAGE, true);
             }
@@ -2299,10 +2299,10 @@ public:
             if (timeInterval < 1000)
                 return;
 
-            if (Creature* tempSumm = caster->SummonCreature(WORLD_TRIGGER, at->GetPosition(), TEMPSUMMON_TIMED_DESPAWN, 200))
+            if (TempSummon* tempSumm = caster->SummonCreature(WORLD_TRIGGER, at->GetPosition(), TEMPSUMMON_TIMED_DESPAWN, 200))
             {
                 tempSumm->setFaction(caster->getFaction());
-                tempSumm->SetGuidValue(UNIT_FIELD_SUMMONEDBY, caster->GetGUID());
+                tempSumm->SetSummonerGUID(caster->GetGUID());
                 PhasingHandler::InheritPhaseShift(tempSumm, caster);
                 caster->CastSpell(tempSumm, SPELL_MAGE_BLIZZARD_DAMAGE, true);
             }
@@ -2330,7 +2330,7 @@ struct at_mage_rune_of_power : AreaTriggerAI
 
     void OnCreate() override
     {
-        at->SetUInt32Value(AREATRIGGER_SPELL_X_SPELL_VISUAL_ID, 25943);
+        at->SetSpellXSpellVisualId(25943);
     }
 
     void OnUnitEnter(Unit* unit) override
@@ -2373,7 +2373,7 @@ struct at_mage_frozen_orb : AreaTriggerAI
 
     void OnCreate() override
     {
-        at->SetUInt32Value(AREATRIGGER_SPELL_X_SPELL_VISUAL_ID, 40291);
+        at->SetSpellXSpellVisualId(40291);
     }
 
     void OnUpdate(uint32 diff) override

@@ -749,9 +749,9 @@ class mob_pandriarch_windfur : public CreatureScript
                 {
                     creature->setFaction(14);
                     creature->SetReactState(REACT_DEFENSIVE);
-                    creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
-                    creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC);
-                    creature->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                    creature->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
+                    creature->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_NPC);
+                    creature->RemoveNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                     creature->AI()->Reset();
                     creature->CombatStart(player, true);
                 }
@@ -788,9 +788,9 @@ class mob_pandriarch_windfur : public CreatureScript
                         me->GetMotionMaster()->MovePoint(0, 1996.76001f, -2216.780029f, 247.725006f);
                         me->setFaction(35);
                         me->SetFullHealth();
-                        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
-                        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC);
-                        me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                        me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
+                        me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_NPC);
+                        me->AddNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                         player->KilledMonsterCredit(NPC_PANDRIARCH_WINDFUR);
                     }
 
@@ -882,9 +882,9 @@ class mob_pandriarch_bramblestaff : public CreatureScript
                 {
                     creature->setFaction(14);
                     creature->SetReactState(REACT_DEFENSIVE);
-                    creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
-                    creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC);
-                    creature->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                    creature->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
+                    creature->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_NPC);
+                    creature->RemoveNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                     creature->AI()->Reset();
                     creature->CombatStart(player, true);
                 }
@@ -923,9 +923,9 @@ class mob_pandriarch_bramblestaff : public CreatureScript
                         me->GetMotionMaster()->MovePoint(0, 1862.300049f, -2325.060059f, 257.062012f);
                         me->setFaction(35);
                         me->SetFullHealth();
-                        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
-                        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC);
-                        me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                        me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
+                        me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_NPC);
+                        me->AddNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                         player->KilledMonsterCredit(NPC_PANDRIARCH_BRAMBLESTAFF);
                     }
                 }
@@ -1024,9 +1024,9 @@ class mob_pandriarch_goldendraft : public CreatureScript
                 {
                     creature->setFaction(14);
                     creature->SetReactState(REACT_DEFENSIVE);
-                    creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
-                    creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC);
-                    creature->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                    creature->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
+                    creature->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_NPC);
+                    creature->RemoveNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                     creature->AI()->Reset();
                     creature->CombatStart(player, true);
                 }
@@ -1062,9 +1062,9 @@ class mob_pandriarch_goldendraft : public CreatureScript
                         me->GetMotionMaster()->MovePoint(0, 1942.630005f, -2290.530029f, 240.429001f);
                         me->setFaction(35);
                         me->SetFullHealth();
-                        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
-                        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC);
-                        me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                        me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
+                        me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_NPC);
+                        me->AddNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                         player->KilledMonsterCredit(NPC_PANDRIARCH_GOLDENDRAFT);
                     }
                 }
@@ -1148,7 +1148,7 @@ class mob_big_bao : public CreatureScript
                 {
                     creature->setFaction(14);
                     creature->SetReactState(REACT_DEFENSIVE);
-                    creature->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                    creature->RemoveNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                     creature->AI()->Reset();
                     creature->CombatStart(player, true);
                 }
@@ -1199,7 +1199,7 @@ class mob_big_bao : public CreatureScript
                         me->GetMotionMaster()->MovePoint(0, 1604.75f, -2562.139893f, 153.134003f);
                         me->setFaction(35);
                         me->SetFullHealth();
-                        me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                        me->AddNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                         player->KilledMonsterCredit(MOB_BIG_BAO);
                     }
                 }
@@ -1532,7 +1532,7 @@ class mob_widow_s_web : public CreatureScript
 
             void Reset() override
             {
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+                me->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
             }
 
             void JustDied(Unit* killer) override
@@ -1609,7 +1609,7 @@ class mob_windward_hatchling : public CreatureScript
             void DoAction(int32 action) override
             {
                 if (action == ACTION_SET_FLAG)
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED);
+                    me->AddUnitFlag(UNIT_FLAG_PLAYER_CONTROLLED);
             }
 
             void Reset() override
@@ -1984,14 +1984,14 @@ class mob_second_big_bao : public CreatureScript
             {
                 if (action == ACTION_REMOVE_FLAG)
                 {
-                    me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                    me->RemoveNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                 }
 
                 else if (action == ACTION_REINITIALIZE)
                 {
                     me->setFaction(35);
                     me->CombatStop();
-                    me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                    me->AddNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                 }
             }
 
@@ -2123,14 +2123,14 @@ class mob_ace_longpaw : public CreatureScript
             {
                 if (action == ACTION_REMOVE_FLAG)
                 {
-                    me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                    me->RemoveNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                 }
 
                 else if (action == ACTION_REINITIALIZE)
                 {
                     me->setFaction(35);
                     me->CombatStop();
-                    me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                    me->AddNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                 }
             }
 
@@ -2262,14 +2262,14 @@ class mob_ningha_darkwheel : public CreatureScript
             {
                 if (action == ACTION_REMOVE_FLAG)
                 {
-                    me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                    me->RemoveNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                 }
 
                 else if (action == ACTION_REINITIALIZE)
                 {
                     me->setFaction(35);
                     me->CombatStop();
-                    me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                    me->AddNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                 }
             }
 
@@ -2401,14 +2401,14 @@ class mob_qua_row_whitebrow : public CreatureScript
             {
                 if (action == ACTION_REMOVE_FLAG)
                 {
-                    me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                    me->RemoveNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                 }
 
                 else if (action == ACTION_REINITIALIZE)
                 {
                     me->setFaction(35);
                     me->CombatStop();
-                    me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                    me->AddNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                 }
             }
 
@@ -2540,14 +2540,14 @@ class mob_suchi_the_sweet : public CreatureScript
             {
                 if (action == ACTION_REMOVE_FLAG)
                 {
-                    me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                    me->RemoveNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                 }
 
                 else if (action == ACTION_REINITIALIZE)
                 {
                     me->setFaction(35);
                     me->CombatStop();
-                    me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                    me->AddNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                 }
             }
 

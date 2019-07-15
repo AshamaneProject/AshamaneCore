@@ -551,7 +551,7 @@ public:
         {
             events.Reset();
             if (!me->FindNearestCreature(NPC_ILLIDAN_2, 100.0f))
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
         }
 
         void EnterCombat(Unit* /*attacker*/) override

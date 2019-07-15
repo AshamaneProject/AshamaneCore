@@ -232,7 +232,7 @@ class boss_zorlok : public CreatureScript
                 summons.DespawnAll();
                 me->SetVirtualItem(0, EQUIP_ZORLOK);
                 // Make sure we can target zorlok
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                me->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
 
                 // Set Echo
                 isAttEcho = me->GetEntry() == NPC_ECHO_OF_ATTENUATION;
@@ -281,7 +281,7 @@ class boss_zorlok : public CreatureScript
 
                 // Echo in phase 2 should not move
                 if (isEcho && phase == 2)
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+                    me->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
 
                 platforms.clear();
                 if (!isEcho)
@@ -328,7 +328,7 @@ class boss_zorlok : public CreatureScript
                 me->SetDisableGravity(true);
                 me->SetHover(true);
                 me->AddUnitMovementFlag(MOVEMENTFLAG_CAN_FLY | MOVEMENTFLAG_FLYING);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
 
                 if (isActive)
                 {
@@ -351,7 +351,7 @@ class boss_zorlok : public CreatureScript
                 me->SetDisableGravity(false);
                 me->RemoveUnitMovementFlag(MOVEMENTFLAG_FLYING);
                 me->SetHover(false);
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                me->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                 events.ScheduleEvent(EVENT_INHALE, 15000);
 
                 if (platformToUse != actualPlatform)
@@ -471,8 +471,8 @@ class boss_zorlok : public CreatureScript
                 if (pInstance)
                     pInstance->SetBossState(DATA_ZORLOK, FAIL);
 
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IN_COMBAT);
+                me->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
+                me->RemoveUnitFlag(UNIT_FLAG_IN_COMBAT);
             }
 
             void EnterCombat(Unit* /*p_Attacker*/) override
@@ -676,9 +676,9 @@ class boss_zorlok : public CreatureScript
                             orientation = 0.0f;
                             // Reset Zor'lok in combat
                             me->SetReactState(REACT_DEFENSIVE);
-                            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED|UNIT_FLAG_REMOVE_CLIENT_CONTROL|UNIT_FLAG_IMMUNE_TO_PC|UNIT_FLAG_STUNNED);
-                            me->RemoveFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN);
-                            me->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_ALLOW_ENEMY_INTERACT);
+                            me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_PACIFIED|UNIT_FLAG_REMOVE_CLIENT_CONTROL|UNIT_FLAG_IMMUNE_TO_PC|UNIT_FLAG_STUNNED));
+                            me->RemoveUnitFlag2(UNIT_FLAG2_DISABLE_TURN);
+                            me->AddUnitFlag2(UNIT_FLAG2_ALLOW_ENEMY_INTERACT);
                         }
                         else
                         {
@@ -949,9 +949,9 @@ class boss_zorlok : public CreatureScript
                         }
                         me->CastSpell(me, SPELL_ATTENUATION, true);
                         me->SetReactState(REACT_PASSIVE);
-                        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED|UNIT_FLAG_REMOVE_CLIENT_CONTROL|UNIT_FLAG_IMMUNE_TO_PC|UNIT_FLAG_STUNNED);
-                        me->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN);
-                        me->RemoveFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_ALLOW_ENEMY_INTERACT);
+                        me->AddUnitFlag(UnitFlags(UNIT_FLAG_PACIFIED|UNIT_FLAG_REMOVE_CLIENT_CONTROL|UNIT_FLAG_IMMUNE_TO_PC|UNIT_FLAG_STUNNED));
+                        me->AddUnitFlag2(UNIT_FLAG2_DISABLE_TURN);
+                        me->RemoveUnitFlag2(UNIT_FLAG2_ALLOW_ENEMY_INTERACT);
 
                         uint32 action = ((phase == PHASE_ZORLOK1 || isEcho) ? EVENT_ATTENUATION : ChooseAction());
                         events.ScheduleEvent(action, 40000);
@@ -1121,7 +1121,7 @@ class mob_sonic_ring : public CreatureScript
             {
                 me->AddAura(SPELL_SONIC_RING_VISUAL, me);
                 me->SetReactState(REACT_PASSIVE);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
                 // Low speed
                 me->SetSpeed(MOVE_WALK, 0.5f);
                 me->SetSpeed(MOVE_RUN,  0.5f);
@@ -1180,7 +1180,7 @@ class mob_sonic_pulse : public CreatureScript
             {
                 me->AddAura(SPELL_SONIC_PULSE_VISUAL, me);
                 me->SetReactState(REACT_PASSIVE);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
                 // Low speed
                 me->SetSpeed(MOVE_WALK, 0.3f);
                 me->SetSpeed(MOVE_RUN,  0.3f);
@@ -1570,7 +1570,7 @@ class spell_zorlok_exhale_damage : public SpellScriptLoader
 
             void Register() override
             {
-                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_zorlok_exhale_damage_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_CASTER_AREA_ENEMY_FRONT);
+                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_zorlok_exhale_damage_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_CONE_ENTRY_129);
             }
         };
 

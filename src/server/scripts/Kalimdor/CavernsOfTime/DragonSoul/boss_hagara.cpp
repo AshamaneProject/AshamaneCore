@@ -435,7 +435,7 @@ class boss_hagara_the_stormbinder: public CreatureScript
                     bEventDone = true;
                     me->SetVisible(true);
                     me->SetReactState(REACT_DEFENSIVE);
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                    me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                 }
 
                 instance->DoRemoveAurasDueToSpellOnPlayers(SPELL_WATERY_ENTRENCHMENT);
@@ -676,7 +676,7 @@ class boss_hagara_the_stormbinder: public CreatureScript
                             instance->SetData(DATA_HAGARA_EVENT, DONE);
                             events.CancelEvent(EVENT_CHECK_PLAYERS);
                             me->SetVisible(true);
-                            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                            me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                             me->SetReactState(REACT_AGGRESSIVE);
                             if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 150.0f, true))
                                 AttackStart(target);
@@ -1144,7 +1144,7 @@ class npc_hagara_the_stormbinder_tornado_stalker : public CreatureScript
         {
             npc_hagara_the_stormbinder_tornado_stalkerAI(Creature* pCreature) : Scripted_NoMovementAI(pCreature)
             {
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                 me->SetReactState(REACT_PASSIVE);
             }
 
@@ -1479,7 +1479,7 @@ class npc_hagara_the_stormbinder_ice_lance : public CreatureScript
         {
             npc_hagara_the_stormbinder_ice_lanceAI(Creature* creature) : Scripted_NoMovementAI(creature)
             {
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
             }
 
             void Reset() override

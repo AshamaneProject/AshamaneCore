@@ -67,7 +67,7 @@ public:
         boss_witherbarkAI(Creature* creature) : BossAI(creature, DATA_WITHERBARK)
         {
             DoCast(me, SPELL_PETRIFIED_BARK);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+            me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
         }
 
         void Reset() override
@@ -92,7 +92,7 @@ public:
             if (!intro)
             {
                 DoCast(me, SPELL_PETRIFIED_BARK);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
             }
         }
 
@@ -110,7 +110,7 @@ public:
                     if (!intro && aqueousIntro >= 3)
                     {
                         DoCast(me, SPELL_CANCEL_PETRIFIED_BARK);
-                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                        me->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                         intro = true;
                     }
 

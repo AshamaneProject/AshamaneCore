@@ -255,7 +255,7 @@ class instance_dragon_soul : public InstanceMapScript
                     case GO_ALLIANCE_SHIP:
                         uiAllianceShipGUID = pGo->GetGUID();
                         if (GetBossState(DATA_ULTRAXION) == DONE)
-                            pGo->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_DESTROYED);
+                            pGo->RemoveFlag(GO_FLAG_DESTROYED);
                         pGo->UpdateObjectVisibility();
                         break;
                     case GO_DEATHWING_BACK_PLATE_1:
@@ -516,7 +516,7 @@ class instance_dragon_soul : public InstanceMapScript
 
                             if (GetBossState(DATA_MADNESS) == NOT_STARTED && GetBossState(DATA_SPINE) == DONE)
                                 if (Creature* trall = instance->GetCreature(uiTrallMaelstrom))
-                                    if (trall->HasFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP))
+                                    if (trall->HasNpcFlag(UNIT_NPC_FLAG_GOSSIP))
                                         trall->AI()->DoAction(ACTION_RESET_BATTLE);
                         }
                     }

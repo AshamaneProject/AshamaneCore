@@ -49,7 +49,7 @@ class mob_ik_ik_the_nimble : public CreatureScript
             void JustSummoned(Creature* summon) override
             {
                 summon->DespawnOrUnsummon(15000);
-                summon->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+                summon->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
             }
 
             void UpdateAI(uint32 diff) override
@@ -248,7 +248,7 @@ class mob_dread_kunchong : public CreatureScript
                 if (!player)
                     return;
 
-                switch (player->GetUInt32Value(PLAYER_FIELD_CURRENT_SPEC_ID))
+                switch (player->GetSpecializationId())
                 {
                     case TALENT_SPEC_DEATHKNIGHT_BLOOD:
                     case TALENT_SPEC_DEATHKNIGHT_FROST:
@@ -1752,7 +1752,7 @@ class mob_hisek_the_swarmkeeper_two : public CreatureScript
             void IsSummonedBy(Unit* owner) override
             {
                 if (owner->ToCreature()->GetEntry() == MOB_SECOND_HISEK_THE_SWARMKEEPER)
-                    me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
+                    me->RemoveNpcFlag(UNIT_NPC_FLAG_QUESTGIVER);
             }
 
             void MovementInform (uint32 type, uint32 pointId) override
@@ -2122,7 +2122,7 @@ class mob_second_kaz_tik_the_manipulator : public CreatureScript
                         player->KilledMonsterCredit(MOB_KAZ_TIK_THE_MANIPULATOR);
                         player->KilledMonsterCredit(MOB_KOVOK);
 
-                        me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
+                        me->AddNpcFlag(UNIT_NPC_FLAG_QUESTGIVER);
                     }
                         break;
                 }

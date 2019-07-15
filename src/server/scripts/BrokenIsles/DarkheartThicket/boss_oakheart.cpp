@@ -95,7 +95,7 @@ struct boss_oakheart : public BossAI
     {
         if (me->GetDistance(who) < 20.0f)
         {
-            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_UNK_6 | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_UNK_15 | UNIT_FLAG_STUNNED);
+            me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_UNK_6 | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_UNK_15 | UNIT_FLAG_STUNNED));
             me->RemoveAurasDueToSpell(SPELL_DEEP_ROOTS);
         }
     }

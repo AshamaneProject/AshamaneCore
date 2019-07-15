@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -340,12 +340,6 @@ enum HotfixDatabaseStatements : uint32
     HOTFIX_SEL_ITEM_MODIFIED_APPEARANCE,
 
     HOTFIX_SEL_ITEM_PRICE_BASE,
-
-    HOTFIX_SEL_ITEM_RANDOM_PROPERTIES,
-    HOTFIX_SEL_ITEM_RANDOM_PROPERTIES_LOCALE,
-
-    HOTFIX_SEL_ITEM_RANDOM_SUFFIX,
-    HOTFIX_SEL_ITEM_RANDOM_SUFFIX_LOCALE,
 
     HOTFIX_SEL_ITEM_SEARCH_NAME,
     HOTFIX_SEL_ITEM_SEARCH_NAME_LOCALE,

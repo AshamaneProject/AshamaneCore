@@ -199,7 +199,7 @@ public:
 
                 me->CombatStop(true);
                 me->SetReactState(REACT_PASSIVE);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                 me->setFaction(35);
                 Talk(SAY_PHASE_1_END_ERUNAK);
                 isEnslaved = false;
@@ -267,14 +267,14 @@ public:
                 me->CastSpell(target, SPELL_ENSLAVE_BUFF, true);
                 target->CastSpell(target, SPELL_ENSLAVE_VEHICLE, true);
                 me->EnterVehicle(target);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
             }
             else
             {
                 me->ExitVehicle();
                 target->RemoveAurasDueToSpell(SPELL_ENSLAVE_BUFF);
                 target->RemoveAurasDueToSpell(SPELL_ENSLAVE_VEHICLE);
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                me->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
             }
         }
 
@@ -285,7 +285,7 @@ public:
                 if (Creature * pErunak = pInstance->GetCreature((DATA_ERUNAK_STONESPEAKER)))
                 {
                     pErunak->SetReactState(REACT_AGGRESSIVE);
-                    pErunak->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                    pErunak->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                     pErunak->setFaction(16);
                     pErunak->Respawn(true);
                     me->DespawnOrUnsummon();
@@ -519,8 +519,8 @@ public:
     {
         npc_ghursha_mind_fogAI(Creature* pCreature) : Scripted_NoMovementAI(pCreature)
         {
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+            me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
+            me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
             me->SetReactState(REACT_PASSIVE);
         }
 

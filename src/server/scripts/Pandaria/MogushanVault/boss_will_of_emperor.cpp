@@ -214,7 +214,7 @@ class boss_jin_qin_xi : public CreatureScript
                 pInstance = creature->GetInstanceScript();
                 me->SetDisplayId(DISPLAY_BOSS_INVISIBLE);
                 me->setFaction(35);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC));
                 sumCourage = 0;
             }
 
@@ -295,7 +295,7 @@ class boss_jin_qin_xi : public CreatureScript
                             pInstance->SetBossState(DATA_WILL_OF_EMPEROR, FAIL);
                             if (me->GetEntry() == NPC_QIN_XI)
                                 if (GameObject* console = pInstance->GetGameObject(GOB_ANCIENT_CONTROL_CONSOLE))
-                                    console->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
+                                    console->RemoveFlag(GO_FLAG_NOT_SELECTABLE);
                         }
                     }
                 }
@@ -337,7 +337,7 @@ class boss_jin_qin_xi : public CreatureScript
 
                 if (id == 2)
                 {
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_IMMUNE_TO_PC);
+                    me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_IMMUNE_TO_PC));
                     me->HandleEmoteCommand(EMOTE_ONESHOT_BOW);
                     events.ScheduleEvent(EVENT_BOSS_EMOTE, 2000);
                 }
@@ -663,9 +663,9 @@ class boss_jin_qin_xi : public CreatureScript
                             qinHitCount = 0;
 
                             // Stop looking after victim
-                            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED|UNIT_FLAG_REMOVE_CLIENT_CONTROL|UNIT_FLAG_STUNNED);
-                            me->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN);
-                            me->RemoveFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_ALLOW_ENEMY_INTERACT);
+                            me->AddUnitFlag(UnitFlags(UNIT_FLAG_PACIFIED|UNIT_FLAG_REMOVE_CLIENT_CONTROL|UNIT_FLAG_STUNNED));
+                            me->AddUnitFlag2(UNIT_FLAG2_DISABLE_TURN);
+                            me->RemoveUnitFlag2(UNIT_FLAG2_ALLOW_ENEMY_INTERACT);
                             me->ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_TAUNT, true);
                             me->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_ATTACK_ME, true);
                             
@@ -767,9 +767,9 @@ class boss_jin_qin_xi : public CreatureScript
                                 me->SetSpeed(MOVE_WALK, moveWalk);
                                 me->SetSpeed(MOVE_RUN, moveRun);
                                 // Reset attacking to normal
-                                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED|UNIT_FLAG_REMOVE_CLIENT_CONTROL|UNIT_FLAG_IMMUNE_TO_PC|UNIT_FLAG_STUNNED);
-                                me->RemoveFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN);
-                                me->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_ALLOW_ENEMY_INTERACT);
+                                me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_PACIFIED|UNIT_FLAG_REMOVE_CLIENT_CONTROL|UNIT_FLAG_IMMUNE_TO_PC|UNIT_FLAG_STUNNED));
+                                me->RemoveUnitFlag2(UNIT_FLAG2_DISABLE_TURN);
+                                me->AddUnitFlag2(UNIT_FLAG2_ALLOW_ENEMY_INTERACT);
                                 me->ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_TAUNT, false);
                                 me->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_ATTACK_ME, false);
                                 
@@ -907,7 +907,7 @@ class mob_woe_add_generic : public CreatureScript
                 me->setFaction(35);
                 // Invisible
                 me->SetDisplayId(DISPLAY_ADD_INVISIBLE);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                 
                 // Wait before casting
                 events.ScheduleEvent(EVENT_CAST_SKYBEAM, 1000);
@@ -928,10 +928,10 @@ class mob_woe_add_generic : public CreatureScript
                 if (id == 1)
                 {
                     targetGuid = ObjectGuid::Empty;
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                    me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                     // Don't remove Immune to PC/NPC for Rage & Stength
                     if (me->GetEntry() == NPC_EMPEROR_COURAGE)
-                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
+                        me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC));
 
                     switch (me->GetEntry())
                     {
@@ -1379,7 +1379,7 @@ class mob_ancient_mogu_machine : public CreatureScript
             mob_ancient_mogu_machineAI(Creature* creature) : ScriptedAI(creature)
             {
                 pInstance = creature->GetInstanceScript();
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_IMMUNE_TO_PC);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_IMMUNE_TO_PC));
             }
 
             void Reset() override
@@ -1479,7 +1479,7 @@ class mob_general_purpose_bunnyJMF : public CreatureScript
 
             mob_general_purpose_bunnyJMFAI(Creature* creature) : ScriptedAI(creature)
             {
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_IMMUNE_TO_PC);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_IMMUNE_TO_PC));
                 me->AddUnitState(UNIT_STATE_ROOT);
                 hasCast = false;
                 isCentralMob = false;
@@ -1498,7 +1498,7 @@ class mob_general_purpose_bunnyJMF : public CreatureScript
             void Reset() override
             {
                 // Also used in Stormstout Brewery...
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_PC);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_PC));
                 me->SetReactState(REACT_PASSIVE);
                 me->SetFullHealth();
 
@@ -1955,7 +1955,7 @@ class go_ancien_control_console : public GameObjectScript
 
                     player->TextEmote("The machine hums to life! Get to the lower level!", 0, true);
 
-                    go->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
+                    go->AddFlag(GO_FLAG_NOT_SELECTABLE);
 
                     if (Creature* cho = GetClosestCreatureWithEntry(go, NPC_LOREWALKER_CHO, 20.0f, true))
                         cho->AI()->DoAction(ACTION_TALK_WILL_OF_EMPEROR);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -122,7 +122,7 @@ namespace WorldPackets
             int32 Unknown = 0;
         };
 
-        struct GarrisonMissionAreaBonus
+        struct GarrisonMissionBonusAbility
         {
             uint32 GarrMssnBonusAbilityID = 0;
             time_t StartTime = time_t(0);
@@ -147,8 +147,8 @@ namespace WorldPackets
             std::vector<GarrisonFollower const*> Followers;
             std::vector<GarrisonMission const*> Missions;
             std::vector<std::vector<GarrisonMissionReward>> MissionRewards;
-            std::vector<std::vector<GarrisonMissionReward>> MissionBonusRewards;
-            std::vector<GarrisonMissionAreaBonus const*> MissionAreaBonuses;
+            std::vector<std::vector<GarrisonMissionReward>> MissionOvermaxRewards;
+            std::vector<GarrisonMissionBonusAbility const*> MissionAreaBonuses;
             std::vector<GarrisonTalent> Talents;
             std::vector<bool> CanStartMission;
             std::vector<int32> ArchivedMissions;
@@ -432,7 +432,7 @@ namespace WorldPackets
         class GarrisonRemoveFollowerResult final : public ServerPacket
         {
         public:
-            GarrisonRemoveFollowerResult() : ServerPacket(SMSG_GARRISON_REMOVE_FOLLOWER_RESULT, 8 + 4) { }
+            GarrisonRemoveFollowerResult() : ServerPacket(SMSG_GARRISON_REMOVE_FOLLOWER_RESULT, 8 + 4 + 4) { }
 
             WorldPacket const* Write() override;
 

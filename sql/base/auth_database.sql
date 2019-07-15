@@ -336,6 +336,7 @@ CREATE TABLE `battlenet_account_toys` (
   `accountId` int(10) unsigned NOT NULL,
   `itemId` int(11) NOT NULL DEFAULT '0',
   `isFavourite` tinyint(1) DEFAULT '0',
+  `hasFanfare` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`accountId`,`itemId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -432,58 +433,6 @@ CREATE TABLE `battlenet_item_favorite_appearances` (
 LOCK TABLES `battlenet_item_favorite_appearances` WRITE;
 /*!40000 ALTER TABLE `battlenet_item_favorite_appearances` DISABLE KEYS */;
 /*!40000 ALTER TABLE `battlenet_item_favorite_appearances` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `ip2nation`
---
-
-DROP TABLE IF EXISTS `ip2nation`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `ip2nation` (
-  `ip` int(11) unsigned NOT NULL DEFAULT '0',
-  `country` char(2) NOT NULL DEFAULT '',
-  KEY `ip` (`ip`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `ip2nation`
---
-
-LOCK TABLES `ip2nation` WRITE;
-/*!40000 ALTER TABLE `ip2nation` DISABLE KEYS */;
-/*!40000 ALTER TABLE `ip2nation` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `ip2nationCountries`
---
-
-DROP TABLE IF EXISTS `ip2nationCountries`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `ip2nationCountries` (
-  `code` varchar(4) NOT NULL DEFAULT '',
-  `iso_code_2` varchar(2) NOT NULL DEFAULT '',
-  `iso_code_3` varchar(3) DEFAULT '',
-  `iso_country` varchar(255) NOT NULL DEFAULT '',
-  `country` varchar(255) NOT NULL DEFAULT '',
-  `lat` float NOT NULL DEFAULT '0',
-  `lon` float NOT NULL DEFAULT '0',
-  PRIMARY KEY (`code`),
-  KEY `code` (`code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `ip2nationCountries`
---
-
-LOCK TABLES `ip2nationCountries` WRITE;
-/*!40000 ALTER TABLE `ip2nationCountries` DISABLE KEYS */;
-/*!40000 ALTER TABLE `ip2nationCountries` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -805,11 +754,8 @@ INSERT INTO `rbac_linked_permissions` VALUES
 (196,304),
 (196,305),
 (196,306),
-(196,307),
-(196,308),
 (196,309),
 (196,310),
-(196,313),
 (196,314),
 (196,319),
 (196,320),
@@ -824,13 +770,9 @@ INSERT INTO `rbac_linked_permissions` VALUES
 (196,329),
 (196,330),
 (196,331),
-(196,332),
-(196,333),
-(196,334),
 (196,335),
 (196,336),
 (196,337),
-(196,338),
 (196,339),
 (196,340),
 (196,341),
@@ -1249,7 +1191,6 @@ INSERT INTO `rbac_linked_permissions` VALUES
 (198,532),
 (198,544),
 (198,545),
-(198,546),
 (198,547),
 (198,548),
 (198,549),
@@ -1502,13 +1443,10 @@ INSERT INTO `rbac_permissions` VALUES
 (304,'Command: debug bg'),
 (305,'Command: debug entervehicle'),
 (306,'Command: debug getitemstate'),
-(307,'Command: debug getitemvalue'),
-(308,'Command: debug getvalue'),
 (309,'Command: debug hostil'),
 (310,'Command: debug itemexpire'),
 (311,'Command: debug lootrecipient'),
 (312,'Command: debug los'),
-(313,'Command: debug mod32value'),
 (314,'Command: debug moveflags'),
 (315,'Command: debug play'),
 (316,'Command: debug play cinematics'),
@@ -1527,13 +1465,9 @@ INSERT INTO `rbac_permissions` VALUES
 (329,'Command: debug send setphaseshift'),
 (330,'Command: debug send spellfail'),
 (331,'Command: debug setaurastate'),
-(332,'Command: debug setbit'),
-(333,'Command: debug setitemvalue'),
-(334,'Command: debug setvalue'),
 (335,'Command: debug setvid'),
 (336,'Command: debug spawnvehicle'),
 (337,'Command: debug threat'),
-(338,'Command: debug update'),
 (339,'Command: debug uws'),
 (340,'Command: wpgps'),
 (341,'Command: deserter'),
@@ -1740,7 +1674,6 @@ INSERT INTO `rbac_permissions` VALUES
 (543,'Command: demorph'),
 (544,'Command: modify'),
 (545,'Command: modify arenapoints'),
-(546,'Command: modify bit'),
 (547,'Command: modify drunk'),
 (548,'Command: modify energy'),
 (549,'Command: modify faction'),
@@ -1845,7 +1778,7 @@ INSERT INTO `rbac_permissions` VALUES
 (650,'Command: reload support'),
 (651,'Command: reload gossip_menu'),
 (652,'Command: reload gossip_menu_option'),
-(653,'Command: reload item_enchantment_template'),
+(653,'Command: reload item_random_bonus_list_template'),
 (654,'Command: reload item_loot_template'),
 (655,'Command: reload item_set_names'),
 (656,'Command: reload lfg_dungeon_rewards'),
@@ -2074,7 +2007,7 @@ CREATE TABLE `realmlist` (
   `timezone` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `allowedSecurityLevel` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `population` float unsigned NOT NULL DEFAULT '0',
-  `gamebuild` int(10) unsigned NOT NULL DEFAULT '26972',
+  `gamebuild` int(10) unsigned NOT NULL DEFAULT '30706',
   `Region` tinyint(3) unsigned NOT NULL DEFAULT '1',
   `Battlegroup` tinyint(3) unsigned NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
@@ -2089,7 +2022,7 @@ CREATE TABLE `realmlist` (
 LOCK TABLES `realmlist` WRITE;
 /*!40000 ALTER TABLE `realmlist` DISABLE KEYS */;
 INSERT INTO `realmlist` VALUES
-(1,'Ashamane','127.0.0.1','127.0.0.1','255.255.255.0',8085,0,0,1,0,0,26972,1,1);
+(1,'Ashamane','127.0.0.1','127.0.0.1','255.255.255.0',8085,0,0,1,0,0,30706,1,1);
 /*!40000 ALTER TABLE `realmlist` ENABLE KEYS */;
 UNLOCK TABLES;
 

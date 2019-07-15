@@ -237,7 +237,7 @@ public:
             secondPhase = false;
             finalPhase = false;
 
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+            me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
 
             if (instance)
                 instance->SetBossState(DATA_NEFARIAN, NOT_STARTED);
@@ -249,7 +249,7 @@ public:
         {
             DoZoneInCombat();
             if(Creature* Onyxia = me->FindNearestCreature(NPC_ONYXIA, 150.0f, true))
-                Onyxia->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                Onyxia->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
         }
 
         void EnterEvadeMode(EvadeReason /*why*/) override
@@ -459,7 +459,7 @@ public:
                     case EVENT_INTRO:
                         me->HandleEmoteCommand(EMOTE_ONESHOT_LIFTOFF);
                         me->SetDisableGravity(true);
-                        me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, 0x02);
+                        me->SetAnimTier(UNIT_BYTE1_FLAG_HOVER, true);
                         me->GetMotionMaster()->MovePoint(1, -126.518f, -233.342f, 36.358f); // Position on top of raid.
                         break;
 
@@ -479,11 +479,11 @@ public:
 
                     case EVENT_LANDING:
                         me->HandleEmoteCommand(EMOTE_ONESHOT_LAND);
-                        me->RemoveByteFlag(UNIT_FIELD_BYTES_1, 3, 0x02);
+                        me->SetAnimTier(UNIT_BYTE1_FLAG_NONE, true);
                         me->SetDisableGravity(false);
                         EnterPhaseGround();
                         me->GetMotionMaster()->MoveChase(me->GetVictim());
-                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                        me->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                         break;
 
                     case EVENT_SHADOWFLAME_BREATH:
@@ -504,7 +504,7 @@ public:
                             elevator->SetGoState(GO_STATE_READY);
 
                         me->HandleEmoteCommand(EMOTE_ONESHOT_LIFTOFF);
-                        me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, 0x02);
+                        me->SetAnimTier(UNIT_BYTE1_FLAG_HOVER, true);
                         me->SetDisableGravity(true);
                         events.ScheduleEvent(EVENT_FLIGHT, 1500);
                         events.ScheduleEvent(EVENT_AIR, 2000);
@@ -533,7 +533,7 @@ public:
                     case EVENT_LAND:
                         me->HandleEmoteCommand(EMOTE_ONESHOT_LAND);
                         me->SetDisableGravity(false);
-                        me->RemoveByteFlag(UNIT_FIELD_BYTES_1, 3, 0x02);
+                        me->SetAnimTier(UNIT_BYTE1_FLAG_NONE, true);
                         events.ScheduleEvent(EVENT_RETURN, 1000);
                         events.ScheduleEvent(EVENT_GROUND, 1500);
                         break;
@@ -615,7 +615,7 @@ public:
         void Reset() override
         {
             events.Reset();
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+            me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
             me->SetReactState(REACT_DEFENSIVE);
         }
 
@@ -698,7 +698,7 @@ public:
             /*
             events.Reset();
             introDone = false;
-            //me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);*/
+            //me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);*/
         }
 
         void EnterCombat(Unit* /*who*/) override
@@ -718,7 +718,7 @@ public:
         void UpdateAI(uint32 diff) override
         {
             //if(instance->GetBossState(BOSS_CHIMAERON) == DONE)
-            //    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+            //    me->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
 
             events.Update(diff);
 
@@ -760,8 +760,8 @@ public:
 
         void DamageTaken(Unit* /*who*/, uint32& /*damage*/) override
         {
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+            me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
+            me->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
             me->SetReactState(REACT_PASSIVE);
             me->AttackStop();
         }

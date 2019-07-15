@@ -339,7 +339,7 @@ class boss_liu_flameheart : public CreatureScript
                         case EVENT_SUMMON_YULON:
                             me->CastSpell(me, SPELL_SUMMON_JADE_SERPENT, false);
                             me->CastSpell(me, SPELL_JADE_SOUL, false);
-                            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                            me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                             me->ApplySpellImmune(SPELL_JADE_SOUL, IMMUNITY_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, true);
                             me->ApplySpellImmune(SPELL_JADE_SOUL, IMMUNITY_DAMAGE, SPELL_SCHOOL_MASK_MAGIC, true);
                             me->SetReactState(REACT_PASSIVE);

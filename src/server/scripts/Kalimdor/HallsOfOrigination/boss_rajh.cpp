@@ -156,7 +156,7 @@ public:
             case NPC_INFERNO_TRIGGER:
                 summon->setFaction(16);
                 summon->SetDisplayFromModel(0);
-                summon->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_NPC);
+                summon->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_NPC));
                 summon->AI()->DoCastAOE(SPELL_INFERNO_JUMP_VISUAL);
 
                 summon->GetScheduler().Schedule(Seconds(1), [summon](TaskContext /*context*/)
@@ -168,7 +168,7 @@ public:
                 break;
             case NPC_SOLAR_WIND:
                 me->SetDisplayFromModel(0);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_NPC);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_NPC));
                 DoCastAOE(SPELL_SOLAR_FIRE);
                 break;
             }
@@ -185,7 +185,7 @@ public:
             switch (pointId)
             {
                 case POINT_CENTER:
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+                    me->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
                     events.ScheduleEvent(EVENT_ENERGIZE, 1);
                     break;
                 default:
@@ -214,7 +214,7 @@ public:
                     me->GetMotionMaster()->MoveChase(target);
                     me->Attack(target, false);
                 }
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+                me->RemoveUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
                 events.ScheduleEvent(EVENT_SUN_STRIKE, 20000);
                 events.ScheduleEvent(EVENT_INFERNO_JUMP, 15000);
                 events.ScheduleEvent(EVENT_SUMMON_SUN_ORB, 9800);
@@ -287,14 +287,14 @@ public:
     {
         npc_solar_wind_vortexAI(Creature* creature) : ScriptedAI(creature)
         {
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_NPC);
+            me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_NPC));
             me->SetReactState(REACT_PASSIVE);
         }
 
         void IsSummonedBy(Unit* /*summoner*/) override
         {
             me->SetDisplayFromModel(0);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_NPC);
+            me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_NPC));
             me->SetReactState(REACT_PASSIVE);
             DoCastAOE(SPELL_FIRE_VORTEX);
             DoCastAOE(SPELL_SOLAR_FIRE_AURA);
@@ -345,10 +345,10 @@ public:
 
         void IsSummonedBy(Unit* /*summoner*/) override
         {
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_NPC);
+            me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_NPC));
             DoCast(me, SPELL_SUN);
             me->SetCanFly(true);
-            me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
             me->setFaction(16);
             events.ScheduleEvent(EVENT_MOVE_UP, 100);
             me->SetReactState(REACT_PASSIVE);
@@ -428,7 +428,7 @@ public:
             {
                 DoCast(SPELL_DISPERSE);
                 me->DespawnOrUnsummon(3100);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                 me->RemoveAllAuras();
             }
         }
@@ -514,7 +514,7 @@ public:
             {
                 DoCast(SPELL_DISPERSE_FINAL);
                 me->DespawnOrUnsummon(3100);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                 me->RemoveAllAuras();
             }
         }

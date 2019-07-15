@@ -388,7 +388,7 @@ public:
                 if (me->GetHealthPct() <= 90)
                 {
                     Active = false;
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                    me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                     me->SetReactState(REACT_PASSIVE);
                     me->CombatStop();
                     me->SetControlled(true, UNIT_STATE_ROOT);
@@ -659,7 +659,7 @@ public:
             uiIntroTimer = 1000;
             uiIntroPhase = 1;
             me->SetReactState(REACT_PASSIVE);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+            me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
 
             if (instance)
             {
@@ -685,7 +685,7 @@ public:
                 uiIntroPhase = 0;
                 Intro = true;
                 Talk(AUGH_EMOTE_KILL_CROCK);
-                me->SetUInt32Value(UNIT_NPC_EMOTESTATE, 0);
+                me->SetEmoteState(EMOTE_ONESHOT_NONE);
                 me->SetVisible(true);
                 me->SetHomePosition(AughPos);
                 me->GetMotionMaster()->MoveTargetedHome();
@@ -738,7 +738,7 @@ public:
                             if (IsHeroic())
                             {
                                 me->SetReactState(REACT_AGGRESSIVE);
-                                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                                me->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                             }
                             break;
                         }

@@ -3075,7 +3075,7 @@ public:
                         {
                             cannon->GetMotionMaster()->Clear();
                             cannon->SetFacingTo(3.24f);
-                            cannon->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                            cannon->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                         }
                     for (std::list<ObjectGuid>::const_iterator itr = my_followerList.begin(); itr != my_followerList.end(); ++itr)
                         if (Creature* follower = ObjectAccessor::GetCreature(*me, (*itr)))

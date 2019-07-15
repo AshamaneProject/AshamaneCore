@@ -444,7 +444,7 @@ public:
         {
             me->SetCanFly(true);
             me->SetDisableGravity(true);
-            me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
             events.Reset();
         }
 
@@ -517,7 +517,7 @@ public:
         {
             //me->SetCanFly(true);
             //me->SetDisableGravity(true);
-            //me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            //me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
             events.Reset();
         }
 
@@ -609,7 +609,7 @@ public:
         {
             //me->SetCanFly(true);
             //me->SetDisableGravity(true);
-            //me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            //me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
             events.Reset();
         }
 
@@ -681,7 +681,7 @@ public:
         {
             //me->SetCanFly(true);
             //me->SetDisableGravity(true);
-            //me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            //me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
             events.Reset();
         }
 
@@ -771,7 +771,7 @@ public:
         {
             me->SetCanFly(true);
             me->SetDisableGravity(true);
-            me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
             events.Reset();
         }
 
@@ -861,7 +861,7 @@ public:
         {
             me->SetCanFly(true);
             me->SetDisableGravity(true);
-            me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
             events.Reset();
         }
 
@@ -951,7 +951,7 @@ public:
         {
             me->SetCanFly(true);
             me->SetDisableGravity(true);
-            me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
             events.Reset();
         }
 
@@ -1012,7 +1012,7 @@ public:
         {
             //me->SetCanFly(true);
             //me->SetDisableGravity(true);
-            //me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            //me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
             events.Reset();
         }
 
@@ -1092,7 +1092,7 @@ public:
         {
             //me->SetCanFly(true);
             //me->SetDisableGravity(true);
-            //me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            //me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
             events.Reset();
         }
 
@@ -1152,7 +1152,7 @@ public:
         {
             //me->SetCanFly(true);
             //me->SetDisableGravity(true);
-            //me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            //me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
             events.Reset();
         }
 
@@ -1214,7 +1214,7 @@ public:
         {
             //me->SetCanFly(true);
             //me->SetDisableGravity(true);
-            //me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            //me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
             events.Reset();
         }
 
@@ -1279,7 +1279,7 @@ public:
         {
             //me->SetCanFly(true);
             //me->SetDisableGravity(true);
-            //me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            //me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
             events.Reset();
         }
 
@@ -1369,7 +1369,7 @@ public:
         {
             //me->SetCanFly(true);
             //me->SetDisableGravity(true);
-            //me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            //me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
             events.Reset();
         }
 
@@ -1491,7 +1491,7 @@ public:
         {
             //me->SetCanFly(true);
             //me->SetDisableGravity(true);
-            //me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            //me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
             events.Reset();
         }
 
@@ -1562,7 +1562,7 @@ public:
         {
             //me->SetCanFly(true);
             //me->SetDisableGravity(true);
-            //me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            //me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
             events.Reset();
         }
 
@@ -1661,7 +1661,7 @@ public:
         {
             //me->SetCanFly(true);
             //me->SetDisableGravity(true);
-            //me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            //me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
             events.Reset();
         }
 
@@ -1748,7 +1748,7 @@ public:
         {
             //me->SetCanFly(true);
             //me->SetDisableGravity(true);
-            //me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            //me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
             events.Reset();
         }
 
@@ -1829,7 +1829,7 @@ public:
         {
             //me->SetCanFly(true);
             //me->SetDisableGravity(true);
-            //me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            //me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
             events.Reset();
         }
 
@@ -1918,7 +1918,7 @@ public:
         {
             //me->SetCanFly(true);
             //me->SetDisableGravity(true);
-            //me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            //me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
             events.Reset();
         }
 
@@ -2001,7 +2001,7 @@ public:
         {
             //me->SetCanFly(true);
             //me->SetDisableGravity(true);
-            //me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            //me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
             events.Reset();
         }
 
@@ -2062,7 +2062,7 @@ public:
         {
             //me->SetCanFly(true);
             //me->SetDisableGravity(true);
-            //me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            //me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
             events.Reset();
         }
 
@@ -2157,7 +2157,7 @@ public:
         {
             //me->SetCanFly(true);
             //me->SetDisableGravity(true);
-            //me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            //me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
             events.Reset();
         }
 
@@ -2219,7 +2219,7 @@ public:
         {
             //me->SetCanFly(true);
             //me->SetDisableGravity(true);
-            //me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            //me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
             events.Reset();
         }
 
@@ -2311,7 +2311,7 @@ public:
         {
             //me->SetCanFly(true);
             //me->SetDisableGravity(true);
-            //me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            //me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
             events.Reset();
         }
 
@@ -2399,7 +2399,7 @@ public:
         {
             //me->SetCanFly(true);
             //me->SetDisableGravity(true);
-            //me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            //me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
             events.Reset();
         }
 
@@ -2480,7 +2480,7 @@ public:
         {
             //me->SetCanFly(true);
             //me->SetDisableGravity(true);
-            //me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            //me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
             events.Reset();
         }
 
@@ -2541,7 +2541,7 @@ public:
         {
             //me->SetCanFly(true);
             //me->SetDisableGravity(true);
-            //me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            //me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
             events.Reset();
         }
 
@@ -2626,7 +2626,7 @@ public:
         {
             //me->SetCanFly(true);
             //me->SetDisableGravity(true);
-            //me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            //me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
             events.Reset();
         }
 
@@ -2703,7 +2703,7 @@ public:
         {
             //me->SetCanFly(true);
             //me->SetDisableGravity(true);
-            //me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            //me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
             events.Reset();
         }
 
@@ -2747,7 +2747,7 @@ public:
                     events.ScheduleEvent(EVENT_TWO, urand(9000, 12000));
                     break;
                 case EVENT_THREE:
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+                    me->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
                     if (Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM, 0))
                     {
                         if (Creature* helper = me->SummonCreature(531430, pTarget->GetPositionX(), pTarget->GetPositionY() + urand(1, 3), pTarget->GetPositionZ(), 0, TEMPSUMMON_TIMED_DESPAWN, 3000))
@@ -2803,7 +2803,7 @@ public:
                     events.ScheduleEvent(EVENT_SIX, 1500);
                     break;
                 case EVENT_SIX:
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+                    me->RemoveUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
                     if (Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM, 0))
                     {
                         if (Creature* helper = me->SummonCreature(531430, pTarget->GetPositionX() - urand(1, 3), pTarget->GetPositionY(), pTarget->GetPositionZ(), 0, TEMPSUMMON_TIMED_DESPAWN, 3000))
@@ -2853,7 +2853,7 @@ public:
         {
             me->SetCanFly(true);
             me->SetDisableGravity(true);
-            me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
             events.Reset();
         }
 
@@ -2921,7 +2921,7 @@ public:
         {
             //me->SetCanFly(true);
             //me->SetDisableGravity(true);
-            //me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            //me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
             events.Reset();
         }
 
@@ -3001,7 +3001,7 @@ public:
         {
             //me->SetCanFly(true);
             //me->SetDisableGravity(true);
-            //me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            //me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
             events.Reset();
         }
 
@@ -3079,7 +3079,7 @@ public:
         {
             //me->SetCanFly(true);
             //me->SetDisableGravity(true);
-            //me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            //me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
             events.Reset();
         }
 
@@ -3174,7 +3174,7 @@ public:
         {
             //me->SetCanFly(true);
             //me->SetDisableGravity(true);
-            //me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            //me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
         }
 
         void EnterCombat(Unit* /*who*/) override
@@ -3254,7 +3254,7 @@ public:
         {
             me->SetCanFly(true);
             me->SetDisableGravity(true);
-            me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
             events.Reset();
         }
 
@@ -3314,7 +3314,7 @@ public:
         {
             //me->SetCanFly(true);
             //me->SetDisableGravity(true);
-            //me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            //me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
             events.Reset();
         }
 
@@ -3436,7 +3436,7 @@ public:
         {
             //me->SetCanFly(true);
             //me->SetDisableGravity(true);
-            //me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            //me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
         }
 
         void EnterCombat(Unit* /*who*/) override
@@ -3507,7 +3507,7 @@ public:
         {
             //me->SetCanFly(true);
             //me->SetDisableGravity(true);
-            //me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            //me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
         }
 
         void EnterCombat(Unit* /*who*/) override
@@ -3573,7 +3573,7 @@ public:
         {
             //me->SetCanFly(true);
             //me->SetDisableGravity(true);
-            //me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            //me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
         }
 
         void EnterCombat(Unit* /*who*/) override
@@ -3643,7 +3643,7 @@ public:
         {
             //me->SetCanFly(true);
             //me->SetDisableGravity(true);
-            //me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            //me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
         }
 
         void EnterCombat(Unit* /*who*/) override
@@ -3713,7 +3713,7 @@ public:
         {
             //me->SetCanFly(true);
             //me->SetDisableGravity(true);
-            //me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            //me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
         }
 
         void EnterCombat(Unit* /*who*/) override
@@ -3791,7 +3791,7 @@ public:
                         me->CastSpell(me, 98827, true);
                         me->SetCanFly(true);
                         me->SetDisableGravity(true);
-                        me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+                        me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
                         me->SetDisplayId(38814);
                         me->GetMotionMaster()->MovePoint(0, pTarget->GetPositionX() + 10, pTarget->GetPositionY() + 10, pTarget->GetPositionZ() + 10);
                     }
@@ -3844,7 +3844,7 @@ public:
         {
             //me->SetCanFly(true);
             //me->SetDisableGravity(true);
-            //me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            //me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
         }
 
         void EnterCombat(Unit* /*who*/) override
@@ -3920,7 +3920,7 @@ public:
         {
             //me->SetCanFly(true);
             //me->SetDisableGravity(true);
-            //me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+            //me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
             events.Reset();
         }
 

@@ -122,7 +122,7 @@ public:
             
             me->CastSpell(me, eNhalishSpells::SpellShadowChannel);
 
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+            me->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
         }
 
         void HandleDoorActivation() // Only upon boss Defeat
@@ -503,12 +503,12 @@ public:
             me->setFaction(35);
             me->SetReactState(ReactStates::REACT_PASSIVE);
 
-            me->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH);
+            me->AddUnitFlag2(UNIT_FLAG2_FEIGN_DEATH);
             me->AddUnitMovementFlag(MovementFlags::MOVEMENTFLAG_ROOT);
-            me->SetFlag(OBJECT_DYNAMIC_FLAGS, UnitDynFlags::UNIT_DYNFLAG_DEAD);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
-            me->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN);
-            me->SetFlag(UNIT_NPC_FLAGS, NPCFlags::UNIT_NPC_FLAG_GOSSIP);
+            me->AddDynamicFlag(UnitDynFlags::UNIT_DYNFLAG_DEAD);
+            me->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+            me->AddUnitFlag2(UNIT_FLAG2_DISABLE_TURN);
+            me->AddNpcFlag(NPCFlags::UNIT_NPC_FLAG_GOSSIP);
 
             me->CastSpell(me, eNhalishSpells::SpellLootSparkles);
         }
@@ -553,7 +553,7 @@ public:
             events.Reset();
 
             me->SetReactState(ReactStates::REACT_PASSIVE);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
+            me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC));
             me->setFaction(16);
 
             me->CastSpell(me, eNhalishSpells::SpellShadowChannel);
@@ -596,8 +596,8 @@ public:
         void Reset() override
         {
             me->SetReactState(ReactStates::REACT_PASSIVE);
-            me->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+            me->AddUnitFlag2(UNIT_FLAG2_DISABLE_TURN);
+            me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
             me->setFaction(35);
             me->SetDisplayId(11686);
 

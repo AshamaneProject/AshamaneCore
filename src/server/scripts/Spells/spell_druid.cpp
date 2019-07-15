@@ -176,7 +176,7 @@ class aura_dru_thrash_bear : public AuraScript
             {
                 if (AuraEffect* aurEff = GetAura()->GetEffect(EFFECT_0))
                 {
-                    int32 dmg = player->GetUInt32Value(UNIT_FIELD_ATTACK_POWER) * 0.605f;
+                    int32 dmg = player->m_unitData->AttackPower * 0.605f;
                     dmg = (dmg * GetStackAmount()) / 5;
                     aurEff->SetDamage(dmg);
                 }
@@ -2313,10 +2313,10 @@ public:
             if (!caster->ToPlayer())
                 return;
 
-            if (Creature* tempSumm = caster->SummonCreature(WORLD_TRIGGER, at->GetPositionX(), at->GetPositionY(), at->GetPositionZ(), 0, TEMPSUMMON_TIMED_DESPAWN, 200))
+            if (TempSummon* tempSumm = caster->SummonCreature(WORLD_TRIGGER, at->GetPositionX(), at->GetPositionY(), at->GetPositionZ(), 0, TEMPSUMMON_TIMED_DESPAWN, 200))
             {
                 tempSumm->setFaction(caster->getFaction());
-                tempSumm->SetGuidValue(UNIT_FIELD_SUMMONEDBY, caster->GetGUID());
+                tempSumm->SetSummonerGUID(caster->GetGUID());
                 PhasingHandler::InheritPhaseShift(tempSumm, caster);
 
                 if (caster->IsValidAttackTarget(unit))
@@ -2347,9 +2347,9 @@ public:
     void Reset() override
     {
         me->CastSpell(me, SPELL_DRUID_EFFLORESCENCE_DUMMY, true);
-        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+        me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
+        me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
+        me->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
         me->SetReactState(REACT_PASSIVE);
     }
 };

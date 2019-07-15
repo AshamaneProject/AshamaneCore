@@ -493,7 +493,7 @@ class boss_madness_of_deathwing : public CreatureScript
                 me->setActive(true);
                 me->SetCanFly(true);
                 me->SetDisableGravity(true);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                 m_current_platform = 0;
                 m_destroyed_platform = 0;
                 healthValueNew = 0;
@@ -791,7 +791,7 @@ class boss_madness_of_deathwing : public CreatureScript
                                 pDeathwing->SetMaxHealth(me->GetMaxHealth());
                                 pDeathwing->SetHealth(me->GetHealth());
                                 healthValue = me->GetHealth();
-                                pDeathwing->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+                                pDeathwing->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
                                 pDeathwing->CastSpell(pDeathwing, SPELL_CORRUPTED_BLOOD_STACKER, true);
                                 pDeathwing->CastSpell(pDeathwing, SPELL_SHRAPNEL_AURA, true);
                                 pDeathwing->AI()->DoAction(ACTION_HP_UPDATE);
@@ -1104,7 +1104,7 @@ class npc_dragon_soul_thrall_1 : public CreatureScript
             {
                 if (!done)
                 {
-                    me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                    me->AddNpcFlag(UNIT_NPC_FLAG_GOSSIP);
 
                     if (pInstance)
                     {
@@ -1680,8 +1680,8 @@ class npc_madness_of_deathwing_limb_tentacle : public CreatureScript
                     (*iter)->CastSpell(me, SPELL_BLISTERING_TENTACLE_VEHICLE, true);
                     me->AddAura(SPELL_BLISTERING_HEAT, (*iter));
                     (*iter)->SetVisible(true);
-                    (*iter)->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-                    (*iter)->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                    (*iter)->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
+                    (*iter)->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                     //(*iter)->ClearUnitState(UNIT_STATE_ONVEHICLE);
                     DoZoneInCombat((*iter), 200.0f);
                 }
@@ -1727,11 +1727,11 @@ class npc_madness_of_deathwing_blistering_tentacle : public CreatureScript
             {
                 me->SetReactState(REACT_PASSIVE);
                 me->SetVisible(false);
-                if (!me->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE))
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-                if (!me->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE))
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-                me->SetFloatValue(UNIT_FIELD_COMBATREACH, 16.0f);
+                if (!me->HasUnitFlag(UNIT_FLAG_NOT_SELECTABLE))
+                    me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
+                if (!me->HasUnitFlag(UNIT_FLAG_NON_ATTACKABLE))
+                    me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
+                me->SetCombatReach(16.0f);
                 if (me->HasAura(SPELL_BLISTERING_HEAT))
                     me->RemoveAura(SPELL_BLISTERING_HEAT);
                 if (me->isDead())
@@ -1745,7 +1745,7 @@ class npc_madness_of_deathwing_blistering_tentacle : public CreatureScript
                 if (damage >= me->GetHealth())
                 {
                     damage = 0;
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                    me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                     me->SetVisible(false);
                     me->RemoveAllAuras();
                     //me->AddUnitState(UNIT_STATE_ONVEHICLE);
@@ -1792,9 +1792,9 @@ class npc_madness_of_deathwing_regenerative_blood : public CreatureScript
                 me->SetPowerType(POWER_ENERGY);
                 events.Reset();
                 me->SetMaxPower(POWER_ENERGY, 90);
-                me->SetInt32Value(UNIT_FIELD_MAXPOWER + 1, 90);
+                me->SetMaxPower(POWER_RAGE, 90);
                 me->SetPower(POWER_ENERGY, 0);
-                me->SetInt32Value(UNIT_FIELD_POWER + 1, 0);
+                me->SetPower(POWER_RAGE, 0);
                 me->AddAura(SPELL_DEGENERATIVE_BITE_AURA, me);
                 platform = GetGround(me);
             }
@@ -1849,17 +1849,18 @@ class npc_madness_of_deathwing_regenerative_blood : public CreatureScript
                     switch (eventId)
                     {
                         case EVENT_UPDATE_HEALTH:
-                            if (me->GetUInt32Value(UNIT_FIELD_POWER + 1) < 90)
+                            //TODO : Figure out which power is it
+                            if (me->GetPower(POWER_RAGE) < 90)
                             {
-                                int32 power = me->GetUInt32Value(UNIT_FIELD_POWER + 1);
+                                int32 power = me->GetPower(POWER_RAGE);
                                 power = power + 10;
                                 me->SetPower(POWER_ENERGY, power);
-                                me->SetInt32Value(UNIT_FIELD_POWER + 1, power);
+                                me->SetPower(POWER_RAGE, power);
                             }
-                            else if (me->GetUInt32Value(UNIT_FIELD_POWER + 1) >= 90)
+                            else if (me->GetPower(POWER_RAGE) >= 90)
                             {
                                 me->SetPower(POWER_ENERGY, 0);
-                                me->SetInt32Value(UNIT_FIELD_POWER + 1, 0);
+                                me->SetPower(POWER_RAGE, 0);
                                 DoCast(me, SPELL_REGENERATIVE_BLOOD_HEAL, true);
                                 me->AddAura(SPELL_REGENERATIVE_BLOOD_AURA, me);
                             }
@@ -1954,8 +1955,8 @@ class npc_madness_of_deathwing_elementium_bolt : public CreatureScript
                             pTrigger->DespawnOrUnsummon(1000);
                         DoCast(me, SPELL_ELEMENTIUM_METEOR_AURA, true);
                         DoCast(me, SPELL_ELEMENTIUM_BLAST, true);
-                        me->SetFloatValue(UNIT_FIELD_BOUNDINGRADIUS, 0.39f);
-                        me->SetFloatValue(UNIT_FIELD_COMBATREACH, 1.0f);
+                        me->SetBoundingRadius(0.39f);
+                        me->SetCombatReach(1.0f);
                     }
             }
 
@@ -2015,7 +2016,7 @@ class npc_madness_of_deathwing_corrupting_parasite : public CreatureScript
                 me->ApplySpellImmune(0, IMMUNITY_MECHANIC, MECHANIC_DISORIENTED, true);
                 me->ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_CONFUSE, true);
 
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                 me->SetReactState(REACT_PASSIVE);
 
                 pInstance = me->GetInstanceScript();
@@ -2033,7 +2034,7 @@ class npc_madness_of_deathwing_corrupting_parasite : public CreatureScript
                 if (action == ACTION_PARASITIC_BACKSLASH && !m_unstable)
                 {
                     m_unstable = true;
-                    me->ApplyPercentModFloatValue(OBJECT_FIELD_SCALE_X, -70.0f, false);
+                    me->SetObjectScale(me->GetObjectScale() * 3.3f);
                     events.ScheduleEvent(EVENT_UNSTABLE_CORRUPTION, 1000);
 
                     if (pInstance)
@@ -2050,7 +2051,7 @@ class npc_madness_of_deathwing_corrupting_parasite : public CreatureScript
                 {
                     if (eventId == EVENT_UNSTABLE_CORRUPTION)
                     {
-                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                        me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                         DoCastAOE(SPELL_UNSTABLE_CORRUPTION);
                     }
                 }
@@ -2540,7 +2541,7 @@ class npc_dragon_soul_alexstrasza_dragon : public CreatureScript
                 pInstance = me->GetInstanceScript();
 
                 isActive = true;
-                me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, 0x02);
+                me->SetAnimTier(UNIT_BYTE1_FLAG_HOVER, true);
                 me->AddUnitMovementFlag(MOVEMENTFLAG_CAN_FLY | MOVEMENTFLAG_FLYING);
             }
 
@@ -2641,7 +2642,7 @@ class npc_dragon_soul_nozdormu_dragon : public CreatureScript
                 pInstance = me->GetInstanceScript();
 
                 isActive = true;
-                me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, 0x02);
+                me->SetAnimTier(UNIT_BYTE1_FLAG_HOVER, true);
                 me->AddUnitMovementFlag(MOVEMENTFLAG_CAN_FLY | MOVEMENTFLAG_FLYING);
             }
 
@@ -2789,7 +2790,7 @@ class npc_dragon_soul_ysera_dragon : public CreatureScript
                 me->SetReactState(REACT_PASSIVE);
 
                 pInstance = me->GetInstanceScript();
-                me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, 0x02);
+                me->SetAnimTier(UNIT_BYTE1_FLAG_HOVER, true);
                 me->AddUnitMovementFlag(MOVEMENTFLAG_CAN_FLY | MOVEMENTFLAG_FLYING);
             }
 
@@ -2862,7 +2863,7 @@ class npc_dragon_soul_kalecgos_dragon : public CreatureScript
                 me->SetReactState(REACT_PASSIVE);
 
                 pInstance = me->GetInstanceScript();
-                me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, 0x02);
+                me->SetAnimTier(UNIT_BYTE1_FLAG_HOVER, true);
                 me->AddUnitMovementFlag(MOVEMENTFLAG_CAN_FLY | MOVEMENTFLAG_FLYING);
             }
 
@@ -3249,7 +3250,7 @@ class spell_madness_of_deathwing_corrupting_parasite_aoe : public SpellScriptLoa
                 {
                     pParasite->AI()->DoZoneInCombat();
                     pParasite->EnterVehicle(GetHitUnit(), -1);
-                    pParasite->ApplyPercentModFloatValue(OBJECT_FIELD_SCALE_X, -70.0f, true);
+                    pParasite->SetObjectScale(pParasite->GetObjectScale() * 0.3f);
                 }
             }
 

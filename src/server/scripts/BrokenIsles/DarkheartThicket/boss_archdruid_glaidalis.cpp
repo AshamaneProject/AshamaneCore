@@ -222,7 +222,7 @@ public:
                                     });
                                 }
 
-                        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+                        me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
                         me->GetMotionMaster()->MovePoint(0, 2876.5976f, 1958.9278f, 189.7037f);
                         break;
                     case EVENT_INTRO_GLAIDALIS_2:
@@ -266,7 +266,7 @@ public:
                         break;
 
                     case EVENT_INTRO_GLAIDALIS_10:
-                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+                        me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
                         me->RemoveAurasDueToSpell(SPELL_CAT_FORM);
                         me->SetObjectScale(1.0f);
                         me->SetHomePosition(2876.5976f, 1958.9278f, 189.7037f, 0.441398f);
@@ -357,7 +357,7 @@ struct at_archdruid_glaidalis_nightfall : AreaTriggerAI
 
     void OnCreate() override
     {
-        at->SetUInt32Value(AREATRIGGER_DECAL_PROPERTIES_ID, 34);
+        at->SetDecalPropertiesID(34);
     }
 
     void OnUnitEnter(Unit* unit) override

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -1362,6 +1362,9 @@ enum SpellEffectName
     SPELL_EFFECT_RESPEC_AZERITE_EMPOWERED_ITEM      = 259,
     SPELL_EFFECT_SUMMON_STABLED_PET                 = 260,
     SPELL_EFFECT_SCRAP_ITEM                         = 261,
+    SPELL_EFFECT_262                                = 262,
+    SPELL_EFFECT_REPAIR_ITEM                        = 263,
+    SPELL_EFFECT_REMOVE_GEM                         = 264,
     TOTAL_SPELL_EFFECTS
 };
 
@@ -2357,8 +2360,8 @@ enum Targets
     TARGET_UNK_126                     = 126,
     TARGET_DEST_CASTER_ENEMY_CENTROID  = 127,
     TARGET_UNK_128                     = 128,
-    TARGET_UNIT_CASTER_AREA_ENEMY_FRONT= 129,
-    TARGET_ENNEMY_IN_LINE              = 130,
+    TARGET_UNIT_CONE_ENTRY_129         = 129,
+    TARGET_UNK_130                     = 130,
     TARGET_UNK_131                     = 131,
     TARGET_DEST_TARGET_ALLY            = 132,
     TARGET_UNK_133                     = 133,

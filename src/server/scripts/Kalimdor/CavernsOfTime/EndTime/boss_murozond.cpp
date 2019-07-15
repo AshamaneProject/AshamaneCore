@@ -165,7 +165,7 @@ class boss_murozond : public CreatureScript
                 me->SetCanFly(false);
                 me->SetDisableGravity(false);
                 me->SetHomePosition(MurozondLandPos);
-                me->RemoveByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+                me->SetAnimTier(UNIT_BYTE1_FLAG_NONE, true);
 
                 instance->SetData(DATA_MUROZOND_STARTED, true);
 
@@ -173,8 +173,8 @@ class boss_murozond : public CreatureScript
                 events.ScheduleEvent(EVENT_TEMPORAL_BLAST, 12000);
                 events.ScheduleEvent(EVENT_DISTORTION_BOMB, 5000);
                 events.ScheduleEvent(EVENT_TAIL_SWEEP, 10000);
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                me->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
+                me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                 DoZoneInCombat();
 
                 if (Map* map = me->GetMap())
@@ -251,8 +251,8 @@ class boss_murozond : public CreatureScript
                     me->SetSpeed(MOVE_FLIGHT, 1.0f);
                     me->SetSpeed(MOVE_RUN, 1.0f);
                     me->SetSpeed(MOVE_WALK, 1.0f);
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                    me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
+                    me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                     me->SetReactState(REACT_PASSIVE);
                     float moveTime = me->GetExactDist(&MurozondFlyPos) / (me->GetSpeed(MOVE_FLIGHT) * 0.001f);
                     me->m_Events.AddEvent(new MurozondLandEvent(*me, MurozondLandPos), me->m_Events.CalculateTime(uint64(moveTime) + 250));

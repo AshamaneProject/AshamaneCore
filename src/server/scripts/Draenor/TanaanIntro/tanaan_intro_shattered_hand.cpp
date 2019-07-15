@@ -394,7 +394,7 @@ public:
             m_Events.Reset();
             m_Events.ScheduleEvent(EventCleararenaFighterCountByNpc, Seconds(10));
 
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+            me->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
 
             for (uint8 i = 0; i < MAX_INITIAL_SPAWN; ++i)
                 me->SummonCreature(TanaanCreatures::NpcShatteredHandBrawler, handBrawlerSpawnPositions[urand(0, 6)], TEMPSUMMON_CORPSE_DESPAWN);

@@ -15,8 +15,17 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "SpellScript.h"
+#include "SpellAuras.h"
+#include "SpellAuraEffects.h"
 #include "Player.h"
 #include "ScriptedEscortAI.h"
+
+#include "Creature.h"
+#include "ScriptedCreature.h"
+#include "ScriptMgr.h"
+#include "CreatureAI.h"
+#include "ScriptedGossip.h"
 
 enum ZuldazarQuests
 {
@@ -126,9 +135,13 @@ struct npc_soth_zolani : public npc_escortAI
 
     void sGossipHello(Player* player) override
     {
-        SetDespawnAtEnd(false);
-        Start(false, false, player->GetGUID());
-        Talk(0);
+        //Zolani at the beginning shouldn't start running through the air
+        if (player->hasQuest(46931))
+        {
+            SetDespawnAtEnd(false);
+            Start(false, false, player->GetGUID());
+            Talk(0);
+        }
     }
 
     void LastWaypointReached() override
@@ -199,6 +212,195 @@ struct npc_talanji_great_seal : public ScriptedAI
     }
 };
 
+// 255588 - Rastari Skull Whistle
+class spell_generic_rastari_skull_whistle : public SpellScript
+{
+    PrepareSpellScript(spell_generic_rastari_skull_whistle);
+
+    void DoCast()
+    {
+        if (Player* caster = GetCaster()->ToPlayer())
+            caster->KilledMonsterCredit(129204);
+    }
+
+    void Register() override
+    {
+        AfterCast += SpellCastFn(spell_generic_rastari_skull_whistle::DoCast);
+    }
+};
+
+//
+class npc_ata_the_winglord_offensively_defence : public npc_escortAI
+{
+public:
+    npc_ata_the_winglord_offensively_defence(Creature* creature) : npc_escortAI(creature)
+    {
+        me->SetCanFly(true);
+        me->SetSpeed(MOVE_FLIGHT, 26);
+        me->SetReactState(REACT_PASSIVE);
+        me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_NPC);
+    }
+
+    void OnCharmed(bool /*apply*/) override
+    {
+        // Make sure the basic cleanup of OnCharmed is done to avoid looping problems
+        if (me->NeedChangeAI)
+            me->NeedChangeAI = false;
+    }
+
+    void EnterEvadeMode(EvadeReason /*why*/) override { }
+
+    void IsSummonedBy(Unit* summoner) override
+    {
+        if (summoner)
+        {
+           // me->GetScheduler().Schedule(1s, [this, summoner](TaskContext /*context*/)
+           summoner->CastSpell(me, 46598);
+        }
+    }
+    void PassengerBoarded(Unit* who, int8 seatId, bool apply) override
+    {
+        if (Player* player = who->ToPlayer())
+            player->KilledMonsterCredit(126822);
+        Start(false, true, who->GetGUID());
+    }
+};
+
+class npc_ata_the_winglord_paku_master_of_winds : public npc_escortAI
+{
+public:
+    npc_ata_the_winglord_paku_master_of_winds(Creature* creature) : npc_escortAI(creature)
+    {
+        me->SetCanFly(true);
+        me->SetSpeed(MOVE_FLIGHT, 26);
+        me->SetReactState(REACT_PASSIVE);
+      //  me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_NPC);
+    }
+
+    void OnCharmed(bool /*apply*/) override
+    {
+        // Make sure the basic cleanup of OnCharmed is done to avoid looping problems
+        if (me->NeedChangeAI)
+            me->NeedChangeAI = false;
+    }
+
+    void EnterEvadeMode(EvadeReason /*why*/) override { }
+
+    void IsSummonedBy(Unit* summoner) override
+    {
+        if (summoner)
+        {
+            // me->GetScheduler().Schedule(1s, [this, summoner](TaskContext /*context*/)
+            summoner->CastSpell(me, 46598);
+        }
+    }
+    void PassengerBoarded(Unit* who, int8 seatId, bool apply) override
+    {
+        if (Player* player = who->ToPlayer())
+            player->KilledMonsterCredit(127414);
+        Start(false, true, who->GetGUID());
+    }
+};
+
+class npc_pterrordax_paku_master_of_winds : public npc_escortAI
+{
+public:
+    npc_pterrordax_paku_master_of_winds(Creature* creature) : npc_escortAI(creature)
+    {
+        me->SetCanFly(true);
+        me->SetReactState(REACT_PASSIVE);
+        me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_NPC);
+    }
+
+    void OnCharmed(bool /*apply*/) override
+    {
+        // Make sure the basic cleanup of OnCharmed is done to avoid looping problems
+        if (me->NeedChangeAI)
+            me->NeedChangeAI = false;
+    }
+
+   /* void WaypointReached(uint32 waypointId) override
+    {
+        if (waypointId == 11)
+            me->ForcedDespawn();
+    }*/
+
+    void EnterEvadeMode(EvadeReason /*why*/) override { }
+
+    void IsSummonedBy(Unit* summoner) override
+    {
+        if (summoner)
+        {
+            // me->GetScheduler().Schedule(1s, [this, summoner](TaskContext /*context*/)
+            summoner->CastSpell(me, 46598);
+            me->SetSpeed(MOVE_RUN, 26);
+        }
+    }
+
+    void PassengerBoarded(Unit* who, int8 seatId, bool apply) override
+    {
+        if (Player* player = who->ToPlayer())
+            player->KilledMonsterCredit(127512);
+        Start(false, true, who->GetGUID());
+    }
+
+
+};
+
+enum Spells
+{
+    SPELL_CALL_PTERRORDAX = 281048
+};
+
+//127377
+struct npc_paku : public ScriptedAI
+{
+    npc_paku(Creature* pCreature) : ScriptedAI(pCreature)
+    {
+    }
+
+    void sGossipHello(Player* player) override
+    {
+        player->KilledMonsterCredit(127377);
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        std::list<Player*> players;
+        me->GetPlayerListInGrid(players, 75.0f);
+
+        for (Player* player : players)
+        {
+            if (player->GetPositionZ() <= 400 && !player->IsMounted() && !player->IsOnVehicle() && player->HasQuest(47440))
+            {
+                Talk(0);
+                player->CastSpell(player, SPELL_CALL_PTERRORDAX);
+            }
+        }
+    }
+};
+
+class spell_rastari_skull_whistle : public SpellScript
+{
+	PrepareSpellScript(spell_rastari_skull_whistle);
+
+	void HandleHitTarget(SpellEffIndex /*effIndex*/)
+	{
+		//if (Creature* target = GetHitCreature())
+			if (Player* player = GetCaster()->ToPlayer())
+				player->KilledMonsterCredit(129204);
+	}
+
+	void Register() override
+	{
+		OnEffectHitTarget += SpellEffectFn(spell_rastari_skull_whistle::HandleHitTarget, EFFECT_1, SPELL_EFFECT_DUMMY);
+	}
+};
+
+
+
+
+
 void AddSC_zone_zuldazar()
 {
     RegisterCreatureAI(npc_talanji_arrival);
@@ -210,4 +412,13 @@ void AddSC_zone_zuldazar()
     RegisterCreatureAI(npc_natal_hakata);
     RegisterCreatureAI(npc_telemancer_oculeth_zuldazar);
     RegisterCreatureAI(npc_talanji_great_seal);
+
+    RegisterCreatureAI(npc_ata_the_winglord_offensively_defence);
+
+    RegisterCreatureAI(npc_ata_the_winglord_paku_master_of_winds);
+    RegisterCreatureAI(npc_pterrordax_paku_master_of_winds);
+    RegisterCreatureAI(npc_paku);
+
+    RegisterSpellScript(spell_rastari_skull_whistle);
+    RegisterSpellScript(spell_generic_rastari_skull_whistle);
 }

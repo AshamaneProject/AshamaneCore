@@ -201,14 +201,14 @@ class boss_ultraxion: public CreatureScript
                 DeleteGameObjects(GO_GIFT_OF_LIFE);
                 DeleteGameObjects(GO_ESSENCE_OF_DREAMS);
                 DeleteGameObjects(GO_SOURCE_OF_MAGIC);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_ATTACKABLE_1);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_ATTACKABLE_1));
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC));
 
                 if (Creature* pThrall = me->FindNearestCreature(NPC_THRALL_1, 300.0f))
                 {
                     pThrall->CastStop();
                     pThrall->RemoveAllAuras();
-                    pThrall->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                    pThrall->AddNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                     me->SetFacingToObject(pThrall);
                 }
                 if (Creature* pYsera = me->FindNearestCreature(NPC_YSERA_THE_AWAKENED, 300.0f))
@@ -474,9 +474,9 @@ class boss_ultraxion: public CreatureScript
                         case EVENT_END_TALK:
                             phase = 0;
                             startCombat = true;
-                            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_ATTACKABLE_1 | UNIT_FLAG_NOT_SELECTABLE);
-                            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
-                            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+                            me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_ATTACKABLE_1 | UNIT_FLAG_NOT_SELECTABLE));
+                            me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC));
+                            me->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
                             if (me->HasAura(SPELL_COSMETIC_INTRO_TRIGGER))
                                 me->RemoveAura(SPELL_COSMETIC_INTRO_TRIGGER);
                             if (startCombat)

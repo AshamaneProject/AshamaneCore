@@ -393,7 +393,7 @@ public:
     {
         npc_ravenous_creeper_triggerAI(Creature* creature) : Scripted_NoMovementAI(creature)
         {
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_PACIFIED);
+            me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_PACIFIED));
             me->SetReactState(REACT_PASSIVE);
         }
 
@@ -597,7 +597,7 @@ public:
                         me->AddAura(SPELL_NO_ENERGY_REGEN, me);
                         instance->SetData(DATA_WEATHER_EVENT, IN_PROGRESS);
                         me->NearTeleportTo(188.62f, 812.97f, 199.48f, 0.96f);
-                        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+                        me->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
                         UltimateUsed = true;
                         uiDownTimer = 1000;
                     }
@@ -623,7 +623,7 @@ public:
                             uiRegentimer = 1000;
                             UltimateUsed = false;
                             me->RemoveAurasDueToSpell(SPELL_NO_ENERGY_REGEN);
-                            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+                            me->RemoveUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
                             instance->SetData(DATA_WEATHER_EVENT, NOT_STARTED);
                             Regen = true;
 
@@ -721,7 +721,7 @@ public:
     {
         npc_ice_patchAI(Creature* creature) : Scripted_NoMovementAI(creature)
         {
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_PACIFIED);
+            me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_PACIFIED));
             me->SetReactState(REACT_PASSIVE);
         }
 
@@ -759,7 +759,7 @@ public:
     {
         npc_soothing_breezeAI(Creature* creature) : Scripted_NoMovementAI(creature)
         {
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_PACIFIED);
+            me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_PACIFIED));
             me->SetReactState(REACT_PASSIVE);
             me->SetSpeed(MOVE_WALK, 0.4f);
         }
@@ -797,7 +797,7 @@ public:
     {
         npc_tornado_rohashAI(Creature* creature) : ScriptedAI(creature)
         {
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+            me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
             me->SetReactState(REACT_PASSIVE);
         }
 
@@ -835,7 +835,7 @@ public:
         {
             creature->SetPowerType(POWER_ENERGY);
             creature->SetMaxPower(POWER_ENERGY, 90);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+            me->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
             me->ApplySpellImmune(0, IMMUNITY_ID, 85483, true);
         }
 
@@ -974,8 +974,8 @@ public:
             me->SetInCombatWithZone();
             if (Creature* Trigger = me->SummonCreature(45979, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), 3.32963f, TEMPSUMMON_TIMED_DESPAWN, 16000))
             {
-                Trigger->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_STUNNED);
-                Trigger->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                Trigger->AddUnitFlag(UNIT_FLAG_STUNNED);
+                Trigger->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                 Trigger->SetReactState(REACT_AGGRESSIVE);
                 Trigger->setFaction(18);
                 Trigger->Attack(me, true);

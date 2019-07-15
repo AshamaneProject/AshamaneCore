@@ -163,7 +163,7 @@ class boss_twin_ogron_pol : public CreatureScript
 
                 me->SetPower(Powers::POWER_ENERGY, 0);
                 me->SetMaxPower(Powers::POWER_ENERGY, 100);
-                me->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_REGENERATE_POWER);
+                me->AddUnitFlag2(UNIT_FLAG2_REGENERATE_POWER);
 
                 /// Has two equips, but one handed and shielded
                 me->SetCanDualWield(false);
@@ -198,7 +198,7 @@ class boss_twin_ogron_pol : public CreatureScript
                         me->SetPower(Powers::POWER_ENERGY, 0);
 
                         me->AddUnitState(UnitState::UNIT_STATE_ROOT);
-                        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+                        me->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
 
                         me->CastSpell(me, eSpells::PulverizeAura, true);
 
@@ -241,7 +241,7 @@ class boss_twin_ogron_pol : public CreatureScript
                             me->SendCancelSpellVisual(eVisuals::BigPulverize);
 
                             me->ClearUnitState(UnitState::UNIT_STATE_ROOT);
-                            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+                            me->RemoveUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
                         });
 
                         break;
@@ -592,7 +592,7 @@ class boss_twin_ogron_phemos : public CreatureScript
 
                 me->SetMaxPower(Powers::POWER_ENERGY, 100);
                 me->SetPower(Powers::POWER_ENERGY, 98);
-                me->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_REGENERATE_POWER);
+                me->AddUnitFlag2(UNIT_FLAG2_REGENERATE_POWER);
 
                 me->CastSpell(me, eSpells::DespawnAreaTriggers, true);
                 me->CastSpell(me, eSpells::AggressiveDisposition, true);

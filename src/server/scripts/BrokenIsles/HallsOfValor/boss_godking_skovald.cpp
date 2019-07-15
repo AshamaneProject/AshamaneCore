@@ -73,8 +73,8 @@ struct boss_god_king_kovald : public BossAI
 {
     boss_god_king_kovald(Creature* creature) : BossAI(creature, DATA_GODKING_SKOVALD)
     {
-        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+        me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
+        me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
         me->SetVisible(false);
     }
 
@@ -205,8 +205,8 @@ struct boss_god_king_kovald : public BossAI
                     break;
 
                 case EVENT_START_COMBAT:
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                    me->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
+                    me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                     break;
 
                 default:

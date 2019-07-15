@@ -454,8 +454,8 @@ class boss_spirit_kings_controler : public CreatureScript
                                     if (Creature* spirit = pInstance->GetCreature(entry))
                                     {
                                         spirit->LowerPlayerDamageReq(spirit->GetMaxHealth());
-                                        spirit->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-                                        spirit->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                                        spirit->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
+                                        spirit->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                                         spirit->RemoveAura(SPELL_INACTIVE);
 
 
@@ -667,7 +667,7 @@ class boss_spirit_kings : public CreatureScript
 
                 me->CastSpell(me, SPELL_INACTIVE, true);
                 me->CastSpell(me, SPELL_INACTIVE_STUN, true);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_NOT_SELECTABLE);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_NOT_SELECTABLE));
 
                 if (pInstance)
                     pInstance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
@@ -697,7 +697,7 @@ class boss_spirit_kings : public CreatureScript
                     me->AddAura(SPELL_INACTIVE, me);
                     me->AddAura(SPELL_INACTIVE_STUN, me);
 
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_NOT_SELECTABLE);
+                    me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_NOT_SELECTABLE));
                 }
                 else
                     if (pInstance)
@@ -811,7 +811,7 @@ class boss_spirit_kings : public CreatureScript
                         me->RemoveAurasDueToSpell(SPELL_INACTIVE);
                         me->RemoveAurasDueToSpell(SPELL_INACTIVE_STUN);
                         me->RemoveAurasDueToSpell(SPELL_ACTIVATION_VISUAL);
-                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_NOT_SELECTABLE);
+                        me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_NOT_SELECTABLE));
                         me->setFaction(14);
                         break;
                     }
@@ -848,7 +848,7 @@ class boss_spirit_kings : public CreatureScript
                         {
                             me->SetFullHealth();
                             me->SetReactState(REACT_PASSIVE);
-                            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                            me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                             if (pInstance)
                             {
                                 pInstance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
@@ -862,7 +862,7 @@ class boss_spirit_kings : public CreatureScript
                         else
                         {
                             me->SetReactState(REACT_AGGRESSIVE);
-                            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                            me->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                             if (pInstance)
                                 pInstance->SendEncounterUnit(ENCOUNTER_FRAME_ENGAGE, me);
                             preEventDone = true;
@@ -933,7 +933,7 @@ class boss_spirit_kings : public CreatureScript
                     vanquished = true;
                     damage = 0;
 
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_NOT_SELECTABLE);
+                    me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_NOT_SELECTABLE));
                     me->AddAura(SPELL_INACTIVE, me);
                     me->SetReactState(REACT_PASSIVE);
                     me->getThreatManager().resetAllAggro();
@@ -1373,7 +1373,7 @@ class mob_undying_shadow : public CreatureScript
                         me->RemoveAurasDueToSpell(SPELL_UNDYING_SHADOW_DOT);
                         me->AddAura(SPELL_COALESCING_SHADOW_DOT, me);
                         me->AddUnitState(UNIT_STATE_ROOT | UNIT_STATE_STUNNED);
-                        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_NOT_SELECTABLE);
+                        me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_NOT_SELECTABLE));
                         phase = PHASE_COALESCING_SHADOW;
                         switchPhaseTimer = 30000;
                         damage = 0;
@@ -1393,7 +1393,7 @@ class mob_undying_shadow : public CreatureScript
                         me->RemoveAurasDueToSpell(SPELL_COALESCING_SHADOW_DOT);
                         me->AddAura(SPELL_UNDYING_SHADOW_DOT, me);
                         me->ClearUnitState(UNIT_STATE_ROOT | UNIT_STATE_STUNNED);
-                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_NOT_SELECTABLE);
+                        me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_NOT_SELECTABLE));
                         phase = PHASE_UNDYING_SHADOW;
                         switchPhaseTimer = 0;
                         DoZoneInCombat();

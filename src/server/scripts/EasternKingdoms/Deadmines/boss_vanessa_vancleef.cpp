@@ -412,8 +412,8 @@ public:
         {
             if (Creature* bunny = me->SummonCreature(NPC_GENERAL_PURPOSE_BUNNY_JMF, -52.31f, -820.18f, 51.91f, 3.32963f))
             {
-                bunny->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_STUNNED);
-                bunny->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                bunny->AddUnitFlag(UNIT_FLAG_STUNNED);
+                bunny->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                 bunny->SetReactState(REACT_AGGRESSIVE);
                 bunny->setFaction(18);
                 bunny->Attack(me, true);
@@ -1233,14 +1233,14 @@ public:
         {
             for (uint8 i = 0; i < 4/*1*/; ++i)
                 if (Creature* saFires = me->SummonCreature(NPC_FIRE_BUNNY, FieryBlaze[i], TEMPSUMMON_MANUAL_DESPAWN, 0))
-                    saFires->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NOT_SELECTABLE);
+                    saFires->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NOT_SELECTABLE));
         }
 
         void SummonSparks()
         {
             for (uint8 i = 0; i < 7; ++i)
                 if (Creature* sSp = me->SummonCreature(NPC_SPARK, ElectricSpark[i], TEMPSUMMON_MANUAL_DESPAWN, 0))
-                    sSp->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NOT_SELECTABLE);
+                    sSp->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NOT_SELECTABLE));
         }
 
         void SummonWorgen_1()
@@ -1505,7 +1505,7 @@ public:
     {
         npc_icycle_dmAI(Creature* creature) : Scripted_NoMovementAI(creature)
         {
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_PACIFIED);
+            me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_PACIFIED));
             me->SetReactState(REACT_PASSIVE);
             me->SetDisplayId(28470);
         }
@@ -1580,7 +1580,7 @@ public:
             if (FlagResetTimer <= diff)
             {
                 me->SetVisible(true);
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
+                me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC));
             } else FlagResetTimer -= diff;
 
             events.Update(diff);
@@ -1681,7 +1681,7 @@ public:
         {
             if (FlagResetTimer <= diff)
             {
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
+                me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC));
             } else FlagResetTimer -= diff;
 
             events.Update(diff);
@@ -1735,7 +1735,7 @@ public:
         void EnterCombat(Unit* /*who*/) override
         {
             DoZoneInCombat();
-            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
+            me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC));
             me->RemoveAurasDueToSpell(SPELL_OFFLINE);
             events.ScheduleEvent(EVENT_SPIRIT_STRIKE, 6000);
         }
@@ -1901,7 +1901,7 @@ public:
     {
         npc_rope_awayAI(Creature* creature) : ScriptedAI(creature)
         {
-            me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+            me->AddNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
         }
 
         void Reset() override

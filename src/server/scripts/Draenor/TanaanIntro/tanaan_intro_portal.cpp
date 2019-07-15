@@ -143,7 +143,7 @@ public:
             events.ScheduleEvent(EVENT_RESTORE_HEALTH,  10000);
             events.ScheduleEvent(EVENT_RANDOM_SPELL,    urand(5000, 10000));
 
-            me->SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+            me->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
         }
 
         bool IsEscalierVangard()
@@ -266,11 +266,11 @@ public:
 
         void Reset() override
         {
-            if (!me->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL) ||
-                !me->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE))
+            if (!me->HasUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL) ||
+                !me->HasUnitFlag(UNIT_FLAG_NON_ATTACKABLE))
             {
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                me->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+                me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
             }
         }
     };

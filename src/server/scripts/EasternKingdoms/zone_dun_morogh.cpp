@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -567,7 +567,7 @@ public:
                                 if (Creature* Troll = ObjectAccessor::GetCreature(*me, trollGUID))
                                 {
                                     Troll->SetReactState(REACT_AGGRESSIVE);
-                                    Troll->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                                    Troll->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                                 }
                             }
                             SummonTimer = 11000;

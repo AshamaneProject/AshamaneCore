@@ -80,7 +80,7 @@ public:
 
         void Reset() override
         {
-            me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
+            me->AddNpcFlag(UNIT_NPC_FLAG_QUESTGIVER);
             uiTimer = 0;
             uiPhase = 0;
             uiQuest = 0;
@@ -97,7 +97,7 @@ public:
         void SetData(uint32 uiId, uint32 uiValue) override
         {
             bRemoveFlag = true;
-            me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
+            me->RemoveNpcFlag(UNIT_NPC_FLAG_QUESTGIVER);
 
             switch (uiId)
             {
@@ -138,7 +138,7 @@ public:
             {
                 if (uiRemoveFlagTimer <= uiDiff)
                 {
-                    me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
+                    me->AddNpcFlag(UNIT_NPC_FLAG_QUESTGIVER);
                     bRemoveFlag = false;
 
                     uiRemoveFlagTimer = 10000;
@@ -596,7 +596,7 @@ public:
                 }
 
                 inhaled = true;
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                 me->RemoveAllAuras();
                 me->SetReactState(REACT_PASSIVE);
                 me->AttackStop();
@@ -647,13 +647,13 @@ public:
                     events.ScheduleEvent(EVENT_REPULSIVE_KICK, urand(10*IN_MILLISECONDS, 15*IN_MILLISECONDS));
                     break;
                 case EVENT_BELOW5:
-                    me->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH);
+                    me->AddUnitFlag2(UNIT_FLAG2_FEIGN_DEATH);
                     me->AddAura(SPELL_CADAVER_HOVER, me);
                     events.ScheduleEvent(EVENT_TAKEOFF, 5200);
                     break;
                 case EVENT_TAKEOFF:
                     me->SetCanFly(true);
-//                    me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
+//                    me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
                     me->SetDisableGravity(true);
                     me->SetSpeed(MOVE_FLIGHT, 0.5f);
                     me->GetMotionMaster()->MovePoint(0, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ()+20.0f);
@@ -890,7 +890,7 @@ public:
     {
         npc_gloomwingAI(Creature* creature) : ScriptedAI(creature)
         {
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE|UNIT_FLAG_NON_ATTACKABLE);
+            me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE|UNIT_FLAG_NON_ATTACKABLE));
             me->SetHover(true);
             me->SetCanFly(true);
         }

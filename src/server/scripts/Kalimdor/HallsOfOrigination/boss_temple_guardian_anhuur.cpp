@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -130,17 +130,17 @@ class boss_anhuur : public CreatureScript
             if(GameObject * lever1 = me->FindNearestGameObject(GO_LEVER_1, 50.0f))
             {
                 if(active)
-                    lever1->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
+                    lever1->RemoveFlag(GO_FLAG_NOT_SELECTABLE);
                 else
-                    lever1->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
+                    lever1->AddFlag(GO_FLAG_NOT_SELECTABLE);
             }
 
             if(GameObject * lever2 = me->FindNearestGameObject(GO_LEVER_2, 50.0f))
             {
                 if(active)
-                    lever2->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
+                    lever2->RemoveFlag(GO_FLAG_NOT_SELECTABLE);
                 else
-                    lever2->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
+                    lever2->AddFlag(GO_FLAG_NOT_SELECTABLE);
             }
         }
 
@@ -243,8 +243,8 @@ class boss_anhuur : public CreatureScript
 
                 DoCastAOE(SPELL_ACTIVATE_BEACONS);
                 DoCast(me, SPELL_REVERBERATING_HYMN);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_UNK_31);
-                //me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+                me->AddUnitFlag(UNIT_FLAG_UNK_31);
+                //me->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
 
                 events.CancelEvent(EVENT_DIVINE_RECKONING);
                 events.CancelEvent(EVENT_BURNING_LIGHT);
@@ -490,7 +490,7 @@ public:
         void Activate(SpellEffIndex index)
         {
             PreventHitDefaultEffect(index);
-            GetHitGObj()->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
+            GetHitGObj()->RemoveFlag(GO_FLAG_NOT_SELECTABLE);
         }
 
         void Register() override

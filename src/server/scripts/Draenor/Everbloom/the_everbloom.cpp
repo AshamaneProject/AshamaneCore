@@ -258,7 +258,7 @@ public:
     {
         npc_dreadpetalAI(Creature* creature) : ScriptedAI(creature)
         {
-            me->SetUInt32Value(UNIT_NPC_EMOTESTATE, 373);
+            me->SetEmoteState(EMOTE_STATE_SUBMERGED);
         }
 
         void Reset() override
@@ -272,12 +272,12 @@ public:
 
         void JustReachedHome() override
         {
-            me->SetUInt32Value(UNIT_NPC_EMOTESTATE, 373);
+            me->SetEmoteState(EMOTE_STATE_SUBMERGED);
         }
 
         void EnterCombat(Unit* /*who*/) override
         {
-            me->SetUInt32Value(UNIT_NPC_EMOTESTATE, 0);
+            me->SetEmoteState(EMOTE_ONESHOT_NONE);
             me->HandleEmoteCommand(449);
         }
 

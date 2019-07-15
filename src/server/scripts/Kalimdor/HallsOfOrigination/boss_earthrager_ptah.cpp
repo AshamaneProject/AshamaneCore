@@ -250,9 +250,9 @@ public:
                     break;
                 case EVENT_QUICKSAND:
                     // Spell not in DBC, it is not cast either, according to sniffs
-                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100.0f, true))
-                    if (Creature* quicksand = me->SummonCreature(NPC_QUICKSAND, *target))
-                        quicksand->SetUInt32Value(UNIT_CREATED_BY_SPELL, SPELL_SUMMON_QUICKSAND);
+                    if (Unit * target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100.0f, true))
+                        if (Creature * quicksand = me->SummonCreature(NPC_QUICKSAND, *target))
+                            quicksand->SetCreatedBySpell(SPELL_SUMMON_QUICKSAND);
                     events.ScheduleEvent(EVENT_QUICKSAND, 10000, 0, PHASE_DISPERSE);
                     break;
                 }
@@ -312,8 +312,8 @@ public:
         {
             if (Unit* ptah = GetCaster())
             {
-                ptah->SetFlag(UNIT_FIELD_FLAGS, uint32(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_UNK_29 | UNIT_FLAG_UNK_31));
-                ptah->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH);
+                ptah->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_UNK_29 | UNIT_FLAG_UNK_31));
+                ptah->AddUnitFlag2(UNIT_FLAG2_FEIGN_DEATH);
             }
         }
 
@@ -321,8 +321,8 @@ public:
         {
             if (Unit* ptah = GetCaster())
             {
-                ptah->RemoveFlag(UNIT_FIELD_FLAGS, uint32(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_UNK_29 | UNIT_FLAG_UNK_31));
-                ptah->RemoveFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH);
+                ptah->RemoveUnitFlag(UnitFlags(uint32(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_UNK_29 | UNIT_FLAG_UNK_31)));
+                ptah->RemoveUnitFlag2(UNIT_FLAG2_FEIGN_DEATH);
             }
         }
 

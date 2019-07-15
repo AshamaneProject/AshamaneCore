@@ -568,7 +568,7 @@ public:
                 _events.Reset();
                 me->RemoveAllAuras();
                 me->setFaction(35);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_UNK_15 | UNIT_FLAG_IMMUNE_TO_PC);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_UNK_15 | UNIT_FLAG_IMMUNE_TO_PC));
                 me->AttackStop();
                 attacker->AttackStop();
                 me->_ExitVehicle();
@@ -1728,8 +1728,8 @@ public:
         void HandleEffectApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
         {
             Unit* target = GetTarget();
-            target->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_UNK_29);
-            target->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH);
+            target->AddUnitFlag(UNIT_FLAG_UNK_29);
+            target->AddUnitFlag2(UNIT_FLAG2_FEIGN_DEATH);
             target->SetHealth(target->CountPctFromMaxHealth(25));
         }
 

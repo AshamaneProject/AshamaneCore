@@ -517,7 +517,7 @@ public:
         CloseGossipMenuFor(pPlayer);
 
         pCreature->AI()->Talk(SAY_ILLIDAN_1_MOVE);
-        pCreature->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+        pCreature->RemoveNpcFlag(UNIT_NPC_FLAG_GOSSIP);
         pCreature->SetSpeed(MOVE_RUN, 1.0f);
         pCreature->GetMotionMaster()->MovePoint(POINT_ILLIDAN_1_2, illidan1Pos[1]);
 
@@ -533,7 +533,7 @@ public:
             me->setActive(true);
             bTalk = false;
             curPoint = 0;
-            me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+            me->RemoveNpcFlag(UNIT_NPC_FLAG_GOSSIP);
             pInstance = me->GetInstanceScript();
         }
 
@@ -578,7 +578,7 @@ public:
                 {
                 case POINT_ILLIDAN_1_1:
                     curPoint = 1;
-                    me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                    me->AddNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                     break;
                 case POINT_ILLIDAN_1_2:
                     curPoint = 2;
@@ -1099,9 +1099,9 @@ public:
                     if (pInstance)
                     {
                         if (Creature* pVarothen = ObjectAccessor::GetCreature(*me, pInstance->GetGuidData(DATA_VAROTHEN)))
-                            pVarothen->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                            pVarothen->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                         if (Creature* pMannoroth = ObjectAccessor::GetCreature(*me, pInstance->GetGuidData(DATA_MANNOROTH)))
-                            pMannoroth->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                            pMannoroth->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                     }
                     Talk(SAY_ILLIDAN_2_VAROTHEN);
                     break;
@@ -1234,7 +1234,7 @@ public:
                     break;
                 case EVENT_ILLIDAN_MOVE_2_7:
                     if (Creature* pAbyssal = me->FindNearestCreature(NPC_ABYSSAL, 100.0f))
-                        pAbyssal->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                        pAbyssal->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                     me->GetMotionMaster()->MovePoint(POINT_ILLIDAN_2_7, illidan2Pos[curPoint]);
                     break;
                 case EVENT_ILLIDAN_MOVE_2_8:
@@ -1482,7 +1482,7 @@ public:
             me->ApplySpellImmune(0, IMMUNITY_MECHANIC, MECHANIC_CHARM, true);
             me->ApplySpellImmune(0, IMMUNITY_MECHANIC, MECHANIC_DISORIENTED, true);
             me->ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_CONFUSE, true);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+            me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
         }
 
         void Reset() override

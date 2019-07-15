@@ -196,7 +196,7 @@ class boss_asaad : public CreatureScript
                         break;
                     case NPC_SKYFALL:
                         summoned->SetInCombatWithZone();
-                        summoned->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+                        summoned->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
                         break;
                     default:
                         break;

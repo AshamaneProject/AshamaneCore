@@ -61,7 +61,7 @@ class boss_isiset : public CreatureScript
             memset(&abilities, true, sizeof(abilities));
             me->RestoreDisplayId();
             me->SetReactState(REACT_AGGRESSIVE);
-            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+            me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
             _Reset();
         }
 
@@ -80,7 +80,7 @@ class boss_isiset : public CreatureScript
                     me->RemoveAllAuras();
                     me->StopMoving();
                     me->SetDisplayId(DISPLAYID_INVISIBLE);
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                    me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
 
                     // summon avatars
                     Position pos;
@@ -148,7 +148,7 @@ class boss_isiset : public CreatureScript
                 creature->DespawnOrUnsummon();
                 me->RestoreDisplayId();
                 me->SetReactState(REACT_AGGRESSIVE);
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                 if(Unit * victim = me->GetVictim())
                     DoStartMovement(victim);
             }

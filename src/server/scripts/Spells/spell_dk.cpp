@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -1967,8 +1967,8 @@ public:
                 return;
 
             l_Caster->ModifyPower(POWER_RUNIC_POWER, -130);
-            if (l_Caster->ToPlayer())
-                l_Caster->ToPlayer()->SendPowerUpdate(POWER_RUNIC_POWER, l_Caster->GetPower(POWER_RUNIC_POWER));
+            /*if (l_Caster->ToPlayer())
+                l_Caster->ToPlayer()->SendPowerUpdate(POWER_RUNIC_POWER, l_Caster->GetPower(POWER_RUNIC_POWER));*/
 
             if (l_Caster->GetPower(POWER_RUNIC_POWER) <= 130)
                 l_Caster->RemoveAura(SPELL_DK_BREATH_OF_SINDRAGOSA);
@@ -2351,8 +2351,8 @@ public:
                 if (m_newPower < 0)
                     m_newPower = 0;
                 caster->SetPower(POWER_RUNIC_POWER, m_newPower);
-                if (Player* player = caster->ToPlayer())
-                    player->SendPowerUpdate(POWER_RUNIC_POWER, m_newPower);
+                /*if (Player* player = caster->ToPlayer())
+                    player->SendPowerUpdate(POWER_RUNIC_POWER, m_newPower);*/
             }
         }
 

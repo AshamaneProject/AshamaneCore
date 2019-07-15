@@ -153,7 +153,7 @@ public:
         {
             if(summon->GetEntry() == NPC_INVOCATION_OF_THE_FLAME_STALKER)
             {
-                summon->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NOT_SELECTABLE);
+                summon->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NOT_SELECTABLE));
                 summon->AI()->DoCast(SPELL_INVOCATION_TRIGGER);
             }
             summon->SetInCombatWithZone();
@@ -181,7 +181,7 @@ public:
                         {
                             valiona->GetAI()->DoAction(ACTION_DRAGAH_CALLS_VALIONA_FOR_HELP);
                             me->CastCustomSpell(VEHICLE_SPELL_RIDE_HARDCODED, SPELLVALUE_BASE_POINT0, 1, valiona, false);
-                            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                            me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                         }
                         events.ScheduleEvent(EVENT_DRAGAH_ENTER_VEHICLE,2000);
                         break;
@@ -197,13 +197,13 @@ public:
             {
                case ACTION_DRAGAH_IS_ON_THE_GROUND:
                    me->SetReactState(REACT_AGGRESSIVE);
-                   //                   me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                   //                   me->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                    events.ScheduleEvent(EVENT_BURNING_SHADOWBOLT, 4000);
                    events.ScheduleEvent(EVENT_SUMMON_INVOKED_FLAME_SPIRIT, 10000);
                    break;
                 case ACTION_VALIONA_SHOULD_FLY_AWAY:
                     phase = PHASE_FINAL_PHASE;
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                    me->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                     me->SetReactState(REACT_AGGRESSIVE);
                     me->RemoveAllAuras();
                     valionaGUID = ObjectGuid::Empty;
@@ -223,7 +223,7 @@ public:
                 phase = PHASE_DRAGON_PHASE;
                 me->SetSpeed(MOVE_RUN, 1.5f);
                 me->SetReactState(REACT_PASSIVE);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                 me->RemoveAllAuras(); // He should not die when he is jumping down...
                 DoCast(me, SPELL_TWILIGHT_PROTECTION, true);
                 events.Reset(); // He Should not cast while he is flying
@@ -289,7 +289,7 @@ public:
             me->SetCanFly(true);
             events.Reset();
             me->SetReactState(REACT_PASSIVE);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+            me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
             dragahGUID = ObjectGuid::Empty;
         }
 
@@ -311,7 +311,7 @@ public:
             summon->setActive(true);
             if(summon->GetEntry() == NPC_SEEPING_TWILIGHT_TRIGGER)
             {
-                summon->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NOT_SELECTABLE);
+                summon->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NOT_SELECTABLE));
                 summon->GetAI()->DoCast(SPELL_SEEPING_TWILIGHT);
             }
             if(me->IsInCombat())
@@ -370,7 +370,7 @@ public:
                     me->RemoveAllAuras();
                     DoCast(me, SPELL_TWILIGHT_SHIFT, true);
                     me->SetReactState(REACT_PASSIVE);
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                    me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                     me->SetCanFly(true);
                     me->GetMotionMaster()->MovePoint(POINT_VALIONA_FLY_AWAY, position[1]);
                     break;
@@ -400,7 +400,7 @@ public:
                         dragah->GetAI()->DoAction(ACTION_DRAGAH_IS_ON_THE_GROUND);
                     me->SetSpeed(MOVE_WALK, 1.0f);
                     me->SetCanFly(false);
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                    me->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                     me->SetReactState(REACT_AGGRESSIVE);
                     me->GetMotionMaster()->Clear();
                     me->GetMotionMaster()->MoveChase(me->GetVictim());

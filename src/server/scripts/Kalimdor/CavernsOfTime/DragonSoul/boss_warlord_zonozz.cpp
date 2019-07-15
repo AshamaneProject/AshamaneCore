@@ -286,7 +286,7 @@ class boss_warlord_zonozz: public CreatureScript
                         break;
                     case NPC_EYE_OF_GORATH:
                         if (!IsHeroic())
-                            summon->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                            summon->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                         // no break
                     case NPC_CLAW_OF_GORATH:
                     case NPC_FLAIL_OF_GORATH:
@@ -502,7 +502,7 @@ class npc_warlord_zonozz_void_of_the_unmaking : public CreatureScript
         {
             npc_warlord_zonozz_void_of_the_unmakingAI(Creature* pCreature) : Scripted_NoMovementAI(pCreature)
             {
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                 me->SetReactState(REACT_PASSIVE);
                 me->SetCanFly(true);
             }
@@ -688,8 +688,8 @@ public:
     {
         npc_scourge_of_gorathAI(Creature* creature) : ScriptedAI(creature)
         {
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC);
+            me->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+            me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_NPC);
         }
 
         EventMap events;
@@ -697,7 +697,7 @@ public:
         void Reset() override
         {
             events.Reset();
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+            me->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
         }
 
         void EnterCombat(Unit* /*who*/) override
@@ -757,8 +757,8 @@ public:
         void EnterCombat(Unit* /*who*/) override
         {
             events.ScheduleEvent(EVENT_SHADOW_GAZE, 1000);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC);
+            me->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+            me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_NPC);
         }
 
         void UpdateAI(uint32 const diff) override
@@ -810,8 +810,8 @@ class npc_warlord_zonozz_tentacle : public CreatureScript
             void Reset() override
             {
                 events.Reset();
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC);
+                me->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+                me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_NPC);
             }
 
             void EnterCombat(Unit* /*who*/) override

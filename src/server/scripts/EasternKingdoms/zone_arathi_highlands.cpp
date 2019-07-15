@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2006-2009 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -164,7 +164,7 @@ class spell_summon_myzrael : public SpellScript
         {
             myzrael->SetReactState(REACT_AGGRESSIVE);
             myzrael->setFaction(14);
-            myzrael->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PVP_ATTACKABLE);
+            myzrael->AddUnitFlag(UNIT_FLAG_PVP_ATTACKABLE);
         }
     }
 

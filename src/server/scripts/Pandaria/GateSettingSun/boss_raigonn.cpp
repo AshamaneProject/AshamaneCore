@@ -187,7 +187,7 @@ class boss_raigonn : public CreatureScript
                     instance->SendEncounterUnit(ENCOUNTER_FRAME_ENGAGE, weakPoint);
                     weakPoint->setFaction(16);
                     weakPoint->ClearUnitState(UNIT_STATE_UNATTACKABLE);
-                    weakPoint->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                    weakPoint->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                 }
             }
 

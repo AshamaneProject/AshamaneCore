@@ -114,7 +114,7 @@ public:
 
             instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
             me->SetReactState(REACT_AGGRESSIVE);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+            me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
             summons.DespawnAll();
             OafSupport();
         }
@@ -230,7 +230,7 @@ public:
                         events.ScheduleEvent(EVENT_CHEST_BOMB, 11000);
                         break;
                     case EVENT_NO_OAF:
-                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                        me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                         me->RemoveAura(SPELL_OAFQUARD);
                         Talk(2);
                         events.RescheduleEvent(EVENT_THROW_BOMB, 3000);
@@ -374,7 +374,7 @@ public:
                             if (bunny != nullptr)
                             {
                                 me->GetMotionMaster()->MovePoint(1, bunny->GetPositionX(), bunny->GetPositionY(), bunny->GetPositionZ());
-                                bunny->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                                bunny->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                             }
                         }
                         events.ScheduleEvent(EVENT_FINISH, 1500);

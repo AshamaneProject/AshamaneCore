@@ -460,7 +460,7 @@ public:
                         if (!ming)
                             return;
                         ming->GetMotionMaster()->MovePoint(0, -4237.658f, -2613.860f, 16.48f);
-                        ming->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                        ming->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                         ming->SetReactState(REACT_AGGRESSIVE);
                     }
                     break;
@@ -478,7 +478,7 @@ public:
                         if (!kuai)
                             return;
                         kuai->GetMotionMaster()->MovePoint(0, -4215.359f, -2601.283f, 16.48f);
-                        kuai->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                        kuai->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                         kuai->SetReactState(REACT_AGGRESSIVE);
                     }
                     break;
@@ -496,7 +496,7 @@ public:
                         if (!haiyan)
                             return;
                         haiyan->GetMotionMaster()->MovePoint(0, -4215.772f, -2627.216f, 16.48f);
-                        haiyan->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                        haiyan->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                         haiyan->SetReactState(REACT_AGGRESSIVE);
                     }
                     break;

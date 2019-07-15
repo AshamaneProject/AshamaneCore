@@ -114,7 +114,7 @@ class boss_galion : public CreatureScript
                     l_ChiefSalyis = me->SummonCreature(NPC_CHIEF_SALYIS, l_Pos);
 
                 l_ChiefSalyis->EnterVehicle(me, 2);
-                l_ChiefSalyis->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                l_ChiefSalyis->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                 l_ChiefSalyis->ToCreature()->AI()->DoAction(ACTION_TALK_INTRO);
 
                 std::list<Creature*> l_Canons;
@@ -129,7 +129,7 @@ class boss_galion : public CreatureScript
                         if (TempSummon* l_NewCanon = me->SummonCreature(NPC_GALLEON_CANON, l_Pos))
                         {
                             l_NewCanon->EnterVehicle(me, l_Index);
-                            l_NewCanon->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                            l_NewCanon->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                             l_NewCanon->SetReactState(REACT_PASSIVE);
                         }
                     }
@@ -147,7 +147,7 @@ class boss_galion : public CreatureScript
                         if (TempSummon* l_Warmonger = me->SummonCreature(NPC_SALYIN_WARMONGER, l_Pos))
                         {
                             l_Warmonger->EnterVehicle(me, l_Index);
-                            l_Warmonger->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                            l_Warmonger->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                         }
                     }
                 }

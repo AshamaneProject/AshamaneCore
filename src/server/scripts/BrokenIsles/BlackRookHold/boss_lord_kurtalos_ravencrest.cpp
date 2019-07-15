@@ -75,7 +75,7 @@ struct boss_kurtalos_ravencrest : public BossAI
         BossAI::Reset();
 
         latosiusActionDone = false;
-        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
+        me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC));
         me->SetReactState(REACT_DEFENSIVE);
 
         instance->DoRemoveAurasDueToSpellOnPlayers(SPELL_UNERRING_SHEAR);
@@ -235,7 +235,7 @@ struct npc_latosius : public ScriptedAI
     {
         SetCombatMovement(false);
         me->SetDisableGravity(false);
-        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
+        me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC));
         me->UpdateEntry(NPC_LATOSIUS);
         SetEquipmentSlots(true);
         me->ClearUnitState(UNIT_STATE_CANNOT_TURN);
@@ -253,7 +253,7 @@ struct npc_latosius : public ScriptedAI
     {
         if (IsLatosius())
         {
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
+            me->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC));
             me->CastSpell(nullptr, SPELL_TELEPORT_OUT, true);
 
             me->AddUnitState(UNIT_STATE_CANNOT_TURN);
@@ -296,12 +296,12 @@ struct npc_latosius : public ScriptedAI
                 SetEquipmentSlots(false, 0, 0, 0);
                 me->CastSpell(me, SPELL_DREADLORD_CONVERSATION, true);
                 me->CastSpell(me, SPELL_TRANSFORM, true);
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
+                me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC));
                 AttackStart(me->GetVictim());
 
                 if (Creature* kurtalos = instance->GetCreature(NPC_LORD_KURTALOS_RAVENCREST))
                 {
-                    kurtalos->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
+                    kurtalos->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC));
                     kurtalos->CastSpell(kurtalos, SPELL_FEIGN_DEATH, true);
 
                     Position soulSummonPos = kurtalos->GetPosition();
@@ -371,7 +371,7 @@ struct npc_latosius : public ScriptedAI
         {
             me->GetMotionMaster()->Clear();
             me->SetDisableGravity(true);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
+            me->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC));
             obliterationAngle = frand(0, 2.f * float(M_PI));
             me->AddUnitState(UNIT_STATE_CANNOT_TURN);
 
@@ -438,7 +438,7 @@ private:
 
     void TeleportToCenter()
     {
-        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
+        me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC));
         me->CastSpell(nullptr, SPELL_TELEPORT_IN, true); // Visual
         me->NearTeleportTo(centerPosition);
         me->SetDisableGravity(false);
@@ -456,7 +456,7 @@ struct npc_kurtalos_soul : public ScriptedAI
     void Reset() override
     {
         me->SetReactState(REACT_PASSIVE);
-        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
+        me->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC));
         Talk(0);
 
         me->GetScheduler().Schedule(3s, [this](TaskContext /*context*/)

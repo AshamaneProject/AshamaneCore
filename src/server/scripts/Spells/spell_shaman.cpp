@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -2000,7 +2000,7 @@ class spell_sha_windfury : public AuraScript
         //Proc Chance is increased by 6.24% of Mastery (ceiled)
         float masteryBonus = 0.0f;
         if (Player* player = eventInfo.GetActor()->ToPlayer())
-            masteryBonus += (player->GetFloatValue(ACTIVE_PLAYER_FIELD_MASTERY)*6.24f) / 100.0f;
+            masteryBonus += (player->m_activePlayerData->Mastery*6.24f) / 100.0f;
 
         float rollChance = 5.0f + masteryBonus;
         if (roll_chance_f(rollChance) || eventInfo.GetActor()->HasAura(SPELL_SHAMAN_DOOM_WINDS))
@@ -2113,8 +2113,8 @@ public:
                 if (m_newMael < 0)
                     m_newMael = 0;
                 caster->SetPower(POWER_MAELSTROM, m_newMael);
-                if (Player* player = caster->ToPlayer())
-                    player->SendPowerUpdate(POWER_MAELSTROM, m_newMael);
+                /*if (Player* player = caster->ToPlayer())
+                    player->SendPowerUpdate(POWER_MAELSTROM, m_newMael);*/
             }
         }
 
@@ -3175,10 +3175,10 @@ public:
             if (timeInterval < 1000)
                 return;
 
-            if (Creature* tempSumm = caster->SummonCreature(WORLD_TRIGGER, at->GetPosition(), TEMPSUMMON_TIMED_DESPAWN, 200))
+            if (TempSummon* tempSumm = caster->SummonCreature(WORLD_TRIGGER, at->GetPosition(), TEMPSUMMON_TIMED_DESPAWN, 200))
             {
                 tempSumm->setFaction(caster->getFaction());
-                tempSumm->SetGuidValue(UNIT_FIELD_SUMMONEDBY, caster->GetGUID());
+                tempSumm->SetSummonerGUID(caster->GetGUID());
                 PhasingHandler::InheritPhaseShift(tempSumm, caster);
                 tempSumm->CastCustomSpell(SPELL_SHAMAN_EARTHQUAKE_DAMAGE, SPELLVALUE_BASE_POINT0, caster->GetTotalSpellPowerValue(SPELL_SCHOOL_MASK_NORMAL, false) * 0.3, caster, TRIGGERED_FULL_MASK);
             }

@@ -96,7 +96,7 @@ public:
                     if (GetData(DATA_LADY_NAZJAR_EVENT) == DONE)
                     {
                         creature->SetVisible(true);
-                        creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_NOT_SELECTABLE);
+                        creature->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_NOT_SELECTABLE));
                         creature->SetReactState(REACT_AGGRESSIVE);
                     }
                     break;
@@ -319,7 +319,7 @@ class GoHelloThroneDefenseSystem : public GameObjectScript
                 if(Creature * commander = ObjectAccessor::GetCreature(*player, instance->GetGuidData(DATA_COMMANDER_ULTHOK)))
                 {
                     commander->SetVisible(true);
-                    commander->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_NOT_SELECTABLE);
+                    commander->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_NOT_SELECTABLE));
                     commander->SetReactState(REACT_AGGRESSIVE);
                 }
 

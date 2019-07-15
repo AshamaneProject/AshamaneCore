@@ -265,8 +265,8 @@ public:
         void Reset() override
         {
             me->SetReactState(ReactStates::REACT_PASSIVE);
-            me->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+            me->AddUnitFlag2(UNIT_FLAG2_DISABLE_TURN);
+            me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
 
             me->CastSpell(me, eNerzulSpells::SpellOmenOfDeathVisualRune);
             me->CastSpell(me, eNerzulSpells::SpellOmenOfDeathLightningt);
@@ -312,7 +312,7 @@ public:
             me->RemoveAllAuras();
             me->SetSpeed(UnitMoveType::MOVE_RUN, 0.5f);
             me->SetReactState(ReactStates::REACT_PASSIVE);
-            me->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN);
+            me->AddUnitFlag2(UNIT_FLAG2_DISABLE_TURN);
             me->AddUnitMovementFlag(MovementFlags::MOVEMENTFLAG_FORWARD);
 
             me->CastSpell(me, eNerzulSpells::SpellRitualOfBonesWeirdVisualPoop);
@@ -367,7 +367,7 @@ public:
             me->SetDisplayId(11686);
             me->setFaction(35);
             me->SetReactState(ReactStates::REACT_PASSIVE);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+            me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_REMOVE_CLIENT_CONTROL));
 
             me->CastSpell(me, eNerzulSpells::SpellRitualOfBonesThirdVisual);
             me->CastSpell(me, eNerzulSpells::SpellRitualOfBonesWeirdVisualPoop);
@@ -428,7 +428,7 @@ public:
             me->SetDisplayId(11686);
             me->setFaction(35);
             me->SetReactState(ReactStates::REACT_PASSIVE);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+            me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_REMOVE_CLIENT_CONTROL));
         }
 
         void UpdateAI(uint32 const diff) override
@@ -517,7 +517,7 @@ public:
             me->SetDisplayId(11686);
             me->setFaction(35);
             me->SetReactState(ReactStates::REACT_PASSIVE);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+            me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_REMOVE_CLIENT_CONTROL));
             me->SetDisableGravity(true);
             me->SetCanFly(true);
 

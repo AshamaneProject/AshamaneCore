@@ -172,10 +172,10 @@ struct boss_nithogg : public WorldBossAI
                 {
                     //DoCast(me, SPELL_CRACKLING_JOLT_TARGET_PICKER);
                     //What I do here is make the cast happen from higher up, making the missiles travel more than they do at the moment.
-                    if (Creature* tempSumm = me->SummonCreature(WORLD_TRIGGER, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ() + 14, 0, TEMPSUMMON_TIMED_DESPAWN, 10000))
+                    if (TempSummon* tempSumm = me->SummonCreature(WORLD_TRIGGER, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ() + 14, 0, TEMPSUMMON_TIMED_DESPAWN, 10000))
                     {
                         tempSumm->setFaction(me->getFaction());
-                        tempSumm->SetGuidValue(UNIT_FIELD_SUMMONEDBY, me->GetGUID());
+                        tempSumm->SetSummonerGUID(me->GetGUID());
                         PhasingHandler::InheritPhaseShift(tempSumm, me);
                         tempSumm->SetLevel(me->getLevel());
                         tempSumm->SetName(me->GetName());
@@ -248,7 +248,7 @@ struct npc_nithogg_electrical_storm : public ScriptedAI
 
     void Reset() override
     {
-        //me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL); //TODO : Change this to a spline once those work/I know how to use them.
+        //me->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL); //TODO : Change this to a spline once those work/I know how to use them.
         ApplyBuff();
     }
 
@@ -426,7 +426,7 @@ struct npc_nithogg_static_orb : public ScriptedAI
         me->SetSpeedRate(MOVE_RUN, 0.7f);
         me->SetSpeedRate(MOVE_WALK, 0.7f);
         me->SetReactState(REACT_PASSIVE);
-        //me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NOT_SELECTABLE);  flags are now in db
+        //me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NOT_SELECTABLE));  flags are now in db
     }
 
     void UpdateAI(uint32 uiDiff) override

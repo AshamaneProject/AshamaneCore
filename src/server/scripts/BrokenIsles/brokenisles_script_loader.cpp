@@ -107,24 +107,42 @@ void AddSC_boss_ymiron_maw();
 void AddSC_boss_harbaron_maw();
 void AddSC_boss_helya_maw();
 
-// Neltharion's Lair
-//void AddSC_instance_neltharions_lair();
-//void AddSC_neltharions_lair();
-//void AddSC_boss_rokmora();
-//void AddSC_boss_ularogg_cragshaper();
-//void AddSC_boss_naraxas();
-//void AddSC_boss_dargrul_the_underking();
+ //Neltharion's Lair
+void AddSC_instance_neltharions_lair();
+void AddSC_neltharions_lair();
+void AddSC_boss_rokmora();
+void AddSC_boss_ularogg_cragshaper();
+void AddSC_boss_naraxas();
+void AddSC_boss_dargrul_the_underking();
+
+//The Nighthold
+void AddSC_boss_aluriel();
+void AddSC_boss_chronomatic_anomaly();
+void AddSC_boss_skorpyron();
+void AddSC_boss_trilliax();
+void AddSC_instance_the_nighthold();
+void AddSC_the_nighthold();
 
 // Vault of the Wardens
-//void AddSC_instance_vault_of_the_wardens();
-//void AddSC_vault_of_the_wardens();
-//void AddSC_boss_tirathon_saltheril();
-//void AddSC_boss_inquisitor_tormentorum();
-//void AddSC_boss_glazer();
-//void AddSC_boss_ashgolm();
-//void AddSC_boss_cordana_felsong();
+/*void AddSC_instance_vault_of_the_wardens();
+void AddSC_vault_of_the_wardens();
+void AddSC_boss_tirathon_saltheril();
+void AddSC_boss_inquisitor_tormentorum();
+void AddSC_boss_glazer();
+void AddSC_boss_ashgolm();
+void AddSC_boss_cordana_felsong();*/
 
 // Violet Hold
+void AddSC_boss_anubesset();
+void AddSC_boss_blood_princess_thalena();
+void AddSC_boss_fel_lord_betrug();
+void AddSC_boss_festerface();
+void AddSC_boss_millificient_manastorm();
+void AddSC_boss_mind_flayer_kaarhj();
+void AddSC_boss_saelorn();
+void AddSC_boss_shivermaw();
+void AddSC_instance_violet_hold_assault();
+void AddSC_violet_hold_assault();
 //void AddSC_instance_violet_hold_legion();
 //void AddSC_violet_hold_legion();
 //void AddSC_boss_anubesset();
@@ -136,9 +154,29 @@ void AddSC_boss_helya_maw();
 //void AddSC_boss_saelorn();
 //void AddSC_boss_fel_lord_betrug();
 
+//Karazhan
+void AddSC_boss_attumen_new();
+void AddSC_boss_curator_new();
+void AddSC_boss_maiden_of_virtue_new();
+void AddSC_boss_mana_devourer();
+void AddSC_boss_moroes_new();
+void AddSC_boss_nightbane_new();
+void AddSC_npc_kara_barnes_new();
+void AddSC_boss_shade_of_medivh();
+void AddSC_boss_vizaduum();
+void AddSC_instance_new_karazhan();
+void AddSC_new_karazhan();
+
+//The Arcway
+void AddSC_instance_the_arcway();
+void AddSC_boss_advisor_vandros();
+void AddSC_boss_general_xakal();
+void AddSC_boss_ivanyr();
+void AddSC_boss_naltira();
+
 // Court of Stars
 void AddSC_boss_patrol_captain_gerdo();
-void AddSC_talixae_flamewreath();
+void AddSC_boss_talixae_flamewreath();
 void AddSC_boss_advisor_melandrus();
 void AddSC_court_of_stars();
 void AddSC_instance_court_of_stars();
@@ -269,23 +307,33 @@ void AddBrokenIslesScripts()
     AddSC_boss_helya_maw();
 
     // Neltharion's Lair
-    //AddSC_instance_neltharions_lair();
-    //AddSC_neltharions_lair();
-    //AddSC_boss_rokmora();
-    //AddSC_boss_ularogg_cragshaper();
-    //AddSC_boss_naraxas();
-    //AddSC_boss_dargrul_the_underking();
+    AddSC_instance_neltharions_lair();
+    AddSC_neltharions_lair();
+    AddSC_boss_rokmora();
+    AddSC_boss_ularogg_cragshaper();
+    AddSC_boss_naraxas();
+    AddSC_boss_dargrul_the_underking();
 
     // Vault of the Wardens
     //AddSC_instance_vault_of_the_wardens();
     //AddSC_vault_of_the_wardens();
-    //AddSC_boss_tirathon_saltheril();
+   // AddSC_boss_tirathon_saltheril();
     //AddSC_boss_inquisitor_tormentorum();
     //AddSC_boss_glazer();
     //AddSC_boss_ashgolm();
     //AddSC_boss_cordana_felsong();
 
     // Violet Hold
+    AddSC_boss_anubesset();
+    AddSC_boss_blood_princess_thalena();
+    AddSC_boss_fel_lord_betrug();
+    AddSC_boss_festerface();
+    AddSC_boss_millificient_manastorm();
+    AddSC_boss_mind_flayer_kaarhj();
+    AddSC_boss_saelorn();
+    AddSC_boss_shivermaw();
+    AddSC_instance_violet_hold_assault();
+    AddSC_violet_hold_assault();
     //AddSC_instance_violet_hold_legion();
     //AddSC_violet_hold_legion();
     //AddSC_boss_anubesset();
@@ -297,9 +345,37 @@ void AddBrokenIslesScripts()
     //AddSC_boss_saelorn();
     //AddSC_boss_fel_lord_betrug();
 
+    //The Nighthold
+    AddSC_boss_aluriel();
+    AddSC_boss_chronomatic_anomaly();
+    AddSC_boss_skorpyron();
+    AddSC_boss_trilliax();
+    AddSC_instance_the_nighthold();
+    AddSC_the_nighthold();
+
+    //Karazhan
+    AddSC_boss_attumen_new();
+    AddSC_boss_curator_new();
+    AddSC_boss_maiden_of_virtue_new();
+    AddSC_boss_mana_devourer();
+    AddSC_boss_moroes_new();
+    AddSC_boss_nightbane_new();
+    AddSC_npc_kara_barnes_new();
+    AddSC_boss_shade_of_medivh();
+    AddSC_boss_vizaduum();
+    AddSC_instance_new_karazhan();
+    AddSC_new_karazhan();
+
+    //The Arcway
+    AddSC_instance_the_arcway();
+    AddSC_boss_advisor_vandros();
+    AddSC_boss_general_xakal();
+    AddSC_boss_ivanyr();
+    AddSC_boss_naltira();
+
     // Court of Stars
     AddSC_boss_patrol_captain_gerdo();
-    AddSC_talixae_flamewreath();
+    AddSC_boss_talixae_flamewreath();
     AddSC_boss_advisor_melandrus();
     AddSC_court_of_stars();
     AddSC_instance_court_of_stars();

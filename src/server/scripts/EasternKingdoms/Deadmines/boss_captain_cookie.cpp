@@ -149,7 +149,7 @@ public:
             _Reset();
             me->SetReactState(REACT_AGGRESSIVE);
             DoCast(SPELL_WHO_IS_THAT);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+            me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
         }
 
         void MoveInLineOfSight(Unit* who) override
@@ -166,7 +166,7 @@ public:
         void EnterCombat(Unit* /*who*/) override
         {
             me->RemoveAura(SPELL_WHO_IS_THAT);
-            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+            me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
             me->AttackStop();
             me->SetReactState(REACT_PASSIVE);
 
@@ -244,14 +244,14 @@ public:
         npc_captain_cookie_cauldronAI(Creature* pCreature) : ScriptedAI(pCreature)
         {
             me->SetReactState(REACT_PASSIVE);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+            me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
         }
 
         void Reset() override
         {
             DoCast(me, SPELL_CAULDRON_VISUAL, true);
             DoCast(me, SPELL_CAULDRON_FIRE);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_STUNNED);
+            me->AddUnitFlag(UNIT_FLAG_STUNNED);
         }
     };
 };

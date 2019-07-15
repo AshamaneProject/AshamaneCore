@@ -463,7 +463,7 @@ public:
             caster->GetAttackableUnitListInRange(units, 25.f);
             units.remove_if([caster](Unit* unit)
             {
-                return !caster->HasInLine(unit, 6.f);
+                return !caster->HasInLine(unit, 6.f, caster->GetObjectScale());
             });
 
             for (Unit* unit : units)
@@ -830,7 +830,7 @@ class spell_demon_hunter_eye_beam_damage : public SpellScriptLoader
                 caster->GetAttackableUnitListInRange(units, 25.f);
                 units.remove_if([caster](Unit* unit)
                 {
-                    return !caster->HasInLine(unit, 5.f);
+                    return !caster->HasInLine(unit, 5.f, caster->GetObjectScale());
                 });
 
                 for (Unit* unit : units)
@@ -839,7 +839,7 @@ class spell_demon_hunter_eye_beam_damage : public SpellScriptLoader
 
             void Register()
             {
-                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_demon_hunter_eye_beam_damage_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_CASTER_AREA_ENEMY_FRONT);
+                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_demon_hunter_eye_beam_damage_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_CONE_ENTRY_129);
             }
         };
 
@@ -1425,10 +1425,10 @@ public:
                     if (!caster->IsWithinDist(at, range))
                         continue;
 
-                    if (Creature* tempSumm = caster->SummonCreature(WORLD_TRIGGER, at->GetPositionX(), at->GetPositionY(), at->GetPositionZ(), 0, TEMPSUMMON_TIMED_DESPAWN, 100))
+                    if (TempSummon * tempSumm = caster->SummonCreature(WORLD_TRIGGER, at->GetPositionX(), at->GetPositionY(), at->GetPositionZ(), 0, TEMPSUMMON_TIMED_DESPAWN, 100))
                     {
                         tempSumm->setFaction(caster->getFaction());
-                        tempSumm->SetGuidValue(UNIT_FIELD_SUMMONEDBY, caster->GetGUID());
+                        tempSumm->SetSummonerGUID(caster->GetGUID());
                         int32 bp = 0;
                         switch (at->GetTemplate()->Id)
                         {
@@ -1755,10 +1755,10 @@ public:
                         if (!caster->IsWithinDist(at, range))
                             continue;
 
-                        if (Creature* tempSumm = caster->SummonCreature(WORLD_TRIGGER, at->GetPositionX(), at->GetPositionY(), at->GetPositionZ(), 0, TEMPSUMMON_TIMED_DESPAWN, 100))
+                        if (TempSummon* tempSumm = caster->SummonCreature(WORLD_TRIGGER, at->GetPositionX(), at->GetPositionY(), at->GetPositionZ(), 0, TEMPSUMMON_TIMED_DESPAWN, 100))
                         {
                             tempSumm->setFaction(caster->getFaction());
-                            tempSumm->SetGuidValue(UNIT_FIELD_SUMMONEDBY, caster->GetGUID());
+                            tempSumm->SetSummonerGUID(caster->GetGUID());
                             int32 bp = 0;
                             switch (at->GetTemplate()->Id)
                             {

@@ -592,8 +592,8 @@ class boss_alysrazor : public CreatureScript
                         {
                             if (Creature* pFocus = (*itr)->ToCreature())
                             {
-                                pFocus->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
-                                pFocus->SetFlag(UNIT_FIELD_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                                pFocus->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
+                                pFocus->AddNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                                 pFocus->CastSpell(pFocus, SPELL_TRANSFORM_CHARGED_PYRESHELL_FOCUS, true);
                             }
                         }
@@ -895,7 +895,7 @@ class npc_alysrazor_blazing_power : public CreatureScript
             npc_alysrazor_blazing_powerAI(Creature* pCreature) : Scripted_NoMovementAI(pCreature)
             {
                 me->SetReactState(REACT_PASSIVE);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
                 me->AddUnitState(UNIT_STATE_IGNORE_PATHFINDING);
             }
 
@@ -924,7 +924,7 @@ class npc_alysrazor_incindiary_cloud : public CreatureScript
             npc_alysrazor_incindiary_cloudAI(Creature* pCreature) : Scripted_NoMovementAI(pCreature)
             {
                 me->SetReactState(REACT_PASSIVE);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
                 me->AddUnitState(UNIT_STATE_IGNORE_PATHFINDING);
             }
 
@@ -954,7 +954,7 @@ class npc_alysrazor_fiery_vortex : public CreatureScript
             {
                 pInstance = pCreature->GetInstanceScript();
                 me->SetReactState(REACT_PASSIVE);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
             }
 
             InstanceScript* pInstance;
@@ -1025,7 +1025,7 @@ class npc_alysrazor_fiery_tornado : public CreatureScript
             npc_alysrazor_fiery_tornadoAI(Creature* pCreature) : Scripted_NoMovementAI(pCreature)
             {
                 me->SetReactState(REACT_PASSIVE);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
             }
 
             void Reset() override
@@ -1148,7 +1148,7 @@ class npc_alysrazor_blazing_talon_initiate : public CreatureScript
 
                     me->SetCanFly(false);
                     me->SetDisableGravity(false);
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+                    me->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
                 }
             }
 
@@ -1211,7 +1211,7 @@ class npc_alysrazor_brushfire : public CreatureScript
             {
                 me->SetFacingTo(urand(0, 6));
                 DoCast(me, SPELL_BRASHFIRE_AURA);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                 started = true;
                 needJump = true;
                 jump = 500;
@@ -1393,7 +1393,7 @@ class npc_alysrazor_blazing_broodmother : public CreatureScript
                 me->SetDisableGravity(true);
                 DoCast(me, SPELL_BROODMOTHER_COSMETIC, true);
 
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
 
                 bLeft = (me->GetPositionX() > 0);
 
@@ -1469,7 +1469,7 @@ class npc_alysrazor_molten_egg : public CreatureScript
             void IsSummonedBy(Unit* /*summoner*/) override
             {
                 me->SetReactState(REACT_PASSIVE);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                 events.ScheduleEvent(EVENT_EGG_EXPLOSION, 3500);
                 started = true;
             }
@@ -1624,7 +1624,7 @@ class npc_alysrazor_plump_lava_worm : public CreatureScript
             npc_alysrazor_plump_lava_wormAI(Creature* pCreature) : Scripted_NoMovementAI(pCreature)
             {
                 me->SetReactState(REACT_PASSIVE);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
             }
 
             EventMap events;
@@ -1715,7 +1715,7 @@ class npc_alysrazor_herald_of_the_burning_end : public CreatureScript
             npc_alysrazor_herald_of_the_burning_endAI(Creature* pCreature) : Scripted_NoMovementAI(pCreature)
             {
                 me->SetReactState(REACT_PASSIVE);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
             }
 
             void EnterCombat(Unit* /*who*/) override
@@ -1759,7 +1759,7 @@ class npc_alysrazor_molten_meteor : public CreatureScript
                 me->SetSpeed(MOVE_WALK, 0.3f);
                 me->SetReactState(REACT_PASSIVE);
                 if (me->GetEntry() == NPC_MOLTEN_METEOR_2)
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                    me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
             }
 
             void IsSummonedBy(Unit* /*owner*/) override

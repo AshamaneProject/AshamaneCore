@@ -116,7 +116,7 @@ struct boss_ymiron_maw : public BossAI
     void JustReachedHome() override
     {
         BossAI::JustReachedHome();
-        me->SetUInt32Value(UNIT_NPC_EMOTESTATE, 16);
+        me->SetEmoteState(EMOTE_ONESHOT_KNEEL);
     }
 
     void KilledUnit(Unit* victim) override

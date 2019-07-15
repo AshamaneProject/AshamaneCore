@@ -524,7 +524,7 @@ public:
             {
                 case ACTION_TRON_ACTIVATE:
                     me->RemoveAurasDueToSpell(SPELL_INACTIVE);
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                    me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                     me->SetReactState(REACT_AGGRESSIVE);
                     DoZoneInCombat(me);
                     if(instance)
@@ -596,7 +596,7 @@ public:
                         me->AttackStop();
                         if(instance)
                         instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me); // Remove
-                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                        me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                         me->GetMotionMaster()->MovePoint(1, wayPos[0]);
                         activated = true;
                         isMovingHome = false;
@@ -612,7 +612,7 @@ public:
                     if(instance)
                         instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me); // Remove
                     me->GetMotionMaster()->MovePoint(0, homePosition);
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                    me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                     isMovingHome = true;
                     activated = false;
                     break;
@@ -643,7 +643,7 @@ public:
                 me->SetPower(POWER_ENERGY, 100);
                 if(instance)
                     instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me); // Remove
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                 me->RemoveAura(me->GetMap()->IsHeroic() ? SPELL_ACTIVATED_H : SPELL_ACTIVATED);
                 DoCast(me, SPELL_SHUTTING_DOWN);
                 return;
@@ -829,7 +829,7 @@ public:
             {
             case NPC_POWER_GENERATOR:
                 summon->SetReactState(REACT_PASSIVE);
-                summon->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                summon->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                 summon->DespawnOrUnsummon(30000);
                 break;
             }

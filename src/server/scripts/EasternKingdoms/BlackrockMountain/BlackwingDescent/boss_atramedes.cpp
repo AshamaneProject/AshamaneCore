@@ -211,7 +211,7 @@ public:
                 instance->DoRemoveAurasDueToSpellOnPlayers(SPELL_NOISY);
             }
 
-            me->RemoveByteFlag(UNIT_FIELD_BYTES_1, 3, 0x02);
+            me->SetAnimTier(UNIT_BYTE1_FLAG_NONE, true);
             me->RemoveUnitMovementFlag(MOVEMENTFLAG_CAN_FLY | MOVEMENTFLAG_FLYING);
 
             _Reset();
@@ -281,7 +281,7 @@ public:
             phase = PHASE_GROUND;
             me->SetReactState(REACT_AGGRESSIVE);
             me->SetDisableGravity(false);
-            me->RemoveByteFlag(UNIT_FIELD_BYTES_1, 3, 0x02);
+            me->SetAnimTier(UNIT_BYTE1_FLAG_NONE, true);
             me->RemoveUnitMovementFlag(MOVEMENTFLAG_CAN_FLY | MOVEMENTFLAG_FLYING);
             events.SetPhase(PHASE_GROUND);
             initEvents(true);
@@ -292,7 +292,7 @@ public:
             phase = PHASE_FLIGHT;
             me->SetReactState(REACT_PASSIVE);
             me->SetDisableGravity(true);
-            me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, 0x02);
+            me->SetAnimTier(UNIT_BYTE1_FLAG_HOVER, true);
             me->AddUnitMovementFlag(MOVEMENTFLAG_CAN_FLY | MOVEMENTFLAG_FLYING);
             events.SetPhase(PHASE_FLIGHT);
             initEvents(false);
@@ -798,9 +798,9 @@ public:
             if (Creature* atramedes = me->FindNearestCreature(BOSS_ATRAMEDES, 200.0f))
             {
                 if (!atramedes->IsInCombat())
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                    me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                 else
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                    me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
             }
         }
     };

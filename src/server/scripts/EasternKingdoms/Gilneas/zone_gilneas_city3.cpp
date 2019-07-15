@@ -823,9 +823,9 @@ public:
                 if (Creature* hippo = ObjectAccessor::GetCreature(*me, (*itr)))
                 {
                     if (value)
-                        hippo->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+                        hippo->AddNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
                     else
-                        hippo->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+                        hippo->RemoveNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
                 }
         }
 
@@ -1699,9 +1699,9 @@ public:
             for (std::list<GameObject*>::const_iterator itr = goList.begin(); itr != goList.end(); ++itr)
             {
                 if (value)
-                    (*itr)->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
+                    (*itr)->RemoveFlag(GO_FLAG_NOT_SELECTABLE);
                 else
-                    (*itr)->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
+                    (*itr)->AddFlag(GO_FLAG_NOT_SELECTABLE);
             }
         }
 

@@ -192,7 +192,7 @@ class boss_majordomo_staghelm : public CreatureScript
                 switch (summon->GetEntry())
                 {
                     case NPC_BURNING_ORB:
-                        summon->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE|UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+                        summon->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE|UNIT_FLAG_REMOVE_CLIENT_CONTROL));
                         summon->CastSpell(summon, SPELL_BURNING_ORB_PERIODIC, false);
                         break;
                     default:

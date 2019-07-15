@@ -204,7 +204,7 @@ namespace Instances
                                         me->SetFacingToObject(target);
                                         me->CastSpell(summon, uint32(Spells::EarthCrush3), false);
 
-                                        summon->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+                                        summon->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
                                     }
                                 }
                                 events.ScheduleEvent(uint32(Events::EarthCrush), urand(20000, 25000));

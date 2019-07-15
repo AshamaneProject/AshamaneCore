@@ -896,7 +896,7 @@ class npc_spine_of_deathwing_corrupted_blood : public CreatureScript
                         DoResetThreat();
                         me->SetReactState(REACT_AGGRESSIVE);
                         me->RemoveAura(SPELL_RESIDUE);
-                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+                        me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
                     }
             }
 
@@ -911,7 +911,7 @@ class npc_spine_of_deathwing_corrupted_blood : public CreatureScript
                         DoResetThreat();
                         me->SetReactState(REACT_PASSIVE);
                         me->AttackStop();
-                        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+                        me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
                         DoCastAOE(SPELL_BURST, true);
                         DoCast(me, SPELL_RESIDUE, true);
                         me->SetSpeed(MOVE_RUN, 0.05f);
@@ -973,7 +973,7 @@ class npc_spine_of_deathwing_burning_tendons : public CreatureScript
                 me->ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_CONFUSE, true);
 
                 me->SetReactState(REACT_PASSIVE);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                 isOpened = false;
                 pInstance = me->GetInstanceScript();
             }
@@ -1009,7 +1009,7 @@ class npc_spine_of_deathwing_burning_tendons : public CreatureScript
                     }
 
                     isOpened = true;
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                    me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                     DoCast(me, ((pos % 2) == 1) ? SPELL_BREACH_ARMOR_2 : SPELL_BREACH_ARMOR_1, true);
                     DoCast(me, ((pos % 2) == 1) ? SPELL_SEAL_ARMOR_BREACH_2 : SPELL_SEAL_ARMOR_BREACH_1);
                     events.ScheduleEvent(EVENT_CHECK_CASTING, 1000);
@@ -1017,7 +1017,7 @@ class npc_spine_of_deathwing_burning_tendons : public CreatureScript
                 else if ((spellInfo->Id == SPELL_SEAL_ARMOR_BREACH_2 || spellInfo->Id == SPELL_SEAL_ARMOR_BREACH_1) && isOpened)
                 {
                     isOpened = false;
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                    me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                     if (Creature* pDeathwing = me->FindNearestCreature(NPC_SPINE_OF_DEATHWING, 200.0f, true))
                     {
                         uint8 cur_plate = pDeathwing->AI()->GetData(DATA_PLATES);
@@ -1079,7 +1079,7 @@ class npc_spine_of_deathwing_burning_tendons : public CreatureScript
                             if (!me->HasUnitState(UNIT_STATE_CASTING))
                             {
                                 isOpened = false;
-                                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                             }
                             events.ScheduleEvent(EVENT_CHECK_CASTING, 1000);
                         }

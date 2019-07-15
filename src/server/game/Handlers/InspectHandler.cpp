@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -49,7 +49,7 @@ void WorldSession::HandleInspectOpcode(WorldPackets::Inspect::Inspect& inspect)
     }
 
     inspectResult.ClassID = player->getClass();
-    inspectResult.GenderID = player->GetByteValue(PLAYER_BYTES_3, PLAYER_BYTES_3_OFFSET_GENDER);
+    inspectResult.GenderID = player->m_playerData->NativeSex;
 
     if (GetPlayer()->CanBeGameMaster() || sWorld->getIntConfig(CONFIG_TALENTS_INSPECTING) + (GetPlayer()->GetTeamId() == player->GetTeamId()) > 1)
     {
@@ -74,12 +74,17 @@ void WorldSession::HandleInspectOpcode(WorldPackets::Inspect::Inspect& inspect)
     }
 
     inspectResult.InspecteeGUID = inspect.Target;
-    inspectResult.SpecializationID = player->GetUInt32Value(PLAYER_FIELD_CURRENT_SPEC_ID);
+    inspectResult.SpecializationID = player->GetPrimarySpecialization();
+    inspectResult.LifetimeMaxRank = player->m_activePlayerData->LifetimeMaxRank;
+    inspectResult.TodayHK = player->m_activePlayerData->TodayHonorableKills;
+    inspectResult.YesterdayHK = player->m_activePlayerData->YesterdayHonorableKills;
+    inspectResult.LifetimeHK = player->m_activePlayerData->LifetimeHonorableKills;
+    inspectResult.HonorLevel = player->m_playerData->HonorLevel;
 
     SendPacket(inspectResult.Write());
 }
 
-void WorldSession::HandleRequestHonorStatsOpcode(WorldPackets::Inspect::RequestHonorStats& request)
+/*void WorldSession::HandleRequestHonorStatsOpcode(WorldPackets::Inspect::RequestHonorStats& request)
 {
     Player* player = ObjectAccessor::FindPlayer(request.TargetGUID);
     if (!player)
@@ -124,7 +129,7 @@ void WorldSession::HandleInspectPVP(WorldPackets::Inspect::InspectPVPRequest& re
     /// @todo: fill brackets
 
     SendPacket(response.Write());
-}
+}*/
 
 void WorldSession::HandleQueryInspectAchievements(WorldPackets::Inspect::QueryInspectAchievements& inspect)
 {

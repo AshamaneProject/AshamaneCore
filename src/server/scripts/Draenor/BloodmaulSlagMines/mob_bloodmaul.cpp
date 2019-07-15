@@ -54,7 +54,7 @@ namespace Instances { namespace Bloodmaul
                     events.Reset();
 
                     me->AddUnitState(UNIT_STATE_ROOT);
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_UNK_6 | UNIT_FLAG_UNK_15 | UNIT_FLAG_NOT_SELECTABLE);
+                    me->AddUnitFlag(UnitFlags(UNIT_FLAG_UNK_6 | UNIT_FLAG_UNK_15 | UNIT_FLAG_NOT_SELECTABLE));
                 }
 
                 void SetData(uint32 type, uint32) override
@@ -62,7 +62,7 @@ namespace Instances { namespace Bloodmaul
                     if (type == uint32(Data::SpawnSlagna))
                     {
                         me->RemoveAura(uint32(Spells::SubmergeVisual));
-                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_UNK_6 | UNIT_FLAG_UNK_15 | UNIT_FLAG_NOT_SELECTABLE);
+                        me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_UNK_6 | UNIT_FLAG_UNK_15 | UNIT_FLAG_NOT_SELECTABLE));
 
                         if (Unit* target = me->SelectNearestPlayer(20.0f))
                             AttackStart(target);
@@ -72,7 +72,7 @@ namespace Instances { namespace Bloodmaul
                 void EnterCombat(Unit*) override
                 {
                     me->RemoveAura(uint32(Spells::SubmergeVisual));
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_UNK_6 | UNIT_FLAG_UNK_15 | UNIT_FLAG_NOT_SELECTABLE);
+                    me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_UNK_6 | UNIT_FLAG_UNK_15 | UNIT_FLAG_NOT_SELECTABLE));
 
                     events.ScheduleEvent(uint32(Events::LavaSpit), urand(2000, 2500));
                 }
@@ -128,7 +128,7 @@ namespace Instances { namespace Bloodmaul
             {
                 mob_AI(Creature* creature) : ScriptedAI(creature)
                 {
-                    me->SetUInt32Value(UNIT_FIELD_FLAGS, 0);
+                    me->SetUnitFlags(UnitFlags(0));
                 }
 
                 EventMap m_Events;
@@ -940,7 +940,7 @@ namespace Instances { namespace Bloodmaul
                     me->CastSpell(me, eSpells::ExplodingFlamesPeriodic, true);
 
                     me->SetReactState(ReactStates::REACT_PASSIVE);
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+                    me->AddUnitFlag(UnitFlags(UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
                 }
 
                 void UpdateAI(uint32 const /*diff*/) override { }
@@ -1166,7 +1166,7 @@ namespace Instances { namespace Bloodmaul
                     m_Events.Reset();
                     m_CanDamage = false;
                     me->SetControlled(true, UNIT_STATE_ROOT);
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NON_ATTACKABLE);
+                    me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NON_ATTACKABLE));
                     m_Events.ScheduleEvent(Events::EventDamage, 3000);
                     me->CastSpell(me, Spells::SpellATSummon, false);
                     me->DespawnOrUnsummon(6000);

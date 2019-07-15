@@ -349,7 +349,7 @@ class npc_highmaul_imperator_margok : public CreatureScript
             void Reset() override
             {
                 me->SetReactState(ReactStates::REACT_PASSIVE);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NON_ATTACKABLE);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NON_ATTACKABLE));
             }
 
             void DoAction(int32 const action) override
@@ -550,8 +550,8 @@ class npc_highmaul_night_twisted_devout : public CreatureScript
             {
                 m_Events.Reset();
 
-                if (me->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC) ||
-                    me->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE))
+                if (me->HasUnitFlag(UNIT_FLAG_IMMUNE_TO_PC) ||
+                    me->HasUnitFlag(UNIT_FLAG_NOT_SELECTABLE))
                     me->SetReactState(ReactStates::REACT_PASSIVE);
             }
 
@@ -1326,7 +1326,7 @@ class npc_highmaul_iron_flame_technician : public CreatureScript
                         if (Creature* l_Charge = me->SummonCreature(eCreature::UnstoppableCharge, *target, TempSummonType::TEMPSUMMON_TIMED_DESPAWN, 2000))
                         {
                             l_Charge->SetReactState(ReactStates::REACT_PASSIVE);
-                            l_Charge->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NOT_SELECTABLE);
+                            l_Charge->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NOT_SELECTABLE));
 
                             m_ChargeTarget = l_Charge->GetGUID();
                             me->CastSpell(l_Charge, eSpells::UnstoppableChargeCharge, true);
@@ -1478,7 +1478,7 @@ class npc_highmaul_iron_warmaster : public CreatureScript
                     {
                         Talk(eTalks::Intro2);
 
-                        me->SetUInt32Value(UNIT_NPC_EMOTESTATE, 0);
+                        me->SetEmoteState(EMOTE_ONESHOT_NONE);
                         me->GetMotionMaster()->MovePoint(0, g_IronWarmasterPos);
                     });
                 }
@@ -1916,7 +1916,7 @@ class npc_highmaul_highmaul_conscript : public CreatureScript
 
                 me->RemoveAura(eSpells::AtArms);
                 me->RemoveAura(eSpells::ShieldCharge);
-                me->RemoveFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN);
+                me->RemoveUnitFlag2(UNIT_FLAG2_DISABLE_TURN);
             }
 
             void JustDied(Unit* /*killer*/) override
@@ -1961,7 +1961,7 @@ class npc_highmaul_highmaul_conscript : public CreatureScript
                             m_ChargeTarget = target->GetGUID();
                             me->SetFacingTo(me->GetAngle(target));
                             me->CastSpell(target, eSpells::ShieldBlocking, false);
-                            me->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN);
+                            me->AddUnitFlag2(UNIT_FLAG2_DISABLE_TURN);
                             me->AddUnitState(UnitState::UNIT_STATE_ROOT);
                         }
 
@@ -2071,7 +2071,7 @@ class npc_highmaul_ogron_earthshaker : public CreatureScript
                     {
                         AddTimedDelayedOperation(1 * TimeConstants::IN_MILLISECONDS, [this]() -> void
                         {
-                            me->RemoveFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN);
+                            me->RemoveUnitFlag2(UNIT_FLAG2_DISABLE_TURN);
                         });
                     }
                 }
@@ -2120,7 +2120,7 @@ class npc_highmaul_ogron_earthshaker : public CreatureScript
                             m_SlamCount = 0;
                             me->SetFacingTo(m_orientation);
                             me->CastSpell(target, eSpells::EarthdevastatingSlam, true);
-                            me->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN);
+                            me->AddUnitFlag2(UNIT_FLAG2_DISABLE_TURN);
                         }
 
                         m_Events.ScheduleEvent(eEvents::EventEarthdevastatingSlam, 60 * TimeConstants::IN_MILLISECONDS);
@@ -2188,7 +2188,7 @@ class npc_highmaul_gorian_arcanist : public CreatureScript
                 if (Creature* l_Stalker = me->FindNearestCreature(eCreature::InvisibleStalker, 20.0f))
                     me->CastSpell(l_Stalker, eSpells::ArcaneForceCosmetic, true);
 
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISARMED);
+                me->RemoveUnitFlag(UNIT_FLAG_DISARMED);
             }
 
             void EnterCombat(Unit* /*attacker*/) override
@@ -3857,8 +3857,8 @@ class spell_highmaul_boars_rush : public SpellScriptLoader
 
             void Register() override
             {
-                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_highmaul_boars_rush_SpellScript::CorrectTargets, EFFECT_1, TARGET_UNIT_CASTER_AREA_ENEMY_FRONT);
-                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_highmaul_boars_rush_SpellScript::CorrectTargets, EFFECT_3, TARGET_UNIT_CASTER_AREA_ENEMY_FRONT);
+                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_highmaul_boars_rush_SpellScript::CorrectTargets, EFFECT_1, TARGET_UNIT_CONE_ENTRY_129);
+                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_highmaul_boars_rush_SpellScript::CorrectTargets, EFFECT_3, TARGET_UNIT_CONE_ENTRY_129);
             }
         };
 
@@ -4156,8 +4156,8 @@ class spell_highmaul_earthdevastating_slam_dmg : public SpellScriptLoader
 
             void Register() override
             {
-                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_highmaul_earthdevastating_slam_dmg_SpellScript::CorrectTargets, EFFECT_0, TARGET_UNIT_CASTER_AREA_ENEMY_FRONT);
-                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_highmaul_earthdevastating_slam_dmg_SpellScript::CorrectTargets, EFFECT_1, TARGET_UNIT_CASTER_AREA_ENEMY_FRONT);
+                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_highmaul_earthdevastating_slam_dmg_SpellScript::CorrectTargets, EFFECT_0, TARGET_UNIT_CONE_ENTRY_129);
+                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_highmaul_earthdevastating_slam_dmg_SpellScript::CorrectTargets, EFFECT_1, TARGET_UNIT_CONE_ENTRY_129);
             }
         };
 
