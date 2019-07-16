@@ -422,7 +422,6 @@ namespace WorldPackets
         class WrapItem;
         class CancelTempEnchantment;
         class UseCritterItem;
-        class UpgradeItem;
         class SocketGems;
         class SortBags;
         class SortBankBags;
@@ -1468,7 +1467,6 @@ class TC_GAME_API WorldSession
         void HandleBuybackItem(WorldPackets::Item::BuyBackItem& packet);
         void HandleWrapItem(WorldPackets::Item::WrapItem& packet);
         void HandleUseCritterItem(WorldPackets::Item::UseCritterItem& packet);
-        void HandleUpgradeItem(WorldPackets::Item::UpgradeItem& packet);
 
         void HandleAttackSwingOpcode(WorldPackets::Combat::AttackSwing& packet);
         void HandleAttackStopOpcode(WorldPackets::Combat::AttackStop& packet);
