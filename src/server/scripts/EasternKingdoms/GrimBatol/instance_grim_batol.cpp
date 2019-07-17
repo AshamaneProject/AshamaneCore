@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
+ * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2005 - 2011 MaNGOS <http://www.getmangos.org/>
  * Copyright (C) 2008 - 2011 TrinityCore <http://www.trinitycore.org/>
  * Copyright (C) 2011 - 2012 ArkCORE <http://www.arkania.net/>

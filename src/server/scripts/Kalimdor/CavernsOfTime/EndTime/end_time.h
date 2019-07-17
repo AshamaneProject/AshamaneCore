@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
+ * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2008-2013 TrinityCore <http://www.trinitycore.org/>
  *
  * Copyright (C) 2008-2014 Forgotten Lands <http://www.forgottenlands.eu/>
