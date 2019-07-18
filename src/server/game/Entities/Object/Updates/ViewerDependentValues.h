@@ -25,6 +25,7 @@
 #include "Player.h"
 #include "SpellInfo.h"
 #include "SpellMgr.h"
+#include "TemporarySummon.h"
 #include "World.h"
 
 namespace UF
@@ -32,6 +33,24 @@ namespace UF
 template<typename Tag>
 class ViewerDependentValue
 {
+};
+
+template<>
+class ViewerDependentValue<UF::ObjectData::EntryIDTag>
+{
+public:
+    using ValueType = UF::ObjectData::EntryIDTag::ValueType;
+
+    static ValueType GetValue(ValueType entryID, Object const* object, Player const* receiver)
+    {
+        if (Unit const* unit = object->ToUnit())
+            if (TempSummon const* tempSummon = unit->ToTempSummon())
+                if (tempSummon->GetSummonerGUID() == object->GetGUID())
+                    if (uint32 specificEntry = tempSummon->GetSummonerSpecificEntry())
+                        entryID = specificEntry;
+
+        return entryID;
+    }
 };
 
 template<>
@@ -110,6 +129,11 @@ public:
 
     static ValueType GetValue(ValueType displayId, Unit const* unit, Player const* receiver)
     {
+        if (TempSummon const* tempSummon = unit->ToTempSummon())
+            if (tempSummon->GetSummonerGUID() == receiver->GetGUID())
+                if (uint32 specificDisplayID = tempSummon->GetSummonerSpecificDisplayID())
+                    displayId = specificDisplayID;
+
         if (unit->IsCreature())
         {
             CreatureTemplate const* cinfo = unit->ToCreature()->GetCreatureTemplate();
@@ -124,9 +148,13 @@ public:
                             break;
                         }
 
-            if (cinfo->flags_extra & CREATURE_FLAG_EXTRA_TRIGGER)
-                if (receiver->IsGameMaster())
+            if (receiver->IsGameMaster())
+            {
+                if (cinfo->flags_extra & CREATURE_FLAG_EXTRA_TRIGGER)
                     displayId = cinfo->GetFirstVisibleModel()->CreatureDisplayID;
+                else if (displayId == cinfo->GetFirstInvisibleModel()->CreatureDisplayID)
+                    displayId = cinfo->GetFirstVisibleModel()->CreatureDisplayID;
+            }
         }
 
         return displayId;
@@ -160,11 +188,20 @@ class ViewerDependentValue<UF::UnitData::FlagsTag>
 public:
     using ValueType = UF::UnitData::FlagsTag::ValueType;
 
-    static ValueType GetValue(ValueType flags, Unit const* /*unit*/, Player const* receiver)
+    static ValueType GetValue(ValueType flags, uint32 flagIndex, Unit const* /*unit*/, Player const* receiver)
     {
-        // Gamemasters should be always able to select units - remove not selectable flag
-        if (receiver->IsGameMaster())
-            flags &= ~UNIT_FLAG_NOT_SELECTABLE;
+        if (flagIndex == 0)
+        {
+            // Gamemasters should be always able to select units - remove not selectable flag
+            if (receiver->IsGameMaster())
+                flags &= ~UNIT_FLAG_NOT_SELECTABLE;
+        }
+        else if (flagIndex == 1)
+        {
+            // Gamemasters should be always able to select units - remove selection disabled flag
+            if (receiver->IsGameMaster())
+                flags &= ~UNIT_FLAG2_SELECTION_DISABLED;
+        }
 
         return flags;
     }

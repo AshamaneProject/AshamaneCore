@@ -32,7 +32,7 @@ namespace UF
 {
 void ObjectData::WriteCreate(ByteBuffer& data, EnumClassFlag<UpdateFieldFlag> fieldVisibilityFlags, Object const* owner, Player const* receiver) const
 {
-    data << int32(EntryID);
+    data << int32(ViewerDependentValue<EntryIDTag>::GetValue(EntryID, owner, receiver));
     data << uint32(ViewerDependentValue<DynamicFlagsTag>::GetValue(DynamicFlags, owner, receiver));
     data << float(Scale);
 }
@@ -47,7 +47,7 @@ void ObjectData::WriteUpdate(ByteBuffer& data, EnumClassFlag<UpdateFieldFlag> fi
     {
         if (changesMask[1])
         {
-            data << int32(EntryID);
+            data << int32(ViewerDependentValue<EntryIDTag>::GetValue(EntryID, owner, receiver));
         }
         if (changesMask[2])
         {
@@ -800,9 +800,9 @@ void UnitData::WriteCreate(ByteBuffer& data, EnumClassFlag<UpdateFieldFlag> fiel
     {
         VirtualItems[i].WriteCreate(data, fieldVisibilityFlags, owner, receiver);
     }
-    data << uint32(ViewerDependentValue<FlagsTag>::GetValue(Flags, owner, receiver));
-    data << uint32(Flags2);
-    data << uint32(Flags3);
+    data << uint32(ViewerDependentValue<FlagsTag>::GetValue(Flags,  0, owner, receiver));
+    data << uint32(ViewerDependentValue<FlagsTag>::GetValue(Flags2, 1, owner, receiver));
+    data << uint32(ViewerDependentValue<FlagsTag>::GetValue(Flags3, 2, owner, receiver));
     data << uint32(ViewerDependentValue<AuraStateTag>::GetValue(AuraState, owner, receiver));
     for (std::size_t i = 0; i < 2; ++i)
     {
@@ -1161,15 +1161,15 @@ void UnitData::WriteUpdate(ByteBuffer& data, UpdateMask<191> const& changesMask,
         }
         if (changesMask[42])
         {
-            data << uint32(ViewerDependentValue<FlagsTag>::GetValue(Flags, owner, receiver));
+            data << uint32(ViewerDependentValue<FlagsTag>::GetValue(Flags, 0, owner, receiver));
         }
         if (changesMask[43])
         {
-            data << uint32(Flags2);
+            data << uint32(ViewerDependentValue<FlagsTag>::GetValue(Flags2, 1, owner, receiver));
         }
         if (changesMask[44])
         {
-            data << uint32(Flags3);
+            data << uint32(ViewerDependentValue<FlagsTag>::GetValue(Flags2, 2, owner, receiver));
         }
         if (changesMask[45])
         {

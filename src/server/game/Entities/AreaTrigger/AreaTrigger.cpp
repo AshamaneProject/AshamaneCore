@@ -255,6 +255,7 @@ AreaTrigger* AreaTrigger::CreateAreaTrigger(uint32 spellMiscId, Unit* caster, ui
     if (!at->Create(spellMiscId, caster, caster, spellEntry, pos, duration, spellEntry->GetSpellVisual(), ObjectGuid::Empty, nullptr, cmi))
     {
         delete at;
+        delete cmi;
         return nullptr;
     }
 

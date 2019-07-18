@@ -42,6 +42,7 @@ namespace UF
 struct ObjectData : public IsUpdateFieldStructureTag, public HasChangesMask<4>
 {
     UpdateField<int32, 0, 1> EntryID;
+    struct EntryIDTag : ViewerDependentValueTag<int32> {};
     UpdateField<uint32, 0, 2> DynamicFlags;
     struct DynamicFlagsTag : ViewerDependentValueTag<uint32> {};
     UpdateField<float, 0, 3> Scale;
@@ -245,9 +246,9 @@ struct UnitData : public IsUpdateFieldStructureTag, public HasChangesMask<191>
     UpdateField<int32, 32, 41> FactionTemplate;
     struct FactionTemplateTag : ViewerDependentValueTag<int32> {};
     UpdateField<uint32, 32, 42> Flags;
-    struct FlagsTag : ViewerDependentValueTag<uint32> {};
     UpdateField<uint32, 32, 43> Flags2;
     UpdateField<uint32, 32, 44> Flags3;
+    struct FlagsTag : ViewerDependentValueTag<uint32> {};
     UpdateField<uint32, 32, 45> AuraState;
     struct AuraStateTag : ViewerDependentValueTag<uint32> {};
     UpdateField<uint32, 32, 46> RangedAttackRoundBaseTime;
