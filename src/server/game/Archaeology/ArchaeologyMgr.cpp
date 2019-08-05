@@ -35,7 +35,7 @@ void ArchaeologyMgr::LoadDigsites()
 
     mResearchDigsitesMap.clear();
 
-    PreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_SEL_ARCHAEOLOGY_DIGSITES);
+    WorldDatabasePreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_SEL_ARCHAEOLOGY_DIGSITES);
     PreparedQueryResult result = WorldDatabase.Query(stmt);
 
     if (!result)
@@ -279,7 +279,7 @@ int ArchaeologyMgr::GetArtifactSkillReqLevel(uint32 spellId)
 {
     uint8 reqSkillLevel = 1;
 
-    PreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_SEL_ARCHAEOLOGY_ARTIFACT);
+    WorldDatabasePreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_SEL_ARCHAEOLOGY_ARTIFACT);
     stmt->setUInt32(0, spellId);
     PreparedQueryResult result = WorldDatabase.Query(stmt);
 

@@ -15,7 +15,7 @@ public:
     ~AzeriteItem();
     bool Create(ObjectGuid::LowType guidlow, uint32 itemid, Player const* owner) override;
     bool LoadFromDB(ObjectGuid::LowType guid, ObjectGuid ownerGuid, Field* fields, uint32 entry, Player const* owner = nullptr) override;
-    void SaveToDB(SQLTransaction& trans) override;
+    void SaveToDB(CharacterDatabaseTransaction& trans) override;
 
     void SetLevel(uint32 level, bool loading = false);
     void AddExperience(uint32 value);
@@ -50,7 +50,7 @@ public:
     bool Create(ObjectGuid::LowType guidlow, uint32 itemid, Player const* owner) override;
     void SelectPower(int32 powerId, int32 tier);
     bool LoadFromDB(ObjectGuid::LowType guid, ObjectGuid ownerGuid, Field* fields, uint32 entry, Player const* owner = nullptr) override;
-    void SaveToDB(SQLTransaction& trans) override;
+    void SaveToDB(CharacterDatabaseTransaction& trans) override;
     void SetPower(uint32 spellId, bool apply, Player* owner = nullptr);
     void ApplyPowers(Player* player, bool apply);
 

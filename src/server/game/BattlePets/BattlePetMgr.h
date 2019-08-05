@@ -31,7 +31,7 @@ public:
     explicit BattlePetMgr(WorldSession* owner);
 
     void LoadFromDB(PreparedQueryResult pets, PreparedQueryResult slots);
-    void SaveToDB(SQLTransaction& trans);
+    void SaveToDB(LoginDatabaseTransaction& trans);
 
     BattlePet* GetPet(ObjectGuid guid);
     void AddPet(BattlePet* battlePet);

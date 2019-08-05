@@ -38,7 +38,7 @@ bool ClassHall::LoadFromDB()
     return true;
 }
 
-void ClassHall::SaveToDB(SQLTransaction& trans)
+void ClassHall::SaveToDB(CharacterDatabaseTransaction& trans)
 {
     Garrison::SaveToDB(trans);
 }
@@ -53,7 +53,7 @@ bool ClassHall::Create(uint32 garrSiteId)
 
 void ClassHall::Delete()
 {
-    SQLTransaction trans = CharacterDatabase.BeginTransaction();
+    CharacterDatabaseTransaction trans = CharacterDatabase.BeginTransaction();
     DeleteFromDB(trans);
     CharacterDatabase.CommitTransaction(trans);
 

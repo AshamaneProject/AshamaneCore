@@ -3041,13 +3041,9 @@ bool Spell::prepare(SpellCastTargets const* targets, AuraEffect const* triggered
 
     CallScriptOnPrepareHandlers();
 
-    if (m_caster->GetTypeId() == TYPEID_PLAYER)
-        m_caster->ToPlayer()->SetSpellModTakingSpell(this, true);
     // Fill cost data (do not use power for item casts)
-    if (!m_CastItem)
-        m_powerCost = m_spellInfo->CalcPowerCost(m_caster, m_spellSchoolMask);
-    if (m_caster->GetTypeId() == TYPEID_PLAYER)
-        m_caster->ToPlayer()->SetSpellModTakingSpell(this, false);
+    if (m_CastItem)
+        m_powerCost = m_spellInfo->CalcPowerCost(m_caster, m_spellSchoolMask, this);
 
     // Set combo point requirement
     if ((_triggeredCastFlags & TRIGGERED_IGNORE_COMBO_POINTS) || m_CastItem || !m_caster->m_playerMovingMe)
@@ -3071,11 +3067,6 @@ bool Spell::prepare(SpellCastTargets const* targets, AuraEffect const* triggered
             triggeredByAura->GetBase()->SetDuration(0);
         }
 
-        // cleanup after mod system
-        // triggered spell pointer can be not removed in some cases
-        if (m_caster->GetTypeId() == TYPEID_PLAYER)
-            m_caster->ToPlayer()->SetSpellModTakingSpell(this, false);
-
         if (param1 || param2)
             SendCastResult(result, &param1, &param2);
         else
@@ -3092,10 +3083,8 @@ bool Spell::prepare(SpellCastTargets const* targets, AuraEffect const* triggered
     {
         if (!player->GetCommandStatus(CHEAT_CASTTIME))
         {
-            player->SetSpellModTakingSpell(this, true);
             // calculate cast time (calculated after first CheckCast check to prevent charge counting for first CheckCast fail)
             m_casttime = m_spellInfo->CalcCastTime(player->getLevel(), this);
-            player->SetSpellModTakingSpell(this, false);
         }
         else
             m_casttime = 0; // Set cast time to 0 if .cheat casttime is enabled.
@@ -3227,6 +3216,23 @@ void Spell::cancel()
 
 void Spell::cast(bool skipCheck)
 {
+    Player* modOwner = m_caster->GetSpellModOwner();
+    Spell* lastSpellMod = nullptr;
+    if (modOwner)
+    {
+        lastSpellMod = modOwner->m_spellModTakingSpell;
+        if (lastSpellMod)
+            modOwner->SetSpellModTakingSpell(lastSpellMod, false);
+    }
+
+    _cast(skipCheck);
+
+    if (lastSpellMod)
+        modOwner->SetSpellModTakingSpell(lastSpellMod, true);
+}
+
+void Spell::_cast(bool skipCheck)
+{
     // update pointers base at GUIDs to prevent access to non-existed already object
     if (!UpdatePointers())
     {
@@ -3283,8 +3289,6 @@ void Spell::cast(bool skipCheck)
             SendCastResult(castResult, &param1, &param2);
             SendInterrupted(0);
 
-            // cleanup after mod system
-            // triggered spell pointer can be not removed in some cases
             if (m_caster->GetTypeId() == TYPEID_PLAYER)
                 m_caster->ToPlayer()->SetSpellModTakingSpell(this, false);
 
@@ -3308,8 +3312,6 @@ void Spell::cast(bool skipCheck)
                         SendCastResult(SPELL_FAILED_DONT_REPORT);
                         SendInterrupted(0);
 
-                        // cleanup after mod system
-                        // triggered spell pointer can be not removed in some cases
                         m_caster->ToPlayer()->SetSpellModTakingSpell(this, false);
 
                         finish(false);
@@ -4937,7 +4939,7 @@ SpellCastResult Spell::CheckCast(bool strict, uint32* param1 /*= nullptr*/, uint
                 return SPELL_FAILED_SPELL_IN_PROGRESS;
 
             // check if we are using a potion in combat for the 2nd+ time. Cooldown is added only after caster gets out of combat
-            if (m_caster->ToPlayer()->GetLastPotionId() && m_CastItem && (m_CastItem->IsPotion() || m_spellInfo->IsCooldownStartedOnEvent()))
+            if (!IsIgnoringCooldowns() && m_caster->ToPlayer()->GetLastPotionId() && m_CastItem && (m_CastItem->IsPotion() || m_spellInfo->IsCooldownStartedOnEvent()))
                 return SPELL_FAILED_NOT_READY;
         }
 
@@ -7104,18 +7106,49 @@ bool Spell::CheckEffectTarget(Unit const* target, SpellEffectInfo const* effect,
 
     /// @todo shit below shouldn't be here, but it's temporary
     //Check targets for LOS visibility
-    if (losPosition)
-        return target->IsWithinLOS(losPosition->GetPositionX(), losPosition->GetPositionY(), losPosition->GetPositionZ(), VMAP::ModelIgnoreFlags::M2);
-    else
+    switch (effect->Effect)
     {
-        // Get GO cast coordinates if original caster -> GO
-        WorldObject* caster = NULL;
-        if (m_originalCasterGUID.IsGameObject())
-            caster = m_caster->GetMap()->GetGameObject(m_originalCasterGUID);
-        if (!caster)
-            caster = m_caster;
-        if (target != m_caster && !target->IsWithinLOSInMap(caster, VMAP::ModelIgnoreFlags::M2))
-            return false;
+        case SPELL_EFFECT_SKIN_PLAYER_CORPSE:
+        {
+            if (!m_targets.GetCorpseTargetGUID())
+            {
+                if (target->IsWithinLOSInMap(m_caster, VMAP::ModelIgnoreFlags::M2) && target->HasUnitFlag(UNIT_FLAG_SKINNABLE))
+                    return true;
+        
+                return false;
+            }
+        
+            Corpse* corpse = ObjectAccessor::GetCorpse(*m_caster, m_targets.GetCorpseTargetGUID());
+            if (!corpse)
+                return false;
+        
+            if (target->GetGUID() != corpse->GetOwnerGUID())
+                return false;
+        
+            if (!corpse->HasDynamicFlag(CORPSE_DYNFLAG_LOOTABLE))
+                return false;
+        
+            if (!corpse->IsWithinLOSInMap(m_caster, VMAP::ModelIgnoreFlags::M2))
+                return false;
+        
+            break;
+        }
+        default:
+        {
+            if (losPosition)
+                return target->IsWithinLOS(losPosition->GetPositionX(), losPosition->GetPositionY(), losPosition->GetPositionZ(), VMAP::ModelIgnoreFlags::M2);
+            else
+            {
+                // Get GO cast coordinates if original caster -> GO
+                WorldObject* caster = NULL;
+                if (m_originalCasterGUID.IsGameObject())
+                    caster = m_caster->GetMap()->GetGameObject(m_originalCasterGUID);
+                if (!caster)
+                    caster = m_caster;
+                if (target != m_caster && !target->IsWithinLOSInMap(caster, VMAP::ModelIgnoreFlags::M2))
+                    return false;
+            }
+        }
     }
 
     return true;
@@ -7421,13 +7454,7 @@ void Spell::DoAllEffectOnLaunchTarget(TargetInfo& targetInfo, float* multiplier)
         }
     }
 
-    if (Player* modOwner = m_caster->GetSpellModOwner())
-        modOwner->SetSpellModTakingSpell(this, true);
-
     targetInfo.crit = m_caster->IsSpellCrit(unit, this, nullptr, m_spellSchoolMask, m_attackType);
-
-    if (Player* modOwner = m_caster->GetSpellModOwner())
-        modOwner->SetSpellModTakingSpell(this, false);
 }
 
 SpellCastResult Spell::CanOpenLock(uint32 effIndex, uint32 lockId, SkillType& skillId, int32& reqSkillValue, int32& skillValue)

@@ -64,7 +64,7 @@ bool AzeriteItem::LoadFromDB(ObjectGuid::LowType guid, ObjectGuid ownerGuid, Fie
     return true;
 }
 
-void AzeriteItem::SaveToDB(SQLTransaction& trans)
+void AzeriteItem::SaveToDB(CharacterDatabaseTransaction& trans)
 {
     Item::SaveToDB(trans);
 
@@ -276,7 +276,7 @@ bool AzeriteEmpoweredItem::LoadFromDB(ObjectGuid::LowType guid, ObjectGuid owner
     return true;
 }
 
-void AzeriteEmpoweredItem::SaveToDB(SQLTransaction& trans)
+void AzeriteEmpoweredItem::SaveToDB(CharacterDatabaseTransaction& trans)
 {
     if (GetState() == ITEM_REMOVED)
     {

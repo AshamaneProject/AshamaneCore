@@ -562,10 +562,10 @@ void WorldSession::HandlePetRename(WorldPackets::Pet::PetRename& packet)
         }
     }
 
-    SQLTransaction trans = CharacterDatabase.BeginTransaction();
+    CharacterDatabaseTransaction trans = CharacterDatabase.BeginTransaction();
     if (declinedname)
     {
-        PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_CHAR_PET_DECLINEDNAME);
+        CharacterDatabasePreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_CHAR_PET_DECLINEDNAME);
         stmt->setUInt32(0, pet->GetCharmInfo()->GetPetNumber());
         trans->Append(stmt);
 
@@ -579,7 +579,7 @@ void WorldSession::HandlePetRename(WorldPackets::Pet::PetRename& packet)
         trans->Append(stmt);
     }
 
-    PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_UPD_CHAR_PET_NAME);
+    CharacterDatabasePreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_UPD_CHAR_PET_NAME);
     stmt->setString(0, name);
     stmt->setUInt64(1, _player->GetGUID().GetCounter());
     stmt->setUInt32(2, pet->GetCharmInfo()->GetPetNumber());
@@ -738,7 +738,7 @@ void WorldSession::UpdatePetSlot(uint32 petNumberA, uint8 oldPetSlot, uint8 newP
     PlayerPetData* playerPetDataA = _player->GetPlayerPetDataById(petNumberA);
     PlayerPetData* playerPetDataB = _player->GetPlayerPetDataBySlot(newPetSlot);
 
-    SQLTransaction trans = CharacterDatabase.BeginTransaction();
+    CharacterDatabaseTransaction trans = CharacterDatabase.BeginTransaction();
 
     // If Slot is already in use
     if (playerPetDataB)
@@ -753,7 +753,7 @@ void WorldSession::UpdatePetSlot(uint32 petNumberA, uint8 oldPetSlot, uint8 newP
         }
         else
         {
-            PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_UPD_CHAR_PET_SLOT_BY_SLOT);
+            CharacterDatabasePreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_UPD_CHAR_PET_SLOT_BY_SLOT);
             stmt->setUInt32(0, oldPetSlot);
             stmt->setUInt64(1, _player->GetGUID().GetCounter());
             stmt->setUInt32(2, newPetSlot);
@@ -772,7 +772,7 @@ void WorldSession::UpdatePetSlot(uint32 petNumberA, uint8 oldPetSlot, uint8 newP
     }
     else
     {
-        PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_UPD_CHAR_PET_SLOT_BY_ID);
+        CharacterDatabasePreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_UPD_CHAR_PET_SLOT_BY_ID);
         stmt->setUInt32(0, newPetSlot);
         stmt->setUInt64(1, _player->GetGUID().GetCounter());
         stmt->setUInt32(2, petNumberA);

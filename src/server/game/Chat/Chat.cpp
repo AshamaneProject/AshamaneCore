@@ -19,6 +19,7 @@
 #include "Chat.h"
 #include "AccountMgr.h"
 #include "CellImpl.h"
+#include "CharacterCache.h"
 #include "ChatLink.h"
 #include "ChatPackets.h"
 #include "Common.h"
@@ -56,7 +57,7 @@ std::vector<ChatCommand> const& ChatHandler::getCommandTable()
         // calls getCommandTable() recursively.
         commandTableCache = sScriptMgr->GetChatCommands();
 
-        PreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_SEL_COMMANDS);
+        WorldDatabasePreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_SEL_COMMANDS);
         PreparedQueryResult result = WorldDatabase.Query(stmt);
         if (result)
         {
@@ -107,7 +108,7 @@ bool ChatHandler::HasLowerSecurity(Player* target, ObjectGuid guid, bool strong)
     if (target)
         target_session = target->GetSession();
     else if (!guid.IsEmpty())
-        target_account = ObjectMgr::GetPlayerAccountIdByGUID(guid);
+        target_account = sCharacterCache->GetCharacterAccountIdByGuid(guid);
 
     if (!target_session && !target_account)
     {
@@ -346,7 +347,7 @@ bool ChatHandler::ExecuteCommandInTable(std::vector<ChatCommand> const& table, c
                     guid.ToString().c_str());
 
                 uint8 index = 0;
-                PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_LOG_GM_COMMAND);
+                CharacterDatabasePreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_LOG_GM_COMMAND);
                 stmt->setUInt32(index++, player->GetSession()->GetAccountId());
                 stmt->setString(index++, player->GetSession()->GetBattlenetAccountName());
                 stmt->setUInt32(index++, player->GetGUID().GetCounter());
@@ -961,7 +962,7 @@ ObjectGuid::LowType ChatHandler::extractLowGuidFromLink(char* text, HighGuid& gu
             if (Player* player = ObjectAccessor::FindPlayerByName(name))
                 return player->GetGUID().GetCounter();
 
-            ObjectGuid guid = ObjectMgr::GetPlayerGUIDByName(name);
+            ObjectGuid guid = sCharacterCache->GetCharacterGuidByName(name);
             if (guid.IsEmpty())
                 return 0;
 
@@ -1021,7 +1022,7 @@ bool ChatHandler::extractPlayerTarget(char* args, Player** player, ObjectGuid* p
             *player = pl;
 
         // if need guid value from DB (in name case for check player existence)
-        ObjectGuid guid = !pl && (player_guid || player_name) ? ObjectMgr::GetPlayerGUIDByName(name) : ObjectGuid::Empty;
+        ObjectGuid guid = !pl && (player_guid || player_name) ? sCharacterCache->GetCharacterGuidByName(name) : ObjectGuid::Empty;
 
         // if allowed player guid (if no then only online players allowed)
         if (player_guid)
@@ -1176,14 +1177,14 @@ bool ChatHandler::GetPlayerGroupAndGUIDByName(const char* cname, Player*& player
         {
             if (!normalizePlayerName(name))
             {
-                PSendSysMessage(LANG_PLAYER_NOT_FOUND);
+                SendSysMessage(LANG_PLAYER_NOT_FOUND);
                 SetSentErrorMessage(true);
                 return false;
             }
 
             player = ObjectAccessor::FindPlayerByName(name);
             if (offline)
-                guid = ObjectMgr::GetPlayerGUIDByName(name.c_str());
+                guid = sCharacterCache->GetCharacterGuidByName(name);
         }
     }
 

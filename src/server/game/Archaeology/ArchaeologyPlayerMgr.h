@@ -57,9 +57,9 @@ public:
     void LoadArchaeologyDigSites(PreparedQueryResult result);
     void LoadArchaeologyBranchs(PreparedQueryResult result);
     void LoadArchaeologyHistory(PreparedQueryResult result);
-    void SaveArchaeologyDigSites(SQLTransaction& trans);
-    void SaveArchaeologyBranchs(SQLTransaction& trans);
-    void SaveArchaeologyHistory(SQLTransaction& trans);
+    void SaveArchaeologyDigSites(CharacterDatabaseTransaction& trans);
+    void SaveArchaeologyBranchs(CharacterDatabaseTransaction& trans);
+    void SaveArchaeologyHistory(CharacterDatabaseTransaction& trans);
 
     ArchaeologyHistoryMap& GetHistory() { return m_ArchaeologyHistoryMap; }
 

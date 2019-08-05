@@ -816,7 +816,7 @@ void GameObject::Update(uint32 diff)
             if (!m_spawnedByDefault)
             {
                 m_respawnTime = 0;
-                UpdateObjectVisibility();
+                DestroyForNearbyPlayers(); // old UpdateObjectVisibility()
                 return;
             }
 
@@ -826,7 +826,7 @@ void GameObject::Update(uint32 diff)
             if (sWorld->getBoolConfig(CONFIG_SAVE_RESPAWN_TIME_IMMEDIATELY))
                 SaveRespawnTime();
 
-            UpdateObjectVisibility();
+            DestroyForNearbyPlayers(); // old UpdateObjectVisibility()
 
             break;
         }
@@ -962,11 +962,11 @@ void GameObject::SaveToDB(uint32 mapid, std::vector<Difficulty> const& spawnDiff
     data.phaseGroup = GetDBPhase() < 0 ? -GetDBPhase() : data.phaseGroup;
 
     // Update in DB
-    SQLTransaction trans = WorldDatabase.BeginTransaction();
+    WorldDatabaseTransaction trans = WorldDatabase.BeginTransaction();
 
     uint8 index = 0;
 
-    PreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_DEL_GAMEOBJECT);
+    WorldDatabasePreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_DEL_GAMEOBJECT);
     stmt->setUInt64(0, m_spawnId);
     trans->Append(stmt);
 
@@ -1063,7 +1063,7 @@ void GameObject::DeleteFromDB()
     GetMap()->RemoveGORespawnTime(m_spawnId);
     sObjectMgr->DeleteGOData(m_spawnId);
 
-    PreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_DEL_GAMEOBJECT);
+    WorldDatabasePreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_DEL_GAMEOBJECT);
 
     stmt->setUInt64(0, m_spawnId);
 
@@ -1457,7 +1457,7 @@ void GameObject::Use(Unit* user)
 
                 if (!itr->second.IsEmpty())
                 {
-                    if (Player* ChairUser = ObjectAccessor::FindPlayer(itr->second))
+                    if (Player* ChairUser = ObjectAccessor::GetPlayer(*this, itr->second))
                     {
                         if (ChairUser->IsSitState() && ChairUser->GetStandState() != UNIT_STAND_STATE_SIT && ChairUser->GetExactDist2d(x_i, y_i) < 0.1f)
                             continue;        // This seat is already occupied by ChairUser. NOTE: Not sure if the ChairUser->GetStandState() != UNIT_STAND_STATE_SIT check is required.

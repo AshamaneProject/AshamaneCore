@@ -153,7 +153,8 @@ void FollowerAI::JustDied(Unit* /*killer*/)
         {
             for (GroupReference* groupRef = group->GetFirstMember(); groupRef != NULL; groupRef = groupRef->next())
                 if (Player* member = groupRef->GetSource())
-                    member->FailQuest(m_pQuestForFollow->GetQuestId());
+                    if (member->IsInMap(player))
+                        member->FailQuest(m_pQuestForFollow->GetQuestId());
         }
         else
             player->FailQuest(m_pQuestForFollow->GetQuestId());
@@ -237,7 +238,6 @@ void FollowerAI::UpdateAI(uint32 uiDiff)
                     for (GroupReference* groupRef = group->GetFirstMember(); groupRef != NULL; groupRef = groupRef->next())
                     {
                         Player* member = groupRef->GetSource();
-
                         if (member && me->IsWithinDistInMap(member, MAX_PLAYER_DISTANCE))
                         {
                             bIsMaxRangeExceeded = false;
@@ -351,8 +351,7 @@ Player* FollowerAI::GetLeaderForFollower()
                 for (GroupReference* groupRef = group->GetFirstMember(); groupRef != NULL; groupRef = groupRef->next())
                 {
                     Player* member = groupRef->GetSource();
-
-                    if (member && member->IsAlive() && me->IsWithinDistInMap(member, MAX_PLAYER_DISTANCE))
+                    if (member && me->IsWithinDistInMap(member, MAX_PLAYER_DISTANCE) && member->IsAlive())
                     {
                         TC_LOG_DEBUG("scripts", "FollowerAI GetLeader changed and returned new leader.");
                         m_uiLeaderGUID = member->GetGUID();

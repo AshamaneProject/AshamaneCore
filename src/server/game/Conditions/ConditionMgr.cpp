@@ -122,7 +122,10 @@ ConditionMgr::ConditionTypeInfo const ConditionMgr::StaticConditionTypeData[COND
     { "On Taxi",             false, false, false },
     { "Quest state mask",     true,  true, false },
     { "Objective Complete",   true, false, false },
-    { "Map Difficulty",       true, false, false }
+    { "Map Difficulty",       true, false, false },
+    { nullptr,               false, false, false },
+    { "Object Entry or Guid", true, true,  true  },
+    { "Object TypeMask",      true, false, false },
 };
 
 // Checks if object meets the condition
@@ -2096,6 +2099,10 @@ bool ConditionMgr::isConditionTypeValid(Condition* cond) const
             }
             break;
         }
+        case CONDITION_OBJECT_ENTRY_GUID_LEGACY:
+            cond->ConditionType = CONDITION_OBJECT_ENTRY_GUID;
+            cond->ConditionValue1 = Trinity::Legacy::ConvertLegacyTypeID(Trinity::Legacy::TypeID(cond->ConditionValue1));
+            /* fallthrough */
         case CONDITION_OBJECT_ENTRY_GUID:
         {
             switch (cond->ConditionValue1)
@@ -2159,6 +2166,10 @@ bool ConditionMgr::isConditionTypeValid(Condition* cond) const
             }
             break;
         }
+        case CONDITION_TYPE_MASK_LEGACY:
+            cond->ConditionType = CONDITION_TYPE_MASK;
+            cond->ConditionValue1 = Trinity::Legacy::ConvertLegacyTypeMask(cond->ConditionValue1);
+            /* fallthrough */
         case CONDITION_TYPE_MASK:
         {
             if (!cond->ConditionValue1 || (cond->ConditionValue1 & ~(TYPEMASK_UNIT | TYPEMASK_PLAYER | TYPEMASK_GAMEOBJECT | TYPEMASK_CORPSE)))

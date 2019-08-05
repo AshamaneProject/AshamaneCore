@@ -205,7 +205,7 @@ struct boss_ahune : public BossAI
         {
             if (Group* group = players.begin()->GetSource()->GetGroup())
                 if (group->isLFGGroup())
-                    sLFGMgr->FinishDungeon(group->GetGUID(), 286);
+                    sLFGMgr->FinishDungeon(group->GetGUID(), 286, me->GetMap());
         }
 
         _JustDied();

@@ -956,10 +956,25 @@ void WorldObject::GetZoneAndAreaId(uint32& zoneid, uint32& areaid) const
     areaid = GetAreaId();
 }
 
+bool WorldObject::IsInWorldPvpZone() const
+{
+    switch (GetZoneId())
+    {
+        case 4197: // Wintergrasp
+        case 5095: // Tol Barad
+        case 6941: // Ashran
+            return true;
+            break;
+        default:
+            return false;
+            break;
+    }
+}
+
 InstanceScript* WorldObject::GetInstanceScript() const
 {
     Map* map = GetMap();
-    return map->IsDungeon() ? ((InstanceMap*)map)->GetInstanceScript() : NULL;
+    return map->IsDungeon() ? ((InstanceMap*)map)->GetInstanceScript() : nullptr;
 }
 
 float WorldObject::GetDistanceZ(const WorldObject* obj) const
@@ -1750,7 +1765,7 @@ void WorldObject::AddObjectToRemoveList()
     map->AddObjectToRemoveList(this);
 }
 
-TempSummon* Map::SummonCreature(uint32 entry, Position const& pos, SummonPropertiesEntry const* properties /*= NULL*/, uint32 duration /*= 0*/, Unit* summoner /*= NULL*/, uint32 spellId /*= 0*/, uint32 vehId /*= 0*/, bool visibleBySummonerOnly /*= false*/, Spell const* summonSpell /*= nullptr*/)
+TempSummon* Map::SummonCreature(uint32 entry, Position const& pos, SummonPropertiesEntry const* properties /*= nullptr*/, uint32 duration /*= 0*/, Unit* summoner /*= nullptr*/, uint32 spellId /*= 0*/, uint32 vehId /*= 0*/, bool visibleBySummonerOnly /*= false*/, Spell const* summonSpell /*= nullptr*/)
 {
     uint32 mask = UNIT_MASK_SUMMON;
     if (properties)

@@ -83,7 +83,7 @@ void ArchaeologyPlayerMgr::LoadArchaeologyHistory(PreparedQueryResult result)
     while (result->NextRow());
 }
 
-void ArchaeologyPlayerMgr::SaveArchaeologyDigSites(SQLTransaction& trans)
+void ArchaeologyPlayerMgr::SaveArchaeologyDigSites(CharacterDatabaseTransaction& trans)
 {
     /*PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_ARCHAEOLOGY_DIGSITES);
     stmt->setUInt64(0, GetPlayer()->GetGUID().GetCounter());
@@ -106,7 +106,7 @@ void ArchaeologyPlayerMgr::SaveArchaeologyDigSites(SQLTransaction& trans)
     }*/
 }
 
-void ArchaeologyPlayerMgr::SaveArchaeologyBranchs(SQLTransaction& trans)
+void ArchaeologyPlayerMgr::SaveArchaeologyBranchs(CharacterDatabaseTransaction& trans)
 {
     /*PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_ARCHAEOLOGY_BRANCHS);
     stmt->setUInt64(0, GetPlayer()->GetGUID().GetCounter());
@@ -126,9 +126,9 @@ void ArchaeologyPlayerMgr::SaveArchaeologyBranchs(SQLTransaction& trans)
     }*/
 }
 
-void ArchaeologyPlayerMgr::SaveArchaeologyHistory(SQLTransaction& trans)
+void ArchaeologyPlayerMgr::SaveArchaeologyHistory(CharacterDatabaseTransaction& trans)
 {
-    PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_ARCHAEOLOGY_HISTORY);
+    CharacterDatabasePreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_ARCHAEOLOGY_HISTORY);
     stmt->setUInt64(0, GetPlayer()->GetGUID().GetCounter());
     trans->Append(stmt);
 

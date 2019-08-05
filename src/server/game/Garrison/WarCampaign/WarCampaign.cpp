@@ -38,7 +38,7 @@ bool WarCampaign::LoadFromDB()
     return true;
 }
 
-void WarCampaign::SaveToDB(SQLTransaction& trans)
+void WarCampaign::SaveToDB(CharacterDatabaseTransaction& trans)
 {
     Garrison::SaveToDB(trans);
 }
@@ -53,7 +53,7 @@ bool WarCampaign::Create(uint32 garrSiteId)
 
 void WarCampaign::Delete()
 {
-    SQLTransaction trans = CharacterDatabase.BeginTransaction();
+    CharacterDatabaseTransaction trans = CharacterDatabase.BeginTransaction();
     DeleteFromDB(trans);
     CharacterDatabase.CommitTransaction(trans);
 
