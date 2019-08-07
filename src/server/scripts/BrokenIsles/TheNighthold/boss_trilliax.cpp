@@ -41,7 +41,7 @@
 enum Texts
 {
     SAY_PHASE1_END  = 0,
-    SAY_ACTIVATE    = 1, 
+    SAY_ACTIVATE    = 1,
     SAY_NORTHREND = 2, // not use
     SAY_START     = 3, //new
     SAY_START2    = 4,
@@ -320,7 +320,7 @@ public:
 
         void EnterCombat(Unit* who) override
         {
-           
+
         }
 
         void Reset() override
@@ -397,7 +397,7 @@ public:
 
         void EnterCombat(Unit* who) override
         {
-           
+
         }
 
         void Reset() override

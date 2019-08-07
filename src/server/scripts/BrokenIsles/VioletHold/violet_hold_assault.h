@@ -108,7 +108,7 @@ struct PlayerFilter
     {
         if (target->ToPlayer())
             return false;
-        
+
         return true;
     }
 };
@@ -125,20 +125,20 @@ struct HealerSelector : public std::unary_function<Unit*, bool>
     {
         if (!target)
             return false;
-        
+
         if (!target->ToPlayer() || !_playerOnly)
             return false;
-        
+
         switch (target->ToPlayer()->GetSpecializationId())
         {
             case TALENT_SPEC_DRUID_RESTORATION:
             case TALENT_SPEC_SHAMAN_RESTORATION:
-            case TALENT_SPEC_MONK_MISTWEAVER:   
+            case TALENT_SPEC_MONK_MISTWEAVER:
             case TALENT_SPEC_PALADIN_HOLY:
             case TALENT_SPEC_PRIEST_DISCIPLINE:
             case TALENT_SPEC_PRIEST_HOLY:
                 return true;
-            
+
             default : return false;
         }
     }

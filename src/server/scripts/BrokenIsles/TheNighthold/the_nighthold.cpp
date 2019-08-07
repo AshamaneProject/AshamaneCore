@@ -79,7 +79,7 @@ public:
 
     struct npc_torm_the_bruteAI : public ScriptedAI
     {
-        npc_torm_the_bruteAI(Creature* creature) : ScriptedAI(creature) 
+        npc_torm_the_bruteAI(Creature* creature) : ScriptedAI(creature)
         {
             _instance = creature->GetInstanceScript();
         }

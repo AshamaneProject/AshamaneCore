@@ -19,7 +19,7 @@
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 
-const uint32 DemonMinions [] = 
+const uint32 DemonMinions [] =
 {
     NPC_CORROSIVE_FELHOUND    ,
     NPC_EREDAR_INVADER        ,
@@ -55,7 +55,7 @@ class npc_vha_demon_portal : public CreatureScript
                 {
                     if (!summon)
                         return;
-                    
+
                     if (summon->GetEntry() == NPC_PORTAL_INQUISITOR || summon->GetEntry() == NPC_PORTAL_DREADLORD ||
                         summon->GetEntry() == NPC_PORTAL_FELGUARD || summon->GetEntry() == NPC_PORTAL_JAILER)
                         {
@@ -81,7 +81,7 @@ class npc_vha_demon_portal : public CreatureScript
                             }
                             else
                                 DoSummon(entry, me->GetPosition(), 10 * IN_MILLISECONDS, TEMPSUMMON_CORPSE_TIMED_DESPAWN);
-                            
+
                             _events.ScheduleEvent(EVENT_SPAWN_MINION, Seconds(15));
                         }
                     }

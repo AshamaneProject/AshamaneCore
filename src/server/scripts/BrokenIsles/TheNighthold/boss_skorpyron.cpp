@@ -46,7 +46,7 @@ public:
     bool Execute(uint64 /*time*/, uint32 /*diff*/)
     {
         if (_caster && _target && _caster->IsInWorld() && _target->IsInWorld())
-			_caster->SendPlaySpellVisual(_target->GetGUID(), _spellVisualId, 0.f, 0.f, 40.0f, false);
+            _caster->SendPlaySpellVisual(_target->GetGUID(), _spellVisualId, 0.f, 0.f, 40.0f, false);
 
         return true;
     }
@@ -901,7 +901,7 @@ public:
         if (_caster)
         {
             uint32 visual = RAND(SPELL_VISUAL_FOCUSED_BLAST_1, SPELL_VISUAL_FOCUSED_BLAST_2, SPELL_VISUAL_FOCUSED_BLAST_3);
-			_caster->SendPlaySpellVisual(_position, 0.f, visual, 0.f, 0.f, 1.0f, false);
+            _caster->SendPlaySpellVisual(_position, 0.f, visual, 0.f, 0.f, 1.0f, false);
         }
 
         return true;

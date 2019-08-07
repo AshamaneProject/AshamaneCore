@@ -55,7 +55,7 @@ enum Events
     EVENT_RELENTLEESS_STORM = 6,
     EVENT_GO_GROUND         = 7,
     EVENT_FRIGID_WINDS      = 8,
-    EVENT_RESTORE_STATE     = 9, 
+    EVENT_RESTORE_STATE     = 9,
 };
 
 enum Adds
@@ -192,7 +192,7 @@ class boss_shivermaw : public CreatureScript
                         events.DelayEvents(Seconds(20));
                         break;
                     }
-                    
+
                     case EVENT_GO_GROUND:
                     {
                         me->GetMotionMaster()->MoveLand(POINT_GROUND, LandPosition);
@@ -208,7 +208,7 @@ class boss_shivermaw : public CreatureScript
         }
 };
 
-class npc_vha_ice_block : public CreatureScript 
+class npc_vha_ice_block : public CreatureScript
 {
     public:
         npc_vha_ice_block() : CreatureScript("npc_vha_ice_block")
@@ -263,7 +263,7 @@ class spell_shivermaw_ice_bomb : public SpellScriptLoader
                     {
                         if (target->GetPositionZ() > 78.5f)
                             return true;
-                        
+
                         return false;
                     });
                 }
@@ -272,7 +272,7 @@ class spell_shivermaw_ice_bomb : public SpellScriptLoader
                 {
                     if (!GetCaster() || !GetHitUnit())
                         return;
-                    
+
                     GetCaster()->CastSpell(GetHitUnit(), SPELL_FROZEN, true);
                     GetHitUnit()->CastSpell(GetHitUnit(), SPELL_ICE_BOMB_SUMMON, true);
 
@@ -308,12 +308,12 @@ class spell_shivermaw_relentless_storm : public SpellScriptLoader
                 {
                     if (!GetCaster())
                         return;
-                    
+
                     Unit* caster = GetCaster();
 
                     caster->CastSpell(caster, SPELL_RELENTLESS_STORM_AR_1, true);
                     caster->CastSpell(caster, SPELL_RELENTLESS_STORM_AR_2, true);
-                    
+
                     for (uint8 i = 0; i < 25; ++i)
                     {
                         float angle = frand(0, 2 * float(M_PI));
@@ -365,7 +365,7 @@ class spell_shivermaw_relentless_storm_missile : public SpellScriptLoader
                     WorldLocation pos = *GetHitDest();
 
                     caster->CastSpell(pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ(), SPELL_RELENTLESS_STORM_DMG, true);
-                    
+
                     for (auto & it : GetCaster()->GetMap()->GetPlayers())
                     {
                         if (Player* ptr = it.GetSource())
@@ -403,7 +403,7 @@ class at_vha_relentless_storm : public AreaTriggerEntityScript
             {
                 if (!unit)
                     return;
-                
+
                 if (unit->GetTypeId() == TYPEID_PLAYER)
                     unit->CastSpell(unit, SPELL_FROSTBITE, true);
             }
@@ -412,7 +412,7 @@ class at_vha_relentless_storm : public AreaTriggerEntityScript
             {
                 if (!unit)
                     return;
-                
+
                 if (unit->GetTypeId() == TYPEID_PLAYER)
                     unit->RemoveAurasDueToSpell(SPELL_FROSTBITE);
             }

@@ -22,7 +22,7 @@
 #include "new_karazhan.h"
 
 
-ObjectData const creatureData[] = 
+ObjectData const creatureData[] =
 {
     { BOSS_VIZADUUM,            DATA_VIZADUUM           },
     { BOSS_MANA_DEVOURER,       DATA_MANA_DEVOURER      },
@@ -40,7 +40,7 @@ ObjectData const creatureData[] =
     { 0,                        0                       }
 };
 
-DoorData const doorData[] = 
+DoorData const doorData[] =
 {
     { GO_OPERA_RIGHT_DOOR,  DATA_OPERA,             DOOR_TYPE_ROOM    },
     { GO_MEDIVH_BOOK_DOOR,  DATA_SHADE_OF_MEDIVH,   DOOR_TYPE_PASSAGE },
@@ -99,7 +99,7 @@ class instance_new_karazhan : public InstanceMapScript
                                 if (!itr.GetSource())
                                     return;
 
-                                nightBane->Talk("The strange chill of a dark presence winds through the air", CHAT_MSG_RAID_BOSS_EMOTE, 
+                                nightBane->Talk("The strange chill of a dark presence winds through the air", CHAT_MSG_RAID_BOSS_EMOTE,
                                 LANG_UNIVERSAL, sWorld->getFloatConfig(CONFIG_LISTEN_RANGE_TEXTEMOTE), itr.GetSource());
                             }
                         }
@@ -107,7 +107,7 @@ class instance_new_karazhan : public InstanceMapScript
                         _checked = false;
                     }
                 }
-                
+
                 if (data == DONE)
                     SaveToDB();
             }
@@ -131,7 +131,7 @@ class instance_new_karazhan : public InstanceMapScript
                     return _firstShip;
                 else if (type == DATA_SECOND_SHIP)
                     return _secondShip;
-                
+
                 return ObjectGuid::Empty;
             }
 

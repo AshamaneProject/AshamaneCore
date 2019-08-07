@@ -44,7 +44,7 @@ class npc_kara_image_of_medivh : public CreatureScript
         {
             if (!player || !creature)
                 return false;
-            
+
             player->PrepareGossipMenu(creature, creature->GetCreatureTemplate()->GossipMenuId, false);
             AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Summon Nightbane", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
             SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, creature->GetGUID());
@@ -85,10 +85,10 @@ class npc_kara_image_of_medivh : public CreatureScript
 
                     _intro = true;
                     Creature* nightbane = me->FindNearestCreature(BOSS_NIGHTBANE, 250.f, true);
-                    
+
                     if (nightbane)
                         nightbane->GetAI()->DoAction(1); // Action NightBane Ready
-                    
+
                     me->GetInstanceScript()->SetData(DATA_NIGHTBANE_EVENT, DONE);
 
                     const auto & players = me->GetMap()->GetPlayers();
@@ -124,10 +124,10 @@ class go_door_entrance : public GameObjectScript
         {
             if (!go)
                 return false;
-            
+
             if (go->GetInstanceScript()->GetData(DATA_NIGHTBANE_EVENT) == NOT_STARTED)
                 go->GetInstanceScript()->SetData(DATA_NIGHTBANE_EVENT, IN_PROGRESS);
-            
+
             if (go->GetGoState() == GO_STATE_ACTIVE)
                 go->SetGoState(GO_STATE_READY);
             else

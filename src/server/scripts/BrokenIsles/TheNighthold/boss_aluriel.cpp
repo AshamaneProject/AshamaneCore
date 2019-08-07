@@ -373,7 +373,7 @@ public:
                                             newtarget->RemoveAura(SPELL_FROSTBITTEN);
                                     }
 
-                                    
+
                                     caster->CastSpell(caster, SPELL_MARK_OF_FROST_AOE, true);
                                 }
                             }

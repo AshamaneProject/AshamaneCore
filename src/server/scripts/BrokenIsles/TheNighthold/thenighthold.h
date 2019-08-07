@@ -591,14 +591,14 @@ enum TheNightholdGOBs
     GO_CHRONOMATIC_ANOMALY_01       = 252349,
     GO_CHRONOMATIC_ANOMALY_02       = 252348,
     GO_TRILLIAX_DOOR_01             = 251397,
-	GO_TRILLIAX_DOOR_02             = 250243,
+    GO_TRILLIAX_DOOR_02             = 250243,
 };
 
 enum TheNightholdBosses
 {
     BOSS_SKORPYRON                  = 0,
     BOSS_CHRONOMATIC_ANOMALY        = 1,
-	BOSS_TRILLIAX                   = 2,
+    BOSS_TRILLIAX                   = 2,
     BOSS_ALURIEL                    = 3,
     MAX_ENCOUNTER
 };

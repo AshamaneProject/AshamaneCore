@@ -78,7 +78,7 @@ class boss_saelorn : public CreatureScript
         {
             boss_saelorn_AI(Creature* creature) : BossAI(creature, DATA_SAELORN)
             {}
-            
+
             void Reset() override
             {
                 _Reset();
@@ -221,7 +221,7 @@ class spell_vha_creeping_slaughter : public SpellScriptLoader
                 {
                     if (!GetUnitOwner() || !GetCaster())
                         return;
-                    
+
                     Unit* owner = GetUnitOwner();
                     Unit* caster = GetCaster();
 
@@ -267,7 +267,7 @@ class spell_saelorn_toxic_blood : public SpellScriptLoader
                 {
                     if (!GetUnitOwner() || !GetCaster())
                         return;
-                    
+
                     GetCaster()->CastSpell(GetUnitOwner(), SPELL_TOXIC_BLOOD_DMG, true);
                 }
 

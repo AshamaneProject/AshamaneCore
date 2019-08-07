@@ -27,7 +27,7 @@ enum Spells
     SPELL_ELEMENTIUM_SQUIRREL_BOMB              = 201240,
     SPELL_THORIUM_ROCKET_CHICKEN                = 201392,
     SPELL_OVERLOADED_ELEMENTIUM_SQUIRREL_BOMB   = 201432,
-    SPELL_REINFORCED_THORIUM_ROCKET_CHICKEN     = 201438, 
+    SPELL_REINFORCED_THORIUM_ROCKET_CHICKEN     = 201438,
     SPELL_DELTA_FINGER_LASER_X                  = 201159,
     SPELL_HYPER_ZAP_ULTIMATE_MARK               = 202310,
     SPELL_MEGA_MINIATURIZATION                  = 201581,
@@ -46,7 +46,7 @@ enum Spells
     SPELL_CHICKEN_SWARN_ROCKETS_TARGETING_2     = 201386,
     SPELL_CHICKEN_SWARN_DMG                     = 201387,
     SPELL_THORIUM_PLATING                       = 201441,
-    
+
     // Mechanical Bomb Squirrel
     SPELL_BOMB_SQUIRREL_BOMB                    = 201302,
 };
@@ -247,7 +247,7 @@ class npc_vha_squirrel_bomb : public CreatureScript
 
                 if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
-                
+
                 while (uint32 eventId = _events.ExecuteEvent())
                 {
                     if (eventId == EVENT_OVERLOADED)
@@ -289,7 +289,7 @@ class npc_vha_mechanical_squirrel_bomb : public CreatureScript
             {
                 if (!spell)
                     return;
-                
+
                 if (spell->Id == SPELL_BOMB_SQUIRREL_BOMB)
                 {
                     _events.Reset();
@@ -303,7 +303,7 @@ class npc_vha_mechanical_squirrel_bomb : public CreatureScript
 
                 if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
-                
+
                 while (uint32 eventId = _events.ExecuteEvent())
                 {
                     if (eventId == EVENT_BOMB_SQUIRREL_BOMB)
@@ -375,7 +375,7 @@ class npc_vha_rocket_chicken : public CreatureScript
                             me->SetFacingToObject(target, true);
                             DoCast(target, SPELL_ROCKET_CHICKEN_ROCKET);
                         }
-                        
+
                         _events.ScheduleEvent(EVENT_ROCKET_CHICKEN_ROCKET, Seconds(3));
                     }
                 }
@@ -408,12 +408,12 @@ class spell_vha_rocket_chicken_rocket : public SpellScriptLoader
                     _src.x = GetCaster()->GetPositionX();
                     _src.y = GetCaster()->GetPositionY();
                 }
-                
+
                 void FilterTargets(SpellTargets & targets)
                 {
                     if (targets.empty())
                         return;
-                    
+
                     Unit* caster = GetCaster();
 
                     targets.remove_if([&] (WorldObject*& target)
@@ -426,7 +426,7 @@ class spell_vha_rocket_chicken_rocket : public SpellScriptLoader
                 {
                     if (!GetCaster())
                         return;
-                    
+
                     GetCaster()->ClearUnitState(UNIT_STATE_ROOT);
                 }
 
