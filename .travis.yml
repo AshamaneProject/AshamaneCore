@@ -10,9 +10,6 @@ git:
 
 addons:
   apt:
-    sources:
-      - ubuntu-toolchain-r-test
-      - sourceline: 'ppa:kzemek/boost'
     packages:
       - g++-6
       - libboost1.66-dev
