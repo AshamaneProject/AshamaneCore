@@ -108,9 +108,6 @@ bool Pet::LoadPetData(Player* owner, uint32 petEntry, uint32 petnumber, bool cur
 
     ObjectGuid::LowType ownerid = owner->GetGUID().GetCounter();
 
-    CharacterDatabasePreparedStatement* stmt;
-    PreparedQueryResult result;
-
     if (petnumber)
     {
         playerPetData = owner->GetPlayerPetDataById(petnumber);
