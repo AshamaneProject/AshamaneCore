@@ -12,7 +12,7 @@ addons:
   apt:
     sources:
       - ubuntu-toolchain-r-test
-      - sourceline: 'ppa:kzemek/boost'
+      - sourceline: 'ppa:mhier/libboost-latest'
     packages:
       - g++-6
       - libboost1.66-dev
