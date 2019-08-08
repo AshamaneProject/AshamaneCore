@@ -12,13 +12,7 @@ addons:
   apt:
     packages:
       - g++-6
-      - libboost1.66-dev
-      - libboost-filesystem1.66-dev
-      - libboost-iostreams1.66-dev
-      - libboost-program-options1.66-dev
-      - libboost-regex1.66-dev
-      - libboost-system1.66-dev
-      - libboost-thread1.66-dev
+      - libboost-all-dev
       - libssl-dev
       - libmysqlclient-dev
       - libreadline6-dev
