@@ -59,7 +59,7 @@ LootStore LootTemplates_Spell("spell_loot_template",                 "spell id (
 // Selects invalid loot items to be removed from group possible entries (before rolling)
 struct LootGroupInvalidSelector : public std::unary_function<LootStoreItem*, bool>
 {
-    explicit LootGroupInvalidSelector(Loot const& loot, uint16 lootMode) : _loot(loot), _lootMode(lootMode) { }
+    explicit LootGroupInvalidSelector(Loot const& loot, uint16 lootMode) : /*_loot(loot), */_lootMode(lootMode) { }
 
     bool operator()(LootStoreItem* item) const
     {
@@ -76,7 +76,7 @@ struct LootGroupInvalidSelector : public std::unary_function<LootStoreItem*, boo
     }
 
 private:
-    Loot const& _loot;
+    /*Loot const& _loot;*/
     uint16 _lootMode;
 };
 

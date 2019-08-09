@@ -1230,7 +1230,7 @@ void Spell::SelectImplicitConeTargets(SpellEffIndex effIndex, SpellImplicitTarge
     }
 }
 
-void Spell::SelectImplicitLineTargets(SpellEffIndex effIndex, SpellImplicitTargetInfo const& targetType, uint32 effMask)
+void Spell::SelectImplicitLineTargets(SpellEffIndex /*effIndex*/, SpellImplicitTargetInfo const& /*targetType*/, uint32 /*effMask*/)
 {
     /*if (targetType.GetReferenceType() != TARGET_REFERENCE_TYPE_CASTER)
     {

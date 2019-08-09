@@ -75,7 +75,7 @@ void ArchaeologyMgr::LoadDigsites()
     TC_LOG_INFO("server.loading", ">> Loaded %u archaeology digsites in %u ms", digCount, GetMSTimeDiffToNow(oldMSTime));
 }
 
-void ArchaeologyMgr::InitBranch(Player* player, uint32 currencyId)
+void ArchaeologyMgr::InitBranch(Player* /*player*/, uint32 /*currencyId*/)
 {
     // TODO MERGE
 
@@ -117,7 +117,7 @@ void ArchaeologyMgr::InitBranch(Player* player, uint32 currencyId)
     }*/
 }
 
-void ArchaeologyMgr::ChangeDigsite(Player* player, uint8 memId)
+void ArchaeologyMgr::ChangeDigsite(Player* /*player*/, uint8 /*memId*/)
 {
     /*std::vector<uint16> SitesInMap;
     std::vector<uint32> digsites = player->GetDynamicValues(ACTIVE_PLAYER_DYNAMIC_FIELD_RESERACH_SITE);
@@ -172,7 +172,7 @@ void ArchaeologyMgr::ChangeDigsite(Player* player, uint8 memId)
     SitesInMap.clear();*/
 }
 
-void ArchaeologyMgr::AddDigsitesToMap(Player* player, uint32 mapId)
+void ArchaeologyMgr::AddDigsitesToMap(Player* /*player*/, uint32 /*mapId*/)
 {
     /*if (!player->HasSkill(SKILL_ARCHAEOLOGY))
         return;
@@ -232,7 +232,7 @@ void ArchaeologyMgr::AddDigsitesToMap(Player* player, uint32 mapId)
     SitesInMap.clear();*/
 }
 
-bool ArchaeologyMgr::IsActiveBranch(Player* player, uint32 currencyId)
+bool ArchaeologyMgr::IsActiveBranch(Player* /*player*/, uint32 /*currencyId*/)
 {
     /*for(uint32 i=0; i < 9; ++i)
     {

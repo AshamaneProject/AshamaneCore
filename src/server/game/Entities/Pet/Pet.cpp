@@ -106,8 +106,6 @@ bool Pet::LoadPetData(Player* owner, uint32 petEntry, uint32 petnumber, bool cur
     m_loading = true;
     PlayerPetData* playerPetData = nullptr;
 
-    ObjectGuid::LowType ownerid = owner->GetGUID().GetCounter();
-
     if (petnumber)
     {
         playerPetData = owner->GetPlayerPetDataById(petnumber);

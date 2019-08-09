@@ -41,7 +41,7 @@ class ViewerDependentValue<UF::ObjectData::EntryIDTag>
 public:
     using ValueType = UF::ObjectData::EntryIDTag::ValueType;
 
-    static ValueType GetValue(ValueType entryID, Object const* object, Player const* receiver)
+    static ValueType GetValue(ValueType entryID, Object const* object, Player const* /*receiver*/)
     {
         if (Unit const* unit = object->ToUnit())
             if (TempSummon const* tempSummon = unit->ToTempSummon())
