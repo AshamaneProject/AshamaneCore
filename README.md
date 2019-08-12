@@ -26,12 +26,18 @@ AshamaneCore is a *MMORPG* Framework based mostly in C++.
 
 It is fully based on *TrinityCore*, with upgrades like :
 
-- Class Hall Basics (WIP)
+- Class Hall/War Campaign Basics (WIP)
 - World Quests
 - Challenge Mode (Mythic+)
 - Mercenary battleground system
 - Rated Arenas
 - TimeWalkers (BC/WotLK/Cataclsym/MoP)
+- Personnal loots
+- BFA Scripts (WIP)
+    - Heart of Azeroth questline
+    - Alliance Intro (escape from prison)
+    - Horde Intro (Stormwind extraction)
+    - The Underrot
 - Legion scripts (WIP)
     - BlackRookHold
     - Darkheart Thicket
@@ -55,7 +61,8 @@ with Ashamane Database (ADB) :
 - All Cataclysm zones spawns
 - All Mist of Pandaria zones spawns
 - All Draenor zones spawns
-- All Legion zones spawns (including Class Halls)
+- All Legion zones spawns
+- All BFA spawns (up to 8.0.1)
 
 It is completely open source; community involvement is highly encouraged.
 
