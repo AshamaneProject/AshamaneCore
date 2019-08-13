@@ -152,8 +152,8 @@ public:
             {
                 if (cinfo->flags_extra & CREATURE_FLAG_EXTRA_TRIGGER)
                     displayId = cinfo->GetFirstVisibleModel()->CreatureDisplayID;
-                else if (displayId == cinfo->GetFirstInvisibleModel()->CreatureDisplayID)
-                    displayId = cinfo->GetFirstVisibleModel()->CreatureDisplayID;
+                else if (displayId == int32(cinfo->GetFirstInvisibleModel()->CreatureDisplayID))
+                    displayId = int32(cinfo->GetFirstVisibleModel()->CreatureDisplayID);
             }
         }
 

@@ -5695,7 +5695,7 @@ void Player::InitializeSkillFields()
     uint32 i = 0;
     for (SkillLineEntry const* skillLine : sSkillLineStore)
     {
-        if (SkillRaceClassInfoEntry const* rcEntry = sDB2Manager.GetSkillRaceClassInfo(skillLine->ID, getRace(), getClass()))
+        if (sDB2Manager.GetSkillRaceClassInfo(skillLine->ID, getRace(), getClass()))
         {
             SetSkillLineId(i, skillLine->ID);
             SetSkillStartingRank(i, 1);
