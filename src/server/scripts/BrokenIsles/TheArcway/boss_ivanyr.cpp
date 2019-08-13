@@ -201,7 +201,7 @@ class boss_ivanyr : public CreatureScript
                     G3D::Vector2 v3 = { targetThree->GetPositionX(), targetThree->GetPositionY()};
                     G3D::Vector2 mid_1 = (v1 + v2)/2;
                     Vector2 mid_two = (v1 + v3)/2;
-                    Vector2 mid_three = (v2 + v3)/2;
+                    //Vector2 mid_three = (v2 + v3)/2;
 
                     LineSegment2D median_1 = LineSegment2D::fromTwoPoints(mid_1, v3);
                     LineSegment2D median_2 = LineSegment2D::fromTwoPoints(mid_two, v2);

@@ -1585,9 +1585,6 @@ public:
             }
         }
 
-    private:
-        bool st;
-
         void Register() override
         {
             OnHit += SpellHitFn(spell_boot_gobSpellScript::HandleOnHit);

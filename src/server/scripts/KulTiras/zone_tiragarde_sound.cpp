@@ -1008,7 +1008,7 @@ public:
             float y = me->GetPositionY();
             float z = me->GetPositionZ();
 
-            if (abs(x - 534.932007f) < .1 && abs(y - 870.984009f) < .1 && abs(z - 7.821800f) < .1f) // ensuring we don't take the quest form ending npc
+            if (fabs(x - 534.932007f) < .1 && fabs(y - 870.984009f) < .1 && fabs(z - 7.821800f) < .1f) // ensuring we don't take the quest form ending npc
                 if (player->GetQuestStatus(QUEST_A_VERY_PRECIOUS_CARGO) == QUEST_STATUS_INCOMPLETE)
                     player->KilledMonsterCredit(NPC_PENNY_KILLCREDIT);
         }
