@@ -51,10 +51,10 @@ void ArchaeologyPlayerMgr::LoadArchaeologyDigSites(PreparedQueryResult result)
 
 void ArchaeologyPlayerMgr::LoadArchaeologyBranchs(PreparedQueryResult result)
 {
-    /*if (!result)
+    if (!result)
         return;
 
-    uint32 mpos = 0;
+    /*uint32 mpos = 0;
 
     do
     {
@@ -83,7 +83,7 @@ void ArchaeologyPlayerMgr::LoadArchaeologyHistory(PreparedQueryResult result)
     while (result->NextRow());
 }
 
-void ArchaeologyPlayerMgr::SaveArchaeologyDigSites(CharacterDatabaseTransaction& trans)
+void ArchaeologyPlayerMgr::SaveArchaeologyDigSites(CharacterDatabaseTransaction& /*trans*/)
 {
     /*PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_ARCHAEOLOGY_DIGSITES);
     stmt->setUInt64(0, GetPlayer()->GetGUID().GetCounter());
@@ -106,7 +106,7 @@ void ArchaeologyPlayerMgr::SaveArchaeologyDigSites(CharacterDatabaseTransaction&
     }*/
 }
 
-void ArchaeologyPlayerMgr::SaveArchaeologyBranchs(CharacterDatabaseTransaction& trans)
+void ArchaeologyPlayerMgr::SaveArchaeologyBranchs(CharacterDatabaseTransaction& /*trans*/)
 {
     /*PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_ARCHAEOLOGY_BRANCHS);
     stmt->setUInt64(0, GetPlayer()->GetGUID().GetCounter());
@@ -203,7 +203,7 @@ void ArchaeologyPlayerMgr::SetDigsiteId(uint8 memId, uint16 digsiteId)
     m_DigsiteMap.insert(DigsiteMap::value_type(memId, digsite));
 }
 
-int ArchaeologyPlayerMgr::GetDigsite(int32 x, int32 y)
+int ArchaeologyPlayerMgr::GetDigsite(int32 /*x*/, int32 /*y*/)
 {
     /*uint16 digsiteID = 0;
     std::vector<uint16> PlayerDigsites;
@@ -281,7 +281,7 @@ int ArchaeologyPlayerMgr::GetDigsite(int32 x, int32 y)
     return -1;
 }
 
-bool ArchaeologyPlayerMgr::IsCurrentArtifactSpell(int32 spellId)
+bool ArchaeologyPlayerMgr::IsCurrentArtifactSpell(int32 /*spellId*/)
 {
     /*for (uint32 i = 0; i < 9; ++i)
     {
@@ -301,7 +301,7 @@ bool ArchaeologyPlayerMgr::IsCurrentArtifactSpell(int32 spellId)
     return false;
 }
 
-void ArchaeologyPlayerMgr::CompleteArtifact(uint32 spellId)
+void ArchaeologyPlayerMgr::CompleteArtifact(uint32 /*spellId*/)
 {
     /*uint32 ftime = time(NULL);
     uint32 count = 0;
