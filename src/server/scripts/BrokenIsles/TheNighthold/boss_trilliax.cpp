@@ -318,10 +318,7 @@ public:
 
         EventMap events;
 
-        void EnterCombat(Unit* who) override
-        {
-
-        }
+        void EnterCombat(Unit* /*who*/) override { }
 
         void Reset() override
         {
