@@ -1008,7 +1008,7 @@ public:
             float y = me->GetPositionY();
             float z = me->GetPositionZ();
 
-            if (abs(x - 534.932007) < .1 && abs(y - 870.984009) < .1 && abs(z - 7.821800) < .1) // ensuring we don't take the quest form ending npc
+            if (abs(x - 534.932007f) < .1 && abs(y - 870.984009f) < .1 && abs(z - 7.821800f) < .1f) // ensuring we don't take the quest form ending npc
                 if (player->GetQuestStatus(QUEST_A_VERY_PRECIOUS_CARGO) == QUEST_STATUS_INCOMPLETE)
                     player->KilledMonsterCredit(NPC_PENNY_KILLCREDIT);
         }
@@ -1052,7 +1052,7 @@ public:
         }
     }
 
-    void JustDied(Unit* /*killer*/)
+    void JustDied(Unit* /*killer*/) override
     {
         if (Player* player = GetPlayerForEscort())
         {

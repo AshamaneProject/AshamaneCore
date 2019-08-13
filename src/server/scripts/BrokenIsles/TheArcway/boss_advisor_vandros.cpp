@@ -63,7 +63,7 @@ Position VandrosTeleportLocations [] =
 
 uint32 ROOM_POSITION = 0;
 constexpr uint32 DATA_LOST_IN_TIME = 1;
-constexpr uint32 LOST_IN_TIME_PHASE = 290;
+//constexpr uint32 LOST_IN_TIME_PHASE = 290;
 
 class boss_advisor_vandros : public CreatureScript
 {
@@ -92,7 +92,7 @@ class boss_advisor_vandros : public CreatureScript
                     Talk(SAY_KILL);
             }
             
-            void JustReachedHome()
+            void JustReachedHome() override
             {
                 Talk(SAY_WIPE);
                 me->SetReactState(REACT_AGGRESSIVE);
@@ -124,7 +124,7 @@ class boss_advisor_vandros : public CreatureScript
                 events.ScheduleEvent(EVENT_ACCELERATING_BLAST, Seconds(3));
             }
 
-            void DamageTaken(Unit* /**/, uint32 & damage) override
+            void DamageTaken(Unit* /**/, uint32& /*damage*/) override
             {
                 if (me->HealthBelowPct(50) && !_lostInTime)
                 {
@@ -258,7 +258,6 @@ class npc_arc_chrono_shard : public CreatureScript
 
             private:
                 uint32 _timerExplotion;
-                bool _isCasted;
         };
 
         CreatureAI* GetAI(Creature* creature) const override
@@ -278,7 +277,7 @@ class npc_arc_timeless_wraith : public CreatureScript
             explicit npc_arc_timeless_wraith_AI(Creature* creature) : ScriptedAI(creature)
             {}
 
-            void Reset()
+            void Reset() override
             {
                 //me->SetInPhase(2, true, true);
                 _events.Reset();
@@ -659,7 +658,7 @@ class at_arc_force_nova : public AreaTriggerEntityScript
             {
                 if (target && target->GetTypeId() == TYPEID_PLAYER)
                 {
-                    float dist = target->GetDistance2d(at);
+                    //float dist = target->GetDistance2d(at);
                     target->CastSpell(target, SPELL_FORCE_NOVA_DMG, true);
                 }
             }

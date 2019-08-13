@@ -221,7 +221,7 @@ class boss_vizaduum : public CreatureScript
                 }
             }
 
-            void DamageTaken(Unit* /**/, uint32 & damage) override
+            void DamageTaken(Unit* /**/, uint32& /*damage*/) override
             {
                 if (me->HealthBelowPct(66) && !_firstPhase)
                 {
@@ -587,7 +587,7 @@ class npc_kara_stabilize_rift : public CreatureScript
         {
             public:
                 npc_kara_stabilize_rift_AI(Creature* me) : ScriptedAI(me),
-                _summons(me), _riftOpened(false)
+                _riftOpened(false), _summons(me)
                 {}
 
                 void JustSummoned(Creature* summon) override
@@ -607,7 +607,7 @@ class npc_kara_stabilize_rift : public CreatureScript
                     _summons.Despawn(summon);
                 }
 
-                void Reset()
+                void Reset() override
                 {
                     _riftOpened = false;
                     me->RemoveAllAuras();
@@ -772,7 +772,7 @@ class spell_vizaduum_bombardment_aura : public SpellScriptLoader
             public:
                 PrepareAuraScript(spell_bombardment_periodic_AuraScript);
 
-                bool Load()
+                bool Load() override
                 {
                     _radius = sSpellRadiusStore.LookupEntry(EFFECT_RADIUS_50_YARDS);
                     return true;
@@ -924,7 +924,6 @@ class at_kara_explosive_shadows : public AreaTriggerEntityScript
 
                 float dx = (tgt.x - src.x);
                 float dy = (tgt.y - src.y);
-                float dz = (tgt.z - src.z);
 
                 for (uint32 i = 0; i < 100; ++i)
                 {
@@ -991,7 +990,7 @@ class at_kara_demonic_portal : public AreaTriggerEntityScript
             explicit at_kara_demonic_portal_AI(AreaTrigger* at) : AreaTriggerAI(at)
             {}
 
-            void OnInitialize()
+            void OnInitialize() override
             {
                 at->GetCaster()->GetInstanceScript()->GetCreature(DATA_VIZADUUM)->GetMotionMaster()->MovePoint(POINT_DEMONIC_PORTAL, at->GetPosition());
             }
@@ -1055,7 +1054,7 @@ class at_kara_fel_flames : public AreaTriggerEntityScript
             explicit at_kara_fel_flames_AI(AreaTrigger* at) : AreaTriggerAI(at)
             {}
 
-            void OnCreate()
+            void OnCreate() override
             {
                 at->GetCaster()->_UnregisterAreaTrigger(at);
                 at->GetCaster()->GetInstanceScript()->GetCreature(DATA_VIZADUUM)->_RegisterAreaTrigger(at);

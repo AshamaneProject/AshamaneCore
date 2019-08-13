@@ -34,7 +34,7 @@ public:
 			me->RemoveNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
 		}
 
-        void DamageTaken(Unit* done_by, uint32& damage) override
+        void DamageTaken(Unit* /*done_by*/, uint32& damage) override
 		{
            // if (Player* player = done_by->ToPlayer())
            // {
@@ -56,7 +56,7 @@ public:
             //}
 		}
 
-		void UpdateAI(const uint32 diff)
+		void UpdateAI(const uint32 /*diff*/) override
 		{
 			DoMeleeAttackIfReady();
 		}

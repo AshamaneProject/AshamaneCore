@@ -247,7 +247,7 @@ class npc_arc_fissure : public CreatureScript
             {
                 for (auto & it : me->GetMap()->GetPlayers())
                 {
-                    if (auto* player = it.GetSource())
+                    if (/*auto* player = */it.GetSource())
                     {
                         DoCast(me, SPELL_FEL_ERUPTION, true);
                         _timerCheck = 0;
@@ -301,7 +301,7 @@ class npc_arc_dread_felbat : public CreatureScript
                 me->SetReactState(REACT_PASSIVE);
             }
 
-            void MovementInform(uint32 type, uint32 id) override
+            void MovementInform(uint32 type, uint32 /*id*/) override
             {
                 if (type == CHASE_MOTION_TYPE && !_isInLand)
                 {
@@ -442,7 +442,7 @@ class at_arc_fel_fissure : public AreaTriggerEntityScript
             {
             }
 
-            void OnInitialize()
+            void OnInitialize() override
             {
                 _borned = false;
                 _activated = false;
@@ -565,7 +565,6 @@ class at_arc_shadow_slash : public AreaTriggerEntityScript
 
                 float dx = (tgt.x - src.x);
                 float dy = (tgt.y - src.y);
-                float dz = (tgt.z - src.z);
 
                 for (uint32 i = 0; i < 100; ++i)
                 {

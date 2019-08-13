@@ -108,12 +108,12 @@ class boss_fel_lord_betrug : public CreatureScript
             boss_fel_lord_betrug_AI(Creature* creature) : BossAI(creature, DATA_BELTRUG)
             {}
 
-            void Reset()
+            void Reset() override
             {
                 _Reset();
             }
 
-            void JustReachedHome()
+            void JustReachedHome() override
             {
                 Talk(SAY_WIPE);
                 _JustReachedHome();
@@ -369,7 +369,7 @@ class spell_betrug_mighty_slash : public SpellScriptLoader
                         _executeTarget->CastSpell(_executeTarget, SPELL_MIGHTY_SLASH_JUMP_EXEC, true);
 
                         for (uint8 i = 0; i < 2; ++i)
-                            auto* crystal = _executeTarget->SummonCreature(NPC_STASIS_CRYSTAL, CrystalStasisPos[i], TEMPSUMMON_TIMED_DESPAWN, 40 * IN_MILLISECONDS);
+                            _executeTarget->SummonCreature(NPC_STASIS_CRYSTAL, CrystalStasisPos[i], TEMPSUMMON_TIMED_DESPAWN, 40 * IN_MILLISECONDS);
 
                     }
                     else
@@ -536,7 +536,6 @@ class at_vha_wake_of_destruction : public AreaTriggerEntityScript
 
                 float dx = (tgt.x - src.x);
                 float dy = (tgt.y - src.y);
-                float dz = (tgt.z - src.z);
 
                 for (uint32 i = 0; i < 100; ++i)
                 {

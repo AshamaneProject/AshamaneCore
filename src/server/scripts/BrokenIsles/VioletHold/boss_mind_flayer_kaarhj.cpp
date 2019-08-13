@@ -106,7 +106,7 @@ class boss_mind_flayer_kaarhj : public CreatureScript
                 events.ScheduleEvent(EVENT_HYSTERIA, 12 * IN_MILLISECONDS);
             }
 
-            void DamageTaken(Unit* /**/, uint32 & damage) override
+            void DamageTaken(Unit* /**/, uint32& /*damage*/) override
             {
                 if (me->HealthBelowPct(80) && !_firstDarkness)
                 {
@@ -187,7 +187,7 @@ class boss_mind_flayer_kaarhj : public CreatureScript
                 }
             }
 
-            void JustDied(Unit* killer) override
+            void JustDied(Unit* /*killer*/) override
             {
                 uint32 talk_id = urand(SAY_DEATH, SAY_DEATH_2);
                 Talk(talk_id);
@@ -261,13 +261,13 @@ class npc_faceless_tendril : public CreatureScript
             {
             }
 
-            void Reset()
+            void Reset() override
             {
                 me->setActive(true);
                 me->SetReactState(REACT_AGGRESSIVE);
             }
 
-            void UpdateAI(uint32 diff) override
+            void UpdateAI(uint32 /*diff*/) override
             {
                 if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
@@ -356,7 +356,7 @@ class spell_eternal_darkness : public SpellScriptLoader
 
                 PrepareAuraScript(spell_eternal_darkness_AuraScript);
 
-                void HandleSummons(AuraEffect const* aurEff)
+                void HandleSummons(AuraEffect const* /*aurEff*/)
                 {
                     if (!GetCaster())
                         return;
@@ -364,7 +364,7 @@ class spell_eternal_darkness : public SpellScriptLoader
                     GetCaster()->CastSpell(GetCaster(), SPELL_SUMMON_TENTACLE, true);
                 }
 
-                void Register()
+                void Register() override
                 {
                     OnEffectPeriodic += AuraEffectPeriodicFn(spell_eternal_darkness_AuraScript::HandleSummons, EFFECT_0, SPELL_AURA_PERIODIC_DUMMY);
                 }
@@ -432,7 +432,7 @@ class at_shadow_crash : public AreaTriggerEntityScript
                     unit->RemoveAurasDueToSpell(SPELL_SHADOW_CRASH_AURA);
             }
 
-            void OnRemove()
+            void OnRemove() override
             {
                 if (Unit* kaahrj = at->FindNearestCreature(101950, 250.0f, true))
                 {
@@ -471,7 +471,7 @@ class at_collapsing_shadow : public AreaTriggerEntityScript
                     unit->CastSpell(unit, SPELL_COLLAPSING_SHADOWS_DMG, true);
             }
 
-            void OnUnitExit(Unit* unit)
+            void OnUnitExit(Unit* unit) override
             {
                 if (unit)
                     unit->RemoveAurasDueToSpell(SPELL_COLLAPSING_SHADOWS_DMG);

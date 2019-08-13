@@ -336,7 +336,7 @@ public:
             instance = me->GetInstanceScript();
         }
 
-        void DoAction(int32 action)
+        void DoAction(int32 action) override
         {
             switch(action)
             {
@@ -438,7 +438,7 @@ public:
                 instance->SetData(DATA_ROKMORA, NOT_STARTED);
         }
 
-        void EnterCombat(Unit* who) override
+        void EnterCombat(Unit* /*who*/) override
         {
             Talk(TALK_AGGRO);
             me->SetInCombatWithZone();
@@ -562,7 +562,7 @@ public:
             me->CastSpell(killer, SPELL_CHOKING_DUST, false);
         }
 
-        void UpdateAI(uint32 diff) override
+        void UpdateAI(uint32 /*diff*/) override
         {
             if (!UpdateVictim())
                 return;

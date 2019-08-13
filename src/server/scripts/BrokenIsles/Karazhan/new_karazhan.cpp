@@ -51,7 +51,7 @@ class npc_kara_image_of_medivh : public CreatureScript
             return true;
         }
 
-        bool OnGossipSelect(Player* player, Creature* me, uint32 /*sender*/, uint32 action) override
+        bool OnGossipSelect(Player* player, Creature* me, uint32 /*sender*/, uint32 /*action*/) override
         {
             ClearGossipMenuFor(player);
             CloseGossipMenuFor(player);
@@ -71,7 +71,7 @@ class npc_kara_image_of_medivh : public CreatureScript
             explicit npc_kara_image_of_medivh_AI(Creature* me) : ScriptedAI(me)
             {}
 
-            void Reset()
+            void Reset() override
             {
                 if (me->GetInstanceScript()->GetData(DATA_NIGHTBANE_EVENT) == DONE)
                     _intro = true;

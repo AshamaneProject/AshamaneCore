@@ -238,7 +238,7 @@ class npc_arc_vicious_manafang : public CreatureScript
                 _damage = 0;
             }
 
-            void MovementInform(uint32 type, uint32 id) override
+            void MovementInform(uint32 type, uint32 /*id*/) override
             {
                 if (type == POINT_MOTION_TYPE && !_isInLand)
                 {
@@ -478,7 +478,7 @@ class spell_naltira_tangled_web_dmg : public SpellScriptLoader
             public:
                 PrepareAuraScript(spell_tangled_web_dmg_AuraScript);
 
-                bool Load()
+                bool Load() override
                 {
                     if (GetCaster()->GetAI())
                     {
@@ -498,7 +498,7 @@ class spell_naltira_tangled_web_dmg : public SpellScriptLoader
                         targetOne->CastSpell(targetTwo, SPELL_TANGLED_WEB_BEAM, true);
                 }
 
-                void HandleOnPeriodic(AuraEffect const* aurEffect)
+                void HandleOnPeriodic(AuraEffect const* /*aurEffect*/)
                 {
                     if (!GetUnitOwner())
                         return;

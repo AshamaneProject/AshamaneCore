@@ -1104,7 +1104,7 @@ class gob_spark_gobelin : public GameObjectScript
 public:
     gob_spark_gobelin() : GameObjectScript("gob_spark_gobelin") { }
 
-    bool OnGossipHello(Player* player, GameObject* go) override
+    bool OnGossipHello(Player* player, GameObject* /*go*/) override
     {
         if (player->GetQuestStatus(24817) == QUEST_STATUS_INCOMPLETE)
         {
@@ -1422,7 +1422,7 @@ public:
             CreatureAI::Reset();
         }
 
-        void OnDamage(Unit* attacker, Unit* victim, uint32& damage, SpellInfo const* /*spellProto*/)
+        void OnDamage(Unit* attacker, Unit* /*victim*/, uint32& damage, SpellInfo const* /*spellProto*/)
         {
             if (attacker->IsFriendlyTo(me))
                 damage = 0;
@@ -1500,7 +1500,7 @@ public:
         {
         }
 
-        void OnDamage(Unit* attacker, Unit* victim, uint32& damage, SpellInfo const* /*spellProto*/)
+        void OnDamage(Unit* attacker, Unit* /*victim*/, uint32& damage, SpellInfo const* /*spellProto*/)
         {
             if (attacker->IsCreature())
                 damage = 0;
@@ -1565,10 +1565,8 @@ public:
 
         bool Validate(SpellInfo const* /*spellEntry*/) override
         {
-            //st = false;
             return true;
         }
-
 
         bool Load() override
         {
@@ -1577,14 +1575,14 @@ public:
 
         void HandleOnHit()
         {
-            //if (Player* caster = GetCaster()->ToPlayer)
-               //
             if (Unit* caster = GetCaster())
-                if (caster->GetTypeId() == TYPEID_PLAYER)
+            {
+                if (Player* playerCaster = caster->ToPlayer())
                 {
-                    caster->ToPlayer()->KilledMonsterCredit(38842);
-                    caster->ToPlayer()->GetMotionMaster()->MoveJump(1480.31f, 1269.97f, 110.0f, 50.0f, 50.0f, 300.0f);
+                    playerCaster->KilledMonsterCredit(38842);
+                    playerCaster->GetMotionMaster()->MoveJump(1480.31f, 1269.97f, 110.0f, 50.0f, 50.0f, 300.0f);
                 }
+            }
         }
 
     private:
@@ -1607,7 +1605,7 @@ class npc_izzy_airplane : public CreatureScript
 public:
     npc_izzy_airplane() : CreatureScript("npc_izzy_airplane") { }
 
-    bool OnQuestAccept(Player* player, Creature* creature, const Quest* quest) override
+    bool OnQuestAccept(Player* player, Creature* /*creature*/, const Quest* quest) override
     {
         if (quest->GetQuestId() == 25023)
         {
@@ -1873,7 +1871,7 @@ class npc_killag_2 : public CreatureScript
 public:
     npc_killag_2() : CreatureScript("npc_killag_2") { }
 
-    bool OnQuestAccept(Player* player, Creature* creature, const Quest* quest) override
+    bool OnQuestAccept(Player* player, Creature* /*creature*/, const Quest* quest) override
     {
         if (quest->GetQuestId() == 25100)
         {
@@ -2257,7 +2255,8 @@ public:
 
     return true;
   }
-  bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 /*sender*/, uint32 action)
+
+  bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 /*sender*/, uint32 /*action*/) override
   {
       if (player->HasQuest(25066))
       {
@@ -2272,7 +2271,7 @@ public:
       }
       else if (player->HasQuest(25266))
       {
-          player->TeleportTo(1468, -5012.f, 13.f, 3.26f);
+          player->TeleportTo(1468, -5012.f, 13.f, 3.26f, 0.f);
       }
       return true;
   }

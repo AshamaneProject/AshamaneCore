@@ -95,7 +95,7 @@ public:
         uint8 curID;
         EventMap events;
 
-        void EnterCombat(Unit* who) override
+        void EnterCombat(Unit* /*who*/) override
         {
             Talk(SAY_ACTIVATE);
             DoZoneInCombat();
@@ -128,7 +128,7 @@ public:
             _EnterEvadeMode();
         }
 
-        void DoAction(int32 param)
+        void DoAction(int32 param) override
         {
             if (param == 1)
             {
@@ -139,7 +139,7 @@ public:
             }
         }
 
-        void KilledUnit(Unit* who)
+        void KilledUnit(Unit* /*who*/) override
         {
             //if (who->ToPlayer())
             //   Talk(SAY_KILL);
@@ -208,7 +208,7 @@ public:
             DoMeleeAttackIfReady();
         }
 
-        void JustDied(Unit* killer) override
+        void JustDied(Unit* /*killer*/) override
         {
             //Talk(SAY_DEATH);
             _JustDied();
@@ -232,7 +232,7 @@ public:
 
         EventMap events;
 
-        void EnterCombat(Unit* who) override
+        void EnterCombat(Unit* /*who*/) override
         {
             DoCast(SPELL_VILE_SLURGE);
             events.ScheduleEvent(EVENT_SLUDGE, urand(5000, 7000));
@@ -254,7 +254,7 @@ public:
             _EnterEvadeMode();
         }
 
-        void KilledUnit(Unit* who)
+        void KilledUnit(Unit* /*who*/) override
         {
         }
 
@@ -293,7 +293,7 @@ public:
             DoMeleeAttackIfReady();
         }
 
-        void JustDied(Unit* killer) override
+        void JustDied(Unit* /*killer*/) override
         {
             DoCast(SPELL_SLIME_POOL);
         }
@@ -332,7 +332,7 @@ public:
             DoCast(223574); // visual
         }
 
-        void MovementInform(uint32 type, uint32 id)
+        void MovementInform(uint32 type, uint32 id) override
         {
             if (type != POINT_MOTION_TYPE)
                 return;
@@ -343,14 +343,12 @@ public:
                 if (Creature * cre = me->FindNearestCreature(112255, 100, true))
                 {
                     uint32 count = _instance->GetData(DATA_SLIME_POOL);
-                    if (count >= 0)
+
+                    count++;
+                    _instance->SetData(DATA_SLIME_POOL, count);
+                    if (count >= 8)
                     {
-                        count++;
-                        _instance->SetData(DATA_SLIME_POOL, count);
-                        if (count >= 8)
-                        {
-                            cre->AI()->DoAction(1);
-                        }
+                        cre->AI()->DoAction(1);
                     }
                 }
                 break;
@@ -365,11 +363,11 @@ public:
             _EnterEvadeMode();
         }
 
-        void KilledUnit(Unit* who)
+        void KilledUnit(Unit* /*who*/) override
         {
         }
 
-        void JustDied(Unit* killer) override
+        void JustDied(Unit* /*killer*/) override
         {
         }
 
@@ -395,7 +393,7 @@ public:
 
         EventMap events;
 
-        void EnterCombat(Unit* who) override
+        void EnterCombat(Unit* /*who*/) override
         {
 
         }
@@ -426,7 +424,7 @@ public:
             _EnterEvadeMode();
         }
 
-        void DoAction(int32 param)
+        void DoAction(int32 param) override
         {
             if (param == 1)
             {
@@ -434,7 +432,7 @@ public:
             }
         }
 
-        void KilledUnit(Unit* who)
+        void KilledUnit(Unit* /*who*/) override
         {
         }
 
@@ -481,7 +479,7 @@ public:
             DoMeleeAttackIfReady();
         }
 
-        void JustDied(Unit* killer) override
+        void JustDied(Unit* /*killer*/) override
         {
             DoCast(SPELL_SLUDGE_ELUPTION);
             if (auto trillax = ObjectAccessor::GetCreature(*me, _instance->GetGuidData(DATAGUID_TRILLAX)))

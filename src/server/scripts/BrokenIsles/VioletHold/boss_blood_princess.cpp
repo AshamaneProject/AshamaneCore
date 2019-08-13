@@ -436,7 +436,6 @@ class spell_thalena_frenzied_bloodthirst : public SpellScriptLoader
                         return;
 
                     Unit* owner = GetUnitOwner();
-                    Unit* caster = GetCaster();
 
                     if (!owner->HasAura(SPELL_ESSENCE_OF_BLOOD_PRINCESS))
                     {

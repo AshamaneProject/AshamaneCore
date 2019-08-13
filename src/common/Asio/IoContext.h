@@ -52,6 +52,8 @@ namespace Trinity
             void restart() { _impl.restart(); }
 
             boost::asio::io_context::executor_type get_executor() noexcept { return _impl.get_executor(); }
+#else
+            void reset() { _impl.reset(); }
 #endif
 
         private:

@@ -103,7 +103,7 @@ public:
             init.Launch();
         }
 
-        void EnterCombat(Unit* who) override
+        void EnterCombat(Unit* /*who*/) override
         {
             Talk(SAY_AGGRO);
             DoZoneInCombat();
@@ -131,11 +131,7 @@ public:
             summons.DespawnAll();
         }
 
-        void DoAction(int32 param)
-        {
-        }
-
-        void KilledUnit(Unit* who)
+        void KilledUnit(Unit* /*who*/) override
         {
             //if (who->ToPlayer())
             //   Talk(SAY_KILL);
@@ -237,7 +233,7 @@ public:
             DoMeleeAttackIfReady();
         }
 
-        void JustDied(Unit* killer) override
+        void JustDied(Unit* /*killer*/) override
         {
             Talk(SAY_DEATH);
             _JustDied();
@@ -331,7 +327,7 @@ public:
             return true;
         }
 
-        void Tick(AuraEffect const* aurEff)
+        void Tick(AuraEffect const* /*aurEff*/)
         {
             if (Unit* caster = GetCaster())
             {

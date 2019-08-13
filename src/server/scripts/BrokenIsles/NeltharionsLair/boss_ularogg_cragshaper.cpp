@@ -214,11 +214,11 @@ public:
             events.Reset();
             me->SetPower(POWER_MANA, 0);
 
-            bool manaRegenerated = false;
-            bool inSecondPhase = false;
-            bool isJumpedToCenter = false;
-            bool allowUpdateVictim = false;
-            uint8 idolsPoint = 0;
+            manaRegenerated = false;
+            inSecondPhase = false;
+            isJumpedToCenter = false;
+            allowUpdateVictim = false;
+            idolsPoint = 0;
             me->SetVisible(true);
 
             if (instance)
@@ -228,7 +228,7 @@ public:
             }
         }
 
-        void EnterCombat(Unit* who) override
+        void EnterCombat(Unit* /*who*/) override
         {
             Talk(TALK_AGGRO);
             me->SetInCombatWithZone();

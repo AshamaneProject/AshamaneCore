@@ -65,7 +65,7 @@ public:
             me->NeedChangeAI = false;
     }
 
-    void LastWaypointReached()
+    void LastWaypointReached() override
     {
         if (Player* rider = me->GetOwner()->ToPlayer())
         {
@@ -84,9 +84,7 @@ public:
         }
     }
 
-
-
-    void PassengerBoarded(Unit* who, int8 seatId, bool apply) override
+    void PassengerBoarded(Unit* who, int8 /*seatId*/, bool /*apply*/) override
     {
         Start(false, true, who->GetGUID());
     }

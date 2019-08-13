@@ -262,7 +262,7 @@ class npc_vha_blistering_bettle : public CreatureScript
                 me->SetReactState(REACT_PASSIVE);
             }
 
-            void IsSummonedBy(Unit* summoner)
+            void IsSummonedBy(Unit* summoner) override
             {
                 if (summoner && summoner->ToCreature())
                     _anubesset = summoner->ToCreature();

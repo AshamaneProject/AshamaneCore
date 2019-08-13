@@ -118,7 +118,7 @@ uint32 DinnerGuests[] =
     NPC_CATRIONA_VONINDI  ,
 };
 
-constexpr uint32 NPC_WHIRLING_EDGE = 114327;
+//constexpr uint32 NPC_WHIRLING_EDGE = 114327;
 
 Position const GuestSummonPosition[] =
 {
@@ -143,7 +143,7 @@ class boss_moroes_new : public CreatureScript
                 ChoseGuests();
             }
 
-            void DamageTaken(Unit* /**/, uint32 & damage) override
+            void DamageTaken(Unit* /**/, uint32 & /*damage*/) override
             {
                 if (me->HealthBelowPct(60) && !_IsPurged)
                 {
@@ -255,7 +255,7 @@ class npc_kara_moroes_guest : public CreatureScript
                 {
                 }
 
-                void Reset()
+                void Reset() override
                 {
                     _summons.DespawnAll();
                     me->RemoveAllAreaTriggers();
@@ -340,7 +340,7 @@ class npc_kara_moroes_guest : public CreatureScript
                     }
                 }
 
-                void ExecuteEvent(uint32 eventId)
+                void ExecuteEvent(uint32 eventId) override
                 {
                     switch (eventId)
                     {
