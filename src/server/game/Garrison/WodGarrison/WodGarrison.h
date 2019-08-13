@@ -77,6 +77,7 @@ public:
     };
 
     explicit WodGarrison(Player* owner);
+    ~WodGarrison() {};
 
     bool LoadFromDB() override;
     void SaveToDB(CharacterDatabaseTransaction& trans) override;

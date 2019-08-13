@@ -30,6 +30,7 @@ class TC_GAME_API WarCampaign : public Garrison
 public:
 
     explicit WarCampaign(Player* owner);
+    ~WarCampaign() {};
 
     bool LoadFromDB() override;
     void SaveToDB(CharacterDatabaseTransaction& trans) override;

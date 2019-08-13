@@ -57,6 +57,8 @@ public:
     };
 
     explicit Garrison(Player* owner);
+    ~Garrison() {};
+
     Player* GetOwner() const { return _owner; }
 
     virtual bool LoadFromDB();

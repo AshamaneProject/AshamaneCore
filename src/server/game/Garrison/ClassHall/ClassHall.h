@@ -30,6 +30,7 @@ class TC_GAME_API ClassHall : public Garrison
 public:
 
     explicit ClassHall(Player* owner);
+    ~ClassHall() {};
 
     bool LoadFromDB() override;
     void SaveToDB(CharacterDatabaseTransaction& trans) override;
