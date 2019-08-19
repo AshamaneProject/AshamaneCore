@@ -112,6 +112,7 @@ public:
             { "movementforce", rbac::RBAC_PERM_COMMAND_DEBUG_MOVEMENT_FORCE,false, nullptr,                             "", debugMovementForceCommandTable },
             { "playercondition",rbac::RBAC_PERM_COMMAND_DEBUG,              false, &HandleDebugPlayerConditionCommand,  "" },
             { "maxItemLevel",   rbac::RBAC_PERM_COMMAND_DEBUG,              false, &HandleDebugMaxItemLevelCommand,     "" },
+            { "transportState", rbac::RBAC_PERM_COMMAND_DEBUG,              false, &HandleDebugTransportStateCommand,   "" },
         };
         static std::vector<ChatCommand> commandTable =
         {
@@ -1430,6 +1431,23 @@ public:
         uint32 effectiveLevel = commandArgs.GetNextArg<uint32>();
         uint32 maxItemLevel = commandArgs.GetNextArg<uint32>();
         handler->getSelectedPlayerOrSelf()->SetEffectiveLevelAndMaxItemLevel(effectiveLevel, maxItemLevel);
+        return true;
+    }
+
+    static bool HandleDebugTransportStateCommand(ChatHandler* handler, char const* args)
+    {
+        CommandArgs commandArgs = CommandArgs(handler, args, { CommandArgs::ARG_UINT, CommandArgs::ARG_UINT });
+        if (!commandArgs.ValidArgs())
+            return false;
+
+        uint32 state = commandArgs.GetNextArg<uint32>();
+        uint32 stopFrame = commandArgs.GetNextArg<uint32>();
+
+        Player* player = handler->GetSession()->GetPlayer();
+
+        if (GameObject* gob = handler->GetObjectFromPlayerMapByDbGuid(player->GetLastTargetedGO()))
+            gob->SetTransportState(GOState(state), stopFrame);
+
         return true;
     }
 };
