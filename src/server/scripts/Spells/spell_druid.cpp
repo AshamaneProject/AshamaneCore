@@ -1989,8 +1989,11 @@ class aura_dru_astral_form : public AuraScript
     {
         Unit* target = GetTarget();
 
-        if (target->HasAura(SPELL_DRUID_MOONKIN_FORM) || target->HasAura(SPELL_DRUID_MOONKIN_FORM_TALENT))
-            target->SetDisplayId(target->GetModelForForm(FORM_MOONKIN_FORM));
+        if (target->HasAura(SPELL_DRUID_MOONKIN_FORM))
+            target->SetDisplayId(target->GetModelForForm(FORM_MOONKIN_FORM, SPELL_DRUID_MOONKIN_FORM));
+
+        if (target->HasAura(SPELL_DRUID_MOONKIN_FORM_TALENT))
+            target->SetDisplayId(target->GetModelForForm(FORM_MOONKIN_FORM, SPELL_DRUID_MOONKIN_FORM_TALENT));
 
         if (target->HasAura(SPELL_DRUID_GLYPH_OF_STARS))
         {
