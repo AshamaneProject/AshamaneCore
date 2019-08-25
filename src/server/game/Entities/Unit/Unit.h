@@ -1213,9 +1213,13 @@ class TC_GAME_API Unit : public WorldObject
 
         void SendDurabilityLoss(Player* receiver, uint32 percent);
 
-        void SetAIAnimKitId(uint16 animKitId, bool oneshot = false) override;
-        void SetMovementAnimKitId(uint16 animKitId) override;
-        void SetMeleeAnimKitId(uint16 animKitId) override;
+        void PlayOneShotAnimKitId(uint16 animKitId);
+        void SetAIAnimKitId(uint16 animKitId);
+        uint16 GetAIAnimKitId() const override { return _aiAnimKitId; }
+        void SetMovementAnimKitId(uint16 animKitId);
+        uint16 GetMovementAnimKitId() const override { return _movementAnimKitId; }
+        void SetMeleeAnimKitId(uint16 animKitId);
+        uint16 GetMeleeAnimKitId() const override { return _meleeAnimKitId; }
 
         uint16 GetMaxSkillValueForLevel(Unit const* target = NULL) const { return (target ? GetLevelForTarget(target) : getLevel()) * 5; }
         void DealDamageMods(Unit const* victim, uint32 &damage, uint32* absorb, DamageEffectType damagetype = DIRECT_DAMAGE) const;
@@ -2215,6 +2219,10 @@ class TC_GAME_API Unit : public WorldObject
 
         uint32 _oldFactionId;           ///< faction before charm
         bool _isWalkingBeforeCharm;     ///< Are we walking before we were charmed?
+
+        uint16 _aiAnimKitId;
+        uint16 _movementAnimKitId;
+        uint16 _meleeAnimKitId;
 
         std::map<time_t, uint32> _damageTakenHistory;
 

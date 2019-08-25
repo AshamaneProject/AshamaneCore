@@ -835,8 +835,7 @@ void MovementInfo::OutDebug()
 
 WorldObject::WorldObject(bool isWorldObject) : WorldLocation(), LastUsedScriptID(0),
 m_name(""), m_isActive(false), m_isWorldObject(isWorldObject), m_zoneScript(NULL),
-m_transport(NULL), _aiAnimKitId(0), _movementAnimKitId(0), _meleeAnimKitId(0),
-m_currMap(NULL), m_InstanceId(0),
+m_transport(NULL), m_currMap(NULL), m_InstanceId(0),
 _dbPhase(0), m_visibleBySummonerOnly(false), m_notifyflags(0), m_executed_notifies(0)
 {
     m_serverSideVisibility.SetValue(SERVERSIDE_VISIBILITY_GHOST, GHOST_VISIBILITY_ALIVE | GHOST_VISIBILITY_GHOST);

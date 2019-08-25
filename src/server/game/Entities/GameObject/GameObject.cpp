@@ -105,7 +105,7 @@ QuaternionData QuaternionData::fromEulerAnglesZYX(float Z, float Y, float X)
 
 GameObject::GameObject() : WorldObject(false), MapObject(),
     m_model(nullptr), m_goValue(), m_AI(nullptr),
-    _worldEffectID(0), _scheduler(this)
+    _animKitId(0), _worldEffectID(0), _scheduler(this)
 {
     m_objectType |= TYPEMASK_GAMEOBJECT;
     m_objectTypeId = TYPEID_GAMEOBJECT;
@@ -329,9 +329,7 @@ bool GameObject::Create(uint32 entry, Map* map, Position const& pos, QuaternionD
         if (m_goTemplateAddon->AIAnimKitID)
         {
             m_updateFlag.AnimKit = true;
-            _aiAnimKitId = m_goTemplateAddon->AIAnimKitID;
-            _movementAnimKitId = m_goTemplateAddon->MovementID;
-            _meleeAnimKitId = m_goTemplateAddon->MeleeID;
+            _animKitId = m_goTemplateAddon->AIAnimKitID;
         }
     }
 
@@ -2653,18 +2651,18 @@ void GameObject::UpdateModelPosition()
     }
 }
 
-void GameObject::SetAIAnimKitId(uint16 animKitId, bool oneshot /*= false*/)
+void GameObject::SetAnimKitId(uint16 animKitId, bool oneshot)
 {
-    if (_aiAnimKitId == animKitId)
+    if (_animKitId == animKitId)
         return;
 
     if (animKitId && !sAnimKitStore.LookupEntry(animKitId))
         return;
 
     if (!oneshot)
-        _aiAnimKitId = animKitId;
+        _animKitId = animKitId;
     else
-        _aiAnimKitId = 0;
+        _animKitId = 0;
 
     WorldPackets::GameObject::GameObjectActivateAnimKit activateAnimKit;
     activateAnimKit.ObjectGUID = GetGUID();

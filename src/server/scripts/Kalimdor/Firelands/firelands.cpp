@@ -2895,7 +2895,7 @@ class spell_alysrazor_turn_monstrosity : public SpellScriptLoader
             void TurnBird(SpellEffIndex effIndex)
             {
                 PreventHitDefaultEffect(effIndex);
-                GetHitUnit()->SetAIAnimKitId(ANIM_KIT_BIRD_TURN, true);
+                GetHitUnit()->PlayOneShotAnimKitId(ANIM_KIT_BIRD_TURN);
             }
 
             void Register() override

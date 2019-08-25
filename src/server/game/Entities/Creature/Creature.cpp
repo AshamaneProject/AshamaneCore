@@ -2636,9 +2636,9 @@ bool Creature::LoadCreaturesAddon()
     if (cainfo->emote != 0)
         SetEmoteState(Emote(cainfo->emote));
 
-    _aiAnimKitId = cainfo->aiAnimKit;
-    _movementAnimKitId = cainfo->movementAnimKit;
-    _meleeAnimKitId = cainfo->meleeAnimKit;
+    SetAIAnimKitId(cainfo->aiAnimKit);
+    SetMovementAnimKitId(cainfo->movementAnimKit);
+    SetMeleeAnimKitId(cainfo->meleeAnimKit);
 
     // Check if visibility distance different
     if (cainfo->visibilityDistanceType != VisibilityDistanceType::Normal)

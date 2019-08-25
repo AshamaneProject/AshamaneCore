@@ -7399,8 +7399,8 @@ void ObjectMgr::LoadGameObjectTemplateAddons()
 {
     uint32 oldMSTime = getMSTime();
 
-    //                                               0       1       2      3        4        5              6            7           8
-    QueryResult result = WorldDatabase.Query("SELECT entry, faction, flags, mingold, maxgold, WorldEffectID, AIAnimKitID, MovementID, MeleeID FROM gameobject_template_addon");
+    //                                               0       1       2      3        4        5              6
+    QueryResult result = WorldDatabase.Query("SELECT entry, faction, flags, mingold, maxgold, WorldEffectID, AIAnimKitID FROM gameobject_template_addon");
 
     if (!result)
     {
@@ -7429,8 +7429,6 @@ void ObjectMgr::LoadGameObjectTemplateAddons()
         gameObjectAddon.maxgold       = fields[4].GetUInt32();
         gameObjectAddon.WorldEffectID = fields[5].GetUInt32();
         gameObjectAddon.AIAnimKitID   = fields[6].GetUInt32();
-        gameObjectAddon.MovementID    = fields[7].GetUInt32();
-        gameObjectAddon.MeleeID       = fields[8].GetUInt32();
 
         // checks
         if (gameObjectAddon.faction && !sFactionTemplateStore.LookupEntry(gameObjectAddon.faction))

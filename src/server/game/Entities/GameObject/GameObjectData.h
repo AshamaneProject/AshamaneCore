@@ -931,8 +931,6 @@ struct GameObjectTemplateAddon
     uint32  maxgold;
     uint32  WorldEffectID;
     uint32  AIAnimKitID;
-    uint32  MovementID;
-    uint32  MeleeID;
 };
 
 

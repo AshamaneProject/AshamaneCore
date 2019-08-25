@@ -524,7 +524,7 @@ class boss_kargath_bladefist : public CreatureScript
 
                         AddTimedDelayedOperation(200, [this]() -> void
                         {
-                            me->SetAIAnimKitId(eDatas::AnimInterrupt, true);
+                            me->PlayOneShotAnimKitId(eDatas::AnimInterrupt);
                         });
 
                         if (m_Instance != nullptr)
@@ -790,7 +790,7 @@ class boss_kargath_bladefist : public CreatureScript
                             me->CastSpell(target, eSpells::SpellImpale, false);
 
                         me->CastSpell(me, eSpells::SpellImpaleMorph, true);
-                        me->SetAIAnimKitId(eDatas::AnimKitImpale, true);
+                        me->PlayOneShotAnimKitId(eDatas::AnimKitImpale);
                         m_Events.ScheduleEvent(eEvents::EventImpale, 43500);
                         break;
                     }
@@ -1618,7 +1618,7 @@ class npc_highmaul_fire_pillar : public CreatureScript
                         me->CastSpell(me, eSpells::FirePillarKnockback, true, nullptr, nullptr, p_Caster->GetGUID());
 
                         me->AddUnitFlag(UNIT_FLAG_IN_COMBAT);
-                        me->SetAIAnimKitId(eData::AnimKit1, true);
+                        me->PlayOneShotAnimKitId(eData::AnimKit1);
                         AddTimedDelayedOperation(3 * TimeConstants::IN_MILLISECONDS, [this]() -> void { me->SetAIAnimKitId(eData::AnimKit2); });
                         AddTimedDelayedOperation(3 * TimeConstants::IN_MILLISECONDS, [this]() -> void { me->CastSpell(me, eSpells::FlameJet, true); });
 
@@ -1686,7 +1686,7 @@ class npc_highmaul_fire_pillar : public CreatureScript
                 me->RemoveUnitFlag(UNIT_FLAG_IN_COMBAT);
                 me->RemoveAllAuras();
                 me->SetAIAnimKitId(0);
-                me->SetAIAnimKitId(eData::AnimKit3, true);
+                me->PlayOneShotAnimKitId(eData::AnimKit3);
                 me->RemoveAura(eSpells::FlameGoutPeriodic);
             }
 
@@ -1971,7 +1971,7 @@ class npc_highmaul_kargath_bladefist_trigger : public CreatureScript
                     me->CastSpell(p_Caster, eSpells::BladeDanceCharge, true);
 
                     uint32 const l_AnimKits[4] = { eDatas::AnimKit1, eDatas::AnimKit2, eDatas::AnimKit3, eDatas::AnimKit4 };
-                    me->SetAIAnimKitId(l_AnimKits[urand(0, 3)], true);
+                    me->PlayOneShotAnimKitId(l_AnimKits[urand(0, 3)]);
 
                     AddTimedDelayedOperation(100, [this]() -> void { me->CastSpell(me, eSpells::SpellBladeDanceFadeOut, true); });
                     AddTimedDelayedOperation(500, [this]() -> void { me->SetDisplayId(eDatas::MorphInvisible); });

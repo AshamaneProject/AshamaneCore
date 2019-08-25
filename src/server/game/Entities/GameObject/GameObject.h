@@ -305,7 +305,8 @@ class TC_GAME_API GameObject : public WorldObject, public GridObject<GameObject>
 
         void UpdateModelPosition();
 
-        void SetAIAnimKitId(uint16 animKitId, bool oneshot = false) override;
+        uint16 GetAIAnimKitId() const override { return _animKitId; }
+        void SetAnimKitId(uint16 animKitId, bool oneshot);
 
         /// Event handler
         EventProcessor m_Events;
@@ -376,6 +377,7 @@ class TC_GAME_API GameObject : public WorldObject, public GridObject<GameObject>
         }
 
         GameObjectAI* m_AI;
+        uint16 _animKitId;
         uint32 _worldEffectID;
 
         TaskScheduler _scheduler;

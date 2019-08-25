@@ -889,7 +889,7 @@ class npc_highmaul_fungal_flesh_eater : public CreatureScript
                     me->SetCombatReach(7.0f);
                 });
 
-                AddTimedDelayedOperation(5 * TimeConstants::IN_MILLISECONDS, [this]() -> void { me->SetAIAnimKitId(eData::AnimKit, true); });
+                AddTimedDelayedOperation(5 * TimeConstants::IN_MILLISECONDS, [this]() -> void { me->PlayOneShotAnimKitId(eData::AnimKit); });
                 AddTimedDelayedOperation(6 * TimeConstants::IN_MILLISECONDS, [this]() -> void { me->ClearUnitState(UnitState::UNIT_STATE_ROOT); });
 
                 if (m_Instance != nullptr)

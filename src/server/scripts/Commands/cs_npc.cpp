@@ -1767,7 +1767,11 @@ public:
         uint32 aiAnimKitId  = cmdArgs.GetArg<uint32>(0);
         bool oneshot        = cmdArgs.GetArg<uint32>(1, 0);
 
-        creatureTarget->SetAIAnimKitId(aiAnimKitId, oneshot);
+        if (oneshot)
+            creatureTarget->PlayOneShotAnimKitId(aiAnimKitId);
+        else
+            creatureTarget->SetAIAnimKitId(aiAnimKitId);
+
         return true;
     }
 };

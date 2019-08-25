@@ -2844,10 +2844,10 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
                     switch (e.action.animKit.type)
                     {
                         case 0:
-                            (*itr)->ToCreature()->SetAIAnimKitId(e.action.animKit.animKit, true);
+                            (*itr)->ToCreature()->PlayOneShotAnimKitId(e.action.animKit.animKit);
                             break;
                         case 1:
-                            (*itr)->ToCreature()->SetAIAnimKitId(e.action.animKit.animKit, false);
+                            (*itr)->ToCreature()->SetAIAnimKitId(e.action.animKit.animKit);
                             break;
                         case 2:
                             (*itr)->ToCreature()->SetMeleeAnimKitId(e.action.animKit.animKit);

@@ -603,14 +603,9 @@ class TC_GAME_API WorldObject : public Object, public WorldLocation
         virtual float GetStationaryZ() const { return GetPositionZ(); }
         virtual float GetStationaryO() const { return GetOrientation(); }
 
-        virtual void SetAIAnimKitId(uint16 animKitId, bool /*oneshot*/ = false) { _aiAnimKitId = animKitId; }
-        uint16 GetAIAnimKitId() const { return _aiAnimKitId; }
-
-        virtual void SetMovementAnimKitId(uint16 animKitId) { _movementAnimKitId = animKitId; }
-        uint16 GetMovementAnimKitId() const { return _movementAnimKitId; }
-
-        virtual void SetMeleeAnimKitId(uint16 animKitId) { _meleeAnimKitId = animKitId; }
-        uint16 GetMeleeAnimKitId() const { return _meleeAnimKitId; }
+        virtual uint16 GetAIAnimKitId() const { return 0; }
+        virtual uint16 GetMovementAnimKitId() const { return 0; }
+        virtual uint16 GetMeleeAnimKitId() const { return 0; }
 
     protected:
         std::string m_name;
@@ -623,10 +618,6 @@ class TC_GAME_API WorldObject : public Object, public WorldLocation
 
         // transports
         Transport* m_transport;
-
-        uint16 _aiAnimKitId;
-        uint16 _movementAnimKitId;
-        uint16 _meleeAnimKitId;
 
         //these functions are used mostly for Relocate() and Corpse/Player specific stuff...
         //use them ONLY in LoadFromDB()/Create() funcs and nowhere else!
