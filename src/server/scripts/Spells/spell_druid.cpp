@@ -1812,9 +1812,6 @@ public:
             if (!player)
                 return SPELL_FAILED_CUSTOM_ERROR;
 
-            if (player->GetSkillValue(SKILL_RIDING) < 75)
-                return SPELL_FAILED_APPRENTICE_RIDING_REQUIREMENT;
-
             SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(player->IsInWater() ? DRUID_AQUATIC_FORM : DRUID_STAG_FORM);
             return spellInfo->CheckLocation(player->GetMapId(), player->GetZoneId(), player->GetAreaId(), player);
         }
