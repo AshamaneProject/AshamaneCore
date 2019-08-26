@@ -51,10 +51,10 @@ void ArchaeologyPlayerMgr::LoadArchaeologyDigSites(PreparedQueryResult result)
 
 void ArchaeologyPlayerMgr::LoadArchaeologyBranchs(PreparedQueryResult result)
 {
-    /*if (!result)
+    if (!result)
         return;
 
-    uint32 mpos = 0;
+    /*uint32 mpos = 0;
 
     do
     {

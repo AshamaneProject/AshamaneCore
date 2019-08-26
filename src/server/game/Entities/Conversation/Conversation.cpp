@@ -204,7 +204,7 @@ bool Conversation::Create(ObjectGuid::LowType lowGuid, uint32 conversationEntry,
     return true;
 }
 
-void Conversation::AddActor(ObjectGuid const& actorGuid, uint16 actorIdx, uint32 padding/* = 0*/)
+void Conversation::AddActor(ObjectGuid const& actorGuid, uint16 actorIdx)
 {
     auto actorField = m_values.ModifyValue(&Conversation::m_conversationData).ModifyValue(&UF::ConversationData::Actors, actorIdx);
     SetUpdateFieldValue(actorField.ModifyValue(&UF::ConversationActor::ActorGUID), actorGuid);
