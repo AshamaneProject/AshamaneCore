@@ -14574,6 +14574,13 @@ void Unit::SendSetVehicleRecId(uint32 vehicleId)
     SendMessageToSet(setVehicleRec.Write(), true);
 }
 
+bool Unit::IsInAir()
+{
+    float ground = GetMap()->GetHeight(GetPhaseShift(), GetPositionX(), GetPositionY(), GetPositionZMinusOffset());
+
+    return G3D::fuzzyGt(GetPositionZMinusOffset(), ground + 0.05f) || G3D::fuzzyLt(GetPositionZMinusOffset(), ground - 0.05f);
+}
+
 void Unit::SendSetPlayHoverAnim(bool enable)
 {
     WorldPackets::Misc::SetPlayHoverAnim data;

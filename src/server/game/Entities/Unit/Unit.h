@@ -1421,6 +1421,7 @@ class TC_GAME_API Unit : public WorldObject
         bool SetCanTurnWhileFalling(bool enable);
         bool SetCanDoubleJump(bool enable);
         void SendSetVehicleRecId(uint32 vehicleId);
+        bool IsInAir();
 
         bool HasMovementForce(ObjectGuid source);
         void ApplyMovementForce(ObjectGuid source, float magnitude, Position direction, Position origin = Position());

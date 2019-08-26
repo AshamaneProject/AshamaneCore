@@ -838,6 +838,19 @@ void Creature::Update(uint32 diff)
     sScriptMgr->OnCreatureUpdate(this, diff);
 }
 
+bool Creature::CanFly() const
+{
+    if (GetCreatureTemplate()->InhabitType & INHABIT_AIR)
+        return true;
+
+    CreatureDisplayInfoEntry const* displayInfo = sCreatureDisplayInfoStore.LookupEntry(GetNativeDisplayId());
+    ASSERT(displayInfo);
+    CreatureModelDataEntry const* modelData = sCreatureModelDataStore.LookupEntry(displayInfo->ModelID);
+    ASSERT(modelData);
+
+    return modelData->HoverHeight > 0.f;
+}
+
 void Creature::StopMovingAndAttacking(uint32 timer)
 {
     if (timer)
@@ -2571,7 +2584,7 @@ bool Creature::CanCreatureAttack(Unit const* victim, bool /*force*/) const
         dist += GetObjectSize() + victim->GetObjectSize();
 
         // to prevent creatures in air ignore attacks because distance is already too high...
-        if (GetCreatureTemplate()->InhabitType & INHABIT_AIR)
+        if (CanFly())
             return victim->IsInDist2d(&m_homePosition, dist);
         else
             return victim->IsInDist(&m_homePosition, dist);
@@ -2616,7 +2629,7 @@ bool Creature::LoadCreaturesAddon()
         //! Check using InhabitType as movement flags are assigned dynamically
         //! basing on whether the creature is in air or not
         //! Set MovementFlag_Hover. Otherwise do nothing.
-        if (m_unitData->AnimTier & UNIT_BYTE1_FLAG_HOVER && !(GetCreatureTemplate()->InhabitType & INHABIT_AIR))
+        if (m_unitData->AnimTier & UNIT_BYTE1_FLAG_HOVER && !CanFly())
             AddUnitMovementFlag(MOVEMENTFLAG_HOVER);
     }
 
@@ -3133,13 +3146,12 @@ void Creature::UpdateMovementFlags()
         return;
 
     // Set the movement flags if the creature is in that mode. (Only fly if actually in air, only swim if in water, etc)
-    float ground = GetMap()->GetHeight(GetPhaseShift(), GetPositionX(), GetPositionY(), GetPositionZMinusOffset());
 
-    bool isInAir = (G3D::fuzzyGt(GetPositionZMinusOffset(), ground + 0.05f) || G3D::fuzzyLt(GetPositionZMinusOffset(), ground - 0.05f)); // Can be underground too, prevent the falling
+    bool isInAir = IsInAir(); // Can be underground too, prevent the falling
 
-    if (GetCreatureTemplate()->InhabitType & INHABIT_AIR && isInAir && !IsFalling())
+    if (CanFly() && !IsFalling())
     {
-        if (GetCreatureTemplate()->InhabitType & INHABIT_GROUND)
+        if (CanWalk() && !isInAir)
             SetCanFly(true);
         else
             SetDisableGravity(true);
@@ -3153,7 +3165,7 @@ void Creature::UpdateMovementFlags()
     if (!isInAir)
         SetFall(false);
 
-    SetSwim(GetCreatureTemplate()->InhabitType & INHABIT_WATER && IsInWater());
+    SetSwim(CanSwim() && IsInWater());
 }
 
 void Creature::SetObjectScale(float scale)
