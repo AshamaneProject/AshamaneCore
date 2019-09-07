@@ -793,6 +793,14 @@ void WorldPackets::Movement::MoveTimeSkipped::Read()
     _worldPacket >> TimeSkipped;
 }
 
+WorldPacket const* WorldPackets::Movement::MoveSkipTime::Write()
+{
+    _worldPacket << MoverGuid;
+    _worldPacket << TimeSkipped;
+
+    return &_worldPacket;
+}
+
 void WorldPackets::Movement::SummonResponse::Read()
 {
     _worldPacket >> SummonerGUID;

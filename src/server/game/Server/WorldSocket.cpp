@@ -357,6 +357,8 @@ WorldSocket::ReadDataHandlerResult WorldSocket::ReadDataHandler()
     }
 
     WorldPacket packet(std::move(_packetBuffer), GetConnectionType());
+    WorldPacket* packetToQueue = nullptr;
+
     OpcodeClient opcode = packet.read<OpcodeClient>();
     if (uint32(opcode) >= uint32(NUM_OPCODE_HANDLERS))
     {
@@ -427,9 +429,13 @@ WorldSocket::ReadDataHandlerResult WorldSocket::ReadDataHandler()
             HandleAuthContinuedSession(authSession);
             return ReadDataHandlerResult::WaitingForQuery;
         }
-        case CMSG_KEEP_ALIVE:
+        case CMSG_KEEP_ALIVE: // todo: handle this packet in the same way of CMSG_TIME_SYNC_RESP
+            sessionGuard.lock();
             LogOpcodeText(opcode, sessionGuard);
-            break;
+            if (_worldSession)
+                _worldSession->ResetTimeOutTime();
+
+            return ReadDataHandlerResult::Ok;
         case CMSG_LOG_DISCONNECT:
             LogOpcodeText(opcode, sessionGuard);
             packet.rfinish();   // contains uint32 disconnectReason;
@@ -456,34 +462,42 @@ WorldSocket::ReadDataHandlerResult WorldSocket::ReadDataHandler()
             LogOpcodeText(opcode, sessionGuard);
             HandleEnableEncryptionAck();
             break;
-        default:
-        {
-            sessionGuard.lock();
-
-            LogOpcodeText(opcode, sessionGuard);
-
-            if (!_worldSession)
-            {
-                TC_LOG_ERROR("network.opcode", "ProcessIncoming: Client not authed opcode = %u", uint32(opcode));
-                return ReadDataHandlerResult::Error;
-            }
-
-            OpcodeHandler const* handler = opcodeTable[opcode];
-            if (!handler)
-            {
-                TC_LOG_ERROR("network.opcode", "No defined handler for opcode %s sent by %s", GetOpcodeNameForLogging(static_cast<OpcodeClient>(packet.GetOpcode())).c_str(), _worldSession->GetPlayerInfo().c_str());
-                break;
-            }
-
-            // Our Idle timer will reset on any non PING opcodes.
-            // Catches people idling on the login screen and any lingering ingame connections.
-            _worldSession->ResetTimeOutTime();
-
-            // Copy the packet to the heap before enqueuing
-            _worldSession->QueuePacket(new WorldPacket(std::move(packet)));
+        case CMSG_TIME_SYNC_RESPONSE:
+            packetToQueue = new WorldPacket(std::move(packet), std::chrono::steady_clock::now());
             break;
-        }
+
+        default:
+            packetToQueue = new WorldPacket(std::move(packet));
+            break;
     }
+
+    if (!packetToQueue)
+        return ReadDataHandlerResult::Ok;
+
+    sessionGuard.lock();
+
+    LogOpcodeText(opcode, sessionGuard);
+
+    if (!_worldSession)
+    {
+        TC_LOG_ERROR("network.opcode", "ProcessIncoming: Client not authed opcode = %u", uint32(opcode));
+        delete packetToQueue;
+        return ReadDataHandlerResult::Error;
+    }
+
+    OpcodeHandler const* handler = opcodeTable[opcode];
+    if (!handler)
+    {
+        TC_LOG_ERROR("network.opcode", "No defined handler for opcode %s sent by %s", GetOpcodeNameForLogging(static_cast<OpcodeClient>(packet.GetOpcode())).c_str(), _worldSession->GetPlayerInfo().c_str());
+        delete packetToQueue;
+        return ReadDataHandlerResult::Error;
+    }
+
+    // Our Idle timer will reset on any non PING opcodes on login screen, allowing us to catch people idling.
+    _worldSession->ResetTimeOutTime();
+
+    // Copy the packet to the heap before enqueuing
+    _worldSession->QueuePacket(packetToQueue);
 
     return ReadDataHandlerResult::Ok;
 }
@@ -1024,10 +1038,7 @@ bool WorldSocket::HandlePing(WorldPackets::Auth::Ping& ping)
         std::lock_guard<std::mutex> sessionGuard(_worldSessionLock);
 
         if (_worldSession)
-        {
             _worldSession->SetLatency(ping.Latency);
-            _worldSession->ResetClientTimeDelay();
-        }
         else
         {
             TC_LOG_ERROR("network", "WorldSocket::HandlePing: peer sent CMSG_PING, but is not authenticated or got recently kicked, address = %s", GetRemoteIpAddress().to_string().c_str());

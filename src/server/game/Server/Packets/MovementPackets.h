@@ -503,6 +503,17 @@ namespace WorldPackets
             uint32 TimeSkipped = 0;
         };
 
+        class TC_GAME_API MoveSkipTime final : public ServerPacket
+        {
+        public:
+            MoveSkipTime() : ServerPacket(SMSG_MOVE_SKIP_TIME, 16 + 4) { }
+
+            WorldPacket const* Write() override;
+
+            ObjectGuid MoverGuid;
+            uint32 TimeSkipped;
+        };
+
         class SummonResponse final : public ClientPacket
         {
         public:
