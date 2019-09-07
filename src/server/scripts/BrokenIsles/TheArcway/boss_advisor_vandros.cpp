@@ -92,7 +92,7 @@ class boss_advisor_vandros : public CreatureScript
                     Talk(SAY_KILL);
             }
             
-            void JustReachedHome()
+            void JustReachedHome() override
             {
                 Talk(SAY_WIPE);
                 me->SetReactState(REACT_AGGRESSIVE);
@@ -278,7 +278,7 @@ class npc_arc_timeless_wraith : public CreatureScript
             explicit npc_arc_timeless_wraith_AI(Creature* creature) : ScriptedAI(creature)
             {}
 
-            void Reset()
+            void Reset() override
             {
                 //me->SetInPhase(2, true, true);
                 _events.Reset();

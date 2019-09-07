@@ -65,7 +65,7 @@ struct instance_neltharions_lair : public InstanceScript
     uint32 centerIdolKilled = 0;
     uint32 dargrulData = 0;
 
-    void Initialize()
+    void Initialize() override
     {
         SetBossNumber(EncounterCount);
         spiritWalkerGUID.Clear();
@@ -79,7 +79,7 @@ struct instance_neltharions_lair : public InstanceScript
         naraxasLootGUID.Clear();
     }
 
-    void OnGameObjectCreate(GameObject* go)
+    void OnGameObjectCreate(GameObject* go) override
     {
         switch(go->GetEntry())
         {

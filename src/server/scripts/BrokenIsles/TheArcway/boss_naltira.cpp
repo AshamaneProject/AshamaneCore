@@ -478,7 +478,7 @@ class spell_naltira_tangled_web_dmg : public SpellScriptLoader
             public:
                 PrepareAuraScript(spell_tangled_web_dmg_AuraScript);
 
-                bool Load()
+                bool Load() override
                 {
                     if (GetCaster()->GetAI())
                     {

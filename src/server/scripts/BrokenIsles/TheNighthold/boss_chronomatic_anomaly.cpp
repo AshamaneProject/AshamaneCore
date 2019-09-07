@@ -409,7 +409,7 @@ public:
             _instance->SendEncounterUnit(ENCOUNTER_FRAME_ENGAGE, me, 1);
         }
 
-        void JustDied(Unit* /*killer*/)
+        void JustDied(Unit* /*killer*/) override
         {
             DoCastSelf(SPELL_TEMPORAL_RIFT, true);
             DoCastSelf(SPELL_FADE_OUT, true);
@@ -491,7 +491,7 @@ public:
             events.ScheduleEvent(EVENT_WARP_NIGHTWELL, 10000);
         }
 
-        void JustDied(Unit* /*killer*/)
+        void JustDied(Unit* /*killer*/) override
         {
             DoCastSelf(SPELL_TEMPORAL_RIFT, true);
             DoCastSelf(SPELL_FADE_OUT, true);
@@ -1231,7 +1231,7 @@ public:
             _posIndex = param;
         }
 
-        void OnUpdate(uint32 diff)
+        void OnUpdate(uint32 diff) override
         {
             if (_timer <= diff && canStartPath)
             {

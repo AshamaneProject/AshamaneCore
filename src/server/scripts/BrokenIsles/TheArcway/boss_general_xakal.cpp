@@ -442,7 +442,7 @@ class at_arc_fel_fissure : public AreaTriggerEntityScript
             {
             }
 
-            void OnInitialize()
+            void OnInitialize() override
             {
                 _borned = false;
                 _activated = false;

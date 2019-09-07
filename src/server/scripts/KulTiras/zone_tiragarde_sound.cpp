@@ -887,7 +887,7 @@ public:
     void SummonedCreatureDespawn(Creature* /*creature*/) override
     {
         // killcredit
-        for each (auto player in players)
+        for (auto player : players)
         {
             if (player && player->IsInWorld() && player->IsInRange2d(me->GetPositionX(), me->GetPositionY(), 0, 50))
                 player->KilledMonsterCredit(NPC_DEFEND_FIREBREAKER_KILLCREDIT);
@@ -898,7 +898,7 @@ public:
     void SummonedCreatureDies(Creature* /*creature*/, Unit* /*unit*/) override
     {
         // Fail the quest
-        for each (auto player in players)
+        for (auto player : players)
         {
             if (player && player->IsInWorld())
                 player->FailQuest(QUEST_BACKUP_WILL_I_PACK);
@@ -1010,7 +1010,7 @@ public:
             float y = me->GetPositionY();
             float z = me->GetPositionZ();
 
-            if (abs(x - 534.932007) < .1 && abs(y - 870.984009) < .1 && abs(z - 7.821800) < .1) // ensuring we don't take the quest form ending npc
+            if (std::abs(x - 534.932007) < .1 && std::abs(y - 870.984009) < .1 && std::abs(z - 7.821800) < .1) // ensuring we don't take the quest form ending npc
                 if (player->GetQuestStatus(QUEST_A_VERY_PRECIOUS_CARGO) == QUEST_STATUS_INCOMPLETE)
                     player->KilledMonsterCredit(NPC_PENNY_KILLCREDIT);
         }
@@ -1054,7 +1054,7 @@ public:
         }
     }
 
-    void JustDied(Unit* /*killer*/)
+    void JustDied(Unit* /*killer*/) override
     {
         if (Player* player = GetPlayerForEscort())
         {
