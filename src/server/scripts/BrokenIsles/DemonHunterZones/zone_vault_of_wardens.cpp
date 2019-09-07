@@ -65,7 +65,7 @@ public:
             me->NeedChangeAI = false;
     }
 
-    void LastWaypointReached()
+    void LastWaypointReached() override
     {
         if (Player* rider = me->GetOwner()->ToPlayer())
         {

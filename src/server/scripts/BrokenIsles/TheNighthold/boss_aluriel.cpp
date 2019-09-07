@@ -131,11 +131,11 @@ public:
             summons.DespawnAll();
         }
 
-        void DoAction(int32 param)
+        void DoAction(int32 param) override
         {
         }
 
-        void KilledUnit(Unit* who)
+        void KilledUnit(Unit* who) override
         {
             //if (who->ToPlayer())
             //   Talk(SAY_KILL);

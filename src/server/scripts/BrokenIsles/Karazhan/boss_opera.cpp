@@ -625,7 +625,7 @@ class boss_opera_coggleston : public CreatureScript
                 me->CastSpell(me, SPELL_SPECTRAL_SERVICE, true);
             }
 
-            void Reset()
+            void Reset() override
             {
                 _minionsDead = 0;
                 _Reset();
@@ -1200,7 +1200,7 @@ class npc_kara_winged_assistant : public CreatureScript
             explicit npc_kara_winged_assistant_AI(Creature* creature) : ScriptedAI(creature)
             {}
 
-            void Reset()
+            void Reset() override
             {
                 _events.Reset();
             }
@@ -1285,7 +1285,7 @@ class npc_kara_gang_ruffian : public CreatureScript
                 }
             }
 
-            void ExecuteEvent(uint32 eventId)
+            void ExecuteEvent(uint32 eventId) override
             {
                 if (eventId == EVENT_POISONOUS_SHANK)
                 {
@@ -1343,7 +1343,7 @@ class npc_kara_flashing_forks : public CreatureScript
                 _events.Reset();
             }
 
-            void ExecuteEvent(uint32 eventId)
+            void ExecuteEvent(uint32 eventId) override
             {
                 switch (eventId)
                 {
@@ -1442,7 +1442,7 @@ class npc_kara_shoreline_speaker : public CreatureScript
                 }
             }
 
-            void ExecuteEvent(uint32 eventId)
+            void ExecuteEvent(uint32 eventId) override
             {
                 if (eventId == EVENT_BUBBLE_BLAST)
                 {

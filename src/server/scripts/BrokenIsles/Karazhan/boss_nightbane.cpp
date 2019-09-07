@@ -374,14 +374,14 @@ class npc_kara_bonecurse : public CreatureScript
                 _events.Reset();
             }
 
-            void EnterCombat(Unit* /**/)
+            void EnterCombat(Unit* /**/) override
             {
                 DoZoneInCombat();
                 _events.ScheduleEvent(EVENT_ABSORB_VITALITY, Seconds(20));
                 _events.ScheduleEvent(EVENT_JAGGED_SHARDS, Seconds(urand(8, 12)));
             }
 
-            void ExecuteEvent(uint32 eventId)
+            void ExecuteEvent(uint32 eventId) override
             {
                 if (eventId == EVENT_ABSORB_VITALITY)
                 {

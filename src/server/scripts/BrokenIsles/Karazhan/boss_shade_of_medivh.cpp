@@ -94,7 +94,7 @@ class boss_shade_of_medivh : public CreatureScript
             explicit boss_shade_of_medivh_AI(Creature* creature) : BossAI(creature, DATA_SHADE_OF_MEDIVH)
             {}
 
-            void ScheduleTasks()
+            void ScheduleTasks() override
             {
                 uint8 order = urand(0, 2);
 
@@ -328,7 +328,7 @@ class npc_kara_guardian_image : public CreatureScript
                 me->AddUnitState(UNIT_STATE_ROOT);
             }
 
-            void Reset()
+            void Reset() override
             {
                 _events.Reset();
             }

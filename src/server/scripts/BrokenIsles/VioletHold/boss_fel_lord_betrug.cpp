@@ -108,12 +108,12 @@ class boss_fel_lord_betrug : public CreatureScript
             boss_fel_lord_betrug_AI(Creature* creature) : BossAI(creature, DATA_BELTRUG)
             {}
 
-            void Reset()
+            void Reset() override
             {
                 _Reset();
             }
 
-            void JustReachedHome()
+            void JustReachedHome() override
             {
                 Talk(SAY_WIPE);
                 _JustReachedHome();

@@ -2257,7 +2257,7 @@ public:
 
     return true;
   }
-  bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 /*sender*/, uint32 action)
+  bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 /*sender*/, uint32 action) override
   {
       if (player->HasQuest(25066))
       {
@@ -2272,7 +2272,7 @@ public:
       }
       else if (player->HasQuest(25266))
       {
-          player->TeleportTo(1468, -5012.f, 13.f, 3.26f);
+          player->TeleportTo(1468, -5012.0, 13.0, 3.26);
       }
       return true;
   }
