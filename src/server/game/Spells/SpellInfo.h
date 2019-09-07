@@ -548,8 +548,10 @@ class TC_GAME_API SpellInfo
         bool HasAreaAuraEffect(uint32 difficulty) const;
         bool HasAreaAuraEffect() const;
         bool HasOnlyDamageEffects() const;
-        bool HasTarget(uint32 target) const;
         bool CasterCanTurnDuringCast() const;
+
+        bool HasTargetType(::Targets target) const;
+        bool HasTargetType(uint32 difficulty, ::Targets target) const;
 
         bool HasAttribute(SpellAttr0 attribute) const { return !!(Attributes & attribute); }
         bool HasAttribute(SpellAttr1 attribute) const { return !!(AttributesEx & attribute); }
@@ -608,6 +610,7 @@ class TC_GAME_API SpellInfo
         bool IsRangedWeaponSpell() const;
         bool IsAutoRepeatRangedSpell() const;
         bool HasInitialAggro() const;
+        bool HasHitDelay() const;
 
         WeaponAttackType GetAttackType() const;
 

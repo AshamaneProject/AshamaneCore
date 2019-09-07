@@ -468,12 +468,12 @@ struct conversation_tol_dagor_escape : public ConversationScript
         if (Vehicle* boat = creator->GetVehicle())
         {
             if (Unit* taelia = boat->GetPassenger(0))
-                conversation->AddActor(taelia->GetGUID(), 0, 59469);
+                conversation->AddActor(taelia->GetGUID(), 0);
 
             // Flynn only speak during the first conversation
             if (conversation->GetEntry() == 5336)
                 if (Unit* flynn = boat->GetPassenger(2))
-                    conversation->AddActor(flynn->GetGUID(), 1, 59472);
+                    conversation->AddActor(flynn->GetGUID(), 1);
         }
     }
 };

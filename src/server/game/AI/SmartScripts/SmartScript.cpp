@@ -2894,14 +2894,38 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             delete targets;
             break;
         }
+        case SMART_ACTION_SET_MOVEMENT_SPEED:
+        {
+            ObjectList* targets = GetTargets(e, unit);
+            if (!targets)
+                break;
+
+            uint32 speedInteger = e.action.movementSpeed.speedInteger;
+            uint32 speedFraction = e.action.movementSpeed.speedFraction;
+            float speed = float(speedInteger) + float(speedFraction) / std::pow(10, std::floor(std::log10(float(speedFraction ? speedFraction : 1)) + 1));
+
+            for (WorldObject* target : *targets)
+                if (IsCreature(target))
+                    me->SetSpeed(UnitMoveType(e.action.movementSpeed.movementType), speed);
+
+            delete targets;
+            break;
+        }
         case SMART_ACTION_PLAY_SPELL_VISUAL_KIT:
         {
             ObjectList* targets = GetTargets(e, unit);
 
-            if (targets)
-                for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
-                    if (IsUnit(*itr))
-                        (*itr)->ToUnit()->SendPlaySpellVisualKit(e.action.spellVisualKit.visualId, e.action.spellVisualKit.visualType, e.action.spellVisualKit.visualDuration * 1000);
+            for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
+            {
+                if (IsUnit(*itr))
+                {
+                    (*itr)->ToUnit()->SendPlaySpellVisualKit(e.action.spellVisualKit.spellVisualKitId, e.action.spellVisualKit.kitType,
+                        e.action.spellVisualKit.duration);
+
+                    TC_LOG_DEBUG("scripts.ai", "SmartScript::ProcessAction:: SMART_ACTION_PLAY_SPELL_VISUAL_KIT: target: %s (%s), SpellVisualKit: %u",
+                        (*itr)->GetName().c_str(), (*itr)->GetGUID().ToString().c_str(), e.action.spellVisualKit.spellVisualKitId);
+                }
+            }
 
             delete targets;
             break;
@@ -3186,7 +3210,6 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
 
                 delete targets;
             }
-
             break;
         }
         default:
