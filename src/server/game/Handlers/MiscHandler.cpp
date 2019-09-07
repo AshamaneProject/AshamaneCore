@@ -1191,7 +1191,7 @@ void WorldSession::HandleSelectFactionOpcode(WorldPackets::Misc::FactionSelect& 
 
 void WorldSession::HandleSetWarModeOpcode(WorldPackets::Misc::SetWarMode& warMode)
 {
-    uint32 const warModeSpellId = 269083; // Enlisted
+    uint32 const warModeSpellId = 282559; // Enlisted
 
     if (_player->GetZoneId() != ZONE_STORMWIND_CITY && _player->GetZoneId() != ZONE_ORGRIMMAR)
         return;
