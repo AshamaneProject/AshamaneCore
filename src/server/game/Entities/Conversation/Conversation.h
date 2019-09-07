@@ -57,7 +57,7 @@ class TC_GAME_API Conversation : public WorldObject, public GridObject<Conversat
 
         static Conversation* CreateConversation(uint32 conversationEntry, Unit* creator, Position const& pos, GuidUnorderedSet&& participants, SpellInfo const* spellInfo = nullptr);
         bool Create(ObjectGuid::LowType lowGuid, uint32 conversationEntry, Map* map, Unit* creator, Position const& pos, GuidUnorderedSet&& participants, SpellInfo const* spellInfo = nullptr);
-        void AddActor(ObjectGuid const& actorGuid, uint16 actorIdx, uint32 padding = 0);
+        void AddActor(ObjectGuid const& actorGuid, uint16 actorIdx);
         void AddParticipant(ObjectGuid const& participantGuid);
 
         ObjectGuid const& GetCreatorGuid() const { return _creatorGuid; }
