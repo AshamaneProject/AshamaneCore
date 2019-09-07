@@ -275,16 +275,12 @@ public:
                         DoAddAuraOnPlayers(SPELL_HATE);
                     else
                     {
-                        Map::PlayerList const &PlayerList = instance->GetPlayers();
-
-                        if (!PlayerList.isEmpty())
-                            for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
-                                if (Player* player = i->GetSource())
-                                {
-                                    player->RemoveAurasDueToSpell(SPELL_HATE);
-                                    player->RemoveAurasDueToSpell(SPELL_HAZE_OF_HATE);
-                                    player->RemoveAurasDueToSpell(SPELL_HAZE_OF_HATE_VISUAL);
-                                }
+                        DoOnPlayers([](Player* player)
+                        {
+                            player->RemoveAurasDueToSpell(SPELL_HATE);
+                            player->RemoveAurasDueToSpell(SPELL_HAZE_OF_HATE);
+                            player->RemoveAurasDueToSpell(SPELL_HAZE_OF_HATE_VISUAL);
+                        });
                     }
                     break;
                 }

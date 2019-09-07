@@ -121,27 +121,24 @@ class instance_the_vortex_pinnacle : public InstanceMapScript
             {
                 if (underMapTimer <= diff)
                 {
-                    Map::PlayerList const& players = instance->GetPlayers();
-                    for (Map::PlayerList::const_iterator i = players.begin(); i != players.end(); ++i)
+                    DoOnPlayers([this](Player* player)
                     {
-                        if (Player* player = i->GetSource())
+                        Position pos = player->GetPosition();
+                        if (player->GetPositionZ() <= 568.0f)
                         {
-                            Position pos = player->GetPosition();
-                            if (player->GetPositionZ() <= 568.0f)
+                            if (Creature * sp = instance->SummonCreature(NPC_SLIPSTREAM, pos))
                             {
-                                if (Creature *sp = instance->SummonCreature(NPC_SLIPSTREAM, pos))
-                                {
-                                    sp->AI()->SetGUID(player->GetGUID());
-                                    sp->GetMotionMaster()->MoveJump(savePlayersPos[player->GetGUID()], 20, 50, 42);
-                                }
-                            }
-                            else if (!player->IsFalling() && !player->GetVehicle() && player->GetPositionZ() > 568.0f)
-                            {
-                                pos.m_positionZ += 1.0f;
-                                savePlayersPos[player->GetGUID()] = pos;
+                                sp->AI()->SetGUID(player->GetGUID());
+                                sp->GetMotionMaster()->MoveJump(savePlayersPos[player->GetGUID()], 20, 50, 42);
                             }
                         }
-                    }
+                        else if (!player->IsFalling() && !player->GetVehicle() && player->GetPositionZ() > 568.0f)
+                        {
+                            pos.m_positionZ += 1.0f;
+                            savePlayersPos[player->GetGUID()] = pos;
+                        }
+                    });
+
                     underMapTimer = 1000;
                 }
                 else

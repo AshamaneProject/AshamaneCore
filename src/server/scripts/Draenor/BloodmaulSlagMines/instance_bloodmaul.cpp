@@ -458,15 +458,11 @@ namespace Instances
 
                         if (m_CheckZPosTimer <= diff)
                         {
-                            Map::PlayerList const& playerList = instance->GetPlayers();
-                            for (Map::PlayerList::const_iterator itr = playerList.begin(); itr != playerList.end(); ++itr)
+                            DoOnPlayers([](Player* player)
                             {
-                                if (Player* player = itr->GetSource())
-                                {
-                                    if (player->GetPositionZ() <= 150.0f)
-                                        player->Kill(player);
-                                }
-                            }
+                                if (player->GetPositionZ() <= 150.0f)
+                                    player->Kill(player);
+                            });
 
                             m_CheckZPosTimer = 1000;
                         }

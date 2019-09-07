@@ -85,11 +85,10 @@ public:
 
         void UpdateQuestCredit()
         {
-            Map::PlayerList const& players = instance->GetPlayers();
-
-            for (Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
-                if (Player* player = itr->GetSource())
-                    player->KilledMonsterCredit(LODGE_QUEST_TRIGGER);
+            DoOnPlayers([](Player* player)
+            {
+                player->KilledMonsterCredit(LODGE_QUEST_TRIGGER);
+            });
         }
 
         void OnCreatureCreate(Creature* creature) override

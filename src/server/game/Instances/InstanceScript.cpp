@@ -402,12 +402,12 @@ bool InstanceScript::SetBossState(uint32 id, EncounterState state)
                     InitializeCombatResurrections(1, resInterval);
                     SendEncounterStart(1, 9, resInterval, resInterval);
 
-                    Map::PlayerList const &playerList = instance->GetPlayers();
-                    if (!playerList.isEmpty())
-                        for (Map::PlayerList::const_iterator i = playerList.begin(); i != playerList.end(); ++i)
-                            if (Player* player = i->GetSource())
-                                if (player->IsAlive())
-                                    player->ProcSkillsAndAuras(nullptr, PROC_FLAG_ENCOUNTER_START, PROC_FLAG_NONE, PROC_SPELL_TYPE_MASK_ALL, PROC_SPELL_PHASE_NONE, PROC_HIT_NONE, nullptr, nullptr, nullptr);
+                    DoOnPlayers([](Player* player)
+                    {
+                        if (player->IsAlive())
+                            player->ProcSkillsAndAuras(nullptr, PROC_FLAG_ENCOUNTER_START, PROC_FLAG_NONE, PROC_SPELL_TYPE_MASK_ALL, PROC_SPELL_PHASE_NONE, PROC_HIT_NONE, nullptr, nullptr, nullptr);
+                    });
+
                     break;
                 }
                 case FAIL:
@@ -636,134 +636,100 @@ void InstanceScript::DoRespawnGameObject(ObjectGuid guid, uint32 timeToDespawn /
 
 void InstanceScript::DoUpdateWorldState(uint32 uiStateId, uint32 uiStateData)
 {
-    Map::PlayerList const& lPlayers = instance->GetPlayers();
-
-    if (!lPlayers.isEmpty())
+    DoOnPlayers([uiStateId, uiStateData](Player* player)
     {
-        for (Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
-            if (Player* player = itr->GetSource())
-                player->SendUpdateWorldState(uiStateId, uiStateData);
-    }
-    else
-        TC_LOG_DEBUG("scripts", "DoUpdateWorldState attempt send data but no players in map.");
+        player->SendUpdateWorldState(uiStateId, uiStateData);
+    });
 }
 
 // Send Notify to all players in instance
 void InstanceScript::DoSendNotifyToInstance(char const* format, ...)
 {
-    InstanceMap::PlayerList const& players = instance->GetPlayers();
+    va_list ap;
+    va_start(ap, format);
+    char buff[1024];
+    vsnprintf(buff, 1024, format, ap);
+    va_end(ap);
 
-    if (!players.isEmpty())
+    DoOnPlayers([buff](Player* player)
     {
-        va_list ap;
-        va_start(ap, format);
-        char buff[1024];
-        vsnprintf(buff, 1024, format, ap);
-        va_end(ap);
-        for (Map::PlayerList::const_iterator i = players.begin(); i != players.end(); ++i)
-            if (Player* player = i->GetSource())
-                if (WorldSession* session = player->GetSession())
-                    session->SendNotification("%s", buff);
-    }
+        if (WorldSession * session = player->GetSession())
+            session->SendNotification("%s", buff);
+    });
 }
 
 // Update Achievement Criteria for all players in instance
 void InstanceScript::DoUpdateCriteria(CriteriaTypes type, uint32 miscValue1 /*= 0*/, uint32 miscValue2 /*= 0*/, Unit* unit /*= NULL*/)
 {
-    Map::PlayerList const &PlayerList = instance->GetPlayers();
-
-    if (!PlayerList.isEmpty())
-        for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
-            if (Player* player = i->GetSource())
-                player->UpdateCriteria(type, miscValue1, miscValue2, 0, unit);
+    DoOnPlayers([type, miscValue1, miscValue2, unit](Player* player)
+    {
+        player->UpdateCriteria(type, miscValue1, miscValue2, 0, unit);
+    });
 }
 
 // Start timed achievement for all players in instance
 void InstanceScript::DoStartCriteriaTimer(CriteriaTimedTypes type, uint32 entry)
 {
-    Map::PlayerList const &PlayerList = instance->GetPlayers();
-
-    if (!PlayerList.isEmpty())
-        for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
-            if (Player* player = i->GetSource())
-                player->StartCriteriaTimer(type, entry);
+    DoOnPlayers([type, entry](Player* player)
+    {
+        player->StartCriteriaTimer(type, entry);
+    });
 }
 
 // Stop timed achievement for all players in instance
 void InstanceScript::DoStopCriteriaTimer(CriteriaTimedTypes type, uint32 entry)
 {
-    Map::PlayerList const &PlayerList = instance->GetPlayers();
-
-    if (!PlayerList.isEmpty())
-        for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
-            if (Player* player = i->GetSource())
-                player->RemoveCriteriaTimer(type, entry);
+    DoOnPlayers([type, entry](Player* player)
+    {
+        player->RemoveCriteriaTimer(type, entry);
+    });
 }
 
 // Remove Auras due to Spell on all players in instance
 void InstanceScript::DoRemoveAurasDueToSpellOnPlayers(uint32 spell)
 {
-    Map::PlayerList const& PlayerList = instance->GetPlayers();
-    if (!PlayerList.isEmpty())
+    DoOnPlayers([spell](Player* player)
     {
-        for (Map::PlayerList::const_iterator itr = PlayerList.begin(); itr != PlayerList.end(); ++itr)
-        {
-            if (Player* player = itr->GetSource())
-            {
-                player->RemoveAurasDueToSpell(spell);
-                if (Pet* pet = player->GetPet())
-                    pet->RemoveAurasDueToSpell(spell);
-            }
-        }
-    }
+        player->RemoveAurasDueToSpell(spell);
+
+        if (Pet* pet = player->GetPet())
+            pet->RemoveAurasDueToSpell(spell);
+    });
 }
 
 // Kill all players with this aura in the instance
 void InstanceScript::DoKillPlayersWithAura(uint32 spell)
 {
-    Map::PlayerList const& PlayerList = instance->GetPlayers();
-    for (Map::PlayerList::const_iterator itr = PlayerList.begin(); itr != PlayerList.end(); ++itr)
-        if (Player* player = itr->GetSource())
-            if (player->HasAura(spell))
-                player->Kill(player);
+    DoOnPlayers([](Player* player)
+    {
+        player->Kill(player);
+    });
 }
 
 // Cast spell on all players in instance
 void InstanceScript::DoCastSpellOnPlayers(uint32 spell, Unit* caster /*= nullptr*/, bool triggered /*= true*/)
 {
-    Map::PlayerList const &PlayerList = instance->GetPlayers();
-
-    if (!PlayerList.isEmpty())
+    DoOnPlayers([spell, caster, triggered](Player* player)
     {
-        for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
-        {
-            if (Player* player = i->GetSource())
-            {
-                caster = caster ? caster : player;
-                caster->CastSpell(player, spell, triggered);
-            }
-        }
-    }
+        Unit* spellCaster = caster ? caster : player;
+        spellCaster->CastSpell(player, spell, triggered);
+    });
 }
 
 // Cast spell on all players in instance
 void InstanceScript::DoPlayScenePackageIdOnPlayers(uint32 scenePackageId)
 {
-    Map::PlayerList const &PlayerList = instance->GetPlayers();
-
-    if (!PlayerList.isEmpty())
-        for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
-            if (Player* player = i->GetSource())
-                player->GetSceneMgr().PlaySceneByPackageId(scenePackageId);
+    DoOnPlayers([scenePackageId](Player* player)
+    {
+        player->GetSceneMgr().PlaySceneByPackageId(scenePackageId);
+    });
 }
 void InstanceScript::DoRemoveForcedMovementsOnPlayers(ObjectGuid forceGuid)
 {
-    Map::PlayerList const &PlayerList = instance->GetPlayers();
-
-    if (!PlayerList.isEmpty())
-        for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
-            if (Player* player = i->GetSource())
-                player->RemoveMovementForce(forceGuid);
+    DoOnPlayers([forceGuid](Player* player)
+    {
+        player->RemoveMovementForce(forceGuid);
+    });
 }
 
 bool InstanceScript::ServerAllowsTwoSideGroups()
@@ -819,45 +785,47 @@ void InstanceScript::DespawnCreatureGroup(uint32 creatureGroupID)
     summonBySummonGroupIDs.erase(creatureGroupID);
 }
 
-void InstanceScript::DoSetAlternatePowerOnPlayers(int32 value)
+void InstanceScript::DoOnPlayers(std::function<void(Player*)>&& function)
 {
-    Map::PlayerList const &plrList = instance->GetPlayers();
+    Map::PlayerList const& plrList = instance->GetPlayers();
 
     if (!plrList.isEmpty())
         for (Map::PlayerList::const_iterator i = plrList.begin(); i != plrList.end(); ++i)
-            if (Player* pPlayer = i->GetSource())
-                pPlayer->SetPower(POWER_ALTERNATE_POWER, value);
+            if (Player* player = i->GetSource())
+                function(player);
+}
+
+void InstanceScript::DoSetAlternatePowerOnPlayers(int32 value)
+{
+    DoOnPlayers([value](Player* player)
+    {
+        player->SetPower(POWER_ALTERNATE_POWER, value);
+    });
 }
 
 void InstanceScript::DoModifyPlayerCurrencies(uint32 id, int32 value)
 {
-    Map::PlayerList const &plrList = instance->GetPlayers();
-
-    if (!plrList.isEmpty())
-        for (Map::PlayerList::const_iterator i = plrList.begin(); i != plrList.end(); ++i)
-            if (Player* pPlayer = i->GetSource())
-                pPlayer->ModifyCurrency(id, value);
+    DoOnPlayers([id, value](Player* player)
+    {
+        player->ModifyCurrency(id, value);
+    });
 }
 
 void InstanceScript::DoNearTeleportPlayers(const Position pos, bool casting /*=false*/)
 {
-    Map::PlayerList const &plrList = instance->GetPlayers();
-
-    if (!plrList.isEmpty())
-        for (Map::PlayerList::const_iterator i = plrList.begin(); i != plrList.end(); ++i)
-            if (Player* pPlayer = i->GetSource())
-                pPlayer->NearTeleportTo(pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ(), pos.GetOrientation(), casting);
+    DoOnPlayers([pos, casting](Player* player)
+    {
+        player->NearTeleportTo(pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ(), pos.GetOrientation(), casting);
+    });
 }
 
-void InstanceScript::DoKilledMonsterKredit(uint32 questId, uint32 entry, ObjectGuid guid/* =0*/)
+void InstanceScript::DoKilledMonsterCredit(uint32 questId, uint32 entry, ObjectGuid guid/* =0*/)
 {
-    Map::PlayerList const &plrList = instance->GetPlayers();
-
-    if (!plrList.isEmpty())
-        for (Map::PlayerList::const_iterator i = plrList.begin(); i != plrList.end(); ++i)
-            if (Player* pPlayer = i->GetSource())
-                if (pPlayer->GetQuestStatus(questId) == QUEST_STATUS_INCOMPLETE)
-                    pPlayer->KilledMonsterCredit(entry, guid);
+    DoOnPlayers([questId, entry, guid](Player* player)
+    {
+        if (player->GetQuestStatus(questId) == QUEST_STATUS_INCOMPLETE)
+            player->KilledMonsterCredit(entry, guid);
+    });
 }
 
 // Complete Achievement for all players in instance
@@ -870,11 +838,10 @@ void InstanceScript::DoCompleteAchievement(uint32 achievement)
         return;
     }
 
-    Map::PlayerList const& playerList = instance->GetPlayers();
-    if (!playerList.isEmpty())
-        for (Map::PlayerList::const_iterator i = playerList.begin(); i != playerList.end(); ++i)
-            if (Player* player = i->GetSource())
-                player->CompletedAchievement(achievementEntry);
+    DoOnPlayers([achievementEntry](Player* player)
+    {
+        player->CompletedAchievement(achievementEntry);
+    });
 }
 
 void InstanceScript::DoStartMovie(uint32 movieId)
@@ -886,54 +853,43 @@ void InstanceScript::DoStartMovie(uint32 movieId)
         return;
     }
 
-    Map::PlayerList const& playerList = instance->GetPlayers();
-    if (!playerList.isEmpty())
-        for (Map::PlayerList::const_iterator i = playerList.begin(); i != playerList.end(); ++i)
-            if (Player* player = i->GetSource())
-                player->SendMovieStart(movieId);
+    DoOnPlayers([movieId](Player* player)
+    {
+        player->SendMovieStart(movieId);
+    });
 }
 
 void InstanceScript::DoPlayConversation(uint32 conversationId)
 {
-    Map::PlayerList const& playerList = instance->GetPlayers();
-    if (!playerList.isEmpty())
-        for (Map::PlayerList::const_iterator i = playerList.begin(); i != playerList.end(); ++i)
-            if (Player* player = i->GetSource())
-                player->PlayConversation(conversationId);
+    DoOnPlayers([conversationId](Player* player)
+    {
+        player->PlayConversation(conversationId);
+    });
 }
 
 void InstanceScript::DoSendScenarioEvent(uint32 eventId)
 {
-    Map::PlayerList const& playerList = instance->GetPlayers();
-    if (!playerList.isEmpty())
-        for (Map::PlayerList::const_iterator i = playerList.begin(); i != playerList.end(); ++i)
-            if (Player* player = i->GetSource())
-            {
-                player->GetScenario()->SendScenarioEvent(player, eventId);
-                return;
-            }
+    if (!instance->GetPlayers().isEmpty())
+        if (Player* player = instance->GetPlayers().begin()->GetSource())
+            player->GetScenario()->SendScenarioEvent(player, eventId);
 }
 
 // Update Achievement Criteria for all players in instance
 void InstanceScript::DoUpdateAchievementCriteria(CriteriaTypes type, uint32 miscValue1 /*= 0*/, uint32 miscValue2 /*= 0*/, Unit* unit /*= NULL*/)
 {
-    Map::PlayerList const& playerList = instance->GetPlayers();
-
-    if (!playerList.isEmpty())
-        for (Map::PlayerList::const_iterator i = playerList.begin(); i != playerList.end(); ++i)
-            if (Player* player = i->GetSource())
-                player->GetAchievementMgr()->UpdateCriteria(type, miscValue1, miscValue2, 0, unit);
+    DoOnPlayers([type, miscValue1, miscValue2, unit](Player* player)
+    {
+        player->GetAchievementMgr()->UpdateCriteria(type, miscValue1, miscValue2, 0, unit);
+    });
 }
 
 // Add aura on all players in instance
 void InstanceScript::DoAddAuraOnPlayers(uint32 spell)
 {
-    Map::PlayerList const &PlayerList = instance->GetPlayers();
-
-    if (!PlayerList.isEmpty())
-        for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
-            if (Player* player = i->GetSource())
-                player->AddAura(spell, player);
+    DoOnPlayers([spell](Player* player)
+    {
+        player->AddAura(spell, player);
+    });
 }
 
 bool InstanceScript::CheckAchievementCriteriaMeet(uint32 criteria_id, Player const* /*source*/, Unit const* /*target*/ /*= NULL*/, uint32 /*miscvalue1*/ /*= 0*/)
@@ -1098,10 +1054,10 @@ void InstanceScript::UpdateEncounterStateForSpellCast(uint32 spellId, Unit* sour
 
 void InstanceScript::UpdatePhasing()
 {
-    Map::PlayerList const& players = instance->GetPlayers();
-    for (Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
-        if (Player* player = itr->GetSource())
-            PhasingHandler::SendToPlayer(player);
+    DoOnPlayers([](Player* player)
+    {
+        PhasingHandler::SendToPlayer(player);
+    });
 }
 
 std::string InstanceScript::GetBossStateName(uint8 state)
@@ -1255,9 +1211,10 @@ void InstanceScript::StartChallengeMode(uint8 level)
 
     SendChallengeModeStart();
 
-    Map::PlayerList const &players = instance->GetPlayers();
-    for (Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
-        CastChallengePlayerSpell(itr->GetSource());
+    DoOnPlayers([this](Player* player)
+    {
+        CastChallengePlayerSpell(player);
+    });
 
     AddTimedDelayedOperation(10000, [this]()
     {
@@ -1286,9 +1243,10 @@ void InstanceScript::CompleteChallengeMode()
         if (uint32(mapChallengeModeEntry->CriteriaCount[i]) > totalDuration)
             ++mythicIncrement;
 
-    Map::PlayerList const &players = instance->GetPlayers();
-    for (Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
-        itr->GetSource()->AddChallengeKey(sChallengeModeMgr->GetRandomChallengeId(), std::max(_challengeModeLevel + mythicIncrement, 1));
+    DoOnPlayers([this, mythicIncrement](Player* player)
+    {
+        player->AddChallengeKey(sChallengeModeMgr->GetRandomChallengeId(), std::max(_challengeModeLevel + mythicIncrement, 1));
+    });
 
     WorldPackets::ChallengeMode::Complete complete;
     complete.Duration = totalDuration;
@@ -1318,8 +1276,10 @@ void InstanceScript::CompleteChallengeMode()
 
     SpawnChallengeModeRewardChest();
 
-    for (Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
-        sChallengeModeMgr->Reward(itr->GetSource(), _challengeModeLevel);
+    DoOnPlayers([this](Player* player)
+    {
+        sChallengeModeMgr->Reward(player, _challengeModeLevel);
+    });
 }
 
 uint32 InstanceScript::GetChallengeModeCurrentDuration() const
