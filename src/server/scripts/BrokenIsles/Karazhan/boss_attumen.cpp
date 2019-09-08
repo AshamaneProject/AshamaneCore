@@ -552,7 +552,7 @@ class npc_kara_midnight : public CreatureScript
                 EventMap _events;
                 ObjectGuid _attumenGUID;
                 uint8 _chargesDone;
-                bool _attumenDied, _firstCharge;
+                bool _attumenDied;
         };
 
         CreatureAI* GetAI(Creature* creature) const override

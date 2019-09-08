@@ -51,7 +51,7 @@ class npc_kara_image_of_medivh : public CreatureScript
             return true;
         }
 
-        bool OnGossipSelect(Player* player, Creature* me, uint32 /*sender*/, uint32 action) override
+        bool OnGossipSelect(Player* player, Creature* me, uint32 /*sender*/, uint32 /*action*/) override
         {
             ClearGossipMenuFor(player);
             CloseGossipMenuFor(player);

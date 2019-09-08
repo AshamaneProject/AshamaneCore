@@ -82,7 +82,7 @@ struct boss_dargrul : public BossAI
                 instance->SetData(DATA_DARGRUL, NOT_STARTED);
         }
 
-        void EnterCombat(Unit* who) override
+        void EnterCombat(Unit* /*who*/) override
         {
             Talk(TALK_AGGRO);
             me->SetInCombatWithZone();

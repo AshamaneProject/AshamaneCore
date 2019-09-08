@@ -98,8 +98,8 @@ class boss_ivanyr : public CreatureScript
                 if (!at)
                     return;
 
-               // auto & vertices = at->_polygonVertices;
-                uint8 index = 0;
+                //auto& vertices = at->_polygonVertices;
+                //uint8 index = 0;
 
                 //for (auto & it :  vertices)
                    // it = _vertexs.at(index++);
@@ -201,14 +201,13 @@ class boss_ivanyr : public CreatureScript
                     G3D::Vector2 v3 = { targetThree->GetPositionX(), targetThree->GetPositionY()};
                     G3D::Vector2 mid_1 = (v1 + v2)/2;
                     Vector2 mid_two = (v1 + v3)/2;
-                    Vector2 mid_three = (v2 + v3)/2;
+                    //Vector2 mid_three = (v2 + v3)/2;
 
                     LineSegment2D median_1 = LineSegment2D::fromTwoPoints(mid_1, v3);
                     LineSegment2D median_2 = LineSegment2D::fromTwoPoints(mid_two, v2);
-                    LineSegment2D median_3 = LineSegment2D::fromTwoPoints(mid_three, v1);
+                    //LineSegment2D median_3 = LineSegment2D::fromTwoPoints(mid_three, v1);
 
                     Vector2 interPoint_1 = median_1.intersection(median_2);
-
 
                     auto & center = interPoint_1;
                     _vertexs.at(0) = v3 - center;
@@ -237,7 +236,7 @@ class boss_ivanyr : public CreatureScript
                 }
             }
 
-            void EnterEvadeMode(EvadeReason why) override
+            void EnterEvadeMode(EvadeReason /*why*/) override
             {
                 Creature* crystal = me->FindNearestCreature(NPC_NIGHT_CRYSTAL, 500.f);
 
@@ -515,7 +514,6 @@ class at_arc_charged_bolt : public AreaTriggerEntityScript
 
                 float dx = (tgt.x - src.x);
                 float dy = (tgt.y - src.y);
-                float dz = (tgt.z - src.z);
 
                 for (uint32 i = 0; i < 100; ++i)
                 {

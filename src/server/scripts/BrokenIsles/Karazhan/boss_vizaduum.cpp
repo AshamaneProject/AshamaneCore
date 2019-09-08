@@ -221,7 +221,7 @@ class boss_vizaduum : public CreatureScript
                 }
             }
 
-            void DamageTaken(Unit* /**/, uint32 & damage) override
+            void DamageTaken(Unit* /**/, uint32& /*damage*/) override
             {
                 if (me->HealthBelowPct(66) && !_firstPhase)
                 {
@@ -587,7 +587,7 @@ class npc_kara_stabilize_rift : public CreatureScript
         {
             public:
                 npc_kara_stabilize_rift_AI(Creature* me) : ScriptedAI(me),
-                _summons(me), _riftOpened(false)
+                _riftOpened(false), _summons(me)
                 {}
 
                 void JustSummoned(Creature* summon) override
@@ -924,7 +924,6 @@ class at_kara_explosive_shadows : public AreaTriggerEntityScript
 
                 float dx = (tgt.x - src.x);
                 float dy = (tgt.y - src.y);
-                float dz = (tgt.z - src.z);
 
                 for (uint32 i = 0; i < 100; ++i)
                 {

@@ -124,7 +124,7 @@ public:
                 instance->SetData(DATA_NARAXAS, NOT_STARTED);
         }
 
-        void EnterCombat(Unit* who) override
+        void EnterCombat(Unit* /*who*/) override
         {
             me->SetInCombatWithZone();
             me->SetPower(POWER_MANA, 0);

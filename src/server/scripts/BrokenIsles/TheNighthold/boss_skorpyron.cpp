@@ -189,9 +189,7 @@ public:
             _JustDied();
             instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
             if (instance->GetData(DATA_CAGE_REMATCH) == DONE)
-                if (AchievementEntry const* achievementEntry = sAchievementStore.LookupEntry(ACHIEVEMENT_CAGE_REMATCH))
-                    //instance->DoCompletedAchievement(achievementEntry);
-                    instance->DoCompleteAchievement(ACHIEVEMENT_CAGE_REMATCH);
+                instance->DoCompleteAchievement(ACHIEVEMENT_CAGE_REMATCH);
         }
 
         void DamageTaken(Unit* /*attacker*/, uint32& damage) override

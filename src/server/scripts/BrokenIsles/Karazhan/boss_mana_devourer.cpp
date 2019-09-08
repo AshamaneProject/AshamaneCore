@@ -312,7 +312,7 @@ class at_kara_energy_void : public AreaTriggerEntityScript
                     {
                         if (Player* ptr = ObjectAccessor::GetPlayer(*at, it))
                         {
-                            if (Aura* mana = ptr->GetAura(SPELL_UNSTABLE_MANA))
+                            if (/*Aura* mana = */ptr->GetAura(SPELL_UNSTABLE_MANA))
                             {
                                 /*float visualRadius = at->GetFloatValue(AREATRIGGER_EXTRA_SCALE_CURVE + 5);
                                 at->SetFloatValue(AREATRIGGER_EXTRA_SCALE_CURVE + 5, visualRadius - visualRadius * 0.05f);*/

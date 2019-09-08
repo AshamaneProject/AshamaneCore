@@ -258,7 +258,7 @@ public:
            summoner->CastSpell(me, 46598);
         }
     }
-    void PassengerBoarded(Unit* who, int8 seatId, bool apply) override
+    void PassengerBoarded(Unit* who, int8 /*seatId*/, bool /*apply*/) override
     {
         if (Player* player = who->ToPlayer())
             player->KilledMonsterCredit(126822);
@@ -294,7 +294,7 @@ public:
             summoner->CastSpell(me, 46598);
         }
     }
-    void PassengerBoarded(Unit* who, int8 seatId, bool apply) override
+    void PassengerBoarded(Unit* who, int8 /*seatId*/, bool /*apply*/) override
     {
         if (Player* player = who->ToPlayer())
             player->KilledMonsterCredit(127414);
@@ -337,7 +337,7 @@ public:
         }
     }
 
-    void PassengerBoarded(Unit* who, int8 seatId, bool apply) override
+    void PassengerBoarded(Unit* who, int8 /*seatId*/, bool /*apply*/) override
     {
         if (Player* player = who->ToPlayer())
             player->KilledMonsterCredit(127512);
@@ -359,24 +359,29 @@ struct npc_paku : public ScriptedAI
     {
     }
 
+    void Reset() override
+    {
+        me->GetScheduler().Schedule(1s, [this](TaskContext context)
+        {
+            std::list<Player*> players;
+            me->GetPlayerListInGrid(players, 75.0f);
+
+            for (Player* player : players)
+            {
+                if (player->GetPositionZ() <= 400 && !player->IsMounted() && !player->IsOnVehicle() && player->HasQuest(47440))
+                {
+                    Talk(0);
+                    player->CastSpell(player, SPELL_CALL_PTERRORDAX);
+                }
+            }
+
+            context.Repeat();
+        });
+    }
+
     void sGossipHello(Player* player) override
     {
         player->KilledMonsterCredit(127377);
-    }
-
-    void UpdateAI(uint32 diff) override
-    {
-        std::list<Player*> players;
-        me->GetPlayerListInGrid(players, 75.0f);
-
-        for (Player* player : players)
-        {
-            if (player->GetPositionZ() <= 400 && !player->IsMounted() && !player->IsOnVehicle() && player->HasQuest(47440))
-            {
-                Talk(0);
-                player->CastSpell(player, SPELL_CALL_PTERRORDAX);
-            }
-        }
     }
 };
 
