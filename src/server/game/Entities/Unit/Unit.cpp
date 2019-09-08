@@ -13342,7 +13342,9 @@ uint32 Unit::GetModelForForm(ShapeshiftForm form, uint32 spellId) const
                     case RACE_TAUREN:
                         return 15375;
                     case RACE_WORGEN:
+                    case RACE_KUL_TIRAN:
                         return 37173;
+                    case RACE_ZANDALARI_TROLL:
                     case RACE_TROLL:
                         return 37174;
                     default:
@@ -13366,8 +13368,10 @@ uint32 Unit::GetModelForForm(ShapeshiftForm form, uint32 spellId) const
                 {
                     case RACE_NIGHTELF:
                     case RACE_WORGEN:
+                    case RACE_KUL_TIRAN:
                         return 40816;
                     case RACE_TROLL:
+                    case RACE_ZANDALARI_TROLL:
                     case RACE_TAUREN:
                         return 45339;
                     case RACE_HIGHMOUNTAIN_TAUREN:
