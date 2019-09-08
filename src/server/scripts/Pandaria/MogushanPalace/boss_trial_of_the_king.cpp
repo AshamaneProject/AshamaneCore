@@ -73,7 +73,7 @@ public:
         void MoveInLineOfSight(Unit* who) override
         {
             // If Lorewalker stonestep sees a player, launch the speech.
-            if (!event_go && who->ToPlayer() && who->GetAreaId() == 6471)//Salle de l'assemblee cramoisie
+            if (!event_go && who->ToPlayer() && who->GetAreaId() == AREA_MOGUSHAN_PALACE_CRIMSON_ASSEMBLY_HALL)
             {
                 if (me->GetInstanceScript())
                     me->GetInstanceScript()->SetData(TYPE_MING_INTRO, 0);
@@ -458,7 +458,7 @@ public:
 
         void MoveInLineOfSight(Unit* who) override
         {
-            if (who->ToPlayer() && who->GetAreaId() == 6471 //Salle de l'assemblee cramoisie
+            if (who->ToPlayer() && who->GetAreaId() == AREA_MOGUSHAN_PALACE_CRIMSON_ASSEMBLY_HALL
                 && me->GetDistance2d(who) < 2.0f
                 && who->isInFront(me)
                 && status != STATUS_ATTACK_GRUNTS)

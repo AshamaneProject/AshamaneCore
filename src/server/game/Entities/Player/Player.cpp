@@ -8877,7 +8877,7 @@ void Player::SendLoot(ObjectGuid guid, LootType loot_type, bool aeLooting/* = fa
                     loot->FillLoot(PLAYER_CORPSE_LOOT_ENTRY, LootTemplates_Creature, this, true);
             }
             // For wintergrasp Quests
-            else if (GetZoneId() == AREA_WINTERGRASP)
+            else if (GetZoneId() == ZONE_WINTERGRASP)
                 loot->FillLoot(PLAYER_CORPSE_LOOT_ENTRY, LootTemplates_Creature, this, true);
 
             // It may need a better formula

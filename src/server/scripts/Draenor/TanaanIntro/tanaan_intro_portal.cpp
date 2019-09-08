@@ -122,7 +122,7 @@ public:
 
         void Reset() override
         {
-            if (me->GetAreaId() != TanaanZones::AreaTheDarkPortal)
+            if (me->GetAreaId() != AREA_TANAAN_DARK_PORTAL)
                 return;
 
             switch (me->GetEntry())

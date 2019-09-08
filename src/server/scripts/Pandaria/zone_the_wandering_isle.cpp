@@ -2264,7 +2264,6 @@ enum NpcHealersActive
 {
     DATA_HEALER_ACTIVE          = 1,
     DATA_HEALER_DIED            = 2,
-    AREA_WRECK_OF_THE_SKYSEEKER = 5833,
     WORLD_STATE_HEALERS_ACTIVE  = 6488
 };
 
@@ -2301,7 +2300,7 @@ public:
 
             for (Map::PlayerList::const_iterator itr = playerList.begin(); itr != playerList.end(); ++itr)
                 if (Player* player = itr->GetSource())
-                    if (player->GetAreaId() == AREA_WRECK_OF_THE_SKYSEEKER)
+                    if (player->GetAreaId() == AREA_WANDERING_ISLE_WRECK_OF_THE_SKYSEEKER)
                         player->SendUpdateWorldState(WORLD_STATE_HEALERS_ACTIVE, _healersActive);
         }
 

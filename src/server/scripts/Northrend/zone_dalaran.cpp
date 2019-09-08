@@ -77,7 +77,7 @@ public:
 
         void MoveInLineOfSight(Unit* who) override
         {
-            if (!who || !who->IsInWorld() || who->GetZoneId() != 4395)
+            if (!who || !who->IsInWorld() || who->GetZoneId() != ZONE_DALARAN_WOTLK)
                 return;
 
             if (!me->IsWithinDist(who, 65.0f, false))
@@ -132,8 +132,6 @@ public:
 
 enum MinigobData
 {
-    ZONE_DALARAN            = 4395,
-
     SPELL_MANABONKED        = 61834,
     SPELL_TELEPORT_VISUAL   = 51347,
     SPELL_IMPROVED_BLINK    = 61995,
@@ -174,7 +172,7 @@ class npc_minigob_manabonk : public CreatureScript
                 Map::PlayerList const &players = me->GetMap()->GetPlayers();
                 for (Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
                     if (Player* player = itr->GetSource()->ToPlayer())
-                        if (player->GetZoneId() == ZONE_DALARAN && !player->IsFlying() && !player->IsMounted() && !player->IsGameMaster())
+                        if (player->GetZoneId() == ZONE_DALARAN_WOTLK && !player->IsFlying() && !player->IsMounted() && !player->IsGameMaster())
                             PlayerInDalaranList.push_back(player);
 
                 if (PlayerInDalaranList.empty())

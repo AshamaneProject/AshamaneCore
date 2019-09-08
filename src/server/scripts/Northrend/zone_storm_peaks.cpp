@@ -245,8 +245,6 @@ enum FreedProtoDrake
 {
     NPC_DRAKE                           = 29709,
 
-    AREA_VALLEY_OF_ANCIENT_WINTERS      = 4437,
-
     TEXT_EMOTE                          = 0,
 
     SPELL_KILL_CREDIT_PRISONER          = 55144,
@@ -291,7 +289,7 @@ public:
             switch (events.ExecuteEvent())
             {
                 case EVENT_CHECK_AREA:
-                    if (me->GetAreaId() == AREA_VALLEY_OF_ANCIENT_WINTERS)
+                    if (me->GetAreaId() == AREA_STORM_PEAKS_VALLEY_ANCIENT_WINTERS)
                     {
                         if (Vehicle* vehicle = me->GetVehicleKit())
                             if (Unit* passenger = vehicle->GetPassenger(0))

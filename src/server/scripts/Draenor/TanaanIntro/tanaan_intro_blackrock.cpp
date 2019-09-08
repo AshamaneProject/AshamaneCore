@@ -130,7 +130,7 @@ public:
 
     void SwitchPhaseMapAfterDamExplosion(Player* player)
     {
-        PhasingHandler::AddVisibleMapId(player, TanaanZones::TerrainSwapID);
+        PhasingHandler::AddVisibleMapId(player, MAP_TANAAN_DAM_EXPLODED);
     }
 };
 

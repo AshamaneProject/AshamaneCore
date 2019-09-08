@@ -4446,7 +4446,7 @@ public:
     {
         if (player->GetMap()->GetEntry()->ID == 1228 && timer <= diff)
         {
-            if (player->GetAreaId() != 7395)
+            if (player->GetAreaId() != AREA_HIGHMAUL_COLLISEUM)
             {
                 if (InstanceScript *instance = player->GetInstanceScript())
                 {

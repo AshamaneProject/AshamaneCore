@@ -185,8 +185,6 @@ enum Overgrind
     SAY_EMOTE       = 1,
     ATTACK_YELL     = 2,
 
-    AREA_COVE       = 3579,
-    AREA_ISLE       = 3639,
     QUEST_GNOMERCY  = 9537,
     FACTION_HOSTILE = 14,
     SPELL_DYNAMITE  = 7978
@@ -211,7 +209,7 @@ public:
             DynamiteTimer = 8000;
             EmoteTimer = urand(120000, 150000);
 
-            if (me->GetAreaId() == AREA_COVE || me->GetAreaId() == AREA_ISLE)
+            if (me->GetAreaId() == AREA_AZUREMYST_ISLE_TRAITOR_COVE || me->GetAreaId() == AREA_AZUREMYST_ISLE_SILVERMYST_ISLE)
                 IsTreeEvent = true;
             else
                 IsTreeEvent = false;

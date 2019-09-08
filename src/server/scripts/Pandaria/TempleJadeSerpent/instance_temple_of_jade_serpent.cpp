@@ -515,7 +515,7 @@ public:
         {
             if (unit->ToCreature() && unit->ToCreature()->GetEntry() == CREATURE_MINION_OF_DOUBTS)
             {
-                if (unit->GetAreaId() == 6119) //AreaId of Liu Flameheart.
+                if (unit->GetAreaId() == AREA_TEMPLE_JADE_SERPENT_TERRACE_TWIN_DRAGONS)
                 {
                     ++countMinionDeads;
 
@@ -738,7 +738,7 @@ public:
                     sunfires.push_back(creature->GetGUID());
                     break;
                 default:
-                    if (creature->GetAreaId() == 6118)
+                    if (creature->GetAreaId() == AREA_TEMPLE_JADE_SERPENT_SCROLLKEEPER_SANCTUM)
                         mobs_liu.push_back(creature->GetGUID());
                     break;
             }

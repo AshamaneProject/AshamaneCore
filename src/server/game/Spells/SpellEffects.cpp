@@ -3530,7 +3530,7 @@ void Spell::EffectScriptEffect(SpellEffIndex effIndex)
                         return;
 
                     // return from top
-                    if (unitTarget->ToPlayer()->GetAreaId() == 4637)
+                    if (unitTarget->ToPlayer()->GetAreaId() == AREA_VARGOTH_RETREAT)
                         unitTarget->CastSpell(unitTarget, 59316, true);
                     // teleport atop
                     else

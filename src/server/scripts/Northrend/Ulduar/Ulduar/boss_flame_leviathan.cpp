@@ -1620,11 +1620,6 @@ class spell_systems_shutdown : public SpellScriptLoader
 
 class FlameLeviathanPursuedTargetSelector
 {
-    enum Area
-    {
-        AREA_FORMATION_GROUNDS = 4652,
-    };
-
     public:
         bool operator()(WorldObject* target) const
         {
@@ -1643,7 +1638,7 @@ class FlameLeviathanPursuedTargetSelector
                 return true;
 
             //! Entity needs to be in appropriate area
-            if (target->GetAreaId() != AREA_FORMATION_GROUNDS)
+            if (target->GetAreaId() != AREA_ULDUAR_FORMATION_GROUNDS)
                 return true;
 
             //! Vehicle must be in use by player

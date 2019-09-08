@@ -203,7 +203,8 @@ public:
 
         void MoveInLineOfSight(Unit* who) override
         {
-            if (me->GetMapId() == 1458 && me->GetAreaId() ==  8339 && who->GetTypeId() == TYPEID_PLAYER && !who->ToPlayer()->IsGameMaster() && me->IsWithinDistInMap(who, 20.0f))
+            if (me->GetMapId() == MAP_NELTHARION_LAIR && me->GetAreaId() == AREA_BROKEN_TEETH &&
+                who->IsPlayer() && !who->ToPlayer()->IsGameMaster() && me->IsWithinDistInMap(who, 20.0f))
             {
                 float allSpeed = 1.0f;
                 who->ToPlayer()->SetSpeedRate(MOVE_WALK, allSpeed);

@@ -300,25 +300,6 @@ namespace TanaanGameObjects
     };
 }
 
-namespace TanaanZones
-{
-    enum
-    {
-        MapTanaan                   = 1265,
-        MapDraenor                  = 1116,
-        ZoneTanaanJungle            = 7025,
-        AreaTheDarkPortal           = 7037,
-        AreaHearthBlood             = 7041,
-        AreaBleedingAltar           = 7039,
-        AreaTarThogBridge           = 7129,
-        AreaKargatharProvingGrounds = 7040,
-        AreaUmbralHalls             = 7042,
-        AreaBlackRockQuarry         = 7043,
-        AreaPathOfGlory             = 7044,
-        TerrainSwapID               = 1307
-    };
-}
-
 enum eFactions
 {
     FactionAggressive   = 14,

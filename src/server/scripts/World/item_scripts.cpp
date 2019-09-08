@@ -62,11 +62,11 @@ public:
         switch (itemId)
         {
             case 24538:
-                if (player->GetAreaId() != 3628)
+                if (player->GetAreaId() != AREA_HALAA)
                     disabled = true;
                 break;
             case 34489:
-                if (player->GetZoneId() != 4080)
+                if (player->GetZoneId() != ZONE_ISLE_OF_QUEL_DANAS)
                     disabled = true;
                 break;
             case 34475:
@@ -262,9 +262,7 @@ public:
 
 enum PetrovClusterBombs
 {
-    SPELL_PETROV_BOMB           = 42406,
-    AREA_ID_SHATTERED_STRAITS   = 4064,
-    ZONE_ID_HOWLING             = 495
+    SPELL_PETROV_BOMB = 42406,
 };
 
 class item_petrov_cluster_bombs : public ItemScript
@@ -274,10 +272,10 @@ public:
 
     bool OnUse(Player* player, Item* /*item*/, SpellCastTargets const& /*targets*/, ObjectGuid castId) override
     {
-        if (player->GetZoneId() != ZONE_ID_HOWLING)
+        if (player->GetZoneId() != ZONE_HOWLING_FJORD)
             return false;
 
-        if (!player->GetTransport() || player->GetAreaId() != AREA_ID_SHATTERED_STRAITS)
+        if (!player->GetTransport() || player->GetAreaId() != AREA_HOWLING_FJORD_SHATTERED_STRAITS)
         {
             if (SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(SPELL_PETROV_BOMB))
                 Spell::SendCastResult(player, spellInfo, 0, castId, SPELL_FAILED_NOT_HERE);

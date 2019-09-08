@@ -137,7 +137,7 @@ public:
         player->KilledMonsterCredit(TanaanKillCredits::CreditBoatsReached);
 
         if (player->GetPositionX() > 3558.0f)
-            player->TeleportTo(TanaanZones::MapTanaan, 3558.0f, -2119.70f, 17.74f, 3.396844f);
+            player->TeleportTo(MAP_TANAAN_JUNGLE_INTRO, 3558.0f, -2119.70f, 17.74f, 3.396844f);
 
         Clean(player);
     }
@@ -196,12 +196,12 @@ public:
         {
             if (player->GetSceneMgr().HasScene(sceneInstanceId, TanaanSceneObjects::SceneAllianceBoat))
             {
-                player->TeleportTo(TanaanZones::MapDraenor, 2308.9621f, 454.9409f, 6.0f, player->GetOrientation());
+                player->TeleportTo(MAP_DRAENOR, 2308.9621f, 454.9409f, 6.0f, player->GetOrientation());
                 player->CompletedAchievement(TanaanAchievements::AchievementWelcomeToDreanorA);
             }
             else if (player->GetSceneMgr().HasScene(sceneInstanceId, TanaanSceneObjects::SceneHordeBoat))
             {
-                player->TeleportTo(TanaanZones::MapDraenor, 5538.213379f, 5015.2690f, 13.0f, player->GetOrientation());
+                player->TeleportTo(MAP_DRAENOR, 5538.213379f, 5015.2690f, 13.0f, player->GetOrientation());
                 player->CompletedAchievement(TanaanAchievements::AchievementWelcomeToDreanorH);
             }
         }
@@ -211,12 +211,12 @@ public:
     {
         if (player->GetSceneMgr().HasScene(sceneInstanceId, TanaanSceneObjects::SceneAllianceBoat))
         {
-            player->TeleportTo(TanaanZones::MapDraenor, 2308.9621f, 454.9409f, 6.0f, player->GetOrientation());
+            player->TeleportTo(MAP_DRAENOR, 2308.9621f, 454.9409f, 6.0f, player->GetOrientation());
             player->CompletedAchievement(TanaanAchievements::AchievementWelcomeToDreanorA);
         }
         else if (player->GetSceneMgr().HasScene(sceneInstanceId, TanaanSceneObjects::SceneHordeBoat))
         {
-            player->TeleportTo(TanaanZones::MapDraenor, 5538.213379f, 5015.2690f, 13.0f, player->GetOrientation());
+            player->TeleportTo(MAP_DRAENOR, 5538.213379f, 5015.2690f, 13.0f, player->GetOrientation());
             player->CompletedAchievement(TanaanAchievements::AchievementWelcomeToDreanorH);
         }
     }
