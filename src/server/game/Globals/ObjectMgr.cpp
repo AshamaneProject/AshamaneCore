@@ -43,6 +43,7 @@
 #include "PhasingHandler.h"
 #include "Player.h"
 #include "PoolMgr.h"
+#include "QueryPackets.h"
 #include "QuestDef.h"
 #include "Random.h"
 #include "ReputationMgr.h"
@@ -266,7 +267,6 @@ bool SpellClickInfo::IsFitToRequirements(Unit const* clicker, Unit const* clicke
 ObjectMgr::ObjectMgr():
     _auctionId(1),
     _equipmentSetGuid(1),
-    _itemTextId(1),
     _mailId(1),
     _hiPetNumber(1),
     _voidItemId(1),
@@ -7399,8 +7399,8 @@ void ObjectMgr::LoadGameObjectTemplateAddons()
 {
     uint32 oldMSTime = getMSTime();
 
-    //                                               0       1       2      3        4        5              6            7           8
-    QueryResult result = WorldDatabase.Query("SELECT entry, faction, flags, mingold, maxgold, WorldEffectID, AIAnimKitID, MovementID, MeleeID FROM gameobject_template_addon");
+    //                                               0       1       2      3        4        5              6
+    QueryResult result = WorldDatabase.Query("SELECT entry, faction, flags, mingold, maxgold, WorldEffectID, AIAnimKitID FROM gameobject_template_addon");
 
     if (!result)
     {
@@ -7429,8 +7429,6 @@ void ObjectMgr::LoadGameObjectTemplateAddons()
         gameObjectAddon.maxgold       = fields[4].GetUInt32();
         gameObjectAddon.WorldEffectID = fields[5].GetUInt32();
         gameObjectAddon.AIAnimKitID   = fields[6].GetUInt32();
-        gameObjectAddon.MovementID    = fields[7].GetUInt32();
-        gameObjectAddon.MeleeID       = fields[8].GetUInt32();
 
         // checks
         if (gameObjectAddon.faction && !sFactionTemplateStore.LookupEntry(gameObjectAddon.faction))
@@ -7892,7 +7890,7 @@ void ObjectMgr::LoadQuestPOI()
     //                                                0        1    2  3
     QueryResult points = WorldDatabase.Query("SELECT QuestID, Idx1, X, Y FROM quest_poi_points ORDER BY QuestID DESC, Idx1, Idx2");
 
-    std::vector<std::vector<std::vector<QuestPOIPoint>>> POIs;
+    std::vector<std::vector<std::vector<QuestPOIBlobPoint>>> POIs;
 
     if (points)
     {
@@ -7913,7 +7911,7 @@ void ObjectMgr::LoadQuestPOI()
             if (int32(POIs[QuestID].size()) <= Idx1 + 1)
                 POIs[QuestID].resize(Idx1 + 10);
 
-            QuestPOIPoint point(X, Y);
+            QuestPOIBlobPoint point(X, Y);
             POIs[QuestID][Idx1].push_back(point);
         } while (points->NextRow());
     }
@@ -7940,11 +7938,12 @@ void ObjectMgr::LoadQuestPOI()
         if (!sObjectMgr->GetQuestTemplate(questID))
             TC_LOG_ERROR("sql.sql", "`quest_poi` quest id (%u) Idx1 (%u) does not exist in `quest_template`", questID, idx1);
 
-        QuestPOI POI(blobIndex, objectiveIndex, questObjectiveID, questObjectID, mapID, uiMapID, priority, flags, worldEffectID, playerConditionID, spawnTrackingID, alwaysAllowMergingBlobs);
         if (questID < int32(POIs.size()) && idx1 < int32(POIs[questID].size()))
         {
-            POI.points = POIs[questID][idx1];
-            _questPOIStore[questID].push_back(POI);
+            QuestPOIData& poiData = _questPOIStore[questID];
+            poiData.QuestID = questID;
+            poiData.QuestPOIBlobDataStats.emplace_back(blobIndex, objectiveIndex, questObjectiveID, questObjectID, mapID, uiMapID, priority, flags,
+                worldEffectID, playerConditionID, spawnTrackingID, std::move(POIs[questID][idx1]), alwaysAllowMergingBlobs);
         }
         else
             TC_LOG_ERROR("sql.sql", "Table quest_poi references unknown quest points for quest %i POI id %i", questID, blobIndex);
@@ -10500,6 +10499,38 @@ void ObjectMgr::LoadCreatureQuestItems()
     TC_LOG_INFO("server.loading", ">> Loaded %u creature quest items in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
 }
 
+void ObjectMgr::InitializeQueriesData(QueryDataGroup mask)
+{
+    // cache disabled
+    if (!sWorld->getBoolConfig(CONFIG_CACHE_DATA_QUERIES))
+        return;
+
+    // Initialize Query data for creatures
+    if (mask & QUERY_DATA_CREATURES)
+        for (auto& creaturePair : _creatureTemplateStore)
+            creaturePair.second.InitializeQueryData();
+
+    // Initialize Query Data for gameobjects
+    if (mask & QUERY_DATA_GAMEOBJECTS)
+        for (auto& gameobjectPair : _gameObjectTemplateStore)
+            gameobjectPair.second.InitializeQueryData();
+
+    // Initialize Query Data for quests
+    if (mask & QUERY_DATA_QUESTS)
+        for (auto& questPair : _questTemplates)
+            questPair.second->InitializeQueryData();
+
+    // Initialize Quest POI data
+    if (mask & QUERY_DATA_POIS)
+        for (auto& poiPair : _questPOIStore)
+            poiPair.second.InitializeQueryData();
+}
+
+void QuestPOIData::InitializeQueryData()
+{
+    QueryDataBuffer << *this;
+}
+
 void ObjectMgr::LoadSceneTemplates()
 {
     uint32 oldMSTime = getMSTime();
@@ -10548,16 +10579,13 @@ void ObjectMgr::LoadQuestTasks()
         if (!quest_template || quest_template->GetQuestType() != QUEST_TYPE_TASK)
             continue;
 
-        if (QuestPOIVector const* questPOIs = GetQuestPOIVector(quest_template->GetQuestId()))
+        if (QuestPOIData const* questPOIs = GetQuestPOIData(quest_template->GetQuestId()))
         {
-            if (questPOIs->size() <= 0)
+            if (questPOIs->QuestPOIBlobDataStats.size() <= 0)
                 continue;
 
-            for (QuestPOIVector::const_iterator itr = questPOIs->begin(); itr != questPOIs->end(); ++itr)
+            for (auto itr = questPOIs->QuestPOIBlobDataStats.begin(); itr != questPOIs->QuestPOIBlobDataStats.end(); ++itr)
             {
-                if (itr->points.size() <= 0)
-                    continue;
-
                 BonusQuestRectEntry rec;
                 rec.MapID = itr->MapID;
                 rec.MinX = 5000000.f;
@@ -10565,7 +10593,7 @@ void ObjectMgr::LoadQuestTasks()
                 rec.MaxX = -5000000.f;
                 rec.MaxY = -5000000.f;
 
-                for (auto const& poi : itr->points)
+                for (auto const& poi : itr->QuestPOIBlobPointStats)
                 {
                     if (poi.X == 0 && poi.Y == 0)
                         continue;
@@ -10578,7 +10606,7 @@ void ObjectMgr::LoadQuestTasks()
                 }
 
                 // If the area is a single point, we assume 50m
-                if (itr->points.size() == 1)
+                if (itr->QuestPOIBlobPointStats.size() == 1)
                 {
                     rec.MinX -= 50;
                     rec.MaxX += 50;

@@ -1363,23 +1363,6 @@ bool SpellInfo::HasOnlyDamageEffects() const
     return true;
 }
 
-bool SpellInfo::HasTarget(uint32 target) const
-{
-    for (SpellEffectInfoMap::const_iterator itr = _effects.begin(); itr != _effects.end(); ++itr)
-    {
-        for (SpellEffectInfo const* effect : itr->second)
-        {
-            if (!effect)
-                continue;
-
-            if (effect->TargetA.GetTarget() == target || effect->TargetB.GetTarget() == target)
-                return true;
-        }
-    }
-
-    return false;
-}
-
 bool SpellInfo::CasterCanTurnDuringCast() const
 {
     if (HasAttribute(SPELL_ATTR5_DONT_TURN_DURING_CAST))
@@ -1389,12 +1372,36 @@ bool SpellInfo::CasterCanTurnDuringCast() const
         return false;
 
     // Todo : Find more generic way ?
-    if (HasTarget(TARGET_UNIT_CONE_ENEMY_54) ||
-        HasTarget(TARGET_UNIT_CONE_ENEMY_104) ||
-        HasTarget(TARGET_UNIT_CONE_ENTRY_129))
+    if (HasTargetType(TARGET_UNIT_CONE_ENEMY_54) ||
+        HasTargetType(TARGET_UNIT_CONE_ENEMY_104) ||
+        HasTargetType(TARGET_UNIT_CONE_ENTRY_129))
         return false;
 
     return true;
+}
+
+bool SpellInfo::HasTargetType(::Targets target) const
+{
+    for (auto itr = _effects.begin(); itr != _effects.end(); ++itr)
+    {
+        for (SpellEffectInfo const* effect : itr->second)
+        {
+            if (effect && (effect->TargetA.GetTarget() == target || effect->TargetB.GetTarget() == target))
+                return true;
+        }
+    }
+    return false;
+}
+
+bool SpellInfo::HasTargetType(uint32 difficulty, ::Targets target) const
+{
+    SpellEffectInfoVector effects = GetEffectsForDifficulty(difficulty);
+    for (SpellEffectInfo const* effect : effects)
+    {
+        if (effect && (effect->TargetA.GetTarget() == target || effect->TargetB.GetTarget() == target))
+            return true;
+    }
+    return false;
 }
 
 bool SpellInfo::HasAnyAuraInterruptFlag() const
@@ -1711,6 +1718,11 @@ bool SpellInfo::IsAutoRepeatRangedSpell() const
 bool SpellInfo::HasInitialAggro() const
 {
     return !(HasAttribute(SPELL_ATTR1_NO_THREAT) || HasAttribute(SPELL_ATTR3_NO_INITIAL_AGGRO));
+}
+
+bool SpellInfo::HasHitDelay() const
+{
+    return Speed > 0.0f || LaunchDelay > 0.0f;
 }
 
 WeaponAttackType SpellInfo::GetAttackType() const

@@ -80,7 +80,7 @@ inline Item* NewItemOrBag(ItemTemplate const* itemTemplate)
         return new AzeriteItem;
     if (sDB2Manager.IsAzeriteEmpoweredItem(itemTemplate->GetId()))
         return new AzeriteEmpoweredItem;
-    return itemTemplate->GetInventoryType() == INVTYPE_BAG ? new Bag : new Item;
+    return (itemTemplate->GetInventoryType() == INVTYPE_BAG) ? new Bag : new Item;
 }
 
 #endif

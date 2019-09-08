@@ -394,11 +394,11 @@ public:
                 // Remove walking flag so we start running
                 me->RemoveUnitMovementFlag(MOVEMENTFLAG_WALKING);
 
-                if (me->GetAreaId() == 1296)
+                if (me->GetAreaId() == AREA_DUROTAR_ROCKTUSK_FARM)
                 {
                     me->GetMotionMaster()->MovePoint(1, 1197.63f, -4293.571f, 21.243f);
                 }
-                else if (me->GetAreaId() == 1)
+                else if (me->GetAreaId() == ZONE_DUN_MOROGH)
                 {
                     me->GetMotionMaster()->MovePoint(2, -5152.3f, -603.529f, 398.356f);
                 }
@@ -407,7 +407,7 @@ public:
             if (spell->Id == SPELL_GO_TO_NEW_TARGET)
             {
                 // If we're at Durotar we target different kegs if we are at at Dun Morogh
-                if (me->GetAreaId() == 1296)
+                if (me->GetAreaId() == AREA_DUROTAR_ROCKTUSK_FARM)
                 {
                     if (drohnAlive && gordokAlive && tchaliAlive)
                     {
@@ -462,7 +462,7 @@ public:
                     }
                 }
                 // If we're at Dun Morogh we target different kegs if we are at Durotar
-                else if (me->GetAreaId() == 1)
+                else if (me->GetAreaId() == ZONE_DUN_MOROGH)
                 {
                     if (barleyAlive && gordokAlive && thunderAlive)
                     {

@@ -170,8 +170,8 @@ enum Races
     RACE_HIGHMOUNTAIN_TAUREN    = 28,
     RACE_VOID_ELF               = 29,
     RACE_LIGHTFORGED_DRAENEI    = 30,
-    //RACE_ZANDALARI_TROLL    = 31,
-    //RACE_KUL_TIRAN          = 32,
+    RACE_ZANDALARI_TROLL        = 31,
+    RACE_KUL_TIRAN              = 32,
     //RACE_THIN_HUMAN         = 33,
     RACE_DARK_IRON_DWARF        = 34,
     //RACE_VULPERA            = 35,
@@ -204,6 +204,8 @@ enum Races
      (UI64LIT(1)<<(RACE_HIGHMOUNTAIN_TAUREN-1)) | \
      (UI64LIT(1)<<(RACE_VOID_ELF-1))            | \
      (UI64LIT(1)<<(RACE_LIGHTFORGED_DRAENEI-1)) | \
+     (UI64LIT(1)<<(RACE_ZANDALARI_TROLL-1))     | \
+     (UI64LIT(1)<<(RACE_KUL_TIRAN-1))           | \
      (UI64LIT(1)<<(RACE_DARK_IRON_DWARF-1))     | \
      (UI64LIT(1)<<(RACE_MAGHAR_ORC-1)))
 
@@ -218,6 +220,7 @@ enum Races
      (UI64LIT(1)<<(RACE_WORGEN-1))              | \
      (UI64LIT(1)<<(RACE_PANDAREN_ALLIANCE-1))   | \
      (UI64LIT(1)<<(RACE_VOID_ELF-1))            | \
+     (UI64LIT(1)<<(RACE_KUL_TIRAN-1))           | \
      (UI64LIT(1)<<(RACE_LIGHTFORGED_DRAENEI-1)) | \
      (UI64LIT(1)<<(RACE_DARK_IRON_DWARF-1)))
 
@@ -6553,14 +6556,88 @@ enum Maps : uint32
     MAP_WOD_BLASTED_LANDS_PHASE = 1190,
     MAP_BROKEN_ISLANDS          = 1220,
     MAP_TANAAN_JUNGLE_INTRO     = 1265,
+    MAP_TANAAN_DAM_EXPLODED     = 1307,
+    MAP_NELTHARION_LAIR         = 1458,
     MAP_TANAAN_JUNGLE           = 1464,
     MAP_DALARAN_UNDERBELLY      = 1502,
 };
 
 enum AreaName : uint32
 {
-    ZONE_STORMWIND_CITY = 1519,
-    ZONE_ORGRIMMAR      = 1637,
+    ZONE_DUN_MOROGH                                 = 1,
+    ZONE_ELWYNN_FOREST                              = 12,
+    ZONE_DUROTAR                                    = 14,
+    AREA_BARRENS_MERCHANT_COAST                     = 391,
+    ZONE_HOWLING_FJORD                              = 495,
+    AREA_DUN_MOROGH_GATES_OF_IRONFORGE              = 809,
+    AREA_DUROTAR_ROCKTUSK_FARM                      = 1296,
+    ZONE_UNDERCITY                                  = 1497,
+    ZONE_STORMWIND_CITY                             = 1519,
+    ZONE_ORGRIMMAR                                  = 1637,
+    ZONE_THUNDER_BLUFF                              = 1638,
+    ZONE_DARNASSUS                                  = 1657,
+    ZONE_EVERSONG_WOODS                             = 3430,
+    ZONE_NAGRAND                                    = 3518,
+    ZONE_NETHERSTORM                                = 3523,
+    ZONE_AZUREMYST_ISLE                             = 3524,
+    ZONE_EXODAR                                     = 3557,
+    AREA_AZUREMYST_ISLE_TRAITOR_COVE                = 3579,
+    AREA_HALAA                                      = 3628,
+    AREA_AZUREMYST_ISLE_SILVERMYST_ISLE             = 3639,
+    ZONE_SHATTRATH                                  = 3703,
+    AREA_NETHERSTORM_SOCRETHAR_SEAT                 = 3742,
+    AREA_NETHERSTORM_INVASION_POINT_OVERLORD        = 3900,
+    AREA_HOWLING_FJORD_SHATTERED_STRAITS            = 4064,
+    ZONE_ISLE_OF_QUEL_DANAS                         = 4080,
+    AREA_BOREAN_TUNDRA_NAXXANAR                     = 4128,
+    ZONE_WINTERGRASP                                = 4197,
+    ZONE_DALARAN_WOTLK                              = 4395,
+    AREA_STORM_PEAKS_VALLEY_ANCIENT_WINTERS         = 4437,
+    AREA_WINTERGRASP_THE_SUNKEN_RING                = 4538,
+    AREA_WINTERGRASP_THE_BROKEN_TEMPLATE            = 4539,
+    AREA_WINTERGRASP_FORTRESS                       = 4575,
+    AREA_WINTERGRASP_THE_CHILLED_QUAGMIRE           = 4589,
+    AREA_WINTERGRASP_WESTPARK_WORKSHOP              = 4611,
+    AREA_WINTERGRASP_EASTPARK_WORKSHOP              = 4612,
+    AREA_VARGOTH_RETREAT                            = 4637,
+    AREA_ULDUAR_FORMATION_GROUNDS                   = 4652,
+    AREA_ICECROWN_ARGENT_TOURNAMENT_FIELDS          = 4658,
+    AREA_ICECROWN_RING_OF_ASPIRANTS                 = 4670,
+    AREA_ICECROWN_RING_OF_ARGENT_VALIANTS           = 4671,
+    AREA_ICECROWN_RING_OF_ALLIANCE_VALIANTS         = 4672,
+    AREA_ICECROWN_RING_OF_HORDE_VALIANTS            = 4673,
+    AREA_ICECROWN_RING_OF_CHAMPIONS                 = 4669,
+    AREA_ICECROWN_SUNREAVER_PAVILION                = 4676,
+    AREA_ICECROWN_SILVER_COVENANT_PAVILION          = 4677,
+    ZONE_GILNEAS                                    = 4714,
+    AREA_GILNEAS_DUSKHAVEN                          = 4786,
+    ZONE_TOL_BARAD_PENINSULA                        = 5389,
+    AREA_WANDERING_ISLE_WRECK_OF_THE_SKYSEEKER      = 5833,
+    ZONE_TEMPLE_JADE_SERPENT                        = 5956,
+    AREA_TEMPLE_JADE_SERPENT_SCROLLKEEPER_SANCTUM   = 6118,
+    AREA_TEMPLE_JADE_SERPENT_TERRACE_TWIN_DRAGONS   = 6119,
+    AREA_MOGUSHAN_PALACE_CRIMSON_ASSEMBLY_HALL      = 6471,
+    ZONE_HIGHMAUL                                   = 6996,
+    ZONE_TANAAN_JUNGLE                              = 7025,
+    AREA_TANAAN_DARK_PORTAL                         = 7037,
+    AREA_TANAAN_BLEEDING_ALTAR                      = 7039,
+    AREA_TANAAN_KARGATHAR_PROVING_GROUNDS           = 7040,
+    AREA_TANAAN_HEARTH_BLOOD                        = 7041,
+    AREA_TANAAN_UMBRAL_HALLS                        = 7042,
+    AREA_TANAAN_BLACKROCK_QUARRY                    = 7043,
+    AREA_TANAAN_PATH_OF_GLORY                       = 7044,
+    AREA_TANAAN_TARTHOG_BRIDGE                      = 7129,
+    AREA_HIGHMAUL_COLLISEUM                         = 7395,
+    ZONE_MARDUM                                     = 7705,
+    AREA_MARDUM_CRYPTIC_HOLLOW                      = 7754,
+    ZONE_DALARAN_LEGION                             = 7886,
+    AREA_BROKEN_TEETH                               = 8339,
+    ZONE_KROKUUN                                    = 8574,
+    AREA_KROKUUN_VINDICAAR                          = 8714,
+    ZONE_MACARE                                     = 8701,
+    ZONE_ANTORAN_WASTES                             = 8899,
+    AREA_MACAREE_VINDICAAR                          = 8915,
+    AREA_ANTORAN_WASTES_VINDICAAR                   = 8916,
 };
 
 enum SpecialSpells : uint32

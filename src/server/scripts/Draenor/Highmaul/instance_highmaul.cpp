@@ -843,27 +843,21 @@ class instance_highmaul : public InstanceMapScript
                 player->GetPhaseShift().RemovePhase(eHighmaulDatas::PhaseKargathDefeated);
             }
 
-            void SendUpdateWorldState(uint32 p_Field, uint32 value)
+            void SendUpdateWorldState(uint32 field, uint32 value)
             {
-                Map::PlayerList const& players = instance->GetPlayers();
-                for (Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
+                DoOnPlayers([field, value](Player* player)
                 {
-                    if (Player* player = itr->GetSource())
-                        player->SendUpdateWorldState(p_Field, value);
-                }
+                    player->SendUpdateWorldState(field, value);
+                });
             }
 
             void PlaySceneForPlayers(Position const /*pos*/, uint32 scenePackageID)
             {
-                Map::PlayerList const& players = instance->GetPlayers();
-                for (Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
+                DoOnPlayers([scenePackageID](Player* player)
                 {
-                    if (Player* player = itr->GetSource())
-                    {
-                        player->GetSceneMgr().PlaySceneByPackageId(scenePackageID);
-                        player->GetPhaseShift().AddPhase(eHighmaulDatas::PhaseKargathDefeated, PhaseFlags::None, nullptr);
-                    }
-                }
+                    player->GetSceneMgr().PlaySceneByPackageId(scenePackageID);
+                    player->GetPhaseShift().AddPhase(eHighmaulDatas::PhaseKargathDefeated, PhaseFlags::None, nullptr);
+                });
             }
 
             void Update(uint32 diff) override

@@ -1235,7 +1235,7 @@ public:
             _posIndex = param;
         }
 
-        void OnUpdate(uint32 diff)override
+        void OnUpdate(uint32 diff) override
         {
             if (_timer <= diff && canStartPath)
             {

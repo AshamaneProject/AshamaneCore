@@ -271,7 +271,7 @@ class TC_GAME_API InstanceScript : public ZoneScript
 
         void DoNearTeleportPlayers(const Position pos, bool casting = false);
 
-        void DoKilledMonsterKredit(uint32 questId, uint32 entry, ObjectGuid guid = ObjectGuid::Empty);
+        void DoKilledMonsterCredit(uint32 questId, uint32 entry, ObjectGuid guid = ObjectGuid::Empty);
 
         // Complete Achievement for all players in instance
         void DoCompleteAchievement(uint32 achievement);
@@ -386,6 +386,8 @@ class TC_GAME_API InstanceScript : public ZoneScript
 
         void SetChallengeDoorPos(Position pos) { _challengeModeDoorPosition = pos; }
         virtual void SpawnChallengeModeRewardChest() { }
+
+        void DoOnPlayers(std::function<void(Player*)>&& function);
 
     protected:
         void SetHeaders(std::string const& dataHeaders);

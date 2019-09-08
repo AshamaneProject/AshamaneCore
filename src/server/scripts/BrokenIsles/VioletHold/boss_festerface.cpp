@@ -226,7 +226,7 @@ class npc_vha_congealing_goo : public CreatureScript
                 DoCast(me, SPELL_FETID_STENCH, true);
             }
 
-            void DamageTaken(Unit* /**/, uint32 & damage) override
+            void DamageTaken(Unit* /**/, uint32& damage) override
             {
                 if (me->HealthBelowPctDamaged(5, damage))
                 {

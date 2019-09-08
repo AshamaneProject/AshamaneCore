@@ -1219,21 +1219,6 @@ enum BrewfestMusicTime
     EVENT_BREWFESTGOBLIN03_TIME = 28000
 };
 
-enum BrewfestMusicAreas
-{
-    SILVERMOON = 3430, // Horde
-    UNDERCITY = 1497,
-    ORGRIMMAR_1 = 1296,
-    ORGRIMMAR_2 = 14,
-    THUNDERBLUFF = 1638,
-    IRONFORGE_1 = 809, // Alliance
-    IRONFORGE_2 = 1,
-    STORMWIND = 12,
-    EXODAR = 3557,
-    DARNASSUS = 1657,
-    SHATTRATH = 3703 // General
-};
-
 enum BrewfestMusicEvents
 {
     EVENT_BM_SELECT_MUSIC = 1,
@@ -1273,7 +1258,12 @@ public:
                     if (!IsHolidayActive(HOLIDAY_BREWFEST)) // Check if Brewfest is active
                         break;
                     // Check if gob is correct area, play music, set time of music
-                    if (go->GetAreaId() == SILVERMOON || go->GetAreaId() == UNDERCITY || go->GetAreaId() == ORGRIMMAR_1 || go->GetAreaId() == ORGRIMMAR_2 || go->GetAreaId() == THUNDERBLUFF || go->GetAreaId() == SHATTRATH)
+                    if (go->GetAreaId() == ZONE_EVERSONG_WOODS ||
+                        go->GetAreaId() == ZONE_UNDERCITY ||
+                        go->GetAreaId() == AREA_DUROTAR_ROCKTUSK_FARM ||
+                        go->GetAreaId() == ZONE_DUROTAR ||
+                        go->GetAreaId() == ZONE_THUNDER_BLUFF ||
+                        go->GetAreaId() == ZONE_SHATTRATH)
                     {
                         if (rnd == 0)
                         {
@@ -1291,7 +1281,12 @@ public:
                             musicTime = EVENT_BREWFESTGOBLIN03_TIME;
                         }
                     }
-                    if (go->GetAreaId() == IRONFORGE_1 || go->GetAreaId() == IRONFORGE_2 || go->GetAreaId() == STORMWIND || go->GetAreaId() == EXODAR || go->GetAreaId() == DARNASSUS || go->GetAreaId() == SHATTRATH)
+                    if (go->GetAreaId() == AREA_DUN_MOROGH_GATES_OF_IRONFORGE ||
+                        go->GetAreaId() == ZONE_DUN_MOROGH ||
+                        go->GetAreaId() == ZONE_ELWYNN_FOREST ||
+                        go->GetAreaId() == ZONE_EXODAR ||
+                        go->GetAreaId() == ZONE_DARNASSUS ||
+                        go->GetAreaId() == ZONE_SHATTRATH)
                     {
                         if (rnd == 0)
                         {

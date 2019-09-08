@@ -785,17 +785,17 @@ uint8 BattlefieldWG::GetSpiritGraveyardId(uint32 areaId) const
     {
         case AREA_WINTERGRASP_FORTRESS:
             return BATTLEFIELD_WG_GY_KEEP;
-        case AREA_THE_SUNKEN_RING:
+        case AREA_WINTERGRASP_THE_SUNKEN_RING:
             return BATTLEFIELD_WG_GY_WORKSHOP_NE;
-        case AREA_THE_BROKEN_TEMPLATE:
+        case AREA_WINTERGRASP_THE_BROKEN_TEMPLATE:
             return BATTLEFIELD_WG_GY_WORKSHOP_NW;
-        case AREA_WESTPARK_WORKSHOP:
+        case AREA_WINTERGRASP_WESTPARK_WORKSHOP:
             return BATTLEFIELD_WG_GY_WORKSHOP_SW;
-        case AREA_EASTPARK_WORKSHOP:
+        case AREA_WINTERGRASP_EASTPARK_WORKSHOP:
             return BATTLEFIELD_WG_GY_WORKSHOP_SE;
-        case AREA_WINTERGRASP:
+        case ZONE_WINTERGRASP:
             return BATTLEFIELD_WG_GY_ALLIANCE;
-        case AREA_THE_CHILLED_QUAGMIRE:
+        case AREA_WINTERGRASP_THE_CHILLED_QUAGMIRE:
             return BATTLEFIELD_WG_GY_HORDE;
         default:
             TC_LOG_ERROR("bg.battlefield", "BattlefieldWG::GetSpiritGraveyardId: Unexpected Area Id %u", areaId);
@@ -1125,10 +1125,10 @@ uint32 BattlefieldWG::GetData(uint32 data) const
     {
         // Used to determine when the phasing spells must be cast
         // See: SpellArea::IsFitToRequirements
-        case AREA_THE_SUNKEN_RING:
-        case AREA_THE_BROKEN_TEMPLATE:
-        case AREA_WESTPARK_WORKSHOP:
-        case AREA_EASTPARK_WORKSHOP:
+        case AREA_WINTERGRASP_THE_SUNKEN_RING:
+        case AREA_WINTERGRASP_THE_BROKEN_TEMPLATE:
+        case AREA_WINTERGRASP_WESTPARK_WORKSHOP:
+        case AREA_WINTERGRASP_EASTPARK_WORKSHOP:
             // Graveyards and Workshops are controlled by the same team.
             if (BfGraveyard const* graveyard = GetGraveyardById(GetSpiritGraveyardId(data)))
                 return graveyard->GetControlTeamId();

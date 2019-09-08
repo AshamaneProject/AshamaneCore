@@ -323,16 +323,12 @@ public:
                     if (GetBossState(DATA_GADOK) != DONE)
                         return;
 
-                    Map::PlayerList const &PlayerList = instance->GetPlayers();
-                    for (Map::PlayerList::const_iterator it = PlayerList.begin(); it != PlayerList.end(); ++it)
+                    DoOnPlayers([](Player* player)
                     {
-                        if (Player* player = it->GetSource())
-                        {
-                            player->SendCinematicStart(CINEMATIC_SETTING_SUN);
-                            PhasingHandler::AddPhase(player, 50);
-                            player->NearTeleportTo(1370.0f, 2283.6f, 402.328f, 2.70f);
-                        }
-                    }
+                        player->SendCinematicStart(CINEMATIC_SETTING_SUN);
+                        PhasingHandler::AddPhase(player, 50);
+                        player->NearTeleportTo(1370.0f, 2283.6f, 402.328f, 2.70f);
+                    });
 
                     cinematicTimer = 100;
                     dataStorage[type] = data;

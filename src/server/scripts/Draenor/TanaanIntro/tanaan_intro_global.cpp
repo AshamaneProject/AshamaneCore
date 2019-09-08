@@ -29,29 +29,29 @@ public:
 
     void OnUpdateArea(Player* player, Area* newArea, Area* /*oldArea*/) override
     {
-        if (player->GetZoneId() != TanaanZones::ZoneTanaanJungle)
+        if (player->GetZoneId() != ZONE_TANAAN_JUNGLE)
             return;
 
         switch (newArea->GetId())
         {
-            case TanaanZones::AreaTheDarkPortal:
+            case AREA_TANAAN_DARK_PORTAL:
             {
                 player->GetSceneMgr().RecreateScene(TanaanSceneObjects::SceneLoomingArmy);
                 player->GetSceneMgr().RecreateScene(TanaanSceneObjects::SceneSoulTrain);
                 break;
             }
-            case TanaanZones::AreaHearthBlood:
+            case AREA_TANAAN_HEARTH_BLOOD:
             {
                 player->GetSceneMgr().RecreateScene(TanaanSceneObjects::SceneCuriousHatchets);
                 break;
             }
-            case TanaanZones::AreaBleedingAltar:
+            case AREA_TANAAN_BLEEDING_ALTAR:
             {
                 player->GetSceneMgr().RecreateScene(TanaanSceneObjects::SceneEyeOfKilrogg);
                 player->GetSceneMgr().RecreateScene(TanaanSceneObjects::SceneBloodBowl);
                 break;
             }
-            case TanaanZones::AreaKargatharProvingGrounds:
+            case AREA_TANAAN_KARGATHAR_PROVING_GROUNDS:
             {
                 if (player->GetQuestStatus(TanaanQuests::QuestAPotentialAlly) != QUEST_STATUS_COMPLETE &&
                     player->GetQuestStatus(TanaanQuests::QuestAPotentialAlly) != QUEST_STATUS_REWARDED &&
@@ -60,14 +60,14 @@ public:
                     player->GetSceneMgr().RecreateScene(TanaanSceneObjects::SceneRingOfFire);
                 break;
             }
-            case TanaanZones::AreaUmbralHalls:
+            case AREA_TANAAN_UMBRAL_HALLS:
             {
                 player->GetSceneMgr().RecreateScene(TanaanSceneObjects::SceneUmbralHallsPortals);
                 player->GetSceneMgr().RecreateScene(TanaanSceneObjects::SceneKelidanVisual1);
                 player->GetSceneMgr().RecreateScene(TanaanSceneObjects::SceneKelidanVisual2);
                 break;
             }
-            case TanaanZones::AreaBlackRockQuarry:
+            case AREA_TANAAN_BLACKROCK_QUARRY:
             {
                 if (player->GetQuestStatus(TanaanQuests::QuestTheBattleOfTheForge) == QUEST_STATUS_INCOMPLETE)
                 {
@@ -85,7 +85,7 @@ public:
         }
 
         if (player->GetQuestStatus(TanaanQuests::QuestTheBattleOfTheForge) == QUEST_STATUS_REWARDED)
-            PhasingHandler::AddVisibleMapId(player, TanaanZones::TerrainSwapID);
+            PhasingHandler::AddVisibleMapId(player, MAP_TANAAN_DAM_EXPLODED);
     }
 
     void OnObjectiveValidate(Player* player, uint32 questId, uint32 objectiveId) override

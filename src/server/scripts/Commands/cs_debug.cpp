@@ -44,6 +44,7 @@ EndScriptData */
 #include "RBAC.h"
 #include "SpellPackets.h"
 #include "Transport.h"
+#include "World.h"
 #include "WorldSession.h"
 #include <fstream>
 #include <limits>
@@ -112,6 +113,9 @@ public:
             { "movementforce", rbac::RBAC_PERM_COMMAND_DEBUG_MOVEMENT_FORCE,false, nullptr,                             "", debugMovementForceCommandTable },
             { "playercondition",rbac::RBAC_PERM_COMMAND_DEBUG,              false, &HandleDebugPlayerConditionCommand,  "" },
             { "maxItemLevel",   rbac::RBAC_PERM_COMMAND_DEBUG,              false, &HandleDebugMaxItemLevelCommand,     "" },
+            { "transportState", rbac::RBAC_PERM_COMMAND_DEBUG,              false, &HandleDebugTransportStateCommand,   "" },
+            { "worldstate" ,   rbac::RBAC_PERM_COMMAND_DEBUG,               false, &HandleDebugWorldStateCommand,       "" },
+            { "wsexpression" , rbac::RBAC_PERM_COMMAND_DEBUG,               false, &HandleDebugWSExpressionCommand,     "" },
         };
         static std::vector<ChatCommand> commandTable =
         {
@@ -1430,6 +1434,88 @@ public:
         uint32 effectiveLevel = commandArgs.GetNextArg<uint32>();
         uint32 maxItemLevel = commandArgs.GetNextArg<uint32>();
         handler->getSelectedPlayerOrSelf()->SetEffectiveLevelAndMaxItemLevel(effectiveLevel, maxItemLevel);
+        return true;
+    }
+
+    static bool HandleDebugTransportStateCommand(ChatHandler* handler, char const* args)
+    {
+        CommandArgs commandArgs = CommandArgs(handler, args, { CommandArgs::ARG_UINT, CommandArgs::ARG_UINT });
+        if (!commandArgs.ValidArgs())
+            return false;
+
+        uint32 state = commandArgs.GetNextArg<uint32>();
+        uint32 stopFrame = commandArgs.GetNextArg<uint32>();
+
+        Player* player = handler->GetSession()->GetPlayer();
+
+        if (GameObject* gob = handler->GetObjectFromPlayerMapByDbGuid(player->GetLastTargetedGO()))
+            gob->SetTransportState(GOState(state), stopFrame);
+
+        return true;
+    }
+
+    static bool HandleDebugWorldStateCommand(ChatHandler* handler, char const* args)
+    {
+        if (!*args)
+            return false;
+
+        char const* worldStateIdStr = strtok((char*)args, " ");
+        char const* valueStr = args ? strtok(nullptr, " ") : nullptr;
+
+        if (!worldStateIdStr)
+            return false;
+
+        Player* target = handler->getSelectedPlayerOrSelf();
+
+        if (!target)
+        {
+            handler->SendSysMessage(LANG_PLAYER_NOT_FOUND);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+        uint32 worldStateId = atoi(worldStateIdStr);
+        uint32 value = valueStr ? atoi(valueStr) : 0;
+
+        if (value)
+        {
+            sWorld->setWorldState(worldStateId, value);
+            target->SendUpdateWorldState(worldStateId, value);
+        }
+        else
+            handler->PSendSysMessage("Worldstate %u actual value : %u", worldStateId, sWorld->getWorldState(worldStateId));
+
+        return true;
+    }
+
+    static bool HandleDebugWSExpressionCommand(ChatHandler* handler, char const* args)
+    {
+        if (!*args)
+            return false;
+
+        char const* expressionIdStr = strtok((char*)args, " ");
+
+        if (!expressionIdStr)
+            return false;
+
+        uint32 expressionId = atoi(expressionIdStr);
+        Player* target = handler->getSelectedPlayerOrSelf();
+
+        if (!target)
+        {
+            handler->SendSysMessage(LANG_PLAYER_NOT_FOUND);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        WorldStateExpressionEntry const* wsExpressionEntry = sWorldStateExpressionStore.LookupEntry(expressionId);
+        if (!wsExpressionEntry)
+            return false;
+
+        if (sConditionMgr->IsPlayerMeetingExpression(target, wsExpressionEntry))
+            handler->PSendSysMessage("Expression %u meet", expressionId);
+        else
+            handler->PSendSysMessage("Expression %u not meet", expressionId);
+
         return true;
     }
 };

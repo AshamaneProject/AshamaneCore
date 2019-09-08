@@ -120,9 +120,6 @@ public:
 enum GuardianPavilion
 {
     SPELL_TRESPASSER_H                            = 63987,
-    AREA_SUNREAVER_PAVILION                       = 4676,
-
-    AREA_SILVER_COVENANT_PAVILION                 = 4677,
     SPELL_TRESPASSER_A                            = 63986,
 };
 
@@ -141,7 +138,7 @@ public:
         void MoveInLineOfSight(Unit* who) override
 
         {
-            if (me->GetAreaId() != AREA_SUNREAVER_PAVILION && me->GetAreaId() != AREA_SILVER_COVENANT_PAVILION)
+            if (me->GetAreaId() != AREA_ICECROWN_SUNREAVER_PAVILION && me->GetAreaId() != AREA_ICECROWN_SILVER_COVENANT_PAVILION)
                 return;
 
             if (!who || who->GetTypeId() != TYPEID_PLAYER || !me->IsHostileTo(who) || !me->isInBackInMap(who, 5.0f))

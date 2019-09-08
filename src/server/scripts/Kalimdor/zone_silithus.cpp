@@ -1445,7 +1445,7 @@ struct npc_azeroth_heart_chamber_azerite_wound : public ScriptedAI
             pCaster->KilledMonsterCredit(me->GetEntry());
 
             if (GameObject* rock = me->FindNearestGameObject(294030, 5.f))
-                rock->SetAIAnimKitId(16292, false);
+                rock->SetAnimKitId(16292, false);
 
             if (Quest const* quest = sObjectMgr->GetQuestTemplate(52428))
             {
@@ -1460,7 +1460,7 @@ struct npc_azeroth_heart_chamber_azerite_wound : public ScriptedAI
             me->GetScheduler().Schedule(20s, [](TaskContext context)
             {
                 if (GameObject* rock = GetContextUnit()->FindNearestGameObject(294030, 5.f))
-                    rock->SetAIAnimKitId(2664, false);
+                    rock->SetAnimKitId(2664, false);
 
                 GetContextCreature()->AI()->Reset();
             });

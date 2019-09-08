@@ -139,17 +139,6 @@ enum WintergraspWorldStates
     BATTLEFIELD_WG_WORLD_STATE_DEFENDED_A        = 4025
 };
 
-enum WintergraspAreaIds
-{
-    AREA_WINTERGRASP_FORTRESS       = 4575,
-    AREA_THE_SUNKEN_RING            = 4538,
-    AREA_THE_BROKEN_TEMPLATE        = 4539,
-    AREA_WESTPARK_WORKSHOP          = 4611,
-    AREA_EASTPARK_WORKSHOP          = 4612,
-    AREA_WINTERGRASP                = 4197,
-    AREA_THE_CHILLED_QUAGMIRE       = 4589
-};
-
 enum WintergraspQuests
 {
     QUEST_VICTORY_WINTERGRASP_A   = 13181,

@@ -306,15 +306,16 @@ class instance_stratholme : public InstanceMapScript
                             if (GetData(TYPE_BARON_RUN) == IN_PROGRESS)
                             {
                                 DoRemoveAurasDueToSpellOnPlayers(SPELL_BARON_ULTIMATUM);
-                                Map::PlayerList const& players = instance->GetPlayers();
-                                if (!players.isEmpty())
-                                    for (Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
-                                        if (Player* player = itr->GetSource())
-                                            if (player->GetQuestStatus(QUEST_DEAD_MAN_PLEA) == QUEST_STATUS_INCOMPLETE)
-                                            {
-                                                player->AreaExploredOrEventHappens(QUEST_DEAD_MAN_PLEA);
-                                                player->KilledMonsterCredit(NPC_YSIDA);
-                                            }
+
+                                DoOnPlayers([](Player* player)
+                                {
+                                    if (player->GetQuestStatus(QUEST_DEAD_MAN_PLEA) == QUEST_STATUS_INCOMPLETE)
+                                    {
+                                        player->AreaExploredOrEventHappens(QUEST_DEAD_MAN_PLEA);
+                                        player->KilledMonsterCredit(NPC_YSIDA);
+                                    }
+                                });
+
                                 SetData(TYPE_BARON_RUN, DONE);
                             }
                         }

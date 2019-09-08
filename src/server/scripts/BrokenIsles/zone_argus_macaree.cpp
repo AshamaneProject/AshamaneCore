@@ -20,12 +20,6 @@
 #include "Player.h"
 #include "SpellMgr.h"
 
-enum
-{
-    ZONE_MACARE             = 8701,
-    AREA_MACAREE_VINDICAAR  = 8915
-};
-
 // Zone 8701
 class zone_argus_macaree : public ZoneScript
 {

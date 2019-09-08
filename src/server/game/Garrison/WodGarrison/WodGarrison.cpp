@@ -623,7 +623,7 @@ GameObject* WodGarrison::Plot::CreateGameObject(Map* map, GarrisonFactionIndex f
                 finalizer->SetRespawnTime(0);
 
                 if (uint16 animKit = finalizeInfo->FactionInfo[faction].AnimKitId)
-                    finalizer->SetAIAnimKitId(animKit);
+                    finalizer->SetAnimKitId(animKit, false);
 
                 map->AddToMap(finalizer);
             }

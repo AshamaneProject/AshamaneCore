@@ -5502,6 +5502,24 @@ struct SpellTotemsLoadInfo
     }
 };
 
+struct SpellVisualKitLoadInfo
+{
+    static DB2LoadInfo const* Instance()
+    {
+        static DB2FieldMeta const fields[] =
+        {
+            { false, FT_INT, "ID" },
+            { true, FT_INT, "Flags" },
+            { true, FT_BYTE, "FallbackPriority" },
+            { false, FT_INT, "FallbackSpellVisualKitId" },
+            { false, FT_SHORT, "DelayMin" },
+            { false, FT_SHORT, "DelayMax" },
+        };
+        static DB2LoadInfo const loadInfo(&fields[0], std::extent<decltype(fields)>::value, SpellVisualKitMeta::Instance(), HOTFIX_SEL_SPELL_VISUAL_KIT);
+        return &loadInfo;
+    }
+};
+
 struct SpellXSpellVisualLoadInfo
 {
     static DB2LoadInfo const* Instance()
@@ -6145,6 +6163,20 @@ struct WorldSafeLocsLoadInfo
             { false, FT_FLOAT, "Facing" },
         };
         static DB2LoadInfo const loadInfo(&fields[0], std::extent<decltype(fields)>::value, WorldSafeLocsMeta::Instance(), HOTFIX_SEL_WORLD_SAFE_LOCS);
+        return &loadInfo;
+    }
+};
+
+struct WorldStateExpressionLoadInfo
+{
+    static DB2LoadInfo const* Instance()
+    {
+        static DB2FieldMeta const fields[] =
+        {
+            { false, FT_INT, "ID" },
+            { false, FT_STRING_NOT_LOCALIZED, "Expression" },
+        };
+        static DB2LoadInfo const loadInfo(&fields[0], std::extent<decltype(fields)>::value, WorldStateExpressionMeta::Instance(), HOTFIX_SEL_WORLD_STATE_EXPRESSION);
         return &loadInfo;
     }
 };

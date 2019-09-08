@@ -621,9 +621,13 @@ class npc_kara_intagible_presence : public CreatureScript
                                 if (Vehicle* vec = ptr->GetVehicleKit())
                                 {
                                     if (!vec->IsVehicleInUse())
+									{
                                         me->EnterVehicle(ptr);
+                                    }
                                     else
+								    {
                                         me->DespawnOrUnsummon();
+							        }
                                 }
                             }
                             break;
