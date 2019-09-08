@@ -170,8 +170,8 @@ enum Races
     RACE_HIGHMOUNTAIN_TAUREN    = 28,
     RACE_VOID_ELF               = 29,
     RACE_LIGHTFORGED_DRAENEI    = 30,
-    //RACE_ZANDALARI_TROLL    = 31,
-    //RACE_KUL_TIRAN          = 32,
+    RACE_ZANDALARI_TROLL        = 31,
+    RACE_KUL_TIRAN              = 32,
     //RACE_THIN_HUMAN         = 33,
     RACE_DARK_IRON_DWARF        = 34,
     //RACE_VULPERA            = 35,
@@ -204,6 +204,8 @@ enum Races
      (UI64LIT(1)<<(RACE_HIGHMOUNTAIN_TAUREN-1)) | \
      (UI64LIT(1)<<(RACE_VOID_ELF-1))            | \
      (UI64LIT(1)<<(RACE_LIGHTFORGED_DRAENEI-1)) | \
+     (UI64LIT(1)<<(RACE_ZANDALARI_TROLL-1))     | \
+     (UI64LIT(1)<<(RACE_KUL_TIRAN-1))           | \
      (UI64LIT(1)<<(RACE_DARK_IRON_DWARF-1))     | \
      (UI64LIT(1)<<(RACE_MAGHAR_ORC-1)))
 
@@ -218,6 +220,7 @@ enum Races
      (UI64LIT(1)<<(RACE_WORGEN-1))              | \
      (UI64LIT(1)<<(RACE_PANDAREN_ALLIANCE-1))   | \
      (UI64LIT(1)<<(RACE_VOID_ELF-1))            | \
+     (UI64LIT(1)<<(RACE_KUL_TIRAN-1))           | \
      (UI64LIT(1)<<(RACE_LIGHTFORGED_DRAENEI-1)) | \
      (UI64LIT(1)<<(RACE_DARK_IRON_DWARF-1)))
 
