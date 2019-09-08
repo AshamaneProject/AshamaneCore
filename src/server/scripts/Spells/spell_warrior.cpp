@@ -31,6 +31,7 @@
 #include "ObjectMgr.h"
 #include "PathGenerator.h"
 #include "Player.h"
+#include "SharedDefines.h"
 #include "ScriptMgr.h"
 #include "SpellAuraEffects.h"
 #include "SpellHistory.h"
@@ -224,7 +225,7 @@ public:
 
             if (Unit* caster = GetCaster())
             {
-                if (caster->GetZoneIdFromPosition() == 7886)
+                if (caster->GetZoneId() == ZONE_DALARAN_LEGION)
                 {
                     float pos_x = caster->GetPositionX();
                     float pos_y = caster->GetPositionY();
