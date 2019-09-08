@@ -203,7 +203,7 @@ class instance_violet_hold_assault : public InstanceMapScript
                 }
             }
 
-            void TriggerCriteria(uint32 entry)
+            void TriggerCriteria(uint32 /*entry*/)
             {
                 /*auto it = std::find_if(_guids.begin(), _guids.end(), NpcInfoCmp(entry));
 

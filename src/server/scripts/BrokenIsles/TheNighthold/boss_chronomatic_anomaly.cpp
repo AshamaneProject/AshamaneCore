@@ -253,32 +253,34 @@ public:
             Talk(SAY_DEATH);
         }
 
-        void DoAction(int32 action) override
+        void DoAction(int32 /*action*/) override
         {
             switch (events.GetPhaseMask())
             {
-            case EVENT_PHASE_NORMAL_SLOW_FAST:
-                if (me->HasAura(SPELL_SPEED_SLOW))
-                    StartFastSpeed();
-                else if (me->HasAura(SPELL_SPEED_NORMAL))
-                    StartSlowSpeed();
-                else if (me->HasAura(SPELL_SPEED_FAST))
-                {
-                    StartNormalSpeed();
-                    events.SetPhase(EVENT_PHASE_NORMAL_FAST_SLOW);
-                }
-                break;
-            case EVENT_PHASE_NORMAL_FAST_SLOW:
-                if (me->HasAura(SPELL_SPEED_SLOW))
-                {
-                    StartNormalSpeed();
-                    events.SetPhase(EVENT_PHASE_NORMAL_SLOW_FAST);
-                }
-                else if (me->HasAura(SPELL_SPEED_NORMAL))
-                    StartFastSpeed();
-                else if (me->HasAura(SPELL_SPEED_FAST))
-                    StartSlowSpeed();
-                break;
+                case EVENT_PHASE_NORMAL_SLOW_FAST:
+                    if (me->HasAura(SPELL_SPEED_SLOW))
+                        StartFastSpeed();
+                    else if (me->HasAura(SPELL_SPEED_NORMAL))
+                        StartSlowSpeed();
+                    else if (me->HasAura(SPELL_SPEED_FAST))
+                    {
+                        StartNormalSpeed();
+                        events.SetPhase(EVENT_PHASE_NORMAL_FAST_SLOW);
+                    }
+                    break;
+                case EVENT_PHASE_NORMAL_FAST_SLOW:
+                    if (me->HasAura(SPELL_SPEED_SLOW))
+                    {
+                        StartNormalSpeed();
+                        events.SetPhase(EVENT_PHASE_NORMAL_SLOW_FAST);
+                    }
+                    else if (me->HasAura(SPELL_SPEED_NORMAL))
+                        StartFastSpeed();
+                    else if (me->HasAura(SPELL_SPEED_FAST))
+                        StartSlowSpeed();
+                    break;
+                default:
+                    break;
             }
         }
 
@@ -335,7 +337,8 @@ public:
                     for (auto at : me->GetAreaTriggers(SPELL_TEMPORAL_ORB_AREATRIGGER_FIRST))
                     {
 //                        at->AI()->DoAction(_triggersCount);
-                        _triggersCount++;
+                        if (at->IsAreaTrigger())
+                            _triggersCount++;
                     }
                     DoCast(SPELL_TEMPORAL_ORBS_PERIODIC);
                     break;
@@ -345,7 +348,8 @@ public:
                     for (auto at : me->GetAreaTriggers(SPELL_TEMPORAL_ORB_AREATRIGGER_SECOND))
                     {
  //                       at->AI()->DoAction(_triggersCount);
-                        _triggersCount++;
+                        if (at->IsAreaTrigger())
+                            _triggersCount++;
                     }
                     break;
                 case EVENT_CHRONOMETRIC_PARTICLES:
@@ -483,7 +487,7 @@ public:
     {
         npc_fragmented_time_particleAI(Creature* creature) : ScriptedAI(creature) { }
 
-        void IsSummonedBy(Unit* summoner) override
+        void IsSummonedBy(Unit* /*summoner*/) override
         {
             me->SetControlled(true, UNIT_STATE_ROOT);
             DoCastSelf(SPELL_PASSAGE_OF_TIME);
@@ -779,7 +783,7 @@ public:
             return false;
         }
 
-        void HandleEffectProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+        void HandleEffectProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
         {
             Unit* target = GetTarget();
             if (!target)

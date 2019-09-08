@@ -104,7 +104,7 @@ public:
 
         EventMap events;
 
-        void EnterCombat(Unit* unit) override
+        void EnterCombat(Unit* /*unit*/) override
         {
             events.ScheduleEvent(EVENT_IMPALING_SHARD, 2s);
         }
@@ -247,7 +247,7 @@ public:
 
         EventMap events;
 
-        void EnterCombat(Unit* unit) override
+        void EnterCombat(Unit* /*unit*/) override
         {
             events.ScheduleEvent(EVENT_BONE_CHOMP, 2s);
             events.ScheduleEvent(EVENT_STONE_GAZE, 6s);
@@ -305,7 +305,7 @@ public:
 
         EventMap events;
 
-        void EnterCombat(Unit* unit) override
+        void EnterCombat(Unit* /*unit*/) override
         {
             events.ScheduleEvent(EVENT_CRUSH, 4s);
         }
@@ -360,7 +360,7 @@ public:
 
         EventMap events;
 
-        void EnterCombat(Unit* unit) override
+        void EnterCombat(Unit* /*unit*/) override
         {
             events.ScheduleEvent(EVENT_SUBMERGE, 2s);
         }
@@ -426,7 +426,7 @@ public:
         uint32 firstShardsCounter = 0;
         uint32 _milliseconds = 0;
 
-        void EnterCombat(Unit* unit) override
+        void EnterCombat(Unit* /*unit*/) override
         {
             if (Creature* drudge = me->FindNearestCreature(NPC_UNDERSTONE_DRUDGE, 80.0f, true))
                 sCreatureTextMgr->SendChat(drudge, 1);
@@ -524,7 +524,7 @@ public:
 
         EventMap events;
 
-        void EnterCombat(Unit* unit) override
+        void EnterCombat(Unit* /*unit*/) override
         {
             events.ScheduleEvent(EVENT_AVALANCHE, 5s);
         }
@@ -579,7 +579,7 @@ public:
 
         EventMap events;
 
-        void EnterCombat(Unit* unit) override
+        void EnterCombat(Unit* /*unit*/) override
         {
             events.ScheduleEvent(EVENT_RETREAT, 5s);
             events.ScheduleEvent(EVENT_JUGGED_DISK, 7s);
@@ -638,7 +638,7 @@ public:
 
         EventMap events;
 
-        void EnterCombat(Unit* unit) override
+        void EnterCombat(Unit* /*unit*/) override
         {
             events.ScheduleEvent(EVENT_STONE_SHUTTER, 5s);
         }
@@ -691,7 +691,7 @@ public:
 
         EventMap events;
 
-        void EnterCombat(Unit* unit) override
+        void EnterCombat(Unit* /*unit*/) override
         {
             events.ScheduleEvent(EVENT_STONE_BOLT, 5s);
         }
@@ -746,7 +746,7 @@ public:
 
         EventMap events;
 
-        void EnterCombat(Unit* unit) override
+        void EnterCombat(Unit* /*unit*/) override
         {
             events.ScheduleEvent(EVENT_LEECH, 5s);
             events.ScheduleEvent(EVENT_STONE_SHUTTER, 3s);

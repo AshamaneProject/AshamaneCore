@@ -221,7 +221,7 @@ class npc_vha_congealing_goo : public CreatureScript
                 me->AddUnitState(UNIT_STATE_ROOT);
             }
 
-            void IsSummonedBy(Unit* summoner) override
+            void IsSummonedBy(Unit* /*summoner*/) override
             {
                 DoCast(me, SPELL_FETID_STENCH, true);
             }

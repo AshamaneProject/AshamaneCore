@@ -377,7 +377,7 @@ public:
             targetsCount = targets.size();
         }
 
-        void HandleHitTarget(SpellEffIndex effIndex)
+        void HandleHitTarget(SpellEffIndex /*effIndex*/)
         {
             Unit* caster = GetCaster();
             Unit* target = GetHitUnit();

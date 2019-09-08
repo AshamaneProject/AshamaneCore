@@ -887,22 +887,20 @@ public:
     void SummonedCreatureDespawn(Creature* /*creature*/) override
     {
         // killcredit
-        for (auto player : players)
-        {
+        for (Player* player : players)
             if (player && player->IsInWorld() && player->IsInRange2d(me->GetPositionX(), me->GetPositionY(), 0, 50))
                 player->KilledMonsterCredit(NPC_DEFEND_FIREBREAKER_KILLCREDIT);
-        }
+
         _ongoing = false;
     }
 
     void SummonedCreatureDies(Creature* /*creature*/, Unit* /*unit*/) override
     {
         // Fail the quest
-        for (auto player : players)
-        {
+        for (Player* player : players)
             if (player && player->IsInWorld())
                 player->FailQuest(QUEST_BACKUP_WILL_I_PACK);
-        }
+
         _ongoing = false;
     }
 
@@ -1010,7 +1008,7 @@ public:
             float y = me->GetPositionY();
             float z = me->GetPositionZ();
 
-            if (std::abs(x - 534.932007) < .1 && std::abs(y - 870.984009) < .1 && std::abs(z - 7.821800) < .1) // ensuring we don't take the quest form ending npc
+            if (fabs(x - 534.932007f) < .1 && fabs(y - 870.984009f) < .1 && fabs(z - 7.821800f) < .1f) // ensuring we don't take the quest form ending npc
                 if (player->GetQuestStatus(QUEST_A_VERY_PRECIOUS_CARGO) == QUEST_STATUS_INCOMPLETE)
                     player->KilledMonsterCredit(NPC_PENNY_KILLCREDIT);
         }

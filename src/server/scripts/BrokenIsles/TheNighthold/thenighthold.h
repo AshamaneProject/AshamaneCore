@@ -416,7 +416,7 @@ static const Movement::PointsArray WaypointScorpid28 =
     { 71.3125f, 3411.25f, -250.0413f }
 };
 
-static const std::array<Movement::PointsArray, 28> scorpidsPath =
+static const std::vector<Movement::PointsArray> scorpidsPath =
 {
     WaypointScorpid1,
     WaypointScorpid2,

@@ -61,7 +61,7 @@ enum Says
     SAY_DEATH           = 6,
 };
 
-constexpr uint32 NPC_VOLATILE_ENERGY    = 114249;
+//constexpr uint32 NPC_VOLATILE_ENERGY    = 114249;
 constexpr uint32 NPC_SOUL_FRAGMENT_KARA = 115113;
 constexpr int32 ACTION_CHECK_MANA       = 1;
 
