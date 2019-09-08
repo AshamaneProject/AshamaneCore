@@ -224,16 +224,19 @@ public:
 
             if (Unit* caster = GetCaster())
             {
-                float pos_x = caster->GetPositionX();
-                float pos_y = caster->GetPositionY();
-                float pos_z = caster->GetPositionZ() + 30.0f;
+                if (caster->GetZoneIdFromPosition() == 7886)
+                {
+                    float pos_x = caster->GetPositionX();
+                    float pos_y = caster->GetPositionY();
+                    float pos_z = caster->GetPositionZ() + 30.0f;
 
-                JumpArrivalCastArgs arrivalCast;
-                arrivalCast.SpellId = SPELL_WARRIOR_JUMP_TO_SKYHOLD_TELEPORT;
-                arrivalCast.Target = caster->GetGUID();
-                caster->GetMotionMaster()->MoveJump(pos_x, pos_y, pos_z, caster->GetOrientation(), 20.f, 20.f, EVENT_JUMP, false, &arrivalCast);
+                    JumpArrivalCastArgs arrivalCast;
+                    arrivalCast.SpellId = SPELL_WARRIOR_JUMP_TO_SKYHOLD_TELEPORT;
+                    arrivalCast.Target = caster->GetGUID();
+                    caster->GetMotionMaster()->MoveJump(pos_x, pos_y, pos_z, caster->GetOrientation(), 20.f, 20.f, EVENT_JUMP, false, &arrivalCast);
 
-                caster->RemoveAurasDueToSpell(SPELL_WARRIOR_JUMP_TO_SKYHOLD_AURA);
+                    caster->RemoveAurasDueToSpell(SPELL_WARRIOR_JUMP_TO_SKYHOLD_AURA);
+                }
             }
         }
 
