@@ -136,11 +136,11 @@ WorldSession::WorldSession(uint32 id, std::string&& name, uint32 battlenetAccoun
     expireTime(60000), // 1 min after socket loss, session is deleted
     forceExit(false),
     m_currentBankerGUID(),
-    _battlePetMgr(Trinity::make_unique<BattlePetMgr>(this)),
-    _collectionMgr(Trinity::make_unique<CollectionMgr>(this)),
     _timeSyncClockDeltaQueue(6),
     _timeSyncClockDelta(0),
-    _pendingTimeSyncRequests()
+    _pendingTimeSyncRequests(),
+    _battlePetMgr(Trinity::make_unique<BattlePetMgr>(this)),
+    _collectionMgr(Trinity::make_unique<CollectionMgr>(this))
 {
     memset(_tutorials, 0, sizeof(_tutorials));
 

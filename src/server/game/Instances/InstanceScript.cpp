@@ -700,9 +700,10 @@ void InstanceScript::DoRemoveAurasDueToSpellOnPlayers(uint32 spell)
 // Kill all players with this aura in the instance
 void InstanceScript::DoKillPlayersWithAura(uint32 spell)
 {
-    DoOnPlayers([](Player* player)
+    DoOnPlayers([spell](Player* player)
     {
-        player->Kill(player);
+        if (player->HasAura(spell))
+            player->Kill(player);
     });
 }
 
