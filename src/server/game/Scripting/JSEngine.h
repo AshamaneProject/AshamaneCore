@@ -21,5 +21,24 @@
 class JSEngine
 {
 public:
+    JSEngine();
+    ~JSEngine();
 
+    void LoadScriptFromFile(const char* filename);
+
+    template <typename T>
+    void RegisterGlobal(const T& obj, const char* name)
+    {
+        dukglue_register_global(m_ctx, obj, name);
+    }
+
+    inline duk_context* GetContext() { return m_ctx; }
+
+private:
+    void RegisterPlayerClass();
+    void RegisterCreatureClass();
+    void RegisterUnitAIClass();
+    void RegisterCreatureAIClass();
+
+    duk_context* m_ctx;
 };
