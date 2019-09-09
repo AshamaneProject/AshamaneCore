@@ -420,10 +420,10 @@ void Pet::SavePetToDB(PetSaveMode mode)
 
         stmt->setString(13, GenerateActionBarData());
 
-        stmt->setUInt32(13, time(NULL));
-        stmt->setUInt32(14, m_unitData->CreatedBySpell);
-        stmt->setUInt8(15, getPetType());
-        stmt->setUInt16(16, m_petSpecialization);
+        stmt->setUInt32(14, time(NULL));
+        stmt->setUInt32(15, m_unitData->CreatedBySpell);
+        stmt->setUInt8(16, getPetType());
+        stmt->setUInt16(17, m_petSpecialization);
         trans->Append(stmt);
 
         CharacterDatabase.CommitTransaction(trans);
