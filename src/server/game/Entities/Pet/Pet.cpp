@@ -414,8 +414,9 @@ void Pet::SavePetToDB(PetSaveMode mode)
         stmt->setInt16(7, m_petSlot);
         stmt->setString(8, m_name);
         stmt->setUInt8(9, HasPetFlag(UNIT_PET_FLAG_CAN_BE_RENAMED) ? 0 : 1);
-        stmt->setUInt32(10, curhealth);
-        stmt->setUInt32(11, curmana);
+        stmt->setUInt8(10, IsActive() ? 1 : 0);
+        stmt->setUInt32(11, curhealth);
+        stmt->setUInt32(12, curmana);
 
         stmt->setString(13, GenerateActionBarData());
 
