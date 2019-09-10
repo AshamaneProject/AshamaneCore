@@ -143,40 +143,23 @@ void ShutdownCLIThread(std::thread* cliThread);
 bool LoadRealmInfo();
 variables_map GetConsoleArguments(int argc, char** argv, fs::path& configFile, std::string& cfg_service);
 
-class TestClass
-{
-public:
-    TestClass() : mCounter(0) {}
-
-    void incCounter(int val) {
-        mCounter += val;
-    }
-
-    void printCounter() {
-        std::cout << "Counter: " << mCounter << std::endl;
-    }
-
-private:
-    int mCounter;
-};
-
-void testPrint(std::string test)
-{
-    printf("%s\n", test.c_str());
-}
-
 struct testAI : public CreatureAI
 {
     testAI(Creature* creature) : CreatureAI(creature) { }
 
     void Reset() override
     {
-        testPrint("testAI Reset");
+        printf("testAI Reset\n");
     }
 
     void MySpecialMethod()
     {
-        testPrint("testAI MySpecialMethod");
+        printf("testAI MySpecialMethod\n");
+    }
+
+    void MySpecialMethod2()
+    {
+        printf("testAI MySpecialMethod2\n");
     }
 
     void UpdateAI(uint32 const /*diff*/) override
@@ -186,30 +169,6 @@ struct testAI : public CreatureAI
 /// Launch the Trinity server
 extern int main(int argc, char** argv)
 {
-    JSEngine jsEngine = JSEngine();
-
-    dukglue_register_function(jsEngine.GetContext(), &testPrint, "print");
-
-    dukglue_register_constructor<TestClass>(jsEngine.GetContext(), "TestClass");
-    dukglue_register_method(jsEngine.GetContext(), &TestClass::incCounter, "incCounter");
-    dukglue_register_method(jsEngine.GetContext(), &TestClass::printCounter, "printCounter");
-    
-    Player* player = new Player(nullptr);
-    testAI* test = new testAI(nullptr);
-
-    dukglue_set_base_class<CreatureAI, testAI>(jsEngine.GetContext());
-    dukglue_register_method(jsEngine.GetContext(), &testAI::MySpecialMethod, "MySpecialMethod");
-
-    jsEngine.RegisterGlobal(player, "player");
-    jsEngine.RegisterGlobal(test, "test");
-
-    jsEngine.LoadScriptFromFile("script.js");
-
-    // Todo : Appeler fonction reset voir ce qui est appele
-    dukglue_pcall_method<void>(jsEngine.GetContext(), test, "Reset");
-
-    return 0;
-
     signal(SIGABRT, &Trinity::AbortHandler);
 
     auto configFile = fs::absolute(_TRINITY_CORE_CONFIG);

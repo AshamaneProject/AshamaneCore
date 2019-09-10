@@ -46,6 +46,7 @@ class InstanceMap;
 class InstanceSave;
 class InstanceScript;
 class InstanceScenario;
+class JSEngine;
 class MapInstanced;
 class Object;
 class PhaseShift;
@@ -581,6 +582,9 @@ class TC_GAME_API Map : public GridRefManager<NGridType>
             _updateObjects.erase(obj);
         }
 
+        JSEngine* GetJSEngine() { return _jsEngine; }
+        void ReloadJSEngine();
+
     private:
         void LoadMapAndVMap(int gx, int gy);
         void LoadVMap(int gx, int gy);
@@ -761,6 +765,8 @@ class TC_GAME_API Map : public GridRefManager<NGridType>
         std::unordered_set<Corpse*> _corpseBones;
 
         std::unordered_set<Object*> _updateObjects;
+
+        JSEngine* _jsEngine;
 };
 
 enum InstanceResetMethod

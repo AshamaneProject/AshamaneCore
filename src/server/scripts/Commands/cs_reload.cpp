@@ -167,6 +167,7 @@ public:
             { "vehicle_accessory",             rbac::RBAC_PERM_COMMAND_RELOAD_VEHICLE_ACCESORY,                 true,  &HandleReloadVehicleAccessoryCommand,           "" },
             { "vehicle_template_accessory",    rbac::RBAC_PERM_COMMAND_RELOAD_VEHICLE_TEMPLATE_ACCESSORY,       true,  &HandleReloadVehicleTemplateAccessoryCommand,   "" },
             { "script_params",                 rbac::RBAC_PERM_COMMAND_RELOAD,                                  true,  &HandleReloadScriptParamsCommand,               "" },
+            { "js",                            rbac::RBAC_PERM_COMMAND_RELOAD,                                  true,  &HandleReloadJSCommand,                         "" },
         };
         static std::vector<ChatCommand> commandTable =
         {
@@ -1209,6 +1210,18 @@ public:
         TC_LOG_INFO("misc", "Reloading script_params table...");
         sObjectMgr->LoadScriptParams();
         handler->SendGlobalGMSysMessage("Script params reloaded.");
+        return true;
+    }
+
+    static bool HandleReloadJSCommand(ChatHandler* handler, const char* /*args*/)
+    {
+        TC_LOG_INFO("misc", "Reloading JS scripts...");
+
+        if (WorldSession * session = handler->GetSession())
+            if (Player * player = session->GetPlayer())
+                sMapMgr->ReloadJSScripts();
+
+        handler->SendGlobalGMSysMessage("JS scripts reloaded.");
         return true;
     }
 };

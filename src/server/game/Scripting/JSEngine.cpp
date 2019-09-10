@@ -16,15 +16,30 @@
  */
 
 #include "JSEngine.h"
+#include "BuiltInConfig.h"
 #include "CreatureAI.h"
+#include "MotionMaster.h"
+#include "SharedDefines.h"
 #include "Spell.h"
+#include <filesystem>
+#include <fstream>
+#include <boost/filesystem.hpp>
+#include <Regex.h>
+
+namespace fs = boost::filesystem;
 
 JSEngine::JSEngine()
 {
     m_ctx = duk_create_heap_default();
 
+    RegisterJSEngineClass();
+    RegisterPosition();
+    RegisterWorldLocation();
+    RegisterWorldObject();
+    RegisterUnitClass();
     RegisterPlayerClass();
     RegisterCreatureClass();
+    RegisterMotionMasterClass();
     RegisterUnitAIClass();
     RegisterCreatureAIClass();
 }
@@ -35,38 +50,161 @@ JSEngine::~JSEngine()
         duk_destroy_heap(m_ctx);
 }
 
-void JSEngine::LoadScriptFromFile(const char* filename)
+static fs::path GetSourceDirectory()
 {
-    FILE* f;
-    size_t len;
-    char buf[16000];
+    fs::path dir = BuiltInConfig::GetSourceDirectory();
+    dir /= "src";
+    dir /= "server";
+    dir /= "scripts";
+    return dir;
+}
 
-    f = fopen(filename, "rb");
-    if (f)
+bool HasJSSourceFileExtension(fs::path const& path)
+{
+    static Trinity::regex const regex("^\\.(js)$");
+    return Trinity::regex_match(path.extension().generic_string(), regex);
+}
+
+bool JSEngine::LoadJSFileScripts()
+{
+    for (const fs::directory_entry& f : fs::recursive_directory_iterator(GetSourceDirectory()))
+        if (fs::is_regular_file(f.path()))
+            if (HasJSSourceFileExtension(f.path()))
+                if (CompileScriptFromFile(f.path().string().c_str()))
+                    RunJSFunction(GetContext(), "register");
+
+    return true;
+}
+
+bool JSEngine::CompileScriptFromFile(const char* filename)
+{
+    std::ifstream inFile(filename);
+    std::ostringstream sout;
+
+    std::copy(std::istreambuf_iterator<char>(inFile),
+              std::istreambuf_iterator<char>(),
+              std::ostreambuf_iterator<char>(sout));
+
+    inFile.close();
+
+    if (!CompileJS(sout.str().c_str()))
     {
-        len = fread((void*)buf, 1, sizeof(buf), f);
-        fclose(f);
-        duk_push_lstring(m_ctx, (const char*)buf, (duk_size_t)len);
+        printf("Compile failed for file %s\n", filename);
+        printf("%s\n", duk_safe_to_string(m_ctx, -1));
+        return false;
+    }
+
+    return true;
+}
+
+bool JSEngine::CompileJS(const char* programBody)
+{
+    bool success = false;
+
+    // Compile the JS into bytecode
+    if (duk_pcompile_string(m_ctx, 0, programBody) == 0)
+    {
+        // Actually evaluate it - this will push the compiled code into the global scope
+        duk_pcall(m_ctx, 0);
+        success = true;
+
+    }
+    duk_pop(m_ctx);
+
+    return success;
+}
+
+duk_bool_t JSEngine::RunJSFunction(duk_context* ctx, const char* funcName, const char* arga, const char* argb)
+{
+    duk_bool_t returnVal;
+
+    // Get a reference to the named JS function
+    if (duk_get_global_string(ctx, funcName))
+    {
+        // Function found, push the args
+
+        duk_push_string(ctx, arga);
+        duk_push_string(ctx, argb);
+
+        // Use pcall - this lets you catch and handle any errors
+        if (duk_pcall(ctx, 2) != DUK_EXEC_SUCCESS)
+        {
+            // An error occurred - display a stack trace
+            duk_get_prop_string(ctx, -1, "stack");
+            printf(duk_safe_to_string(ctx, -1));
+        }
+        else
+        {
+            // function executed successfully - get result
+            returnVal = duk_get_boolean(ctx, -1);
+        }
     }
     else
-        duk_push_undefined(m_ctx);
+    {
+        printf("JS function not found!\n");
+        returnVal = false;
+    }
 
-    duk_eval(m_ctx);
+    duk_pop(ctx); // pop result
 
-    duk_get_global_string(m_ctx, "register");
-    duk_call(m_ctx, 0);
+    return returnVal;
+}
+
+void jsPrint(std::string test)
+{
+    printf("%s\n", test.c_str());
+}
+
+void JSEngine::RegisterJSEngineClass()
+{
+    RegisterGlobal(GetContext(), this, "JSEngine");
+    RegisterGlobal(GetContext(), sJsStorage, "sJsStorage");
+    dukglue_register_method(m_ctx, &JSStorage::RegisterCreatureScript, "RegisterCreatureScript");
+
+    dukglue_register_function(m_ctx, &jsPrint, "print");
+}
+
+void JSEngine::RegisterPosition()
+{
+    dukglue_register_method(m_ctx, &Position::GetPositionX, "GetPositionX");
+    dukglue_register_method(m_ctx, &Position::GetPositionY, "GetPositionY");
+    dukglue_register_method(m_ctx, &Position::GetPositionZ, "GetPositionZ");
+}
+
+void JSEngine::RegisterWorldLocation()
+{
+    dukglue_set_base_class<Position, WorldLocation>(m_ctx);
+    dukglue_register_method(m_ctx, &WorldLocation::GetMapId, "GetMapId");
+}
+
+void JSEngine::RegisterWorldObject()
+{
+    dukglue_set_base_class<WorldLocation, WorldObject>(m_ctx);
+}
+
+void JSEngine::RegisterUnitClass()
+{
+    dukglue_set_base_class<WorldObject, Unit>(m_ctx);
+
+    dukglue_register_method(m_ctx, (bool (Unit::*)(Unit*, uint32)) &Unit::CastSpell, "CastSpell");
+    dukglue_register_method(m_ctx, (bool (Unit::*)(Unit*, uint32)) &Unit::CastSpellTriggered, "CastSpellTriggered");
+
+    dukglue_register_method(m_ctx, (MotionMaster* (Unit::*)()) &Creature::GetMotionMaster, "GetMotionMaster");
 }
 
 void JSEngine::RegisterPlayerClass()
 {
-    dukglue_register_constructor<Player, WorldSession*>(m_ctx, "Player");
-    dukglue_register_method(m_ctx, &Player::HasSummonPending, "HasSummonPending");
-    dukglue_register_method(m_ctx, (bool (Player::*)(Unit*, uint32)) &Player::CastSpell, "CastSpell");
+    dukglue_set_base_class<Unit, Player>(m_ctx);
 }
 
 void JSEngine::RegisterCreatureClass()
 {
-    dukglue_register_constructor<Creature>(m_ctx, "Creature");
+    dukglue_set_base_class<Unit, Creature>(m_ctx);
+}
+
+void JSEngine::RegisterMotionMasterClass()
+{
+    dukglue_register_method(m_ctx, (void (MotionMaster::*)(uint32, float, float, float, bool generatePath)) &MotionMaster::MovePoint, "MovePoint");
 }
 
 void JSEngine::RegisterUnitAIClass()
@@ -90,4 +228,24 @@ void JSEngine::RegisterCreatureAIClass()
 
     dukglue_register_method(m_ctx, &CreatureAI::SummonedCreatureDespawn, "SummonedCreatureDespawn");
     dukglue_register_method(m_ctx, &CreatureAI::SummonedCreatureDies, "SummonedCreatureDies");
+}
+
+JSStorage* JSStorage::instance()
+{
+    static JSStorage instance;
+    return &instance;
+}
+
+void JSStorage::RegisterCreatureScript(std::string scriptname, uint32 id)
+{
+    scripts[MAKE_PAIR64(TYPEID_UNIT, id)] = scriptname;
+}
+
+std::string JSStorage::GetCreatureScript(uint32 id)
+{
+    auto scriptItr = scripts.find(MAKE_PAIR64(TYPEID_UNIT, id));
+    if (scriptItr == scripts.end())
+        return "";
+
+    return scriptItr->second;
 }

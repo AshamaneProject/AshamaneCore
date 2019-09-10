@@ -298,6 +298,12 @@ void MapManager::UnloadAll()
     Map::DeleteStateMachine();
 }
 
+void MapManager::ReloadJSScripts()
+{
+    for (auto iter = i_maps.begin(); iter != i_maps.end(); ++iter)
+        iter->second->ReloadJSEngine();
+}
+
 uint32 MapManager::GetNumInstances()
 {
     std::lock_guard<std::mutex> lock(_mapsLock);

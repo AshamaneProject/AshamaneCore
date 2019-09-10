@@ -1524,6 +1524,13 @@ static bool HasCXXSourceFileExtension(fs::path const& path)
     return Trinity::regex_match(path.extension().generic_string(), regex);
 }
 
+/// Returns true when the given path has a known JS file extension
+static bool HasJSSourceFileExtension(fs::path const& path)
+{
+    static Trinity::regex const regex("^\\.(js)$");
+    return Trinity::regex_match(path.extension().generic_string(), regex);
+}
+
 SourceUpdateListener::SourceUpdateListener(fs::path path, std::string script_module_name)
     : path_(std::move(path)), script_module_name_(std::move(script_module_name)),
       watcher_id_(sScriptReloadMgr->_fileWatcher.addWatch(path_.generic_string(), this, true))
@@ -1572,6 +1579,12 @@ void SourceUpdateListener::handleFileAction(efsw::WatchID watchid, std::string c
     auto const path = fs::absolute(
         filename,
         dir);
+
+    if (path.has_extension() && HasJSSourceFileExtension(path))
+    {
+        sMapMgr->ReloadJSScripts();
+        return;
+    }
 
     // Check if the file is a C/C++ source file.
     if (!path.has_extension() || !HasCXXSourceFileExtension(path))

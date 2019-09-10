@@ -79,6 +79,8 @@ class TC_GAME_API MapManager
         //void LoadGrid(int mapid, int instId, float x, float y, const WorldObject* obj, bool no_unload = false);
         void UnloadAll();
 
+        void ReloadJSScripts();
+
         static bool ExistMapAndVMap(uint32 mapid, float x, float y);
         static bool IsValidMAP(uint32 mapid, bool startUp);
 

@@ -34,6 +34,7 @@
 #include "Group.h"
 #include "GroupMgr.h"
 #include "InstanceScript.h"
+#include "JSEngine.h"
 #include "Log.h"
 #include "LootMgr.h"
 #include "MiscPackets.h"
@@ -292,7 +293,8 @@ m_respawnDelay(300), m_corpseDelay(60), m_respawnradius(0.0f), m_boundaryCheckTi
 m_defaultMovementType(IDLE_MOTION_TYPE), m_spawnId(UI64LIT(0)), m_equipmentId(0), m_originalEquipmentId(0), m_AlreadyCallAssistance(false),
 m_AlreadySearchedAssistance(false), m_regenHealth(true), m_cannotReachTarget(false), m_cannotReachTimer(0), m_AI_locked(false), m_meleeDamageSchoolMask(SPELL_SCHOOL_MASK_NORMAL),
 m_originalEntry(0), m_homePosition(), m_transportHomePosition(), m_creatureInfo(nullptr), m_creatureData(nullptr), m_waypointID(0), m_path_id(0), m_formation(nullptr),
-m_focusSpell(nullptr), m_focusDelay(0), m_shouldReacquireTarget(false), m_suppressedOrientation(0.0f), _lastDamagedTime(0), m_wildBattlePet(nullptr), m_disableHealthRegen(false)
+m_focusSpell(nullptr), m_focusDelay(0), m_shouldReacquireTarget(false), m_suppressedOrientation(0.0f), _lastDamagedTime(0), m_wildBattlePet(nullptr), m_disableHealthRegen(false),
+m_jsCtx(nullptr)
 {
     m_regenTimer = CREATURE_REGEN_INTERVAL;
 
@@ -1026,13 +1028,25 @@ bool Creature::AIM_Create(CreatureAI* ai /*= nullptr*/)
     Motion_Initialize();
 
     i_AI = ai ? ai : FactorySelector::selectAI(this);
+
+    std::string jsScriptName = sJsStorage->GetCreatureScript(GetEntry());
+    if (!jsScriptName.empty())
+    {
+        m_jsCtx = GetMap()->GetJSEngine()->GetNewContext();
+        GetMap()->GetJSEngine()->RegisterGlobal(m_jsCtx, i_AI, "script");
+        GetMap()->GetJSEngine()->RegisterGlobal(m_jsCtx, this, "me");
+        GetMap()->GetJSEngine()->RunJSFunction(m_jsCtx, jsScriptName.c_str());
+    }
+
     return true;
 }
 
 void Creature::AI_InitializeAndEnable()
 {
     IsAIEnabled = true;
-    i_AI->InitializeAI();
+
+    ResetAI(true);
+
     // Initialize vehicle
     if (GetVehicleKit())
         GetVehicleKit()->Reset();
@@ -1060,6 +1074,25 @@ void Creature::Motion_Initialize()
         GetMotionMaster()->MoveIdle(); //wait the order of leader
     else
         GetMotionMaster()->Initialize();
+}
+
+void Creature::ResetAI(bool initialize)
+{
+    if (m_jsCtx && !isDead())
+    {
+        try
+        {
+            dukglue_pcall_method<void>(GetJSContext(), AI(), "Reset");
+        }
+        catch (std::exception& ex)
+        {
+            printf("Error : %s", ex.what());
+        }
+    }
+    else if (initialize)
+        AI()->InitializeAI();
+    else
+        AI()->Reset();
 }
 
 bool Creature::Create(ObjectGuid::LowType guidlow, Map* map, uint32 entry, float x, float y, float z, float ang, CreatureData const* data /*= nullptr*/, uint32 vehId /*= 0*/)
@@ -2102,7 +2135,8 @@ void Creature::Respawn(bool force)
         if (IsAIEnabled)
         {
             //reset the AI to be sure no dirty or uninitialized values will be used till next tick
-            AI()->Reset();
+            ResetAI(false);
+
             m_TriggerJustRespawned = true;//delay event to next tick so all creatures are created on the map before processing
         }
 

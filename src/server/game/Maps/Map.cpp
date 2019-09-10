@@ -31,6 +31,7 @@
 #include "InstancePackets.h"
 #include "InstanceScenario.h"
 #include "InstanceScript.h"
+#include "JSEngine.h"
 #include "Log.h"
 #include "MapInstanced.h"
 #include "MapManager.h"
@@ -312,6 +313,9 @@ i_scriptLock(false), _defaultLight(DB2Manager::GetDefaultMapLight(id))
     GetGuidSequenceGenerator<HighGuid::Transport>().Set(sObjectMgr->GetGenerator<HighGuid::Transport>().GetNextAfterMaxUsed());
 
     MMAP::MMapFactory::createOrGetMMapManager()->loadMapInstance(sWorld->GetDataPath(), GetId(), i_InstanceId);
+
+    _jsEngine = new JSEngine();
+    _jsEngine->LoadJSFileScripts();
 
     sScriptMgr->OnCreateMap(this);
 }
@@ -4470,4 +4474,12 @@ void Map::UpdateAreaDependentAuras()
         if (Player* player = itr->GetSource())
             if (player->IsInWorld())
                 player->UpdateAreaDependentAuras();
+}
+
+void Map::ReloadJSEngine()
+{
+    delete _jsEngine;
+
+    _jsEngine = new JSEngine();
+    _jsEngine->LoadJSFileScripts();
 }

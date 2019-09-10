@@ -24,21 +24,51 @@ public:
     JSEngine();
     ~JSEngine();
 
-    void LoadScriptFromFile(const char* filename);
+    bool LoadJSFileScripts();
+
+    duk_bool_t RunJSFunction(duk_context* ctx, const char* funcName, const char* arga = "", const char* argb = "");
 
     template <typename T>
-    void RegisterGlobal(const T& obj, const char* name)
+    void RegisterGlobal(duk_context* ctx, const T& obj, const char* name)
     {
-        dukglue_register_global(m_ctx, obj, name);
+        dukglue_register_global(ctx, obj, name);
     }
 
     inline duk_context* GetContext() { return m_ctx; }
+    inline duk_context* GetNewContext()
+    {
+        duk_push_thread(m_ctx);
+        return duk_get_context(m_ctx, -1);
+    }
 
 private:
+    bool CompileScriptFromFile(const char* filename);
+    bool CompileJS(const char* programBody);
+
+    void RegisterJSEngineClass();
+    void RegisterPosition();
+    void RegisterWorldLocation();
+    void RegisterWorldObject();
+    void RegisterUnitClass();
     void RegisterPlayerClass();
     void RegisterCreatureClass();
+    void RegisterMotionMasterClass();
     void RegisterUnitAIClass();
     void RegisterCreatureAIClass();
 
     duk_context* m_ctx;
 };
+
+class JSStorage
+{
+public:
+    static JSStorage* instance();
+
+    void RegisterCreatureScript(std::string scriptname, uint32 id);
+    std::string GetCreatureScript(uint32 id);
+
+private:
+    std::unordered_map<uint64, std::string> scripts;
+};
+
+#define sJsStorage JSStorage::instance()

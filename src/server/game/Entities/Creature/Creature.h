@@ -23,6 +23,7 @@
 #include "Common.h"
 #include "CreatureData.h"
 #include "DatabaseEnvFwd.h"
+#include "duktape/duk_config.h"
 #include "Duration.h"
 #include "Loot.h"
 #include "MapObject.h"
@@ -32,6 +33,7 @@
 class CreatureAI;
 class CreatureGroup;
 class Group;
+class JSEngine;
 class Quest;
 class Player;
 class SpellInfo;
@@ -149,6 +151,7 @@ class TC_GAME_API Creature : public Unit, public GridObject<Creature>, public Ma
         void AI_InitializeAndEnable();
         bool AIM_Initialize(CreatureAI* ai = nullptr);
         void Motion_Initialize();
+        void ResetAI(bool initialize);
 
         CreatureAI* AI() const { return reinterpret_cast<CreatureAI*>(i_AI); }
 
@@ -365,6 +368,8 @@ class TC_GAME_API Creature : public Unit, public GridObject<Creature>, public Ma
         void ReenableHealthRegen() { m_disableHealthRegen = false; }
         bool HealthRegenDisabled() const { return m_disableHealthRegen; }
 
+        duk_context* GetJSContext() const { return m_jsCtx; }
+
     protected:
         bool CreateFromProto(ObjectGuid::LowType guidlow, uint32 entry, CreatureData const* data = nullptr, uint32 vehId = 0);
         bool InitEntry(uint32 entry, CreatureData const* data = nullptr);
@@ -443,6 +448,8 @@ class TC_GAME_API Creature : public Unit, public GridObject<Creature>, public Ma
         WildBattlePet* m_wildBattlePet;
 
         bool m_disableHealthRegen;
+
+        duk_context* m_jsCtx;
 };
 
 class TC_GAME_API AssistDelayEvent : public BasicEvent
