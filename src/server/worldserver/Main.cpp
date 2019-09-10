@@ -143,29 +143,6 @@ void ShutdownCLIThread(std::thread* cliThread);
 bool LoadRealmInfo();
 variables_map GetConsoleArguments(int argc, char** argv, fs::path& configFile, std::string& cfg_service);
 
-struct testAI : public CreatureAI
-{
-    testAI(Creature* creature) : CreatureAI(creature) { }
-
-    void Reset() override
-    {
-        printf("testAI Reset\n");
-    }
-
-    void MySpecialMethod()
-    {
-        printf("testAI MySpecialMethod\n");
-    }
-
-    void MySpecialMethod2()
-    {
-        printf("testAI MySpecialMethod2\n");
-    }
-
-    void UpdateAI(uint32 const /*diff*/) override
-    {}
-};
-
 /// Launch the Trinity server
 extern int main(int argc, char** argv)
 {

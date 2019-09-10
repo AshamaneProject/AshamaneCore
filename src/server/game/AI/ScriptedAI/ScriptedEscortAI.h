@@ -88,7 +88,7 @@ struct TC_GAME_API npc_escortAI : public ScriptedAI
 
         bool GetWaypointPosition(uint32 pointId, float& x, float& y, float& z);
 
-        virtual void WaypointReached(uint32 pointId) { }
+        virtual void WaypointReached(uint32 /*pointId*/) { }
         virtual void LastWaypointReached() { }
         virtual void WaypointStart(uint32 /*pointId*/) { }
 

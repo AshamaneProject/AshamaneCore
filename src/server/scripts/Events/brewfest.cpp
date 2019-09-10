@@ -21,7 +21,6 @@
 #include "ScriptedEscortAI.h"
 #include "GameEventMgr.h"
 #include "ObjectMgr.h"
-#include "ScriptMgr.h"
 #include "World.h"
 
 /*####

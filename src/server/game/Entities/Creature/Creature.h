@@ -23,7 +23,6 @@
 #include "Common.h"
 #include "CreatureData.h"
 #include "DatabaseEnvFwd.h"
-#include "duktape/duk_config.h"
 #include "Duration.h"
 #include "Loot.h"
 #include "MapObject.h"
@@ -42,6 +41,8 @@ class WorldSession;
 enum MovementGeneratorType : uint8;
 
 struct ScriptParam;
+struct duk_hthread;
+typedef struct duk_hthread duk_context;
 
 struct VendorItemCount
 {
