@@ -1172,15 +1172,10 @@ public:
 class TargetFilter
 {
 public:
-    explicit TargetFilter(Unit* caster) : _caster(caster) { }
-
     bool operator()(WorldObject* unit) const
     {
         return !unit->ToPlayer();
     }
-
-private:
-    Unit* _caster;
 };
 
 class spell_rising_fire_totem : public SpellScriptLoader
@@ -1194,7 +1189,7 @@ public:
 
         void FilterTargets(std::list<WorldObject*>& targets)
         {
-            targets.remove_if(TargetFilter(GetCaster()));
+            targets.remove_if(TargetFilter());
             Trinity::Containers::RandomResize(targets, 1);
         }
 
