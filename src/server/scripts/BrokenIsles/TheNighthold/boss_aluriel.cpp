@@ -431,14 +431,7 @@ public:
 
         void FilterTargets(std::list<WorldObject*>& targetsList)
         {
-            if (targetsList.empty())
-                return;
-
-            Unit* caster = GetCaster();
-            if (!caster)
-                return;
-
-            targetsList.remove_if([caster](WorldObject* obj)
+            targetsList.remove_if([](WorldObject* obj)
             {
                 if (Unit* target = obj->ToUnit())
                     return !target->HasAura(SPELL_MARK_OF_FROST);
