@@ -961,9 +961,6 @@ class spell_ultraxion_fading_light : public SpellScriptLoader
                         }
                         return false;
                     }
-
-                private:
-                    uint32 _spellId;
             };
         };
 
@@ -1020,9 +1017,6 @@ class spell_ultraxion_last_defender_of_azeroth : public SpellScriptLoader
                         }
                         return true;
                     }
-
-                private:
-                    uint32 _spellId;
             };
         };
         SpellScript* GetSpellScript() const override

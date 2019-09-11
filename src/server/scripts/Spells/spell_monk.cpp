@@ -3038,7 +3038,7 @@ class spell_monk_renewing_mist_jump : public SpellScript
         Unit* previousTarget = GetExplTargetUnit();
 
         // Not remove full health targets now, dancing mists talent can jump on full health too
-        targets.remove_if([caster, previousTarget, this](WorldObject* a)
+        targets.remove_if([caster, previousTarget](WorldObject* a)
         {
             Unit* ally = a->ToUnit();
             if (!ally || ally->HasAura(SPELL_MONK_RENEWING_MIST_HOT, caster->GetGUID()) || ally == previousTarget)
@@ -3047,7 +3047,7 @@ class spell_monk_renewing_mist_jump : public SpellScript
             return false;
         });
 
-        targets.remove_if([this](WorldObject* a)
+        targets.remove_if([](WorldObject* a)
         {
             Unit* ally = a->ToUnit();
             if (!ally || ally->IsFullHealth())

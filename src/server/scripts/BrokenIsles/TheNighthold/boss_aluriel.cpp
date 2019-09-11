@@ -431,14 +431,7 @@ public:
 
         void FilterTargets(std::list<WorldObject*>& targetsList)
         {
-            if (targetsList.empty())
-                return;
-
-            Unit* caster = GetCaster();
-            if (!caster)
-                return;
-
-            targetsList.remove_if([caster](WorldObject* obj)
+            targetsList.remove_if([](WorldObject* obj)
             {
                 if (Unit* target = obj->ToUnit())
                     return !target->HasAura(SPELL_MARK_OF_FROST);
@@ -526,14 +519,7 @@ public:
 
         void FilterTargets(std::list<WorldObject*>& targetsList)
         {
-            if (targetsList.empty())
-                return;
-
-            Unit* caster = GetCaster();
-            if (!caster)
-                return;
-
-            targetsList.remove_if([caster](WorldObject* obj)
+            targetsList.remove_if([](WorldObject* obj)
             {
                 if (Creature* target = obj->ToCreature())
                     return target->GetEntry() != 107694;
@@ -544,12 +530,8 @@ public:
 
         void Animate(SpellEffIndex /*effIndex*/)
         {
-            Unit* caster = GetCaster();
-            Unit* target = GetHitUnit();
-            if (!caster || !target)
-                return;
-
-            caster->CastSpell(target, SPELL_ANIMATE_SUMMON, true);
+            if (Unit * target = GetHitUnit())
+                GetCaster()->CastSpell(target, SPELL_ANIMATE_SUMMON, true);
         }
 
         void Register() override

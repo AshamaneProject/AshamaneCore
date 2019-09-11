@@ -150,11 +150,9 @@ class boss_oondasta : public CreatureScript
 class TankCheck : public std::unary_function<Unit*, bool>
 {
     public:
-        explicit TankCheck(Unit* _caster) : caster(_caster) { }
-
         bool operator()(WorldObject* object)
         {
-            if (object->GetTypeId() != TYPEID_PLAYER)
+            if (!object->IsPlayer())
                 return true;
 
             if (object->ToPlayer()->GetRoleForGroup() != ROLE_TANK)
@@ -162,9 +160,6 @@ class TankCheck : public std::unary_function<Unit*, bool>
 
             return false;
         }
-
-    private:
-        Unit* caster;
 };
 
 // Alpha Male - Tank Threat Multiplier 138390.
@@ -183,7 +178,7 @@ class spell_alpha_male_threat: public SpellScriptLoader
                     return;
 
                 // Set targets.
-                targets.remove_if(TankCheck(GetCaster()));
+                targets.remove_if(TankCheck());
             }
 
             void Register() override

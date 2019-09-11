@@ -978,15 +978,10 @@ class spell_garalon_crush_trigger: public SpellScriptLoader
 class BossCheck : public std::unary_function<Unit*, bool>
 {
     public:
-        explicit BossCheck(Unit* _caster) : caster(_caster) { }
-
         bool operator()(WorldObject* object)
         {
             return object->GetEntry() != NPC_GARALON;
         }
-
-    private:
-        Unit* caster;
 };
 
 // Pheromones Taunt: 123109.
@@ -1015,7 +1010,7 @@ class spell_garalon_pheromones_taunt: public SpellScriptLoader
                     return;
 
                 // Only the boss gets taunted.
-                targets.remove_if(BossCheck(GetCaster()));
+                targets.remove_if(BossCheck());
             }
 
             void Register() override
@@ -1057,7 +1052,7 @@ class spell_garalon_broken_leg : public SpellScriptLoader
                     return;
 
                 // Only casted by boss on self.
-                targets.remove_if(BossCheck(GetCaster()));*/
+                targets.remove_if(BossCheck());*/
                 targets.clear();
             }
 

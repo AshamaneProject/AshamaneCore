@@ -104,7 +104,7 @@ struct scenario_stormwind_extraction : public InstanceScript
             if (!talanji || !zul || !saurfang)
                 return;
 
-            talanji->GetScheduler().Schedule(2s, [this, talanji, zul](TaskContext /*context*/)
+            talanji->GetScheduler().Schedule(2s, [talanji, zul](TaskContext /*context*/)
             {
                 talanji->GetMotionMaster()->MovePoint(1, -8745.711914f, 886.244446f, 52.815662f);
 

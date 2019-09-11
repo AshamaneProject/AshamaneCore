@@ -57,7 +57,7 @@ public:
     };
 
     explicit Garrison(Player* owner);
-    ~Garrison() {};
+    virtual ~Garrison() {};
 
     Player* GetOwner() const { return _owner; }
 

@@ -414,15 +414,16 @@ void Pet::SavePetToDB(PetSaveMode mode)
         stmt->setInt16(7, m_petSlot);
         stmt->setString(8, m_name);
         stmt->setUInt8(9, HasPetFlag(UNIT_PET_FLAG_CAN_BE_RENAMED) ? 0 : 1);
-        stmt->setUInt32(10, curhealth);
-        stmt->setUInt32(11, curmana);
+        stmt->setUInt8(10, IsActive() ? 1 : 0);
+        stmt->setUInt32(11, curhealth);
+        stmt->setUInt32(12, curmana);
 
         stmt->setString(13, GenerateActionBarData());
 
-        stmt->setUInt32(13, time(NULL));
-        stmt->setUInt32(14, m_unitData->CreatedBySpell);
-        stmt->setUInt8(15, getPetType());
-        stmt->setUInt16(16, m_petSpecialization);
+        stmt->setUInt32(14, time(NULL));
+        stmt->setUInt32(15, m_unitData->CreatedBySpell);
+        stmt->setUInt8(16, getPetType());
+        stmt->setUInt16(17, m_petSpecialization);
         trans->Append(stmt);
 
         CharacterDatabase.CommitTransaction(trans);
