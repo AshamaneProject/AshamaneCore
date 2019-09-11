@@ -3047,7 +3047,7 @@ class spell_monk_renewing_mist_jump : public SpellScript
             return false;
         });
 
-        targets.remove_if([this](WorldObject* a)
+        targets.remove_if([](WorldObject* a)
         {
             Unit* ally = a->ToUnit();
             if (!ally || ally->IsFullHealth())
