@@ -21,7 +21,7 @@ namespace dukglue
 				"lightfunc"
 			};
 
-			if (type_idx >= 0 && type_idx < sizeof(names) / sizeof(names[0]))
+			if (type_idx >= 0 && type_idx < duk_int_t(sizeof(names) / sizeof(names[0])))
 				return names[type_idx];
 			else
 				return "unknown";
