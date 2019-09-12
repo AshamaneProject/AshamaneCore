@@ -4476,10 +4476,44 @@ void Map::UpdateAreaDependentAuras()
                 player->UpdateAreaDependentAuras();
 }
 
+class ReloadJSWorker
+{
+public:
+    ReloadJSWorker(bool destroy) : _destroy(destroy) { }
+
+    void Visit(std::unordered_map<ObjectGuid, Creature*>& creatureMap)
+    {
+        for (auto const& p : creatureMap)
+        {
+            if (p.second->IsInWorld())
+            {
+                if (_destroy)
+                    p.second->AIM_JS_Destroy();
+                else
+                    p.second->AIM_JS_Create();
+            }
+        }
+    }
+
+    template<class T>
+    void Visit(std::unordered_map<ObjectGuid, T*>&) { }
+
+private:
+    bool _destroy;
+};
+
 void Map::ReloadJSEngine()
 {
+    ReloadJSWorker destroyWorker(true);
+    TypeContainerVisitor<ReloadJSWorker, MapStoredObjectTypesContainer> destroyVisitor(destroyWorker);
+    destroyVisitor.Visit(GetObjectsStore());
+
     delete _jsEngine;
 
     _jsEngine = new JSEngine();
     _jsEngine->LoadJSFileScripts();
+
+    ReloadJSWorker createWorker(false);
+    TypeContainerVisitor<ReloadJSWorker, MapStoredObjectTypesContainer> createVisitor(createWorker);
+    createVisitor.Visit(GetObjectsStore());
 }

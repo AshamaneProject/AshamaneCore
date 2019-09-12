@@ -149,6 +149,8 @@ class TC_GAME_API Creature : public Unit, public GridObject<Creature>, public Ma
 
         bool AIM_Destroy();
         bool AIM_Create(CreatureAI* ai = nullptr);
+        void AIM_JS_Destroy();
+        void AIM_JS_Create();
         void AI_InitializeAndEnable();
         bool AIM_Initialize(CreatureAI* ai = nullptr);
         void Motion_Initialize();

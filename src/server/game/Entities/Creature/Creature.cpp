@@ -1030,6 +1030,18 @@ bool Creature::AIM_Create(CreatureAI* ai /*= nullptr*/)
 
     i_AI = ai ? ai : FactorySelector::selectAI(this);
 
+    AIM_JS_Create();
+
+    return true;
+}
+
+void Creature::AIM_JS_Destroy()
+{
+    m_jsCtx = nullptr;
+}
+
+void Creature::AIM_JS_Create()
+{
     std::string jsScriptName = sJsStorage->GetCreatureScript(GetEntry());
     if (!jsScriptName.empty())
     {
@@ -1038,8 +1050,6 @@ bool Creature::AIM_Create(CreatureAI* ai /*= nullptr*/)
         GetMap()->GetJSEngine()->RegisterGlobal(m_jsCtx, this, "me");
         GetMap()->GetJSEngine()->RunJSFunction(m_jsCtx, jsScriptName.c_str());
     }
-
-    return true;
 }
 
 void Creature::AI_InitializeAndEnable()

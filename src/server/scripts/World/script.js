@@ -1,6 +1,8 @@
 
 function npc_bryan_cross()
 {
+    var timer = 10000;
+
     script.Reset = function()
     {
         me.CastSpellTriggered(me, 41475);
@@ -11,7 +13,13 @@ function npc_bryan_cross()
 
     script.UpdateAI = function(diff)
     {
-        print("UpdateAI");
+        if (timer <= diff)
+        {
+            print("10 secondes :)");
+            timer = 10000;
+        }
+        else
+            timer -= diff;
     };
 }
 
