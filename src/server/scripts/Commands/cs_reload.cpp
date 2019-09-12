@@ -71,8 +71,8 @@ public:
             { "quest",                         rbac::RBAC_PERM_COMMAND_RELOAD_ALL_QUEST,                        true,  &HandleReloadAllQuestCommand,                    "" },
             { "scripts",                       rbac::RBAC_PERM_COMMAND_RELOAD_ALL_SCRIPTS,                      true,  &HandleReloadAllScriptsCommand,                  "" },
             { "spell",                         rbac::RBAC_PERM_COMMAND_RELOAD_ALL_SPELL,                        true,  &HandleReloadAllSpellCommand,                    "" },
-            { "js",                            rbac::RBAC_PERM_COMMAND_RELOAD_ALL,                              true,  &HandleReloadAllSpellCommand,                    "" },
-            { "",                              rbac::RBAC_PERM_COMMAND_RELOAD_ALL,                              true,  &HandleReloadAllJSCommand,                         "" },
+            { "js",                            rbac::RBAC_PERM_COMMAND_RELOAD_ALL,                              true,  &HandleReloadAllJSCommand,                       "" },
+            { "",                              rbac::RBAC_PERM_COMMAND_RELOAD_ALL,                              true,  &HandleReloadAllCommand,                         "" },
         };
         static std::vector<ChatCommand> reloadCommandTable =
         {
