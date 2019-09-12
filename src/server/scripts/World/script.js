@@ -5,13 +5,14 @@ function npc_bryan_cross()
     {
         me.CastSpellTriggered(me, 41475);
         
-        var x = me.GetPositionX();
-        
         var motionMaster = me.GetMotionMaster();
-        motionMaster.MovePoint(0, -8942.668945, -107.672882, 83.069565, false);
-        
-        print(" " + x);
+        //motionMaster.MovePoint(0, -8942.668945, -107.672882, 83.069565, false);
     };
+
+	script.UpdateAI = function(diff)
+	{
+		print("UpdateAI");
+	};
 }
 
 function register()

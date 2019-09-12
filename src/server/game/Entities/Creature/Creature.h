@@ -156,6 +156,27 @@ class TC_GAME_API Creature : public Unit, public GridObject<Creature>, public Ma
 
         CreatureAI* AI() const { return reinterpret_cast<CreatureAI*>(i_AI); }
 
+        duk_context* GetJSContext() const { return m_jsCtx; }
+        bool HasJSScript() const { return GetJSContext() != nullptr; }
+
+        template <typename... ArgTs>
+        bool CallVoidJSMethod(const char* method_name, ArgTs... args)
+        {
+            if (!HasJSScript())
+                return false;
+
+            try
+            {
+                dukglue_pcall_method<void>(GetJSContext(), AI(), method_name, args...);
+            }
+            catch (std::exception const& /*ex*/)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         SpellSchoolMask GetMeleeDamageSchoolMask() const override { return m_meleeDamageSchoolMask; }
         void SetMeleeDamageSchool(SpellSchools school) { m_meleeDamageSchoolMask = SpellSchoolMask(1 << school); }
 
@@ -368,8 +389,6 @@ class TC_GAME_API Creature : public Unit, public GridObject<Creature>, public Ma
         void DisableHealthRegen() { m_disableHealthRegen = true; }
         void ReenableHealthRegen() { m_disableHealthRegen = false; }
         bool HealthRegenDisabled() const { return m_disableHealthRegen; }
-
-        duk_context* GetJSContext() const { return m_jsCtx; }
 
     protected:
         bool CreateFromProto(ObjectGuid::LowType guidlow, uint32 entry, CreatureData const* data = nullptr, uint32 vehId = 0);

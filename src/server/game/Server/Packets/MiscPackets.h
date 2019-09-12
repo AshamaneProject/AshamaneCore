@@ -171,7 +171,7 @@ namespace WorldPackets
                 Alliance    = 1
             };
 
-            uint32 SelectedFaction = -1; ///< 0 - horde, 1 - alliance
+            uint32 SelectedFaction = uint32(-1); ///< 0 - horde, 1 - alliance
         };
 
         class TimeSyncRequest final : public ServerPacket

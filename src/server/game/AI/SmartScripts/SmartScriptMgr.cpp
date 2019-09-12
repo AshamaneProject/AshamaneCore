@@ -684,7 +684,7 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
 
     if (e.event.event_phase_mask > SMART_EVENT_PHASE_ALL)
     {
-        //TC_LOG_ERROR("sql.sql", "SmartAIMgr: EntryOrGuid " SI64FMTD " using event(%u) has invalid phase mask (%u), skipped.", e.entryOrGuid, e.event_id, e.event.event_phase_mask);
+        TC_LOG_ERROR("sql.sql", "SmartAIMgr: EntryOrGuid " SI64FMTD " using event(%u) has invalid phase mask (%u), skipped.", e.entryOrGuid, e.event_id, e.event.event_phase_mask);
         return false;
     }
 

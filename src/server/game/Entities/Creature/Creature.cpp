@@ -778,7 +778,8 @@ void Creature::Update(uint32 diff)
 
                 // Recheck in case UpdateOperations changed the AI (creature destroy, etc)
                 if (i_AI)
-                    i_AI->UpdateAI(diff);
+                    if (!CallVoidJSMethod("UpdateAI", diff))
+                        i_AI->UpdateAI(diff);
 
                 m_AI_locked = false;
             }
@@ -1078,16 +1079,9 @@ void Creature::Motion_Initialize()
 
 void Creature::ResetAI(bool initialize)
 {
-    if (m_jsCtx && !isDead())
+    if (HasJSScript() && !isDead())
     {
-        try
-        {
-            dukglue_pcall_method<void>(GetJSContext(), AI(), "Reset");
-        }
-        catch (std::exception& ex)
-        {
-            printf("Error : %s", ex.what());
-        }
+        CallVoidJSMethod("Reset");
     }
     else if (initialize)
         AI()->InitializeAI();

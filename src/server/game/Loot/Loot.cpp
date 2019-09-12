@@ -162,7 +162,7 @@ void Loot::clear()
 
 uint32 Loot::GetUnlootedCount(Player const* player /*= nullptr*/) const
 {
-    uint32 unlootedCount = 0;
+    uint32 playerUnlootedCount = 0;
 
     if (player)
     {
@@ -170,17 +170,17 @@ uint32 Loot::GetUnlootedCount(Player const* player /*= nullptr*/) const
         if (itr != items.end())
             for (LootItem const& item : itr->second)
                 if (!item.is_looted)
-                    ++unlootedCount;
+                    ++playerUnlootedCount;
     }
     else
     {
         for (auto const& itemItr : items)
             for (LootItem const& item : itemItr.second)
                 if (!item.is_looted)
-                    ++unlootedCount;
+                    ++playerUnlootedCount;
     }
 
-    return unlootedCount;
+    return playerUnlootedCount;
 }
 
 void Loot::NotifyItemRemoved(uint8 lootIndex)

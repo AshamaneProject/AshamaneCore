@@ -147,9 +147,6 @@ namespace ArenaHelper
 
     inline uint32 GetConquestCapFromRating(int rating)
     {
-        if (!g_PvpMinCPPerWeek)
-            return 0;
-
         float minRatingFactor = CalculateRatingFactor(1500);
         float maxRatingFactor = CalculateRatingFactor(3000);
         float currentRatingFactor = CalculateRatingFactor(rating);

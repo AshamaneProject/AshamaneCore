@@ -80,6 +80,7 @@
 #include "WorldPacket.h"
 #include "WorldSession.h"
 #include <cmath>
+#include "dukglue\dukglue.h"
 
 float baseMoveSpeed[MAX_MOVE_TYPE] =
 {
@@ -8392,7 +8393,8 @@ void Unit::SetInCombatState(bool PvP, Unit* enemy)
         if (enemy)
         {
             if (IsAIEnabled)
-                creature->AI()->EnterCombat(enemy);
+                if (!creature->CallVoidJSMethod("EnterCombat", enemy))
+                    creature->AI()->EnterCombat(enemy);
 
             if (creature->GetFormation())
                 creature->GetFormation()->MemberAttackStart(creature, enemy);

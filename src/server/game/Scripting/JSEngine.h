@@ -52,6 +52,7 @@ private:
     void RegisterUnitClass();
     void RegisterPlayerClass();
     void RegisterCreatureClass();
+    void RegisterTempSummonClass();
     void RegisterMotionMasterClass();
     void RegisterUnitAIClass();
     void RegisterCreatureAIClass();

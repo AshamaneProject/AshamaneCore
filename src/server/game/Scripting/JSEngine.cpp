@@ -21,6 +21,7 @@
 #include "MotionMaster.h"
 #include "SharedDefines.h"
 #include "Spell.h"
+#include "TemporarySummon.h"
 #include <filesystem>
 #include <fstream>
 #include <boost/filesystem.hpp>
@@ -39,6 +40,7 @@ JSEngine::JSEngine()
     RegisterUnitClass();
     RegisterPlayerClass();
     RegisterCreatureClass();
+    RegisterTempSummonClass();
     RegisterMotionMasterClass();
     RegisterUnitAIClass();
     RegisterCreatureAIClass();
@@ -101,15 +103,19 @@ bool JSEngine::CompileJS(const char* programBody)
 {
     bool success = false;
 
-    // Compile the JS into bytecode
-    if (duk_pcompile_string(m_ctx, 0, programBody) == 0)
+    try
     {
-        // Actually evaluate it - this will push the compiled code into the global scope
-        duk_pcall(m_ctx, 0);
-        success = true;
+        // Compile the JS into bytecode
+        if (duk_pcompile_string(m_ctx, 0, programBody) == 0)
+        {
+            // Actually evaluate it - this will push the compiled code into the global scope
+            duk_pcall(m_ctx, 0);
+            success = true;
 
+        }
+        duk_pop(m_ctx);
     }
-    duk_pop(m_ctx);
+    catch (std::exception const& /*ex*/) { }
 
     return success;
 }
@@ -202,6 +208,11 @@ void JSEngine::RegisterCreatureClass()
     dukglue_set_base_class<Unit, Creature>(m_ctx);
 }
 
+void JSEngine::RegisterTempSummonClass()
+{
+    dukglue_set_base_class<Creature, TempSummon>(m_ctx);
+}
+
 void JSEngine::RegisterMotionMasterClass()
 {
     dukglue_register_method(m_ctx, (void (MotionMaster::*)(uint32, float, float, float, bool generatePath)) &MotionMaster::MovePoint, "MovePoint");
@@ -218,6 +229,13 @@ void JSEngine::RegisterCreatureAIClass()
 {
     //dukglue_register_constructor<CreatureAI>(m_ctx, "CreatureAI");
     dukglue_set_base_class<UnitAI, CreatureAI>(m_ctx);
+
+    dukglue_register_method(m_ctx, &CreatureAI::UpdateVictim, "UpdateVictim");
+    dukglue_register_method(m_ctx, &CreatureAI::UpdateVictimWithGaze, "UpdateVictimWithGaze");
+
+    dukglue_register_method(m_ctx, &CreatureAI::SetGazeOn, "SetGazeOn");
+
+    dukglue_register_method(m_ctx, &CreatureAI::Talk, "Talk");
 
     dukglue_register_method(m_ctx, &CreatureAI::JustDied, "JustDied");
     dukglue_register_method(m_ctx, &CreatureAI::KilledUnit, "KilledUnit");

@@ -71,7 +71,8 @@ public:
             { "quest",                         rbac::RBAC_PERM_COMMAND_RELOAD_ALL_QUEST,                        true,  &HandleReloadAllQuestCommand,                    "" },
             { "scripts",                       rbac::RBAC_PERM_COMMAND_RELOAD_ALL_SCRIPTS,                      true,  &HandleReloadAllScriptsCommand,                  "" },
             { "spell",                         rbac::RBAC_PERM_COMMAND_RELOAD_ALL_SPELL,                        true,  &HandleReloadAllSpellCommand,                    "" },
-            { "",                              rbac::RBAC_PERM_COMMAND_RELOAD_ALL,                              true,  &HandleReloadAllCommand,                         "" },
+            { "js",                            rbac::RBAC_PERM_COMMAND_RELOAD_ALL,                              true,  &HandleReloadAllSpellCommand,                    "" },
+            { "",                              rbac::RBAC_PERM_COMMAND_RELOAD_ALL,                              true,  &HandleReloadAllJSCommand,                         "" },
         };
         static std::vector<ChatCommand> reloadCommandTable =
         {
@@ -1213,15 +1214,28 @@ public:
         return true;
     }
 
-    static bool HandleReloadJSCommand(ChatHandler* handler, const char* /*args*/)
+    static bool HandleReloadAllJSCommand(ChatHandler* handler, const char* /*args*/)
     {
         TC_LOG_INFO("misc", "Reloading JS scripts...");
 
-        if (WorldSession * session = handler->GetSession())
-            if (Player * player = session->GetPlayer())
+        if (WorldSession* session = handler->GetSession())
+            if (Player* player = session->GetPlayer())
                 sMapMgr->ReloadJSScripts();
 
         handler->SendGlobalGMSysMessage("JS scripts reloaded.");
+        return true;
+    }
+
+    static bool HandleReloadJSCommand(ChatHandler* handler, const char* /*args*/)
+    {
+        TC_LOG_INFO("misc", "Reloading JS scripts for this map...");
+
+        if (WorldSession* session = handler->GetSession())
+            if (Player* player = session->GetPlayer())
+                if (Map* map = player->GetMap())
+                    map->ReloadJSEngine();
+
+        handler->SendGlobalGMSysMessage("JS scripts reloaded for this map.");
         return true;
     }
 };
