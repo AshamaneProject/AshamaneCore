@@ -23,6 +23,7 @@
 #include "Common.h"
 #include "CreatureData.h"
 #include "DatabaseEnvFwd.h"
+#include "dukglue/dukglue.h"
 #include "Duration.h"
 #include "Loot.h"
 #include "MapObject.h"
