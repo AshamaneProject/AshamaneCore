@@ -19,7 +19,7 @@ template <typename FullT>
 void dukglue_push(duk_context* ctx, const FullT& val) {
 	// ArgStorage has some static_asserts in it that validate value types,
 	// so we typedef it to force ArgStorage<RetType> to compile and run the asserts
-	typedef typename dukglue::types::ArgStorage<FullT>::type ValidateReturnType;
+	//typedef typename dukglue::types::ArgStorage<FullT>::type ValidateReturnType;
 
 	using namespace dukglue::types;
 	DukType<typename Bare<FullT>::type>::template push<FullT>(ctx, std::move(val));
@@ -48,7 +48,7 @@ void dukglue_read(duk_context* ctx, duk_idx_t arg_idx, RetT* out)
 {
 	// ArgStorage has some static_asserts in it that validate value types,
 	// so we typedef it to force ArgStorage<RetType> to compile and run the asserts
-	typedef typename dukglue::types::ArgStorage<RetT>::type ValidateReturnType;
+	//typedef typename dukglue::types::ArgStorage<RetT>::type ValidateReturnType;
 
 	using namespace dukglue::types;
 	*out = DukType<typename Bare<RetT>::type>::template read<RetT>(ctx, arg_idx);
