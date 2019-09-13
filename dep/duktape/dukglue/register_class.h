@@ -77,20 +77,6 @@ void dukglue_set_base_class(duk_context* ctx)
 }
 
 // methods
-template<typename T, T Value, class Cls, typename RetType, typename... Ts>
-void dukglue_register_method_compiletime(duk_context* ctx, RetType(Cls::*method)(Ts...), const char* name)
-{
-	static_assert(std::is_same<T, RetType(Cls::*)(Ts...)>::value, "Mismatching method types.");
-	dukglue_register_method_compiletime<false, T, Value, Cls, RetType, Ts...>(ctx, name);
-}
-
-template<typename T, T Value, class Cls, typename RetType, typename... Ts>
-void dukglue_register_method_compiletime(duk_context* ctx, RetType(Cls::*method)(Ts...) const, const char* name)
-{
-	static_assert(std::is_same<T, RetType(Cls::*)(Ts...) const>::value, "Mismatching method types.");
-	dukglue_register_method_compiletime<true, T, Value, Cls, RetType, Ts...>(ctx, name);
-}
-
 template<bool isConst, typename T, T Value, class Cls, typename RetType, typename... Ts>
 void dukglue_register_method_compiletime(duk_context* ctx, const char* name)
 {

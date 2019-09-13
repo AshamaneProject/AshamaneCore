@@ -37,7 +37,7 @@ namespace dukglue
 				{
 					// ArgStorage has some static_asserts in it that validate value types,
 					// so we typedef it to force ArgStorage<RetType> to compile and run the asserts
-					typedef typename dukglue::types::ArgStorage<RetType>::type ValidateReturnType;
+					//typedef typename dukglue::types::ArgStorage<RetType>::type ValidateReturnType;
 
 					RetType return_val = dukglue::detail::apply_fp(funcToCall, args);
 
@@ -46,7 +46,7 @@ namespace dukglue
 				}
 
 				template<typename Dummy = RetType, typename... BakedTs>
-				static typename std::enable_if<std::is_void<Dummy>::value>::type actually_call(duk_context* ctx, const std::tuple<BakedTs...>& args)
+				static typename std::enable_if<std::is_void<Dummy>::value>::type actually_call(duk_context* /*ctx*/, const std::tuple<BakedTs...>& args)
 				{
 					dukglue::detail::apply_fp(funcToCall, args);
 				}
@@ -81,7 +81,7 @@ namespace dukglue
 				{
 					// ArgStorage has some static_asserts in it that validate value types,
 					// so we typedef it to force ArgStorage<RetType> to compile and run the asserts
-					typedef typename dukglue::types::ArgStorage<RetType>::type ValidateReturnType;
+					//typedef typename dukglue::types::ArgStorage<RetType>::type ValidateReturnType;
 
 					RetType return_val = dukglue::detail::apply_fp(funcToCall, args);
 
@@ -90,7 +90,7 @@ namespace dukglue
 				}
 
 				template<typename Dummy = RetType, typename... BakedTs>
-				static typename std::enable_if<std::is_void<Dummy>::value>::type actually_call(duk_context* ctx, RetType(*funcToCall)(Ts...), const std::tuple<BakedTs...>& args)
+				static typename std::enable_if<std::is_void<Dummy>::value>::type actually_call(duk_context* /*ctx*/, RetType(*funcToCall)(Ts...), const std::tuple<BakedTs...>& args)
 				{
 					dukglue::detail::apply_fp(funcToCall, args);
 				}

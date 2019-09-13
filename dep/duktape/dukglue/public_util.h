@@ -19,7 +19,7 @@ template <typename FullT>
 void dukglue_push(duk_context* ctx, const FullT& val) {
 	// ArgStorage has some static_asserts in it that validate value types,
 	// so we typedef it to force ArgStorage<RetType> to compile and run the asserts
-	typedef typename dukglue::types::ArgStorage<FullT>::type ValidateReturnType;
+	//typedef typename dukglue::types::ArgStorage<FullT>::type ValidateReturnType;
 
 	using namespace dukglue::types;
 	DukType<typename Bare<FullT>::type>::template push<FullT>(ctx, std::move(val));
@@ -32,7 +32,7 @@ void dukglue_push(duk_context* ctx, const T& arg, ArgTs... args)
 	dukglue_push(ctx, args...);
 }
 
-inline void dukglue_push(duk_context* ctx)
+inline void dukglue_push(duk_context* /*ctx*/)
 {
 	// no-op
 }
@@ -48,7 +48,7 @@ void dukglue_read(duk_context* ctx, duk_idx_t arg_idx, RetT* out)
 {
 	// ArgStorage has some static_asserts in it that validate value types,
 	// so we typedef it to force ArgStorage<RetType> to compile and run the asserts
-	typedef typename dukglue::types::ArgStorage<RetT>::type ValidateReturnType;
+	//typedef typename dukglue::types::ArgStorage<RetT>::type ValidateReturnType;
 
 	using namespace dukglue::types;
 	*out = DukType<typename Bare<RetT>::type>::template read<RetT>(ctx, arg_idx);
@@ -91,7 +91,7 @@ struct SafeMethodCallData {
 };
 
 template <typename ObjT, typename... ArgTs, size_t... Indexes>
-void call_method_safe_helper(duk_context* ctx, const ObjT& obj, const char* method_name, std::tuple<ArgTs...>& tup, index_tuple<Indexes...> indexes)
+void call_method_safe_helper(duk_context* ctx, const ObjT& obj, const char* method_name, std::tuple<ArgTs...>& tup, index_tuple<Indexes...> /*indexes*/)
 {
 	dukglue_call_method(ctx, obj, method_name, std::forward<ArgTs>(std::get<Indexes>(tup))...);
 }
@@ -180,7 +180,7 @@ struct SafeCallData {
 };
 
 template <typename ObjT, typename... ArgTs, size_t... Indexes>
-void call_safe_helper(duk_context* ctx, const ObjT& obj, std::tuple<ArgTs...>& tup, index_tuple<Indexes...> indexes)
+void call_safe_helper(duk_context* ctx, const ObjT& obj, std::tuple<ArgTs...>& tup, index_tuple<Indexes...> /*indexes*/)
 {
 	dukglue_call(ctx, obj, std::forward<ArgTs>(std::get<Indexes>(tup))...);
 }
