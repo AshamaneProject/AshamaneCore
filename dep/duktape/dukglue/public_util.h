@@ -32,7 +32,7 @@ void dukglue_push(duk_context* ctx, const T& arg, ArgTs... args)
 	dukglue_push(ctx, args...);
 }
 
-inline void dukglue_push(duk_context* ctx)
+inline void dukglue_push(duk_context* /*ctx*/)
 {
 	// no-op
 }
