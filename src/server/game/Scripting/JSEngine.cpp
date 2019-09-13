@@ -136,7 +136,7 @@ duk_bool_t JSEngine::RunJSFunction(duk_context* ctx, const char* funcName, const
         {
             // An error occurred - display a stack trace
             duk_get_prop_string(ctx, -1, "stack");
-            printf(duk_safe_to_string(ctx, -1));
+            printf("%s\n", duk_safe_to_string(ctx, -1));
         }
         else
         {
