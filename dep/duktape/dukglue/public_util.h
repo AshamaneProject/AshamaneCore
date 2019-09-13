@@ -180,7 +180,7 @@ struct SafeCallData {
 };
 
 template <typename ObjT, typename... ArgTs, size_t... Indexes>
-void call_safe_helper(duk_context* ctx, const ObjT& obj, std::tuple<ArgTs...>& tup, index_tuple<Indexes...> indexes)
+void call_safe_helper(duk_context* ctx, const ObjT& obj, std::tuple<ArgTs...>& tup, index_tuple<Indexes...> /*indexes*/)
 {
 	dukglue_call(ctx, obj, std::forward<ArgTs>(std::get<Indexes>(tup))...);
 }
