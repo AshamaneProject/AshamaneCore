@@ -91,7 +91,7 @@ struct SafeMethodCallData {
 };
 
 template <typename ObjT, typename... ArgTs, size_t... Indexes>
-void call_method_safe_helper(duk_context* ctx, const ObjT& obj, const char* method_name, std::tuple<ArgTs...>& tup, index_tuple<Indexes...> indexes)
+void call_method_safe_helper(duk_context* ctx, const ObjT& obj, const char* method_name, std::tuple<ArgTs...>& tup, index_tuple<Indexes...> /*indexes*/)
 {
 	dukglue_call_method(ctx, obj, method_name, std::forward<ArgTs>(std::get<Indexes>(tup))...);
 }
