@@ -22,7 +22,6 @@
 #include "SharedDefines.h"
 #include "Spell.h"
 #include "TemporarySummon.h"
-#include <filesystem>
 #include <fstream>
 #include <boost/filesystem.hpp>
 #include <Regex.h>
