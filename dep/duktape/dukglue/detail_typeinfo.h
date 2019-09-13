@@ -7,7 +7,7 @@ namespace dukglue
 	namespace detail
 	{
 		// same as duk_get_type_name, which is private for some reason *shakes fist*
-		static const char* get_type_name(duk_int_t type_idx) {
+		static inline const char* get_type_name(duk_int_t type_idx) {
 			static const char* names[] = {
 				"none",
 				"undefined",
