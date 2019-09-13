@@ -185,7 +185,7 @@ public:
 	}
 
 protected:
-	static duk_ret_t json_decode_safe(duk_context* ctx, void* user_data)
+	static duk_ret_t json_decode_safe(duk_context* ctx, void* /*user_data*/)
 	{
 		duk_json_decode(ctx, -1);
 		return 1;
