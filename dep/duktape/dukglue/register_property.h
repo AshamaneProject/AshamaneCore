@@ -54,7 +54,7 @@ void dukglue_register_property(duk_context* ctx,
 
 // no getter, no setter
 template <typename Cls, typename ValT>
-void dukglue_register_property(duk_context* /*ctx*/, std::nullptr_t getter, std::nullptr_t setter, const char* name)
+void dukglue_register_property(duk_context* /*ctx*/, std::nullptr_t /*getter*/, std::nullptr_t /*setter*/, const char* /**/)
 {
 	// strictly speaking I think duktape can probably handle neither
 	// (according to the wonderful API docs), but I don't know why you
