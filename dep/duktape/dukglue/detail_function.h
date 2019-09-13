@@ -46,7 +46,7 @@ namespace dukglue
 				}
 
 				template<typename Dummy = RetType, typename... BakedTs>
-				static typename std::enable_if<std::is_void<Dummy>::value>::type actually_call(duk_context* ctx, const std::tuple<BakedTs...>& args)
+				static typename std::enable_if<std::is_void<Dummy>::value>::type actually_call(duk_context* /*ctx*/, const std::tuple<BakedTs...>& args)
 				{
 					dukglue::detail::apply_fp(funcToCall, args);
 				}
