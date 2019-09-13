@@ -80,7 +80,7 @@
 #include "WorldPacket.h"
 #include "WorldSession.h"
 #include <cmath>
-#include "dukglue\dukglue.h"
+#include "dukglue/dukglue.h"
 
 float baseMoveSpeed[MAX_MOVE_TYPE] =
 {

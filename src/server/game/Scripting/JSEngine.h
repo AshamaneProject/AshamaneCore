@@ -15,8 +15,8 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "duktape\duktape.h"
-#include "dukglue\dukglue.h"
+#include "duktape/duktape.h"
+#include "dukglue/dukglue.h"
 
 class JSEngine
 {
