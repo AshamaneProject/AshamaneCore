@@ -121,7 +121,7 @@ bool JSEngine::CompileJS(const char* programBody)
 
 duk_bool_t JSEngine::RunJSFunction(duk_context* ctx, const char* funcName, const char* arga, const char* argb)
 {
-    duk_bool_t returnVal;
+    duk_bool_t returnVal = false;
 
     // Get a reference to the named JS function
     if (duk_get_global_string(ctx, funcName))
@@ -145,10 +145,7 @@ duk_bool_t JSEngine::RunJSFunction(duk_context* ctx, const char* funcName, const
         }
     }
     else
-    {
         printf("JS function not found!\n");
-        returnVal = false;
-    }
 
     duk_pop(ctx); // pop result
 
