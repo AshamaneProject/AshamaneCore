@@ -2910,6 +2910,7 @@ float Unit::GetUnitCriticalChance(WeaponAttackType attackType, Unit const* victi
 
             if (GetOwner() && GetOwner()->IsPlayer() && (IsPet() || IsHunterPet() || IsGuardian()))
             {
+                thisPlayer = GetOwner()->ToPlayer();
                 switch (attackType)
                 {
                     case BASE_ATTACK:
