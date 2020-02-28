@@ -504,6 +504,9 @@ struct GameObjectTemplate
             uint32 autoClose;                               // 2 autoClose (ms), int, Min value: 0, Max value: 2147483647, Default value: 0
             uint32 BlocksPathsDown;                         // 3 Blocks Paths Down, enum { false, true, }; Default: false
             uint32 PathBlockerBump;                         // 4 Path Blocker Bump (ft), int, Min value: -2147483648, Max value: 2147483647, Default value: 0
+            uint32 GiganticAOI;                             // 5 Gigantic AOI, enum { false, true, }; Default: false
+            uint32 InfiniteAOI;                             // 6 Infinite AOI, enum { false, true, }; Default: false
+            uint32 DoorisOpaque;                            // 7 Door is Opaque (Disable portal on close), enum { false, true, }; Default: false
         } trapdoor;
         // 36 GAMEOBJECT_TYPE_NEW_FLAG
         struct

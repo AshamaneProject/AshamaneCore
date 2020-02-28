@@ -166,6 +166,11 @@ foreach(SCRIPT_MODULE ${SCRIPT_MODULE_LIST})
         trinity-core-interface
       PUBLIC
         game)
+
+    target_include_directories(${SCRIPT_MODULE_PROJECT_NAME}
+      PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR})
+
     set_target_properties(${SCRIPT_MODULE_PROJECT_NAME}
       PROPERTIES
         FOLDER

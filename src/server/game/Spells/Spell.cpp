@@ -561,7 +561,7 @@ protected:
 
 Spell::Spell(Unit* caster, SpellInfo const* info, TriggerCastFlags triggerFlags, ObjectGuid originalCasterGUID, bool skipCheck) :
 m_spellInfo(info), m_caster((info->HasAttribute(SPELL_ATTR6_CAST_BY_CHARMER) && caster->GetCharmerOrOwner()) ? caster->GetCharmerOrOwner() : caster),
-m_spellValue(new SpellValue(caster->GetMap()->GetDifficultyID(), m_spellInfo, caster)), _spellEvent(nullptr)
+m_spellValue(new SpellValue(caster->GetMap()->GetDifficultyID(), m_spellInfo)), _spellEvent(nullptr)
 {
     _effects = info->GetEffectsForDifficulty(caster->GetMap()->GetDifficultyID());
 
@@ -870,16 +870,16 @@ uint64 Spell::CalculateDelayMomentForDst() const
         {
             float speed = m_targets.GetSpeedXY();
             if (speed > 0.0f)
-                m_delayMoment = uint64(std::floor(m_targets.GetDist2d() / speed * 1000.0f) + (m_spellInfo->LaunchDelay * 1000.0f));
+                return (uint64)floor((m_targets.GetDist2d() / speed * 1000.0f) + (m_spellInfo->LaunchDelay * 1000.0f));
         }
         else if (m_spellInfo->Speed > 0.0f)
         {
             // We should not subtract caster size from dist calculation (fixes execution time desync with animation on client, eg. Malleable Goo cast by PP)
             float dist = m_caster->GetExactDist(*m_targets.GetDstPos());
             if (!m_spellInfo->HasAttribute(SPELL_ATTR9_SPECIAL_DELAY_CALCULATION))
-                m_delayMoment = uint64(std::floor(dist / m_spellInfo->Speed * 1000.0f) + (m_spellInfo->LaunchDelay * 1000.0f));
+                return (uint64)floor(std::floor(dist / m_spellInfo->Speed * 1000.0f) + (m_spellInfo->LaunchDelay * 1000.0f));
             else
-                m_delayMoment = uint64((m_spellInfo->Speed * 1000.0f) + (m_spellInfo->LaunchDelay * 1000.0f));
+                return (uint64)floor((m_spellInfo->Speed * 1000.0f) + (m_spellInfo->LaunchDelay * 1000.0f));
         }
     }
 
@@ -905,7 +905,7 @@ void Spell::SelectEffectImplicitTargets(SpellEffIndex effIndex, SpellImplicitTar
         case TARGET_SELECT_CATEGORY_NEARBY:
         case TARGET_SELECT_CATEGORY_CONE:
         case TARGET_SELECT_CATEGORY_AREA:
-        case TARGET_SELECT_CATEGORY_LINE:
+        case TARGET_SELECT_CATEGORY_TRAJ:
             // targets for effect already selected
             if (effectMask & processedEffectMask)
                 return;
@@ -948,7 +948,7 @@ void Spell::SelectEffectImplicitTargets(SpellEffIndex effIndex, SpellImplicitTar
         case TARGET_SELECT_CATEGORY_AREA:
             SelectImplicitAreaTargets(effIndex, targetType, effectMask);
             break;
-        case TARGET_SELECT_CATEGORY_LINE:
+        case TARGET_SELECT_CATEGORY_TRAJ:
             // just in case there is no dest, explanation in SelectImplicitDestDestTargets
             CheckDst();
 
@@ -6119,6 +6119,7 @@ SpellCastResult Spell::CheckCasterAuras(uint32* param1) const
         }
         else if (!CheckSpellCancelsConfuse(param1))
             result = SPELL_FAILED_CONFUSED;
+    }
     else if (m_caster->HasFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_NO_ACTIONS) && m_spellInfo->PreventionType & SPELL_PREVENTION_TYPE_NO_ACTIONS && !CheckSpellCancelsNoActions(param1))
         result = SPELL_FAILED_NO_ACTIONS;
 
@@ -8137,10 +8138,13 @@ WorldObjectSpellLineTargetCheck::WorldObjectSpellLineTargetCheck(float range, Un
 
 bool WorldObjectSpellLineTargetCheck::operator()(WorldObject* target)
 {
-    if (!_caster->HasInLine(target, _caster->GetObjectSize()))
+    if (!_caster->HasInLine(target, target->GetObjectSize(), TRAJECTORY_MISSILE_SIZE))
         return false;
 
-    return WorldObjectSpellAreaTargetCheck::operator ()(target);
+    if (target->GetExactDist2d(_position) > _range)
+        return false;
+
+    return WorldObjectSpellTargetCheck::operator ()(target);
 }
 
 WorldObjectSpellTrajTargetCheck::WorldObjectSpellTrajTargetCheck(float range, Position const* position, Unit* caster, SpellInfo const* spellInfo, SpellTargetCheckTypes selectionType, ConditionContainer* condList)
