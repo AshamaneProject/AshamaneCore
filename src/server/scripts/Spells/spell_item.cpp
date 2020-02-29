@@ -4686,18 +4686,14 @@ uint32 RandomMorphs[16] =
     11670
 };
 
-// 74589
+ // 74589
 class spell_item_faded_wizard_hat : public AuraScript
 {
     PrepareAuraScript(spell_item_faded_wizard_hat);
 
     void OnApply(AuraEffect const*, AuraEffectHandleModes /*mode*/)
     {
-        Unit* caster = GetCaster();
-        if (!caster)
-            return;
-
-        caster->SetDisplayId(RandomMorphs[urand(0, 15)]);
+        GetCaster()->SetDisplayId(RandomMorphs[urand(0, 15)]);
     }
 
     void Register() override
@@ -4713,25 +4709,19 @@ class spell_item_demon_hunters_aspect : public AuraScript
 
     void OnApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
     {
-        Unit* player = GetTarget()->ToPlayer();
-
-        if (!player)
-            return;
-
-        if (player->getGender() == GENDER_MALE)
-            player->SetDisplayId(MaleModels[urand(0, 10)]);
-        else
-            player->SetDisplayId(20126);
+       if (Unit* player = GetTarget()->ToPlayer())
+		{
+            if (player->getGender() == GENDER_MALE)
+                player->SetDisplayId(MaleModels[urand(0, 10)]);
+            else
+                player->SetDisplayId(20126);
+        }
     }
 
     void OnRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
     {
-        Unit* player = GetTarget()->ToPlayer();
-
-        if (!player)
-            return;
-
-        player->SetDisplayId(player->GetNativeDisplayId());
+        if (Unit* player = GetTarget()->ToPlayer())
+            player->SetDisplayId(player->GetNativeDisplayId());
     }
 
     void Register() override
