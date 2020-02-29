@@ -63,10 +63,6 @@ enum SpellIds
     SPELL_WARLOCK_TEAR_CHAOS_BOLT                   = 215279,
     SPELL_WARLOCK_TEAR_SHADOW_BOLT                  = 196657,
     SPELL_PALADIN_TYR_DELIVERANCE_HEAL              = 200654,
-    SPELL_MAGE_MARK_OF_ALUNETH                      = 224968,
-    SPELL_MAGE_MARK_OF_ALUNETH_AOE                  = 211088,
-    SPELL_MAGE_MARK_OF_ALUNETH_DAMAGE               = 211076,
-    SPELL_MAGE_MARK_OF_ALUNETH_SPEED                = 211056
 };
 
 // Ebonbolt - 214634
@@ -719,54 +715,6 @@ class aura_artifact_shaman_stormkeeper : public AuraScript
     }
 };
 
-//224968
-class aura_arti_mage_mark_of_aluneth : public AuraScript
-{
-    PrepareAuraScript(aura_arti_mage_mark_of_aluneth);
-
-    void HandleDummyTick(AuraEffect const* aurEff)
-    {
-        if (Unit* caster = GetCaster())
-            if (Unit* target = GetTarget())
-                caster->CastSpell(target, SPELL_MAGE_MARK_OF_ALUNETH_AOE, true, NULL, aurEff);
-    }
-
-    void OnRemove(AuraEffect const* aurEff, AuraEffectHandleModes /*mode*/)
-    {
-        Unit* caster = GetCaster();
-        Unit* target = GetTarget();
-
-        uint32 power = caster->GetMaxPower(Powers::POWER_MANA);
-        int32 bp = CalculatePct(power, int32(sSpellMgr->GetSpellInfo(SPELL_MAGE_MARK_OF_ALUNETH_DAMAGE)->GetEffect(EFFECT_1)->BasePoints));
-        caster->CastCustomSpell(SPELL_MAGE_MARK_OF_ALUNETH_DAMAGE, SPELLVALUE_BASE_POINT0, bp, target, true, nullptr, aurEff);
-    }
-
-    void Register() override
-    {
-        OnEffectPeriodic += AuraEffectPeriodicFn(aura_arti_mage_mark_of_aluneth::HandleDummyTick, EFFECT_0, SPELL_AURA_PERIODIC_DUMMY);
-        AfterEffectRemove += AuraEffectRemoveFn(aura_arti_mage_mark_of_aluneth::OnRemove, EFFECT_0, SPELL_AURA_PERIODIC_DUMMY, AURA_EFFECT_HANDLE_REAL);
-    }
-};
-
-//211088,211076
-class spell_arti_mage_mark_of_aluneth_aoe : public SpellScript
-{
-    PrepareSpellScript(spell_arti_mage_mark_of_aluneth_aoe);
-
-    void HandleHit(SpellEffIndex /*effIndex*/)
-    {
-        Unit* caster = GetCaster();
-        Unit* hitunit = GetHitUnit();
-
-        caster->CastSpell(hitunit, SPELL_MAGE_MARK_OF_ALUNETH_SPEED, true);
-    }
-
-    void Register() override
-    {
-        OnEffectHitTarget += SpellEffectFn(spell_arti_mage_mark_of_aluneth_aoe::HandleHit, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
-    }
-};
-
 void AddSC_artifact_spell_scripts()
 {
     RegisterSpellScript(spell_arti_dru_new_moon);
@@ -787,9 +735,7 @@ void AddSC_artifact_spell_scripts()
     RegisterCreatureAI(npc_warl_chaos_tear);
     RegisterCreatureAI(npc_warl_shadowy_tear);
     RegisterSpellScript(spell_arti_warl_thalkiels_consumption);
-    RegisterSpellScript(spell_arti_mage_mark_of_aluneth_aoe);
 
-    RegisterAuraScript(aura_arti_mage_mark_of_aluneth);
     /// AreaTrigger scripts
     RegisterAreaTriggerAI(at_dh_fury_of_the_illidari);
 
