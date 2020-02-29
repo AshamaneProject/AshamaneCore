@@ -4666,6 +4666,81 @@ class aura_item_burning_essence : public AuraScript
     }
 };
 
+uint32 RandomMorphs[16] =
+{
+    30089,
+    30096,
+    30084,
+    29907,
+    19840,
+    30085,
+    30086,
+    29909,
+    30094,
+    30093,
+    29908,
+    30088,
+    7614,
+    30092,
+    30095,
+    11670
+};
+
+// 74589
+class spell_item_faded_wizard_hat : public AuraScript
+{
+    PrepareAuraScript(spell_item_faded_wizard_hat);
+
+    void OnApply(AuraEffect const*, AuraEffectHandleModes /*mode*/)
+    {
+        Unit* caster = GetCaster();
+        if (!caster)
+            return;
+
+        caster->SetDisplayId(RandomMorphs[urand(0, 15)]);
+    }
+
+    void Register() override
+    {
+        OnEffectApply += AuraEffectApplyFn(spell_item_faded_wizard_hat::OnApply, EFFECT_0, SPELL_AURA_TRANSFORM, AURA_EFFECT_HANDLE_REAL);
+    }
+};
+
+uint32 MaleModels[] = { 20122, 20124, 20130, 20131, 20132, 20133, 20134, 20756, 20757, 20758, 20759 };
+class spell_item_demon_hunters_aspect : public AuraScript
+{
+    PrepareAuraScript(spell_item_demon_hunters_aspect);
+
+    void OnApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+    {
+        Unit* player = GetTarget()->ToPlayer();
+
+        if (!player)
+            return;
+
+        if (player->getGender() == GENDER_MALE)
+            player->SetDisplayId(MaleModels[urand(0, 10)]);
+        else
+            player->SetDisplayId(20126);
+    }
+
+    void OnRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+    {
+        Unit* player = GetTarget()->ToPlayer();
+
+        if (!player)
+            return;
+
+        player->SetDisplayId(player->GetNativeDisplayId());
+    }
+
+    void Register() override
+    {
+        AfterEffectApply += AuraEffectRemoveFn(spell_item_demon_hunters_aspect::OnApply, EFFECT_0, SPELL_AURA_TRANSFORM, AURA_EFFECT_HANDLE_REAL);
+        AfterEffectRemove += AuraEffectRemoveFn(spell_item_demon_hunters_aspect::OnRemove, EFFECT_0, SPELL_AURA_TRANSFORM, AURA_EFFECT_HANDLE_REAL);
+    }
+};
+
 void AddSC_item_spell_scripts()
 {
     // 23074 Arcanite Dragonling
@@ -4783,4 +4858,6 @@ void AddSC_item_spell_scripts()
     new spell_item_water_strider();
     new spell_item_brutal_kinship();
     RegisterAuraScript(aura_item_burning_essence);
+	 RegisterAuraScript(spell_item_demon_hunters_aspect);
+	 RegisterAuraScript(spell_item_faded_wizard_hat);
 }
