@@ -3857,8 +3857,8 @@ class spell_highmaul_boars_rush : public SpellScriptLoader
 
             void Register() override
             {
-                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_highmaul_boars_rush_SpellScript::CorrectTargets, EFFECT_1, TARGET_UNIT_CASTER_AREA_ENEMY_FRONT);
-                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_highmaul_boars_rush_SpellScript::CorrectTargets, EFFECT_3, TARGET_UNIT_CASTER_AREA_ENEMY_FRONT);
+                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_highmaul_boars_rush_SpellScript::CorrectTargets, EFFECT_1, TARGET_UNIT_CONE_ENTRY_129);
+                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_highmaul_boars_rush_SpellScript::CorrectTargets, EFFECT_3, TARGET_UNIT_CONE_ENTRY_129);
             }
         };
 
@@ -4156,8 +4156,8 @@ class spell_highmaul_earthdevastating_slam_dmg : public SpellScriptLoader
 
             void Register() override
             {
-                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_highmaul_earthdevastating_slam_dmg_SpellScript::CorrectTargets, EFFECT_0, TARGET_UNIT_CASTER_AREA_ENEMY_FRONT);
-                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_highmaul_earthdevastating_slam_dmg_SpellScript::CorrectTargets, EFFECT_1, TARGET_UNIT_CASTER_AREA_ENEMY_FRONT);
+                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_highmaul_earthdevastating_slam_dmg_SpellScript::CorrectTargets, EFFECT_0, TARGET_UNIT_CONE_ENTRY_129);
+                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_highmaul_earthdevastating_slam_dmg_SpellScript::CorrectTargets, EFFECT_1, TARGET_UNIT_CONE_ENTRY_129);
             }
         };
 

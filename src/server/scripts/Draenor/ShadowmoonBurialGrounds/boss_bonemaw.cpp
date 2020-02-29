@@ -653,8 +653,8 @@ public:
 
         void Register() override
         {
-            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_shadowmoon_burial_grounds_body_slam_SpellScript::CorrectTargets, SpellEffIndex::EFFECT_0, Targets::TARGET_UNIT_CASTER_AREA_ENEMY_FRONT);
-            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_shadowmoon_burial_grounds_body_slam_SpellScript::CorrectTargets, SpellEffIndex::EFFECT_1, Targets::TARGET_UNIT_CASTER_AREA_ENEMY_FRONT);
+            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_shadowmoon_burial_grounds_body_slam_SpellScript::CorrectTargets, SpellEffIndex::EFFECT_0, Targets::TARGET_UNIT_CONE_ENTRY_129);
+            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_shadowmoon_burial_grounds_body_slam_SpellScript::CorrectTargets, SpellEffIndex::EFFECT_1, Targets::TARGET_UNIT_CONE_ENTRY_129);
         }
     };
 
