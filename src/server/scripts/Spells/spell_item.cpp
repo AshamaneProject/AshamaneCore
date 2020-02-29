@@ -4709,8 +4709,8 @@ class spell_item_demon_hunters_aspect : public AuraScript
 
     void OnApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
     {
-       if (Unit* player = GetTarget()->ToPlayer())
-		{
+        if (Unit* player = GetTarget()->ToPlayer())
+        {
             if (player->getGender() == GENDER_MALE)
                 player->SetDisplayId(MaleModels[urand(0, 10)]);
             else
@@ -4848,6 +4848,6 @@ void AddSC_item_spell_scripts()
     new spell_item_water_strider();
     new spell_item_brutal_kinship();
     RegisterAuraScript(aura_item_burning_essence);
-	 RegisterAuraScript(spell_item_demon_hunters_aspect);
-	 RegisterAuraScript(spell_item_faded_wizard_hat);
+    RegisterAuraScript(spell_item_demon_hunters_aspect);
+    RegisterAuraScript(spell_item_faded_wizard_hat);
 }
