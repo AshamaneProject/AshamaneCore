@@ -34,6 +34,11 @@ void WorldSession::HandleArtifactAddPower(WorldPackets::Artifact::ArtifactAddPow
     Item* artifact = _player->GetItemByGuid(artifactAddPower.ArtifactGUID);
     if (!artifact)
         return;
+	
+	uint8 categoryID = ARTIFACT_CATEGORY_PRIMARY;
+    uint32 artifactID = artifact->GetTemplate()->GetArtifactID();
+    if (ArtifactEntry const* entry = sArtifactStore.LookupEntry(artifactID))
+        categoryID = static_cast<ArtifactCategory>(entry->ArtifactCategoryID);
 
     uint32 currentArtifactTier = artifact->GetModifier(ITEM_MODIFIER_ARTIFACT_TIER);
 
@@ -57,6 +62,9 @@ void WorldSession::HandleArtifactAddPower(WorldPackets::Artifact::ArtifactAddPow
 
     if (artifactPowerEntry->Tier > currentArtifactTier)
         return;
+	
+	if (categoryID == ARTIFACT_CATEGORY_FISHING)
+        artifact->ActivateFishArtifact(artifactID);
 
     uint32 maxRank = artifactPowerEntry->MaxPurchasableRank;
     if (artifactPowerEntry->Tier < currentArtifactTier)
@@ -259,4 +267,116 @@ void WorldSession::HandleConfirmArtifactRespec(WorldPackets::Artifact::ConfirmAr
 
     artifact->SetUInt64Value(ITEM_FIELD_ARTIFACT_XP, newAmount);
     artifact->SetState(ITEM_CHANGED, _player);
+}
+
+void WorldSession::HandleArtifactAddRelicTalent(WorldPackets::Artifact::ArtifactAddRelicTalent& packet)
+{
+    if (!_player->GetGameObjectIfCanInteractWith(packet.ForgeGUID, GAMEOBJECT_TYPE_ARTIFACT_FORGE))
+        return;
+
+    Item* artifact = _player->GetItemByGuid(packet.ArtifactGUID);
+    if (!artifact)
+        return;
+
+    auto relicks = artifact->GetArtifactSockets();
+    if (relicks.find(packet.SlotIndex) == relicks.end()) // can it?
+       return;
+
+    if (auto gem = artifact->GetGem(packet.SlotIndex - 2))
+    {
+        if (!gem || !gem->ItemId)
+            return;
+    }
+
+    if ((1 << packet.TalentIndex) & relicks[packet.SlotIndex].firstTier)
+        return;
+
+    uint32 reqLevel = 0;
+    if (packet.TalentIndex > 0)
+        reqLevel = 60 + (packet.SlotIndex - 2) * 3;
+    if (packet.TalentIndex > 2)
+        reqLevel += 9;
+
+    if (reqLevel > artifact->GetTotalPurchasedArtifactPowers())
+    {
+        _player->SendEquipError(EQUIP_ERR_SCALING_STAT_ITEM_LEVEL_TOO_LOW);
+        return;
+    }
+
+    artifact->SetState(ITEM_CHANGED, _player);
+
+    uint8 offset = (packet.SlotIndex - 2) * 6;
+    artifact->SetDynamicValue(ITEM_DYNAMIC_FIELD_RELIC_TALENT_DATA, offset++, relicks[packet.SlotIndex].unk1);
+    artifact->SetDynamicValue(ITEM_DYNAMIC_FIELD_RELIC_TALENT_DATA, offset++, packet.SlotIndex);
+    artifact->SetDynamicValue(ITEM_DYNAMIC_FIELD_RELIC_TALENT_DATA, offset++, relicks[packet.SlotIndex].firstTier | (1 << packet.TalentIndex));
+    artifact->SetDynamicValue(ITEM_DYNAMIC_FIELD_RELIC_TALENT_DATA, offset++, relicks[packet.SlotIndex].secondTier);
+    artifact->SetDynamicValue(ITEM_DYNAMIC_FIELD_RELIC_TALENT_DATA, offset++, relicks[packet.SlotIndex].thirdTier);
+    artifact->SetDynamicValue(ITEM_DYNAMIC_FIELD_RELIC_TALENT_DATA, offset++, relicks[packet.SlotIndex].additionalThirdTier);
+
+    _player->UpdateCriteria(CRITERIA_TYPE_RELIC_TALENT_UNLOCKED, 1739, 1); //UpdateCriteria vmesto UpdateAchievementCriteria
+
+    artifact->AddOrRemoveSocketTalent(packet.TalentIndex, true, packet.SlotIndex);
+}
+
+void WorldSession::HandleArtifactAttunePreviewRelic(WorldPackets::Artifact::ArtifactAttunePreviewRelic& packet)
+{
+    if (!_player->GetGameObjectIfCanInteractWith(packet.ForgeGUID, GAMEOBJECT_TYPE_ARTIFACT_FORGE))
+        return;
+
+    Item* socket = _player->GetItemByGuid(packet.RelicGUID);
+    if (!socket)
+        return;
+
+    socket->SetBinding(true);
+    socket->SetState(ITEM_CHANGED, _player);
+
+    if (socket->GetDonateItem())
+        sLog->outSpamm("Player %s (GUID: %u) was preview donate relic with Entry: %u (item GUID: %u) in Relic Forge.", _player->GetName(), _player->GetGUIDLow(), socket->GetEntry(), socket->GetGUIDLow());
+
+    auto relicks = socket->GetArtifactSockets();
+    if (relicks.find(2) == relicks.end())
+    {
+        socket->CreateSocketTalents(2);
+        return;
+    }
+
+    uint8 offset = 0;
+    socket->SetDynamicValue(ITEM_DYNAMIC_FIELD_RELIC_TALENT_DATA, offset++, relicks[2].unk1);
+    socket->SetDynamicValue(ITEM_DYNAMIC_FIELD_RELIC_TALENT_DATA, offset++, 2);
+    socket->SetDynamicValue(ITEM_DYNAMIC_FIELD_RELIC_TALENT_DATA, offset++, relicks[2].firstTier);
+    socket->SetDynamicValue(ITEM_DYNAMIC_FIELD_RELIC_TALENT_DATA, offset++, relicks[2].secondTier);
+    socket->SetDynamicValue(ITEM_DYNAMIC_FIELD_RELIC_TALENT_DATA, offset++, relicks[2].thirdTier);
+    socket->SetDynamicValue(ITEM_DYNAMIC_FIELD_RELIC_TALENT_DATA, offset++, relicks[2].additionalThirdTier);
+}
+
+void WorldSession::HandleArtifactAttuneSocketedRelic(WorldPackets::Artifact::ArtifactAttuneSocketedRelic& packet)
+{
+    if (!_player->GetGameObjectIfCanInteractWith(packet.ForgeGUID, GAMEOBJECT_TYPE_ARTIFACT_FORGE))
+        return;
+
+    Item* artifact = _player->GetItemByGuid(packet.ArtifactGUID);
+    if (!artifact)
+        return;
+
+    if (auto gem = artifact->GetGem(packet.RelicSlotIndex - 2))
+    {
+        if (!gem || !gem->ItemId)
+            return;
+    }
+    artifact->SetState(ITEM_CHANGED, _player);
+
+    auto relicks = artifact->GetArtifactSockets();
+    if (relicks.find(packet.RelicSlotIndex) == relicks.end())
+    {
+        artifact->CreateSocketTalents(packet.RelicSlotIndex);
+        return;
+    }
+
+    uint8 offset = (packet.RelicSlotIndex - 2) * 6;
+    artifact->SetDynamicValue(ITEM_DYNAMIC_FIELD_RELIC_TALENT_DATA, offset++, relicks[packet.RelicSlotIndex].unk1);
+    artifact->SetDynamicValue(ITEM_DYNAMIC_FIELD_RELIC_TALENT_DATA, offset++, packet.RelicSlotIndex);
+    artifact->SetDynamicValue(ITEM_DYNAMIC_FIELD_RELIC_TALENT_DATA, offset++, relicks[packet.RelicSlotIndex].firstTier);
+    artifact->SetDynamicValue(ITEM_DYNAMIC_FIELD_RELIC_TALENT_DATA, offset++, relicks[packet.RelicSlotIndex].secondTier);
+    artifact->SetDynamicValue(ITEM_DYNAMIC_FIELD_RELIC_TALENT_DATA, offset++, relicks[packet.RelicSlotIndex].thirdTier);
+    artifact->SetDynamicValue(ITEM_DYNAMIC_FIELD_RELIC_TALENT_DATA, offset++, relicks[packet.RelicSlotIndex].additionalThirdTier);
 }

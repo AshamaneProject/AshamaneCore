@@ -29,7 +29,8 @@ void WorldPackets::Artifact::ArtifactAddPower::Read()
     _worldPacket >> ArtifactGUID;
     _worldPacket >> ForgeGUID;
     PowerChoices.resize(_worldPacket.read<uint32>());
-    for (ArtifactPowerChoice& artifactPowerChoice : PowerChoices)
+    
+	for (ArtifactPowerChoice& artifactPowerChoice : PowerChoices)
         _worldPacket >> artifactPowerChoice;
 }
 
@@ -65,7 +66,7 @@ WorldPacket const* WorldPackets::Artifact::ArtifactRespecConfirm::Write()
 WorldPacket const* WorldPackets::Artifact::ArtifactXpGain::Write()
 {
     _worldPacket << ArtifactGUID;
-    _worldPacket << uint64(Amount);
+    _worldPacket << Amount;
 
     return &_worldPacket;
 }
@@ -74,6 +75,45 @@ WorldPacket const* WorldPackets::Artifact::ArtifactKnowledge::Write()
 {
     _worldPacket << int32(ArtifactCategoryID);
     _worldPacket << int8(KnowledgeLevel);
+
+    return &_worldPacket;
+}
+
+void WorldPackets::Artifact::ArtifactAddRelicTalent::Read()
+{
+    _worldPacket >> ArtifactGUID;
+    _worldPacket >> ForgeGUID;
+    _worldPacket >> SlotIndex;
+    _worldPacket >> TalentIndex;
+}
+
+WorldPacket const* WorldPackets::Artifact::ArtifactTraitsRefunded::Write()
+
+{
+    _worldPacket << Guid;
+    _worldPacket << UnkInt;
+    _worldPacket << UnkInt2;
+
+    return &_worldPacket;
+}
+
+void WorldPackets::Artifact::ArtifactAttuneSocketedRelic::Read()
+{
+    _worldPacket >> ArtifactGUID;
+    _worldPacket >> ForgeGUID;
+    _worldPacket >> RelicSlotIndex;
+}
+
+void WorldPackets::Artifact::ArtifactAttunePreviewRelic::Read()
+{
+    _worldPacket >> RelicGUID;
+    _worldPacket >> ForgeGUID;
+}
+
+WorldPacket const* WorldPackets::Artifact::ArtifactAttuneSocketedRelicData::Write()
+{
+    _worldPacket << ArtifactGUID;
+    _worldPacket << Result;
 
     return &_worldPacket;
 }

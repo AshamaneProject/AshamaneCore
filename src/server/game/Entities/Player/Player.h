@@ -22,6 +22,8 @@
 #include "Arena.h"
 #include "ArenaHelper.h"
 #include "ArchaeologyPlayerMgr.h"
+#include "Conversation.h"
+#include "TaskScheduler.h"
 #include "Unit.h"
 #include "CUFProfile.h"
 #include "DatabaseEnvFwd.h"
@@ -38,6 +40,7 @@
 #include "SceneMgr.h"
 #include <queue>
 #include "GarrisonMgr.h"
+#include "PlayerStorage.h"
 
 struct AccessRequirement;
 struct AchievementEntry;
@@ -85,7 +88,6 @@ class PlayerAI;
 class PlayerAchievementMgr;
 class PlayerMenu;
 class PlayerSocial;
-class QuestObjectiveCriteriaMgr;
 class ReputationMgr;
 class RestMgr;
 class SpellCastTargets;
@@ -811,8 +813,6 @@ enum PlayerLoginQueryIndex
     PLAYER_LOGIN_QUERY_LOAD_SPELLS,
     PLAYER_LOGIN_QUERY_LOAD_QUEST_STATUS,
     PLAYER_LOGIN_QUERY_LOAD_QUEST_STATUS_OBJECTIVES,
-    PLAYER_LOGIN_QUERY_LOAD_QUEST_STATUS_OBJECTIVES_CRITERIA,
-    PLAYER_LOGIN_QUERY_LOAD_QUEST_STATUS_OBJECTIVES_CRITERIA_PROGRESS,
     PLAYER_LOGIN_QUERY_LOAD_DAILY_QUEST_STATUS,
     PLAYER_LOGIN_QUERY_LOAD_REPUTATION,
     PLAYER_LOGIN_QUERY_LOAD_INVENTORY,
@@ -1122,6 +1122,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         bool IsInAreaTriggerRadius(const AreaTriggerEntry* trigger) const;
 
         void SendInitialPacketsBeforeAddToMap();
+		void SendNewDiff(Difficulty difficulty);
         void SendInitialPacketsAfterAddToMap();
         void SendSupercededSpell(uint32 oldSpell, uint32 newSpell) const;
         void SendTransferAborted(uint32 mapid, TransferAbortReason reason, uint8 arg = 0) const;
@@ -1174,6 +1175,10 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         bool GetCommandStatus(uint32 command) const { return (_activeCheats & command) != 0; }
         void SetCommandStatusOn(uint32 command) { _activeCheats |= command; }
         void SetCommandStatusOff(uint32 command) { _activeCheats &= ~command; }
+		
+		// TimeIsMoneyFriend
+		uint32 ptr_Interval;
+		uint32 ptr_Money;
 
         // Played Time Stuff
         time_t m_logintime;
@@ -1395,6 +1400,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         void PrepareGossipMenu(WorldObject* source, uint32 menuId = 0, bool showQuests = false);
         void SendPreparedGossip(WorldObject* source);
         void OnGossipSelect(WorldObject* source, uint32 optionIndex, uint32 menuId);
+		void SendShipmentCrafterUI(ObjectGuid guid, uint32 shipmentContainerID);
 
         uint32 GetGossipTextId(uint32 menuId, WorldObject* source);
         uint32 GetGossipTextId(WorldObject* source);
@@ -1461,6 +1467,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         void RemoveActiveQuest(Quest const* quest, bool update = true);
         void RemoveRewardedQuest(uint32 questId, bool update = true);
         void SendQuestUpdate(uint32 questId);
+        void UpdateQuestsWithCriteriaTreeObjectives();
         QuestGiverStatus GetQuestDialogStatus(Object* questGiver);
 
         void SetDailyQuestStatus(uint32 quest_id);
@@ -1495,7 +1502,6 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         void KilledPlayerCredit();
         void KillCreditGO(uint32 entry, ObjectGuid guid = ObjectGuid::Empty);
         void TalkedToCreature(uint32 entry, ObjectGuid guid);
-        void KillCreditCriteriaTreeObjective(QuestObjective const& questObjective);
         void MoneyChanged(uint64 value);
         void ReputationChanged(FactionEntry const* factionEntry);
         void CurrencyChanged(uint32 currencyId, int32 change);
@@ -1628,7 +1634,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
 
         PlayerMails const& GetMails() const { return m_mail; }
 
-        void SendItemRetrievalMail(uint32 itemEntry, uint32 count); // Item retrieval mails sent by The Postmaster (34337), used in multiple places.
+        void SendItemRetrievalMail(uint32 itemEntry, uint32 count, ItemRandomEnchantmentId const& randomPropertyId /*= {}*/, std::vector<int32> const& bonusListIDs /*= std::vector<int32>()*/); // Item retrieval mails sent by The Postmaster (34337), used in multiple places.
 
         /*********************************************************/
         /*** MAILED ITEMS SYSTEM ***/
@@ -1701,6 +1707,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         TalentSpecialization GetSpecializationId() const { return (TalentSpecialization)GetUInt32Value(PLAYER_FIELD_CURRENT_SPEC_ID); }
         uint32 GetRoleForGroup() const;
         static uint32 GetRoleBySpecializationId(uint32 specializationId);
+		bool isInTankSpec() const;
 
         bool ResetTalents(bool noCost = false);
         void ResetPvpTalents();
@@ -2057,7 +2064,9 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
 
         int32 CalculateReputationGain(ReputationSource source, uint32 creatureOrQuestLevel, int32 rep, int32 faction, bool noQuestBonus = false);
 
-        void UpdateSkillsForLevel();
+        PlayerStorage* GetStorage() const { return m_playerStorage; }
+		
+		void UpdateSkillsForLevel();
         void UpdateSkillsToMaxSkillsForLevel();             // for .levelup
         void ModifySkillBonus(uint32 skillid, int32 val, bool talent);
 
@@ -2316,6 +2325,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         uint32 DoRandomRoll(uint32 minimum, uint32 maximum);
         uint8 GetItemLimitCategoryQuantity(ItemLimitCategoryEntry const* limitEntry) const;
         void ShowNeutralPlayerFactionSelectUI();
+		void SendDisplayToast(uint32 entry, uint32 questId, uint32 count, DisplayToastMethod method, ToastTypes type, bool bonusRoll, bool mailed, std::vector<int32> bonus = {});
 
         void SetEffectiveLevelAndMaxItemLevel(uint32 effectiveLevel, uint32 maxItemLevel);
 
@@ -2498,7 +2508,6 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         void SetAdvancedCombatLogging(bool enabled) { _advancedCombatLoggingEnabled = enabled; }
 
         PlayerAchievementMgr* GetAchievementMgr() { return m_achievementMgr; }
-        QuestObjectiveCriteriaMgr* GetQuestObjectiveCriteriaMgr() const { return m_questObjectiveCriteriaMgr.get(); }
         SceneMgr& GetSceneMgr() { return m_sceneMgr; }
         SceneMgr const& GetSceneMgr() const { return m_sceneMgr; }
         RestMgr& GetRestMgr() const { return *_restMgr; }
@@ -2528,6 +2537,52 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         // Send custom message with system message (addon, custom interfaces ...etc)
         void SendCustomMessage(std::string const& opcode, std::string const& data = "");
         void SendCustomMessage(std::string const& opcode, std::vector<std::string> const& data);
+		
+		/* delay teleport */
+        void AddDelayedTeleport(uint32 delay, uint32 mapID, float x, float y, float z, float o)
+        {
+            WorldLocation loc;
+            loc = WorldLocation(mapID);
+            loc.Relocate(x, y, z, o);
+
+            this->GetScheduler().Schedule(Milliseconds(delay), [loc](TaskContext context)
+            {
+                if (Player* player = GetContextPlayer())
+                {
+                    if (loc.GetMapId() == player->GetMapId())
+                        player->NearTeleportTo(loc, false);
+                    else
+                        player->TeleportTo(loc);
+                }
+            });
+
+        }
+        void AddDelayedTeleport(uint32 delay, uint32 mapID, Position pos)
+        {
+            AddDelayedTeleport(delay, mapID, pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ(), pos.GetOrientation());
+        }
+
+        /*conversation delay teleport */
+        void AddConversationDelayedTeleport(uint32 delay, uint32 conversationId, uint32 mapID, float x, float y, float z, float o)
+        {
+            Conversation::CreateConversation(conversationId, this, this->GetPosition(), { this->GetGUID() });
+            AddDelayedTeleport(delay, mapID, x, y, z, o);           
+        }
+        void AddConversationDelayedTeleport(uint32 delay, uint32 conversationId, uint32 mapID, Position pos)
+        {
+            AddConversationDelayedTeleport(delay, conversationId, mapID, pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ(), pos.GetOrientation());
+        }
+
+        void AddDelayedConversation(uint32 delay, uint32 conversationId)
+        {
+            this->GetScheduler().Schedule(Milliseconds(delay), [conversationId](TaskContext context)
+            {
+                if (Player* player = GetContextPlayer())
+                {
+                    Conversation::CreateConversation(conversationId, player, player->GetPosition(), { player->GetGUID() });
+                }
+            });
+        }
 
     protected:
         // Gamemaster whisper whitelist
@@ -2745,7 +2800,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         time_t m_lastDailyQuestTime;
 
         uint32 m_hostileReferenceCheckTimer;
-        uint32 m_drunkTimer;
+		uint32 m_drunkTimer;
         uint32 m_weaponChangeTimer;
 
         uint32 m_zoneUpdateTimer;
@@ -2848,9 +2903,10 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
 
         PlayerAchievementMgr* m_achievementMgr;
         ReputationMgr*  m_reputationMgr;
-        std::unique_ptr<QuestObjectiveCriteriaMgr> m_questObjectiveCriteriaMgr;
 
-        uint32 m_ChampioningFaction;
+        PlayerStorage* m_playerStorage;
+		
+		uint32 m_ChampioningFaction;
 
         std::queue<uint32> m_timeSyncQueue;
         uint32 m_timeSyncTimer;
@@ -2865,6 +2921,8 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         float _PersonnalXpRate;
 
         uint32 _activeCheats;
+		
+		time_t m_criteriaTimer;
 
         PlayerGarrisonMap _garrisons;
         GarrisonType _insideGarrisonType;
