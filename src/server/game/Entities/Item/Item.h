@@ -64,54 +64,6 @@ enum ItemUpdateState
     ITEM_REMOVED                                 = 3
 };
 
-enum ItemLevelBonus
-{
-    ITEM_LEVEL_BC_T6                    = 164,
-    ITEM_LEVEL_DRAEANOR_EPIC            = 710,
-    ITEM_LEVEL_LEGION_MIN_LEVEL         = 805,
-    ITEM_LEVEL_LEGION_MAX_LEVEL         = 985, // 7.3.5
-    ITEM_LEVEL_LEGION_EPIC              = 905, // 7.3.5
-    ITEM_LEVEL_LEGION_T19               = 875,
-    ITEM_LEVEL_LEGION_T21               = 890,
-    ITEM_LEVEL_LEGION_T20               = 900,
-
-    ITEM_LEVEL_BONUS_MAX_ROLLS          = 10,
-    ITEM_LEVEL_BONUS_SUCCESS_CHANCE     = 20,
-    ITEM_LEVEL_BONUS_AFTER_SUCCES_PCT   = 80,
-    ITEM_LEVEL_BONUS_FORGED             = 5,
-    ITEM_LEVEL_BONUS_TITANFORGED        = 15
-};
-
-enum ItemForgedConstant : uint32
-{
-    BONUS_ITEM_LEVEL_START            = 1467,
-    BONUS_ITEM_RARE                   = 3397,
-    BONUS_ITEM_EPIC                   = 3462,
-    BONUS_ITEM_EPIC_WARFORGED         = 3336,
-    BONUS_ITEM_EPIC_TITANFORGED       = 3337,
-    BONUS_ITEM_TITANFORGED            = 3338,
-    BONUS_ITEM_WARFORGED              = 3339,
-    BONUS_ITEM_SOCKET_PRISMASTIC      = 523,
-    BONUS_ITEM_LEECH                  = 41,
-    BONUS_ITEM_AVOIDANCE              = 40,
-    BONUS_ITEM_INDESTRUCTIBLE         = 43,
-    BONUS_ITEM_SPEED                  = 42,
-
-    BONUS_CACHE_MYTHIC                = 569,
-    BONUS_CACHE_HEROIC                = 570,
-    BONUS_ITEM_DRAENOR_NULL           = 0,
-    BONUS_ITEM_T19_LEVEL_START        = 1472, // nitehold t19
-    BONUS_ITEM_T19_LEVEL_RTART        = 1808,
-    BONUS_ITEM_T19_EPIC               = 3514,
-    BONUS_ITEM_T19_HEROIC             = 3516,
-    BONUS_ITEM_T19_MYTHIC             = 3518,
-
-    BONUS_ITEM_T20_LEVEL_START        = 1482, // gs t20
-    BONUS_ITEM_T20_EPIC               = 3561,
-    BONUS_ITEM_T20_HEROIC             = 3562,
-    BONUS_ITEM_T20_MYTHIC             = 3563,
-    BONUS_ITEM_T20_LEVEL_START2       = 1476,
-};
 
 #define MAX_ITEM_SPELLS 5
 
@@ -173,30 +125,6 @@ struct ItemDynamicFieldGems
     uint8 Context;
     uint8 Padding[3];
 };
-
-struct SocketTier
-{
-    SocketTier() = default;
-    SocketTier(uint16 first, uint16 second)
-        : FirstSpell(first)
-        , SecondSpell(second)
-    {}
-
-    uint16 FirstSpell = 0;
-    uint16 SecondSpell = 0;
-};
-
-struct ItemSocketInfo
-{
-    uint32 unk1 = 0;
-    uint32 socketIndex = 0;
-    uint32 firstTier = 0;
-    uint32 secondTier = 0;
-    uint32 thirdTier = 0;
-    uint32 additionalThirdTier = 0;
-
-};
-
 #pragma pack(pop)
 
 class TC_GAME_API Item : public Object
@@ -231,7 +159,6 @@ class TC_GAME_API Item : public Object
         void CheckArtifactRelicSlotUnlock(Player const* owner);
 
         void AddBonuses(uint32 bonusListID);
-		void InitializeBonus();
 
         static void DeleteFromDB(SQLTransaction& trans, ObjectGuid::LowType itemGuid);
         virtual void DeleteFromDB(SQLTransaction& trans);
@@ -301,14 +228,8 @@ class TC_GAME_API Item : public Object
         uint32 GetEnchantmentDuration(EnchantmentSlot slot) const { return GetUInt32Value(ITEM_FIELD_ENCHANTMENT + slot*MAX_ENCHANTMENT_OFFSET + ENCHANTMENT_DURATION_OFFSET);}
         uint32 GetEnchantmentCharges(EnchantmentSlot slot)  const { return GetUInt32Value(ITEM_FIELD_ENCHANTMENT + slot*MAX_ENCHANTMENT_OFFSET + ENCHANTMENT_CHARGES_OFFSET);}
         DynamicFieldStructuredView<ItemDynamicFieldGems> GetGems() const;
-        std::map<uint8, ItemSocketInfo> GetArtifactSockets() const;
         ItemDynamicFieldGems const* GetGem(uint16 slot) const;
         void SetGem(uint16 slot, ItemDynamicFieldGems const* gem, uint32 gemScalingLevel);
-        void CreateSocketTalents(uint8 socketIndex);
-        void AddOrRemoveSocketTalent(uint8 talentIndex, bool add, uint8 socketIndex);
-		
-		static void GenerateItemBonus(uint32 itemId, uint32 bonusTreeMod, std::vector<int32>& itemBonus, bool onlyHeroicOrMithic = false, uint8 Difficulty = 0, uint32 ChallengeLevel = 0, bool IsOplote = false);
-        static int32 GenerateForgedBonus(uint32& itemLevel, std::vector<int32>& bonusLists, bool t19 = false);
 
         std::string const& GetText() const { return m_text; }
         void SetText(std::string const& text) { m_text = text; }
@@ -371,8 +292,6 @@ class TC_GAME_API Item : public Object
         ObjectGuid const& GetRefundRecipient() const { return m_refundRecipient; }
         uint64 GetPaidMoney() const { return m_paidMoney; }
         uint32 GetPaidExtendedCost() const { return m_paidExtendedCost; }
-        void SetDonateItem(bool apply);
-        bool GetDonateItem() const; // can't be traded, selled or add on auction
 
         void UpdatePlayedTime(Player* owner);
         uint32 GetPlayedTime();
@@ -421,12 +340,8 @@ class TC_GAME_API Item : public Object
         void CopyArtifactDataFromParent(Item* parent);
 
         void GiveArtifactXp(uint64 amount, Item* sourceItem, uint32 artifactCategoryId);
-		void ActivateFishArtifact(uint8 artifactId);
     protected:
         BonusData _bonusData;
-
-        bool GetModsApplied() const { return m_modsApplied; }
-        void SetModsApplied(bool apply) { m_modsApplied = apply; }
 
     private:
         std::string m_text;
@@ -439,12 +354,10 @@ class TC_GAME_API Item : public Object
         ObjectGuid m_refundRecipient;
         uint64 m_paidMoney;
         uint32 m_paidExtendedCost;
-        bool DonateItem = false;
         GuidSet allowedGUIDs;
         ItemRandomEnchantmentId m_randomEnchantment;        // store separately to easily find which bonus list is the one randomly given for stat rerolling
         ObjectGuid m_childItem;
         std::unordered_map<uint32, uint16> m_artifactPowerIdToIndex;
         std::array<uint32, MAX_ITEM_PROTO_SOCKETS> m_gemScalingLevels;
-        bool m_modsApplied = false;
 };
 #endif

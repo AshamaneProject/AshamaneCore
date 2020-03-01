@@ -29,20 +29,19 @@ namespace WorldPackets
         class ArtifactAddPower final : public ClientPacket
         {
         public:
-			ArtifactAddPower(WorldPacket&& packet) : ClientPacket(CMSG_ARTIFACT_ADD_POWER, std::move(packet)) { }
-		
             struct ArtifactPowerChoice
             {
                 int32 ArtifactPowerID = 0;
                 uint8 Rank = 0;
             };
 
+            ArtifactAddPower(WorldPacket&& packet) : ClientPacket(CMSG_ARTIFACT_ADD_POWER, std::move(packet)) { }
 
             void Read() override;
 
-            std::vector<ArtifactPowerChoice> PowerChoices;
-			ObjectGuid ArtifactGUID;
+            ObjectGuid ArtifactGUID;
             ObjectGuid ForgeGUID;
+            Array<ArtifactPowerChoice, 1 /*lua allows only 1 power per call*/> PowerChoices;
         };
 
         class ArtifactSetAppearance final : public ClientPacket
@@ -66,42 +65,6 @@ namespace WorldPackets
 
             ObjectGuid ArtifactGUID;
             ObjectGuid NpcGUID;
-        };
-        
-        class ArtifactAddRelicTalent final : public ClientPacket
-        {
-            public:
-                ArtifactAddRelicTalent(WorldPacket&& packet) : ClientPacket(CMSG_ARTIFACT_ADD_RELIC_TALENT, std::move(packet)) { }
-                
-                void Read() override;
-                
-                ObjectGuid ArtifactGUID;
-                ObjectGuid ForgeGUID;
-                uint32 SlotIndex = 0;
-                uint8 TalentIndex = 0;
-        };
-		
-		class ArtifactAttuneSocketedRelic final : public ClientPacket
-        {
-        public:
-            ArtifactAttuneSocketedRelic(WorldPacket&& packet) : ClientPacket(CMSG_ARTIFACT_ATTUNE_SOCKETED_RELIC, std::move(packet)) { }
-
-            void Read() override;
-
-            ObjectGuid ArtifactGUID;
-            ObjectGuid ForgeGUID;
-            uint32 RelicSlotIndex = 0;
-        };
-
-        class ArtifactAttuneSocketedRelicData final : public ServerPacket
-        {
-        public:
-            ArtifactAttuneSocketedRelicData() : ServerPacket(SMSG_ARTIFACT_ATTUNE_SOCKETED_RELIC_DATA, 16 + 4) { }
-
-            WorldPacket const* Write() override;
-
-            ObjectGuid ArtifactGUID;
-            uint32 Result = 0; // not 100% sure
         };
 
         class ArtifactForgeOpened final : public ServerPacket
@@ -129,23 +92,12 @@ namespace WorldPackets
         class ArtifactXpGain final : public ServerPacket
         {
         public:
-            ArtifactXpGain() : ServerPacket(SMSG_ARTIFACT_XP_GAIN, 16 + 8) { }
+            ArtifactXpGain() : ServerPacket(SMSG_ARTIFACT_XP_GAIN, 16 + 4) { }
 
             WorldPacket const* Write() override;
 
             ObjectGuid ArtifactGUID;
             uint64 Amount = 0;
-        };
-
-        class ArtifactAttunePreviewRelic final : public ClientPacket
-        {
-        public:
-            ArtifactAttunePreviewRelic(WorldPacket&& packet) : ClientPacket(CMSG_ARTIFACT_ATTUNE_PREVIEW_RELIC, std::move(packet)) { }
-
-            void Read() override;
-
-            ObjectGuid RelicGUID;
-            ObjectGuid ForgeGUID;
         };
 
         class ArtifactKnowledge final : public ServerPacket
@@ -157,27 +109,6 @@ namespace WorldPackets
 
             int32 ArtifactCategoryID = 0;
             int8 KnowledgeLevel = 0;
-        };
-		
-		//< SMSG_ARTIFACT_FORGE_CLOSE
-        class NullSmsg final : public ServerPacket
-        {
-        public:
-            NullSmsg(OpcodeServer opcode) : ServerPacket(opcode, 0) { }
-
-            WorldPacket const* Write() override { return &_worldPacket; }
-        };
-
-        class ArtifactTraitsRefunded final : public ServerPacket
-        {
-        public:
-            ArtifactTraitsRefunded() : ServerPacket(SMSG_ARTIFACT_TRAITS_REFUNDED, 16 + 8) { }
-
-            WorldPacket const* Write() override;
-
-            ObjectGuid Guid;
-            uint32 UnkInt = 0;
-            uint32 UnkInt2 = 0;
         };
     }
 }
