@@ -675,7 +675,7 @@ void WorldSocket::HandleAuthSessionCallback(std::shared_ptr<WorldPackets::Auth::
     SHA256Hash digestKeyHash;
     digestKeyHash.UpdateData(account.Game.KeyData.data(), account.Game.KeyData.size());
     if (account.Game.OS == "Win")
-        digestKeyHash.UpdateData(buildInfo->winAuthSeed.data(), buildInfo->winAuthSeed.size());
+        digestKeyHash.UpdateData(buildInfo->WinAuthSeed.data(), buildInfo->WinAuthSeed.size());
     else if (account.Game.OS == "Wn64")
         digestKeyHash.UpdateData(buildInfo->Win64AuthSeed.data(), buildInfo->Win64AuthSeed.size();
     else if (account.Game.OS == "Mc64")
