@@ -56,6 +56,7 @@ void RealmList::Initialize(Trinity::Asio::IoContext& ioContext, uint32 updateInt
     _updateTimer = Trinity::make_unique<Trinity::Asio::DeadlineTimer>(ioContext);
     _resolver = Trinity::make_unique<boost::asio::ip::tcp::resolver>(ioContext);
 
+    LoadBuildInfo();
     // Get the content of the realmlist table in the database
     UpdateRealms(boost::system::error_code());
 }
@@ -63,6 +64,41 @@ void RealmList::Initialize(Trinity::Asio::IoContext& ioContext, uint32 updateInt
 void RealmList::Close()
 {
     _updateTimer->cancel();
+}
+
+void RealmList::LoadBuildInfo()
+{
+    //                                                              0             1              2              3      4              5              6
+    if (QueryResult result = LoginDatabase.Query("SELECT majorVersion, minorVersion, bugfixVersion, hotfixVersion, build, win64AuthSeed, mac64AuthSeed FROM build_info ORDER BY build ASC"))
+    {
+        do
+        {
+            Field* fields = result->Fetch();
+            _builds.emplace_back();
+            RealmBuildInfo& build = _builds.back();
+            build.MajorVersion = fields[0].GetUInt32();
+            build.MinorVersion = fields[1].GetUInt32();
+            build.BugfixVersion = fields[2].GetUInt32();
+            std::string hotfixVersion = fields[3].GetString();
+            if (hotfixVersion.length() < build.HotfixVersion.size())
+                std::copy(hotfixVersion.begin(), hotfixVersion.end(), build.HotfixVersion.begin());
+            else
+                std::fill(hotfixVersion.begin(), hotfixVersion.end(), '\0');
+
+            std::string winAuthSeedHexStr = fields[4].GetString();
+            if (winAuthSeedHexStr.length() == build.WinAuthSeed.size() * 2)
+                HexStrToByteArray(winAuthSeedHexStr, build.WinAuthSeed.data());
+
+            std::string win64AuthSeedHexStr = fields[5].GetString();
+            if (win64AuthSeedHexStr.length() == build.Win64AuthSeed.size() * 2)
+                HexStrToByteArray(win64AuthSeedHexStr, build.Win64AuthSeed.data());
+
+            std::string mac64AuthSeedHexStr = fields[6].GetString();
+            if (mac64AuthSeedHexStr.length() == build.Mac64AuthSeed.size() * 2)
+                HexStrToByteArray(mac64AuthSeedHexStr, build.Mac64AuthSeed.data());
+
+        } while (result->NextRow());
+    }
 }
 
 void RealmList::UpdateRealm(Realm& realm, Battlenet::RealmHandle const& id, uint32 build, std::string const& name,
