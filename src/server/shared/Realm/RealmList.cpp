@@ -68,8 +68,8 @@ void RealmList::Close()
 
 void RealmList::LoadBuildInfo()
 {
-    //                                                              0             1              2              3      4              5              6
-    if (QueryResult result = LoginDatabase.Query("SELECT majorVersion, minorVersion, bugfixVersion, hotfixVersion, build, win64AuthSeed, mac64AuthSeed FROM build_info ORDER BY build ASC"))
+    //                                                              0             1              2              3    4         5           6               7
+    if (QueryResult result = LoginDatabase.Query("SELECT majorVersion, minorVersion, bugfixVersion, hotfixVersion, build, winAuthSeed, win64AuthSeed, mac64AuthSeed FROM build_info ORDER BY build ASC"))
     {
         do
         {
@@ -85,15 +85,16 @@ void RealmList::LoadBuildInfo()
             else
                 std::fill(hotfixVersion.begin(), hotfixVersion.end(), '\0');
 
-            std::string winAuthSeedHexStr = fields[4].GetString();
+            build.Build = fields[4].GetUInt32();
+            std::string winAuthSeedHexStr = fields[5].GetString();
             if (winAuthSeedHexStr.length() == build.WinAuthSeed.size() * 2)
                 HexStrToByteArray(winAuthSeedHexStr, build.WinAuthSeed.data());
 
-            std::string win64AuthSeedHexStr = fields[5].GetString();
+            std::string win64AuthSeedHexStr = fields[6].GetString();
             if (win64AuthSeedHexStr.length() == build.Win64AuthSeed.size() * 2)
                 HexStrToByteArray(win64AuthSeedHexStr, build.Win64AuthSeed.data());
 
-            std::string mac64AuthSeedHexStr = fields[6].GetString();
+            std::string mac64AuthSeedHexStr = fields[7].GetString();
             if (mac64AuthSeedHexStr.length() == build.Mac64AuthSeed.size() * 2)
                 HexStrToByteArray(mac64AuthSeedHexStr, build.Mac64AuthSeed.data());
 
