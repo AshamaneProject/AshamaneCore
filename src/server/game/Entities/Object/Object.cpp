@@ -547,9 +547,10 @@ void Object::BuildMovementUpdate(ByteBuffer* data, uint32 flags) const
         bool hasMorphCurveID        = areaTriggerMiscTemplate != nullptr ? areaTriggerMiscTemplate->MorphCurveId  != 0 : false;
         bool hasFacingCurveID       = areaTriggerMiscTemplate != nullptr ? areaTriggerMiscTemplate->FacingCurveId != 0 : false;
         bool hasMoveCurveID         = areaTriggerMiscTemplate != nullptr ? areaTriggerMiscTemplate->MoveCurveId   != 0 : false;
-        bool hasUnk2                = areaTriggerTemplate->HasFlag(AREATRIGGER_FLAG_UNK2);
+        bool hasAnimation            = areaTriggerTemplate->HasFlag(AREATRIGGER_FLAG_HAS_ANIM_ID);
         bool hasUnk3                = areaTriggerTemplate->HasFlag(AREATRIGGER_FLAG_UNK3);
-        bool hasUnk4                = areaTriggerTemplate->HasFlag(AREATRIGGER_FLAG_UNK4);
+        bool hasAnimKitID           = areaTriggerTemplate->HasFlag(AREATRIGGER_FLAG_HAS_ANIM_KIT_ID);
+        bool hasAnimProgress        = false;
         bool hasAreaTriggerSphere   = areaTriggerTemplate->IsSphere();
         bool hasAreaTriggerBox      = areaTriggerTemplate->IsBox();
         bool hasAreaTriggerPolygon  = areaTriggerTemplate->IsPolygon();
@@ -568,9 +569,10 @@ void Object::BuildMovementUpdate(ByteBuffer* data, uint32 flags) const
         data->WriteBit(hasMorphCurveID);
         data->WriteBit(hasFacingCurveID);
         data->WriteBit(hasMoveCurveID);
-        data->WriteBit(hasUnk2);
+        data->WriteBit(hasAnimation);
+        data->WriteBit(hasAnimKitID);
         data->WriteBit(hasUnk3);
-        data->WriteBit(hasUnk4);
+        data->WriteBit(hasAnimProgress);
         data->WriteBit(hasAreaTriggerSphere);
         data->WriteBit(hasAreaTriggerBox);
         data->WriteBit(hasAreaTriggerPolygon);
@@ -606,10 +608,13 @@ void Object::BuildMovementUpdate(ByteBuffer* data, uint32 flags) const
         if (hasMoveCurveID)
             *data << uint32(areaTriggerMiscTemplate->MoveCurveId);
 
-        if (hasUnk2)
-            *data << int32(0);
+        if (hasAnimation)
+            *data << int32(areaTriggerMiscTemplate->AnimId);
 
-        if (hasUnk4)
+        if (hasAnimKitID)
+            *data << int32(areaTriggerMiscTemplate->AnimKitId);
+
+        if (hasAnimProgress)
             *data << uint32(0);
 
         if (hasAreaTriggerSphere)
