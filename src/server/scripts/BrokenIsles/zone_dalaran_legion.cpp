@@ -24,6 +24,8 @@
 #include "ScriptMgr.h"
 #include "SpellMgr.h"
 #include "ScriptedCreature.h"
+#include "ScriptedEscortAI.h"
+#include "ScriptedGossip.h"
 #include "SpellScript.h"
 
 /*
@@ -224,6 +226,36 @@ public:
     }
 };
 
+class npc_archmage_khadgar_86563 : public CreatureScript
+{
+public:
+    npc_archmage_khadgar_86563() : CreatureScript("npc_archmage_khadgar_86563") { }
+
+    enum eNpc
+    {   
+        QUEST_DOWN_TO_AZSUNA = 41220,
+        SPELL_TAXI_DALARAN_AZSUNA_ALLIANCE = 205098,
+        SPELL_TAXI_DALARAN_AZSUNA_HORDE = 205203,
+    };
+
+    bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 /*sender*/, uint32 /*action*/) override
+    {
+        if (player->HasQuest(QUEST_DOWN_TO_AZSUNA) || player->GetQuestStatus(QUEST_DOWN_TO_AZSUNA) == QUEST_STATUS_INCOMPLETE)
+            player->CastSpell(player, player->IsInAlliance() ? SPELL_TAXI_DALARAN_AZSUNA_ALLIANCE : SPELL_TAXI_DALARAN_AZSUNA_HORDE, true); // KillCredit & SendTaxi
+
+        return true;
+    }
+
+    bool OnQuestAccept(Player* /*player*/, Creature* creature, Quest const* quest) override
+    {
+        if (quest->GetQuestId() == QUEST_DOWN_TO_AZSUNA)
+        {
+            creature->AI()->Talk(1);
+        }
+        return true;
+    }
+};
+
 void AddSC_dalaran_legion()
 {
     new OnLegionArrival();
@@ -233,4 +265,5 @@ void AddSC_dalaran_legion()
     new npc_dalaran_karazhan_khadgar();
     new scene_dalaran_kharazan_teleportion();
     new zone_legion_dalaran_underbelly();
+	 new npc_archmage_khadgar_86563();
 }
