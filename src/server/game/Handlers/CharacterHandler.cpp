@@ -976,7 +976,7 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
 
         if (ChrClassesEntry const* cEntry = sChrClassesStore.LookupEntry(pCurrChar->getClass()))
         {
-            else if (pCurrChar->getClass() == CLASS_DEMON_HUNTER)
+            if (pCurrChar->getClass() == CLASS_DEMON_HUNTER)
                 pCurrChar->SendMovieStart(469);
             else if (cEntry->CinematicSequenceID)
                 pCurrChar->SendCinematicStart(cEntry->CinematicSequenceID);
