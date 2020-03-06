@@ -16821,16 +16821,19 @@ void Player::RemoveRewardedQuest(uint32 questId, bool update /*= true*/)
 
 void Player::SendQuestUpdate(uint32 questId)
 {
-    uint32 zone = 0, area = 0;
-    GetZoneAndAreaId(zone, area);
+    if (!GetArea())
+        return;
 
-    SpellAreaForQuestAreaMapBounds saBounds = sSpellMgr->GetSpellAreaForQuestAreaMapBounds(area, questId);
+    auto areaTree = GetArea()->GetTree();
+    // Reverse the tree, we need to start by zone
+    std::reverse(areaTree.begin(), areaTree.end());
 
-    if (saBounds.first != saBounds.second)
+    for (Area* area : areaTree)
     {
-        for (SpellAreaForQuestAreaMap::const_iterator itr = saBounds.first; itr != saBounds.second; ++itr)
+        SpellAreaForAreaMapBounds saBounds = sSpellMgr->GetSpellAreaForAreaMapBounds(area->GetId());
+        for (SpellAreaForAreaMap::const_iterator itr = saBounds.first; itr != saBounds.second; ++itr)
         {
-            if (itr->second->flags & SPELL_AREA_FLAG_AUTOREMOVE && !itr->second->IsFitToRequirements(this, zone, area))
+            if (itr->second->flags & SPELL_AREA_FLAG_AUTOREMOVE && !itr->second->IsFitToRequirements(this, GetZoneId(), GetAreaId()))
                 RemoveAurasDueToSpell(itr->second->spellId);
             else if (itr->second->flags & SPELL_AREA_FLAG_AUTOCAST && !(itr->second->flags & SPELL_AREA_FLAG_IGNORE_AUTOCAST_ON_QUEST_STATUS_CHANGE))
                 if (!HasAura(itr->second->spellId))
@@ -25894,7 +25897,11 @@ void Player::UpdateAreaDependentAuras()
     if (!GetArea())
         return;
 
-    for (Area* area : GetArea()->GetTree())
+    auto areaTree = GetArea()->GetTree();
+    // Reverse the tree, we need to start by zone
+    std::reverse(areaTree.begin(), areaTree.end());
+
+    for (Area* area : areaTree)
     {
         SpellAreaForAreaMapBounds saBounds = sSpellMgr->GetSpellAreaForAreaMapBounds(area->GetId());
         for (SpellAreaForAreaMap::const_iterator itr = saBounds.first; itr != saBounds.second; ++itr)

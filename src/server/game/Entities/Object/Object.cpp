@@ -550,7 +550,6 @@ void Object::BuildMovementUpdate(ByteBuffer* data, uint32 flags) const
         bool hasAnimation            = areaTriggerTemplate->HasFlag(AREATRIGGER_FLAG_HAS_ANIM_ID);
         bool hasUnk3                = areaTriggerTemplate->HasFlag(AREATRIGGER_FLAG_UNK3);
         bool hasAnimKitID           = areaTriggerTemplate->HasFlag(AREATRIGGER_FLAG_HAS_ANIM_KIT_ID);
-        bool hasAnimProgress        = false;
         bool hasAreaTriggerSphere   = areaTriggerTemplate->IsSphere();
         bool hasAreaTriggerBox      = areaTriggerTemplate->IsBox();
         bool hasAreaTriggerPolygon  = areaTriggerTemplate->IsPolygon();
@@ -570,9 +569,8 @@ void Object::BuildMovementUpdate(ByteBuffer* data, uint32 flags) const
         data->WriteBit(hasFacingCurveID);
         data->WriteBit(hasMoveCurveID);
         data->WriteBit(hasAnimation);
-        data->WriteBit(hasAnimKitID);
         data->WriteBit(hasUnk3);
-        data->WriteBit(hasAnimProgress);
+        data->WriteBit(hasAnimKitID);
         data->WriteBit(hasAreaTriggerSphere);
         data->WriteBit(hasAreaTriggerBox);
         data->WriteBit(hasAreaTriggerPolygon);
@@ -613,9 +611,6 @@ void Object::BuildMovementUpdate(ByteBuffer* data, uint32 flags) const
 
         if (hasAnimKitID)
             *data << int32(areaTriggerMiscTemplate->AnimKitId);
-
-        if (hasAnimProgress)
-            *data << uint32(0);
 
         if (hasAreaTriggerSphere)
         {

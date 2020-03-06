@@ -9864,8 +9864,11 @@ void Unit::CheckPowerProc(Powers power, int32 oldVal, int32 newVal, AuraEffectLi
 
             if (effect->GetAuraType() == SPELL_AURA_TRIGGER_SPELL_ON_POWER_PCT)
             {
-                oldValueCheck = GetPctOf(oldVal, GetMaxPower(power));
-                newValueCheck = GetPctOf(newVal, GetMaxPower(power));
+                if (int32 maxPower = GetMaxPower(power))
+                {
+                    oldValueCheck = GetPctOf(oldVal, maxPower);
+                    newValueCheck = GetPctOf(newVal, maxPower);
+                }
             }
 
             uint32 effectAmount = effect->GetAmount();

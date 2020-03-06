@@ -953,11 +953,11 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
         pCurrChar->SetGuildLevel(0);
     }
 
-    pCurrChar->SendInitialPacketsBeforeAddToMap();
-
     // TODO: Move this to BattlePetMgr::SendJournalLock() just to have all packets in one file
     WorldPackets::BattlePet::BattlePetJournalLockAcquired lock;
     SendPacket(lock.Write());
+
+    pCurrChar->SendInitialPacketsBeforeAddToMap();
 
     WorldPackets::Artifact::ArtifactKnowledge artifactKnowledge;
     artifactKnowledge.ArtifactCategoryID = ARTIFACT_CATEGORY_PRIMARY;
