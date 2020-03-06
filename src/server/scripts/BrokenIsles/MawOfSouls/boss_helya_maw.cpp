@@ -40,13 +40,6 @@ enum Spells
     SPELL_PIERCING_TENTACLE     = 197117,
 };
 
-enum CreaturesIds
-{
-    NPC_DESTRUCTOR_TENTACLE     = 99801, // Level 112
-    NPC_GRASPING_TENTACLE       = 100360, // Level 111
-    NPC_PIERCING_TENTACLE       = 100188, // No idea about level, probably 112 to match instance avg level
-};
-
 enum Auras
 {
     AURA_HELYA_TAINT = 197262
