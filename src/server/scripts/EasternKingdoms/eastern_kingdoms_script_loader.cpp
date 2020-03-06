@@ -174,10 +174,7 @@ void AddSC_boss_zanzil();
 void AddSC_instance_zulgurub();
 
 // Cataclysm Dungeons/Raids
-void AddSC_zone_gilneas_duskhaven();            //Gilneas
-void AddSC_zone_gilneas_city1();
-void AddSC_zone_gilneas_city2();
-void AddSC_zone_gilneas_city3();
+void AddSC_gilneas_c1();
 void AddSC_boss_alizabal();                     //Baradin Hold
 void AddSC_boss_occuthar();
 void AddSC_boss_pit_lord_argaloth();
@@ -419,10 +416,7 @@ void AddEasternKingdomsScripts()
     AddSC_instance_zulgurub();
 
     // Cataclysm Dungeons/Raids
-    AddSC_zone_gilneas_duskhaven();             //Gilneas
-    AddSC_zone_gilneas_city1();
-    AddSC_zone_gilneas_city2();
-    AddSC_zone_gilneas_city3();
+    AddSC_gilneas_c1();
     AddSC_boss_alizabal();                      //Baradin Hold
     AddSC_boss_occuthar();
     AddSC_boss_pit_lord_argaloth();
