@@ -101,6 +101,7 @@ public:
     // Buildings
     void LearnBlueprint(uint32 garrBuildingId);
     void UnlearnBlueprint(uint32 garrBuildingId);
+    bool HasBlueprint(uint32 garrBuildingId) const { return _knownBuildings.find(garrBuildingId) != _knownBuildings.end(); }
     void PlaceBuilding(uint32 garrPlotInstanceId, uint32 garrBuildingId);
     void CancelBuildingConstruction(uint32 garrPlotInstanceId);
     void ActivateBuilding(uint32 garrPlotInstanceId);

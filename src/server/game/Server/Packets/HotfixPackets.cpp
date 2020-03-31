@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
+ * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -26,10 +26,7 @@ void WorldPackets::Hotfix::DBQueryBulk::Read()
 
     Queries.resize(count);
     for (uint32 i = 0; i < count; ++i)
-    {
-        _worldPacket >> Queries[i].GUID;
         _worldPacket >> Queries[i].RecordID;
-    }
 }
 
 WorldPacket const* WorldPackets::Hotfix::DBReply::Write()

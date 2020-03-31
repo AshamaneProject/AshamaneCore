@@ -1,6 +1,5 @@
 /*
- * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
- * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
+ * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -556,7 +555,7 @@ void PlayerAchievementMgr::CompletedAchievement(AchievementEntry const* achievem
 
         CharacterDatabaseTransaction trans = CharacterDatabase.BeginTransaction();
 
-        Item* item = reward->ItemId ? Item::CreateItem(reward->ItemId, 1, _owner) : NULL;
+        Item* item = reward->ItemId ? Item::CreateItem(reward->ItemId, 1, ItemContext::NONE, _owner) : NULL;
         if (item)
         {
             // save new item before send
@@ -573,7 +572,10 @@ void PlayerAchievementMgr::CompletedAchievement(AchievementEntry const* achievem
 
 bool PlayerAchievementMgr::ModifierTreeSatisfied(uint32 modifierTreeId) const
 {
-    return AdditionalRequirementsSatisfied(sCriteriaMgr->GetModifierTree(modifierTreeId), 0, 0, nullptr, _owner);
+    if (ModifierTreeNode const* modifierTree = sCriteriaMgr->GetModifierTree(modifierTreeId))
+        return ModifierTreeSatisfied(modifierTree, 0, 0, nullptr, _owner);
+
+    return false;
 }
 
 void PlayerAchievementMgr::SendCriteriaUpdate(Criteria const* criteria, CriteriaProgress const* progress, uint32 timeElapsed, bool timedCompleted) const

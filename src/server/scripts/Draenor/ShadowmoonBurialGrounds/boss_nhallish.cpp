@@ -330,7 +330,7 @@ public:
                         if (itr->IsWithinDist(me, 25.0f, true))
                         {
                             if (itr->IsAlive() && !itr->HasMovementForce(me->GetGUID()))
-                                itr->ApplyMovementForce(me->GetGUID(), 3.0f, position);
+                                itr->ApplyMovementForce(me->GetGUID(), position, 3.0f, 0);
                             else if (!itr->IsAlive() && itr->HasMovementForce(me->GetGUID()))
                                 itr->RemoveMovementForce(me->GetGUID());
                         }

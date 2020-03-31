@@ -1,6 +1,5 @@
 /*
- * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
- * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
+ * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -1087,20 +1086,14 @@ void Group::SendUpdateToPlayer(ObjectGuid playerGUID, MemberSlot* slot)
         partyUpdate.LfgInfos->Aborted = false;
 
         partyUpdate.LfgInfos->MyFlags = sLFGMgr->GetState(m_guid) == lfg::LFG_STATE_FINISHED_DUNGEON ? 2 : 0;
-        partyUpdate.LfgInfos->MyRandomSlot = [player]() -> uint32
-        {
-            lfg::LfgDungeonSet const& selectedDungeons = sLFGMgr->GetSelectedDungeons(player->GetGUID());
-            if (selectedDungeons.size() == 1)
-                if (LFGDungeonsEntry const* dungeon = sLFGDungeonsStore.LookupEntry(*selectedDungeons.begin()))
-                    if (dungeon->TypeID == lfg::LFG_TYPE_RANDOM)
-                        return dungeon->ID;
-
-            return 0;
-        }();
+        partyUpdate.LfgInfos->MyRandomSlot = sLFGMgr->GetSelectedRandomDungeon(player->GetGUID());
 
         partyUpdate.LfgInfos->MyPartialClear = 0;
         partyUpdate.LfgInfos->MyGearDiff = 0.0f;
         partyUpdate.LfgInfos->MyFirstReward = false;
+        if (lfg::LfgReward const* reward = sLFGMgr->GetRandomDungeonReward(partyUpdate.LfgInfos->MyRandomSlot, player->getLevel()))
+            if (Quest const* quest = sObjectMgr->GetQuestTemplate(reward->firstQuest))
+                partyUpdate.LfgInfos->MyFirstReward = player->CanRewardQuest(quest, false);
 
         partyUpdate.LfgInfos->MyStrangerCount = 0;
         partyUpdate.LfgInfos->MyKickVoteCount = 0;

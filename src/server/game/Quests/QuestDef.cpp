@@ -1,6 +1,5 @@
 /*
- * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
- * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
+ * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -128,16 +127,17 @@ Quest::Quest(Field* questRecord)
     TreasurePickerID = questRecord[109].GetInt32();
     Expansion = questRecord[110].GetInt32();
     ManagedWorldStateID = questRecord[111].GetInt32();
+    QuestSessionBonus = questRecord[112].GetInt32();
 
-    LogTitle = questRecord[112].GetString();
-    LogDescription = questRecord[113].GetString();
-    QuestDescription = questRecord[114].GetString();
-    AreaDescription = questRecord[115].GetString();
-    PortraitGiverText = questRecord[116].GetString();
-    PortraitGiverName = questRecord[117].GetString();
-    PortraitTurnInText = questRecord[118].GetString();
-    PortraitTurnInName = questRecord[119].GetString();
-    QuestCompletionLog = questRecord[120].GetString();
+    LogTitle = questRecord[113].GetString();
+    LogDescription = questRecord[114].GetString();
+    QuestDescription = questRecord[115].GetString();
+    AreaDescription = questRecord[116].GetString();
+    PortraitGiverText = questRecord[117].GetString();
+    PortraitGiverName = questRecord[118].GetString();
+    PortraitTurnInText = questRecord[119].GetString();
+    PortraitTurnInName = questRecord[120].GetString();
+    QuestCompletionLog = questRecord[121].GetString();
 
     for (uint32 i = 0; i < QUEST_EMOTE_COUNT; ++i)
     {
@@ -583,6 +583,8 @@ WorldPacket Quest::BuildQueryData(LocaleConstant loc) const
     response.Info.AllowableRaces = GetAllowableRaces();
     response.Info.TreasurePickerID = GetTreasurePickerId();
     response.Info.Expansion = GetExpansion();
+    response.Info.ManagedWorldStateID = GetManagedWorldStateId();
+    response.Info.QuestSessionBonus = 0; //GetQuestSessionBonus(); // this is only sent while quest session is active
 
     for (QuestObjective const& questObjective : GetObjectives())
     {

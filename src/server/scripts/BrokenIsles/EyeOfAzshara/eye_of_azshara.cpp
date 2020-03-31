@@ -208,7 +208,7 @@ class aura_eoa_violent_winds_force_move : public AuraScript
     void ApplyForceMove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
     {
         Unit* target = GetTarget();
-        target->ApplyMovementForce(target->GetGUID(), 2.0f, Position(-3486.264f, 4386.87f, -3.580416f));
+        target->ApplyMovementForce(target->GetGUID(), Position(-3486.264f, 4386.87f, -3.580416f), 2.0f, 0);
     }
 
     void RemoveForceMove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)

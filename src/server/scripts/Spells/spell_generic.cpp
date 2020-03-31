@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
+ * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -3394,7 +3394,7 @@ class spell_gen_upper_deck_create_foam_sword : public SpellScriptLoader
                             return;
                     }
 
-                    CreateItem(effIndex, itemId[urand(0, 4)]);
+                    CreateItem(effIndex, itemId[urand(0, 4)], ItemContext::NONE);
                 }
             }
 

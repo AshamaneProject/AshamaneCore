@@ -222,7 +222,7 @@ class boss_tayak : public CreatureScript
                         for (Player* player : playerList)
                         {
                             if (player->IsAlive() && !player->HasMovementForce(me->GetGUID()))
-                                player->ApplyMovementForce(me->GetGUID(), 3.f, pos);
+                                player->ApplyMovementForce(me->GetGUID(), pos, 3.f, 0);
                         }
 
                         // Won't reach the event until 6-7 secs as Ta'yak has UNIT_STATE_CASTING
@@ -1042,7 +1042,7 @@ class mob_gale_winds_stalker : public CreatureScript
                         {
                             // Player doesn't have forcedMovement
                             if (player->IsAlive() && !player->HasMovementForce(me->GetGUID()))
-                                player->ApplyMovementForce(me->GetGUID(), -7.0f, pos);
+                                player->ApplyMovementForce(me->GetGUID(), pos, -7.0f, 0);
                             // Dead player has forcedMovement
                             else if (!player->IsAlive())
                                 player->RemoveAllMovementForces();

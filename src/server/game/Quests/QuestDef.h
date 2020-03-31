@@ -1,6 +1,5 @@
 /*
- * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
- * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
+ * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -443,6 +442,7 @@ class TC_GAME_API Quest
         int32 GetTreasurePickerId() const { return TreasurePickerID; }
         int32 GetExpansion() const { return Expansion; }
         int32 GetManagedWorldStateId() const { return ManagedWorldStateID; }
+        int32 GetQuestSessionBonus() const { return QuestSessionBonus; }
         uint32 GetQuestGiverPortrait() const { return QuestGiverPortrait; }
         int32 GetQuestGiverPortraitMount() const { return QuestGiverPortraitMount; }
         uint32 GetQuestTurnInPortrait() const { return QuestTurnInPortrait; }
@@ -547,6 +547,7 @@ class TC_GAME_API Quest
         int32 TreasurePickerID;
         int32 Expansion;
         int32 ManagedWorldStateID;
+        int32 QuestSessionBonus;
         QuestObjectives Objectives;
         std::string LogTitle;
         std::string LogDescription;

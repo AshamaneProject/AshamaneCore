@@ -1,6 +1,5 @@
 /*
- * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
- * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
+ * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -19,6 +18,8 @@
 #include "ObjectMgr.h"
 #include "Area.h"
 #include "AreaTriggerDataStore.h"
+#include "AzeriteEmpoweredItem.h"
+#include "AzeriteItem.h"
 #include "Chat.h"
 #include "Containers.h"
 #include "DatabaseEnv.h"
@@ -426,7 +427,7 @@ void ObjectMgr::LoadCreatureTemplates()
     //                                        9         10        11              12        13        14                      15                 16
                                              "TitleAlt, IconName, gossip_menu_id, minlevel, maxlevel, HealthScalingExpansion, RequiredExpansion, VignetteID, "
     //                                        17       18       19          20         21     22    23         24              25               26            27
-                                             "faction, npcflag, speed_walk, speed_run, scale, rank, dmgschool, BaseAttackTime, RangeAttackTime, BaseVariance, RangeVariance, "
+                                             "faction, npcflag, speed_walk, speed_run, scale, `rank`, dmgschool, BaseAttackTime, RangeAttackTime, BaseVariance, RangeVariance, "
     //                                        28          29          30           31           32            33      34             35
                                              "unit_class, unit_flags, unit_flags2, unit_flags3, dynamicflags, family, trainer_class, type, "
     //                                        36          37           38      39              40        41           42           43           44           45           46
@@ -3092,7 +3093,7 @@ void ObjectMgr::LoadItemTemplates()
     }
 
     for (std::set<uint32>::const_iterator itr = notFoundOutfit.begin(); itr != notFoundOutfit.end(); ++itr)
-        TC_LOG_ERROR("sql.sql", "Item (Entry: %u) does not exist in `item_template` but is referenced in `CharStartOutfit.dbc`", *itr);
+        TC_LOG_ERROR("sql.sql", "Item (Entry: %u) does not exist but is referenced in `CharStartOutfit.dbc`", *itr);
 
     TC_LOG_INFO("server.loading", ">> Loaded %u item templates in %u ms", sparseCount, GetMSTimeDiffToNow(oldMSTime));
 }
@@ -3481,7 +3482,7 @@ void ObjectMgr::LoadPlayerInfo()
 
                 if (!GetItemTemplate(item_id))
                 {
-                    TC_LOG_ERROR("sql.sql", "Item id %u (race %u class %u) in `playercreateinfo_item` table but not listed in `item_template`, ignoring.", item_id, current_race, current_class);
+                    TC_LOG_ERROR("sql.sql", "Item id %u (race %u class %u) in `playercreateinfo_item` table but it does not exist, ignoring.", item_id, current_race, current_class);
                     continue;
                 }
 
@@ -4041,9 +4042,9 @@ void ObjectMgr::LoadQuests()
         "RewardFactionID5, RewardFactionValue5, RewardFactionOverride5, RewardFactionCapIn5, RewardFactionFlags, "
         //96                97                  98                 99                  100                101                 102                103
         "RewardCurrencyID1, RewardCurrencyQty1, RewardCurrencyID2, RewardCurrencyQty2, RewardCurrencyID3, RewardCurrencyQty3, RewardCurrencyID4, RewardCurrencyQty4, "
-        //104                105                 106          107          108             109               110        111
-        "AcceptedSoundKitID, CompleteSoundKitID, AreaGroupID, TimeAllowed, AllowableRaces, TreasurePickerID, Expansion, ManagedWorldStateID, "
-        //112      113             114               115              116                117                118                 119                 120
+        //104                105                 106          107          108             109               110        111                  112
+        "AcceptedSoundKitID, CompleteSoundKitID, AreaGroupID, TimeAllowed, AllowableRaces, TreasurePickerID, Expansion, ManagedWorldStateID, QuestSessionBonus, "
+        //113      114             115               116              117                118                119                 120                 121
         "LogTitle, LogDescription, QuestDescription, AreaDescription, PortraitGiverText, PortraitGiverName, PortraitTurnInText, PortraitTurnInName, QuestCompletionLog"
         " FROM quest_template");
     if (!result)
@@ -4234,7 +4235,7 @@ void ObjectMgr::LoadQuests()
 
         Quest* qinfo = iter->second;
 
-        // additional quest integrity checks (GO, creature_template and item_template must be loaded already)
+        // additional quest integrity checks (GO, creature_template and items must be loaded already)
 
         if (qinfo->GetQuestType() >= MAX_QUEST_TYPES)
             TC_LOG_ERROR("sql.sql", "Quest %u has `Method` = %u, expected values are 0, 1 or 2.", qinfo->GetQuestId(), qinfo->GetQuestType());
@@ -5839,11 +5840,11 @@ void ObjectMgr::LoadInstanceEncounters()
 
         if (!dungeonEncounter->DifficultyID)
         {
-            for (uint32 i = 0; i < MAX_DIFFICULTY; ++i)
+            for (DifficultyEntry const* difficulty : sDifficultyStore)
             {
-                if (sDB2Manager.GetMapDifficultyData(dungeonEncounter->MapID, Difficulty(i)))
+                if (sDB2Manager.GetMapDifficultyData(dungeonEncounter->MapID, Difficulty(difficulty->ID)))
                 {
-                    DungeonEncounterList& encounters = _dungeonEncounterStore[MAKE_PAIR64(dungeonEncounter->MapID, i)];
+                    DungeonEncounterList& encounters = _dungeonEncounterStore[MAKE_PAIR64(dungeonEncounter->MapID, difficulty->ID)];
                     encounters.push_back(new DungeonEncounter(dungeonEncounter, EncounterCreditType(creditType), creditEntry, lastEncounterDungeon));
                 }
             }
@@ -6009,12 +6010,13 @@ void ObjectMgr::ReturnOrDeleteOldMails(bool serverUp)
             // if it is mail from non-player, or if it's already return mail, it shouldn't be returned, but deleted
             if (m->messageType != MAIL_NORMAL || (m->checked & (MAIL_CHECK_MASK_COD_PAYMENT | MAIL_CHECK_MASK_RETURNED)))
             {
+                CharacterDatabaseTransaction nonTransactional(nullptr);
                 // mail open and then not returned
                 for (MailItemInfoVec::iterator itr2 = m->items.begin(); itr2 != m->items.end(); ++itr2)
                 {
-                    stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_ITEM_INSTANCE);
-                    stmt->setUInt64(0, itr2->item_guid);
-                    CharacterDatabase.Execute(stmt);
+                    Item::DeleteFromDB(nonTransactional, itr2->item_guid);
+                    AzeriteItem::DeleteFromDB(nonTransactional, itr2->item_guid);
+                    AzeriteEmpoweredItem::DeleteFromDB(nonTransactional, itr2->item_guid);
                 }
 
                 stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_MAIL_ITEM_BY_ID);
@@ -6465,7 +6467,7 @@ void ObjectMgr::LoadGraveyardZones()
         uint32 zoneId = fields[1].GetUInt32();
         uint32 team   = fields[2].GetUInt16();
 
-        WorldSafeLocsEntry const* entry = sWorldSafeLocsStore.LookupEntry(safeLocId);
+        WorldSafeLocsEntry const* entry = GetWorldSafeLoc(safeLocId);
         if (!entry)
         {
             TC_LOG_ERROR("sql.sql", "Table `graveyard_zone` has a record for non-existing graveyard (WorldSafeLocsID: %u), skipped.", safeLocId);
@@ -6501,9 +6503,9 @@ WorldSafeLocsEntry const* ObjectMgr::GetDefaultGraveYard(uint32 team) const
     };
 
     if (team == HORDE)
-        return sWorldSafeLocsStore.LookupEntry(HORDE_GRAVEYARD);
+        return GetWorldSafeLoc(HORDE_GRAVEYARD);
     else if (team == ALLIANCE)
-        return sWorldSafeLocsStore.LookupEntry(ALLIANCE_GRAVEYARD);
+        return GetWorldSafeLoc(ALLIANCE_GRAVEYARD);
     else return nullptr;
 }
 
@@ -6564,7 +6566,7 @@ WorldSafeLocsEntry const* ObjectMgr::GetClosestGraveYard(WorldLocation const& lo
     {
         GraveYardData const& data = range.first->second;
 
-        WorldSafeLocsEntry const* entry = sWorldSafeLocsStore.AssertEntry(data.safeLocId);
+        WorldSafeLocsEntry const* entry = ASSERT_NOTNULL(GetWorldSafeLoc(data.safeLocId));
 
         // skip enemy faction graveyard
         // team == 0 case can be at call from .neargrave
@@ -6576,17 +6578,17 @@ WorldSafeLocsEntry const* ObjectMgr::GetClosestGraveYard(WorldLocation const& lo
             if (!sConditionMgr->IsObjectMeetingNotGroupedConditions(CONDITION_SOURCE_TYPE_GRAVEYARD, data.safeLocId, conditionSource))
                 continue;
 
-            if (int16(entry->MapID) == mapEntry->ParentMapID && !conditionObject->GetPhaseShift().HasVisibleMapId(entry->MapID))
+            if (int16(entry->Loc.GetMapId()) == mapEntry->ParentMapID && !conditionObject->GetPhaseShift().HasVisibleMapId(entry->Loc.GetMapId()))
                 continue;
         }
 
         // find now nearest graveyard at other map
-        if (MapId != entry->MapID && int16(entry->MapID) != mapEntry->ParentMapID)
+        if (MapId != entry->Loc.GetMapId() && int16(entry->Loc.GetMapId()) != mapEntry->ParentMapID)
         {
             // if find graveyard at different map from where entrance placed (or no entrance data), use any first
             if (!mapEntry
                 || mapEntry->CorpseMapID < 0
-                || uint32(mapEntry->CorpseMapID) != entry->MapID
+                || uint32(mapEntry->CorpseMapID) != entry->Loc.GetMapId()
                 || (mapEntry->Corpse.X == 0 && mapEntry->Corpse.Y == 0)) // Check X and Y
             {
                 // not have any corrdinates for check distance anyway
@@ -6595,8 +6597,8 @@ WorldSafeLocsEntry const* ObjectMgr::GetClosestGraveYard(WorldLocation const& lo
             }
 
             // at entrance map calculate distance (2D);
-            float dist2 = (entry->Loc.X - mapEntry->Corpse.X)*(entry->Loc.X - mapEntry->Corpse.X)
-                +(entry->Loc.Y - mapEntry->Corpse.Y)*(entry->Loc.Y - mapEntry->Corpse.Y);
+            float dist2 = (entry->Loc.GetPositionX() - mapEntry->Corpse.X) * (entry->Loc.GetPositionX() - mapEntry->Corpse.X)
+                + (entry->Loc.GetPositionY() - mapEntry->Corpse.Y) * (entry->Loc.GetPositionY() - mapEntry->Corpse.Y);
             if (foundEntr)
             {
                 if (dist2 < distEntr)
@@ -6615,7 +6617,9 @@ WorldSafeLocsEntry const* ObjectMgr::GetClosestGraveYard(WorldLocation const& lo
         // find now nearest graveyard at same map
         else
         {
-            float dist2 = (entry->Loc.X - x)*(entry->Loc.X - x)+(entry->Loc.Y - y)*(entry->Loc.Y - y)+(entry->Loc.Z - z)*(entry->Loc.Z - z);
+            float dist2 = (entry->Loc.GetPositionX() - x) * (entry->Loc.GetPositionX() - x)
+                + (entry->Loc.GetPositionY() - y) * (entry->Loc.GetPositionY() - y)
+                + (entry->Loc.GetPositionZ() - z) * (entry->Loc.GetPositionZ() - z);
             if (foundNear)
             {
                 if (dist2 < distNear)
@@ -6652,6 +6656,46 @@ GraveYardData const* ObjectMgr::FindGraveYardData(uint32 id, uint32 zoneId) cons
             return &data;
     }
     return nullptr;
+}
+
+void ObjectMgr::LoadWorldSafeLocs()
+{
+    uint32 oldMSTime = getMSTime();
+
+    //                                                   0   1      2     3     4     5
+    if (QueryResult result = WorldDatabase.Query("SELECT ID, MapID, LocX, LocY, LocZ, Facing FROM world_safe_locs"))
+    {
+        do
+        {
+            Field* fields = result->Fetch();
+            uint32 id = fields[0].GetUInt32();
+            WorldLocation loc(fields[1].GetUInt32(), fields[2].GetFloat(), fields[3].GetFloat(), fields[4].GetFloat(), fields[5].GetFloat());
+            if (!MapManager::IsValidMapCoord(loc))
+            {
+                TC_LOG_ERROR("sql.sql", "World location (ID: %u) has a invalid position MapID: %u %s, skipped", id, loc.GetMapId(), loc.ToString().c_str());
+                continue;
+            }
+
+            WorldSafeLocsEntry& worldSafeLocs = _worldSafeLocs[id];
+            worldSafeLocs.ID = id;
+            worldSafeLocs.Loc.WorldRelocate(loc);
+
+        } while (result->NextRow());
+
+        TC_LOG_INFO("server.loading", ">> Loaded " SZFMTD " world locations %u ms", _worldSafeLocs.size(), GetMSTimeDiffToNow(oldMSTime));
+    }
+    else
+        TC_LOG_INFO("server.loading", ">> Loaded 0 world locations. DB table `world_safe_locs` is empty.");
+}
+
+WorldSafeLocsEntry const* ObjectMgr::GetWorldSafeLoc(uint32 id) const
+{
+    return Trinity::Containers::MapGetValuePtr(_worldSafeLocs, id);
+}
+
+Trinity::IteratorPair<std::unordered_map<uint32, WorldSafeLocsEntry>::const_iterator> ObjectMgr::GetWorldSafeLocs() const
+{
+    return std::make_pair(_worldSafeLocs.begin(), _worldSafeLocs.end());
 }
 
 AreaTriggerTeleportStruct const* ObjectMgr::GetAreaTrigger(int64 trigger) const
@@ -6771,7 +6815,7 @@ void ObjectMgr::LoadAreaTriggerTeleports()
         int64 TriggerIDOrGUID   = fields[0].GetInt64();
         uint32 PortLocID        = fields[1].GetUInt32();
 
-        WorldSafeLocsEntry const* portLoc = sWorldSafeLocsStore.LookupEntry(PortLocID);
+        WorldSafeLocsEntry const* portLoc = GetWorldSafeLoc(PortLocID);
         if (!portLoc)
         {
             if (TriggerIDOrGUID > 0)
@@ -6783,11 +6827,11 @@ void ObjectMgr::LoadAreaTriggerTeleports()
 
         AreaTriggerTeleportStruct at;
 
-        at.target_mapId       = portLoc->MapID;
-        at.target_X           = portLoc->Loc.X;
-        at.target_Y           = portLoc->Loc.Y;
-        at.target_Z           = portLoc->Loc.Z;
-        at.target_Orientation = (portLoc->Facing * M_PI) / 180; // Orientation is initially in degrees
+        at.target_mapId       = portLoc->Loc.GetMapId();
+        at.target_X           = portLoc->Loc.GetPositionX();
+        at.target_Y           = portLoc->Loc.GetPositionY();
+        at.target_Z           = portLoc->Loc.GetPositionZ();
+        at.target_Orientation = portLoc->Loc.GetOrientation();
 
         if (TriggerIDOrGUID > 0)
         {
@@ -7001,7 +7045,7 @@ void ObjectMgr::SetHighestGuids()
     if (result)
         sGuildMgr->SetNextGuildId((*result)[0].GetUInt64()+1);
 
-    result = CharacterDatabase.Query("SELECT MAX(guid) FROM groups");
+    result = CharacterDatabase.Query("SELECT MAX(guid) FROM `groups`");
     if (result)
         sGroupMgr->SetGroupDbStoreSize((*result)[0].GetUInt32()+1);
 
@@ -10311,37 +10355,76 @@ void ObjectMgr::LoadRaceAndClassExpansionRequirements()
     oldMSTime = getMSTime();
     _classExpansionRequirementStore.clear();
 
-    //                                   0        1
-    result = WorldDatabase.Query("SELECT classID, expansion FROM `class_expansion_requirement`");
+    //                                         0       1                     2                      3
+    result = WorldDatabase.Query("SELECT ClassID, RaceID, ActiveExpansionLevel, AccountExpansionLevel FROM `class_expansion_requirement`");
 
     if (result)
     {
+        std::map<uint8, std::map<uint8, std::pair<uint8, uint8>>> temp;
         uint32 count = 0;
         do
         {
             Field* fields = result->Fetch();
 
-            uint8 classID = fields[0].GetInt8();
-            uint8 expansion = fields[1].GetInt8();
+            uint8 classID = fields[0].GetUInt8();
+            uint8 raceID = fields[1].GetUInt8();
+            uint8 activeExpansionLevel = fields[2].GetUInt8();
+            uint8 accountExpansionLevel = fields[3].GetUInt8();
 
             ChrClassesEntry const* classEntry = sChrClassesStore.LookupEntry(classID);
             if (!classEntry)
             {
-                TC_LOG_ERROR("sql.sql", "Class %u defined in `class_expansion_requirement` does not exists, skipped.", classID);
+                TC_LOG_ERROR("sql.sql", "Class %u (race %u) defined in `class_expansion_requirement` does not exists, skipped.",
+                    uint32(classID), uint32(raceID));
                 continue;
             }
 
-            if (expansion >= MAX_EXPANSIONS)
+            ChrRacesEntry const* raceEntry = sChrRacesStore.LookupEntry(raceID);
+            if (!raceEntry)
             {
-                TC_LOG_ERROR("sql.sql", "Class %u defined in `class_expansion_requirement` has incorrect expansion %u, skipped.", classID, expansion);
+                TC_LOG_ERROR("sql.sql", "Race %u (class %u) defined in `class_expansion_requirement` does not exists, skipped.",
+                    uint32(raceID), uint32(classID));
                 continue;
             }
 
-            _classExpansionRequirementStore[classID] = expansion;
+            if (activeExpansionLevel >= MAX_EXPANSIONS)
+            {
+                TC_LOG_ERROR("sql.sql", "Class %u Race %u defined in `class_expansion_requirement` has incorrect ActiveExpansionLevel %u, skipped.",
+                    uint32(classID), uint32(raceID), activeExpansionLevel);
+                continue;
+            }
+
+            if (accountExpansionLevel >= MAX_ACCOUNT_EXPANSIONS)
+            {
+                TC_LOG_ERROR("sql.sql", "Class %u Race %u defined in `class_expansion_requirement` has incorrect AccountExpansionLevel %u, skipped.",
+                    uint32(classID), uint32(raceID), accountExpansionLevel);
+                continue;
+            }
+
+            temp[raceID][classID] = { activeExpansionLevel, accountExpansionLevel };
 
             ++count;
         }
         while (result->NextRow());
+
+        for (auto&& race : temp)
+        {
+            _classExpansionRequirementStore.emplace_back();
+
+            RaceClassAvailability& raceClassAvailability = _classExpansionRequirementStore.back();
+            raceClassAvailability.RaceID = race.first;
+
+            for (auto&& class_ : race.second)
+            {
+                raceClassAvailability.Classes.emplace_back();
+
+                ClassAvailability& classAvailability = raceClassAvailability.Classes.back();
+                classAvailability.ClassID = class_.first;
+                classAvailability.ActiveExpansionLevel = class_.second.first;
+                classAvailability.AccountExpansionLevel = class_.second.second;
+            }
+        }
+
         TC_LOG_INFO("server.loading", ">> Loaded %u class expansion requirements in %u ms.", count, GetMSTimeDiffToNow(oldMSTime));
     }
     else
@@ -10402,6 +10485,25 @@ bool ObjectMgr::GetRealmName(uint32 realmId, std::string& name, std::string& nor
         return true;
     }
     return false;
+}
+
+ClassAvailability const* ObjectMgr::GetClassExpansionRequirement(uint8 raceId, uint8 classId) const
+{
+    auto raceItr = std::find_if(_classExpansionRequirementStore.begin(), _classExpansionRequirementStore.end(), [raceId](RaceClassAvailability const& raceClass)
+    {
+        return raceClass.RaceID == raceId;
+    });
+    if (raceItr == _classExpansionRequirementStore.end())
+        return nullptr;
+
+    auto classItr = std::find_if(raceItr->Classes.begin(), raceItr->Classes.end(), [classId](ClassAvailability const& classAvailability)
+    {
+        return classAvailability.ClassID == classId;
+    });
+    if (classItr == raceItr->Classes.end())
+        return nullptr;
+
+    return &(*classItr);
 }
 
 PlayerChoice const* ObjectMgr::GetPlayerChoice(int32 choiceId) const
@@ -11032,10 +11134,10 @@ void ObjectMgr::LoadPlayerChoicesLocale()
     }
 }
 
-std::set<uint32> ObjectMgr::GetItemBonusTree(uint32 ItemID, uint32 itemBonusTreeMod, uint32 ownerLevel, int32 levelBonus, int32 needLevel)
+std::set<uint32> ObjectMgr::GetItemBonusTree(uint32 ItemID, ItemContext itemContext, uint32 ownerLevel, int32 levelBonus, int32 needLevel)
 {
     auto itemTemplate = GetItemTemplate(ItemID);
-    auto bonusListIDs = GetItemBonusForLevel(ItemID, itemBonusTreeMod, needLevel);
+    auto bonusListIDs = GetItemBonusForLevel(ItemID, itemContext, needLevel);
     if (!itemTemplate)
         return bonusListIDs;
 
@@ -11050,12 +11152,12 @@ std::set<uint32> ObjectMgr::GetItemBonusTree(uint32 ItemID, uint32 itemBonusTree
     return bonusListIDs;
 }
 
-std::set<uint32> ObjectMgr::GetItemBonusForLevel(uint32 itemID, uint32 itemBonusTreeMod, int32 needLevel)
+std::set<uint32> ObjectMgr::GetItemBonusForLevel(uint32 itemID, ItemContext itemContext, int32 needLevel)
 {
     auto itemTemplate = GetItemTemplate(itemID);
-    uint32 itemLevelFromBonus = 0;
 
-    auto bonusListIDs = sDB2Manager.GetItemBonusTree(itemID, itemBonusTreeMod, itemLevelFromBonus);
+    uint32 itemLevelFromBonus = 0;
+    auto bonusListIDs = sDB2Manager.GetItemBonusTree(itemID, itemContext, itemLevelFromBonus);
     if (!needLevel)
         needLevel = itemLevelFromBonus;
 

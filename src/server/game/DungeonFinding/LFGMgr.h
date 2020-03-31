@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
+ * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -353,6 +353,8 @@ class TC_GAME_API LFGMgr
         bool inLfgDungeonMap(ObjectGuid guid, uint32 map, Difficulty difficulty);
         /// Get selected dungeons
         LfgDungeonSet const& GetSelectedDungeons(ObjectGuid guid);
+        /// Get selected random dungeon
+        uint32 GetSelectedRandomDungeon(ObjectGuid guid);
         /// Get current lfg state
         LfgState GetState(ObjectGuid guid);
         /// Get current vote kick state

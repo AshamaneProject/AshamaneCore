@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
+ * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -112,6 +112,15 @@ namespace WorldPackets
                 uint32 ContributionPoints = 0;
             };
 
+            struct PVPMatchPlayerPVPStat
+            {
+                PVPMatchPlayerPVPStat() : PvpStatID(0), PvpStatValue(0) { }
+                PVPMatchPlayerPVPStat(int32 pvpStatID, int32 pvpStatValue) : PvpStatID(pvpStatID), PvpStatValue(pvpStatValue) { }
+
+                int32 PvpStatID;
+                int32 PvpStatValue;
+            };
+
             struct PVPMatchPlayerStatistics
             {
                 ObjectGuid PlayerGUID;
@@ -125,7 +134,7 @@ namespace WorldPackets
                 Optional<int32> RatingChange;
                 Optional<uint32> PreMatchMMR;
                 Optional<int32> MmrChange;
-                std::vector<int32> Stats;
+                std::vector<PVPMatchPlayerPVPStat> Stats;
                 int32 PrimaryTalentTree = 0;
                 int32 Sex = 0;
                 int32 Race = 0;

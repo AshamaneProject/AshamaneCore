@@ -1,6 +1,5 @@
 /*
- * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
- * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
+ * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -25,7 +24,7 @@
 #include "HmacHash.h"
 #include "IPLocation.h"
 #include "PacketLog.h"
-#include "Realm.h"
+#include "RealmList.h"
 #include "RBAC.h"
 #include "ScriptMgr.h"
 #include "SessionKeyGeneration.h"
@@ -68,9 +67,6 @@ uint8 const WorldSocket::AuthCheckSeed[16] = { 0xC5, 0xC6, 0x98, 0x95, 0x76, 0x3
 uint8 const WorldSocket::SessionKeySeed[16] = { 0x58, 0xCB, 0xCF, 0x40, 0xFE, 0x2E, 0xCE, 0xA6, 0x5A, 0x90, 0xB8, 0x01, 0x68, 0x6C, 0x28, 0x0B };
 uint8 const WorldSocket::ContinuedSessionSeed[16] = { 0x16, 0xAD, 0x0C, 0xD4, 0x46, 0xF9, 0x4F, 0xB2, 0xEF, 0x7D, 0xEA, 0x2A, 0x17, 0x66, 0x4D, 0x2F };
 uint8 const WorldSocket::EncryptionKeySeed[16] = { 0xE9, 0x75, 0x3C, 0x50, 0x90, 0x93, 0x61, 0xDA, 0x3B, 0x07, 0xEE, 0xFA, 0xFF, 0x9D, 0x41, 0xB8 };
-
-uint8 const ClientTypeSeed_Wn64[16] = { 0x79, 0x73, 0xA8, 0xD5, 0x4B, 0xDB, 0x8B, 0x79, 0x8D, 0x92, 0x97, 0xB0, 0x96, 0xE7, 0x71, 0xEF };
-uint8 const ClientTypeSeed_Mc64[16] = { 0x34, 0x1C, 0xFE, 0xFE, 0x3D, 0x72, 0xAC, 0xA9, 0xA4, 0x40, 0x7D, 0xC5, 0x35, 0xDE, 0xD6, 0x6A };
 
 WorldSocket::WorldSocket(tcp::socket&& socket) : Socket(std::move(socket)),
     _type(CONNECTION_TYPE_REALM), _key(0), _OverSpeedPings(0),
@@ -687,6 +683,15 @@ void WorldSocket::HandleAuthSessionCallback(std::shared_ptr<WorldPackets::Auth::
         return;
     }
 
+    RealmBuildInfo const* buildInfo = sRealmList->GetBuildInfo(realm.Build);
+    if (!buildInfo)
+    {
+        SendAuthResponseError(ERROR_BAD_VERSION);
+        TC_LOG_ERROR("network", "WorldSocket::HandleAuthSession: Missing auth seed for realm build %u (%s).", realm.Build, GetRemoteIpAddress().to_string().c_str());
+        DelayedCloseSocket();
+        return;
+    }
+
     AccountInfo account(result->Fetch());
 
     // For hook purposes, we get Remoteaddress at this point.
@@ -695,9 +700,9 @@ void WorldSocket::HandleAuthSessionCallback(std::shared_ptr<WorldPackets::Auth::
     SHA256Hash digestKeyHash;
     digestKeyHash.UpdateData(account.Game.KeyData.data(), account.Game.KeyData.size());
     if (account.Game.OS == "Wn64")
-        digestKeyHash.UpdateData(ClientTypeSeed_Wn64, 16);
+        digestKeyHash.UpdateData(buildInfo->Win64AuthSeed.data(), buildInfo->Win64AuthSeed.size());
     else if (account.Game.OS == "Mc64")
-        digestKeyHash.UpdateData(ClientTypeSeed_Mc64, 16);
+        digestKeyHash.UpdateData(buildInfo->Mac64AuthSeed.data(), buildInfo->Mac64AuthSeed.size());
 
     digestKeyHash.Finalize();
 

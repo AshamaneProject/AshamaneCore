@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
+ * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -29,6 +29,11 @@ void UF::WriteDynamicFieldUpdateMask(std::size_t size, std::vector<uint32> const
         else
             for (std::size_t block = 0; block < size / 32; ++block)
                 data << uint32(updateMask[block]);
+    }
+    else if (size == 32)
+    {
+        data.WriteBits(updateMask.back(), 32);
+        return;
     }
 
     if (size % 32)

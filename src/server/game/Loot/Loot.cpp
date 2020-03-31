@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
+ * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -48,7 +48,6 @@ LootItem::LootItem(LootStoreItem const& li)
         freeforall = false;
         needs_quest = false;
         follow_loot_rules = false;
-        upgradeId = 0;
     }
     else
     {
@@ -57,13 +56,10 @@ LootItem::LootItem(LootStoreItem const& li)
         follow_loot_rules = proto && (proto->FlagsCu & ITEM_FLAGS_CU_FOLLOW_LOOT_RULES);
 
         needs_quest = li.needs_quest;
-
-        upgradeId = sDB2Manager.GetRulesetItemUpgrade(itemid);
     }
 
     randomBonusListId = GenerateItemRandomBonusListId(itemid);
-    upgradeId = sDB2Manager.GetRulesetItemUpgrade(itemid);
-    context = 0;
+    context = ItemContext::NONE;
     count = 0;
     is_looted = 0;
     is_blocked = 0;
@@ -113,7 +109,7 @@ void LootItem::AddAllowedLooter(const Player* player)
 // --------- Loot ---------
 //
 
-Loot::Loot(uint32 _gold /*= 0*/) : gold(_gold), unlootedCount(0), loot_type(LOOT_CORPSE), _itemContext(0)
+Loot::Loot(uint32 _gold /*= 0*/) : gold(_gold), unlootedCount(0), loot_type(LOOT_NONE), _itemContext(ItemContext::NONE)
 {
 }
 
@@ -157,7 +153,7 @@ void Loot::clear()
     unlootedCount = 0;
     loot_type = LOOT_NONE;
     i_LootValidatorRefManager.clearReferences();
-    _itemContext = 0;
+    _itemContext = ItemContext::NONE;
 }
 
 uint32 Loot::GetUnlootedCount(Player const* player /*= nullptr*/) const
@@ -269,7 +265,7 @@ void Loot::GenerateJournalEncounterLoot(Player* looter, uint32 journalEncounterI
 }
 
 // Calls processor of corresponding LootTemplate (which handles everything including references)
-bool Loot::FillLoot(uint32 lootId, LootStore const& store, Player* lootOwner, bool /*personal*/, bool noEmptyError, uint16 lootMode /*= LOOT_MODE_DEFAULT*/, bool specOnly /*= false*/)
+bool Loot::FillLoot(uint32 lootId, LootStore const& store, Player* lootOwner, bool /*personal*/, bool noEmptyError, uint16 lootMode /*= LOOT_MODE_DEFAULT*/, ItemContext context /*= ItemContext::NONE*/, bool specOnly /*= false*/)
 {
     // Must be provided
     if (!lootOwner)
@@ -279,7 +275,7 @@ bool Loot::FillLoot(uint32 lootId, LootStore const& store, Player* lootOwner, bo
 
     if (LFGDungeonsEntry const* dungeonEntry = sLFGMgr->GetPlayerLFGDungeonEntry(lootOwner->GetGUID()))
         if (dungeonEntry->Flags[0] & lfg::LfgFlags::LFG_FLAG_TIMEWALKER)
-            _itemContext = uint8(ItemContext::TimeWalker);
+            _itemContext = ItemContext::TimeWalker;
 
     LootTemplate const* tab = store.GetLootFor(lootId);
 
@@ -289,6 +285,8 @@ bool Loot::FillLoot(uint32 lootId, LootStore const& store, Player* lootOwner, bo
             TC_LOG_ERROR("sql.sql", "Table '%s' loot id #%u used but it doesn't have records.", store.GetName(), lootId);
         return false;
     }
+
+    _itemContext = context;
 
     items.reserve(MAX_NR_LOOT_ITEMS);
 
@@ -330,10 +328,9 @@ void Loot::AddItem(LootStoreItem const& item, Player const* player /*= nullptr*/
         LootItem generatedLoot(item);
         generatedLoot.context = _itemContext;
         generatedLoot.count = std::min(count, proto->GetMaxStackSize());
-        if (_itemContext)
+        if (_itemContext != ItemContext::NONE)
         {
-            uint32 redunantData = 0;
-            std::set<uint32> bonusListIDs = sDB2Manager.GetItemBonusTree(generatedLoot.itemid, _itemContext, redunantData);
+            std::set<uint32> bonusListIDs = sDB2Manager.GetItemBonusTree(generatedLoot.itemid, _itemContext);
             generatedLoot.BonusListIDs.insert(generatedLoot.BonusListIDs.end(), bonusListIDs.begin(), bonusListIDs.end());
         }
 

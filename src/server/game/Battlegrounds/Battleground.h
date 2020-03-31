@@ -1,6 +1,5 @@
 /*
- * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
- * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
+ * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -111,7 +110,7 @@ enum BattlegroundMarks
     ITEM_SA_MARK_OF_HONOR           = 42425
 };
 
-enum BattlegroundChests
+enum BattlegroundMarksCount
 {
     ITEM_BG_ALLIANCE_CHEST  = 151557,
     ITEM_BG_HORDE_CHEST     = 151558,

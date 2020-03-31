@@ -17,6 +17,7 @@
 
 #include "AreaTrigger.h"
 #include "AreaTriggerAI.h"
+#include "ObjectMgr.h"
 #include "Player.h"
 #include "ScriptMgr.h"
 
@@ -26,9 +27,9 @@ public:
     at_legion_instance_portal(const char* name, uint32 mapId, float x, float y, float z, float o) : AreaTriggerEntityScript(name), _tpLocation(mapId, x, y, z, o) {}
     at_legion_instance_portal(const char* name, uint32 worldSafeLocs) : AreaTriggerEntityScript(name)
     {
-        WorldSafeLocsEntry const* safeLoc = sWorldSafeLocsStore.LookupEntry(worldSafeLocs);
+        WorldSafeLocsEntry const* safeLoc = sObjectMgr->GetWorldSafeLoc(worldSafeLocs);
         ASSERT(safeLoc);
-        _tpLocation = WorldLocation(safeLoc->MapID, safeLoc->Loc.X, safeLoc->Loc.Y, safeLoc->Loc.Z, safeLoc->Facing);
+        _tpLocation = safeLoc->Loc;
     }
 
     WorldLocation _tpLocation;

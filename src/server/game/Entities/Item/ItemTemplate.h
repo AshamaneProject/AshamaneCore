@@ -1,6 +1,5 @@
 /*
- * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
- * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
+ * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -113,7 +112,7 @@ enum ItemSpelltriggerType
      * death" of spell 57348 makes me think so)
      */
     ITEM_SPELLTRIGGER_ON_OBTAIN       = 5,
-    ITEM_SPELLTRIGGER_LEARN_SPELL_ID  = 6                   // used in item_template.spell_2 with spell_id with SPELL_GENERIC_LEARN in spell_1
+    ITEM_SPELLTRIGGER_LEARN_SPELL_ID  = 6                   // used in ItemEffect in second slot with spell_id with SPELL_GENERIC_LEARN in spell_1
 };
 
 #define MAX_ITEM_SPELLTRIGGER           7
@@ -157,7 +156,7 @@ enum ItemFieldFlags : uint32
     ITEM_FIELD_FLAG_CHILD         = 0x00080000,
     ITEM_FIELD_FLAG_UNK15         = 0x00100000,
     ITEM_FIELD_FLAG_NEW_ITEM      = 0x00200000, // Item glows in inventory
-    ITEM_FLAG_AZERITE_EMPOWERED   = 0x00400000,
+    ITEM_FIELD_FLAG_AZERITE_EMPOWERED_ITEM_VIEWED = 0x00400000, // Won't play azerite powers animation when viewing it
     ITEM_FIELD_FLAG_UNK18         = 0x00800000,
     ITEM_FIELD_FLAG_UNK19         = 0x01000000,
     ITEM_FIELD_FLAG_UNK20         = 0x02000000,
@@ -167,6 +166,11 @@ enum ItemFieldFlags : uint32
     ITEM_FIELD_FLAG_UNK24         = 0x20000000,
     ITEM_FIELD_FLAG_UNK25         = 0x40000000,
     ITEM_FIELD_FLAG_UNK26         = 0x80000000
+};
+
+enum ItemFieldFlags2 : uint32
+{
+    ITEM_FIELD_FLAG2_EQUIPPED   = 0x1
 };
 
 enum ItemFlags : uint32
@@ -768,7 +772,7 @@ struct TC_GAME_API ItemTemplate
     uint32 GetStartQuest() const { return ExtendedData->StartQuestID; }
     uint32 GetLockID() const { return ExtendedData->LockID; }
     uint32 GetItemSet() const { return ExtendedData->ItemSet; }
-    uint32 GetArea() const { return ExtendedData->ZoneBound; }
+    uint32 GetArea(uint32 index) const { ASSERT(index < MAX_ITEM_PROTO_ZONES); return ExtendedData->ZoneBound[index]; }
     uint32 GetMap() const { return ExtendedData->InstanceBound; }
     uint32 GetBagFamily() const { return ExtendedData->BagFamily; }
     uint32 GetTotemCategory() const { return ExtendedData->TotemCategoryID; }

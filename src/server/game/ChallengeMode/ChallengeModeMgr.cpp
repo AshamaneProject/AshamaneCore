@@ -147,7 +147,7 @@ void ChallengeModeMgr::Reward(Player* player, uint8 challengeLevel)
     }
 
     std::vector<int32> bonusListIds = GetBonusListIdsForRewards(randomStuffItem->GetBaseItemLevel(), challengeLevel);
-    Item* pItem = player->StoreNewItem(dest, itemId, true, GenerateItemRandomBonusListId(itemId), GuidSet(), 0, bonusListIds);
+    Item* pItem = player->StoreNewItem(dest, itemId, true, GenerateItemRandomBonusListId(itemId), GuidSet(), ItemContext(0), bonusListIds);
     player->SendNewItem(pItem, 1, true, false, true);
 
     WorldPackets::Loot::DisplayToast displayToast;

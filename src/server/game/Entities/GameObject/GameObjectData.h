@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
+ * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -668,6 +668,7 @@ struct GameObjectTemplate
             uint32 linkedTrap;                              // 20 linkedTrap, References: GameObjects, NoValue = 0
             uint32 PlayOpenAnimationonOpening;              // 21 Play Open Animation on Opening, enum { false, true, }; Default: false
             uint32 turnpersonallootsecurityoff;             // 22 turn personal loot security off, enum { false, true, }; Default: false
+            uint32 ClearObjectVignetteonOpening;            // 23 Clear Object Vignette on Opening, enum { false, true, }; Default: false
         } gatheringNode;
         // 51 GAMEOBJECT_TYPE_CHALLENGE_MODE_REWARD
         struct
@@ -706,6 +707,14 @@ struct GameObjectTemplate
             uint32 open;                                    // 2 open, References: Lock_, NoValue = 0
             uint32 openTextID;                              // 3 openTextID, References: BroadcastText, NoValue = 0
         } pvpReward;
+        // 56 GAMEOBJECT_TYPE_FUTURE_PATCH_1
+        struct
+        {
+        } futurePatch1;
+        // 57 GAMEOBJECT_TYPE_FUTURE_PATCH_2
+        struct
+        {
+        } futurePatch2;
         struct
         {
             uint32 data[MAX_GAMEOBJECT_DATA];

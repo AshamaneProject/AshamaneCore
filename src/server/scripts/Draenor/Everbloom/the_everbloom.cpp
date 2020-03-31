@@ -769,8 +769,7 @@ public:
         void OnUnitEnter(Unit* unit) override
         {
             if (Player* player = unit->ToPlayer())
-                if (!player->HasMovementForce(at->GetGUID()))
-                    player->ApplyMovementForce(at->GetGUID(), 3.0f, directionForce);
+                player->ApplyMovementForce(at->GetGUID(), directionForce, 3.0f, 0);
         }
 
         void OnUnitExit(Unit* unit) override

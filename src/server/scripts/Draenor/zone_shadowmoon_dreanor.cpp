@@ -373,7 +373,7 @@ struct areatrigger_aqualir_submerge : AreaTriggerAI
     void OnUnitEnter(Unit* unit) override
     {
         if (unit->IsPlayer())
-            unit->ApplyMovementForce(at->GetGUID(), 7.0f, bottom);
+            unit->ApplyMovementForce(at->GetGUID(), bottom, 7.0f, 0);
     }
 
     void OnUnitExit(Unit* unit) override

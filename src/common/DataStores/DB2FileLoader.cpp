@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
+ * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -149,6 +149,16 @@ std::pair<int32, int32> DB2FileLoadInfo::GetFieldIndexByName(char const* fieldNa
     }
 
     return std::make_pair(-1, -1);
+}
+
+int32 DB2FileLoadInfo::GetFieldIndexByMetaIndex(uint32 metaIndex) const
+{
+    ASSERT(metaIndex < Meta->FieldCount);
+    int32 ourIndex = Meta->HasIndexFieldInData() ? 0 : 1;
+    for (uint32 i = 0; i < metaIndex; ++i)
+        ourIndex += Meta->Fields[i].ArraySize;
+
+    return ourIndex;
 }
 
 DB2FileSource::~DB2FileSource()
@@ -494,10 +504,6 @@ char* DB2FileLoaderRegularImpl::AutoProduceData(uint32& records, char**& indexTa
                 {
                     switch (_loadInfo->TypesString[fieldIndex])
                     {
-                        case FT_FLOAT:
-                            *((float*)(&dataTable[offset])) = 0;
-                            offset += 4;
-                            break;
                         case FT_INT:
                             *((uint32*)(&dataTable[offset])) = 0;
                             offset += 4;
@@ -510,26 +516,8 @@ char* DB2FileLoaderRegularImpl::AutoProduceData(uint32& records, char**& indexTa
                             *((uint16*)(&dataTable[offset])) = 0;
                             offset += 2;
                             break;
-                        case FT_LONG:
-                            *((uint64*)(&dataTable[offset])) = 0;
-                            offset += 8;
-                            break;
-                        case FT_STRING:
-                        case FT_STRING_NOT_LOCALIZED:
-                        {
-                            // init db2 string field slots by pointers to string holders
-                            char const*** slot = (char const***)(&dataTable[offset]);
-                            *slot = (char const**)(&stringHoldersPool[stringHoldersRecordPoolSize * y + stringFieldOffset]);
-                            if (_loadInfo->TypesString[fieldIndex] == FT_STRING)
-                                stringFieldOffset += sizeof(LocalizedString);
-                            else
-                                stringFieldOffset += sizeof(char*);
-
-                            offset += sizeof(char*);
-                            break;
-                        }
                         default:
-                            ASSERT(false, "Unknown format character '%c' found in %s meta for field %s",
+                            ASSERT(false, "Unknown format character '%c' found in %s meta for parent field %s",
                                 _loadInfo->TypesString[fieldIndex], _fileName, _loadInfo->Fields[fieldIndex].Name);
                             break;
                     }
@@ -678,25 +666,54 @@ void DB2FileLoaderRegularImpl::FillParentLookup(char* dataTable)
     for (uint32 i = 0; i < _header->SectionCount; ++i)
     {
         DB2SectionHeader const& section = GetSection(i);
-        for (std::size_t j = 0; j < _parentIndexes[i][0].Entries.size(); ++j)
+        if (!section.TactId)
         {
-            uint32 parentId = _parentIndexes[i][0].Entries[j].ParentId;
-            char* recordData = &dataTable[(_parentIndexes[i][0].Entries[j].RecordIndex + recordIndexOffset) * recordSize];
-
-            switch (_loadInfo->Meta->Fields[_loadInfo->Meta->ParentIndexField].Type)
+            for (std::size_t j = 0; j < _parentIndexes[i][0].Entries.size(); ++j)
             {
-                case FT_SHORT:
-                    *reinterpret_cast<uint16*>(&recordData[parentIdOffset]) = uint16(parentId);
-                    break;
-                case FT_BYTE:
-                    *reinterpret_cast<uint8*>(&recordData[parentIdOffset]) = uint8(parentId);
-                    break;
-                case FT_INT:
-                    *reinterpret_cast<uint32*>(&recordData[parentIdOffset]) = parentId;
-                    break;
-                default:
-                    ASSERT(false, "Unhandled parent id type '%c' found in %s", _loadInfo->Meta->Fields[_loadInfo->Meta->ParentIndexField].Type, _fileName);
-                    break;
+                uint32 parentId = _parentIndexes[i][0].Entries[j].ParentId;
+                char* recordData = &dataTable[(_parentIndexes[i][0].Entries[j].RecordIndex + recordIndexOffset) * recordSize];
+
+                switch (_loadInfo->Meta->Fields[_loadInfo->Meta->ParentIndexField].Type)
+                {
+                    case FT_SHORT:
+                    {
+                        if (_loadInfo->Meta->ParentIndexField >= int32(_loadInfo->Meta->FileFieldCount))
+                        {
+                            // extra field at the end
+                            *reinterpret_cast<uint32*>(&recordData[parentIdOffset]) = parentId;
+                        }
+                        else
+                        {
+                            // in data block, must fit
+                            ASSERT(parentId <= 0xFFFF, "ParentId value %u does not fit into uint16 field (%s in %s)",
+                                parentId, _loadInfo->Fields[_loadInfo->GetFieldIndexByMetaIndex(_loadInfo->Meta->ParentIndexField)].Name, _fileName);
+                            *reinterpret_cast<uint16*>(&recordData[parentIdOffset]) = parentId;
+                        }
+                        break;
+                    }
+                    case FT_BYTE:
+                    {
+                        if (_loadInfo->Meta->ParentIndexField >= int32(_loadInfo->Meta->FileFieldCount))
+                        {
+                            // extra field at the end
+                            *reinterpret_cast<uint32*>(&recordData[parentIdOffset]) = parentId;
+                        }
+                        else
+                        {
+                            // in data block, must fit
+                            ASSERT(parentId <= 0xFF, "ParentId value %u does not fit into uint8 field (%s in %s)",
+                                parentId, _loadInfo->Fields[_loadInfo->GetFieldIndexByMetaIndex(_loadInfo->Meta->ParentIndexField)].Name, _fileName);
+                            *reinterpret_cast<uint8*>(&recordData[parentIdOffset]) = parentId;
+                        }
+                        break;
+                    }
+                    case FT_INT:
+                        *reinterpret_cast<uint32*>(&recordData[parentIdOffset]) = parentId;
+                        break;
+                    default:
+                        ASSERT(false, "Unhandled parent id type '%c' found in %s", _loadInfo->Meta->Fields[_loadInfo->Meta->ParentIndexField].Type, _fileName);
+                        break;
+                }
             }
         }
         recordIndexOffset += section.RecordCount;
@@ -1020,7 +1037,7 @@ bool DB2FileLoaderSparseImpl::LoadCatalogData(DB2FileSource* source, uint32 sect
     {
         std::size_t oldCopyTableSize = _copyTable.size();
         _copyTable.resize(oldCopyTableSize + _sections[section].CopyTableCount);
-        if (!source->Read(&_copyTable[oldSize], sizeof(DB2RecordCopy) * _sections[section].CopyTableCount))
+        if (!source->Read(&_copyTable[oldCopyTableSize], sizeof(DB2RecordCopy) * _sections[section].CopyTableCount))
             return false;
     }
 
@@ -1177,10 +1194,6 @@ char* DB2FileLoaderSparseImpl::AutoProduceData(uint32& maxId, char**& indexTable
                 {
                     switch (_loadInfo->TypesString[fieldIndex])
                     {
-                        case FT_FLOAT:
-                            *((float*)(&dataTable[offset])) = 0;
-                            offset += 4;
-                            break;
                         case FT_INT:
                             *((uint32*)(&dataTable[offset])) = 0;
                             offset += 4;
@@ -1193,26 +1206,8 @@ char* DB2FileLoaderSparseImpl::AutoProduceData(uint32& maxId, char**& indexTable
                             *((uint16*)(&dataTable[offset])) = 0;
                             offset += 2;
                             break;
-                        case FT_LONG:
-                            *((uint64*)(&dataTable[offset])) = 0;
-                            offset += 8;
-                            break;
-                        case FT_STRING:
-                        case FT_STRING_NOT_LOCALIZED:
-                        {
-                            // init db2 string field slots by pointers to string holders
-                            char const*** slot = (char const***)(&dataTable[offset]);
-                            *slot = (char const**)(&stringHoldersPool[stringHoldersRecordPoolSize * recordNum + stringFieldOffset]);
-                            if (_loadInfo->TypesString[fieldIndex] == FT_STRING)
-                                stringFieldOffset += sizeof(LocalizedString);
-                            else
-                                stringFieldOffset += sizeof(char*);
-
-                            offset += sizeof(char*);
-                            break;
-                        }
                         default:
-                            ASSERT(false, "Unknown format character '%c' found in %s meta for field %s",
+                            ASSERT(false, "Unknown format character '%c' found in %s meta for parent field %s",
                                 _loadInfo->TypesString[fieldIndex], _fileName, _loadInfo->Fields[fieldIndex].Name);
                             break;
                     }
@@ -1383,25 +1378,54 @@ void DB2FileLoaderSparseImpl::FillParentLookup(char* dataTable)
     for (uint32 i = 0; i < _header->SectionCount; ++i)
     {
         DB2SectionHeader const& section = GetSection(i);
-        for (std::size_t j = 0; j < _parentIndexes[i][0].Entries.size(); ++j)
+        if (!section.TactId)
         {
-            uint32 parentId = _parentIndexes[i][0].Entries[j].ParentId;
-            char* recordData = &dataTable[(_parentIndexes[i][0].Entries[j].RecordIndex + recordIndexOffset) * recordSize];
-
-            switch (_loadInfo->Meta->Fields[_loadInfo->Meta->ParentIndexField].Type)
+            for (std::size_t j = 0; j < _parentIndexes[i][0].Entries.size(); ++j)
             {
-                case FT_SHORT:
-                    *reinterpret_cast<uint16*>(&recordData[parentIdOffset]) = uint16(parentId);
-                    break;
-                case FT_BYTE:
-                    *reinterpret_cast<uint8*>(&recordData[parentIdOffset]) = uint8(parentId);
-                    break;
-                case FT_INT:
-                    *reinterpret_cast<uint32*>(&recordData[parentIdOffset]) = parentId;
-                    break;
-                default:
-                    ASSERT(false, "Unhandled parent id type '%c' found in %s", _loadInfo->Meta->Fields[_loadInfo->Meta->ParentIndexField].Type, _fileName);
-                    break;
+                uint32 parentId = _parentIndexes[i][0].Entries[j].ParentId;
+                char* recordData = &dataTable[(_parentIndexes[i][0].Entries[j].RecordIndex + recordIndexOffset) * recordSize];
+
+                switch (_loadInfo->Meta->Fields[_loadInfo->Meta->ParentIndexField].Type)
+                {
+                    case FT_SHORT:
+                    {
+                        if (_loadInfo->Meta->ParentIndexField >= int32(_loadInfo->Meta->FileFieldCount))
+                        {
+                            // extra field at the end
+                            *reinterpret_cast<uint32*>(&recordData[parentIdOffset]) = parentId;
+                        }
+                        else
+                        {
+                            // in data block, must fit
+                            ASSERT(parentId <= 0xFFFF, "ParentId value %u does not fit into uint16 field (%s in %s)",
+                                parentId, _loadInfo->Fields[_loadInfo->GetFieldIndexByMetaIndex(_loadInfo->Meta->ParentIndexField)].Name, _fileName);
+                            *reinterpret_cast<uint16*>(&recordData[parentIdOffset]) = parentId;
+                        }
+                        break;
+                    }
+                    case FT_BYTE:
+                    {
+                        if (_loadInfo->Meta->ParentIndexField >= int32(_loadInfo->Meta->FileFieldCount))
+                        {
+                            // extra field at the end
+                            *reinterpret_cast<uint32*>(&recordData[parentIdOffset]) = parentId;
+                        }
+                        else
+                        {
+                            // in data block, must fit
+                            ASSERT(parentId <= 0xFF, "ParentId value %u does not fit into uint8 field (%s in %s)",
+                                parentId, _loadInfo->Fields[_loadInfo->GetFieldIndexByMetaIndex(_loadInfo->Meta->ParentIndexField)].Name, _fileName);
+                            *reinterpret_cast<uint8*>(&recordData[parentIdOffset]) = parentId;
+                        }
+                        break;
+                    }
+                    case FT_INT:
+                        *reinterpret_cast<uint32*>(&recordData[parentIdOffset]) = parentId;
+                        break;
+                    default:
+                        ASSERT(false, "Unhandled parent id type '%c' found in %s", _loadInfo->Meta->Fields[_loadInfo->Meta->ParentIndexField].Type, _fileName);
+                        break;
+                }
             }
         }
         recordIndexOffset += section.RecordCount;
@@ -1873,6 +1897,13 @@ bool DB2FileLoader::Load(DB2FileSource* source, DB2FileLoadInfo const* loadInfo)
     if (loadInfo && !loadInfo->Meta->HasIndexFieldInData() && _header.RecordCount)
         idTable.reserve(_header.RecordCount);
 
+    if (_header.ParentLookupCount)
+    {
+        parentIndexes.resize(_header.SectionCount);
+        for (std::vector<DB2IndexData>& parentIndexesForSection : parentIndexes)
+            parentIndexesForSection.resize(_header.ParentLookupCount);
+    }
+
     for (uint32 i = 0; i < _header.SectionCount; ++i)
     {
         DB2SectionHeader const& section = _impl->GetSection(i);
@@ -1917,9 +1948,7 @@ bool DB2FileLoader::Load(DB2FileSource* source, DB2FileLoadInfo const* loadInfo)
 
         if (_header.ParentLookupCount)
         {
-            parentIndexes.emplace_back();
-            std::vector<DB2IndexData>& parentIndexesForSection = parentIndexes.back();
-            parentIndexesForSection.resize(_header.ParentLookupCount);
+            std::vector<DB2IndexData>& parentIndexesForSection = parentIndexes[i];
             for (uint32 j = 0; j < _header.ParentLookupCount; ++j)
             {
                 DB2IndexDataInfo indexInfo;
@@ -1943,12 +1972,12 @@ bool DB2FileLoader::Load(DB2FileSource* source, DB2FileLoadInfo const* loadInfo)
         uint32 fieldIndex = 0;
         if (!loadInfo->Meta->HasIndexFieldInData())
         {
-            ASSERT(!loadInfo->Fields[0].IsSigned, "ID must be unsigned");
+            ASSERT(!loadInfo->Fields[0].IsSigned, "ID must be unsigned in %s", source->GetFileName());
             ++fieldIndex;
         }
         for (uint32 f = 0; f < loadInfo->Meta->FieldCount; ++f)
         {
-            ASSERT(loadInfo->Fields[fieldIndex].IsSigned == _impl->IsSignedField(f), "Mismatched field signedness for field %u (%s)", f, loadInfo->Fields[fieldIndex].Name);
+            ASSERT(loadInfo->Fields[fieldIndex].IsSigned == _impl->IsSignedField(f), "Mismatched field signedness for field %u (%s) in %s", f, loadInfo->Fields[fieldIndex].Name, source->GetFileName());
             fieldIndex += loadInfo->Meta->Fields[f].ArraySize;
         }
     }

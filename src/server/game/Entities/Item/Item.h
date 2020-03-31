@@ -1,6 +1,5 @@
 /*
- * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
- * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
+ * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -92,11 +91,14 @@ struct BonusData
     uint16 GemRelicRankBonus[MAX_ITEM_PROTO_SOCKETS];
     int32 RelicType;
     int32 RequiredLevelOverride;
-    bool HasItemLevelBonus;
+    int32 AzeriteTierUnlockSetId;
+    bool CanDisenchant;
+    bool CanScrap;
     bool HasFixedLevel;
 
     void Initialize(ItemTemplate const* proto);
     void Initialize(WorldPackets::Item::ItemInstance const& itemInstance);
+    void AddBonusList(uint32 bonusListId);
     void AddBonus(uint32 type, int32 const (&values)[3]);
 
 private:
@@ -104,38 +106,77 @@ private:
     {
         int32 AppearanceModPriority;
         int32 ScalingStatDistributionPriority;
+        int32 AzeriteTierUnlockSetPriority;
         bool HasQualityBonus;
     } _state;
 };
 
-struct ArtifactPowerLoadInfo
+struct ArtifactPowerData
 {
-    uint32 ArtifactPowerId;
-    uint8 PurchasedRank;
-    uint8 CurrentRankWithBonus;
+    uint32 ArtifactPowerId = 0;
+    uint8 PurchasedRank = 0;
+    uint8 CurrentRankWithBonus = 0;
 };
 
-#pragma pack(push, 1)
+struct ArtifactData
+{
+    uint64 Xp = 0;
+    uint32 ArtifactAppearanceId = 0;
+    uint32 ArtifactTierId = 0;
+    std::vector<ArtifactPowerData> ArtifactPowers;
+};
+
+struct AzeriteItemSelectedEssencesData
+{
+    uint32 SpecializationId = 0;
+    std::array<uint32, MAX_AZERITE_ESSENCE_SLOT> AzeriteEssenceId = { };
+};
+
+struct AzeriteItemData
+{
+    uint64 Xp;
+    uint32 Level;
+    uint32 KnowledgeLevel;
+    std::vector<uint32> AzeriteItemMilestonePowers;
+    std::vector<AzeriteEssencePowerEntry const*> UnlockedAzeriteEssences;
+    std::array<AzeriteItemSelectedEssencesData, MAX_SPECIALIZATIONS> SelectedAzeriteEssences = { };
+};
+
+struct AzeriteEmpoweredItemData
+{
+    std::array<int32, MAX_AZERITE_EMPOWERED_TIER> SelectedAzeritePowers;
+};
+
+struct ItemAdditionalLoadInfo
+{
+    static void Init(std::unordered_map<ObjectGuid::LowType, ItemAdditionalLoadInfo>* loadInfo, PreparedQueryResult artifactResult, PreparedQueryResult azeriteItemResult,
+        PreparedQueryResult azeriteItemMilestonePowersResult, PreparedQueryResult azeriteItemUnlockedEssencesResult, PreparedQueryResult azeriteEmpoweredItemResult);
+
+    Optional<ArtifactData> Artifact;
+    Optional<AzeriteItemData> AzeriteItem;
+    Optional<AzeriteEmpoweredItemData> AzeriteEmpoweredItem;
+};
+
 struct ItemDynamicFieldGems
 {
     uint32 ItemId;
     uint16 BonusListIDs[16];
     uint8 Context;
-    uint8 Padding[3];
 };
-#pragma pack(pop)
+
+Item* NewItemOrBag(ItemTemplate const* proto);
 
 class TC_GAME_API Item : public Object
 {
     friend void AddItemToUpdateQueueOf(Item* item, Player* player);
     friend void RemoveItemFromUpdateQueueOf(Item* item, Player* player);
     public:
-        static Item* CreateItem(uint32 itemEntry, uint32 count, Player const* player = nullptr);
+        static Item* CreateItem(uint32 itemEntry, uint32 count, ItemContext context, Player const* player = nullptr);
         Item* CloneItem(uint32 count, Player const* player = nullptr) const;
 
         Item();
 
-        virtual bool Create(ObjectGuid::LowType guidlow, uint32 itemId, Player const* owner);
+        virtual bool Create(ObjectGuid::LowType guidlow, uint32 itemId, ItemContext context, Player const* owner);
 
         ItemTemplate const* GetTemplate() const;
         BonusData const* GetBonus() const { return &_bonusData; }
@@ -164,6 +205,10 @@ class TC_GAME_API Item : public Object
         void AddItemFlag(ItemFieldFlags flags) { SetUpdateFieldFlagValue(m_values.ModifyValue(&Item::m_itemData).ModifyValue(&UF::ItemData::DynamicFlags), flags); }
         void RemoveItemFlag(ItemFieldFlags flags) { RemoveUpdateFieldFlagValue(m_values.ModifyValue(&Item::m_itemData).ModifyValue(&UF::ItemData::DynamicFlags), flags); }
         void SetItemFlags(ItemFieldFlags flags) { SetUpdateFieldValue(m_values.ModifyValue(&Item::m_itemData).ModifyValue(&UF::ItemData::DynamicFlags), flags); }
+        bool HasItemFlag2(ItemFieldFlags2 flag) const { return (*m_itemData->DynamicFlags2 & flag) != 0; }
+        void AddItemFlag2(ItemFieldFlags2 flags) { SetUpdateFieldFlagValue(m_values.ModifyValue(&Item::m_itemData).ModifyValue(&UF::ItemData::DynamicFlags2), flags); }
+        void RemoveItemFlag2(ItemFieldFlags2 flags) { RemoveUpdateFieldFlagValue(m_values.ModifyValue(&Item::m_itemData).ModifyValue(&UF::ItemData::DynamicFlags2), flags); }
+        void SetItemFlags2(ItemFieldFlags2 flags) { SetUpdateFieldValue(m_values.ModifyValue(&Item::m_itemData).ModifyValue(&UF::ItemData::DynamicFlags2), flags); }
         bool IsSoulBound() const { return HasItemFlag(ITEM_FIELD_FLAG_SOULBOUND); }
         bool IsBoundAccountWide() const { return (GetTemplate()->GetFlags() & ITEM_FLAG_IS_BOUND_TO_ACCOUNT) != 0; }
         bool IsBattlenetAccountBound() const { return (GetTemplate()->GetFlags2() & ITEM_FLAG2_BNET_ACCOUNT_TRADE_OK) != 0; }
@@ -171,7 +216,7 @@ class TC_GAME_API Item : public Object
         bool IsBoundByEnchant() const;
         virtual void SaveToDB(CharacterDatabaseTransaction& trans);
         virtual bool LoadFromDB(ObjectGuid::LowType guid, ObjectGuid ownerGuid, Field* fields, uint32 entry, Player const* owner = nullptr);
-        void LoadArtifactData(Player* owner, uint64 xp, uint32 artifactAppearanceId, uint32 artifactTier, std::vector<ArtifactPowerLoadInfo>& powers);  // must be called after LoadFromDB to have gems (relics) initialized
+        void LoadArtifactData(Player const* owner, uint64 xp, uint32 artifactAppearanceId, uint32 artifactTier, std::vector<ArtifactPowerData>& powers);  // must be called after LoadFromDB to have gems (relics) initialized
         void CheckArtifactRelicSlotUnlock(Player const* owner);
 
         void AddBonuses(uint32 bonusListID);
@@ -194,11 +239,17 @@ class TC_GAME_API Item : public Object
         void SaveRefundDataToDB();
         void DeleteRefundDataFromDB(CharacterDatabaseTransaction* trans);
 
-        Bag* ToBag() { if (IsBag()) return reinterpret_cast<Bag*>(this); else return NULL; }
-        const Bag* ToBag() const { if (IsBag()) return reinterpret_cast<const Bag*>(this); else return NULL; }
+        Bag* ToBag() { if (IsBag()) return reinterpret_cast<Bag*>(this); else return nullptr; }
+        Bag const* ToBag() const { if (IsBag()) return reinterpret_cast<Bag const*>(this); else return nullptr; }
+        AzeriteItem* ToAzeriteItem() { return IsAzeriteItem() ? reinterpret_cast<AzeriteItem*>(this) : nullptr; }
+        AzeriteItem const* ToAzeriteItem() const { return IsAzeriteItem() ? reinterpret_cast<AzeriteItem const*>(this) : nullptr; }
+        AzeriteEmpoweredItem* ToAzeriteEmpoweredItem() { return IsAzeriteEmpoweredItem() ? reinterpret_cast<AzeriteEmpoweredItem*>(this) : nullptr; }
+        AzeriteEmpoweredItem const* ToAzeriteEmpoweredItem() const { return IsAzeriteEmpoweredItem() ? reinterpret_cast<AzeriteEmpoweredItem const*>(this) : nullptr; }
 
         bool IsLocked() const { return !HasItemFlag(ITEM_FIELD_FLAG_UNLOCKED); }
         bool IsBag() const { return GetTemplate()->GetInventoryType() == INVTYPE_BAG; }
+        bool IsAzeriteItem() const { return GetTypeId() == TYPEID_AZERITE_ITEM; }
+        bool IsAzeriteEmpoweredItem() const { return GetTypeId() == TYPEID_AZERITE_EMPOWERED_ITEM; }
         bool IsCurrencyToken() const { return GetTemplate()->IsCurrencyToken(); }
         bool IsNotEmptyBag() const;
         bool IsBroken() const { return *m_itemData->MaxDurability > 0 && *m_itemData->Durability == 0; }
@@ -280,8 +331,8 @@ class TC_GAME_API Item : public Object
         bool IsRangedWeapon() const { return GetTemplate()->IsRangedWeapon(); }
         uint32 GetQuality() const { return _bonusData.Quality; }
         uint32 GetItemLevel(Player const* owner) const;
-        static uint32 GetItemLevel(ItemTemplate const* itemTemplate, BonusData const& bonusData, uint32 level, uint32 fixedLevel, uint32 upgradeId,
-            uint32 minItemLevel, uint32 minItemLevelCutoff, uint32 maxItemLevel, bool pvpBonus);
+        static uint32 GetItemLevel(ItemTemplate const* itemTemplate, BonusData const& bonusData, uint32 level, uint32 fixedLevel,
+            uint32 minItemLevel, uint32 minItemLevelCutoff, uint32 maxItemLevel, bool pvpBonus, uint32 azeriteLevel);
         int32 GetRequiredLevel() const;
         int32 GetItemStatType(uint32 index) const { ASSERT(index < MAX_ITEM_PROTO_STATS); return _bonusData.ItemStatType[index]; }
         int32 GetItemStatValue(uint32 index, Player const* owner) const;
@@ -348,8 +399,10 @@ class TC_GAME_API Item : public Object
         ObjectGuid GetChildItem() const { return m_childItem; }
         void SetChildItem(ObjectGuid childItem) { m_childItem = childItem; }
 
+        bool IsArtifactDisabled() const;
+
         UF::ArtifactPower const* GetArtifactPower(uint32 artifactPowerId) const;
-        void AddArtifactPower(ArtifactPowerLoadInfo const* artifactPower);
+        void AddArtifactPower(ArtifactPowerData const* artifactPower);
         void SetArtifactPower(uint16 artifactPowerId, uint8 purchasedRank, uint8 currentRankWithBonus);
 
         void InitArtifactPowers(uint8 artifactId, uint8 artifactTier);
@@ -360,7 +413,8 @@ class TC_GAME_API Item : public Object
         void SetArtifactXP(uint64 xp) { SetUpdateFieldValue(m_values.ModifyValue(&Item::m_itemData).ModifyValue(&UF::ItemData::ArtifactXP), xp); }
         void GiveArtifactXp(uint64 amount, Item* sourceItem, uint32 artifactCategoryId);
 
-        void SetContext(int32 context) { SetUpdateFieldValue(m_values.ModifyValue(&Item::m_itemData).ModifyValue(&UF::ItemData::Context), context); }
+        ItemContext GetContext() const { return ItemContext(*m_itemData->Context); }
+        void SetContext(ItemContext context) { SetUpdateFieldValue(m_values.ModifyValue(&Item::m_itemData).ModifyValue(&UF::ItemData::Context), int32(context)); }
 
         void SetPetitionId(uint32 petitionId) { SetUpdateFieldValue(m_values.ModifyValue(&Item::m_itemData).ModifyValue(&UF::ItemData::Enchantment, 0).ModifyValue(&UF::ItemEnchantment::ID), petitionId); }
         void SetPetitionNumSignatures(uint32 signatures) { SetUpdateFieldValue(m_values.ModifyValue(&Item::m_itemData).ModifyValue(&UF::ItemData::Enchantment, 0).ModifyValue(&UF::ItemEnchantment::Duration), signatures); }
@@ -368,6 +422,7 @@ class TC_GAME_API Item : public Object
         UF::UpdateField<UF::ItemData, 0, TYPEID_ITEM> m_itemData;
 
     protected:
+        void ApplyBonusList(uint32 itemBonusListId);
         BonusData _bonusData;
 
     private:

@@ -1,6 +1,5 @@
 /*
- * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
- * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
+ * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -17,6 +16,7 @@
  */
 
 #include "Spell.h"
+#include "AzeriteEmpoweredItem.h"
 #include "Battlefield.h"
 #include "BattlefieldMgr.h"
 #include "Battleground.h"
@@ -58,7 +58,7 @@
 #include "WorldSession.h"
 #include <numeric>
 
-extern pEffect SpellEffects[TOTAL_SPELL_EFFECTS];
+extern NonDefaultConstructible<pEffect> SpellEffects[TOTAL_SPELL_EFFECTS];
 
 SpellDestination::SpellDestination()
 {
@@ -537,7 +537,7 @@ SpellValue::SpellValue(Difficulty diff, SpellInfo const* proto, Unit const* cast
     {
         if (effect)
         {
-            EffectBasePoints[effect->EffectIndex] = effect->CalcBaseValue(caster, nullptr, -1);
+            EffectBasePoints[effect->EffectIndex] = effect->CalcBaseValue(caster, nullptr, 0, -1);
             EffectTriggerSpell[effect->EffectIndex] = effect->TriggerSpell;
         }
     }
@@ -2749,13 +2749,13 @@ SpellMissInfo Spell::DoSpellHitOnUnit(Unit* unit, uint32 effectMask)
                 if (auraSpellEffect)
                     basePoints[auraSpellEffect->EffectIndex] = (m_spellValue->CustomBasePointsMask & (1 << auraSpellEffect->EffectIndex)) ?
                         m_spellValue->EffectBasePoints[auraSpellEffect->EffectIndex] :
-                        auraSpellEffect->CalcBaseValue(m_originalCaster, unit, m_castItemLevel);
+                        auraSpellEffect->CalcBaseValue(m_originalCaster, unit, m_castItemEntry, m_castItemLevel);
 
             bool refresh = false;
             bool const resetPeriodicTimer = !(_triggeredCastFlags & TRIGGERED_DONT_RESET_PERIODIC_TIMER);
             m_spellAura = Aura::TryRefreshStackOrCreate(m_spellInfo, m_castId, effectMask, unit,
                 m_originalCaster, basePoints,
-                m_CastItem, ObjectGuid::Empty, &refresh, resetPeriodicTimer, ObjectGuid::Empty, m_castItemLevel);
+                m_CastItem, ObjectGuid::Empty, &refresh, resetPeriodicTimer, ObjectGuid::Empty, m_castItemEntry, m_castItemLevel);
             if (m_spellAura)
             {
                 // Set aura stack amount to desired value
@@ -4956,7 +4956,7 @@ void Spell::HandleEffects(Unit* pUnitTarget, Item* pItemTarget, GameObject* pGOT
 
     if (!preventDefault && eff < TOTAL_SPELL_EFFECTS)
     {
-        (this->*SpellEffects[eff])((SpellEffIndex)i);
+        (this->*SpellEffects[eff].Value)((SpellEffIndex)i);
     }
 }
 
@@ -6230,7 +6230,7 @@ SpellCastResult Spell::CheckArenaAndRatedBattlegroundCastRules()
 int32 Spell::CalculateDamage(uint8 i, Unit const* target, float* var /*= nullptr*/) const
 {
     bool needRecalculateBasePoints = !(m_spellValue->CustomBasePointsMask & (1 << i));
-    return m_caster->CalculateSpellDamage(target, m_spellInfo, i, needRecalculateBasePoints ? nullptr : &m_spellValue->EffectBasePoints[i], var, m_castItemLevel);
+    return m_caster->CalculateSpellDamage(target, m_spellInfo, i, needRecalculateBasePoints ? nullptr : &m_spellValue->EffectBasePoints[i], var, m_castItemEntry, m_castItemLevel);
 }
 
 bool Spell::CanAutoCast(Unit* target)
@@ -6900,6 +6900,37 @@ SpellCastResult Spell::CheckItems(uint32* param1 /*= nullptr*/, uint32* param2 /
                              return SPELL_FAILED_ITEM_AT_MAX_CHARGES;
                  }
                  break;
+            }
+            case SPELL_EFFECT_RESPEC_AZERITE_EMPOWERED_ITEM:
+            {
+                Item const* item = m_targets.GetItemTarget();
+                if (!item)
+                    return SPELL_FAILED_AZERITE_EMPOWERED_ONLY;
+
+                if (item->GetOwnerGUID() != m_caster->GetGUID())
+                    return SPELL_FAILED_DONT_REPORT;
+
+                AzeriteEmpoweredItem const* azeriteEmpoweredItem = item->ToAzeriteEmpoweredItem();
+                if (!azeriteEmpoweredItem)
+                    return SPELL_FAILED_AZERITE_EMPOWERED_ONLY;
+
+                bool hasSelections = false;
+                for (int32 tier = 0; tier < azeriteEmpoweredItem->GetMaxAzeritePowerTier(); ++tier)
+                {
+                    if (azeriteEmpoweredItem->GetSelectedAzeritePower(tier))
+                    {
+                        hasSelections = true;
+                        break;
+                    }
+                }
+
+                if (!hasSelections)
+                    return SPELL_FAILED_AZERITE_EMPOWERED_NO_CHOICES_TO_UNDO;
+
+                if (!m_caster->ToPlayer()->HasEnoughMoney(azeriteEmpoweredItem->GetRespecCost()))
+                    return SPELL_FAILED_DONT_REPORT;
+
+                break;
             }
             default:
                 break;

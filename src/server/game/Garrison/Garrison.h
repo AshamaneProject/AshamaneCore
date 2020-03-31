@@ -41,6 +41,7 @@ public:
     struct Follower
     {
         uint32 GetItemLevel() const;
+        bool HasAbility(uint32 garrAbilityId) const;
         void EarnXP(Player* owner, uint32 xp);
         uint32 _EarnXP(uint32 xp);
         uint32 GetRequiredLevelUpXP() const;
@@ -92,6 +93,16 @@ public:
     uint32 GetActiveFollowersCount() const;
     uint32 GetAverageFollowerILevel() const;
     uint32 GetMaxFollowerLevel() const;
+    template<typename Predicate>
+    uint32 CountFollowers(Predicate&& predicate) const
+    {
+        uint32 count = 0;
+        for (auto itr = _followers.begin(); itr != _followers.end(); ++itr)
+            if (predicate(itr->second))
+                ++count;
+
+        return count;
+    }
 
     uint32 GetFollowerActivationLimit() const { return _followerActivationsRemainingToday; }
     void ResetFollowerActivationLimit() { _followerActivationsRemainingToday = 1; }

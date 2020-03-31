@@ -788,6 +788,14 @@ uint32 Garrison::Follower::GetItemLevel() const
     return (PacketInfo.ItemLevelWeapon + PacketInfo.ItemLevelArmor) / 2;
 }
 
+bool Garrison::Follower::HasAbility(uint32 garrAbilityId) const
+{
+    return std::find_if(PacketInfo.AbilityID.begin(), PacketInfo.AbilityID.end(), [garrAbilityId](GarrAbilityEntry const* garrAbility)
+    {
+        return garrAbility->ID == garrAbilityId;
+    }) != PacketInfo.AbilityID.end();
+}
+
 void Garrison::Follower::EarnXP(Player* owner, uint32 xp)
 {
     GarrFollowerEntry const* followerEntry = sGarrFollowerStore.LookupEntry(PacketInfo.GarrFollowerID);

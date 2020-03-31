@@ -103,11 +103,11 @@ Read file [COPYING](COPYING).
 
 ## Authors &amp; Contributors
 
-Read file [THANKS](THANKS).
+Read file [AUTHORS](AUTHORS).
 
 ## Links
 
 * [Website](https://www.ashamane.com)
 * [Wiki](https://www.trinitycore.info)
-* [Forums](http://forum.ashamane.com/)
-* [TrinityCore](https://www.trinitycore.org/)
+* [Forums](https://community.trinitycore.org)
+* [Discord](https://discord.trinitycore.org/)

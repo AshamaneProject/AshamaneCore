@@ -248,7 +248,7 @@ public:
                             if (itr->IsWithinDist(l_BonemawMouth, 100.0f, true))
                             {
                                 if (itr->IsAlive() && !itr->HasMovementForce(l_BonemawMouth->GetGUID()))
-                                    itr->ApplyMovementForce(l_BonemawMouth->GetGUID(), 3.0f, position);
+                                    itr->ApplyMovementForce(l_BonemawMouth->GetGUID(), position, 3.0f, 0);
                                 else if (!itr->IsAlive() && itr->HasMovementForce(l_BonemawMouth->GetGUID()))
                                     itr->RemoveMovementForce(l_BonemawMouth->GetGUID());
                             }

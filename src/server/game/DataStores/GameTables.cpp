@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
+ * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -16,6 +16,7 @@
  */
 
 #include "GameTables.h"
+#include "ItemTemplate.h"
 #include "Timer.h"
 #include "Log.h"
 #include "Util.h"
@@ -25,7 +26,6 @@
 GameTable<GtArtifactKnowledgeMultiplierEntry>   sArtifactKnowledgeMultiplierGameTable;
 GameTable<GtArtifactLevelXPEntry>               sArtifactLevelXPGameTable;
 GameTable<GtAzeriteBaseExperiencePerLevelEntry> sAzeriteBaseExperiencePerLevelTable;
-GameTable<GtAzeriteKnowledgeMultiplierEntry>    sAzeriteKnowledgeMultiplierGameTable;
 GameTable<GtAzeriteLevelToItemLevelEntry>       sAzeriteLevelToItemLevelGameTable;
 GameTable<GtBarberShopCostBaseEntry>            sBarberShopCostBaseGameTable;
 GameTable<GtBaseMPEntry>                        sBaseMPGameTable;
@@ -39,6 +39,7 @@ GameTable<GtNpcDamageByClassEntry>              sNpcDamageByClassGameTable[MAX_E
 GameTable<GtNpcManaCostScalerEntry>             sNpcManaCostScalerGameTable;
 GameTable<GtNpcTotalHpEntry>                    sNpcTotalHpGameTable[MAX_EXPANSIONS];
 GameTable<GtSpellScalingEntry>                  sSpellScalingGameTable;
+GameTable<GtStaminaMultByILvl>                  sStaminaMultByILvlGameTable;
 GameTable<GtXpEntry>                            sXpGameTable;
 
 template<class T>
@@ -116,7 +117,6 @@ void LoadGameTables(std::string const& dataPath)
     LOAD_GT(sArtifactKnowledgeMultiplierGameTable, "ArtifactKnowledgeMultiplier.txt");
     LOAD_GT(sArtifactLevelXPGameTable, "ArtifactLevelXP.txt");
     LOAD_GT(sAzeriteBaseExperiencePerLevelTable, "AzeriteBaseExperiencePerLevel.txt");
-    LOAD_GT(sAzeriteKnowledgeMultiplierGameTable, "AzeriteKnowledgeMultiplier.txt");
     LOAD_GT(sAzeriteLevelToItemLevelGameTable, "AzeriteLevelToItemLevel.txt");
     LOAD_GT(sBarberShopCostBaseGameTable, "BarberShopCostBase.txt");
     LOAD_GT(sBaseMPGameTable, "BaseMp.txt");
@@ -144,6 +144,7 @@ void LoadGameTables(std::string const& dataPath)
     LOAD_GT(sNpcTotalHpGameTable[6], "NpcTotalHpExp6.txt");
     LOAD_GT(sNpcTotalHpGameTable[7], "NpcTotalHpExp7.txt");
     LOAD_GT(sSpellScalingGameTable, "SpellScaling.txt");
+    LOAD_GT(sStaminaMultByILvlGameTable, "StaminaMultByILvl.txt");
     LOAD_GT(sXpGameTable, "xp.txt");
 
 #undef LOAD_GT
@@ -160,3 +161,34 @@ void LoadGameTables(std::string const& dataPath)
 
     TC_LOG_INFO("server.loading", ">> Initialized %d GameTables in %u ms", gameTableCount, GetMSTimeDiffToNow(oldMSTime));
 }
+
+template<class T>
+float GetIlvlStatMultiplier(T const* row, InventoryType invType)
+{
+    switch (invType)
+    {
+        case INVTYPE_NECK:
+        case INVTYPE_FINGER:
+            return row->JewelryMultiplier;
+            break;
+        case INVTYPE_TRINKET:
+            return row->TrinketMultiplier;
+            break;
+        case INVTYPE_WEAPON:
+        case INVTYPE_SHIELD:
+        case INVTYPE_RANGED:
+        case INVTYPE_2HWEAPON:
+        case INVTYPE_WEAPONMAINHAND:
+        case INVTYPE_WEAPONOFFHAND:
+        case INVTYPE_HOLDABLE:
+        case INVTYPE_RANGEDRIGHT:
+            return row->WeaponMultiplier;
+            break;
+        default:
+            return row->ArmorMultiplier;
+            break;
+    }
+}
+
+template float GetIlvlStatMultiplier(GtCombatRatingsMultByILvl const* row, InventoryType invType);
+template float GetIlvlStatMultiplier(GtStaminaMultByILvl const* row, InventoryType invType);

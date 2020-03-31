@@ -1,6 +1,5 @@
 /*
- * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
- * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
+ * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -18,6 +17,8 @@
 
 #include "GameObject.h"
 #include "ArtifactPackets.h"
+#include "AzeriteItem.h"
+#include "AzeritePackets.h"
 #include "Battleground.h"
 #include "CellImpl.h"
 #include "CreatureAISelector.h"
@@ -349,7 +350,7 @@ bool GameObject::Create(uint32 entry, Map* map, Position const& pos, QuaternionD
     SetGoState(goState);
     SetGoArtKit(artKit);
 
-    SetUpdateFieldValue(m_values.ModifyValue(&GameObject::m_gameObjectData).ModifyValue(&UF::GameObjectData::SpawnTrackingStateAnimID), sAnimationDataStore.GetNumRows());
+    SetUpdateFieldValue(m_values.ModifyValue(&GameObject::m_gameObjectData).ModifyValue(&UF::GameObjectData::SpawnTrackingStateAnimID), sDB2Manager.GetEmptyAnimStateID());
 
     switch (goInfo->type)
     {
@@ -1997,18 +1998,39 @@ void GameObject::Use(Unit* user)
                 if (!sConditionMgr->IsPlayerMeetingCondition(player, playerCondition))
                     return;
 
-            Aura const* artifactAura = player->GetAura(ARTIFACTS_ALL_WEAPONS_GENERAL_WEAPON_EQUIPPED_PASSIVE);
-            Item const* item = artifactAura ? player->GetItemByGuid(artifactAura->GetCastItemGUID()) : nullptr;
-            if (!item)
+            switch (info->itemForge.ForgeType)
             {
-                player->SendDirectMessage(WorldPackets::Misc::DisplayGameError(GameError::ERR_MUST_EQUIP_ARTIFACT).Write());
-                return;
-            }
+                case 0: // Artifact Forge
+                case 1: // Relic Forge
+                {
+                    Aura const* artifactAura = player->GetAura(ARTIFACTS_ALL_WEAPONS_GENERAL_WEAPON_EQUIPPED_PASSIVE);
+                    Item const* item = artifactAura ? player->GetItemByGuid(artifactAura->GetCastItemGUID()) : nullptr;
+                    if (!item)
+                    {
+                        player->SendDirectMessage(WorldPackets::Misc::DisplayGameError(GameError::ERR_MUST_EQUIP_ARTIFACT).Write());
+                        return;
+                    }
 
-            WorldPackets::Artifact::ArtifactForgeOpened artifactForgeOpened;
-            artifactForgeOpened.ArtifactGUID = item->GetGUID();
-            artifactForgeOpened.ForgeGUID = GetGUID();
-            player->SendDirectMessage(artifactForgeOpened.Write());
+                    WorldPackets::Artifact::ArtifactForgeOpened artifactForgeOpened;
+                    artifactForgeOpened.ArtifactGUID = item->GetGUID();
+                    artifactForgeOpened.ForgeGUID = GetGUID();
+                    player->SendDirectMessage(artifactForgeOpened.Write());
+                    break;
+                }
+                case 2: // Heart Forge
+                {
+                    Item const* item = player->GetItemByEntry(ITEM_ID_HEART_OF_AZEROTH, ITEM_SEARCH_EVERYWHERE);
+                    if (!item)
+                        return;
+
+                    WorldPackets::Azerite::AzeriteEssenceForgeOpened azeriteEssenceForgeOpened;
+                    azeriteEssenceForgeOpened.ForgeGUID = GetGUID();
+                    player->SendDirectMessage(azeriteEssenceForgeOpened.Write());
+                    break;
+                }
+                default:
+                    break;
+            }
             return;
         }
         case GAMEOBJECT_TYPE_UI_LINK:

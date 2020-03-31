@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
+ * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -299,10 +299,7 @@ void Field::LogWrongType(char const* getter) const
         getter, meta.Type, meta.TableAlias, meta.Alias, meta.TableName, meta.Name, meta.Index);
 }
 
-#ifdef _WIN32 // hack for broken mysql.h not including the correct winsock header for SOCKET definition, fixed in 5.7
-#include <winsock2.h>
-#endif
-#include <mysql.h>
+#include "MySQLHacks.h"
 
 static char const* FieldTypeToString(enum_field_types type)
 {
@@ -338,7 +335,7 @@ static char const* FieldTypeToString(enum_field_types type)
     }
 }
 
-void Field::SetMetadata(MYSQL_FIELD* field, uint32 fieldIndex)
+void Field::SetMetadata(MySQLField* field, uint32 fieldIndex)
 {
     meta.TableName = field->org_table;
     meta.TableAlias = field->table;

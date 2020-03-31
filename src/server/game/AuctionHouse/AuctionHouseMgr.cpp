@@ -1,6 +1,5 @@
 /*
- * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
- * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
+ * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -414,10 +413,10 @@ bool AuctionHouseMgr::PendingAuctionAdd(Player* player, AuctionEntry* aEntry, It
         // Get deposit so far
         uint64 totalDeposit = 0;
         for (AuctionEntry const* thisAuction : *thisAH)
-            totalDeposit += GetAuctionDeposit(thisAuction->auctionHouseEntry, thisAuction->etime, item, thisAuction->itemCount);
+            totalDeposit += thisAuction->deposit;
 
         // Add this deposit
-        totalDeposit += GetAuctionDeposit(aEntry->auctionHouseEntry, aEntry->etime, item, aEntry->itemCount);
+        totalDeposit += aEntry->deposit;
 
         if (!player->HasEnoughMoney(totalDeposit))
             return false;
@@ -448,40 +447,34 @@ void AuctionHouseMgr::PendingAuctionProcess(Player* player)
 
     PlayerAuctions* thisAH = iterMap->second.first;
 
-    CharacterDatabaseTransaction trans = CharacterDatabase.BeginTransaction();
-
-    uint32 totalItems = 0;
-    for (auto itrAH = thisAH->begin(); itrAH != thisAH->end(); ++itrAH)
-    {
-        AuctionEntry* AH = (*itrAH);
-        totalItems += AH->itemCount;
-    }
-
     uint64 totaldeposit = 0;
-    auto itr = (*thisAH->begin());
-
-    if (Item* item = GetAItem(itr->itemGUIDLow))
-         totaldeposit = GetAuctionDeposit(itr->auctionHouseEntry, itr->etime, item, totalItems);
-
-    uint64 depositremain = totaldeposit;
-    for (auto itrAH = thisAH->begin(); itrAH != thisAH->end(); ++itrAH)
+    auto itrAH = thisAH->begin();
+    for (; itrAH != thisAH->end(); ++itrAH)
     {
         AuctionEntry* AH = (*itrAH);
+        if (!player->HasEnoughMoney(totaldeposit + AH->deposit))
+            break;
 
-        if (next(itrAH) == thisAH->end())
-            AH->deposit = depositremain;
-        else
-        {
-            AH->deposit = totaldeposit / thisAH->size();
-            depositremain -= AH->deposit;
-        }
-
-        AH->DeleteFromDB(trans);
-
-        AH->SaveToDB(trans);
+        totaldeposit += AH->deposit;
     }
 
-    CharacterDatabase.CommitTransaction(trans);
+    // expire auctions we cannot afford
+    if (itrAH != thisAH->end())
+    {
+        CharacterDatabaseTransaction trans = CharacterDatabase.BeginTransaction();
+
+        do
+        {
+            AuctionEntry* AH = (*itrAH);
+            AH->expire_time = GameTime::GetGameTime();
+            AH->DeleteFromDB(trans);
+            AH->SaveToDB(trans);
+            ++itrAH;
+        } while (itrAH != thisAH->end());
+
+        CharacterDatabase.CommitTransaction(trans);
+    }
+
     pendingAuctionMap.erase(player->GetGUID());
     delete thisAH;
     player->ModifyMoney(-int64(totaldeposit));
@@ -517,7 +510,7 @@ void AuctionHouseMgr::UpdatePendingAuctions()
             {
                 AuctionEntry* AH = (*AHitr);
                 ++AHitr;
-                AH->expire_time = time(NULL);
+                AH->expire_time = time(nullptr);
                 AH->DeleteFromDB(trans);
                 AH->SaveToDB(trans);
             }
@@ -537,7 +530,7 @@ void AuctionHouseMgr::Update()
 
 AuctionHouseEntry const* AuctionHouseMgr::GetAuctionHouseEntry(uint32 factionTemplateId, uint32* houseId)
 {
-    uint32 houseid = 7; // goblin auction house
+    uint32 houseid = 1; // Auction House
 
     if (!sWorld->getBoolConfig(CONFIG_ALLOW_TWO_SIDE_INTERACTION_AUCTION))
     {
@@ -546,27 +539,20 @@ AuctionHouseEntry const* AuctionHouseMgr::GetAuctionHouseEntry(uint32 factionTem
         // but no easy way convert creature faction to player race faction for specific city
         switch (factionTemplateId)
         {
-            case   12: houseid = 1; break; // human
-            case   29: houseid = 6; break; // orc, and generic for horde
-            case   55: houseid = 2; break; // dwarf, and generic for alliance
-            case   68: houseid = 4; break; // undead
-            case   80: houseid = 3; break; // n-elf
-            case  104: houseid = 5; break; // trolls
-            case  120: houseid = 7; break; // booty bay, neutral
-            case  474: houseid = 7; break; // gadgetzan, neutral
-            case  855: houseid = 7; break; // everlook, neutral
-            case 1604: houseid = 6; break; // b-elfs,
-            default:                       // for unknown case
+            case  120: houseid = 7; break; // booty bay, Blackwater Auction House
+            case  474: houseid = 7; break; // gadgetzan, Blackwater Auction House
+            case  855: houseid = 7; break; // everlook, Blackwater Auction House
+            default:                       // default
             {
                 FactionTemplateEntry const* u_entry = sFactionTemplateStore.LookupEntry(factionTemplateId);
                 if (!u_entry)
-                    houseid = 7; // goblin auction house
+                    houseid = 1; // Auction House
                 else if (u_entry->FactionGroup & FACTION_MASK_ALLIANCE)
-                    houseid = 1; // human auction house
+                    houseid = 2; // Alliance Auction House
                 else if (u_entry->FactionGroup & FACTION_MASK_HORDE)
-                    houseid = 6; // orc auction house
+                    houseid = 6; // Horde Auction House
                 else
-                    houseid = 7; // goblin auction house
+                    houseid = 1; // Auction House
                 break;
             }
         }
@@ -656,34 +642,29 @@ void AuctionHouseObject::Update()
     CharacterDatabase.CommitTransaction(trans);
 }
 
-void AuctionHouseObject::BuildListBidderItems(WorldPackets::AuctionHouse::AuctionListBidderItemsResult& packet, Player* player, uint32& totalcount)
+void AuctionHouseObject::BuildListBidderItems(WorldPackets::AuctionHouse::AuctionListBidderItemsResult& packet, Player* player)
 {
     for (AuctionEntryMap::const_iterator itr = AuctionsMap.begin(); itr != AuctionsMap.end(); ++itr)
     {
         AuctionEntry* Aentry = itr->second;
         if (Aentry && Aentry->bidder == player->GetGUID().GetCounter())
-        {
             itr->second->BuildAuctionInfo(packet.Items, false);
-            ++totalcount;
-        }
     }
 }
 
-void AuctionHouseObject::BuildListOwnerItems(WorldPackets::AuctionHouse::AuctionListOwnerItemsResult& packet, Player* player, uint32& totalcount)
+void AuctionHouseObject::BuildListOwnerItems(WorldPackets::AuctionHouse::AuctionListOwnerItemsResult& packet, Player* player)
 {
     for (AuctionEntryMap::const_iterator itr = AuctionsMap.begin(); itr != AuctionsMap.end(); ++itr)
     {
         AuctionEntry* Aentry = itr->second;
         if (Aentry && Aentry->owner == player->GetGUID().GetCounter())
-        {
             Aentry->BuildAuctionInfo(packet.Items, false);
-            ++totalcount;
-        }
     }
 }
 
 void AuctionHouseObject::BuildListAuctionItems(WorldPackets::AuctionHouse::AuctionListItemsResult& packet, Player* player,
-    std::wstring const& searchedname, uint32 listfrom, uint8 levelmin, uint8 levelmax, bool usable, Optional<AuctionSearchFilters> const& filters, uint32 quality)
+    std::wstring const& searchedname, uint32 listfrom, uint8 levelmin, uint8 levelmax, EnumClassFlag<AuctionHouseFilterMask> filters,
+    Optional<AuctionSearchClassFilters> const& classFilters)
 {
     time_t curTime = GameTime::GetGameTime();
 
@@ -699,32 +680,32 @@ void AuctionHouseObject::BuildListAuctionItems(WorldPackets::AuctionHouse::Aucti
             continue;
 
         ItemTemplate const* proto = item->GetTemplate();
-        if (filters)
+        if (classFilters)
         {
             // if we dont want any class filters, Optional is not initialized
             // if we dont want this class included, SubclassMask is set to FILTER_SKIP_CLASS
             // if we want this class and did not specify and subclasses, its set to FILTER_SKIP_SUBCLASS
             // otherwise full restrictions apply
-            if (filters->Classes[proto->GetClass()].SubclassMask == AuctionSearchFilters::FILTER_SKIP_CLASS)
+            if (classFilters->Classes[proto->GetClass()].SubclassMask == AuctionSearchClassFilters::FILTER_SKIP_CLASS)
                 continue;
 
-            if (filters->Classes[proto->GetClass()].SubclassMask != AuctionSearchFilters::FILTER_SKIP_SUBCLASS)
+            if (classFilters->Classes[proto->GetClass()].SubclassMask != AuctionSearchClassFilters::FILTER_SKIP_SUBCLASS)
             {
-                if (!(filters->Classes[proto->GetClass()].SubclassMask & (1 << proto->GetSubClass())))
+                if (!(classFilters->Classes[proto->GetClass()].SubclassMask & (1 << proto->GetSubClass())))
                     continue;
 
-                if (!(filters->Classes[proto->GetClass()].InvTypes[proto->GetSubClass()] & (1 << proto->GetInventoryType())))
+                if (!(classFilters->Classes[proto->GetClass()].InvTypes[proto->GetSubClass()] & (1 << proto->GetInventoryType())))
                     continue;
             }
         }
 
-        if (quality != 0xffffffff && proto->GetQuality() != quality)
+        if (!filters.HasFlag(static_cast<AuctionHouseFilterMask>(1 << (proto->GetQuality() + 4))))
             continue;
 
         if (levelmin != 0 && (item->GetRequiredLevel() < levelmin || (levelmax != 0 && item->GetRequiredLevel() > levelmax)))
             continue;
 
-        if (usable && player->CanUseItem(item) != EQUIP_ERR_OK)
+        if (filters.HasFlag(AuctionHouseFilterMask::UsableOnly) && player->CanUseItem(item) != EQUIP_ERR_OK)
             continue;
 
         // Allow search by suffix (ie: of the Monkey) or partial name (ie: Monkey)
@@ -791,7 +772,7 @@ void AuctionHouseObject::BuildReplicate(WorldPackets::AuctionHouse::AuctionRepli
     }
 
     auctionReplicateResult.ChangeNumberGlobal = throttleItr->second.Global;
-    auctionReplicateResult.ChangeNumberCursor = throttleItr->second.Cursor = !auctionReplicateResult.Items.empty() ? auctionReplicateResult.Items.back().AuctionItemID : 0;
+    auctionReplicateResult.ChangeNumberCursor = throttleItr->second.Cursor = !auctionReplicateResult.Items.empty() ? auctionReplicateResult.Items.back().AuctionID : 0;
     auctionReplicateResult.ChangeNumberTombstone = throttleItr->second.Tombstone = !count ? AuctionsMap.rbegin()->first : 0;
 }
 
@@ -807,15 +788,16 @@ void AuctionEntry::BuildAuctionInfo(std::vector<WorldPackets::AuctionHouse::Auct
 
     WorldPackets::AuctionHouse::AuctionItem auctionItem;
 
-    auctionItem.AuctionItemID = Id;
-    auctionItem.Item.Initialize(item);
+    auctionItem.AuctionID = Id;
+    auctionItem.Item.emplace();
+    auctionItem.Item->Initialize(item);
     auctionItem.BuyoutPrice = buyout;
     auctionItem.CensorBidInfo = false;
     auctionItem.CensorServerSideInfo = listAuctionItems;
     auctionItem.Charges = item->GetSpellCharges();
     auctionItem.Count = item->GetCount();
     auctionItem.DeleteReason = 0; // Always 0 ?
-    auctionItem.DurationLeft = (expire_time - time(NULL)) * IN_MILLISECONDS;
+    auctionItem.DurationLeft = (expire_time - time(nullptr)) * IN_MILLISECONDS;
     auctionItem.EndTime = expire_time;
     auctionItem.Flags = 0; // todo
     auctionItem.ItemGuid = item->GetGUID();

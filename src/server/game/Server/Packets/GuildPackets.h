@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
+ * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -227,6 +227,18 @@ namespace WorldPackets
             std::string OldGuildName;
         };
 
+        class GuildEventAwayChange final : public ServerPacket
+        {
+        public:
+            GuildEventAwayChange() : ServerPacket(SMSG_GUILD_EVENT_AWAY_CHANGE, 16 + 1) {  }
+
+            WorldPacket const* Write() override;
+
+            ObjectGuid Guid;
+            bool AFK = false;
+            bool DND = false;
+        };
+
         class GuildEventPresenceChange final : public ServerPacket
         {
         public:
@@ -431,7 +443,7 @@ namespace WorldPackets
 
             void Read() override;
 
-            int32 RankID = 0;
+            uint8 RankID = 0;
             int32 RankOrder = 0;
             uint32 WithdrawGoldLimit = 0;
             uint32 Flags = 0;
@@ -485,8 +497,8 @@ namespace WorldPackets
 
         struct GuildRankData
         {
-            uint32 RankID = 0;
-            uint32 RankOrder = 0;
+            uint8 RankID = 0;
+            int32 RankOrder = 0;
             uint32 Flags = 0;
             uint32 WithdrawGoldLimit = 0;
             std::string RankName;

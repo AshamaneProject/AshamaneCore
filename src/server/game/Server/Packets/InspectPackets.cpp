@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
+ * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -16,6 +16,7 @@
  */
 
 #include "InspectPackets.h"
+#include "AzeriteItem.h"
 #include "Item.h"
 #include "Player.h"
 
@@ -165,6 +166,28 @@ WorldPackets::Inspect::InspectItemData::InspectItemData(::Item const* item, uint
             gem.Item.Initialize(&gemData);
         }
         ++i;
+    }
+
+    if (AzeriteItem const* azeriteItem = item->ToAzeriteItem())
+    {
+        if (UF::SelectedAzeriteEssences const* essences = azeriteItem->GetSelectedAzeriteEssences())
+        {
+            for (uint8 slot = 0; slot < essences->AzeriteEssenceID.size(); ++slot)
+            {
+                AzeriteEssences.emplace_back();
+
+                WorldPackets::Inspect::AzeriteEssenceData& essence = AzeriteEssences.back();
+                essence.Index = slot;
+                essence.AzeriteEssenceID = essences->AzeriteEssenceID[slot];
+                if (essence.AzeriteEssenceID)
+                {
+                    essence.Rank = azeriteItem->GetEssenceRank(essence.AzeriteEssenceID);
+                    essence.SlotUnlocked = true;
+                }
+                else
+                    essence.SlotUnlocked = azeriteItem->HasUnlockedEssenceSlot(slot);
+            }
+        }
     }
 }
 

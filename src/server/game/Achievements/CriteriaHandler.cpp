@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
+ * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -16,7 +16,13 @@
  */
 
 #include "CriteriaHandler.h"
+#include "AchievementMgr.h"
+#include "AzeriteItem.h"
+#include "BattlefieldMgr.h"
 #include "Battleground.h"
+#include "BattlePetMgr.h"
+#include "CollectionMgr.h"
+#include "Creature.h"
 #include "DatabaseEnv.h"
 #include "DB2Stores.h"
 #include "DisableMgr.h"
@@ -24,17 +30,22 @@
 #include "ClassHall.h"
 #include "Group.h"
 #include "InstanceScript.h"
+#include "Item.h"
 #include "Log.h"
 #include "MapManager.h"
 #include "ObjectMgr.h"
+#include "PhasingHandler.h"
 #include "Player.h"
+#include "RealmList.h"
 #include "ReputationMgr.h"
+#include "Scenario.h"
 #include "ScriptMgr.h"
 #include "SpellInfo.h"
 #include "SpellMgr.h"
 #include "WarCampaign.h"
 #include "WodGarrison.h"
 #include "World.h"
+#include "WorldSession.h"
 
 bool CriteriaData::IsValid(Criteria const* criteria)
 {
@@ -523,6 +534,7 @@ void CriteriaHandler::UpdateCriteria(CriteriaTypes type, uint64 miscValue1 /*= 0
             case CRITERIA_TYPE_COMPLETE_BATTLEGROUND:
             case CRITERIA_TYPE_DAMAGE_DONE:
             case CRITERIA_TYPE_HEALING_DONE:
+            case CRITERIA_TYPE_HEART_OF_AZEROTH_ARTIFACT_POWER_EARNED:
                 SetCriteriaProgress(criteria, miscValue1, referencePlayer, PROGRESS_ACCUMULATE);
                 break;
             case CRITERIA_TYPE_KILL_CREATURE:
@@ -540,6 +552,7 @@ void CriteriaHandler::UpdateCriteria(CriteriaTypes type, uint64 miscValue1 /*= 0
             case CRITERIA_TYPE_HIGHEST_HIT_RECEIVED:
             case CRITERIA_TYPE_HIGHEST_HEAL_CAST:
             case CRITERIA_TYPE_HIGHEST_HEALING_RECEIVED:
+            case CRITERIA_TYPE_HEART_OF_AZEROTH_LEVEL_REACHED:
                 SetCriteriaProgress(criteria, miscValue1, referencePlayer, PROGRESS_HIGHEST);
                 break;
             case CRITERIA_TYPE_REACH_LEVEL:
@@ -588,16 +601,23 @@ void CriteriaHandler::UpdateCriteria(CriteriaTypes type, uint64 miscValue1 /*= 0
             }
             case CRITERIA_TYPE_COMPLETE_QUESTS_IN_ZONE:
             {
-                uint32 counter = 0;
-
-                const RewardedQuestSet &rewQuests = referencePlayer->getRewardedQuests();
-                for (RewardedQuestSet::const_iterator itr = rewQuests.begin(); itr != rewQuests.end(); ++itr)
+                if (miscValue1)
                 {
-                    Quest const* quest = sObjectMgr->GetQuestTemplate(*itr);
-                    if (quest && quest->GetZoneOrSort() >= 0 && quest->GetZoneOrSort() == criteria->Entry->Asset.ZoneID)
-                        ++counter;
+                    SetCriteriaProgress(criteria, 1, referencePlayer, PROGRESS_ACCUMULATE);
                 }
-                SetCriteriaProgress(criteria, counter, referencePlayer);
+                else // login case
+                {
+                    uint32 counter = 0;
+
+                    const RewardedQuestSet& rewQuests = referencePlayer->getRewardedQuests();
+                    for (RewardedQuestSet::const_iterator itr = rewQuests.begin(); itr != rewQuests.end(); ++itr)
+                    {
+                        Quest const* quest = sObjectMgr->GetQuestTemplate(*itr);
+                        if (quest && quest->GetZoneOrSort() >= 0 && quest->GetZoneOrSort() == criteria->Entry->Asset.ZoneID)
+                            ++counter;
+                    }
+                    SetCriteriaProgress(criteria, counter, referencePlayer, PROGRESS_HIGHEST);
+                }
                 break;
             }
             case CRITERIA_TYPE_FALL_WITHOUT_DYING:
@@ -789,8 +809,6 @@ void CriteriaHandler::UpdateCriteria(CriteriaTypes type, uint64 miscValue1 /*= 0
             case CRITERIA_TYPE_EARN_HONOR_XP:
             case CRITERIA_TYPE_RELIC_TALENT_UNLOCKED:
             case CRITERIA_TYPE_REACH_ACCOUNT_HONOR_LEVEL:
-            case CRITERIA_TREE_HEART_OF_AZEROTH_ARTIFACT_POWER_EARNED:
-            case CRITERIA_TREE_HEART_OF_AZEROTH_LEVEL_REACHED:
                 break;                                   // Not implemented yet :(
         }
 
@@ -1192,8 +1210,8 @@ bool CriteriaHandler::IsCompletedCriteria(Criteria const* criteria, uint64 requi
         case CRITERIA_TYPE_COMPLETE_DUNGEON_ENCOUNTER:
         case CRITERIA_TYPE_SEND_EVENT_SCENARIO:
         case CRITERIA_TYPE_REACH_ACCOUNT_HONOR_LEVEL:
-        case CRITERIA_TREE_HEART_OF_AZEROTH_ARTIFACT_POWER_EARNED:
-        case CRITERIA_TREE_HEART_OF_AZEROTH_LEVEL_REACHED:
+        case CRITERIA_TYPE_HEART_OF_AZEROTH_ARTIFACT_POWER_EARNED:
+        case CRITERIA_TYPE_HEART_OF_AZEROTH_LEVEL_REACHED:
             return progress->Counter >= requiredAmount;
         case CRITERIA_TYPE_COMPLETE_ACHIEVEMENT:
         case CRITERIA_TYPE_COMPLETE_QUEST:
@@ -1279,7 +1297,7 @@ bool CriteriaHandler::CanUpdateCriteria(Criteria const* criteria, CriteriaTreeLi
         return false;
     }
 
-    if (criteria->Modifier && !AdditionalRequirementsSatisfied(criteria->Modifier, miscValue1, miscValue2, unit, referencePlayer))
+    if (criteria->Modifier && !ModifierTreeSatisfied(criteria->Modifier, miscValue1, miscValue2, unit, referencePlayer))
     {
         TC_LOG_TRACE("criteria", "CriteriaHandler::CanUpdateCriteria: (Id: %u Type %s) Requirements have not been satisfied", criteria->ID, CriteriaMgr::GetCriteriaTypeString(criteria->Entry->Type));
         return false;
@@ -1393,8 +1411,12 @@ bool CriteriaHandler::RequirementsSatisfied(Criteria const* criteria, uint64 mis
                 return false;
             break;
         case CRITERIA_TYPE_COMPLETE_QUESTS_IN_ZONE:
-            if (miscValue1 && miscValue1 != uint32(criteria->Entry->Asset.ZoneID))
-                return false;
+            if (miscValue1)
+            {
+                Quest const* quest = sObjectMgr->GetQuestTemplate(miscValue1);
+                if (!quest ||  quest->GetZoneOrSort() != criteria->Entry->Asset.ZoneID)
+                    return false;
+            }
             break;
         case CRITERIA_TYPE_DEATH:
         {
@@ -1611,50 +1633,51 @@ bool CriteriaHandler::RequirementsSatisfied(Criteria const* criteria, uint64 mis
     return true;
 }
 
-bool CriteriaHandler::AdditionalRequirementsSatisfied(ModifierTreeNode const* tree, uint64 miscValue1, uint64 miscValue2, Unit const* unit, Player* referencePlayer) const
+bool CriteriaHandler::ModifierTreeSatisfied(ModifierTreeNode const* tree, uint64 miscValue1, uint64 miscValue2, Unit const* unit, Player* referencePlayer) const
 {
-    const uint64 requiredCount = tree->Entry->Amount;
-
-    switch (tree->Entry->Operator)
+    switch (ModifierTreeOperator(tree->Entry->Operator))
     {
-        case CRITERIA_TREE_OPERATOR_ANY:
-        {
-            uint64 progress = 0;
+        case ModifierTreeOperator::SingleTrue:
+            return tree->Entry->Type && ModifierSatisfied(tree->Entry, miscValue1, miscValue2, unit, referencePlayer);
+        case ModifierTreeOperator::SingleFalse:
+            return tree->Entry->Type && !ModifierSatisfied(tree->Entry, miscValue1, miscValue2, unit, referencePlayer);
+        case ModifierTreeOperator::All:
             for (ModifierTreeNode const* node : tree->Children)
-                if (AdditionalRequirementsSatisfied(node, miscValue1, miscValue2, unit, referencePlayer))
-                    if (++progress >= requiredCount)
+                if (!ModifierTreeSatisfied(node, miscValue1, miscValue2, unit, referencePlayer))
+                    return false;
+            return true;
+        case ModifierTreeOperator::Some:
+        {
+            int8 requiredAmount = std::max<int8>(tree->Entry->Amount, 1);
+            for (ModifierTreeNode const* node : tree->Children)
+                if (ModifierTreeSatisfied(node, miscValue1, miscValue2, unit, referencePlayer))
+                    if (!--requiredAmount)
                         return true;
 
             return false;
         }
-        case CRITERIA_TREE_OPERATOR_ALL:
         default:
-        {
-            for (ModifierTreeNode const* node : tree->Children)
-                if (!AdditionalRequirementsSatisfied(node, miscValue1, miscValue2, unit, referencePlayer))
-                    return false;
-
             break;
-        }
     }
 
-    bool conditionMet = AdditionalRequirementsConditionSatisfied(tree, miscValue1, miscValue2, unit, referencePlayer);
-    if (tree->Entry->Operator == CRITERIA_TREE_OPERATOR_MODIFIER_SINGLE_NOT_COMPLETED)
-        conditionMet = !conditionMet;
-
-    return conditionMet;
+    return false;
 }
 
-bool CriteriaHandler::AdditionalRequirementsConditionSatisfied(ModifierTreeNode const* tree, uint64 miscValue1, uint64 /*miscValue2*/, Unit const* unit, Player* referencePlayer) const
+bool CriteriaHandler::ModifierSatisfied(ModifierTreeEntry const* modifier, uint64 miscValue1, uint64 miscValue2, Unit const* unit, Player* referencePlayer) const
 {
-    uint32 reqType = tree->Entry->Type;
-    if (!reqType)
-        return true;
+    uint32 reqValue = modifier->Asset;
+    uint32 secondaryAsset = modifier->SecondaryAsset;
+    uint32 tertiaryAsset = modifier->TertiaryAsset;
 
-    uint32 reqValue = tree->Entry->Asset;
-
-    switch (CriteriaAdditionalCondition(reqType))
+    switch (CriteriaAdditionalCondition(modifier->Type))
     {
+        case CRITERIA_ADDITIONAL_CONDITION_SOURCE_DRUNK_VALUE: // 1
+        {
+            uint32 inebriation = std::min(std::max<uint32>(referencePlayer->GetDrunkValue(), *referencePlayer->m_playerData->FakeInebriation), 100u);
+            if (inebriation < reqValue)
+                return false;
+            break;
+        }
         case CRITERIA_ADDITIONAL_CONDITION_SOURCE_PLAYER_CONDITION: // 2
         {
             PlayerConditionEntry const* playerCondition = sPlayerConditionStore.LookupEntry(reqValue);
@@ -1726,6 +1749,10 @@ bool CriteriaHandler::AdditionalRequirementsConditionSatisfied(ModifierTreeNode 
                 return false;
             break;
         }
+        case CRITERIA_ADDITIONAL_CONDITION_SOURCE_IS_ALIVE: // 16
+            if (referencePlayer->isDead())
+                return false;
+            break;
         case CRITERIA_ADDITIONAL_CONDITION_SOURCE_AREA_OR_ZONE: // 17
         {
             uint32 zoneId, areaId;
@@ -1751,6 +1778,14 @@ bool CriteriaHandler::AdditionalRequirementsConditionSatisfied(ModifierTreeNode 
                 return false;
             break;
         }
+        case CRITERIA_ADDITIONAL_CONDITION_SOURCE_LEVEL_ABOVE_TARGET: // 22
+            if (!unit || referencePlayer->getLevel() + reqValue < unit->getLevel())
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_SOURCE_LEVEL_EQUAL_TARGET: // 23
+            if (!unit || referencePlayer->getLevel() != unit->getLevel())
+                return false;
+            break;
         case CRITERIA_ADDITIONAL_CONDITION_ARENA_TYPE: // 24
         {
             Battleground* bg = referencePlayer->GetBattleground();
@@ -1786,8 +1821,33 @@ bool CriteriaHandler::AdditionalRequirementsConditionSatisfied(ModifierTreeNode 
                 return false;
             break;
         }
+        case CRITERIA_ADDITIONAL_CONDITION_TARGET_CREATURE_FAMILY: // 31
+        {
+            if (!unit)
+                return false;
+            if (unit->GetTypeId() != TYPEID_UNIT || unit->ToCreature()->GetCreatureTemplate()->family != CreatureFamily(reqValue))
+                return false;
+            break;
+        }
         case CRITERIA_ADDITIONAL_CONDITION_SOURCE_MAP: // 32
             if (referencePlayer->GetMapId() != reqValue)
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_CLIENT_VERSION: // 33
+            if (reqValue < sRealmList->GetMinorMajorBugfixVersionForBuild(realm.Build))
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_BATTLE_PET_TEAM_LEVEL: // 34
+            for (WorldPackets::BattlePet::BattlePetSlot const& slot : referencePlayer->GetSession()->GetBattlePetMgr()->GetSlots())
+                if (slot.Pet.Level != reqValue)
+                    return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_NOT_IN_GROUP: // 35
+            if (referencePlayer->GetGroup())
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_IN_GROUP: // 36
+            if (!referencePlayer->GetGroup())
                 return false;
             break;
         case CRITERIA_ADDITIONAL_CONDITION_TITLE_BIT_INDEX: // 38
@@ -1803,12 +1863,74 @@ bool CriteriaHandler::AdditionalRequirementsConditionSatisfied(ModifierTreeNode 
             if (!unit || unit->GetLevelForTarget(referencePlayer) != reqValue)
                 return false;
             break;
-        case CRITERIA_ADDITIONAL_CONDITION_TARGET_ZONE: // 41
-            if (!unit || unit->GetZoneId() != reqValue)
+        case CRITERIA_ADDITIONAL_CONDITION_SOURCE_ZONE: // 41
+        {
+            uint32 zoneId = referencePlayer->GetAreaId();
+            if (AreaTableEntry const* areaEntry = sAreaTableStore.LookupEntry(zoneId))
+                if (areaEntry->Flags[0] & AREA_FLAG_SUB_ZONE)
+                    zoneId = areaEntry->ParentAreaID;
+            if (zoneId != reqValue)
                 return false;
             break;
-        case CRITERIA_ADDITIONAL_CONDITION_TARGET_HEALTH_PERCENT_BELOW: // 46
-            if (!unit || unit->GetHealthPct() >= reqValue)
+        }
+        case CRITERIA_ADDITIONAL_CONDITION_TARGET_ZONE: // 42
+        {
+            if (!unit)
+                return false;
+            uint32 zoneId = unit->GetAreaId();
+            if (AreaTableEntry const* areaEntry = sAreaTableStore.LookupEntry(zoneId))
+                if (areaEntry->Flags[0] & AREA_FLAG_SUB_ZONE)
+                    zoneId = areaEntry->ParentAreaID;
+            if (zoneId != reqValue)
+                return false;
+            break;
+        }
+        case CRITERIA_ADDITIONAL_CONDITION_SOURCE_HEALTH_PCT_LOWER: // 43
+            if (referencePlayer->GetHealthPct() > float(reqValue))
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_SOURCE_HEALTH_PCT_GREATER: // 44
+            if (referencePlayer->GetHealthPct() < float(reqValue))
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_SOURCE_HEALTH_PCT_EQUAL: // 45
+            if (referencePlayer->GetHealthPct() != float(reqValue))
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_TARGET_HEALTH_PCT_LOWER: // 46
+            if (!unit || unit->GetHealthPct() > float(reqValue))
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_TARGET_HEALTH_PCT_GREATER: // 47
+            if (!unit || unit->GetHealthPct() < float(reqValue))
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_TARGET_HEALTH_PCT_EQUAL: // 48
+            if (!unit || unit->GetHealthPct() != float(reqValue))
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_SOURCE_HEALTH_LOWER: // 49
+            if (referencePlayer->GetHealth() > reqValue)
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_SOURCE_HEALTH_GREATER: // 50
+            if (referencePlayer->GetHealth() < reqValue)
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_SOURCE_HEALTH_EQUAL: // 51
+            if (referencePlayer->GetHealth() != reqValue)
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_TARGET_HEALTH_LOWER: // 52
+            if (!unit || unit->GetHealth() > reqValue)
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_TARGET_HEALTH_GREATER: // 53
+            if (!unit || unit->GetHealth() < reqValue)
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_TARGET_HEALTH_EQUAL: // 54
+            if (!unit || unit->GetHealth() != reqValue)
                 return false;
             break;
         case CRITERIA_ADDITIONAL_CONDITION_TARGET_PLAYER_CONDITION: // 55
@@ -1821,10 +1943,34 @@ bool CriteriaHandler::AdditionalRequirementsConditionSatisfied(ModifierTreeNode 
                 return false;
             break;
         }
+        case CRITERIA_ADDITIONAL_CONDITION_MIN_ACHIEVEMENT_POINTS: // 56
+            if (referencePlayer->GetAchievementPoints() <= reqValue)
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_IN_LFG_DUNGEON: // 57
+            if (!ConditionMgr::GetPlayerConditionLfgValue(referencePlayer, PlayerConditionLfgStatus::InLFGDungeon))
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_IN_LFG_RANDOM_DUNGEON: // 58
+            if (!ConditionMgr::GetPlayerConditionLfgValue(referencePlayer, PlayerConditionLfgStatus::InLFGRandomDungeon))
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_IN_LFG_FIRST_RANDOM_DUNGEON: // 59
+            if (!ConditionMgr::GetPlayerConditionLfgValue(referencePlayer, PlayerConditionLfgStatus::InLFGFirstRandomDungeon))
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_GUILD_REPUTATION: // 62
+            if (referencePlayer->GetReputationMgr().GetReputation(1168) < int32(reqValue))
+                return false;
+            break;
         case CRITERIA_ADDITIONAL_CONDITION_RATED_BATTLEGROUND_RATING: // 64
             //if (referencePlayer->GetRBGPersonalRating() < reqValue)
                 return false;
             break;
+        case CRITERIA_ADDITIONAL_CONDITION_WORLD_STATE_EXPRESSION: // 67
+            if (WorldStateExpressionEntry const* worldStateExpression = sWorldStateExpressionStore.LookupEntry(reqValue))
+                return ConditionMgr::IsPlayerMeetingExpression(referencePlayer, worldStateExpression);
+            return false;
         case CRITERIA_ADDITIONAL_CONDITION_MAP_DIFFICULTY: // 68
         {
             DifficultyEntry const* difficulty = sDifficultyStore.LookupEntry(referencePlayer->GetMap()->GetDifficultyID());
@@ -1832,88 +1978,795 @@ bool CriteriaHandler::AdditionalRequirementsConditionSatisfied(ModifierTreeNode 
                 return false;
             break;
         }
-        case CRITERIA_ADDITIONAL_CONDITION_QUEST_INCOMPLETE: // 84
-            if (!referencePlayer->HasQuest(reqValue))
+        case CRITERIA_ADDITIONAL_CONDITION_SOURCE_LEVEL_GREATER: // 69
+            if (referencePlayer->getLevel() < reqValue)
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_TARGET_LEVEL_GREATER: // 70
+            if (!unit || unit->getLevel() < reqValue)
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_SOURCE_LEVEL_LOWER: // 71
+            if (referencePlayer->getLevel() > reqValue)
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_TARGET_LEVEL_LOWER: // 72
+            if (!unit || unit->getLevel() > reqValue)
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_MODIFIER_TREE: // 73
+            if (ModifierTreeNode const* nextModifierTree = sCriteriaMgr->GetModifierTree(reqValue))
+                return ModifierTreeSatisfied(nextModifierTree, miscValue1, miscValue2, unit, referencePlayer);
+            return false;
+        case CRITERIA_ADDITIONAL_CONDITION_SCENARIO_ID: // 74
+        {
+            Scenario const* scenario = referencePlayer->GetScenario();
+            if (!scenario)
+                return false;
+            if (scenario->GetEntry()->ID != reqValue)
+                return false;
+            break;
+        }
+        case CRITERIA_ADDITIONAL_CONDITION_THE_TILLERS_REPUTATION: // 75
+            if (referencePlayer->GetReputationMgr().GetReputation(1272) < int32(reqValue))
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_SCENARIO_STEP_INDEX: // 82
+        {
+            Scenario const* scenario = referencePlayer->GetScenario();
+            if (!scenario)
+                return false;
+            if (scenario->GetStep()->OrderIndex != (reqValue - 1))
+                return false;
+            break;
+        }
+        case CRITERIA_ADDITIONAL_CONDITION_IS_ON_QUEST: // 84
+            if (referencePlayer->FindQuestSlot(reqValue) == MAX_QUEST_LOG_SIZE)
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_EXALTED_WITH_FACTION: // 85
+            if (referencePlayer->GetReputationMgr().GetReputation(reqValue) < 42000)
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_HAS_ACHIEVEMENT: // 86
+            if (!referencePlayer->HasAchieved(reqValue))
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_CLOUD_SERPENT_REPUTATION: // 88
+            if (referencePlayer->GetReputationMgr().GetReputation(1271) < int32(reqValue))
                 return false;
             break;
         case CRITERIA_ADDITIONAL_CONDITION_BATTLE_PET_SPECIES: // 91
             if (miscValue1 != reqValue)
                 return false;
             break;
-        case CRITERIA_ADDITIONAL_CONDITION_REPUTATION: // 95
-            if (referencePlayer->GetReputation(reqValue) < int32(tree->Entry->SecondaryAsset))
+        case CRITERIA_ADDITIONAL_CONDITION_ACTIVE_EXPANSION: // 92
+            if (referencePlayer->GetSession()->GetExpansion() < reqValue)
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_FACTION_STANDING: // 95
+            if (referencePlayer->GetReputationMgr().GetReputation(reqValue) < int32(secondaryAsset))
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_SOURCE_SEX: // 97
+            if (referencePlayer->getGender() != uint8(reqValue))
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_SOURCE_NATIVE_SEX: // 98
+            if (referencePlayer->m_playerData->NativeSex != uint8(reqValue))
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_SKILL: // 99
+            if (referencePlayer->GetPureSkillValue(reqValue) < uint16(secondaryAsset))
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_NORMAL_PHASE_SHIFT: // 101
+            if (!PhasingHandler::InDbPhaseShift(referencePlayer, 0, 0, 0))
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_IN_PHASE: // 102
+            if (!PhasingHandler::InDbPhaseShift(referencePlayer, 0, reqValue, 0))
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_NOT_IN_PHASE: // 103
+            if (PhasingHandler::InDbPhaseShift(referencePlayer, 0, reqValue, 0))
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_HAS_SPELL: // 104
+            if (!referencePlayer->HasSpell(reqValue))
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_ITEM_COUNT: // 105
+            if (referencePlayer->GetItemCount(reqValue, false) < secondaryAsset)
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_ACCOUNT_EXPANSION: // 106
+            if (referencePlayer->GetSession()->GetAccountExpansion() < reqValue)
                 return false;
             break;
         case CRITERIA_ADDITIONAL_CONDITION_REWARDED_QUEST: // 110
-            if (!referencePlayer->GetQuestRewardStatus(reqValue))
-                return false;
+            if (uint32 questBit = sDB2Manager.GetQuestUniqueBitFlag(reqValue))
+                if (!(referencePlayer->m_activePlayerData->QuestCompleted[((questBit - 1) >> 6)] & (UI64LIT(1) << ((questBit - 1) & 63))))
+                    return false;
             break;
         case CRITERIA_ADDITIONAL_CONDITION_COMPLETED_QUEST: // 111
             if (referencePlayer->GetQuestStatus(reqValue) != QUEST_STATUS_COMPLETE)
                 return false;
             break;
-        case CRITERIA_ADDITIONAL_CONDITION_GARRISON_FOLLOWER_ENTRY: // 144
+        case CRITERIA_ADDITIONAL_CONDITION_EXPLORED_AREA: // 113
         {
-            if (!referencePlayer)
+            AreaTableEntry const* areaTable = sAreaTableStore.LookupEntry(reqValue);
+            if (!areaTable)
                 return false;
-
-            for (auto const& garrison : referencePlayer->GetGarrisons())
+            if (areaTable->AreaBit <= 0)
+                break; // success
+            uint32 playerIndexOffset = uint32(areaTable->AreaBit) / 64;
+            if (playerIndexOffset >= PLAYER_EXPLORED_ZONES_SIZE)
+                break;
+            if (!(referencePlayer->m_activePlayerData->ExploredZones[playerIndexOffset] & (UI64LIT(1) << (areaTable->AreaBit % 64))))
+                return false;
+            break;
+        }
+        case CRITERIA_ADDITIONAL_CONDITION_ITEM_COUNT_INCLUDING_BANK: // 114
+            if (referencePlayer->GetItemCount(reqValue, true) < secondaryAsset)
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_SOURCE_PVP_FACTION_INDEX: // 116
+        {
+            ChrRacesEntry const* race = sChrRacesStore.LookupEntry(referencePlayer->getRace());
+            if (!race)
+                return false;
+            FactionTemplateEntry const* faction = sFactionTemplateStore.LookupEntry(race->FactionID);
+            if (!faction)
+                return false;
+            int32 factionIndex = -1;
+            if (faction->FactionGroup & FACTION_MASK_HORDE)
+                factionIndex = 0;
+            else if (faction->FactionGroup & FACTION_MASK_ALLIANCE)
+                factionIndex = 1;
+            else if (faction->FactionGroup & FACTION_MASK_PLAYER)
+                factionIndex = 0;
+            if (factionIndex != int32(reqValue))
+                return false;
+            break;
+        }
+        case CRITERIA_ADDITIONAL_CONDITION_LFG_VALUE_EQUAL: // 117
+            if (ConditionMgr::GetPlayerConditionLfgValue(referencePlayer, PlayerConditionLfgStatus(reqValue)) != secondaryAsset)
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_LFG_VALUE_GREATER: // 118
+            if (ConditionMgr::GetPlayerConditionLfgValue(referencePlayer, PlayerConditionLfgStatus(reqValue)) < secondaryAsset)
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_CURRENCY_AMOUNT: // 119
+            if (!referencePlayer->HasCurrency(reqValue, secondaryAsset))
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_CURRENCY_TRACKED_AMOUNT: // 121
+            if (referencePlayer->GetTrackedCurrencyCount(reqValue) < secondaryAsset)
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_MAP_INSTANCE_TYPE: // 122
+            if (referencePlayer->GetMap()->GetEntry()->InstanceType != int8(reqValue))
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_MENTOR: // 123
+            if (!referencePlayer->HasPlayerFlag(PLAYER_FLAGS_MENTOR))
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_GARRISON_LEVEL_ABOVE: // 126
+        {
+            Garrison* garrison = referencePlayer->GetGarrison(GARRISON_TYPE_GARRISON);
+            if (!garrison || garrison->GetType() != GarrisonType(secondaryAsset) || garrison->GetSiteLevel()->GarrLevel < reqValue)
+                return false;
+            break;
+        }
+        case CRITERIA_ADDITIONAL_CONDITION_GARRISON_FOLLOWERS_ABOVE_LEVEL: // 127
+        {
+            Garrison* garrison = referencePlayer->GetGarrison(GARRISON_TYPE_GARRISON);
+            if (!garrison || garrison->GetType() != GarrisonType(tertiaryAsset))
+                return false;
+            uint32 followerCount = garrison->CountFollowers([secondaryAsset](Garrison::Follower const& follower)
             {
-                Garrison::Follower const* follower = garrison.second->GetFollower(miscValue1);
-                if (follower && follower->PacketInfo.GarrFollowerID == reqValue)
-                    return true;
-            }
+                return follower.PacketInfo.FollowerLevel >= secondaryAsset;
+            });
+            if (followerCount < reqValue)
+                return false;
+            break;
+        }
+        case CRITERIA_ADDITIONAL_CONDITION_GARRISON_FOLLOWERS_ABOVE_QUALITY: // 128
+        {
+            Garrison* garrison = referencePlayer->GetGarrison(GARRISON_TYPE_GARRISON);
+            if (!garrison || garrison->GetType() != GarrisonType(tertiaryAsset))
+                return false;
+            uint32 followerCount = garrison->CountFollowers([secondaryAsset](Garrison::Follower const& follower)
+            {
+                return follower.PacketInfo.Quality >= secondaryAsset;
+            });
+            if (followerCount < reqValue)
+                return false;
+            break;
+        }
+        case CRITERIA_ADDITIONAL_CONDITION_GARRISON_FOLLOWER_ABOVE_LEVEL_WITH_ABILITY: // 129
+        {
+            Garrison* garrison = referencePlayer->GetGarrison(GARRISON_TYPE_GARRISON);
+            if (!garrison || garrison->GetType() != GarrisonType(tertiaryAsset))
+                return false;
+            uint32 followerCount = garrison->CountFollowers([reqValue, secondaryAsset](Garrison::Follower const& follower)
+            {
+                return follower.PacketInfo.FollowerLevel >= reqValue && follower.HasAbility(secondaryAsset);
+            });
+            if (followerCount < 1)
+                return false;
+            break;
+        }
+        case CRITERIA_ADDITIONAL_CONDITION_GARRISON_FOLLOWER_ABOVE_LEVEL_WITH_TRAIT: // 130
+        {
+            Garrison* garrison = referencePlayer->GetGarrison(GARRISON_TYPE_GARRISON);
+            if (!garrison || garrison->GetType() != GarrisonType(tertiaryAsset))
+                return false;
+            GarrAbilityEntry const* traitEntry = sGarrAbilityStore.LookupEntry(secondaryAsset);
+            if (!traitEntry || !(traitEntry->Flags & GARRISON_ABILITY_FLAG_TRAIT))
+                return false;
+            uint32 followerCount = garrison->CountFollowers([reqValue, secondaryAsset](Garrison::Follower const& follower)
+            {
+                return follower.PacketInfo.FollowerLevel >= reqValue && follower.HasAbility(secondaryAsset);
+            });
+            if (followerCount < 1)
+                return false;
+            break;
+        }
+        case CRITERIA_ADDITIONAL_CONDITION_GARRISON_FOLLOWER_WITH_ABILITY_IN_BUILDING: // 131
+        {
+            Garrison* garrison = referencePlayer->GetGarrison(GARRISON_TYPE_GARRISON);
+            if (!garrison || garrison->GetType() != GarrisonType(tertiaryAsset))
+                return false;
+            uint32 followerCount = garrison->CountFollowers([reqValue, secondaryAsset](Garrison::Follower const& follower)
+            {
+                GarrBuildingEntry const* followerBuilding = sGarrBuildingStore.LookupEntry(follower.PacketInfo.CurrentBuildingID);
+                if (!followerBuilding)
+                    return false;
+                return followerBuilding->BuildingType == secondaryAsset && follower.HasAbility(reqValue);;
+            });
+            if (followerCount < 1)
+                return false;
+            break;
+        }
+        case CRITERIA_ADDITIONAL_CONDITION_GARRISON_FOLLOWER_WITH_TRAIT_IN_BUILDING: // 132
+        {
+            Garrison* garrison = referencePlayer->GetGarrison(GARRISON_TYPE_GARRISON);
+            if (!garrison || garrison->GetType() != GarrisonType(tertiaryAsset))
+                return false;
+            GarrAbilityEntry const* traitEntry = sGarrAbilityStore.LookupEntry(reqValue);
+            if (!traitEntry || !(traitEntry->Flags & GARRISON_ABILITY_FLAG_TRAIT))
+                return false;
+            uint32 followerCount = garrison->CountFollowers([reqValue, secondaryAsset](Garrison::Follower const& follower)
+            {
+                GarrBuildingEntry const* followerBuilding = sGarrBuildingStore.LookupEntry(follower.PacketInfo.CurrentBuildingID);
+                if (!followerBuilding)
+                    return false;
+                return followerBuilding->BuildingType == secondaryAsset && follower.HasAbility(reqValue);;
+            });
+            if (followerCount < 1)
+                return false;
+            break;
+        }
+        case CRITERIA_ADDITIONAL_CONDITION_GARRISON_FOLLOWER_ABOVE_LEVEL_IN_BUILDING: // 133
+        {
+            Garrison* garrison = referencePlayer->GetGarrison(GARRISON_TYPE_GARRISON);
+            if (!garrison || garrison->GetType() != GarrisonType(tertiaryAsset))
+                return false;
+            uint32 followerCount = garrison->CountFollowers([reqValue, secondaryAsset](Garrison::Follower const& follower)
+            {
+                if (follower.PacketInfo.FollowerLevel < reqValue)
+                    return false;
+                GarrBuildingEntry const* followerBuilding = sGarrBuildingStore.LookupEntry(follower.PacketInfo.CurrentBuildingID);
+                if (!followerBuilding)
+                    return false;
+                return followerBuilding->BuildingType == secondaryAsset;
+            });
+            if (followerCount < 1)
+                return false;
+            break;
+        }
+        case CRITERIA_ADDITIONAL_CONDITION_GARRISON_BUILDING_ABOVE_LEVEL: // 134
+        {
+            Garrison* garrison = referencePlayer->GetGarrison(GARRISON_TYPE_GARRISON);
+            if (!garrison || garrison->GetType() != GarrisonType(tertiaryAsset))
+                return false;
+            WodGarrison* wodGarrison = garrison->ToWodGarrison();
+            for (WodGarrison::Plot const* plot : wodGarrison->GetPlots())
+            {
+                if (!plot->BuildingInfo.PacketInfo)
+                    continue;
 
+                GarrBuildingEntry const* building = sGarrBuildingStore.LookupEntry(plot->BuildingInfo.PacketInfo->GarrBuildingID);
+                if (!building || building->UpgradeLevel < reqValue || building->BuildingType != secondaryAsset)
+                    continue;
+
+                return true;
+            }
             return false;
         }
-        case CRITERIA_ADDITIONAL_CONDITION_GARRISON_FOLLOWER_QUALITY: // 145
+        case CRITERIA_ADDITIONAL_CONDITION_GARRISON_BLUEPRINT: // 135
         {
-            if (!referencePlayer)
+            GarrBuildingEntry const* blueprintBuilding = sGarrBuildingStore.LookupEntry(reqValue);
+            if (!blueprintBuilding)
                 return false;
-
-            for (auto const& garrison : referencePlayer->GetGarrisons())
+            Garrison* garrison = referencePlayer->GetGarrison(GARRISON_TYPE_GARRISON);
+            if (!garrison || garrison->GetType() != GarrisonType(blueprintBuilding->GarrTypeID))
+                return false;
+            WodGarrison const* wodGarrison = garrison->ToWodGarrison();
+            if (!wodGarrison->HasBlueprint(reqValue))
+                return false;
+            break;
+        }
+        case CRITERIA_ADDITIONAL_CONDITION_GARRISON_BUILDING_INACTIVE: // 140
+        {
+            GarrBuildingEntry const* building = sGarrBuildingStore.LookupEntry(reqValue);
+            if (!building)
+                return false;
+            Garrison* garrison = referencePlayer->GetGarrison(GARRISON_TYPE_GARRISON);
+            if (!garrison || garrison->GetType() != GarrisonType(tertiaryAsset))
+                return false;
+            WodGarrison* wodGarrison = garrison->ToWodGarrison();
+            for (WodGarrison::Plot const* plot : wodGarrison->GetPlots())
             {
-                Garrison::Follower const* follower = garrison.second->GetFollower(miscValue1);
-                if (follower && follower->PacketInfo.Quality == reqValue)
-                    return true;
-            }
+                if (!plot->BuildingInfo.PacketInfo || plot->BuildingInfo.PacketInfo->GarrBuildingID != reqValue)
+                    continue;
 
+                return !plot->BuildingInfo.PacketInfo->Active;
+            }
             return false;
         }
-        case CRITERIA_ADDITIONAL_CONDITION_GARRISON_FOLLOWER_LEVEL: // 146
+        case CRITERIA_ADDITIONAL_CONDITION_GARRISON_BUILDING_EQUAL_LEVEL: // 142
         {
-            if (!referencePlayer)
+            Garrison* garrison = referencePlayer->GetGarrison(GARRISON_TYPE_GARRISON);
+            if (!garrison || garrison->GetType() != GarrisonType(tertiaryAsset))
                 return false;
-
-            for (auto const& garrison : referencePlayer->GetGarrisons())
+            WodGarrison* wodGarrison = garrison->ToWodGarrison();
+            for (WodGarrison::Plot const* plot : wodGarrison->GetPlots())
             {
-                Garrison::Follower const* follower = garrison.second->GetFollower(miscValue1);
-                if (follower && follower->PacketInfo.FollowerLevel >= reqValue)
-                    return true;
-            }
+                if (!plot->BuildingInfo.PacketInfo)
+                    continue;
 
+                GarrBuildingEntry const* building = sGarrBuildingStore.LookupEntry(plot->BuildingInfo.PacketInfo->GarrBuildingID);
+                if (!building || building->UpgradeLevel != reqValue || building->BuildingType != secondaryAsset)
+                    continue;
+
+                return true;
+            }
             return false;
         }
-        case CRITERIA_ADDITIONAL_CONDITION_GARRISON_FOLLOWER_ILVL: // 184
+        case CRITERIA_ADDITIONAL_CONDITION_GARRISON_FOLLOWER_WITH_ABILITY: // 143
         {
-            if (!referencePlayer)
+            Garrison* garrison = referencePlayer->GetGarrison(GARRISON_TYPE_GARRISON);
+            if (!garrison || garrison->GetType() != GarrisonType(secondaryAsset))
                 return false;
-
-            for (auto const& garrison : referencePlayer->GetGarrisons())
+            if (miscValue1)
             {
-                Garrison::Follower const* follower = garrison.second->GetFollower(miscValue1);
-                if (follower && follower->GetItemLevel() >= reqValue)
-                    return true;
+                Garrison::Follower* follower = garrison->GetFollower(miscValue1);
+                if (!follower)
+                    return false;
+                if (!follower->HasAbility(reqValue))
+                    return false;
             }
-
-            return false;
+            else
+            {
+                uint32 followerCount = garrison->CountFollowers([reqValue](Garrison::Follower const& follower)
+                {
+                    return follower.HasAbility(reqValue);
+                });
+                if (followerCount < 1)
+                    return false;
+            }
+            break;
+        }
+        case CRITERIA_ADDITIONAL_CONDITION_GARRISON_FOLLOWER_WITH_TRAIT: // 144
+        {
+            GarrAbilityEntry const* traitEntry = sGarrAbilityStore.LookupEntry(reqValue);
+            if (!traitEntry || !(traitEntry->Flags & GARRISON_ABILITY_FLAG_TRAIT))
+                return false;
+            Garrison* garrison = referencePlayer->GetGarrison(GARRISON_TYPE_GARRISON);
+            if (!garrison || garrison->GetType() != GarrisonType(secondaryAsset))
+                return false;
+            if (miscValue1)
+            {
+                Garrison::Follower* follower = garrison->GetFollower(miscValue1);
+                if (!follower || !follower->HasAbility(reqValue))
+                    return false;
+            }
+            else
+            {
+                uint32 followerCount = garrison->CountFollowers([reqValue](Garrison::Follower const& follower)
+                {
+                    return follower.HasAbility(reqValue);
+                });
+                if (followerCount < 1)
+                    return false;
+            }
+            break;
+        }
+        case CRITERIA_ADDITIONAL_CONDITION_GARRISON_FOLLOWER_ABOVE_QUALITY_WOD: // 145
+        {
+            Garrison* garrison = referencePlayer->GetGarrison(GARRISON_TYPE_GARRISON);
+            if (!garrison || garrison->GetType() != GARRISON_TYPE_GARRISON)
+                return false;
+            if (miscValue1)
+            {
+                Garrison::Follower* follower = garrison->GetFollower(miscValue1);
+                if (!follower || follower->PacketInfo.Quality < reqValue)
+                    return false;
+            }
+            else
+            {
+                uint32 followerCount = garrison->CountFollowers([reqValue](Garrison::Follower const& follower)
+                {
+                    return follower.PacketInfo.Quality >= reqValue;
+                });
+                if (followerCount < 1)
+                    return false;
+            }
+            break;
+        }
+        case CRITERIA_ADDITIONAL_CONDITION_GARRISON_FOLLOWER_EQUAL_LEVEL: // 146
+        {
+            Garrison* garrison = referencePlayer->GetGarrison(GARRISON_TYPE_GARRISON);
+            if (!garrison || garrison->GetType() != GarrisonType(secondaryAsset))
+                return false;
+            if (miscValue1)
+            {
+                Garrison::Follower* follower = garrison->GetFollower(miscValue1);
+                if (!follower || follower->PacketInfo.FollowerLevel < reqValue)
+                    return false;
+            }
+            else
+            {
+                uint32 followerCount = garrison->CountFollowers([reqValue](Garrison::Follower const& follower)
+                {
+                    return follower.PacketInfo.FollowerLevel >= reqValue;
+                });
+                if (followerCount < 1)
+                    return false;
+            }
+            break;
+        }
+        case CRITERIA_ADDITIONAL_CONDITION_BATTLE_PET_SPECIES_IN_TEAM: // 151
+        {
+            uint32 count = 0;
+            for (WorldPackets::BattlePet::BattlePetSlot const& slot : referencePlayer->GetSession()->GetBattlePetMgr()->GetSlots())
+                if (slot.Pet.Species == secondaryAsset)
+                    ++count;
+            if (count < reqValue)
+                return false;
+            break;
+        }
+        case CRITERIA_ADDITIONAL_CONDITION_BATTLE_PET_FAMILY_IN_TEAM: // 152
+        {
+            uint32 count = 0;
+            for (WorldPackets::BattlePet::BattlePetSlot const& slot : referencePlayer->GetSession()->GetBattlePetMgr()->GetSlots())
+                if (BattlePetSpeciesEntry const* species = sBattlePetSpeciesStore.LookupEntry(slot.Pet.Species))
+                    if (species->PetTypeEnum == secondaryAsset)
+                        ++count;
+            if (count < reqValue)
+                return false;
+            break;
+        }
+        case CRITERIA_ADDITIONAL_CONDITION_GARRISON_FOLLOWER_ID: // 157
+        {
+            Garrison* garrison = referencePlayer->GetGarrison(GARRISON_TYPE_GARRISON);
+            if (!garrison)
+                return false;
+            if (miscValue1)
+            {
+                Garrison::Follower* follower = garrison->GetFollower(miscValue1);
+                if (!follower || follower->PacketInfo.GarrFollowerID != reqValue)
+                    return false;
+            }
+            else
+            {
+                uint32 followerCount = garrison->CountFollowers([reqValue](Garrison::Follower const& follower)
+                {
+                    return follower.PacketInfo.GarrFollowerID == reqValue;
+                });
+                if (followerCount < 1)
+                    return false;
+            }
+            break;
+        }
+        case CRITERIA_ADDITIONAL_CONDITION_GARRISON_FOLLOWER_ABOVE_ITEM_LEVEL: // 168
+        {
+            Garrison* garrison = referencePlayer->GetGarrison(GARRISON_TYPE_GARRISON);
+            if (!garrison)
+                return false;
+            if (miscValue1)
+            {
+                Garrison::Follower* follower = garrison->GetFollower(miscValue1);
+                if (!follower || follower->PacketInfo.GarrFollowerID != reqValue)
+                    return false;
+            }
+            else
+            {
+                uint32 followerCount = garrison->CountFollowers([reqValue](Garrison::Follower const& follower)
+                {
+                    return follower.GetItemLevel() >= reqValue;
+                });
+                if (followerCount < 1)
+                    return false;
+            }
+            break;
+        }
+        case CRITERIA_ADDITIONAL_CONDITION_GARRISON_FOLLOWERS_ABOVE_ITEM_LEVEL: // 169
+        {
+            Garrison* garrison = referencePlayer->GetGarrison(GARRISON_TYPE_GARRISON);
+            if (!garrison || garrison->GetType() != GarrisonType(tertiaryAsset))
+                return false;
+            uint32 followerCount = garrison->CountFollowers([secondaryAsset](Garrison::Follower const& follower)
+            {
+                return follower.GetItemLevel() >= secondaryAsset;
+            });
+            if (followerCount < reqValue)
+                return false;
+            break;
+        }
+        case CRITERIA_ADDITIONAL_CONDITION_GARRISON_LEVEL_EQUAL: // 170
+        {
+            Garrison* garrison = referencePlayer->GetGarrison(GARRISON_TYPE_GARRISON);
+            if (!garrison || garrison->GetType() != GARRISON_TYPE_GARRISON || garrison->GetSiteLevel()->GarrLevel != reqValue)
+                return false;
+            break;
+        }
+        case CRITERIA_ADDITIONAL_CONDITION_TARGETING_CORPSE: // 173
+            if (referencePlayer->GetTarget().GetHigh() != HighGuid::Corpse)
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_GARRISON_FOLLOWERS_LEVEL_EQUAL: // 175
+        {
+            Garrison* garrison = referencePlayer->GetGarrison(GARRISON_TYPE_GARRISON);
+            if (!garrison || garrison->GetType() != GarrisonType(tertiaryAsset))
+                return false;
+            uint32 followerCount = garrison->CountFollowers([secondaryAsset](Garrison::Follower const& follower)
+            {
+                return follower.PacketInfo.FollowerLevel >= secondaryAsset;
+            });
+            if (followerCount < reqValue)
+                return false;
+            break;
+        }
+        case CRITERIA_ADDITIONAL_CONDITION_GARRISON_FOLLOWER_ID_IN_BUILDING: // 176
+        {
+            Garrison* garrison = referencePlayer->GetGarrison(GARRISON_TYPE_GARRISON);
+            if (!garrison || garrison->GetType() != GARRISON_TYPE_GARRISON)
+                return false;
+            uint32 followerCount = garrison->CountFollowers([reqValue, secondaryAsset](Garrison::Follower const& follower)
+            {
+                if (follower.PacketInfo.GarrFollowerID != reqValue)
+                    return false;
+                GarrBuildingEntry const* followerBuilding = sGarrBuildingStore.LookupEntry(follower.PacketInfo.CurrentBuildingID);
+                if (!followerBuilding)
+                    return false;
+                return followerBuilding->BuildingType == secondaryAsset;
+            });
+            if (followerCount < 1)
+                return false;
+            break;
+        }
+        case CRITERIA_ADDITIONAL_CONDITION_WORLD_PVP_AREA: // 179
+        {
+            Battlefield const* bf = sBattlefieldMgr->GetBattlefieldToZoneId(referencePlayer->GetZoneId());
+            if (!bf || bf->GetBattleId() != reqValue)
+                return false;
+            break;
+        }
+        case CRITERIA_ADDITIONAL_CONDITION_GARRISON_FOLLOWERS_ITEM_LEVEL_ABOVE: // 184
+        {
+            Garrison* garrison = referencePlayer->GetGarrison(GARRISON_TYPE_GARRISON);
+            if (!garrison)
+                return false;
+            uint32 followerCount = garrison->CountFollowers([secondaryAsset, tertiaryAsset](Garrison::Follower const& follower)
+            {
+                GarrFollowerEntry const* garrFollower = sGarrFollowerStore.LookupEntry(follower.PacketInfo.GarrFollowerID);
+                if (!garrFollower)
+                    return false;
+                return follower.GetItemLevel() >= secondaryAsset && garrFollower->GarrFollowerTypeID == tertiaryAsset;
+            });
+            if (followerCount < reqValue)
+                return false;
+            break;
         }
         case CRITERIA_ADDITIONAL_CONDITION_HONOR_LEVEL: // 193
-            if (!referencePlayer || referencePlayer->GetHonorLevel() != reqValue)
+            if (referencePlayer->GetHonorLevel() != reqValue)
                 return false;
             break;
         case CRITERIA_ADDITIONAL_CONDITION_PRESTIGE_LEVEL: // 194
             return false;
+        case CRITERIA_ADDITIONAL_CONDITION_ITEM_MODIFIED_APPEARANCE: // 200
+        {
+            std::pair<bool, bool> hasAppearance = referencePlayer->GetSession()->GetCollectionMgr()->HasItemAppearance(reqValue);
+            if (!hasAppearance.first || hasAppearance.second)
+                return false;
+            break;
+        }
+        case CRITERIA_ADDITIONAL_CONDITION_HAS_CHARACTER_RESTRICTIONS: // 203
+        {
+            if (referencePlayer->m_activePlayerData->CharacterRestrictions.empty())
+                return false;
+            break;
+        }
+        case CRITERIA_ADDITIONAL_CONDITION_QUEST_INFO_ID: // 206
+        {
+            Quest const* quest = sObjectMgr->GetQuestTemplate(miscValue1);
+            if (!quest || quest->GetQuestInfoID() != reqValue)
+                return false;
+            break;
+        }
+        case CRITERIA_ADDITIONAL_CONDITION_ARTIFACT_APPEARANCE_SET_USED: // 208
+        {
+            for (uint8 slot = EQUIPMENT_SLOT_MAINHAND; slot <= EQUIPMENT_SLOT_RANGED; ++slot)
+                if (Item* artifact = referencePlayer->GetItemByPos(INVENTORY_SLOT_BAG_0, slot))
+                    if (ArtifactAppearanceEntry const* artifactAppearance = sArtifactAppearanceStore.LookupEntry(artifact->GetModifier(ITEM_MODIFIER_ARTIFACT_APPEARANCE_ID)))
+                        if (artifactAppearance->ArtifactAppearanceSetID == reqValue)
+                            return true;
+            return false;
+        }
+        case CRITERIA_ADDITIONAL_CONDITION_CURRENCY_AMOUNT_EQUAL: // 209
+            if (referencePlayer->GetCurrency(reqValue) != secondaryAsset)
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_SCENARIO_TYPE: // 211
+        {
+            Scenario const* scenario = referencePlayer->GetScenario();
+            if (!scenario)
+                return false;
+            if (scenario->GetEntry()->Type != reqValue)
+                return false;
+            break;
+        }
+        case CRITERIA_ADDITIONAL_CONDITION_ACCOUNT_EXPANSION_EQUAL: // 212
+            if (referencePlayer->GetSession()->GetAccountExpansion() != reqValue)
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_ACHIEVEMENT_GLOBALLY_INCOMPLETED: // 231
+        {
+            AchievementEntry const* achievement = sAchievementStore.LookupEntry(secondaryAsset);
+            if (!achievement)
+                return false;
+            if (sAchievementMgr->IsRealmCompleted(achievement))
+                return false;
+            break;
+        }
+        case CRITERIA_ADDITIONAL_CONDITION_MAIN_HAND_VISIBLE_SUBCLASS: // 232
+        {
+            uint32 itemSubclass = ITEM_SUBCLASS_WEAPON_FIST_WEAPON;
+            if (ItemTemplate const* itemTemplate = sObjectMgr->GetItemTemplate(referencePlayer->m_playerData->VisibleItems[EQUIPMENT_SLOT_MAINHAND].ItemID))
+                itemSubclass = itemTemplate->GetSubClass();
+            if (itemSubclass != reqValue)
+                return false;
+            break;
+        }
+        case CRITERIA_ADDITIONAL_CONDITION_OFF_HAND_VISIBLE_SUBCLASS: // 233
+        {
+            uint32 itemSubclass = ITEM_SUBCLASS_WEAPON_FIST_WEAPON;
+            if (ItemTemplate const* itemTemplate = sObjectMgr->GetItemTemplate(referencePlayer->m_playerData->VisibleItems[EQUIPMENT_SLOT_OFFHAND].ItemID))
+                itemSubclass = itemTemplate->GetSubClass();
+            if (itemSubclass != reqValue)
+                return false;
+            break;
+        }
+        case CRITERIA_ADDITIONAL_CONDITION_AZERITE_ITEM_LEVEL: // 235
+        {
+            Item const* heartOfAzeroth = referencePlayer->GetItemByEntry(ITEM_ID_HEART_OF_AZEROTH, ITEM_SEARCH_EVERYWHERE);
+            if (!heartOfAzeroth || heartOfAzeroth->ToAzeriteItem()->GetLevel() < reqValue)
+                return false;
+            break;
+        }
+        case CRITERIA_ADDITIONAL_CONDITION_SOURCE_DISPLAY_RACE: // 252
+        {
+            CreatureDisplayInfoEntry const* creatureDisplayInfo = sCreatureDisplayInfoStore.LookupEntry(referencePlayer->GetDisplayId());
+            if (!creatureDisplayInfo)
+                return false;
+            CreatureDisplayInfoExtraEntry const* creatureDisplayInfoExtra = sCreatureDisplayInfoExtraStore.LookupEntry(creatureDisplayInfo->ExtendedDisplayInfoID);
+            if (!creatureDisplayInfoExtra)
+                return false;
+            if (uint32(creatureDisplayInfoExtra->DisplayRaceID) != reqValue)
+                return false;
+            break;
+        }
+        case CRITERIA_ADDITIONAL_CONDITION_TARGET_DISPLAY_RACE: // 253
+        {
+            if (!unit)
+                return false;
+            CreatureDisplayInfoEntry const* creatureDisplayInfo = sCreatureDisplayInfoStore.LookupEntry(unit->GetDisplayId());
+            if (!creatureDisplayInfo)
+                return false;
+            CreatureDisplayInfoExtraEntry const* creatureDisplayInfoExtra = sCreatureDisplayInfoExtraStore.LookupEntry(creatureDisplayInfo->ExtendedDisplayInfoID);
+            if (!creatureDisplayInfoExtra)
+                return false;
+            if (uint32(creatureDisplayInfoExtra->DisplayRaceID) != reqValue)
+                return false;
+            break;
+        }
+        case CRITERIA_ADDITIONAL_CONDITION_SOURCE_AURA_COUNT_EQUAL: // 255
+            if (referencePlayer->GetAuraCount(secondaryAsset) != reqValue)
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_TARGET_AURA_COUNT_EQUAL: // 256
+            if (!unit || unit->GetAuraCount(secondaryAsset) != reqValue)
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_SOURCE_AURA_COUNT_GREATER: // 257
+            if (referencePlayer->GetAuraCount(secondaryAsset) < reqValue)
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_TARGET_AURA_COUNT_GREATER: // 258
+            if (!unit || unit->GetAuraCount(secondaryAsset) < reqValue)
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_UNLOCKED_AZERITE_ESSENCE_RANK_LOWER: // 259
+        {
+            if (Item const* heartOfAzeroth = referencePlayer->GetItemByEntry(ITEM_ID_HEART_OF_AZEROTH, ITEM_SEARCH_EVERYWHERE))
+                if (AzeriteItem const* azeriteItem = heartOfAzeroth->ToAzeriteItem())
+                    for (UF::UnlockedAzeriteEssence const& essence : azeriteItem->m_azeriteItemData->UnlockedEssences)
+                        if (essence.AzeriteEssenceID == reqValue && essence.Rank < secondaryAsset)
+                            return true;
+            return false;
+        }
+        case CRITERIA_ADDITIONAL_CONDITION_UNLOCKED_AZERITE_ESSENCE_RANK_EQUAL: // 260
+        {
+            if (Item const* heartOfAzeroth = referencePlayer->GetItemByEntry(ITEM_ID_HEART_OF_AZEROTH, ITEM_SEARCH_EVERYWHERE))
+                if (AzeriteItem const* azeriteItem = heartOfAzeroth->ToAzeriteItem())
+                    for (UF::UnlockedAzeriteEssence const& essence : azeriteItem->m_azeriteItemData->UnlockedEssences)
+                        if (essence.AzeriteEssenceID == reqValue && essence.Rank == secondaryAsset)
+                            return true;
+            return false;
+        }
+        case CRITERIA_ADDITIONAL_CONDITION_UNLOCKED_AZERITE_ESSENCE_RANK_GREATER: // 261
+        {
+            if (Item const* heartOfAzeroth = referencePlayer->GetItemByEntry(ITEM_ID_HEART_OF_AZEROTH, ITEM_SEARCH_EVERYWHERE))
+                if (AzeriteItem const* azeriteItem = heartOfAzeroth->ToAzeriteItem())
+                    for (UF::UnlockedAzeriteEssence const& essence : azeriteItem->m_azeriteItemData->UnlockedEssences)
+                        if (essence.AzeriteEssenceID == reqValue && essence.Rank > secondaryAsset)
+                            return true;
+            return false;
+        }
+        case CRITERIA_ADDITIONAL_CONDITION_SOURCE_HAS_AURA_EFFECT_INDEX: // 262
+            if (!referencePlayer->GetAuraEffect(reqValue, secondaryAsset))
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_SOURCE_SPECIALIZATION_ROLE: // 263
+        {
+            ChrSpecializationEntry const* spec = sChrSpecializationStore.LookupEntry(referencePlayer->GetPrimarySpecialization());
+            if (!spec || spec->Role != int32(reqValue))
+                return false;
+            break;
+        }
+        case CRITERIA_ADDITIONAL_CONDITION_SOURCE_LEVEL_120: // 264
+            if (referencePlayer->getLevel() != 120)
+                return false;
+            break;
+        case CRITERIA_ADDITIONAL_CONDITION_SELECTED_AZERITE_ESSENCE_RANK_LOWER: // 266
+            if (Item const* heartOfAzeroth = referencePlayer->GetItemByEntry(ITEM_ID_HEART_OF_AZEROTH, ITEM_SEARCH_EVERYWHERE))
+                if (AzeriteItem const* azeriteItem = heartOfAzeroth->ToAzeriteItem())
+                    if (UF::SelectedAzeriteEssences const* selectedEssences = azeriteItem->GetSelectedAzeriteEssences())
+                        for (UF::UnlockedAzeriteEssence const& essence : azeriteItem->m_azeriteItemData->UnlockedEssences)
+                            if (essence.AzeriteEssenceID == selectedEssences->AzeriteEssenceID[reqValue] && essence.Rank < secondaryAsset)
+                                return true;
+            return false;
+        case CRITERIA_ADDITIONAL_CONDITION_SELECTED_AZERITE_ESSENCE_RANK_GREATER: // 267
+            if (Item const* heartOfAzeroth = referencePlayer->GetItemByEntry(ITEM_ID_HEART_OF_AZEROTH, ITEM_SEARCH_EVERYWHERE))
+                if (AzeriteItem const* azeriteItem = heartOfAzeroth->ToAzeriteItem())
+                    if (UF::SelectedAzeriteEssences const* selectedEssences = azeriteItem->GetSelectedAzeriteEssences())
+                        for (UF::UnlockedAzeriteEssence const& essence : azeriteItem->m_azeriteItemData->UnlockedEssences)
+                            if (essence.AzeriteEssenceID == selectedEssences->AzeriteEssenceID[reqValue] && essence.Rank > secondaryAsset)
+                                return true;
+            return false;
+        case CRITERIA_ADDITIONAL_CONDITION_MAP_OR_COSMETIC_MAP: // 280
+        {
+            MapEntry const* map = referencePlayer->GetMap()->GetEntry();
+            if (map->ID != reqValue && map->CosmeticParentMapID != int32(reqValue))
+                return false;
+            break;
+        }
         default:
             break;
     }
@@ -2289,9 +3142,9 @@ char const* CriteriaMgr::GetCriteriaTypeString(CriteriaTypes type)
             return "RELIC_TALENT_UNLOCKED";
         case CRITERIA_TYPE_REACH_ACCOUNT_HONOR_LEVEL:
             return "REACH_ACCOUNT_HONOR_LEVEL";
-        case CRITERIA_TREE_HEART_OF_AZEROTH_ARTIFACT_POWER_EARNED:
+        case CRITERIA_TYPE_HEART_OF_AZEROTH_ARTIFACT_POWER_EARNED:
             return "HEART_OF_AZEROTH_ARTIFACT_POWER_EARNED";
-        case CRITERIA_TREE_HEART_OF_AZEROTH_LEVEL_REACHED:
+        case CRITERIA_TYPE_HEART_OF_AZEROTH_LEVEL_REACHED:
             return "HEART_OF_AZEROTH_LEVEL_REACHED";
     }
     return "MISSING_TYPE";

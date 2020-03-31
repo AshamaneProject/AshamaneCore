@@ -95,7 +95,7 @@ struct at_aquasirr_undertow : AreaTriggerAI
     void OnUnitEnter(Unit* unit) override
     {
         if (unit->HasAura(SPELL_UNDERTOW, at->GetCasterGuid()))
-            unit->ApplyMovementForce(at->GetGUID(), -5.f, *at->GetCaster());
+            unit->ApplyMovementForce(at->GetGUID(), *at->GetCaster(), -5.f, 0);
     }
 
     void OnUnitExit(Unit* unit) override

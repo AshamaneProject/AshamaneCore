@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
+ * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -28,11 +28,15 @@ WorldPacket const* WorldPackets::System::FeatureSystemStatus::Write()
     _worldPacket << uint32(CfgRealmID);
     _worldPacket << int32(CfgRealmRecID);
 
+    _worldPacket << uint32(RAFSystem.MaxRecruits);
+    _worldPacket << uint32(RAFSystem.MaxRecruitMonths);
+    _worldPacket << uint32(RAFSystem.MaxRecruitmentUses);
+    _worldPacket << uint32(RAFSystem.DaysInCycle);
+
     _worldPacket << uint32(TwitterPostThrottleLimit);
     _worldPacket << uint32(TwitterPostThrottleCooldown);
 
     _worldPacket << uint32(TokenPollTimeSeconds);
-    _worldPacket << uint32(TokenRedeemIndex);
     _worldPacket << int64(TokenBalanceAmount);
 
     _worldPacket << uint32(BpayStoreProductDeliveryDelay);
@@ -49,7 +53,8 @@ WorldPacket const* WorldPackets::System::FeatureSystemStatus::Write()
     _worldPacket.WriteBit(ItemRestorationButtonEnabled);
     _worldPacket.WriteBit(BrowserEnabled);
     _worldPacket.WriteBit(SessionAlert.is_initialized());
-    _worldPacket.WriteBit(RecruitAFriendSendingEnabled);
+    _worldPacket.WriteBit(RAFSystem.Enabled);
+    _worldPacket.WriteBit(RAFSystem.RecruitingEnabled);
     _worldPacket.WriteBit(CharUndeleteEnabled);
     _worldPacket.WriteBit(RestrictedAccount);
     _worldPacket.WriteBit(CommerceSystemEnabled);
@@ -60,7 +65,6 @@ WorldPacket const* WorldPackets::System::FeatureSystemStatus::Write()
     _worldPacket.WriteBit(WillKickFromWorld);
     _worldPacket.WriteBit(KioskModeEnabled);
     _worldPacket.WriteBit(CompetitiveModeEnabled);
-    _worldPacket.WriteBit(RaceClassExpansionLevels.is_initialized());
     _worldPacket.WriteBit(TokenBalanceEnabled);
     _worldPacket.WriteBit(WarModeFeatureEnabled);
     _worldPacket.WriteBit(ClubsEnabled);
@@ -69,6 +73,9 @@ WorldPacket const* WorldPackets::System::FeatureSystemStatus::Write()
     _worldPacket.WriteBit(ClubsPresenceUpdateEnabled);
     _worldPacket.WriteBit(VoiceChatDisabledByParentalControl);
     _worldPacket.WriteBit(VoiceChatMutedByParentalControl);
+    _worldPacket.WriteBit(QuestSessionEnabled);
+    _worldPacket.WriteBit(IsMuted);
+    _worldPacket.WriteBit(ClubFinderEnabled);
 
     _worldPacket.FlushBits();
 
@@ -105,15 +112,8 @@ WorldPacket const* WorldPackets::System::FeatureSystemStatus::Write()
         _worldPacket << int32(SessionAlert->DisplayTime);
     }
 
-    if (RaceClassExpansionLevels)
     {
-        _worldPacket << uint32(RaceClassExpansionLevels->size());
-        if (!RaceClassExpansionLevels->empty())
-            _worldPacket.append(RaceClassExpansionLevels->data(), RaceClassExpansionLevels->size());
-    }
-
-    {
-        _worldPacket.WriteBit(VoiceChatManagerSettings.Enabled);
+        _worldPacket.WriteBit(VoiceChatManagerSettings.IsSquelched);
         _worldPacket << VoiceChatManagerSettings.BnetAccountGuid;
         _worldPacket << VoiceChatManagerSettings.GuildGuid;
     }
@@ -146,7 +146,6 @@ WorldPacket const* WorldPackets::System::FeatureSystemStatusGlueScreen::Write()
     _worldPacket.WriteBit(IsExpansionPreorderInStore);
     _worldPacket.WriteBit(KioskModeEnabled);
     _worldPacket.WriteBit(CompetitiveModeEnabled);
-    _worldPacket.WriteBit(false); // not accessed in handler
     _worldPacket.WriteBit(TrialBoostEnabled);
     _worldPacket.WriteBit(TokenBalanceEnabled);
     _worldPacket.WriteBit(LiveRegionCharacterListEnabled);
@@ -154,8 +153,7 @@ WorldPacket const* WorldPackets::System::FeatureSystemStatusGlueScreen::Write()
     _worldPacket.WriteBit(LiveRegionAccountCopyEnabled);
     _worldPacket.FlushBits();
 
-    _worldPacket << int32(TokenPollTimeSeconds);
-    _worldPacket << int32(TokenRedeemIndex);
+    _worldPacket << uint32(TokenPollTimeSeconds);
     _worldPacket << int64(TokenBalanceAmount);
     _worldPacket << int32(MaxCharactersPerRealm);
     _worldPacket << uint32(BpayStoreProductDeliveryDelay);

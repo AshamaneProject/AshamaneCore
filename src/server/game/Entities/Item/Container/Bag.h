@@ -1,6 +1,5 @@
 /*
- * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
- * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
+ * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -36,7 +35,7 @@ class TC_GAME_API Bag : public Item
         void AddToWorld() override;
         void RemoveFromWorld() override;
 
-        bool Create(ObjectGuid::LowType guidlow, uint32 itemid, Player const* owner) override;
+        bool Create(ObjectGuid::LowType guidlow, uint32 itemid, ItemContext context, Player const* owner) override;
 
         void Clear();
         void StoreItem(uint8 slot, Item* pItem, bool update);
@@ -73,14 +72,5 @@ class TC_GAME_API Bag : public Item
         // Bag Storage space
         Item* m_bagslot[MAX_BAG_SIZE];
 };
-
-inline Item* NewItemOrBag(ItemTemplate const* itemTemplate)
-{
-    if (sDB2Manager.IsAzeriteItem(itemTemplate->GetId()))
-        return new AzeriteItem;
-    if (sDB2Manager.IsAzeriteEmpoweredItem(itemTemplate->GetId()))
-        return new AzeriteEmpoweredItem;
-    return (itemTemplate->GetInventoryType() == INVTYPE_BAG) ? new Bag : new Item;
-}
 
 #endif

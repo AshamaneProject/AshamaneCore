@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
+ * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -1248,15 +1248,17 @@ public:
         if (!mEntry || !mEntry->IsRaid())
             return false;
         int32 difficulty = difficulty_str ? atoi(difficulty_str) : -1;
-        if (difficulty >= MAX_DIFFICULTY || difficulty < -1)
+        if (!sDifficultyStore.HasRecord(difficulty) || difficulty < -1)
             return false;
 
         if (difficulty == -1)
-            for (uint8 diff = 0; diff < MAX_DIFFICULTY; ++diff)
+        {
+            for (DifficultyEntry const* difficulty : sDifficultyStore)
             {
-                if (sDB2Manager.GetMapDifficultyData(map, Difficulty(diff)))
-                    sInstanceSaveMgr->ForceGlobalReset(map, Difficulty(diff));
+                if (sDB2Manager.GetMapDifficultyData(map, Difficulty(difficulty->ID)))
+                    sInstanceSaveMgr->ForceGlobalReset(map, Difficulty(difficulty->ID));
             }
+        }
         else
             sInstanceSaveMgr->ForceGlobalReset(map, Difficulty(difficulty));
         return true;
@@ -1286,23 +1288,24 @@ public:
             float z = player->GetPositionZ();
             float distNearest = std::numeric_limits<float>::max();
 
-            for (uint32 i = 0; i < sWorldSafeLocsStore.GetNumRows(); ++i)
+            for (auto&& kvp : sObjectMgr->GetWorldSafeLocs())
             {
-                WorldSafeLocsEntry const* loc = sWorldSafeLocsStore.LookupEntry(i);
-                if (loc && loc->MapID == player->GetMapId())
+                if (kvp.second.Loc.GetMapId() == player->GetMapId())
                 {
-                    float dist = (loc->Loc.X - x) * (loc->Loc.X - x) + (loc->Loc.Y - y) * (loc->Loc.Y - y) + (loc->Loc.Z - z) * (loc->Loc.Z - z);
+                    float dist = (kvp.second.Loc.GetPositionX() - x) * (kvp.second.Loc.GetPositionX() - x)
+                        + (kvp.second.Loc.GetPositionY() - y) * (kvp.second.Loc.GetPositionY() - y)
+                        + (kvp.second.Loc.GetPositionZ() - z) * (kvp.second.Loc.GetPositionZ() - z);
                     if (dist < distNearest)
                     {
                         distNearest = dist;
-                        nearestLoc = loc;
+                        nearestLoc = &kvp.second;
                     }
                 }
             }
         }
 
         if (nearestLoc)
-            handler->PSendSysMessage(LANG_COMMAND_NEARGRAVEYARD, nearestLoc->ID, nearestLoc->Loc.X, nearestLoc->Loc.Y, nearestLoc->Loc.Z);
+            handler->PSendSysMessage(LANG_COMMAND_NEARGRAVEYARD, nearestLoc->ID, nearestLoc->Loc.GetPositionX(), nearestLoc->Loc.GetPositionY(), nearestLoc->Loc.GetPositionZ());
         else
             handler->PSendSysMessage(LANG_COMMAND_NEARGRAVEYARD_NOTFOUND);
 
@@ -1387,7 +1390,7 @@ public:
                 origin.Relocate((float)atof(originX), (float)atof(originY), (float)atof(originZ));
         }
 
-        unit->ApplyMovementForce(player->GetGUID(), magnitude, direction, origin);
+        unit->ApplyMovementForce(player->GetGUID(), direction, magnitude, 0, origin);
         return true;
     }
 

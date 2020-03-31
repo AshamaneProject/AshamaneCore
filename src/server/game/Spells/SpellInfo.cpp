@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
+ * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -463,11 +463,11 @@ bool SpellEffectInfo::IsUnitOwnedAuraEffect() const
     return IsAreaAuraEffect() || Effect == SPELL_EFFECT_APPLY_AURA;
 }
 
-int32 SpellEffectInfo::CalcValue(Unit const* caster /*= nullptr*/, int32 const* bp /*= nullptr*/, Unit const* target /*= nullptr*/, float* variance /*= nullptr*/, int32 itemLevel /*= -1*/) const
+int32 SpellEffectInfo::CalcValue(Unit const* caster /*= nullptr*/, int32 const* bp /*= nullptr*/, Unit const* target /*= nullptr*/, float* variance /*= nullptr*/, uint32 castItemId /*= 0*/, int32 itemLevel /*= -1*/) const
 {
     float basePointsPerLevel = RealPointsPerLevel;
     // TODO: this needs to be a float, not rounded
-    int32 basePoints = CalcBaseValue(caster, target, itemLevel);
+    int32 basePoints = CalcBaseValue(caster, target, castItemId, itemLevel);
     float value = bp ? *bp : basePoints;
     float comboDamage = PointsPerResource;
 
@@ -515,7 +515,7 @@ int32 SpellEffectInfo::CalcValue(Unit const* caster /*= nullptr*/, int32 const* 
     return int32(round(value));
 }
 
-int32 SpellEffectInfo::CalcBaseValue(Unit const* caster, Unit const* target, int32 itemLevel) const
+int32 SpellEffectInfo::CalcBaseValue(Unit const* caster, Unit const* target, uint32 itemId, int32 itemLevel) const
 {
     if (Scaling.Coefficient != 0.0f)
     {
@@ -561,10 +561,21 @@ int32 SpellEffectInfo::CalcBaseValue(Unit const* caster, Unit const* target, int
                 value = GetSpellScalingColumnForClass(sSpellScalingGameTable.GetRow(level), _spellInfo->Scaling.Class);
 
             if (_spellInfo->Scaling.Class == -7)
-            {
-                // todo: get inventorytype here
                 if (GtCombatRatingsMultByILvl const* ratingMult = sCombatRatingsMultByILvlGameTable.GetRow(effectiveItemLevel))
-                    value *= ratingMult->ArmorMultiplier;
+                    if (ItemSparseEntry const* itemSparse = sItemSparseStore.LookupEntry(itemId))
+                        value *= GetIlvlStatMultiplier(ratingMult, InventoryType(itemSparse->InventoryType));
+
+            if (IsAura(SPELL_AURA_MOD_RATING))
+            {
+                if (GtCombatRatingsMultByILvl const* ratingMult = sCombatRatingsMultByILvlGameTable.GetRow(effectiveItemLevel))
+                    if (ItemSparseEntry const* itemSparse = sItemSparseStore.LookupEntry(itemId))
+                        value *= GetIlvlStatMultiplier(ratingMult, InventoryType(itemSparse->InventoryType));
+            }
+            else if (IsAura(SPELL_AURA_MOD_STAT) && MiscValue == STAT_STAMINA)
+            {
+                if (GtStaminaMultByILvl const* staminaMult = sStaminaMultByILvlGameTable.GetRow(effectiveItemLevel))
+                    if (ItemSparseEntry const* itemSparse = sItemSparseStore.LookupEntry(itemId))
+                        value *= GetIlvlStatMultiplier(staminaMult, InventoryType(itemSparse->InventoryType));
             }
         }
 
@@ -723,6 +734,7 @@ ExpectedStatType SpellEffectInfo::GetScalingExpectedStat() const
         case SPELL_EFFECT_APPLY_AREA_AURA_OWNER:
         case SPELL_EFFECT_APPLY_AURA_ON_PET:
         case SPELL_EFFECT_APPLY_AURA_WITH_AMOUNT:
+        case SPELL_EFFECT_APPLY_AREA_AURA_PARTY_NONRANDOM:
             switch (ApplyAuraName)
             {
                 case SPELL_AURA_PERIODIC_DAMAGE:
@@ -1070,6 +1082,13 @@ SpellEffectInfo::StaticData SpellEffectInfo::_data[TOTAL_SPELL_EFFECTS] =
     {EFFECT_IMPLICIT_TARGET_NONE,     TARGET_OBJECT_TYPE_NONE}, // 262 SPELL_EFFECT_262
     {EFFECT_IMPLICIT_TARGET_EXPLICIT, TARGET_OBJECT_TYPE_ITEM}, // 263 SPELL_EFFECT_REPAIR_ITEM
     {EFFECT_IMPLICIT_TARGET_EXPLICIT, TARGET_OBJECT_TYPE_ITEM}, // 264 SPELL_EFFECT_REMOVE_GEM
+    {EFFECT_IMPLICIT_TARGET_NONE,     TARGET_OBJECT_TYPE_UNIT}, // 265 SPELL_EFFECT_LEARN_AZERITE_ESSENCE_POWER
+    {EFFECT_IMPLICIT_TARGET_NONE,     TARGET_OBJECT_TYPE_NONE}, // 266 SPELL_EFFECT_266
+    {EFFECT_IMPLICIT_TARGET_NONE,     TARGET_OBJECT_TYPE_NONE}, // 267 SPELL_EFFECT_267
+    {EFFECT_IMPLICIT_TARGET_NONE,     TARGET_OBJECT_TYPE_UNIT}, // 268 SPELL_EFFECT_APPLY_MOUNT_EQUIPMENT
+    {EFFECT_IMPLICIT_TARGET_EXPLICIT, TARGET_OBJECT_TYPE_ITEM}, // 269 SPELL_EFFECT_UPGRADE_ITEM
+    {EFFECT_IMPLICIT_TARGET_NONE,     TARGET_OBJECT_TYPE_NONE}, // 270 SPELL_EFFECT_270
+    {EFFECT_IMPLICIT_TARGET_EXPLICIT, TARGET_OBJECT_TYPE_UNIT}, // 271 SPELL_EFFECT_APPLY_AREA_AURA_PARTY_NONRANDOM
 };
 
 SpellInfo::SpellInfo(SpellInfoLoadHelper const& data, SpellEffectEntryMap const& effectsMap, SpellVisualMap&& visuals)

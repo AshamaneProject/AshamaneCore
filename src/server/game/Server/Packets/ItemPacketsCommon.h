@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
+ * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -27,6 +27,7 @@ class ByteBuffer;
 class Item;
 struct LootItem;
 struct VoidStorageItem;
+enum class ItemContext : uint8;
 
 namespace UF
 {
@@ -39,7 +40,7 @@ namespace WorldPackets
     {
         struct ItemBonusInstanceData
         {
-            uint8 Context = 0;
+            ItemContext Context = ItemContext(0);
             std::vector<int32> BonusListIDs;
 
             bool operator==(ItemBonusInstanceData const& r) const;

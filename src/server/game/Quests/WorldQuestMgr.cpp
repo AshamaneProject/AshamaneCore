@@ -379,8 +379,8 @@ void WorldQuestMgr::RewardQuestForPlayer(Player* player, uint32 questId)
                 ItemPosCountVec dest;
                 if (player->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, worldQuestReward->RewardId, worldQuestReward->RewardCount) == EQUIP_ERR_OK)
                 {
-                    std::vector<int32> bonusListIDs = sDB2Manager.GetItemBonusTreeVector(worldQuestReward->RewardId, worldQuestReward->RewardContext);
-                    Item* item = player->StoreNewItem(dest, worldQuestReward->RewardId, true, GenerateItemRandomBonusListId(worldQuestReward->RewardId), GuidSet(), 0, bonusListIDs);
+                    std::vector<int32> bonusListIDs = sDB2Manager.GetItemBonusTreeVector(worldQuestReward->RewardId, ItemContext(worldQuestReward->RewardContext));
+                    Item* item = player->StoreNewItem(dest, worldQuestReward->RewardId, true, GenerateItemRandomBonusListId(worldQuestReward->RewardId), GuidSet(), ItemContext(0), bonusListIDs);
                     player->SendNewItem(item, worldQuestReward->RewardCount, true, false);
                 }
                 break;
@@ -545,8 +545,8 @@ void WorldQuestMgr::BuildRewardPacket(Player* player, uint32 questId, WorldPacke
                 WorldPackets::Quest::QueryQuestRewardResponse::ItemReward itemReward;
                 itemReward.Item.ItemID = worldQuestReward->RewardId;
                 itemReward.Item.ItemBonus = WorldPackets::Item::ItemBonusInstanceData();
-                itemReward.Item.ItemBonus->Context = worldQuestReward->RewardContext;
-                itemReward.Item.ItemBonus->BonusListIDs = sDB2Manager.GetItemBonusTreeVector(worldQuestReward->RewardId, worldQuestReward->RewardContext);
+                itemReward.Item.ItemBonus->Context = (ItemContext)worldQuestReward->RewardContext;
+                itemReward.Item.ItemBonus->BonusListIDs = sDB2Manager.GetItemBonusTreeVector(worldQuestReward->RewardId, ItemContext(worldQuestReward->RewardContext));
                 itemReward.Quantity = worldQuestReward->RewardCount;
                 packet.ItemRewards.push_back(itemReward);
                 break;

@@ -156,7 +156,7 @@ struct at_dresaron_down_draft : AreaTriggerAI
         if (unit->IsPlayer() && at->GetCaster())
         {
             unit->CastSpell(unit, SPELL_DD_DOT, true);
-            unit->ToPlayer()->ApplyMovementForce(at->GetGUID(), -8.0f, at->GetPosition());
+            unit->ToPlayer()->ApplyMovementForce(at->GetGUID(), at->GetPosition(), -8.0f, 0);
         }
     }
 

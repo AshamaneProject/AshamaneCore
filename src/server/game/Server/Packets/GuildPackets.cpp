@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
+ * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -188,6 +188,16 @@ ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Guild::GuildRosterMemberD
     return data;
 }
 
+WorldPacket const* WorldPackets::Guild::GuildEventAwayChange::Write()
+{
+    _worldPacket << Guid;
+    _worldPacket.WriteBit(AFK);
+    _worldPacket.WriteBit(DND);
+    _worldPacket.FlushBits();
+
+    return &_worldPacket;
+}
+
 WorldPacket const* WorldPackets::Guild::GuildEventPresenceChange::Write()
 {
     _worldPacket << Guid;
@@ -303,7 +313,6 @@ void WorldPackets::Guild::GuildSetRankPermissions::Read()
     _worldPacket >> RankID;
     _worldPacket >> RankOrder;
     _worldPacket >> Flags;
-    _worldPacket >> OldFlags;
     _worldPacket >> WithdrawGoldLimit;
 
     for (uint8 i = 0; i < GUILD_BANK_MAX_TABS; i++)
@@ -316,6 +325,8 @@ void WorldPackets::Guild::GuildSetRankPermissions::Read()
     uint32 rankNameLen = _worldPacket.ReadBits(7);
 
     RankName = _worldPacket.ReadString(rankNameLen);
+
+    _worldPacket >> OldFlags;
 }
 
 WorldPacket const* WorldPackets::Guild::GuildEventNewLeader::Write()
@@ -359,8 +370,8 @@ WorldPacket const* WorldPackets::Guild::GuildEventTabTextChanged::Write()
 
 ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Guild::GuildRankData const& rankData)
 {
-    data << uint32(rankData.RankID);
-    data << uint32(rankData.RankOrder);
+    data << uint8(rankData.RankID);
+    data << int32(rankData.RankOrder);
     data << uint32(rankData.Flags);
     data << uint32(rankData.WithdrawGoldLimit);
 

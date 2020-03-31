@@ -1368,7 +1368,7 @@ class boss_imperator_margok : public CreatureScript
                                     && !l_TriggerGuid.IsEmpty() && l_Trigger)
                                 {
                                     if (!player->HasMovementForce(l_TriggerGuid))
-                                        player->ApplyMovementForce(l_TriggerGuid, -5.5f, *l_Trigger);
+                                        player->ApplyMovementForce(l_TriggerGuid, *l_Trigger, -5.5f, 0);
                                 }
                             }
                             else
