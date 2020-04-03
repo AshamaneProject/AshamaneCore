@@ -168,6 +168,14 @@ void ScriptedAI::UpdateAI(uint32 diff)
     DoMeleeAttackIfReady();
 }
 
+void ScriptedAI::SetUnlock(uint32 time)
+{
+    me->GetScheduler().Schedule(Milliseconds(time), [this](TaskContext context)
+    {
+        IsLock = false;
+    });
+}
+
 void ScriptedAI::DoStartMovement(Unit* victim, float distance, float angle)
 {
     if (victim)
@@ -433,6 +441,67 @@ void ScriptedAI::SetEquipmentSlots(bool loadDefault, int32 mainHand /*= EQUIP_NO
 void ScriptedAI::SetCombatMovement(bool allowMovement)
 {
     _isCombatMovementAllowed = allowMovement;
+}
+
+void ScriptedAI::LoadEventData(std::vector<EventData> const* data)
+{
+    eventList = data;
+}
+
+void ScriptedAI::GetEventData(uint16 group)
+{
+    if (!eventList)
+        return;
+
+    for (EventData data : *eventList)
+        events.ScheduleEvent(data.eventId, data.time, data.group, data.phase);
+}
+
+void ScriptedAI::LoadTalkData(std::vector<TalkData> const* data)
+{
+    talkList = data;
+}
+
+void ScriptedAI::GetTalkData(uint32 eventId)
+{
+    if (!talkList)
+        return;
+
+    for (TalkData data : *talkList)
+    {
+        if (data.eventId == eventId)
+        {
+            switch (data.eventType)
+            {
+                case EVENT_TYPE_TALK:
+                    me->AI()->Talk(data.eventData);
+                    break;
+                case EVENT_TYPE_CONVERSATION:
+                    if (data.eventData > 0)
+                        if (instance)
+                            instance->DoPlayConversation(data.eventData);
+                    break;
+                case EVENT_TYPE_ACHIEVEMENT:
+                    if (data.eventData > 0)
+                        if (instance)
+                            instance->DoCompleteAchievement(data.eventData);
+                    break;
+                case EVENT_TYPE_SPELL:
+                    if (data.eventData > 0)
+                        if (instance)
+                            instance->DoCastSpellOnPlayers(data.eventData);
+                    break;
+                case EVENT_TYPE_YELL:
+                    if (data.eventData > 0)
+                        me->Yell(data.eventData);
+                    break;
+                case EVENT_TYPE_SAY:
+                    if (data.eventData > 0)
+                        me->Say(data.eventData);
+                    break;
+            }
+        }
+    }
 }
 
 enum NPCs

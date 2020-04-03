@@ -526,7 +526,7 @@ public:
             swipeTimer = 1000;
         }
 
-        void MoveInLineOfSight(Unit* who) override 
+        void MoveInLineOfSight(Unit* who) override
         {
             CreatureAI::MoveInLineOfSight(who);
         }

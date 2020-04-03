@@ -101,9 +101,9 @@ enum eSadanaTalks
 
 enum eSadanaActions
 {
-    ActionActivateDefiledSpirit = 1, 
+    ActionActivateDefiledSpirit = 1,
     ActionMoveDefiledSpirits,
-    ActionActivateLunarTriggersActivate, 
+    ActionActivateLunarTriggersActivate,
     ActionActivateLunarTriggersDeactivate
 };
 
@@ -114,7 +114,7 @@ enum eSadanaCreatures
     CreatureDefiledSpiritSadanaEncounter = 75966,
     CreatureShadowRune                   = 75778
 };
-   
+
 enum eSadanaMovements
 {
     MovementDaggerFallReachedAlttitude = 1
@@ -125,7 +125,7 @@ enum eSadanaMovements
 #define HostileFaction 16
 #define FriendlyFaction 35
 
-Position const g_PositionCircles[8] = 
+Position const g_PositionCircles[8] =
 {
     {1805.502f, -16.298f, 261.308f, 4.011894f},
     {1809.695f, -26.531f, 261.308f, 3.086692f},
@@ -230,7 +230,7 @@ public:
 
             me->CastSpell(me, eSadanaSpells::SpellShadowRitual);
 
-            me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_IMMUNE_TO_PC 
+            me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_IMMUNE_TO_PC
                 | UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
         }
 
@@ -265,7 +265,7 @@ public:
                     case eSadanaCreatures::CreatureEclipseTrigger:
                         summon->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_REMOVE_CLIENT_CONTROL));
                         summon->AddUnitFlag2(UNIT_FLAG2_DISABLE_TURN);
-                        break;             
+                        break;
                 }
             }
         }
@@ -382,7 +382,7 @@ public:
         }
 
         void UpdateAI(uint32 const diff) override
-        {     
+        {
             if (!UpdateVictim())
                 return;
 
@@ -394,9 +394,9 @@ public:
                 if (Creature* creature = ObjectAccessor::GetCreature(*me, m_CommunionGuid))
                 {
                     creature->UpdatePosition(creature->GetPositionX(), creature->GetPositionY(), creature->GetPositionZ(), creature->GetOrientation(), true);
-           
+
                     if (me->IsWithinDistInMap(creature, 4.0f))
-                    {           
+                    {
                         m_CommunionInRange = false;
 
                         creature->DespawnOrUnsummon();
@@ -414,7 +414,7 @@ public:
             switch (events.ExecuteEvent())
             {
                 case eSadanaEvents::EventDaggerFall:
-                {             
+                {
                     /// Delete all ground markers nearby.
                     std::list<AreaTrigger*> l_listAreaTriggers;
                     me->GetAreatriggerListInRange(l_listAreaTriggers, 300.0f);
@@ -429,13 +429,13 @@ public:
                             itr->SetDuration(500);
                         }
                     }
-              
+
                     for (uint8 l_I = 0; l_I < 2; l_I++)
                     {
                         if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_RANDOM, 0, 100.0f, true, -eSadanaSpells::SpellDaggerFallGroundMarker))
                         {
                             me->SummonCreature(eSadanaCreatures::CreatureDaggerFall, target->GetPositionX(), target->GetPositionY(), DaggerFallAltitude, target->GetOrientation(), TempSummonType::TEMPSUMMON_MANUAL_DESPAWN);
-                            target->CastSpell(target, eSadanaSpells::SpellDaggerFallGroundMarker);     
+                            target->CastSpell(target, eSadanaSpells::SpellDaggerFallGroundMarker);
                         }
                     }
 
@@ -712,7 +712,7 @@ public:
             events.Reset();
 
             me->setFaction(HostileFaction);
-            me->SetReactState(ReactStates::REACT_PASSIVE);          
+            me->SetReactState(ReactStates::REACT_PASSIVE);
             me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_IMMUNE_TO_PC));
             me->AddUnitFlag2(UNIT_FLAG2_DISABLE_TURN);
             me->CastSpell(me, eSadanaSpells::SpellDaggerAuraFunctioning);
@@ -739,7 +739,7 @@ public:
 
             switch (events.ExecuteEvent())
             {
-                case eSadanaEvents::EventDaggerFallActivation:               
+                case eSadanaEvents::EventDaggerFallActivation:
                     m_CanDamage = true;
 
                     me->CastSpell(me, eSadanaSpells::SpellDaggerAlttitudeVisual); /// The visual when the daggerfall reaches the ground
@@ -939,7 +939,7 @@ public:
 
                     for (auto itr : playerList)
                     {
-                        itr->CastSpell(itr, eSadanaSpells::SpellLunarPurityDamageModification); 
+                        itr->CastSpell(itr, eSadanaSpells::SpellLunarPurityDamageModification);
                     }
 
                     m_ActionDiff = 2 * TimeConstants::IN_MILLISECONDS;
@@ -958,7 +958,7 @@ public:
 };
 
 /// Shadow Burn - 153224 [Ticking damage spell from daggerfall proc]
-class spell_shadowmoon_burial_grounds_shadow_burn : public SpellScriptLoader 
+class spell_shadowmoon_burial_grounds_shadow_burn : public SpellScriptLoader
 {
 public:
 
@@ -972,11 +972,11 @@ public:
         {
             if (!GetCaster())
                 return SpellCastResult::SPELL_FAILED_DONT_REPORT;
-       
+
             if (GetCaster()->GetPositionZ() > 262.0f)
                 return SpellCastResult::SPELL_FAILED_DONT_REPORT;
             else
-                return SpellCastResult::SPELL_CAST_OK;        
+                return SpellCastResult::SPELL_CAST_OK;
         }
 
         void Register() override
@@ -1107,7 +1107,7 @@ public:
 
         void Register() override
         {
-            AfterEffectApply += AuraEffectApplyFn(spell_shadowmoon_burial_grounds_dark_eclipse_AuraScript::OnApply,           SpellEffIndex::EFFECT_0, AuraType::SPELL_AURA_PERIODIC_DUMMY, AuraEffectHandleModes::AURA_EFFECT_HANDLE_REAL);       
+            AfterEffectApply += AuraEffectApplyFn(spell_shadowmoon_burial_grounds_dark_eclipse_AuraScript::OnApply,           SpellEffIndex::EFFECT_0, AuraType::SPELL_AURA_PERIODIC_DUMMY, AuraEffectHandleModes::AURA_EFFECT_HANDLE_REAL);
             OnEffectPeriodic += AuraEffectPeriodicFn(spell_shadowmoon_burial_grounds_dark_eclipse_AuraScript::HandlePeriodic, SpellEffIndex::EFFECT_0, AuraType::SPELL_AURA_PERIODIC_DUMMY);
         }
     };

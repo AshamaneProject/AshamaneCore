@@ -17,7 +17,52 @@
  */
 
 #include "ScriptMgr.h"
+enum
+{
+    ///MONK Quest
+    NPC_INITIATE_DA_NEL = 98519,
+    QUEST_DA_NEL = 12103,
+};
+
+
+struct npc_initiate_da_nel : public ScriptedAI
+{
+    npc_initiate_da_nel(Creature* creature) : ScriptedAI(creature) { SayHi = false; }
+
+    void MoveInLineOfSight(Unit* who) override
+    {
+        if (!who || !who->IsInWorld())
+            return;
+        if (!me->IsWithinDist(who, 25.0f, false))
+            return;
+
+        Player* player = who->GetCharmerOrOwnerPlayerOrPlayerItself();
+
+        if (!player)
+            return;
+        me->GetMotionMaster()->MoveFollow(player, PET_FOLLOW_DIST, me->GetFollowAngle());
+        if (!SayHi)
+        {
+            SayHi = true;
+            Talk(0, player);
+        }
+    }
+
+    void sQuestAccept(Player* player, Quest const* quest) override
+    {
+        if (quest->GetQuestId() == QUEST_DA_NEL)
+        {
+            Talk(1, player);
+            player->CastSpell(player, 194004, true);
+            me->DespawnOrUnsummon(5000);
+        }
+    }
+private:
+    bool SayHi;
+};
+
 
 void AddSC_class_hall_monk()
 {
+    RegisterCreatureAI(npc_initiate_da_nel);
 }

@@ -59,7 +59,7 @@ namespace Instances
             LavaExplosionStalker    = 75846,
             MagmaLord               = 75211,
 
-            /// Gog'duh 
+            /// Gog'duh
             Gogduh                  = 74366,
 
             /// Roltall

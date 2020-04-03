@@ -20,6 +20,29 @@
 
 enum Spells
 {
+    //Breath of Corruption
+    SPELL_BOC_TARGET = 191325, //Targets a tank
+    SPELL_BOC_DAMAGE = 191326, //Ticks every second for 3 seconds
+
+    //Down Draft
+    SPELL_DD_TARGET = 199345,
+    SPELL_DD_AT = 199348,
+    SPELL_DD_DOT = 220855,
+    SPELL_DD_CHARGE = 199351,
+
+    //Earthshaking Roar
+    //                        199385 ?
+    SPELL_ER_TARGET = 199389,
+    SPELL_ER_DAMAGE = 218587,
+
+    //Falling Rocks
+    SPELL_FR_TRIGGERMISSILE = 141461,
+    SPELL_FR_MISSILE = 141463,
+    SPELL_FR_AT = 163897,
+    SPELL_FR_DOT = 163900,
+    SPELL_FR_AT_1 = 199458,
+
+    SPELL_DISTURB_EGG = 199313
 };
 
 // 122316
@@ -29,10 +52,33 @@ struct boss_saprish : public BossAI
 
     void ScheduleTasks() override
     {
+        events.ScheduleEvent(SPELL_BOC_TARGET, 15s);
+        events.ScheduleEvent(SPELL_ER_TARGET, 21s);
+        events.ScheduleEvent(SPELL_DD_TARGET, 40s);
     }
 
-    void ExecuteEvent(uint32 /*eventId*/) override
+    void ExecuteEvent(uint32 eventId) override
     {
+        switch (eventId)
+        {
+        case SPELL_BOC_TARGET:
+        {
+            events.Repeat(15s);
+            DoCastVictim(SPELL_BOC_TARGET);
+            break;
+        }
+        case SPELL_ER_TARGET:
+        {
+            events.Repeat(21s);
+            DoCastAOE(SPELL_ER_TARGET);
+            break;
+        }
+        case SPELL_DD_TARGET:
+        {
+            events.Repeat(40s);
+            DoCastSelf(SPELL_DD_TARGET);
+        }
+        }
     }
 };
 

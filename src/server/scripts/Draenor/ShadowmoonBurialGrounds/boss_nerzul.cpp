@@ -23,7 +23,7 @@
 
 enum eNerzulSpells
 {
-    // Ritual of Bones: 76518   
+    // Ritual of Bones: 76518
     SpellMalevolance                    = 154442,
     SpellOmenOfDeathPeriodicSpell       = 175988,
     SpellOmenOfDeathSummon              = 154350,
@@ -46,7 +46,7 @@ enum eNerzulSpells
 
 enum eNerzulEvents
 {
-    // Ritual of Bones: 76518 
+    // Ritual of Bones: 76518
     EventMalevolance,
     EventRitualOfSouls,
     EventOmenOfDeath,
@@ -64,7 +64,7 @@ enum eNerzulTalks
     TalkSpell02,   ///< A kindeling of bones and shadows.. army of the dead.. ARISE! [43689]
     TalkSpell03,   ///< Into the ABYSS! [43690]
     TalkSpell04,   ///< Feel the void, cold embrace.. [43691]
-}; 
+};
 
 enum eNerzulCreatures
 {
@@ -434,7 +434,7 @@ public:
         void UpdateAI(uint32 const diff) override
         {
             events.Update(diff);
-            
+
             if (m_Instance == nullptr)
                 return;
 

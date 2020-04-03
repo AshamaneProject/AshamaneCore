@@ -160,7 +160,7 @@ enum eShekzeerEvents
 
     // Dissonance Field
     EVENT_CHECK_CAST,
-    
+
     // Sha of Fear
     EVENT_LEAVING,
 

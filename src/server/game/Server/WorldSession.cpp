@@ -1550,7 +1550,7 @@ void WorldSession::LoadRecoveries()
         {
             if (ItemTemplate const* proto = sObjectMgr->GetItemTemplate(itemRecovery.itemId))
             {
-                if ((proto->GetAllowableRace() & newChar.getRaceMask()) == 0)
+                if ((proto->GetAllowableRace().RawValue & newChar.getRaceMask()) == 0)
                     continue;
 
                 newChar.StoreNewItemInBestSlots(itemRecovery.itemId, 1, (ItemContext)itemRecovery.context);

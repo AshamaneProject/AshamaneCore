@@ -1609,7 +1609,7 @@ class spell_crazed_cowardice : public SpellScriptLoader
             void HandlePeriodic(AuraEffect const* /*aurEff*/)
             {
                 PreventDefaultAction();
-                
+
                 if (Unit* caster = GetCaster())
                 {
                     if (Aura* aura = GetAura())

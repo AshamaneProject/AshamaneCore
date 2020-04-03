@@ -42,7 +42,7 @@ class instance_tomb_of_sargeras : public InstanceMapScript
 
             void Initialize() override
             {
-                SetBossNumber(DATA_MAX_ENCOUNTERS);
+                SetBossNumber(ENCOUNTER_COUNT);
                 LoadDoorData(doorData);
             }
 
@@ -50,10 +50,22 @@ class instance_tomb_of_sargeras : public InstanceMapScript
             {
                 switch (creature->GetEntry())
                 {
-                    case NPC_GOROTH:
-                    case NPC_ATRIGAN:
-                    case NPC_BELAC:
-                    case NPC_HARJATAN:
+                case BOSS_GOROTH:
+                    creature->SetVisible(false);
+                    creature->setActive(false);
+                    GorothGUID = creature->GetGUID();
+
+                    break;
+
+                case BOSS_ATRIGAN:
+                    AtriganGUID = creature->GetGUID();
+                    break;
+
+                case BOSS_BELAC:
+                    BelacGUID = creature->GetGUID();
+                    break;
+
+                    case BOSS_HARJATAN:
                     case NPC_HUNTRESS_KASPARIAN:
                     case NPC_CAPTAIN_YATHAE_MOONSTRIKE:
                     case NPC_PRIESTESS_LUNASPYRE:
@@ -75,6 +87,36 @@ class instance_tomb_of_sargeras : public InstanceMapScript
             {
                 switch (go->GetEntry())
                 {
+                 case GO_DESTRUCTIBLE_1:
+                    DestructibleGUID[0] = go->GetGUID();
+
+                    if (GetBossState(DATA_GOROTH) == DONE)
+                        go->UseDoorOrButton(1000000, true);
+                    break;
+
+                 case GO_DESTRUCTIBLE_2:
+                    DestructibleGUID[1] = go->GetGUID();
+
+                    if (GetBossState(DATA_GOROTH) == DONE)
+                        go->UseDoorOrButton(1000000, true);
+
+                    break;
+
+                 case GO_DESTRUCTIBLE_3:
+                    DestructibleGUID[2] = go->GetGUID();
+
+                    if (GetBossState(DATA_GOROTH) == DONE)
+                        go->UseDoorOrButton(1000000, true);
+
+                    break;
+
+                 case GO_DOOR_TO_MISTRESS:
+                 case GO_DOOR_TO_MISTRESS2:
+                    if (GetBossState(DATA_HARJATAN) == DONE)
+                        go->UseDoorOrButton(1000000, true);
+
+                    break;
+
                     case GO_DOOR_ROOM_GOROTH_S:
                     case GO_DOOR_ROOM_GOROTH_N:
                     case GO_DOOR_ROOM_GOROTH_E:
@@ -84,6 +126,33 @@ class instance_tomb_of_sargeras : public InstanceMapScript
                         break;
                 }
             }
+
+           ObjectGuid GetGuidData(uint32 type) const override
+           {
+              switch (type)
+              {
+                case DATA_GOROTH:
+                    return GorothGUID;
+
+                case DATA_ATRIGAN:
+                    return AtriganGUID;
+
+                case DATA_BELAC:
+                    return BelacGUID;
+
+                default:
+                    break;
+              }
+
+            return ObjectGuid::Empty;
+          }
+
+    protected:
+        EventMap events;
+        ObjectGuid GorothGUID;
+        ObjectGuid AtriganGUID;
+        ObjectGuid BelacGUID;
+        ObjectGuid DestructibleGUID[3];
         };
 
         InstanceScript* GetInstanceScript(InstanceMap* map) const override

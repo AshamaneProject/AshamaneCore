@@ -28,7 +28,7 @@ enum eWitherbarkTalks
 {
     WitherbarkAggro   = 4, ///< So... Thirsty(45108)
     WitherbarkKill01  = 5, ///< Return to the earth...(45110)
-    WitherbarkKill02  = 6, ///< Feed my roots.(45111) 
+    WitherbarkKill02  = 6, ///< Feed my roots.(45111)
     WitherbarkSpell01 = 7, ///< Refreshed.(45112)
     WitherbarkSpell02 = 8, ///< I Cannot Be Stopped.(45113)
     WitherbarkDeath   = 9 ///< Arghh...(45109)

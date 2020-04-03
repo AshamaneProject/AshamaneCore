@@ -7,7 +7,7 @@
  * option) any later version.
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ *  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
  * more details.
  *
@@ -15,316 +15,551 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "AreaTrigger.h"
-#include "AreaTriggerAI.h"
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
+#include "AreaTriggerTemplate.h"
+#include "AreaTriggerAI.h"
+#include "AreaTrigger.h"
 #include "eye_of_azshara.h"
 
 enum Spells
 {
-    SPELL_RAMPAGE           = 191848,
+    // Serpentrix
+    SPELL_TOXIC_WOUND           = 191855,
+    SPELL_TOXIC_PUDDLE          = 191858,
+    SPELL_POISON_SPIT           = 192050,
+    SPELL_POISON_SPIT_TRIGGER   = 191839,
+    SPELL_POISON_SPIT_DMG_1     = 191841,
+    SPELL_POISON_SPIT_DMG_2     = 191843,
+    SPELL_POISON_SPIT_DMG_3     = 191845,
+    SPELL_SUMERGE               = 191873,
+    SPELL_RAMPAGE               = 191848,
+    SPELL_RAMPAGE_TRIGGER       = 191850,
+    SPELL_HYDRA_HEAD            = 202680,
+    SPELL_HYDRA_HEAD_HIDE       = 180898, // Hide The Heads while not in phase
 
-    SPELL_HYDRA_HEAD        = 202680,
+    // Blazing Hydra Spawn
+    SPELL_BLAZING_NOVA          = 192003,
 
-    SPELL_TOXIC_WOUND       = 191855,
-    SPELL_TOXIC_PUDDLE      = 191858,
-
-    SPELL_POISON_SPIT       = 192050,
-    SPELL_POISON_SPIT_AURA  = 191839,
-    // Speed depends on winds
-    SPELL_POISON_SPIT_SLOW  = 191841,
-    SPELL_POISON_SPIT_NORM  = 191843,
-    SPELL_POISON_SPIT_FAST  = 191845,
-
-    // 66% and 33%
-    SPELL_SUBMERGE          = 191873,
-
-    SPELL_BLAZING_NOVA      = 192003,
-
-    SPELL_ARCANE_BLAST      = 192005
+    // Arcane Hydra Spawn
+    SPELL_ARCANE_BLAST          = 192005,
+    SPELL_ARCANE_CHARGE         = 192007,
 };
 
-enum CreatureIds
+enum Events
 {
-    NPC_BLAZING_HYDRA_SPAWN = 97259,
-    NPC_ARCANE_HYDRA_SPAWN  = 97260
+    EVENT_TOXIC_WOUND    = 1,
+    EVENT_POISON_SPIT    = 2,
+    EVENT_ACTIVATE_HEADS = 3,
+    EVENT_RAMPAGE        = 4,
 };
 
-// 91808
-struct boss_serpentrix : public BossAI
+enum Npcs
 {
-    boss_serpentrix(Creature* creature) : BossAI(creature, DATA_SERPENTRIX) { }
+    NPC_BLAZING_HYDRA_SPAWN    = 97259,
+    NPC_ARCANE_HYDRA_SPAWN     = 97260,
+    NPC_SINK_HOLE              = 97263,
+};
 
-    void Reset() override
-    {
-        BossAI::Reset();
-        SetCombatMovement(false);
+enum Says
+{
+    SAY_SUBMERGE = 0,
+};
 
-        _removeAllPuddles();
-    }
+enum Actions
+{
+    ACTION_SPAWN_HEAD   = 1,
+};
 
-    void EnterEvadeMode(EvadeReason why) override
-    {
-        BossAI::EnterEvadeMode(why);
-        summons.DespawnAll();
-        me->NearTeleportTo(me->GetHomePosition());
-    }
+Position EmergePos;
 
-    void JustDied(Unit* killer) override
-    {
-        BossAI::JustDied(killer);
+class boss_serpentrix : public CreatureScript
+{
+    public:
+        boss_serpentrix() : CreatureScript("boss_serpentrix")
+        {}
 
-        _removeAllPuddles();
-        me->GetInstanceScript()->SetData(DATA_BOSS_DIED, 0);
-    }
-
-    void ScheduleTasks() override
-    {
-        events.ScheduleEvent(SPELL_POISON_SPIT, 12s);
-        events.ScheduleEvent(SPELL_TOXIC_WOUND, 7s);
-        events.ScheduleEvent(SPELL_RAMPAGE, 8s);
-    }
-
-    void DamageTaken(Unit* /*attacker*/, uint32& damage) override
-    {
-        if (me->HealthWillBeBelowPctDamaged(66, damage))
+        struct boss_serpentrix_AI : public BossAI
         {
-            Talk(0);
-            DoCastSelf(SPELL_SUBMERGE, true);
-            events.RescheduleEvent(SPELL_RAMPAGE, 5s);
-        }
-        else if (me->HealthWillBeBelowPctDamaged(33, damage))
-        {
-            Talk(0);
-            DoCastSelf(SPELL_SUBMERGE, true);
-            events.RescheduleEvent(SPELL_RAMPAGE, 5s);
-        }
-    }
-
-    void ExecuteEvent(uint32 eventId) override
-    {
-        switch (eventId)
-        {
-            case SPELL_POISON_SPIT:
+            boss_serpentrix_AI(Creature* creature) : BossAI(creature, DATA_SERPENTRIX)
             {
-                DoCastSelf(SPELL_POISON_SPIT, false);
-                events.Repeat(10s);
-                break;
             }
-            case SPELL_TOXIC_WOUND:
+
+            void Reset() override
             {
-                DoCastSelf(SPELL_TOXIC_WOUND, false);
-                events.Repeat(25s);
-                break;
+                GetHolesToEmerge();
+                me->AddUnitState(UNIT_STATE_ROOT);
+                _Reset();
+                _firstSumerged = _secondSumerged = false;
             }
-            case SPELL_RAMPAGE:
+
+            void JustDied(Unit* ) override
             {
-                bool hasPlayerInRange = false;
-                Map::PlayerList const& playerList = me->GetMap()->GetPlayers();
-                if (!playerList.isEmpty())
+                _JustDied();
+            }
+
+            void ActivateHeads()
+            {
+                Trinity::Containers::RandomResize(_holes, 2);
+
+                if (IsHeroic())
                 {
-                    for (Map::PlayerList::const_iterator itr = playerList.begin(); itr != playerList.end(); ++itr)
+                    DoSummon(NPC_ARCANE_HYDRA_SPAWN, _holes.back(), 5 * IN_MILLISECONDS);
+                    DoSummon(NPC_BLAZING_HYDRA_SPAWN, _holes.front(), 5 * IN_MILLISECONDS);
+                }
+                else
+                {
+                    for (auto & it : _holes)
+                        DoSummon(NPC_BLAZING_HYDRA_SPAWN, it, 5 * IN_MILLISECONDS);
+                }
+            }
+
+            void GetHolesToEmerge()
+            {
+                _holes.clear();
+
+                std::list<Creature*> sink_holes;
+
+                me->GetCreatureListWithEntryInGrid(sink_holes, NPC_SINK_HOLE, 500.0f);
+
+                if (sink_holes.empty())
+                    return;
+
+                for (auto & it : sink_holes)
+                    if (it)
+                        _holes.push_back(it->GetPosition());
+
+            }
+
+            Position FindEmergeHole()
+            {
+                if (_holes.empty())
+                    return me->GetPosition();
+
+                Position emergePos = Trinity::Containers::SelectRandomContainerElement(_holes);
+
+                _holes.erase(find(_holes.begin(), _holes.end(), emergePos));
+
+                return emergePos;
+            }
+
+            void InitSubmerged()
+            {
+                me->CastStop();
+                Talk(SAY_SUBMERGE);
+                EmergePos = FindEmergeHole();
+
+                me->CastSpell(me, SPELL_SUMERGE, false);
+                events.ScheduleEvent(EVENT_ACTIVATE_HEADS, 2 * IN_MILLISECONDS);
+                events.RescheduleEvent(EVENT_RAMPAGE, 3 * IN_MILLISECONDS);
+            }
+
+            void DamageTaken(Unit* attacker, uint32 & /**/) override
+            {
+                if (attacker)
+                {
+                    if (me->IsWithinMeleeRange(attacker) && me->HasAura(SPELL_RAMPAGE))
+                        me->CastStop();
+                }
+
+                if (me->HealthBelowPct(66) && !_firstSumerged)
+                {
+                    _firstSumerged = true;
+                    InitSubmerged();
+                }
+                else if (me->HealthBelowPct(33) && !_secondSumerged)
+                {
+                    _secondSumerged = true;
+                    InitSubmerged();
+                }
+            }
+
+            void EnterEvadeMode(EvadeReason /**/) override
+            {
+                std::list<Creature*> heads;
+                me->GetCreatureListWithEntryInGrid(heads,NPC_BLAZING_HYDRA_SPAWN);
+
+                if (!heads.empty())
+                {
+                    for (auto & it : heads)
+                        it->AI()->EnterEvadeMode();
+                }
+
+                _EnterEvadeMode();
+                me->RemoveAllAreaTriggers();
+                me->NearTeleportTo(me->GetHomePosition());
+                Reset();
+            }
+
+            void EnterCombat(Unit* /**/) override
+            {
+                _EnterCombat();
+                _firstSumerged = _secondSumerged = false;
+                events.ScheduleEvent(EVENT_POISON_SPIT, 9 * IN_MILLISECONDS);
+                events.ScheduleEvent(EVENT_TOXIC_WOUND, 6 * IN_MILLISECONDS);
+                events.ScheduleEvent(EVENT_RAMPAGE, 3 * IN_MILLISECONDS);
+            }
+
+            void UpdateAI(uint32 diff) override
+            {
+                if (!UpdateVictim())
+                    return;
+
+                events.Update(diff);
+
+                if (me->HasUnitState(UNIT_STATE_CASTING))
+                    return;
+
+                while (uint32 eventId = events.ExecuteEvent())
+                {
+                    switch (eventId)
                     {
-                        if (me->IsWithinMeleeRange(itr->GetSource()))
+                        case EVENT_RAMPAGE:
                         {
-                            hasPlayerInRange = true;
+                            if (!me->IsWithinMeleeRange(me->GetVictim()))
+                                DoCast(me, SPELL_RAMPAGE);
+
+                            events.ScheduleEvent(EVENT_RAMPAGE, IN_MILLISECONDS);
                             break;
                         }
-                    }
 
-                    if (!hasPlayerInRange)
-                    {
-                        DoCastSelf(SPELL_RAMPAGE, true);
-
-                        me->GetScheduler().Schedule(2s, [this](TaskContext context)
+                        case EVENT_TOXIC_WOUND:
                         {
-                            if (me->GetChannelSpellId() == SPELL_RAMPAGE)
-                            {
-                                Map::PlayerList const& playerList = me->GetMap()->GetPlayers();
-                                for (Map::PlayerList::const_iterator itr = playerList.begin(); itr != playerList.end(); ++itr)
-                                    if (me->IsWithinMeleeRange(itr->GetSource()))
-                                        me->InterruptSpell(CURRENT_CHANNELED_SPELL);
+                            Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me));
 
-                                context.Repeat();
-                            }
-                        });
+                            if (!target)
+                                DoCastVictim(SPELL_TOXIC_WOUND);
+                            else
+                                DoCast(target, SPELL_TOXIC_WOUND);
+
+                            events.ScheduleEvent(EVENT_TOXIC_WOUND, 25 * IN_MILLISECONDS);
+                            break;
+                        }
+
+                        case EVENT_POISON_SPIT:
+                        {
+                            DoCast(me, SPELL_POISON_SPIT);
+                            events.ScheduleEvent(EVENT_POISON_SPIT, 7 * IN_MILLISECONDS);
+                            break;
+                        }
+
+                        case EVENT_ACTIVATE_HEADS:
+                        {
+                            ActivateHeads();
+                            GetHolesToEmerge();
+                            break;
+                        }
+
+                        default : break;
                     }
                 }
 
-                events.Repeat(2s);
-                break;
+                DoMeleeAttackIfReady();
             }
-        }
-    }
 
-private:
-    void _removeAllPuddles()
-    {
-        std::list<AreaTrigger*> atList;
-        me->GetAreaTriggerListWithSpellIDInRange(atList, 191856, 100.f);
-        for (auto itr : atList)
-            itr->SetDuration(0);
-    }
+            private:
+                bool _firstSumerged, _secondSumerged;
+                std::vector<Position> _holes;
+        };
+
+        CreatureAI* GetAI(Creature* creature) const override
+        {
+            return new boss_serpentrix_AI(creature);
+        }
 };
 
-// 192050
-class spell_serpentrix_poison_spit : public SpellScript
+class npc_serpentrix_head : public CreatureScript
 {
-    PrepareSpellScript(spell_serpentrix_poison_spit);
+    public:
+        npc_serpentrix_head() : CreatureScript("npc_serpentrix_head")
+        {}
 
-    void HandleDummy(SpellEffIndex /*effIndex*/)
-    {
-        Unit* target = GetHitUnit();
-        // TODO: Spell should be selected based on Violent Winds
-        if (target->ToPlayer())
+        struct npc_serpentrix_head_AI : public ScriptedAI
         {
-            if (Unit* caster = GetCaster())
-                caster->CastSpell(target, SPELL_POISON_SPIT_NORM, true);
-        }
-    }
+            npc_serpentrix_head_AI(Creature* creature) : ScriptedAI(creature)
+            {}
 
-    void Register() override
-    {
-        OnEffectHitTarget += SpellEffectFn(spell_serpentrix_poison_spit::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
-    }
-};
-
-// Spell: 191856
-// AT: 9574
-struct at_serpentrix_toxic_puddle : AreaTriggerAI
-{
-    at_serpentrix_toxic_puddle(AreaTrigger* areatrigger) : AreaTriggerAI(areatrigger) { }
-
-    void OnInitialize() override
-    {
-        at->SetPeriodicProcTimer(1000);
-    }
-
-    void OnPeriodicProc() override
-    {
-        if (Unit* caster = at->GetCaster())
-        {
-            GuidUnorderedSet const& insideUnits = at->GetInsideUnits();
-
-            for (ObjectGuid guid : insideUnits)
-                if (Player* player = ObjectAccessor::GetPlayer(*caster, guid))
-                    player->CastSpell(player, SPELL_TOXIC_PUDDLE, true);
-        }
-    }
-};
-
-// 191873
-class spell_serpentrix_submerge : public SpellScript
-{
-    PrepareSpellScript(spell_serpentrix_submerge);
-
-    // Teleport somewhere
-    void RelocateDest(SpellEffIndex /*effIndex*/)
-    {
-        Trinity::Containers::RandomShuffle(_coords);
-        GetHitDest()->WorldRelocate(WorldLocation(1456, _coords[0][0], _coords[0][1], _coords[0][2], _coords[0][3]));
-
-        if (Unit* caster = GetCaster())
-        {
-            if (Creature* hydra = caster->SummonCreature(NPC_BLAZING_HYDRA_SPAWN, _coords[1][0], _coords[1][1], _coords[1][2], _coords[1][3], TEMPSUMMON_CORPSE_DESPAWN, 0))
-                hydra->AI()->DoZoneInCombat();
-
-            if (caster->GetMap()->IsHeroic())
+            void Reset() override
             {
-                if (Creature* hydra = caster->SummonCreature(NPC_ARCANE_HYDRA_SPAWN, _coords[2][0], _coords[2][1], _coords[2][2], _coords[2][3], TEMPSUMMON_CORPSE_DESPAWN, 0))
-                    hydra->AI()->DoZoneInCombat();
+                me->AddUnitState(UNIT_STATE_ROOT);
             }
-            else if (Creature* hydra = caster->SummonCreature(NPC_BLAZING_HYDRA_SPAWN, _coords[2][0], _coords[2][1], _coords[2][2], _coords[2][3], TEMPSUMMON_CORPSE_DESPAWN, 0))
-                hydra->AI()->DoZoneInCombat();
 
-            caster->CastSpell(caster, SPELL_HYDRA_HEAD, true);
+            void EnterCombat(Unit* /**/) override
+            {
+                _spellTimer = 0;
+                DoZoneInCombat();
+            }
+
+            void EnterEvadeMode(EvadeReason reason) override
+            {
+                _EnterEvadeMode(reason);
+                Reset();
+            }
+
+            void UpdateAI(uint32 diff) override
+            {
+                if (!UpdateVictim())
+                    return;
+
+                _spellTimer += diff;
+
+                if (me->HasUnitState(UNIT_STATE_CASTING))
+                    return;
+
+                if (_spellTimer >= 3 * IN_MILLISECONDS)
+                {
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0, true))
+                    {
+                        if (me->GetEntry() == NPC_ARCANE_HYDRA_SPAWN)
+                            DoCast(target, SPELL_ARCANE_BLAST);
+                        else
+                            DoCast(target, SPELL_BLAZING_NOVA);
+                    }
+                    _spellTimer = 0;
+                }
+            }
+
+            private:
+                uint32 _spellTimer;
+        };
+
+        CreatureAI* GetAI(Creature* creature) const override
+        {
+            return new npc_serpentrix_head_AI(creature);
         }
-    }
-
-    void Register() override
-    {
-        OnEffectLaunch += SpellEffectFn(spell_serpentrix_submerge::RelocateDest, EFFECT_0, SPELL_EFFECT_TELEPORT_UNITS);
-    }
-
-private:
-    float _coords[6][4] =
-    {
-        { -3294.20f,    4460.52f,  -0.633784f, 3.92802f },
-        { -3304.17f,    4405.53f,   0.087278f, 3.24648f },
-        { -3246.71f,    4479.65f,   0.266675f, 3.28796f },
-        { -3256.36f,    4370.39f,   0.374848f, 2.72140f },
-        { -3199.40f,    4384.95f,   0.161310f, 3.02506f },
-        { -3192.24f,    4440.18f,  -0.648342f, 3.34983f }
-    };
 };
 
-// 191850
-class spell_serpentix_rampage_aura : public SpellScript
+class at_toxic_wound : public AreaTriggerEntityScript
 {
-    PrepareSpellScript(spell_serpentix_rampage_aura);
+    public:
+        at_toxic_wound() : AreaTriggerEntityScript("at_toxic_wound")
+        {}
 
-    void HandleScript(SpellEffIndex /*effIndex*/)
-    {
-        if (Player* target = GetHitPlayer())
+        struct at_toxic_wound_AI : public AreaTriggerAI
         {
-            if (Unit* caster = GetCaster())
-                caster->CastSpell(target, SPELL_POISON_SPIT_FAST, true);
+            at_toxic_wound_AI(AreaTrigger* at) : AreaTriggerAI(at)
+            {}
+
+            void OnInitialize()
+            {
+                _serpentrix = nullptr;
+                _timerToxic = 0;
+                at->SetDecalPropertiesID(22);
+
+                if (!at->GetCaster())
+                    return;
+
+                _serpentrix = at->GetCaster()->FindNearestCreature(BOSS_SERPENTRIX, 500.0f, true);
+
+                if (_serpentrix)
+                    _serpentrix->_RegisterAreaTrigger(at);
+            }
+
+            void OnUnitEnter(Unit* unit) override
+            {
+                if (!unit || !at->GetCaster())
+                    return;
+
+                if (unit->ToPlayer())
+                    _targets.push_back(unit);
+            }
+
+            void OnUnitExit(Unit* unit) override
+            {
+                if (!unit)
+                    return;
+
+                if (unit->ToPlayer())
+                    _targets.remove(unit);
+            }
+
+            void OnRemove()
+            {
+                if (!at)
+                    return;
+
+                if (_serpentrix)
+                    _serpentrix->_UnregisterAreaTrigger(at);
+            }
+
+            void OnUpdate(uint32 diff) override
+            {
+                _timerToxic += diff;
+
+                if (_timerToxic >= IN_MILLISECONDS)
+                {
+                    if (!_targets.empty())
+                    {
+                        for (auto & it : _targets)
+                            if (it)
+                                it->CastSpell(it, SPELL_TOXIC_PUDDLE, true);
+                    }
+
+                    _timerToxic = 0;
+                }
+            }
+
+            private:
+                Creature* _serpentrix;
+                std::list<Unit*> _targets;
+                uint32 _timerToxic;
+        };
+
+        AreaTriggerAI* GetAI(AreaTrigger* at) const override
+        {
+            return new at_toxic_wound_AI(at);
         }
-    }
-
-    void Register() override
-    {
-        OnEffectHitTarget += SpellEffectFn(spell_serpentix_rampage_aura::HandleScript, EFFECT_0, SPELL_EFFECT_SCRIPT_EFFECT);
-    }
 };
 
-// 97259
-struct npc_blazing_hydra_spawn : public ScriptedAI
+class spell_serpentrix_poison_spit : public SpellScriptLoader
 {
-    npc_blazing_hydra_spawn(Creature* creature) : ScriptedAI(creature) { }
+    public:
+        spell_serpentrix_poison_spit() : SpellScriptLoader("spell_serpentrix_poison_spit")
+        {}
 
-    void Reset() override
-    {
-        ScriptedAI::Reset();
-        SetCombatMovement(false);
-
-        me->GetScheduler().Schedule(1s, [](TaskContext context)
+        class spell_serpentrix_poison_spit_SpellScript : public SpellScript
         {
-            GetContextUnit()->CastSpell(GetContextUnit(), SPELL_BLAZING_NOVA, false);
-            context.Repeat(1s);
-        });
-    }
+            public:
+                PrepareSpellScript(spell_serpentrix_poison_spit_SpellScript);
+
+                void HandleAreaTargets(std::list<WorldObject*>& targets)
+                {
+                    if (targets.empty())
+                        return;
+
+                    for (auto & it : targets)
+                    {
+                        if (it && it->ToPlayer())
+                            _targets.push_back(it->ToPlayer());
+                    }
+
+                }
+
+                void HandleOnCast()
+                {
+                    if (!GetCaster() || _targets.empty())
+                        return;
+
+                    for (auto & it : _targets)
+                        GetCaster()->CastSpell(it, SPELL_POISON_SPIT_TRIGGER, true);
+                }
+
+                void Register()
+                {
+                    OnCast += SpellCastFn(spell_serpentrix_poison_spit_SpellScript::HandleOnCast);
+                    OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_serpentrix_poison_spit_SpellScript::HandleAreaTargets, EFFECT_0, TARGET_UNIT_SRC_AREA_ENEMY);
+                }
+
+                private:
+                    std::list<Player*> _targets;
+        };
+
+        SpellScript* GetSpellScript() const
+        {
+            return new spell_serpentrix_poison_spit_SpellScript();
+        }
 };
 
-// 97260
-struct npc_arcane_hydra_spawn : public ScriptedAI
+class spell_serpentrix_poison_spit_dmg : public SpellScriptLoader
 {
-    npc_arcane_hydra_spawn(Creature* creature) : ScriptedAI(creature) { }
+    public:
+        spell_serpentrix_poison_spit_dmg() : SpellScriptLoader("spell_serpentrix_poison_spit_dmg")
+        {}
 
-    void Reset() override
-    {
-        ScriptedAI::Reset();
-        SetCombatMovement(false);
-
-        me->GetScheduler().Schedule(1s, [this](TaskContext context)
+        class spell_serpentrix_poison_spit_dmg_SpellScript : public SpellScript
         {
-            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM))
-                GetContextUnit()->CastSpell(target, SPELL_ARCANE_BLAST, false);
-            context.Repeat(1s);
-        });
-    }
+            public:
+                PrepareSpellScript(spell_serpentrix_poison_spit_dmg_SpellScript);
+
+                void HandleDmg()
+                {
+                    if (!GetCaster() || !GetHitUnit())
+                        return;
+
+                    GetCaster()->CastSpell(GetHitUnit(), SPELL_POISON_SPIT_DMG_1, true);
+                }
+
+                void Register()
+                {
+                    OnHit += SpellHitFn(spell_serpentrix_poison_spit_dmg_SpellScript::HandleDmg);
+                }
+        };
+
+        SpellScript* GetSpellScript() const
+        {
+            return new spell_serpentrix_poison_spit_dmg_SpellScript();
+        }
+};
+
+class spell_serpentrix_rampage_dmg : public SpellScriptLoader
+{
+    public:
+        spell_serpentrix_rampage_dmg() : SpellScriptLoader("spell_serpentrix_rampage_dmg")
+        {}
+
+        class spell_serpentrix_rampage_dmg_SpellScript : public SpellScript
+        {
+            public:
+                PrepareSpellScript(spell_serpentrix_rampage_dmg_SpellScript);
+
+                void HandleDummy(SpellEffIndex /**/)
+                {
+                    if (!GetHitUnit())
+                        return;
+
+                    GetCaster()->CastSpell(GetHitUnit(), SPELL_POISON_SPIT_DMG_2, true);
+                }
+
+                void Register()
+                {
+                    OnEffectHitTarget += SpellEffectFn(spell_serpentrix_rampage_dmg_SpellScript::HandleDummy, EFFECT_0, SPELL_EFFECT_SCRIPT_EFFECT);
+                }
+        };
+
+        SpellScript* GetSpellScript() const
+        {
+            return new spell_serpentrix_rampage_dmg_SpellScript();
+        }
+};
+
+class spell_serpentrix_submerge : public SpellScriptLoader
+{
+    public:
+        spell_serpentrix_submerge() : SpellScriptLoader("spell_serpentrix_submerge")
+        {}
+
+        class spell_serpentrix_submerge_SpellScript : public SpellScript
+        {
+            public:
+                PrepareSpellScript(spell_serpentrix_submerge_SpellScript);
+
+                void HandleCast()
+                {
+                    if (!GetCaster())
+                        return;
+
+                    GetCaster()->NearTeleportTo(EmergePos, false);
+                }
+
+                void Register()
+                {
+                    OnCast += SpellCastFn(spell_serpentrix_submerge_SpellScript::HandleCast);
+                }
+        };
+
+        SpellScript* GetSpellScript() const
+        {
+            return new spell_serpentrix_submerge_SpellScript();
+        }
 };
 
 void AddSC_boss_serpentrix()
 {
-    RegisterCreatureAI(boss_serpentrix);
-    RegisterCreatureAI(npc_blazing_hydra_spawn);
-    RegisterCreatureAI(npc_arcane_hydra_spawn);
-
-    RegisterSpellScript(spell_serpentrix_poison_spit);
-    RegisterSpellScript(spell_serpentrix_submerge);
-    RegisterSpellScript(spell_serpentix_rampage_aura);
-
-    RegisterAreaTriggerAI(at_serpentrix_toxic_puddle);
+    new boss_serpentrix();
+    new npc_serpentrix_head();
+    new at_toxic_wound();
+    new spell_serpentrix_poison_spit();
+    new spell_serpentrix_poison_spit_dmg();
+    new spell_serpentrix_rampage_dmg();
+    new spell_serpentrix_submerge();
 }

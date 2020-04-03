@@ -129,7 +129,7 @@ struct instance_end_time : public InstanceScript
         }
     }
 
-    uint32 GetData(uint32 type) const override 
+    uint32 GetData(uint32 type) const override
     {
         switch (type)
         {

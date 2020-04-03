@@ -225,7 +225,7 @@ class boss_zorlok : public CreatureScript
             bool isAttEcho;
             bool isFaVEcho;
             bool hasSummonedLastEcho;
-            
+
             void Reset() override
             {
                 events.Reset();
@@ -906,7 +906,7 @@ class boss_zorlok : public CreatureScript
 
                 if (!isFlying && (!target || me->GetDistance(target) > 5.0f) && !me->HasUnitState(UNIT_STATE_CASTING))
                     me->CastSpell(me, SPELL_SONG_OF_THE_EMPRESS, true);
-                
+
                 switch (events.ExecuteEvent())
                 {
                     // All-time events

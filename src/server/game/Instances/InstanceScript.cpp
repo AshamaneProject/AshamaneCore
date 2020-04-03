@@ -867,6 +867,23 @@ void InstanceScript::DoPlayConversation(uint32 conversationId)
     });
 }
 
+void InstanceScript::DoDelayedConversation(uint32 delay, uint32 conversationId)
+{
+    DoOnPlayers([delay, conversationId](Player* player)
+    {
+        player->AddDelayedConversation(delay, conversationId);
+    });
+}
+
+void InstanceScript::DoAddItemByClassOnPlayers(uint8 classId, uint32 itemId, uint32 count)
+{
+    DoOnPlayers([classId, itemId, count](Player* player)
+    {
+        if (player->getClass() == classId)
+            player->AddItem(itemId, count);
+    });
+}
+
 void InstanceScript::DoSendScenarioEvent(uint32 eventId)
 {
     if (!instance->GetPlayers().isEmpty())
@@ -889,6 +906,16 @@ void InstanceScript::DoAddAuraOnPlayers(uint32 spell)
     DoOnPlayers([spell](Player* player)
     {
         player->AddAura(spell, player);
+    });
+}
+
+// Do combat stop on all players in instance
+void InstanceScript::DoCombatStopOnPlayers()
+{
+    DoOnPlayers([](Player* player)
+    {
+        if (player->IsInCombat())
+            player->CombatStop();
     });
 }
 

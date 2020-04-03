@@ -395,7 +395,7 @@ class spell_eternal_darkness_dmg : public SpellScriptLoader
                     GetCaster()->CastSpell(GetCaster(), SPELL_ETERNAL_DARKNESS_BUFF, true);
                 }
 
-                void Register()
+                void Register() override
                 {
                     OnEffectPeriodic += AuraEffectPeriodicFn(spell_eternal_darkness_dmg_AuraScript::HandleStacks, EFFECT_0, SPELL_AURA_PERIODIC_DAMAGE);
                 }

@@ -357,7 +357,7 @@ namespace Instances { namespace Bloodmaul
                                 if (unit->IsInCombat())
                                     target = unit;
                             }*/
-                            
+
                             me->CastSpell(target, uint32(Spells::StoneBulwark));
 
                             events.ScheduleEvent(uint32(Events::StoneBulwark), urand(3000, 35000));

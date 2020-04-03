@@ -242,7 +242,7 @@ public:
     class spell_skeram_true_fulfillment_SpellScript : public SpellScript
     {
         PrepareSpellScript(spell_skeram_true_fulfillment_SpellScript);
-        
+
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
             return ValidateSpellInfo({ SPELL_GENERIC_DISMOUNT, SPELL_TRUE_FULFILLMENT_2 });

@@ -23,17 +23,6 @@
 #include "ScriptMgr.h"
 #include "eye_of_azshara.h"
 
-// 97171
-struct npc_hatecoil_arcanist : public ScriptedAI
-{
-    npc_hatecoil_arcanist(Creature* creature) : ScriptedAI(creature) { }
-
-    void JustDied(Unit* /*killer*/) override
-    {
-        me->GetInstanceScript()->SetData(DATA_ARCANIST_DIED, 0);
-    }
-};
-
 // 196027
 class spell_hatecoil_arcanist_aqua_spout : public SpellScript
 {
@@ -277,8 +266,6 @@ class spell_eoa_lightning_strikes_damage : public SpellScript
 
 void AddSC_eye_of_azshara()
 {
-    RegisterCreatureAI(npc_hatecoil_arcanist);
-
     RegisterSpellScript(spell_hatecoil_arcanist_aqua_spout);
     RegisterSpellScript(spell_animated_storm_water_spout);
     RegisterSpellScript(spell_skrog_tidestomper_massive_quake);

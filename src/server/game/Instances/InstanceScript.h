@@ -281,10 +281,16 @@ class TC_GAME_API InstanceScript : public ZoneScript
         // Add aura on all players in instance
         void DoAddAuraOnPlayers(uint32 spell);
 
+        // Do combat stop on all players in instance
+        void DoCombatStopOnPlayers();
+
         // Start movie for all players in instance
         void DoStartMovie(uint32 movieId);
 
         void DoPlayConversation(uint32 conversationId);
+        void DoDelayedConversation(uint32 delay, uint32 conversationId);
+
+        void DoAddItemByClassOnPlayers(uint8 classId, uint32 itemId, uint32 count);
 
         void DoSendScenarioEvent(uint32 eventId);
 

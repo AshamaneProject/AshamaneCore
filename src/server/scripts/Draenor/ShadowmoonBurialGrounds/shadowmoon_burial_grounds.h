@@ -261,12 +261,12 @@ enum eShadowmoonBurialGroundsActions
 
 enum eShadowmoonBurialGroundsAchivement
 {
-    // Heroic: 
+    // Heroic:
     AchievementShadowmoonBurialGroundsHeroic = 9054,
     AchievementIckyIchors = 9025,
     AchievementSoulsOfTheLosts = 9026,
     AchievementWhatsYourSign = 9018,
-    // Normal: 
+    // Normal:
     AchievementShadowmonBurialGroundsNormal = 9041,
 };
 

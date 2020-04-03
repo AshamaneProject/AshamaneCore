@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 #include "AreaTriggerTemplate.h"
@@ -61,7 +78,7 @@ enum Says
     SAY_DEAD        = 7,
 };
 
-enum Actions 
+enum Actions
 {
     ACTION_RUNE_ACTIVATED   = 1,
     ACTION_BAT_ATTACK       = 2,
@@ -135,13 +152,13 @@ class boss_general_xakal : public CreatureScript
 
             void ExecuteEvent(uint32 eventId) override
             {
-                switch (eventId) 
+                switch (eventId)
                 {
                     case EVENT_FEL_FISSURE:
                     {
                         Talk(SAY_FEL_FISSURE);
                         DoCastAOE(SPELL_FEL_FISSURE);
-                        
+
                         events.ScheduleEvent(EVENT_FEL_FISSURE, Seconds(11));
                         break;
                     }
@@ -247,7 +264,7 @@ class npc_arc_fissure : public CreatureScript
             {
                 for (auto & it : me->GetMap()->GetPlayers())
                 {
-                    if (/*auto* player = */it.GetSource())
+                    if (auto* player = it.GetSource())
                     {
                         DoCast(me, SPELL_FEL_ERUPTION, true);
                         _timerCheck = 0;
@@ -266,7 +283,7 @@ class npc_arc_fissure : public CreatureScript
             {
                 if (!_activated)
                     return;
-                
+
                 _timerCheck += diff;
 
                 if (_timerCheck >= 3500)
@@ -301,7 +318,7 @@ class npc_arc_dread_felbat : public CreatureScript
                 me->SetReactState(REACT_PASSIVE);
             }
 
-            void MovementInform(uint32 type, uint32 /*id*/) override
+            void MovementInform(uint32 type, uint32 id) override
             {
                 if (type == CHASE_MOTION_TYPE && !_isInLand)
                 {
@@ -326,7 +343,7 @@ class npc_arc_dread_felbat : public CreatureScript
             {
                 if (!UpdateVictim())
                     return;
-                
+
                 _events.Update(diff);
 
                 if (me->HasUnitState(UNIT_STATE_CASTING))
@@ -414,7 +431,7 @@ class spell_xakal_fel_fissure : public SpellScriptLoader
                 {
                     if (!GetCaster() || !GetHitUnit())
                         return;
-                    
+
                     GetCaster()->CastSpell(GetHitUnit(), SPELL_FEL_FISSURE_SUMMON, true);
                 }
 
@@ -442,7 +459,7 @@ class at_arc_fel_fissure : public AreaTriggerEntityScript
             {
             }
 
-            void OnInitialize() override
+            void OnInitialize()
             {
                 _borned = false;
                 _activated = false;
@@ -454,10 +471,10 @@ class at_arc_fel_fissure : public AreaTriggerEntityScript
             {
                 if (!unit)
                     return;
-                
+
                 if (unit->GetTypeId() != TYPEID_PLAYER)
                     return;
-                
+
                 if (!_borned)
                     return;
 
@@ -510,10 +527,10 @@ class at_arc_wake_of_shadow : public AreaTriggerEntityScript
             {
                 if (!unit)
                     return;
-                
+
                 if (unit->GetTypeId() != TYPEID_PLAYER)
                     return;
-                
+
                 unit->CastSpell(unit, SPELL_WAKE_OF_SHADOW_DMG, true);
             }
 
@@ -521,10 +538,10 @@ class at_arc_wake_of_shadow : public AreaTriggerEntityScript
             {
                 if (!target)
                     return;
-                
+
                 if (target->GetTypeId() != TYPEID_PLAYER)
                     return;
-                
+
                 target->RemoveAurasDueToSpell(SPELL_WAKE_OF_SHADOW_DMG);
             }
         };
@@ -565,6 +582,7 @@ class at_arc_shadow_slash : public AreaTriggerEntityScript
 
                 float dx = (tgt.x - src.x);
                 float dy = (tgt.y - src.y);
+                float dz = (tgt.z - src.z);
 
                 for (uint32 i = 0; i < 100; ++i)
                 {
@@ -598,10 +616,10 @@ class at_arc_shadow_slash : public AreaTriggerEntityScript
             {
                 if (!unit)
                     return;
-                
+
                 if (unit->GetTypeId() != TYPEID_PLAYER)
                     return;
-                
+
                 at->GetCaster()->CastSpell(unit, SPELL_SHADOW_SLASH_DMG, true);
             }
 

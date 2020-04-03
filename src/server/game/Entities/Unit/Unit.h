@@ -1139,6 +1139,9 @@ class TC_GAME_API Unit : public WorldObject
         Emote GetEmoteState() const { return Emote(*m_unitData->EmoteState); }
         void SetEmoteState(Emote emote) { SetUpdateFieldValue(m_values.ModifyValue(&Unit::m_unitData).ModifyValue(&UF::UnitData::EmoteState), emote); }
 
+        Anim GetStateAnimId() const { return Anim(*m_unitData->StateAnimID); }
+        void SetStateAnimId(Anim animId) { SetUpdateFieldValue(m_values.ModifyValue(&Unit::m_unitData).ModifyValue(&UF::UnitData::StateAnimID), animId); }
+
         SheathState GetSheath() const { return SheathState(*m_unitData->SheatheState); }
         void SetSheath(SheathState sheathed) { SetUpdateFieldValue(m_values.ModifyValue(&Unit::m_unitData).ModifyValue(&UF::UnitData::SheatheState), sheathed); }
 

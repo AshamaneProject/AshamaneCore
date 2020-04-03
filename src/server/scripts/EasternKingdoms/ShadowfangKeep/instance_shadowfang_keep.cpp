@@ -79,7 +79,7 @@ public:
                 TeamInInstance = player->GetTeam();
         }
 
-        uint32 GetData(uint32 identifier) const override 
+        uint32 GetData(uint32 identifier) const override
         {
             if (identifier == TEAM_IN_INSTANCE)
                 return TeamInInstance;

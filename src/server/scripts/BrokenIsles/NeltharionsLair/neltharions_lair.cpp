@@ -1,20 +1,19 @@
 /*
-* Copyright (C) 2008-2017 TrinityCore <http://www.trinitycore.org/>
-*
-* This program is free software; you can redistribute it and/or modify it
-* under the terms of the GNU General Public License as published by the
-* Free Software Foundation; either version 2 of the License, or (at your
-* option) any later version.
-*
-* This program is distributed in the hope that it will be useful, but WITHOUT
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
-* more details.
-*
-* You should have received a copy of the GNU General Public License along
-
-* with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #include "AreaTriggerAI.h"
 #include "ScriptedCreature.h"
@@ -41,7 +40,7 @@ public:
     struct mob_vileshard_crawler_AI : public ScriptedAI
     {
         mob_vileshard_crawler_AI(Creature* creature) : ScriptedAI(creature) {}
-        
+
         void JustDied(Unit* killer) override
         {
             me->CastSpell(killer, SPELL_ACID_SPLATTER, false);
@@ -104,7 +103,7 @@ public:
 
         EventMap events;
 
-        void EnterCombat(Unit* /*unit*/) override
+        void EnterCombat(Unit* unit) override
         {
             events.ScheduleEvent(EVENT_IMPALING_SHARD, 2s);
         }
@@ -140,7 +139,7 @@ public:
 
     struct mob_trigger_start_waterfall_AI : public ScriptedAI
     {
-        mob_trigger_start_waterfall_AI(Creature* creature) : ScriptedAI(creature) 
+        mob_trigger_start_waterfall_AI(Creature* creature) : ScriptedAI(creature)
         {
             me->SetVisible(false);
         }
@@ -196,15 +195,14 @@ public:
 
     struct mob_neltharionslair_trigger_AI : public ScriptedAI
     {
-        mob_neltharionslair_trigger_AI(Creature* creature) : ScriptedAI(creature) 
+        mob_neltharionslair_trigger_AI(Creature* creature) : ScriptedAI(creature)
         {
             me->SetVisible(false);
         }
 
         void MoveInLineOfSight(Unit* who) override
         {
-            if (me->GetMapId() == MAP_NELTHARION_LAIR && me->GetAreaId() == AREA_BROKEN_TEETH &&
-                who->IsPlayer() && !who->ToPlayer()->IsGameMaster() && me->IsWithinDistInMap(who, 20.0f))
+            if (me->GetMapId() == 1458 && me->GetAreaId() ==  8339 && who->GetTypeId() == TYPEID_PLAYER && !who->ToPlayer()->IsGameMaster() && me->IsWithinDistInMap(who, 20.0f))
             {
                 float allSpeed = 1.0f;
                 who->ToPlayer()->SetSpeedRate(MOVE_WALK, allSpeed);
@@ -247,7 +245,7 @@ public:
 
         EventMap events;
 
-        void EnterCombat(Unit* /*unit*/) override
+        void EnterCombat(Unit* unit) override
         {
             events.ScheduleEvent(EVENT_BONE_CHOMP, 2s);
             events.ScheduleEvent(EVENT_STONE_GAZE, 6s);
@@ -305,7 +303,7 @@ public:
 
         EventMap events;
 
-        void EnterCombat(Unit* /*unit*/) override
+        void EnterCombat(Unit* unit) override
         {
             events.ScheduleEvent(EVENT_CRUSH, 4s);
         }
@@ -360,7 +358,7 @@ public:
 
         EventMap events;
 
-        void EnterCombat(Unit* /*unit*/) override
+        void EnterCombat(Unit* unit) override
         {
             events.ScheduleEvent(EVENT_SUBMERGE, 2s);
         }
@@ -426,11 +424,11 @@ public:
         uint32 firstShardsCounter = 0;
         uint32 _milliseconds = 0;
 
-        void EnterCombat(Unit* /*unit*/) override
+        void EnterCombat(Unit* unit) override
         {
             if (Creature* drudge = me->FindNearestCreature(NPC_UNDERSTONE_DRUDGE, 80.0f, true))
                 sCreatureTextMgr->SendChat(drudge, 1);
-            
+
             events.ScheduleEvent(EVENT_PIERCING_SHARDS, 5s);
             events.ScheduleEvent(EVENT_FRACTURE, 10s);
         }
@@ -524,7 +522,7 @@ public:
 
         EventMap events;
 
-        void EnterCombat(Unit* /*unit*/) override
+        void EnterCombat(Unit* unit) override
         {
             events.ScheduleEvent(EVENT_AVALANCHE, 5s);
         }
@@ -570,7 +568,7 @@ public:
     {
         SPELL_RETREAT             = 226361,
         SPELL_JUGGED_DISK         = 183633
-        
+
     };
 
     struct mob_rockbound_pelter_AI : public ScriptedAI
@@ -579,7 +577,7 @@ public:
 
         EventMap events;
 
-        void EnterCombat(Unit* /*unit*/) override
+        void EnterCombat(Unit* unit) override
         {
             events.ScheduleEvent(EVENT_RETREAT, 5s);
             events.ScheduleEvent(EVENT_JUGGED_DISK, 7s);
@@ -629,7 +627,7 @@ public:
     enum eSpells
     {
         SPELL_STONE_SHUTTER       = 226347
-        
+
     };
 
     struct mob_stoneclaw_hunter_AI : public ScriptedAI
@@ -638,7 +636,7 @@ public:
 
         EventMap events;
 
-        void EnterCombat(Unit* /*unit*/) override
+        void EnterCombat(Unit* unit) override
         {
             events.ScheduleEvent(EVENT_STONE_SHUTTER, 5s);
         }
@@ -682,7 +680,7 @@ public:
     enum eSpells
     {
         SPELL_STONE_BOLT       = 186269
-        
+
     };
 
     struct mob_blightshard_shaper_AI : public ScriptedAI
@@ -691,7 +689,7 @@ public:
 
         EventMap events;
 
-        void EnterCombat(Unit* /*unit*/) override
+        void EnterCombat(Unit* unit) override
         {
             events.ScheduleEvent(EVENT_STONE_BOLT, 5s);
         }
@@ -737,7 +735,7 @@ public:
     {
         SPELL_LEECH             = 202230,
         SPELL_STONE_SHUTTER     = 226347,
-        
+
     };
 
     struct mob_stoneclaw_grubmaster_AI : public ScriptedAI
@@ -746,7 +744,7 @@ public:
 
         EventMap events;
 
-        void EnterCombat(Unit* /*unit*/) override
+        void EnterCombat(Unit* unit) override
         {
             events.ScheduleEvent(EVENT_LEECH, 5s);
             events.ScheduleEvent(EVENT_STONE_SHUTTER, 3s);

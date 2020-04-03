@@ -82,7 +82,7 @@ public:
         {
             events.Reset();
             summons.DespawnAll();
-            
+
             if (Creature* l_Dulhu = instance->GetCreature(DATA_DULHU))
                 if (Creature* l_Telu = instance->GetCreature(DATA_EARTHSHAPER_TELU))
                     if (l_Dulhu->isDead() && l_Telu->isDead())
@@ -356,7 +356,7 @@ public:
         void Reset() override
         {
             _Reset();
-            
+
             RendingChargeTimer = 7000;
             chargeVictim = NULL;
             NoxiousEruptionTimer = 10000;
@@ -372,7 +372,7 @@ public:
         void JustReachedHome() override
         {
             _JustReachedHome();
-            DoCast(me, SPELL_READY_UNARMED);     
+            DoCast(me, SPELL_READY_UNARMED);
         }
 
         void JustDied(Unit* /*killer*/) override

@@ -2621,6 +2621,12 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
 
         void PlayConversation(uint32 conversationId);
 
+        void AddDelayedTeleport(uint32 delay, uint32 mapID, float x, float y, float z, float o);
+        void AddDelayedTeleport(uint32 delay, uint32 mapID, Position pos);
+        void AddConversationDelayedTeleport(uint32 delay, uint32 conversationId, uint32 mapID, float x, float y, float z, float o);
+        void AddConversationDelayedTeleport(uint32 delay, uint32 conversationId, uint32 mapID, Position pos);
+        void AddDelayedConversation(uint32 delay, uint32 conversationId);
+
     protected:
         // Gamemaster whisper whitelist
         GuidList WhisperList;

@@ -1,20 +1,19 @@
 /*
-* Copyright (C) 2008-2018 TrinityCore <http://www.trinitycore.org/>
-*
-* This program is free software; you can redistribute it and/or modify it
-* under the terms of the GNU General Public License as published by the
-* Free Software Foundation; either version 2 of the License, or (at your
-* option) any later version.
-*
-* This program is distributed in the hope that it will be useful, but WITHOUT
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
-* more details.
-*
-* You should have received a copy of the GNU General Public License along
-
-* with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #include "AreaTrigger.h"
 #include "AreaTriggerAI.h"
@@ -109,12 +108,12 @@ public:
                     if (Creature* rokmora = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_ROKMORA)))
                         if (rokmora->IsAlive())
                             return;
-                        
+
                     instance->SetData(DATA_BARRELS_EVENT, IN_PROGRESS);
-                        
+
                     if (GameObject* goObstruction = ObjectAccessor::GetGameObject(*me, instance->GetGuidData(DATA_GO_NAVARROGG_OBSTRUCTION)))
                         goObstruction->SetGoState(GO_STATE_READY);
-                        
+
                     Talk(TALK_OBSTRUCTION);
                     me->SetWalk(false);
                     me->GetMotionMaster()->MovePoint(0, navaroggObstructionPos);
@@ -133,7 +132,7 @@ public:
                     me->GetMotionMaster()->MoveJump(startFallingPos, 15.0f, 15.0f, EVENT_JUMP, true);
                     if (instance)
                         instance->SetData(DATA_ENTRANCE_START_DIALOG, DONE);
-                    
+
                     events.ScheduleEvent(EVENT_DESPAWN, 4s);
                     break;
                 case EVENT_ULAROGG_INITIATE:
@@ -179,7 +178,7 @@ public:
                 }
             }
         }
-    }; 
+    };
 };
 
 class npc_spiritwalker_ebonhorn : public CreatureScript
@@ -215,7 +214,7 @@ public:
     struct npc_spiritwalker_ebonhorn_AI : public ScriptedAI
     {
         npc_spiritwalker_ebonhorn_AI(Creature* creature) : ScriptedAI(creature) { }
-        
+
         InstanceScript* instance;
 
         void InitializeAI() override
@@ -292,7 +291,7 @@ public:
                     break;
             }
         }
-    }; 
+    };
 };
 
 class npc_ularogg_rokmora_start : public CreatureScript
@@ -336,7 +335,7 @@ public:
             instance = me->GetInstanceScript();
         }
 
-        void DoAction(int32 action) override
+        void DoAction(int32 action)
         {
             switch(action)
             {
@@ -363,7 +362,7 @@ public:
                     me->GetMotionMaster()->MovePoint(0, ularoggAwayPos);
 
                     if (Creature* rokmora = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_ROKMORA)))
-                       rokmora->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
+                       rokmora->RemoveUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC));
 
                     events.ScheduleEvent(EVENT_DESPAWN, 7s);
                     break;
@@ -375,7 +374,7 @@ public:
                     break;
             }
         }
-    }; 
+    };
 };
 
 class boss_rokmora : public CreatureScript
@@ -438,7 +437,7 @@ public:
                 instance->SetData(DATA_ROKMORA, NOT_STARTED);
         }
 
-        void EnterCombat(Unit* /*who*/) override
+        void EnterCombat(Unit* who) override
         {
             Talk(TALK_AGGRO);
             me->SetInCombatWithZone();
@@ -534,7 +533,7 @@ public:
 
             DoMeleeAttackIfReady();
         }
-    }; 
+    };
 };
 
 // 97720
@@ -562,11 +561,11 @@ public:
             me->CastSpell(killer, SPELL_CHOKING_DUST, false);
         }
 
-        void UpdateAI(uint32 /*diff*/) override
+        void UpdateAI(uint32 diff) override
         {
             if (!UpdateVictim())
                 return;
-            
+
             DoMeleeAttackIfReady();
         }
     };
@@ -647,7 +646,7 @@ class spell_crystalline_ground_damage : public SpellScriptLoader
 
                 if (!target->isMoving())
                     return;
-                
+
                 target->CastSpell(target, 198028, false);
             }
 
@@ -674,11 +673,11 @@ public:
         {
             SPELL_RUPTURING_SKITTER = 215929
         };
-        
+
         PrepareSpellScript(spell_rokmora_shatter_SpellScript);
 
         void KillSkitters()
-        { 
+        {
             if (Unit* caster = GetCaster())
             {
                 Player* _player = nullptr;

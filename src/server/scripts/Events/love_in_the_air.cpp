@@ -95,7 +95,7 @@ class spell_love_is_in_the_air_romantic_picnic : public SpellScriptLoader
                             {
                                 caster->CastSpell(target, SPELL_ROMANTIC_PICNIC_ACHIEV, true);
 
-                                if (target->ToPlayer() && target->GetZoneId() == ZONE_DALARAN_WOTLK) 
+                                if (target->ToPlayer() && target->GetZoneId() == ZONE_DALARAN_WOTLK)
                                     target->ToPlayer()->GetAchievementMgr()->CompletedAchievement(sAchievementStore.LookupEntry(1291), nullptr); // Lonely?
                             }
                         }

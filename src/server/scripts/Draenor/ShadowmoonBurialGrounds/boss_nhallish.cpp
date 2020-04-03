@@ -119,7 +119,7 @@ public:
             m_PhaseCounter = 0;
             m_VortexDiff = 0;
             m_Vortex = false;
-            
+
             me->CastSpell(me, eNhalishSpells::SpellShadowChannel);
 
             me->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
@@ -369,7 +369,7 @@ public:
                             break;
                         case 1:
                             events.ScheduleEvent(eNhalishEvents::EventVoidVortex, 5 * TimeConstants::IN_MILLISECONDS);
-                            break;                                           
+                            break;
                     }
 
                     events.ScheduleEvent(eNhalishEvents::EventPlanarShift, 30 * TimeConstants::IN_MILLISECONDS);
@@ -422,7 +422,7 @@ public:
     shadowmoon_burial_grounds_soul() : CreatureScript("shadowmoon_burial_grounds_soul") { }
 
     bool OnGossipHello(Player* /*player*/, Creature* creature) override
-    {   
+    {
         if (shadowmoon_burial_grounds_soul::shadowmoon_burial_grounds_creaturesAI* linkAI = CAST_AI(shadowmoon_burial_grounds_soul::shadowmoon_burial_grounds_creaturesAI, creature->GetAI()))
         {
             if (linkAI && linkAI->m_HasDied)
@@ -462,14 +462,14 @@ public:
         bool m_HasDied;
 
         void Reset() override
-        {         
+        {
             events.Reset();
 
             if (!m_victimGUID.IsEmpty())
             {
                 if (Unit* victim = ObjectAccessor::GetUnit(*me, m_victimGUID))
                 {
-                    me->CastSpell(victim, eNhalishSpells::SpellSoulShred); // automatically target the summoner TARGET_UNIT_SUMMONER 
+                    me->CastSpell(victim, eNhalishSpells::SpellSoulShred); // automatically target the summoner TARGET_UNIT_SUMMONER
                     me->CastSpell(me, eShadowmoonBurialGroundsSpells::SpellUnortodoxExistanceAuraDummy);
                 }
             }
@@ -573,7 +573,7 @@ public:
             }
         }
     };
-     
+
     CreatureAI* GetAI(Creature* creature) const override
     {
         return new shadowmoon_burial_grounds_creaturesAI(creature);
@@ -703,7 +703,7 @@ public:
     }
 };
 
-/// Void Blast - 152792  
+/// Void Blast - 152792
 class spell_shadowmoon_burial_grounds_void_blast : public SpellScriptLoader
 {
 public:
@@ -752,7 +752,7 @@ public:
     }
 };
 
-/// Void Vortex - 152801 
+/// Void Vortex - 152801
 class spell_shadowmoon_burial_grounds_void_vortex : public SpellScriptLoader
 {
 public:
@@ -796,7 +796,7 @@ public:
     }
 };
 
-/// Soul Steal - 152962 
+/// Soul Steal - 152962
 class spell_shadowmoon_burial_grounds_soul_steal : public SpellScriptLoader
 {
 public:
@@ -854,7 +854,7 @@ public:
                 }
             }
         }
-  
+
         void Register() override
         {
             OnEffectHitTarget += SpellEffectFn(spell_shadowmoon_burial_grounds_soul_steal_SpellScript::HandleForceCast, SpellEffIndex::EFFECT_0, SPELL_EFFECT_FORCE_CAST);
@@ -867,7 +867,7 @@ public:
     }
 };
 
-/// Planar Shift - 153623   
+/// Planar Shift - 153623
 class spell_shadowmoon_burial_grounds_planar_shift : public SpellScriptLoader
 {
 public:
@@ -902,7 +902,7 @@ public:
     }
 };
 
-/// Void Devestation - 153072 
+/// Void Devestation - 153072
 class areatrigger_void_devestation : public AreaTriggerAI
 {
 public:

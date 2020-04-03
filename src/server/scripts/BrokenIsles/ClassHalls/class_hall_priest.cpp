@@ -17,7 +17,75 @@
  */
 
 #include "ScriptMgr.h"
+#include "ObjectMgr.h"
+#include "PhasingHandler.h"
+#include "GameObject.h"
+#include "ScriptedGossip.h"
+#include "Log.h"
+
+enum
+{
+    ///Priest Quest
+    QUEST_PRIESTLY_MATTERS = 40705,
+};
+
+
+struct npc_hooded_priestess : public ScriptedAI
+{
+    npc_hooded_priestess(Creature* creature) : ScriptedAI(creature) { SayHi = false; }
+
+    void MoveInLineOfSight(Unit* who) override
+    {
+        if (!who || !who->IsInWorld())
+            return;
+        if (!me->IsWithinDist(who, 25.0f, false))
+            return;
+
+        Player* player = who->GetCharmerOrOwnerPlayerOrPlayerItself();
+
+        if (!player)
+            return;
+        me->GetMotionMaster()->MoveFollow(player, PET_FOLLOW_DIST, me->GetFollowAngle());
+        if (!SayHi)
+        {
+            SayHi = true;
+            Talk(0, player);
+        }
+    }
+
+    void sQuestAccept(Player* player, Quest const* quest) override
+    {
+        if (quest->GetQuestId() == QUEST_PRIESTLY_MATTERS)
+        {
+            Talk(1, player);
+            me->DespawnOrUnsummon(5000);
+        }
+    }
+private:
+    bool SayHi;
+};
+
+struct npc_calia_102343 : public ScriptedAI
+{
+    npc_calia_102343(Creature* creature) : ScriptedAI(creature) {  }
+
+    void sGossipSelect(Player* player, uint32 menuId, uint32 gossipListId)
+    {
+        if (player->HasQuest(QUEST_PRIESTLY_MATTERS))
+        {
+            if (gossipListId == 0)
+            {
+                player->KilledMonsterCredit(102340);
+                CloseGossipMenuFor(player);
+                me->SummonCreature(102358, Position(2602.699951f, -534.164978f, 88.999901f, 4.55463f), TEMPSUMMON_MANUAL_DESPAWN);
+            }
+        }
+
+    }
+};
 
 void AddSC_class_hall_priest()
 {
+    RegisterCreatureAI(npc_hooded_priestess);
+    RegisterCreatureAI(npc_calia_102343);
 }

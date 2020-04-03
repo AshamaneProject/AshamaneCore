@@ -70,7 +70,7 @@ public:
                 uiEncounter[i] = NOT_STARTED;
         }
 
-        bool IsEncounterInProgress() const override 
+        bool IsEncounterInProgress() const override
         {
             for (uint8 i = 0; i < ENCOUNTERS; ++i)
             {

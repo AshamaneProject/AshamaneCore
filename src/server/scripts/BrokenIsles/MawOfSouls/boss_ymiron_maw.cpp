@@ -17,311 +17,492 @@
 
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
+#include "AreaTriggerTemplate.h"
+#include "AreaTriggerAI.h"
+#include "AreaTrigger.h"
+#include "GameObject.h"
 #include "maw_of_souls.h"
+#include <G3D/Vector3.h>
 
 enum Spells
 {
-    // Ymiron Spells
-    SPELL_BANE          = 193460,
-    SPELL_SLASH         = 193211,
-    SPELL_SCREAMS       = 193364,
-    SPELL_SIPHON        = 194665,
-    SPELL_BLOOD         = 213738,
-    SPELL_WINDS         = 193977,
-    SPELL_FALLEN        = 193566,
+    SPELL_DARK_SLASH            = 193211,
+    SPELL_SCREAMS_OF_DEAD       = 193364,
+    SPELL_BANE                  = 193460,
+    SPELL_BANE_TRIGGER          = 193463,
+    SPELL_BANE_AREATRIGGER      = 193465,
+    SPELL_WINDS_OF_NORTHREND    = 193977,
+    SPELL_ARISE_FALLEN          = 193566,
+    SPELL_ARISE_FALLEN_SUMMON   = 193594,
+    SPELL_KNEELING              = 197227,
 
-    // Bane Orb Spells
-    SPELL_BANE_NOVA     = 200194,
+    SPELL_BANE_DMG_AREATRIGGER  = 193513,
+    SPELL_BANE_DMG_TARGET       = 200194,
 
-    // Risen Warrior Spells
-    SPELL_VIGOR_STACK   = 203816
-};
+    SPELL_VIGOR                 = 203816,
 
-enum Auras
-{
-    AURA_BANE_SELF      = 193460
-};
-
-enum Adds
-{
-    NPC_FALLEN_WARRIOR  = 98246,
-    NPC_BANE_SPHERE     = 97099
-};
-
-enum Yells
-{
-    YELL_PRE_ENCOUNTER  = 0,
-    YELL_ENTER_COMBAT   = 1,
-    YELL_BANE           = 2,
-    YELL_FALLEN         = 3,
-    YELL_SCREAMS        = 4,
-    YELL_WINDS          = 5,
-    YELL_KILL           = 6,
-    YELL_KILLED         = 7
+    // Horn of Dammed
+    SPELL_HELHEIM_TELEPORT      = 191558,
+    SPELL_HELHEIM_SCENE         = 191559,
 };
 
 enum Events
 {
-    EVENT_SLASH                 = 1,
-    EVENT_SCREAMS               = 2,
-    EVENT_WINDS                 = 3,
-    EVENT_BANE                  = 4,
-    EVENT_FALLEN                = 5,
-    EVENT_CREATE_BANE_SPHERE    = 6
+    EVENT_DARK_SLASH        = 1,
+    EVENT_SCREAMS_OF_DEAD   = 2,
+    EVENT_BANE              = 3,
+    EVENT_WIND_OF_NORTHREND = 4,
+    EVENT_ARISE_FALLEN      = 5,
+
+    // Risen Fallen
+    EVENT_VIGOR             = 6,
 };
 
-Position const YmironPositions[2] =
+enum Adds
 {
-    { 7407.954102f, 7265.254883f, 51.087051f, 5.549540f },
-    { 7395.062012f, 7275.660156f, 43.792096f, 5.467066f }
+    NPC_RISEN_WARRIOR       = 98246,
 };
 
-enum Misc
+enum Says
 {
-    DATA_INSTANT_KARMA = 1
+    SAY_AGGRO   = 0,
+    SAY_SCREAM  = 1,
+    SAY_WINDS   = 2,
+    SAY_BANE    = 3,
+    SAY_ARISE   = 4,
+    SAY_KILL    = 5,
+    SAY_WIPE    = 6,
+    SAY_DEATH   = 7,
 };
 
-struct boss_ymiron_maw : public BossAI
+class boss_ymiron_fallen : public CreatureScript
 {
-    boss_ymiron_maw(Creature* creature) : BossAI(creature, DATA_YMIRON_MAW)
-    {
-        getDifficuly();
-    }
+    public:
+        boss_ymiron_fallen() : CreatureScript("boss_ymiron_fallen")
+        {}
 
-    void Reset() override
-    {
-        BossAI::Reset();
-
-        events.ScheduleEvent(EVENT_SLASH, 3.5 * IN_MILLISECONDS);
-        events.ScheduleEvent(EVENT_SCREAMS, 5.9 * IN_MILLISECONDS);
-        events.ScheduleEvent(EVENT_WINDS, 15 * IN_MILLISECONDS);
-        events.ScheduleEvent(EVENT_BANE, 21 * IN_MILLISECONDS);
-
-        if (isHeroicOrMythic)
-            events.ScheduleEvent(EVENT_FALLEN, 39 * IN_MILLISECONDS);
-    }
-
-    void EnterCombat(Unit* who) override
-    {
-        BossAI::EnterCombat(who);
-        Talk(YELL_ENTER_COMBAT);
-    }
-
-    void JustDied(Unit* killer) override
-    {
-        BossAI::JustDied(killer);
-        Talk(YELL_KILLED);
-    }
-
-    void JustReachedHome() override
-    {
-        BossAI::JustReachedHome();
-        me->SetEmoteState(EMOTE_ONESHOT_KNEEL);
-    }
-
-    void KilledUnit(Unit* victim) override
-    {
-        if(victim->IsPlayer())
-            Talk(YELL_KILL);
-    }
-
-    uint32 GetData(uint32 type) const override
-    {
-        if(type == DATA_INSTANT_KARMA)
-            return instantKarma ? 1 : 0;
-
-        return 0;
-    }
-
-    void MoveInLineOfSight(Unit* who) override
-    {
-        if(who->IsPlayer() && me->GetDistance2d(who) < 85.0f && !me->IsInCombat())
+        struct boss_ymiron_fallen_AI : public BossAI
         {
-            //Talk(YELL_PRE_ENCOUNTER);
-            // Should start the event here
-        }
-    }
+            boss_ymiron_fallen_AI(Creature* creature) : BossAI(creature, DATA_YMIRON)
+            {}
 
-    void SummonedCreatureDies(Creature* /*summoned*/, Unit* /*who*/) override
-    {
-        // Achievement Logic Missing
-    }
-
-    void UpdateAI(uint32 diff) override
-    {
-        if(!UpdateVictim())
-            return;
-
-        events.Update(diff);
-
-        if(me->HasUnitState(UNIT_STATE_CASTING))
-            return;
-
-        if(me->GetDistance(me->GetHomePosition()) > 120.0f)
-        {
-            EnterEvadeMode(EVADE_REASON_BOUNDARY);
-            return;
-        }
-
-        if(me->HasAura(AURA_BANE_SELF))
-        {
-            if(createdSpheres <= allowedSpheres)
+            void Reset() override
             {
-                createdSpheres++;
-                activeSpheres++;
-                me->SummonCreature(NPC_BANE_SPHERE, me->GetPositionX() + frand(-5.0f, 5.0f), me->GetPositionY() + frand(-5.0f, 5.0f), me->GetPositionZ(), 2.0f, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 15 * IN_MILLISECONDS);
+                _Reset();
+                HandleHorn(false);
             }
-        }
 
-        while(uint32 eventID = events.ExecuteEvent())
-        {
-            switch(eventID)
+            void HandleHorn(bool activated)
             {
-                case EVENT_SLASH:
-                    DoCastVictim(SPELL_SLASH);
-                    events.ScheduleEvent(EVENT_SLASH, 14.6 * IN_MILLISECONDS);
-                    break;
+                if (GameObject* horn = me->FindNearestGameObject(GO_HORN_OF_DAMMED, 150.0f))
+                {
+                    if (activated)
+                        horn->RemoveFlag(GO_FLAG_NOT_SELECTABLE);
+                    else
+                        horn->AddFlag(GO_FLAG_NOT_SELECTABLE);
+                }
+            }
 
-                case EVENT_SCREAMS:
-                    DoCastVictim(SPELL_SCREAMS);
-                    Talk(YELL_SCREAMS);
-                    events.ScheduleEvent(EVENT_SCREAMS, 23 * IN_MILLISECONDS);
-                    break;
+            void EnterCombat(Unit* /**/) override
+            {
+                Talk(SAY_AGGRO);
+                me->RemoveAurasDueToSpell(SPELL_KNEELING);
+                _EnterCombat();
+                events.ScheduleEvent(EVENT_BANE, Seconds(23));
+                events.ScheduleEvent(EVENT_DARK_SLASH, 3500);
+                events.ScheduleEvent(EVENT_SCREAMS_OF_DEAD, Seconds(6));
+                events.ScheduleEvent(EVENT_WIND_OF_NORTHREND, Seconds(15));
+            }
 
-                case EVENT_WINDS:
-                    DoCastVictim(SPELL_WINDS);
-                    Talk(YELL_WINDS);
-                    events.ScheduleEvent(EVENT_WINDS, 24 * IN_MILLISECONDS);
-                    break;
+            void JustReachedHome() override
+            {
+                Talk(SAY_WIPE);
+                me->CastSpell(me, SPELL_KNEELING, true);
+                _JustReachedHome();
+            }
 
-                case EVENT_BANE:
-                    DoCast(SPELL_BANE);
-                    Talk(YELL_BANE);
-                    events.ScheduleEvent(EVENT_BANE, 49.5 * IN_MILLISECONDS);
-                    if(isHeroicOrMythic)
-                        events.ScheduleEvent(EVENT_FALLEN, 67.4 * IN_MILLISECONDS);
-                    break;
+            void KilledUnit(Unit* victim) override
+            {
+                if (victim && victim->GetTypeId() == TYPEID_PLAYER)
+                    Talk(SAY_KILL);
+            }
 
-                case EVENT_FALLEN:
-                    DoCast(SPELL_FALLEN);
-                    Talk(YELL_FALLEN);
-                    for(uint32 sphere = 0; sphere < activeSpheres; sphere++)
+            void JustDied(Unit* /**/) override
+            {
+                Talk(SAY_DEATH);
+                HandleHorn(true);
+                _JustDied();
+            }
+
+            void ExecuteEvent(uint32 eventId) override
+            {
+                switch (eventId)
+                {
+                    case EVENT_BANE:
                     {
-                        if(Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100.0f, true))
-                        {
-                            Position playerPosition = target->GetPosition();
-                            me->SummonCreature(NPC_FALLEN_WARRIOR, playerPosition.m_positionX + frand(-3.0f, 3.0f), playerPosition.m_positionY + frand(-3.0f, 3.0f), playerPosition.m_positionZ, 2.0f, TEMPSUMMON_DEAD_DESPAWN);
-                        }
+                        Talk(SAY_BANE);
+                        DoCast(me, SPELL_BANE);
+                        events.ScheduleEvent(EVENT_BANE, Minutes(1));
+
+                        if (IsHeroic())
+                            events.ScheduleEvent(EVENT_ARISE_FALLEN, Seconds(19));
+                        break;
                     }
-                    createdSpheres = 0;
-                    activeSpheres = 0;
-                    break;
 
-                default:
-                    break;
+                    case EVENT_DARK_SLASH:
+                    {
+                        DoCastVictim(SPELL_DARK_SLASH);
+                        events.ScheduleEvent(EVENT_DARK_SLASH, Seconds(17));
+                        break;
+                    }
+
+                    case EVENT_SCREAMS_OF_DEAD:
+                    {
+                        Talk(SAY_SCREAM);
+                        DoCast(me, SPELL_SCREAMS_OF_DEAD);
+                        events.ScheduleEvent(EVENT_SCREAMS_OF_DEAD, Seconds(30));
+                        break;
+                    }
+
+                    case EVENT_WIND_OF_NORTHREND:
+                    {
+                        Talk(SAY_WINDS);
+                        DoCast(me, SPELL_WINDS_OF_NORTHREND);
+                        events.ScheduleEvent(EVENT_WIND_OF_NORTHREND, Seconds(30));
+                        break;
+                    }
+
+                    case EVENT_ARISE_FALLEN:
+                    {
+                        Talk(SAY_ARISE);
+                        me->CastSpell(me, SPELL_ARISE_FALLEN, false);
+                        break;
+                    }
+                }
             }
-        }
+        };
 
-        DoMeleeAttackIfReady();
-    }
-
-    void updateSpheresCount()
-    {
-        --activeSpheres;
-    }
-
-    void getDifficuly()
-    {
-        Difficulty instanceDifficulty = instance->instance->GetDifficultyID();
-        double healthModifier = 20;
-        double damageModifier = 20;
-
-        if(instanceDifficulty == DIFFICULTY_NORMAL)
+        CreatureAI* GetAI(Creature* creature) const override
         {
-            healthModifier = 1.0;
-            damageModifier = 1.0;
+            return new boss_ymiron_fallen_AI(creature);
         }
-        else if(instanceDifficulty == DIFFICULTY_HEROIC)
-        {
-            healthModifier = 1.0571428043; // HealthModifier 36.99
-            damageModifier = 1.39285714286;
-            isHeroicOrMythic = true;
-        }
-        else if(instanceDifficulty == DIFFICULTY_MYTHIC)
-        {
-            healthModifier = 1.32142855675; // HealthModifier 46.25
-            damageModifier = 1.95;
-            isHeroicOrMythic = true;
-        }
-
-        uint64 difficultyAdjustedHealth = static_cast<unsigned long long>(me->GetHealth() * healthModifier);
-        me->SetMaxHealth(difficultyAdjustedHealth);
-        me->SetHealth(difficultyAdjustedHealth);
-        me->SetModifierValue(UNIT_MOD_DAMAGE_MAINHAND, BASE_VALUE, static_cast<float>(damageModifier));
-    }
-
-    private:
-        bool instantKarma;
-        bool isHeroicOrMythic = false;
-
-        // Bane Spheres Variables
-        uint32 createdSpheres = 0;
-        uint32 activeSpheres = 0;
-        uint32 allowedSpheres = 7;
 };
 
-// TEMP NPC 97099
-struct npc_bane_sphere : public ScriptedAI
+class npc_mos_risen_warrior : public CreatureScript
 {
-    npc_bane_sphere(Creature* creature) : ScriptedAI(creature) { }
+    public:
+        npc_mos_risen_warrior() : CreatureScript("npc_mos_risen_warrior")
+        {}
 
-    void Reset() override
-    {
-        me->setFaction(84);
-        me->SetSpeed(MOVE_RUN, 15.0f);
-
-        if(Creature* boss = instance->GetCreature(NPC_YMIRON_MAW))
-            me->GetMotionMaster()->MoveCirclePath(boss->GetPositionX() + frand(-10.0f, 10.0f), boss->GetPositionY() + frand(-10.0f, 10.0f), boss->GetPositionZ(), frand(12.0f, 18.0f), true, 16);
-    }
-
-    void MoveInLineOfSight(Unit* who) override
-    {
-        if(who->IsPlayer() && me->GetDistance2d(who) < 2.3f)
+        struct npc_mos_risen_warrior_AI : public ScriptedAI
         {
-            DoCast(SPELL_BANE_NOVA);
-            if(Creature* boss = instance->GetCreature(NPC_YMIRON_MAW))
-                ENSURE_AI(boss_ymiron_maw, boss->AI())->updateSpheresCount();
-            me->DespawnOrUnsummon();
-        }
-    }
+            npc_mos_risen_warrior_AI(Creature* creature) : ScriptedAI(creature)
+            {}
 
-    void UpdateAI(uint32 /*diff*/) override { }
+            void EnterCombat(Unit* /**/) override
+            {
+                DoCast(me, SPELL_VIGOR, true);
+                _events.ScheduleEvent(EVENT_VIGOR, Seconds(6));
+            }
+
+            void UpdateAI(uint32 diff) override
+            {
+                if (!UpdateVictim())
+                    return;
+
+                _events.Update(diff);
+
+                if (me->HasUnitState(UNIT_STATE_CASTING))
+                    return;
+
+                while (uint32 eventId = _events.ExecuteEvent())
+                {
+                    if (eventId == EVENT_VIGOR)
+                    {
+                        DoCast(me, SPELL_VIGOR, true);
+                        _events.ScheduleEvent(EVENT_VIGOR, Seconds(6));
+                    }
+                }
+
+                DoMeleeAttackIfReady();
+            }
+
+            private:
+                EventMap _events;
+        };
+
+        CreatureAI* GetAI(Creature* creature) const override
+        {
+            return new npc_mos_risen_warrior_AI(creature);
+        }
 };
 
-// NPC 98246
-struct npc_bane_skeleton : public ScriptedAI
+class at_bane_essence : public AreaTriggerEntityScript
 {
-    npc_bane_skeleton(Creature* creature) : ScriptedAI(creature) { }
+    public:
+        at_bane_essence() : AreaTriggerEntityScript("at_bane_essence")
+        {}
 
-    void Reset() override
-    {
-        me->GetScheduler().Schedule(0s, [this](TaskContext context)
+        struct at_bane_essence_AI : public AreaTriggerAI
         {
-            DoCast(me, SPELL_VIGOR_STACK);
-            context.Repeat(6s);
-        });
-    }
+            at_bane_essence_AI(AreaTrigger* at) : AreaTriggerAI(at)
+            {}
 
-    void JustDied(Unit* /*killer*/) override
-    {
-        // Handle mechanics when add killed by another one (for the achievement)
-    }
+            void OnInitialize()
+            {
+                if (!at->GetCaster())
+                    return;
+
+                Unit* caster = at->GetCaster();
+
+                G3D::Vector2 dist = { at->GetPositionX() - caster->GetPositionX(), at->GetPositionY() - caster->GetPositionY() };
+                G3D::Vector2 center = { caster->GetPositionX(), caster->GetPositionY() };
+
+                float radius = dist.length();
+                float step = 2 * float(M_PI)/ 23.f;
+                float angle = 5.0f + at->GetOrientation();
+
+                for (uint8 i = 0; i < 23; i++, angle += step)
+                {
+                    G3D::Vector3 point;
+
+                    point.x = center.x  + radius * cosf(angle);
+                    point.y = center.y + radius * sinf(angle);
+                    point.z = at->GetPositionZ();
+
+                    _points.push_back(point);
+                }
+
+                at->InitSplines(_points, at->GetDuration() * 0.85);
+
+            }
+
+            void OnUnitEnter(Unit* target) override
+            {
+                if (!target)
+                    return;
+
+                if (target->GetTypeId() == TYPEID_PLAYER)
+                {
+                    at->GetCaster()->CastSpell(target, SPELL_BANE_DMG_AREATRIGGER, true);
+                    at->GetCaster()->CastSpell(target, SPELL_BANE_DMG_TARGET, true);
+                    at->Remove();
+                }
+            }
+
+            private:
+                std::vector<G3D::Vector3> _points;
+        };
+
+        AreaTriggerAI* GetAI(AreaTrigger* at) const override
+        {
+            return new at_bane_essence_AI(at);
+        }
+};
+
+class spell_ymiron_fallen_bane : public SpellScriptLoader
+{
+    public:
+        spell_ymiron_fallen_bane() : SpellScriptLoader("spell_ymiron_fallen_bane")
+        {}
+
+        class spell_ymiron_fallen_bane_SpellScript : public SpellScript
+        {
+            PrepareSpellScript(spell_ymiron_fallen_bane_SpellScript);
+
+            void HandleCast()
+            {
+                if (!GetCaster())
+                    return;
+
+                Unit* caster = GetCaster();
+                float radius = 20.f;
+                float angle = float(M_PI)/6;
+
+                for (uint8 i = 0; i < 5; ++i)
+                {
+                    Position pos = caster->GetNearPosition(radius, angle);
+                    caster->CastSpell(pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ(), SPELL_BANE_TRIGGER, true);
+                }
+            }
+
+            void Register()
+            {
+                OnCast += SpellCastFn(spell_ymiron_fallen_bane_SpellScript::HandleCast);
+            }
+        };
+
+        class spell_ymiron_fallen_bane_AuraScript : public AuraScript
+        {
+            PrepareAuraScript(spell_ymiron_fallen_bane_AuraScript);
+
+            bool Load() override
+            {
+                _reverse = false;
+                _restantAreas = 10;
+                _radius = 30.0f;
+                _angle = float(M_PI)/6.0f;
+                return true;
+            }
+
+            void HandlePeriodic(AuraEffect const* /**/)
+            {
+                if (!GetCaster())
+                    return;
+
+                Unit* caster = GetCaster();
+                Difficulty diff = GetCaster()->GetMap()->GetDifficultyID();
+
+                if (_restantAreas <= 0)
+                    return;
+
+                if (diff == DIFFICULTY_HEROIC)
+                {
+                    for (uint8 i = 0; i < 2; ++i && _restantAreas > 0, _restantAreas--)
+                    {
+
+                        Position pos = caster->GetNearPosition(_radius, _angle);
+
+                        _angle += _angle;
+
+                        if (_radius <= 10.0f)
+                            _reverse = true;
+                        else if (_radius >= 30.0f)
+                            _reverse = false;
+
+                        if (_reverse)
+                            _radius += 5.0f;
+                        else
+                            _radius -= 5.0f;
+
+                        caster->CastSpell(pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ(), SPELL_BANE_TRIGGER, true);
+                    }
+                }
+                else if (diff == DIFFICULTY_MYTHIC)
+                {
+                    Position pos = caster->GetNearPosition(_radius, _angle);
+
+                    _angle += _angle;
+
+                    if (_radius <= 10.0f)
+                        _reverse = true;
+                    else if (_radius >= 30.0f)
+                        _reverse = false;
+
+                    if (_reverse)
+                        _radius += 5.0f;
+                    else
+                        _radius -= 5.0f;
+
+                    caster->CastSpell(pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ(), SPELL_BANE_TRIGGER, true);
+                    _restantAreas--;
+                }
+            }
+
+            void Register()
+            {
+                OnEffectPeriodic += AuraEffectPeriodicFn(spell_ymiron_fallen_bane_AuraScript::HandlePeriodic, EFFECT_0, SPELL_AURA_PERIODIC_DUMMY);
+            }
+
+            private:
+                uint8 _restantAreas;
+                bool _reverse;
+                float _radius;
+                float _angle;
+        };
+
+        SpellScript* GetSpellScript() const override
+        {
+            return new spell_ymiron_fallen_bane_SpellScript();
+        }
+
+        AuraScript* GetAuraScript() const override
+        {
+            return new spell_ymiron_fallen_bane_AuraScript();
+        }
+};
+
+class spell_ymiron_arise_fallen : public SpellScriptLoader
+{
+    public:
+        spell_ymiron_arise_fallen() : SpellScriptLoader("spell_ymiron_arise_fallen")
+        {}
+
+        class spell_ymiron_arise_fallen_SpellScript : public SpellScript
+        {
+            public:
+                PrepareSpellScript(spell_ymiron_arise_fallen_SpellScript);
+
+                void FilterTargets(SpellTargets & targets)
+                {
+                    if (targets.empty())
+                        return;
+
+                    std::vector<AreaTrigger*> banes_essences(GetCaster()->GetAreaTriggers(SPELL_BANE_AREATRIGGER));
+
+                    if (banes_essences.empty())
+                    {
+                        targets.clear();
+                        return;
+                    }
+
+                    targets.remove_if(PlayerFilter());
+
+                    for (auto & it : banes_essences)
+                    {
+                        it->Remove();
+                        WorldObject* target = Trinity::Containers::SelectRandomContainerElement(targets);
+                        GetCaster()->CastSpell(target->ToUnit(), SPELL_ARISE_FALLEN_SUMMON, true);
+                    }
+                }
+
+                void Register()
+                {
+                    OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_ymiron_arise_fallen_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_SRC_AREA_ENEMY);
+                }
+        };
+
+        SpellScript* GetSpellScript() const override
+        {
+            return new spell_ymiron_arise_fallen_SpellScript();
+        }
+};
+
+class go_echoing_horn_of_dammed : public GameObjectScript
+{
+    public:
+        go_echoing_horn_of_dammed() : GameObjectScript("go_echoing_horn_of_dammed")
+        {}
+
+        bool OnGossipHello(Player* player, GameObject* go)
+        {
+            if (!player)
+                return false;
+
+            Map::PlayerList const & players = go->GetMap()->GetPlayers();
+
+            if (!players.isEmpty())
+            {
+                for (auto & it : players)
+                {
+                    if (Player* player_ptr = it.GetSource())
+                    {
+                        player_ptr->CastSpell(player_ptr, SPELL_HELHEIM_SCENE, true);
+                        player_ptr->CastSpell(player_ptr, SPELL_HELHEIM_TELEPORT, true);
+                    }
+                }
+            }
+
+            return true;
+        }
 };
 
 void AddSC_boss_ymiron_maw()
 {
-    RegisterCreatureAI(boss_ymiron_maw);
-    RegisterCreatureAI(npc_bane_skeleton);
-    RegisterCreatureAI(npc_bane_sphere);
-    //new achievement_instant_karma();
+    new boss_ymiron_fallen();
+    new npc_mos_risen_warrior();
+    new spell_ymiron_fallen_bane();
+    new spell_ymiron_arise_fallen();
+    new at_bane_essence();
+    new go_echoing_horn_of_dammed();
 }

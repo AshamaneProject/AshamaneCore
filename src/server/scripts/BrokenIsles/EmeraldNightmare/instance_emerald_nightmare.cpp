@@ -25,8 +25,17 @@
 
 DoorData const doorData[] =
 {
-    { GOB_NYTHENDRA_ENTRANCE_1,     DATA_NYTHENDRA,     DOOR_TYPE_ROOM  },
-    { GOB_NYTHENDRA_ENTRANCE_2,     DATA_NYTHENDRA,     DOOR_TYPE_ROOM  },
+    { GOB_NYTHENDRA_ENTRANCE_1,     DATA_NYTHENDRA,     DOOR_TYPE_PASSAGE },
+    { GOB_NYTHENDRA_ENTRANCE_2,     DATA_NYTHENDRA,     DOOR_TYPE_PASSAGE },
+    { GOB_NYTHENDRA_ENTRANCE_3,     DATA_NYTHENDRA,     DOOR_TYPE_ROOM },
+    { GOB_NYTHENDRA_ENTRANCE_4,     DATA_NYTHENDRA,     DOOR_TYPE_ROOM },
+    { GOB_NYTHENDRA_ENTRANCE_5,     DATA_NYTHENDRA,     DOOR_TYPE_PASSAGE },
+    { GOB_NYTHENDRA_ENTRANCE_6,     DATA_NYTHENDRA,     DOOR_TYPE_PASSAGE },
+    { GOB_NYTHENDRA_ENTRANCE_7,     DATA_NYTHENDRA,     DOOR_TYPE_PASSAGE },
+    { GOB_URSOC_DOOR,               DATA_URSOC,         DOOR_TYPE_ROOM },
+    { GOB_ILGYNOTH_DOOR_1,          DATA_ILGYNOTH,      DOOR_TYPE_ROOM },
+    { GOB_ILGYNOTH_DOOR_2,          DATA_ILGYNOTH,      DOOR_TYPE_ROOM },
+    { GOB_ILGYNOTH_DOOR_3,          DATA_ILGYNOTH,      DOOR_TYPE_ROOM },
 };
 
 struct instance_emerald_nightmare : public InstanceScript
@@ -37,6 +46,15 @@ struct instance_emerald_nightmare : public InstanceScript
     {
         SetBossNumber(DATA_MAX_ENCOUNTERS);
         LoadDoorData(doorData);
+
+        if (GetBossState(DATA_XAVIUS) != DONE)
+            SetBossState(DATA_PRE_EVENT_XAVIUS, NOT_STARTED); // Reset event
+    }
+
+    void OnPlayerEnter(Player* player) override
+    {
+        if (GetBossState(DATA_XAVIUS) == IN_PROGRESS)
+            player->CastSpell(player, 189960, true); //Alter power
     }
 
     void OnCreatureCreate(Creature* creature) override

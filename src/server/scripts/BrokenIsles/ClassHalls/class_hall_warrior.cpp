@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
- * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
+ * Copyright (C) 2008-2017 TrinityCore <http://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -19,14 +19,187 @@
 #include "MotionMaster.h"
 #include "MovementTypedefs.h"
 #include "ObjectAccessor.h"
-#include "PhasingHandler.h"
-#include "Player.h"
-#include "ScriptedCreature.h"
-#include "ScriptedGossip.h"
 #include "ScriptMgr.h"
 #include "Spell.h"
 #include "SpellPackets.h"
-#include "TemporarySummon.h"
+#include "ScriptedGossip.h"
+#include "Player.h"
+#include "PhasingHandler.h"
+#include "Position.h"
+#include "QuestDef.h"
+#include "ScriptedCreature.h"
+
+enum WarriorClassHall
+{
+    // Emotes
+    ONE_SHOT_TALK                                               = 1,
+    ONE_SHOT_LAUGH                                              = 11,
+    ONE_SHOT_ROAR                                               = 15,
+    ONE_SHOT_SHOT                                               = 22,
+    ONE_SHOT_POINT                                              = 25,
+    ONE_SHOT_SALUTE                                             = 66,
+    ONE_SHOT_CHEER_NO_SHEATHE                                   = 71,
+    ONE_SHOT_EAT_NO_SHEATHE                                     = 92,
+    ONE_SHOT_LAUGH_NO_SHEATHE                                   = 153,
+    ONE_SHOT_NO                                                 = 274,
+
+    // Texts
+    EITRIGG_TEXT_00                                             = 0,
+    EITRIGG_TEXT_01                                             = 1,
+    SERGEANT_DALTON_TEXT_00                                     = 0,
+    SERGEANT_DALTON_TEXT_01                                     = 1,
+    SERGEANT_DALTON_TEXT_02                                     = 2,
+    SAY_FIRST_LINE                                              = 1,
+    SAY_SECOND_LINE                                             = 2,
+    SAY_THIRD_LINE                                              = 3,
+
+    // Spells
+    SPELL_EMOTE_BELCH                                           = 65937,
+    SPELL_WARRIOR_ORDER_FORMATION_SCENE                         = 193709,
+    SPELL_CANCEL_COMPLETE_SCENE_WARRIOR_ORDER_FORMATION         = 193711,
+    SPELL_TELE_DALARAN                                          = 191473,
+    SPELL_TELE_STORMHEIM                                        = 225220,
+    SPELL_TELE_ASZUNA                                           = 225163,
+    SPELL_TELE_VALSHARAH                                        = 225115,
+    SPELL_TELE_HIGHMOUNTAIN                                     = 205813,
+    SPELL_TELE_SURAMAR                                          = 225233,
+    SPELL_TELE_BROKEN_SHORE                                     = 241928,
+
+    // Phases
+    PHASE_CLASS_WARRIOR_HORDE                                   = 7300,
+    PHASE_CLASS_WARRIOR_ALIANCE                                 = 7302,
+    PHASE_ODYN                                                  = 5107,
+    PHASE_DANICA                                                = 5090,
+
+    // Quests
+    QUEST_H_A_DESPERATE_PLEA                                    = 41052,
+    QUEST_H_RETURN_TO_THE_BROKEN_SHORE                          = 38904,
+    QUEST_A_AN_IMPORTANT_MISSION                                = 42814,
+    QUEST_ODYN_AND_THE_VALARJAR                                 = 39654,
+
+    // Creatures
+    NPC_EITRIGG_93775                                           = 93775,
+    NPC_SERGEANT_DALTON_108961                                  = 108961,
+    NPC_KILL_CREDIT_FOLLOWED_DANICA                             = 103036,
+    NPC_DANICA_THE_RECLAIMER                                    = 93823,
+    NPC_KILL_CREDIT_ARRIVED_AT_ODYN                             = 96532,
+
+    // Items
+    ITEM_MONSTER_ITEM_MUTTON_WITH_BITE                          = 2202,
+    ITEM_MONSTER_ITEM_TANKARD_WOODEN                            = 2703,
+    ITEM_HOV_2H_AXE                                             = 137176,
+    ITEM_HOV_1H_SWORD                                           = 137263,
+    ITEM_HOV_SHIELD_2                                           = 137265,
+
+    // Points
+    POINT_FORGE_OF_ODYN                                         = 1,
+    POINT_INTRODUCE_MEAD_HALL                                   = 2,
+    POINT_ODYN                                                  = 3,
+    POINT_LEAVING                                               = 1,
+    POINT_TABLE                                                 = 1,
+    POINT_ODYN_1                                                = 2,
+    POINT_DESPAWN                                               = 3,
+    POINT_DESPAWN_1                                             = 4,
+    POINT_DESPAWN_2                                             = 1,
+    POINT_JUMP                                                  = 2,
+    POINT_DESPAWN_JUMP                                          = 3,
+
+    // Misc
+    ZONE_LEGION_DALARAN                                         = 7502
+};
+
+struct npc_eitrigg_93775 : public ScriptedAI
+{
+    npc_eitrigg_93775(Creature* creature) : ScriptedAI(creature)
+    {
+        SayHi = false;
+    }
+
+    void MoveInLineOfSight(Unit* who) override
+    {
+        if (!who || !who->IsInWorld())
+            return;
+
+        if (!me->IsWithinDist(who, 25.0f, false))
+            return;
+
+        Player* player = who->GetCharmerOrOwnerPlayerOrPlayerItself();
+
+        if (!player)
+            return;
+
+        me->GetMotionMaster()->MoveFollow(player, PET_FOLLOW_DIST, me->GetFollowAngle());
+
+        if (!SayHi)
+        {
+            SayHi = true;
+            Talk(EITRIGG_TEXT_00, player);
+        }
+    }
+
+    void sQuestAccept(Player* player, Quest const* quest) override
+    {
+        if (quest->GetQuestId() == QUEST_H_A_DESPERATE_PLEA)
+        {
+            if (player->IsInHorde() && player->GetAreaId() == ZONE_LEGION_DALARAN && player->getClass() == CLASS_WARRIOR)
+                PhasingHandler::AddPhase(player, PHASE_CLASS_WARRIOR_HORDE);
+
+            Talk(EITRIGG_TEXT_01, player);
+            me->DespawnOrUnsummon(5000);
+        }
+    }
+
+private:
+
+    bool SayHi;
+};
+
+struct npc_sergeant_dalton_108961 : public ScriptedAI
+{
+    npc_sergeant_dalton_108961(Creature* creature) : ScriptedAI(creature)
+    {
+        SayHi = false;
+    }
+
+    void MoveInLineOfSight(Unit* who) override
+    {
+        if (!who || !who->IsInWorld())
+            return;
+
+        if (!me->IsWithinDist(who, 25.0f, false))
+            return;
+
+        Player* player = who->GetCharmerOrOwnerPlayerOrPlayerItself();
+
+        if (!player)
+            return;
+
+        me->GetMotionMaster()->MoveFollow(player, PET_FOLLOW_DIST, me->GetFollowAngle());
+
+        if (!SayHi)
+        {
+            SayHi = true;
+            Talk(SERGEANT_DALTON_TEXT_00, player);
+        }
+    }
+
+    void sQuestAccept(Player* player, Quest const* quest) override
+    {
+        if (quest->GetQuestId() == QUEST_A_AN_IMPORTANT_MISSION)
+        {
+            if (player->IsInAlliance() && player->GetAreaId() == ZONE_LEGION_DALARAN && player->getClass() == CLASS_WARRIOR)
+                PhasingHandler::AddPhase(player, PHASE_CLASS_WARRIOR_ALIANCE);
+            Talk(SERGEANT_DALTON_TEXT_01, player);
+            /// delay 1s
+            Talk(SERGEANT_DALTON_TEXT_02, player);
+            me->DespawnOrUnsummon(5000);
+        }
+    }
+
+private:
+
+    bool SayHi;
+};
 
 // Jump to teleport out of the class hall
 // 191473 (Dalaran), 225220 (Stormheim), 225163 (Aszuna), 225115 (Val'sharah),
@@ -61,6 +234,7 @@ class spell_class_hall_warrior_jump_teleport : public SpellScript
     void HandleTeleport(SpellEffIndex effIndex)
     {
         PreventHitDefaultEffect(effIndex);
+
         if (Player* player = GetHitPlayer())
         {
             player->SendDirectMessage(WorldPackets::Spells::CustomLoadScreen(GetSpellInfo()->Id, GetSpellInfo()->GetEffect(effIndex)->MiscValue).Write());
@@ -76,18 +250,8 @@ class spell_class_hall_warrior_jump_teleport : public SpellScript
     }
 
 private:
-    WorldLocation _loc;
-};
 
-enum classHallTeleportSpells
-{
-    SPELL_TELE_DALARAN      = 191473,
-    SPELL_TELE_STORMHEIM    = 225220,
-    SPELL_TELE_ASZUNA       = 225163,
-    SPELL_TELE_VALSHARAH    = 225115,
-    SPELL_TELE_HIGHMOUNTAIN = 205813,
-    SPELL_TELE_SURAMAR      = 225233,
-    SPELL_TELE_BROKEN_SHORE = 241928
+    WorldLocation _loc;
 };
 
 // 96679
@@ -98,6 +262,7 @@ struct npc_class_hall_warrior_aerylia : public ScriptedAI
     void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId) override
     {
         uint32 spellId = 0;
+
         switch (gossipListId)
         {
             case 2:
@@ -133,40 +298,6 @@ struct npc_class_hall_warrior_aerylia : public ScriptedAI
 
         CloseGossipMenuFor(player);
     }
-};
-
-enum ValarjarSpells
-{
-    SPELL_EMOTE_BELCH                                   = 65937,
-    SPELL_WARRIOR_ORDER_FORMATION_SCENE                 = 193709,
-    SPELL_CANCEL_COMPLETE_SCENE_WARRIOR_ORDER_FORMATION = 193711
-};
-
-enum Phases
-{
-    PHASE_ODYN      = 5107,
-    PHASE_DANICA    = 5090
-};
-
-enum Quests
-{
-    QUEST_ODYN_AND_THE_VALARJAR = 39654
-};
-
-enum Creatures
-{
-    NPC_KILL_CREDIT_FOLLOWED_DANICA = 103036,
-    NPC_DANICA_THE_RECLAIMER        = 93823,
-    NPC_KILL_CREDIT_ARRIVED_AT_ODYN = 96532
-};
-
-enum Items
-{
-    ITEM_MONSTER_ITEM_MUTTON_WITH_BITE  = 2202,
-    ITEM_MONSTER_ITEM_TANKARD_WOODEN    = 2703,
-    ITEM_HOV_2H_AXE                     = 137176,
-    ITEM_HOV_1H_SWORD                   = 137263,
-    ITEM_HOV_SHIELD_2                   = 137265
 };
 
 struct npc_danica_the_reclaimer : public ScriptedAI
@@ -208,20 +339,6 @@ struct npc_danica_the_reclaimer : public ScriptedAI
 
     using DanicaPath03Size = std::extent<decltype(DanicaPath03)>;
 
-    enum Texts
-    {
-        SAY_FIRST_LINE  = 1,
-        SAY_SECOND_LINE = 2,
-        SAY_THIRD_LINE  = 3
-    };
-
-    enum Points
-    {
-        POINT_FORGE_OF_ODYN,
-        POINT_INTRODUCE_MEAD_HALL,
-        POINT_ODYN
-    };
-
     // Should be the player
     // Personal spawn ? Demon Creator is the player who accepts the quest, no phasing involved but the quest giver dissapears and gets replaced with a new one
     void IsSummonedBy(Unit* summoner) override
@@ -231,6 +348,7 @@ struct npc_danica_the_reclaimer : public ScriptedAI
 
         me->RemoveNpcFlag(UNIT_NPC_FLAG_GOSSIP);
         _summonerGuid = summoner->GetGUID();
+
         _scheduler.Schedule(2s, [this, summoner](TaskContext /*context*/)
         {
             me->GetMotionMaster()->MoveSmoothPath(POINT_FORGE_OF_ODYN, DanicaPath01, DanicaPath01Size::value, false, true);
@@ -254,7 +372,7 @@ struct npc_danica_the_reclaimer : public ScriptedAI
                 _scheduler.Schedule(10s, [this](TaskContext /*context*/)
                 {
                     Player* player = ObjectAccessor::FindConnectedPlayer(_summonerGuid);
-                    me->GetMotionMaster()->MoveSmoothPath(POINT_ODYN, DanicaPath03, DanicaPath03Size::value, false, true);
+                    me->GetMotionMaster()->MoveSmoothPath(POINT_ODYN_1, DanicaPath03, DanicaPath03Size::value, false, true);
                     Talk(SAY_THIRD_LINE, player);
 
                     if (player)
@@ -262,7 +380,7 @@ struct npc_danica_the_reclaimer : public ScriptedAI
                 });
                 break;
             case POINT_ODYN:
-                me->DespawnOrUnsummon();
+                me->DisappearAndDie();
                 break;
             default:
                 break;
@@ -278,6 +396,7 @@ struct npc_danica_the_reclaimer : public ScriptedAI
     void sQuestAccept(Player* player, Quest const* /*quest*/) override
     {
         TempSummon* summon = player->SummonCreature(NPC_DANICA_THE_RECLAIMER, 1059.613f, 7224.605f, 100.4608f, 0.03462749f, TEMPSUMMON_MANUAL_DESPAWN, 0, true);
+
         if (!summon)
             return;
 
@@ -285,6 +404,7 @@ struct npc_danica_the_reclaimer : public ScriptedAI
     }
 
 private:
+
     TaskScheduler _scheduler;
     ObjectGuid _summonerGuid;
 };
@@ -292,13 +412,7 @@ private:
 struct npc_feasting_valarjar : public ScriptedAI
 {
     npc_feasting_valarjar(Creature* creature) : ScriptedAI(creature),
-        _randomEmotes({ EMOTE_ONESHOT_EAT_NO_SHEATHE, EMOTE_ONESHOT_LAUGH_NO_SHEATHE, EMOTE_ONESHOT_ROAR, EMOTE_ONESHOT_LAUGH, EMOTE_ONESHOT_POINT,
-            EMOTE_ONESHOT_TALK, EMOTE_ONESHOT_CHEER_NO_SHEATHE }) { }
-
-    enum Points
-    {
-        POINT_LEAVING
-    };
+        _randomEmotes({ ONE_SHOT_EAT_NO_SHEATHE, ONE_SHOT_LAUGH_NO_SHEATHE, ONE_SHOT_ROAR, ONE_SHOT_LAUGH, ONE_SHOT_POINT, ONE_SHOT_TALK, ONE_SHOT_CHEER_NO_SHEATHE }) { }
 
     void UpdateAI(uint32 diff) override
     {
@@ -310,12 +424,15 @@ struct npc_feasting_valarjar : public ScriptedAI
         _scheduler.Schedule(5s, 30s, [this](TaskContext context)
         {
             uint32 emoteID = Trinity::Containers::SelectRandomContainerElement(_randomEmotes);
-            if (emoteID == EMOTE_ONESHOT_EAT_NO_SHEATHE)
+
+            if (emoteID == ONE_SHOT_EAT_NO_SHEATHE)
             {
                 me->SetVirtualItem(0, urand(0, 1) ? ITEM_MONSTER_ITEM_MUTTON_WITH_BITE : ITEM_MONSTER_ITEM_TANKARD_WOODEN);
+
                 _scheduler.Schedule(1s, [this](TaskContext /*context*/)
                 {
                     me->SetVirtualItem(0, 0);
+
                     if (roll_chance_i(85))
                         DoCastSelf(SPELL_EMOTE_BELCH);
                 });
@@ -337,7 +454,7 @@ struct npc_feasting_valarjar : public ScriptedAI
         switch (id)
         {
             case POINT_LEAVING:
-                me->DespawnOrUnsummon();
+                me->DisappearAndDie();
                 break;
             default:
                 break;
@@ -345,6 +462,7 @@ struct npc_feasting_valarjar : public ScriptedAI
     }
 
 private:
+
     TaskScheduler _scheduler;
     std::unordered_set<uint32> _randomEmotes;
 };
@@ -352,14 +470,7 @@ private:
 struct npc_valarjar_paying_respect_to_odyn : ScriptedAI
 {
     npc_valarjar_paying_respect_to_odyn(Creature* creature) : ScriptedAI(creature),
-        _randomEmotes({ EMOTE_ONESHOT_POINT, EMOTE_ONESHOT_TALK, EMOTE_ONESHOT_NO }) { }
-
-    enum Points
-    {
-        POINT_TABLE,
-        POINT_ODYN,
-        POINT_DESPAWN
-    };
+        _randomEmotes({ ONE_SHOT_POINT, ONE_SHOT_TALK, ONE_SHOT_NO }) { }
 
     virtual size_t GetPathToTableSize() const = 0;
     virtual Position const* GetPathToTable() const = 0;
@@ -393,18 +504,23 @@ struct npc_valarjar_paying_respect_to_odyn : ScriptedAI
                     me->GetMotionMaster()->MoveSmoothPath(POINT_ODYN, GetPathToOdyn(), GetPathToOdynSize(), true);
                 });
                 break;
+
             case POINT_ODYN:
                 _scheduler.Schedule(1s, 3s, [this](TaskContext /*context*/)
                 {
                     me->PlayOneShotAnimKitId(1431);
+
                     _scheduler.Schedule(3s, 10s, [this](TaskContext /*context*/)
                     {
                         me->GetMotionMaster()->MoveSmoothPath(POINT_DESPAWN, GetPathToDespawnPoint(), GetPathToDespawnPointSize());
                     });
                 });
                 break;
-            case POINT_DESPAWN:
-                me->DespawnOrUnsummon(2s);
+            case POINT_DESPAWN_1:
+                _scheduler.Schedule(2s, [this](TaskContext /*context*/)
+                {
+                    me->DisappearAndDie();
+                });
                 break;
             default:
                 break;
@@ -412,6 +528,7 @@ struct npc_valarjar_paying_respect_to_odyn : ScriptedAI
     }
 
 private:
+
     TaskScheduler _scheduler;
     std::unordered_set<uint32> _randomEmotes;
 };
@@ -463,12 +580,30 @@ struct npc_incoming_valarjar_aspirant_1 : public npc_valarjar_paying_respect_to_
 
     using IncommingValarjarAspirantPath03Size = std::extent<decltype(IncommingValarjarAspirantPath03)>;
 
-    size_t GetPathToTableSize() const override { return IncommingValarjarAspirantPath01Size::value; }
-    Position const* GetPathToTable() const override { return IncommingValarjarAspirantPath01; }
-    size_t GetPathToOdynSize() const override { return IncommingValarjarAspirantPath02Size::value; }
-    Position const* GetPathToOdyn() const override { return IncommingValarjarAspirantPath02; }
-    size_t GetPathToDespawnPointSize() const override { return IncommingValarjarAspirantPath03Size::value; }
-    Position const* GetPathToDespawnPoint() const override { return IncommingValarjarAspirantPath03; }
+    size_t GetPathToTableSize() const override
+    {
+        return IncommingValarjarAspirantPath01Size::value;
+    }
+    Position const* GetPathToTable() const override
+    {
+        return IncommingValarjarAspirantPath01;
+    }
+    size_t GetPathToOdynSize() const override
+    {
+        return IncommingValarjarAspirantPath02Size::value;
+    }
+    Position const* GetPathToOdyn() const override
+    {
+        return IncommingValarjarAspirantPath02;
+    }
+    size_t GetPathToDespawnPointSize() const override
+    {
+        return IncommingValarjarAspirantPath03Size::value;
+    }
+    Position const* GetPathToDespawnPoint() const override
+    {
+        return IncommingValarjarAspirantPath03;
+    }
 };
 
 struct npc_incoming_valarjar_aspirant_2 : public npc_valarjar_paying_respect_to_odyn
@@ -521,12 +656,30 @@ struct npc_incoming_valarjar_aspirant_2 : public npc_valarjar_paying_respect_to_
 
     using IncommingValarjarAspirantPath03Size = std::extent<decltype(IncommingValarjarAspirantPath03)>;
 
-    size_t GetPathToTableSize() const override { return IncommingValarjarAspirantPath01Size::value; }
-    Position const* GetPathToTable() const override { return IncommingValarjarAspirantPath01; }
-    size_t GetPathToOdynSize() const override { return IncommingValarjarAspirantPath02Size::value; }
-    Position const* GetPathToOdyn() const override { return IncommingValarjarAspirantPath02; }
-    size_t GetPathToDespawnPointSize() const override { return IncommingValarjarAspirantPath03Size::value; }
-    Position const* GetPathToDespawnPoint() const override { return IncommingValarjarAspirantPath03; }
+    size_t GetPathToTableSize() const override
+    {
+        return IncommingValarjarAspirantPath01Size::value;
+    }
+    Position const* GetPathToTable() const override
+    {
+        return IncommingValarjarAspirantPath01;
+    }
+    size_t GetPathToOdynSize() const override
+    {
+        return IncommingValarjarAspirantPath02Size::value;
+    }
+    Position const* GetPathToOdyn() const override
+    {
+        return IncommingValarjarAspirantPath02;
+    }
+    size_t GetPathToDespawnPointSize() const override
+    {
+        return IncommingValarjarAspirantPath03Size::value;
+    }
+    Position const* GetPathToDespawnPoint() const override
+    {
+        return IncommingValarjarAspirantPath03;
+    }
 };
 
 struct npc_leaving_valarjar_1 : public npc_valarjar_paying_respect_to_odyn
@@ -575,12 +728,30 @@ struct npc_leaving_valarjar_1 : public npc_valarjar_paying_respect_to_odyn
 
     using PathLeavingValarjar03Size = std::extent<decltype(PathLeavingValarjar03)>;
 
-    size_t GetPathToTableSize() const override { return PathLeavingValarjar01Size::value; }
-    Position const* GetPathToTable() const override { return PathLeavingValarjar01; }
-    size_t GetPathToOdynSize() const override { return PathLeavingValarjar02Size::value; }
-    Position const* GetPathToOdyn() const override { return PathLeavingValarjar02; }
-    size_t GetPathToDespawnPointSize() const override { return PathLeavingValarjar03Size::value; }
-    Position const* GetPathToDespawnPoint() const override { return PathLeavingValarjar03; }
+    size_t GetPathToTableSize() const override
+    {
+        return PathLeavingValarjar01Size::value;
+    }
+    Position const* GetPathToTable() const override
+    {
+        return PathLeavingValarjar01;
+    }
+    size_t GetPathToOdynSize() const override
+    {
+        return PathLeavingValarjar02Size::value;
+    }
+    Position const* GetPathToOdyn() const override
+    {
+        return PathLeavingValarjar02;
+    }
+    size_t GetPathToDespawnPointSize() const override
+    {
+        return PathLeavingValarjar03Size::value;
+    }
+    Position const* GetPathToDespawnPoint() const override
+    {
+        return PathLeavingValarjar03;
+    }
 };
 
 struct npc_leaving_valarjar_2 : public npc_valarjar_paying_respect_to_odyn
@@ -625,18 +796,35 @@ struct npc_leaving_valarjar_2 : public npc_valarjar_paying_respect_to_odyn
 
     using PathLeavingValarjar03Size = std::extent<decltype(PathLeavingValarjar03)>;
 
-    size_t GetPathToTableSize() const override { return PathLeavingValarjar01Size::value; }
-    Position const* GetPathToTable() const override { return PathLeavingValarjar01; }
-    size_t GetPathToOdynSize() const override { return PathLeavingValarjar02Size::value; }
-    Position const* GetPathToOdyn() const override { return PathLeavingValarjar02; }
-    size_t GetPathToDespawnPointSize() const override { return PathLeavingValarjar03Size::value; }
-    Position const* GetPathToDespawnPoint() const override { return PathLeavingValarjar03; }
+    size_t GetPathToTableSize() const override
+    {
+        return PathLeavingValarjar01Size::value;
+    }
+    Position const* GetPathToTable() const override
+    {
+        return PathLeavingValarjar01;
+    }
+    size_t GetPathToOdynSize() const override
+    {
+        return PathLeavingValarjar02Size::value;
+    }
+    Position const* GetPathToOdyn() const override
+    {
+        return PathLeavingValarjar02;
+    }
+    size_t GetPathToDespawnPointSize() const override
+    {
+        return PathLeavingValarjar03Size::value;
+    }
+    Position const* GetPathToDespawnPoint() const override
+    {
+        return PathLeavingValarjar03;
+    }
 };
 
 struct npc_odyn : public ScriptedAI
 {
     npc_odyn(Creature* creature) : ScriptedAI(creature) { }
-
     // Should be an better way of doing this...
     // What about a QuestScript with a hook "OnPlayerChangeArea" ? But The Great Mead Hall does not have a specific area...
     void MoveInLineOfSight(Unit* who) override
@@ -658,7 +846,7 @@ struct npc_odyn : public ScriptedAI
 struct npc_spectating_valarjar : public ScriptedAI
 {
     npc_spectating_valarjar(Creature* creature) : ScriptedAI(creature),
-        _randomEmotes({ EMOTE_ONESHOT_CHEER_NO_SHEATHE, EMOTE_ONESHOT_SALUTE, EMOTE_ONESHOT_ROAR, EMOTE_ONESHOT_POINT, EMOTE_ONESHOT_SHOUT }) { }
+        _randomEmotes({ ONE_SHOT_CHEER_NO_SHEATHE, ONE_SHOT_SALUTE, ONE_SHOT_ROAR, ONE_SHOT_POINT, ONE_SHOT_SHOT }) { }
 
     void UpdateAI(uint32 diff) override
     {
@@ -685,7 +873,7 @@ struct npc_spectating_valarjar : public ScriptedAI
         switch (id)
         {
             case 0:
-                me->DespawnOrUnsummon();
+                me->DisappearAndDie();
                 break;
             default:
                 break;
@@ -693,6 +881,7 @@ struct npc_spectating_valarjar : public ScriptedAI
     }
 
 private:
+
     TaskScheduler _scheduler;
     std::unordered_set<uint32> _randomEmotes;
 };
@@ -704,13 +893,6 @@ struct npc_valkyr_of_odyn : public ScriptedAI
     virtual Position const* GetPath() const = 0;
     virtual size_t GetPathSize() const = 0;
 
-    enum Points
-    {
-        POINT_DESPAWN = 1,
-        POINT_JUMP,
-        POINT_DESPAWN_JUMP
-    };
-
     void Reset() override
     {
         if (me->GetPositionZ() >= 100.0f)
@@ -721,7 +903,7 @@ struct npc_valkyr_of_odyn : public ScriptedAI
             });
         }
         else
-            me->GetMotionMaster()->MoveSmoothPath(POINT_DESPAWN, GetPath(), GetPathSize(), false, true);
+            me->GetMotionMaster()->MoveSmoothPath(POINT_DESPAWN_2, GetPath(), GetPathSize(), false, true);
     }
 
     void UpdateAI(uint32 diff) override
@@ -737,19 +919,22 @@ struct npc_valkyr_of_odyn : public ScriptedAI
                 _scheduler.Schedule(250ms, [this](TaskContext /*context*/)
                 {
                     /*
-                     * (MovementMonsterSpline) (MovementSpline) MoveTime: 3111
-                     * (MovementMonsterSpline) (MovementSpline) JumpGravity: 19.2911 -> +-Movement::gravity
-                     * 1.4125f is guessed value. Which makes the JumpGravity way closer to the intended one. Not sure how to do it 100% blizzlike.
-                     * Also the MoveTime is not correct but I don't know how to set it here.
-                     */
+                    * (MovementMonsterSpline) (MovementSpline) MoveTime: 3111
+                    * (MovementMonsterSpline) (MovementSpline) JumpGravity: 19.2911 -> +-Movement::gravity
+                    * 1.4125f is guessed value. Which makes the JumpGravity way closer to the intended one. Not sure how to do it 100% blizzlike.
+                    * Also the MoveTime is not correct but I don't know how to set it here.
+                    */
                     me->GetMotionMaster()->MoveJump({ 1107.84f, 7222.57f, 38.9725f, me->GetOrientation() }, me->GetSpeed(MOVE_RUN), Movement::gravity * 1.4125f, POINT_DESPAWN_JUMP);
                 });
                 break;
-            case POINT_DESPAWN:
-                me->DespawnOrUnsummon(500ms);
+            case POINT_DESPAWN_2:
+                _scheduler.Schedule(500ms, [this](TaskContext /*context*/)
+                {
+                    me->DisappearAndDie();
+                });
                 break;
             case POINT_DESPAWN_JUMP:
-                me->DespawnOrUnsummon();
+                me->DisappearAndDie();
                 break;
             default:
                 break;
@@ -757,6 +942,7 @@ struct npc_valkyr_of_odyn : public ScriptedAI
     }
 
 private:
+
     TaskScheduler _scheduler;
 };
 
@@ -777,8 +963,14 @@ struct npc_valkyr_of_odyn_1 : public npc_valkyr_of_odyn
 
     using PathSize = std::extent<decltype(Path)>;
 
-    Position const* GetPath() const override { return Path; }
-    size_t GetPathSize() const override { return PathSize::value; }
+    Position const* GetPath() const override
+    {
+        return Path;
+    }
+    size_t GetPathSize() const override
+    {
+        return PathSize::value;
+    }
 };
 
 struct npc_valkyr_of_odyn_2 : public npc_valkyr_of_odyn
@@ -809,8 +1001,14 @@ struct npc_valkyr_of_odyn_2 : public npc_valkyr_of_odyn
 
     using PathSize = std::extent<decltype(Path)>;
 
-    Position const* GetPath() const override { return Path; }
-    size_t GetPathSize() const override { return PathSize::value; }
+    Position const* GetPath() const override
+    {
+        return Path;
+    }
+    size_t GetPathSize() const override
+    {
+        return PathSize::value;
+    }
 };
 
 struct npc_valkyr_of_odyn_3 : public npc_valkyr_of_odyn
@@ -837,8 +1035,14 @@ struct npc_valkyr_of_odyn_3 : public npc_valkyr_of_odyn
 
     using PathSize = std::extent<decltype(Path)>;
 
-    Position const* GetPath() const override { return Path; }
-    size_t GetPathSize() const override { return PathSize::value; }
+    Position const* GetPath() const override
+    {
+        return Path;
+    }
+    size_t GetPathSize() const override
+    {
+        return PathSize::value;
+    }
 };
 
 struct npc_valkyr_of_odyn_4 : public npc_valkyr_of_odyn
@@ -858,8 +1062,14 @@ struct npc_valkyr_of_odyn_4 : public npc_valkyr_of_odyn
 
     using PathSize = std::extent<decltype(Path)>;
 
-    Position const* GetPath() const override { return Path; }
-    size_t GetPathSize() const override { return PathSize::value; }
+    Position const* GetPath() const override
+    {
+        return Path;
+    }
+    size_t GetPathSize() const override
+    {
+        return PathSize::value;
+    }
 };
 
 struct npc_valkyr_of_odyn_5 : public npc_valkyr_of_odyn
@@ -884,8 +1094,14 @@ struct npc_valkyr_of_odyn_5 : public npc_valkyr_of_odyn
 
     using PathSize = std::extent<decltype(Path)>;
 
-    Position const* GetPath() const override { return Path; }
-    size_t GetPathSize() const override { return PathSize::value; }
+    Position const* GetPath() const override
+    {
+        return Path;
+    }
+    size_t GetPathSize() const override
+    {
+        return PathSize::value;
+    }
 };
 
 struct npc_valkyr_of_odyn_6 : public npc_valkyr_of_odyn
@@ -915,8 +1131,14 @@ struct npc_valkyr_of_odyn_6 : public npc_valkyr_of_odyn
 
     using PathSize = std::extent<decltype(Path)>;
 
-    Position const* GetPath() const override { return Path; }
-    size_t GetPathSize() const override { return PathSize::value; }
+    Position const* GetPath() const override
+    {
+        return Path;
+    }
+    size_t GetPathSize() const override
+    {
+        return PathSize::value;
+    }
 };
 
 struct npc_valkyr_of_odyn_7 : public npc_valkyr_of_odyn
@@ -939,14 +1161,20 @@ struct npc_valkyr_of_odyn_7 : public npc_valkyr_of_odyn
 
     using PathSize = std::extent<decltype(Path)>;
 
-    Position const* GetPath() const override { return Path; }
-    size_t GetPathSize() const override { return PathSize::value; }
+    Position const* GetPath() const override
+    {
+        return Path;
+    }
+    size_t GetPathSize() const override
+    {
+        return PathSize::value;
+    }
 };
 
 struct npc_weapon_inspector_valarjar : public ScriptedAI
 {
     npc_weapon_inspector_valarjar(Creature* creature) : ScriptedAI(creature),
-        _randomWeapons({ { ITEM_HOV_2H_AXE, 0 }, { ITEM_HOV_1H_SWORD, ITEM_HOV_SHIELD_2 } }) { }
+        _randomWeapons({ { ITEM_HOV_2H_AXE, 0 },{ ITEM_HOV_1H_SWORD, ITEM_HOV_SHIELD_2 } }) { }
 
     void UpdateAI(uint32 diff) override
     {
@@ -966,21 +1194,23 @@ struct npc_weapon_inspector_valarjar : public ScriptedAI
             {
                 me->SetVirtualItem(0, 0);
                 me->SetVirtualItem(1, 0);
+
                 context.Schedule(10s, [this](TaskContext /*context*/)
                 {
                     me->SetAIAnimKitId(1583);
                 });
             });
-
             context.Repeat(30s);
         });
     }
 
 private:
+
     TaskScheduler _scheduler;
     std::unordered_set<std::pair<uint32, uint32>> _randomWeapons;
 };
 
+///SceneID: 1109    PlaybackFlags: 11    SceneScriptPackageID : 1489
 class scene_odyn_intro : public SceneScript
 {
 public:
@@ -993,28 +1223,82 @@ public:
         player->SetControlled(true, UNIT_STATE_ROOT);
     }
 
-    // Called when a scene is canceled
-    void OnSceneCancel(Player* player, uint32 /*sceneInstanceID*/, SceneTemplate const* /*sceneTemplate*/) override
-    {
-        Finish(player);
-    }
-
-    // Called when a scene is completed
-    void OnSceneComplete(Player* player, uint32 /*sceneInstanceID*/, SceneTemplate const* /*sceneTemplate*/) override
-    {
-        Finish(player);
-    }
-
-    void Finish(Player* player)
+    void OnSceneEnd(Player* player, uint32 /*sceneInstanceID*/, SceneTemplate const* /*sceneTemplate*/) override
     {
         PhasingHandler::AddPhase(player, PHASE_ODYN, true);
         player->SetControlled(false, UNIT_STATE_ROOT);
+        //player->KilledMonsterCredit(96492);///ADD_CREDIT QuestID: 39654    ObjectID: 96492
         player->CastSpell(player, SPELL_CANCEL_COMPLETE_SCENE_WARRIOR_ORDER_FORMATION);
+    }
+};
+
+struct npc_high_overlord_saurfang_93773 : public ScriptedAI
+{
+    npc_high_overlord_saurfang_93773(Creature* creature) : ScriptedAI(creature) { }
+
+    void DoAction(int32 param)
+    {
+        switch (param)
+        {
+            case 1:
+                break;
+        }
+    }
+
+    void sQuestAccept(Player* player, Quest const* quest) override
+    {
+        if (quest->GetQuestId() == QUEST_H_RETURN_TO_THE_BROKEN_SHORE)
+        {
+            //PhasingHandler::AddPhase(player, PHASE_2);
+        }
+    }
+
+    void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId)
+    {
+        if (player->HasQuest(QUEST_H_A_DESPERATE_PLEA))
+        {
+            player->KilledMonsterCredit(123);
+            CloseGossipMenuFor(player);
+            me->Say(114668);
+        }
+
+        if (player->HasQuest(QUEST_H_RETURN_TO_THE_BROKEN_SHORE))
+        {
+
+        }
+    }
+};
+
+struct npc_makka_100519 : public ScriptedAI
+{
+    npc_makka_100519(Creature* creature) : ScriptedAI(creature) { }
+
+    void DoAction(int32 param)
+    {
+        switch (param)
+        {
+            case 1:
+                break;
+        }
+    }
+
+    void OnSpellClick(Unit* clicker, bool& /*result*/)
+    {
+        if (Player* player = clicker->ToPlayer())
+        {
+            if (player->GetQuestStatus(QUEST_H_RETURN_TO_THE_BROKEN_SHORE) == QUEST_STATUS_INCOMPLETE)
+            {
+                player->KilledMonsterCredit(me->GetEntry());
+                me->DespawnOrUnsummon(5000);
+            }
+        }
     }
 };
 
 void AddSC_class_hall_warrior()
 {
+    RegisterCreatureAI(npc_eitrigg_93775);
+    RegisterCreatureAI(npc_sergeant_dalton_108961);
     RegisterSpellScript(spell_class_hall_warrior_jump_exit);
     RegisterSpellScript(spell_class_hall_warrior_jump_teleport);
 
@@ -1037,4 +1321,7 @@ void AddSC_class_hall_warrior()
     RegisterCreatureAI(npc_valkyr_of_odyn_7);
     RegisterCreatureAI(npc_weapon_inspector_valarjar);
     new scene_odyn_intro();
+
+    RegisterCreatureAI(npc_high_overlord_saurfang_93773);
+    RegisterCreatureAI(npc_makka_100519);
 }

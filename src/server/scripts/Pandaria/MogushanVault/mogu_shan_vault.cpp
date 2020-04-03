@@ -985,7 +985,7 @@ class npc_lorewalker_cho : public CreatureScript
                                     {
                                         king->AI()->DoAction(ACTION_SET_GHOST_VISUAL);
                                         king->AI()->DoAction(ACTION_SET_NATIVE_DISPLAYID);
-                                        
+
                                         if (king->GetEntry() == MOB_ZIAN)
                                         {
                                             king->AI()->DoAction(ACTION_BEFORE_COMBAT);
@@ -2131,7 +2131,7 @@ class mob_mogu_secret_keeper : public CreatureScript
                 events.ScheduleEvent(EVENT_SECRET_FLESH_TO_STONE, urand(5000, 12000));
                 events.ScheduleEvent(EVENT_SECRET_STONE_BLOCK, urand(15000, 20000));
             }
-            
+
             void JustDied(Unit* /*p_Killer*/) override
             {
                 if (Creature* cho = GetClosestCreatureWithEntry(me, NPC_LOREWALKER_CHO, 60.0f, true))
@@ -2215,7 +2215,7 @@ class mob_mogu_warden : public CreatureScript
                     events.ScheduleEvent(EVENT_WARDEN_WARDEN_S_FURY, urand(22000, 28000));
                 }
             }
-            
+
             void JustDied(Unit* /*p_Killer*/) override
             {
                 // In front of Elegon, we must check all the other trash before making Cho moves
@@ -2304,7 +2304,7 @@ class mob_mogu_engine_keeper : public CreatureScript
                 events.ScheduleEvent(EVENT_KEEPER_ENHANCED_RECONSTRUCTION, urand(5000, 12000));
                 events.ScheduleEvent(EVENT_KEEPER_RECONSTRUCTING, urand(15000, 20000));
             }
-            
+
             void JustDied(Unit* /*p_Killer*/) override
             {
                 Creature* warden1  = GetClosestCreatureWithEntry(me, NPC_MOGUSHAN_WARDEN,        300.0f, true);

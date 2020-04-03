@@ -52,7 +52,7 @@ namespace Instances { namespace Bloodmaul
                 Magmolatus          = 74475,
                 ForgemasterGogduh   = 74366
             };
-                
+
             enum Yells
             {
                 Aggro           = 0,
@@ -355,7 +355,7 @@ namespace Instances { namespace Bloodmaul
                             break;
                         default:
                             break;
-                                
+
                     }
                 }
 
@@ -892,7 +892,7 @@ namespace Instances { namespace Bloodmaul
     {
         public:
             spell_withering_flames() : SpellScriptLoader("spell_withering_flames") { }
- 
+
             enum Spells
             {
                 ChokingAshes = 150034
@@ -911,7 +911,7 @@ namespace Instances { namespace Bloodmaul
                     if (Unit* target = caster->SelectNearbyTarget(GetOwner()->ToUnit(), VISIBLE_RANGE/*, (uint32)Spells::ChokingAshes*/))
                         caster->CastSpell(target, (uint32)Spells::ChokingAshes, true);
                 }
- 
+
                 void Register() override
                 {
                     OnEffectPeriodic += AuraEffectPeriodicFn(spell_withering_flames_AuraScript::OnPeriodic, EFFECT_0, SPELL_AURA_PERIODIC_DAMAGE);

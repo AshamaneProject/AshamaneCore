@@ -206,7 +206,7 @@ private:
     std::ostringstream fCacheStream;
 
 public:
-    /// Author: 
+    /// Author:
     /// <summary>
     /// Sustituye los caracteres en una cadena string
     /// </summary>
@@ -236,7 +236,7 @@ public:
         /* Return Value */
         return _aFirst.str();
     }
-    /// Author: 
+    /// Author:
     /// <summary>
     /// inicializa una nueva instancia de la clase.
     /// </summary>
@@ -247,7 +247,7 @@ public:
     }
 
 
-    /// Author: 
+    /// Author:
     /// <summary>
     /// Sustituye los caracteres ', " por \', \" respectivamente
     /// </summary>
@@ -814,7 +814,7 @@ public:
                     << " '" << isActive << "',"
                     << " '" << this->SafeSQLParams(ScriptName) << "',"
                     << " '" << VerifiedBuild << "')";
-             
+
                 // Solo como comentario
                 ;
             } while ( _Result->NextRow() );
@@ -978,7 +978,7 @@ public:
     /// <summary>
     /// Exportar todo lo referente a la tabla gameobject_questrelation
     /// </summary>
-    /// <param name="aGAmeObjectId">.</param> 
+    /// <param name="aGAmeObjectId">.</param>
     /// <param name="aQuestId">.</param>
     /// <return>Si no hay errores true, false en otro caso.</return>
     bool exportGameObjectQuestRelation(uint32 aGAmeObjectId, uint32 aQuestId) // Preguntar si se pasa el QuestGiver o el GoEntry
@@ -1048,7 +1048,7 @@ public:
                     << " '" << quest << "')";
 
                 //
-                // 
+                //
                 if ( _Result->GetRowCount() == _rowCount )
                     this->fCacheStream << "; ";
                 else
@@ -1138,7 +1138,7 @@ public:
                     << " '" << quest << "')";
 
                 //
-                // 
+                //
                 if ( _Result->GetRowCount() == _rowCount )
                     this->fCacheStream << "; ";
                 else
@@ -1998,7 +1998,7 @@ public:
                 << " '" << ItemVisual3 << "',"
                 << " '" << VerifiedBuild << "');";
 
-            // Referencia a los otros valores a exportar.    
+            // Referencia a los otros valores a exportar.
             //
             // Seperador (solo de bonito en el fichero)
             this->fCacheStream << "\n\n";
@@ -2010,7 +2010,7 @@ public:
             return false;
         return true;
     }
-    /// Author: 
+    /// Author:
     /// <summary>
     /// Exportar todo lo referente a la tabla npc_vendor
     /// </summary>
@@ -2049,7 +2049,7 @@ public:
             do {
 
                 _Index = 0;
-                _Fields = _Result->Fetch();		// Materializar la fila en un objeto   
+                _Fields = _Result->Fetch();		// Materializar la fila en un objeto
 
                 VendorItem vItem;
                 //uint16 VendorGld = vItem.OverrideGoldCost;
@@ -2108,7 +2108,7 @@ public:
                     << " '" << VerifiedBuild << "')";
 
                 //
-                // 
+                //
                 if ( _Result->GetRowCount() == _rowCount )
                     this->fCacheStream << "; ";
                 else
@@ -2141,7 +2141,7 @@ public:
             return false;
         return true;
     }
-    /// Author: 
+    /// Author:
     /// <summary>
     /// Exportar todo lo referente a la tabla npc_trainer
     /// </summary>
@@ -2204,7 +2204,7 @@ public:
                     << " '" << Index << "')";
 
                 //
-                // 
+                //
                 if ( _Result->GetRowCount() == _rowCount )
                     this->fCacheStream << "; ";
                 else
@@ -2231,7 +2231,7 @@ public:
         return true;
     }
 
-    /// Author: 
+    /// Author:
     /// <summary>
     /// Exportar todo lo referente a la tabla creature_text
     /// </summary>
@@ -2502,7 +2502,7 @@ public:
                     this->fCacheStream
                         << " '" << path_id << "',";
                 }
-                // 
+                //
                 this->fCacheStream
                     << " '" << mount << "',"
                     << " '" << bytes1 << "',"
@@ -4136,7 +4136,7 @@ public:
                     << " '" << quest << "')";
 
                 //
-                // 
+                //
                 if ( _Result->GetRowCount() == _rowCount )
                     this->fCacheStream << "; ";
                 else
@@ -4227,7 +4227,7 @@ public:
                     << " '" << quest << "')";
 
                 //
-                // 
+                //
                 if ( _Result->GetRowCount() == _rowCount )
                     this->fCacheStream << "; ";
                 else

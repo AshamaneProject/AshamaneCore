@@ -102,7 +102,6 @@ void AddSC_boss_fenryr();
 
 // Maw of Souls
 void AddSC_instance_maw_of_souls();
-void AddSC_maw_of_souls();
 void AddSC_boss_ymiron_maw();
 void AddSC_boss_harbaron_maw();
 void AddSC_boss_helya_maw();
@@ -155,17 +154,17 @@ void AddSC_violet_hold_assault();
 //void AddSC_boss_fel_lord_betrug();
 
 //Karazhan
-void AddSC_boss_attumen_new();
-void AddSC_boss_curator_new();
-void AddSC_boss_maiden_of_virtue_new();
-void AddSC_boss_mana_devourer();
-void AddSC_boss_moroes_new();
-void AddSC_boss_nightbane_new();
-void AddSC_npc_kara_barnes_new();
-void AddSC_boss_shade_of_medivh();
-void AddSC_boss_vizaduum();
-void AddSC_instance_new_karazhan();
-void AddSC_new_karazhan();
+void AddSC_instance_karazhan_legion();
+void AddSC_karazhan_legion();
+void AddSC_boss_maiden_of_virtue_karazhan_legion();
+void AddSC_boss_curator_karazhan_legion();
+void AddSC_boss_mana_devourer_karazhan_legion();
+void AddSC_boss_shade_of_medivh_karazhan_legion();
+void AddSC_boss_moroes_karazhan_legion();
+void AddSC_boss_attumen_karazhan_legion();
+void AddSC_boss_opera_karazhan_legion();
+void AddSC_boss_vizaduum_karazhan_legion();
+void AddSC_boss_nightbane_karazhan_legion();
 
 //The Arcway
 void AddSC_instance_the_arcway();
@@ -301,7 +300,6 @@ void AddBrokenIslesScripts()
 
     // Maw of Souls
     AddSC_instance_maw_of_souls();
-    AddSC_maw_of_souls();
     AddSC_boss_ymiron_maw();
     AddSC_boss_harbaron_maw();
     AddSC_boss_helya_maw();
@@ -353,18 +351,18 @@ void AddBrokenIslesScripts()
     AddSC_instance_the_nighthold();
     AddSC_the_nighthold();
 
-    //Karazhan
-    AddSC_boss_attumen_new();
-    AddSC_boss_curator_new();
-    AddSC_boss_maiden_of_virtue_new();
-    AddSC_boss_mana_devourer();
-    AddSC_boss_moroes_new();
-    AddSC_boss_nightbane_new();
-    AddSC_npc_kara_barnes_new();
-    AddSC_boss_shade_of_medivh();
-    AddSC_boss_vizaduum();
-    AddSC_instance_new_karazhan();
-    AddSC_new_karazhan();
+    // Karazhan Legion
+    AddSC_instance_karazhan_legion();
+    AddSC_karazhan_legion();
+    AddSC_boss_maiden_of_virtue_karazhan_legion();
+    AddSC_boss_curator_karazhan_legion();
+    AddSC_boss_mana_devourer_karazhan_legion();
+    AddSC_boss_shade_of_medivh_karazhan_legion();
+    AddSC_boss_moroes_karazhan_legion();
+    AddSC_boss_attumen_karazhan_legion();
+    AddSC_boss_opera_karazhan_legion();
+    AddSC_boss_vizaduum_karazhan_legion();
+    AddSC_boss_nightbane_karazhan_legion();
 
     //The Arcway
     AddSC_instance_the_arcway();

@@ -350,6 +350,15 @@ void MotionMaster::MoveCloserAndStop(uint32 id, Unit* target, float distance)
     }
 }
 
+void MotionMaster::MoveAwayAndDespawn(float distance, uint32 msTimeToDespawn)
+{
+    if (_owner->ToCreature())
+    {
+        MovePoint(1, _owner->ToCreature()->GetPositionWithDistInFront(distance), true);
+        _owner->ToCreature()->DespawnOrUnsummon(msTimeToDespawn);
+    }
+}
+
 void MotionMaster::MoveLand(uint32 id, Position const& pos)
 {
     float x, y, z;

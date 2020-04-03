@@ -1096,7 +1096,7 @@ struct npc_dm_vanessa_vancleef : public ScriptedAI
     {
         std::list<Creature*> creatures;
         GetCreatureListWithEntryInGrid(creatures, me, NPC_VISION_OF_THE_PAST, 240);
-    
+
         for (auto vision : creatures)
             vision->AI()->DoAction(ACTION_VANCLEEF_DEAD);
     }

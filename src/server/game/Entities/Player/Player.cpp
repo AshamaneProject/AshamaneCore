@@ -30042,3 +30042,49 @@ void Player::FinishWeek()
         slotInfo.WeekGames = 0;
     }
 }
+
+void Player::AddDelayedTeleport(uint32 delay, uint32 mapID, float x, float y, float z, float o)
+{
+    WorldLocation loc;
+    loc = WorldLocation(mapID);
+    loc.Relocate(x, y, z, o);
+
+    this->GetScheduler().Schedule(Milliseconds(delay), [loc](TaskContext context)
+    {
+        if (Player* player = GetContextPlayer())
+        {
+            if (loc.GetMapId() == player->GetMapId())
+                player->NearTeleportTo(loc, false);
+            else
+                player->TeleportTo(loc);
+        }
+    });
+
+}
+
+void Player::AddDelayedTeleport(uint32 delay, uint32 mapID, Position pos)
+{
+    AddDelayedTeleport(delay, mapID, pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ(), pos.GetOrientation());
+}
+
+void Player::AddConversationDelayedTeleport(uint32 delay, uint32 conversationId, uint32 mapID, float x, float y, float z, float o)
+{
+    Conversation::CreateConversation(conversationId, this, this->GetPosition(), { this->GetGUID() });
+    AddDelayedTeleport(delay, mapID, x, y, z, o);
+}
+
+void Player::AddConversationDelayedTeleport(uint32 delay, uint32 conversationId, uint32 mapID, Position pos)
+{
+    AddConversationDelayedTeleport(delay, conversationId, mapID, pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ(), pos.GetOrientation());
+}
+
+void Player::AddDelayedConversation(uint32 delay, uint32 conversationId)
+{
+    this->GetScheduler().Schedule(Milliseconds(delay), [conversationId](TaskContext context)
+    {
+        if (Player* player = GetContextPlayer())
+        {
+            Conversation::CreateConversation(conversationId, player, player->GetPosition(), { player->GetGUID() });
+        }
+    });
+}

@@ -140,7 +140,7 @@ class boss_millificent_manastorm : public CreatureScript
                     me->SetReactState(REACT_PASSIVE);
                     me->AttackStop();
                     me->CastStop();
-                    me->AddUnitFlag(UNIT_FLAG_NOT_ATTACKABLE_1);
+                    me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_ATTACKABLE_1));
                     Talk(SAY_DEFEAT);
                     DoCast(me, SPELL_HYPER_ZAP_ULTIMATE_MARK);
                     events.ScheduleEvent(EVENT_END_COMBAT, Seconds(2));

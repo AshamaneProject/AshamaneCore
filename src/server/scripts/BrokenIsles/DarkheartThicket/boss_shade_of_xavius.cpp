@@ -368,9 +368,9 @@ public:
             int32 deltaX = urand(0, 150);
             int32 deltaY = urand(0, 150);
 
-            if (TempSummon* tempSumm = caster->SummonCreature(WORLD_TRIGGER, caster->GetPositionX() + deltaX - 75, caster->GetPositionY() + deltaY - 75, caster->GetPositionZ(), 0, TEMPSUMMON_TIMED_DESPAWN, 2000))
+            if (Creature* tempSumm = caster->SummonCreature(WORLD_TRIGGER, caster->GetPositionX() + deltaX - 75, caster->GetPositionY() + deltaY - 75, caster->GetPositionZ(), 0, TEMPSUMMON_TIMED_DESPAWN, 2000))
             {
-                tempSumm->SetSummonerGUID(caster->GetGUID());
+                tempSumm->SetOwnerGUID(caster->GetGUID());
                 PhasingHandler::InheritPhaseShift(tempSumm, caster);
                 tempSumm->SetName(caster->GetName());
                 caster->CastSpell(tempSumm, SPELL_AN_TRIGGERMISSILE, false);

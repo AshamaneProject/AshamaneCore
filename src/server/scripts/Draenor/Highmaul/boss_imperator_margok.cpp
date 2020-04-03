@@ -45,7 +45,7 @@ Position const g_ChogallEventsPos[] =
 @TODO:
 - Ajouter le MM pour les NPCs (les getdata des ePhases)
 - faire des fonctions pour les déplacements vers les runes (gain de place dans le code), faire des tableaux pour les positions/dialogues/... indexés sur l'id de la rune
-- visuel des runes activées sur le SLG generic : 
+- visuel des runes activées sur le SLG generic :
     déplacement   : visu : 174026
     reproduction  : visu du socl : 174044
     fortification : visual du socle : 174043
@@ -706,10 +706,10 @@ class boss_imperator_margok : public CreatureScript
                     itr->DespawnOrUnsummon();
 
                 me->GetCreatureListWithEntryInGrid(NightList, WORLD_TRIGGER, 300.0f);
-                
+
                 for (Creature* itr : NightList)
                     itr->DespawnOrUnsummon();
-                
+
                 me->RemoveAllAreaTriggers();
                 std::list<AreaTrigger*> AreaTriggerList;
                 me->GetAreaTriggerListWithSpellIDInRange(AreaTriggerList, SpellGrowingShadowsAT, 300);
@@ -1282,7 +1282,7 @@ class boss_imperator_margok : public CreatureScript
                             me->CastSpell(me, eSpells::DestructiveResonanceReplicationSearch, false);
                             break;
                         }
-                        
+
                         me->CastSpell(me, eSpells::DestructiveResonanceCosmetic, true);
                         m_Events.ScheduleEvent(eEvents::EventDestructiveResonance, 15 * TimeConstants::IN_MILLISECONDS);
                         break;
@@ -1308,7 +1308,7 @@ class boss_imperator_margok : public CreatureScript
                             me->CastSpell(me, eSpells::SummonReplicatingArcaneAberration, false);
                             break;
                         }
-                        
+
                         me->CastSpell(me, eSpells::SummonArcaneAberrationCosmetic, true);
 
                         if (m_Phase != ePhases::MythicPhase4ChoGall) Talk(eTalks::ArcaneAberration);
@@ -1880,7 +1880,7 @@ public:
         ///< Glimpse of Madness
         SpellGlimpseOfMadnessSearch = 165243,
         SpellGlimpseOfMadnessSpawn  = 165647,
-        SpellGlimpseOfMadnessClone  = 165486,   ///< should spawn npc:82242 and clone caster from it 
+        SpellGlimpseOfMadnessClone  = 165486,   ///< should spawn npc:82242 and clone caster from it
         SpellGlimpseOfMadnessDummy  = 165664,   ///< unused? infinite aura, maybe for not targetting affected players
         ///< Edge of the void
         SpellEdgeOfTheVoidPeriodic  = 165178,
@@ -2056,7 +2056,7 @@ public:
 
                     me->RemoveAura(eSpells::SpellCosmeticVoidOmni);
                 });
-                
+
                 AddTimedDelayedOperation(7500 + 11000 + 2000 /* 1-3seconds after the event */, [this]() -> void
                 {
                     //cho'gall aggro
@@ -2071,7 +2071,7 @@ public:
                         me->GetMotionMaster()->MoveChase(victim);
                     }
                 });
-                
+
                 break;
             }
         }
@@ -2157,9 +2157,9 @@ public:
             {
                 case eEvents::EventSpawnIntroAdds:
                 {
-                    ///< 45 secs to spawn 25 adds 
+                    ///< 45 secs to spawn 25 adds
                     m_IntroSpawned++;
-                    
+
                     Position pos = g_ChogallEventsPos[urand(3, 4)];
 
                     if (TempSummon* add = me->SummonCreature(NpcNightTwistedFaithful, pos, TEMPSUMMON_DEAD_DESPAWN))
@@ -4288,7 +4288,7 @@ class spell_highmaul_force_nova_dot : public SpellScriptLoader
             RuneOfReplication = 6,
             MythicPhase1 = 7,
             MythicPhase3 = 11,
-            MythicPhase4ChoGall = 12,    
+            MythicPhase4ChoGall = 12,
         };
 
         class spell_highmaul_force_nova_dot_AuraScript : public AuraScript
@@ -4305,7 +4305,7 @@ class spell_highmaul_force_nova_dot : public SpellScriptLoader
                             return;
 
                         uint8 l_Phase = l_Margok->AI()->GetData(eData::PhaseID);
-                        if (l_Phase == ePhase::RuneOfReplication || l_Phase == ePhase::MythicPhase1 || 
+                        if (l_Phase == ePhase::RuneOfReplication || l_Phase == ePhase::MythicPhase1 ||
                             l_Phase == ePhase::MythicPhase3 || l_Phase == ePhase::MythicPhase4ChoGall)
                             target->CastSpell(target, eSpell::ForceNovaReplicationAoEDamage, true);
                     }
@@ -4554,7 +4554,7 @@ public:
         PrepareAuraScript(spell_highmaul_infinite_darkness_AuraScript);
 
         bool Load() override
-        { 
+        {
             m_HealAbsorbAmount = 0;
             return true;
         }

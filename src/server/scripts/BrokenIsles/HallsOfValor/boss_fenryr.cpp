@@ -53,8 +53,8 @@ struct boss_fenryr : public BossAI
     boss_fenryr(Creature* creature) : BossAI(creature, DATA_FENRYR)
     {
         me->SetReactState(REACT_DEFENSIVE);
-        me->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
-        me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
+        me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE));
+        me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE));
         me->SetCanFly(false);
         instance->SetBossState(DATA_FENRYR, NOT_STARTED);
     }
@@ -81,8 +81,8 @@ struct boss_fenryr : public BossAI
     void InSecondPhaseStart()
     {
         me->SetReactState(REACT_PASSIVE);
-        me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
-        me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
+        me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE));
+        me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE));
         me->AttackStop();
 
         me->GetMotionMaster()->MovePoint(0, fenryrDen[0]);
@@ -97,8 +97,8 @@ struct boss_fenryr : public BossAI
     void InSecondPhaseCombatStart()
     {
         me->SetReactState(REACT_DEFENSIVE);
-        me->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
-        me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
+        me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE));
+        me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE));
         me->SetInCombatWithZone();
     }
 
@@ -123,8 +123,8 @@ struct boss_fenryr : public BossAI
                 RegenerateHeal();
                 me->SetOrientation(6.0570f);
                 me->SetReactState(REACT_DEFENSIVE);
-                me->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
-                me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
+                me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE));
+                me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE));
                 me->CastSpell(me, 31539, true);
                 phaseStarted = false;
             }

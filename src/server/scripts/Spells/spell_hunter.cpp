@@ -533,7 +533,7 @@ public:
         {
             if (GetTargetApplication()->GetRemoveMode() == AURA_REMOVE_BY_DEFAULT || GetTargetApplication()->GetRemoveMode() == AURA_REMOVE_BY_INTERRUPT)
                 return;
-                
+
             if (!GetTarget()->HasAura(SPELL_HUNTER_MISDIRECTION_PROC))
                 GetTarget()->ResetRedirectThreat();
         }

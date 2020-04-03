@@ -36,12 +36,20 @@ enum SOTCreatureIds
     NPC_ZURAAL_THE_ASCENDED = 122313,
     NPC_SAPRISH             = 122316,
     NPC_VICEROY_NEZHAR      = 124309,
-    NPC_LURA                = 122314
+    NPC_LURA                = 122314,
+
+    NPC_LURA_DOOR = 125104,
 };
 
 enum SOTSpells
 {
     SPELL_PHYSICAL_REALM    = 244074,
+};
+
+enum GameObjectIds
+{
+    GO_DOOR_ROOM_ZURAAL_THE_ASCENDED = 273789, //boos1
+    GO_DOOR_ROOM_VICEROY_NEZHAR = 272062, //boos3
 };
 
 #endif // DEF_SEAT_OF_TRIUMVIRATE_H

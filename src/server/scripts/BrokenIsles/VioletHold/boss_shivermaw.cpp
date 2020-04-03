@@ -101,7 +101,7 @@ class boss_shivermaw : public CreatureScript
                 {
                     if (id == POINT_AIR)
                     {
-                        me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
+                        me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE));
                         DoCast(SPELL_ICE_BOMB);
                         events.ScheduleEvent(EVENT_GO_GROUND, Seconds(10));
                     }
@@ -110,7 +110,7 @@ class boss_shivermaw : public CreatureScript
                         me->SetReactState(REACT_AGGRESSIVE);
                         me->SetCanFly(false);
                         me->SetDisableGravity(false);
-                        me->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
+                        me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE));
                         events.ScheduleEvent(EVENT_ICE_BOMB, Seconds(60));
                         events.ScheduleEvent(EVENT_FRIGID_WINDS, Seconds(50));
                     }
@@ -322,10 +322,10 @@ class spell_shivermaw_relentless_storm : public SpellScriptLoader
 
                         for (auto & it : GetCaster()->GetMap()->GetPlayers())
                         {
-                            if (/*Player* ptr = */it.GetSource())
+                            if (Player* ptr = it.GetSource())
                             {
-                                G3D::Vector3 tgt_pos = { pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ() };
-                                //ptr->SendPlayOrphanSpellVisual(tgt_pos, 52628, 3.f, true, false);
+                                Position tgt_pos = { pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ() };
+                                ptr->SendPlayOrphanSpellVisual(tgt_pos, 52628, 3.f, true, false);
                             }
                         }
 
@@ -368,10 +368,10 @@ class spell_shivermaw_relentless_storm_missile : public SpellScriptLoader
 
                     for (auto & it : GetCaster()->GetMap()->GetPlayers())
                     {
-                        if (/*Player* ptr = */it.GetSource())
+                        if (Player* ptr = it.GetSource())
                         {
-                            G3D::Vector3 tgt_pos = { pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ() };
-                            //ptr->SendPlayOrphanSpellVisual(tgt_pos, 52630, 1.f, true, true);
+                            Position tgt_pos = { pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ() };
+                            ptr->SendPlayOrphanSpellVisual(tgt_pos, 52630, 1.f, true, true);
                         }
                     }
                 }

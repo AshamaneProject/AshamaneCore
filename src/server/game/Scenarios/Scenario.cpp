@@ -273,6 +273,12 @@ ScenarioStepEntry const* Scenario::GetFirstStep() const
     return firstStep;
 }
 
+void Scenario::CompleteCurrStep()
+{
+    if (ScenarioStepEntry const* step = GetStep())
+        CompleteStep(step);
+}
+
 void Scenario::SendScenarioState(Player* player)
 {
     WorldPackets::Scenario::ScenarioState scenarioState;
