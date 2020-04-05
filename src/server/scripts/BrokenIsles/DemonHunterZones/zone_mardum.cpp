@@ -1558,8 +1558,8 @@ public:
                         break;
                     case EVENT_INTO_THE_SHADOWS:
                         DoCast(me, SPELL_INTO_THE_SHADOWS, true);
-                        _events.RescheduleEvent(EVENT_QUEENS_BITE, 20s + (14s, 20s));
-                        _events.RescheduleEvent(EVENT_BROOD_SWARM, 20s + (20s, 26s));
+                        _events.RescheduleEvent(EVENT_QUEENS_BITE, 34s, 44s);
+                        _events.RescheduleEvent(EVENT_BROOD_SWARM, 40s, 46s);
                         _events.ScheduleEvent(EVENT_INTO_THE_SHADOWS, 20s + 20s);
                         break;
                     case EVENT_SAY_TEXT_2:

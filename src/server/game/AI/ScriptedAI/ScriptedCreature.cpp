@@ -454,7 +454,8 @@ void ScriptedAI::GetEventData(uint16 group)
         return;
 
     for (EventData data : *eventList)
-        events.ScheduleEvent(data.eventId, data.time, data.group, data.phase);
+        if (data.group == group)
+            events.ScheduleEvent(data.eventId, data.time, data.group, data.phase);
 }
 
 void ScriptedAI::LoadTalkData(std::vector<TalkData> const* data)
