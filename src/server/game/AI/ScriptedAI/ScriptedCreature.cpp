@@ -170,7 +170,7 @@ void ScriptedAI::UpdateAI(uint32 diff)
 
 void ScriptedAI::SetUnlock(uint32 time)
 {
-    me->GetScheduler().Schedule(Milliseconds(time), [this](TaskContext context)
+    me->GetScheduler().Schedule(Milliseconds(time), [this](TaskContext /*context*/)
     {
         IsLock = false;
     });
