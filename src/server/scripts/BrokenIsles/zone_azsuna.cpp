@@ -1895,6 +1895,4 @@ void AddSC_azsuna()
     RegisterCreatureAI(npc_quest_107242);
     RegisterCreatureAI(npc_quest_107241);
     RegisterCreatureAI(npc_quest_107243);
-
-    new merayl_q42159("merayl_q42159");
 }
