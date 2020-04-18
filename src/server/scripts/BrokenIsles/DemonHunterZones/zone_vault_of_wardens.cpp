@@ -184,7 +184,7 @@ public:
             }
         }
 
-        void EnterCombat(Unit* who) override {}
+        void EnterCombat(Unit* /*who*/) override {}
 
         void UpdateAI(uint32 diff) override
         {
