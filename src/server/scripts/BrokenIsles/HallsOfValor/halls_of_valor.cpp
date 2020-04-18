@@ -295,7 +295,7 @@ struct boss_king_bjorn : public BossAI
 
     ObjectGuid targetGuid;
 
-    void sGossipSelect(Player* /*player*/, uint32 /*menuId*/, uint32 /*gossipListId*/)
+    void sGossipSelect(Player* /*player*/, uint32 /*menuId*/, uint32 /*gossipListId*/) override
     {
         me->setFaction(14);
         me->SetReactState(REACT_DEFENSIVE);
