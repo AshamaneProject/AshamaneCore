@@ -267,7 +267,7 @@ struct npc_bombing_run_124704 : public ScriptedAI
         me->CastSpell(me, SPELL_LEGION_SHIP_INVASION_SPAWN, true);
     }
 
-    void UpdateAI(uint32 diff) override {}
+    void UpdateAI(uint32 /*diff*/) override {}
 };
 
 struct npc_pulse_grenade_124928 : public ScriptedAI
