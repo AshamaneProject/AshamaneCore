@@ -59,7 +59,7 @@ struct boss_thrashbite_the_scornful : public BossAI
         LoadTalkData(&talkData);
     }
 
-    void DoAction(int32 param)
+    void DoAction(int32 param) override
     {
         switch (param)
         {
