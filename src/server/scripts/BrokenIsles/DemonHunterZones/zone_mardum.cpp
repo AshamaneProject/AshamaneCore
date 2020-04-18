@@ -422,7 +422,7 @@ struct npc_inquisitor_baleful : public ScriptedAI
                     context.Repeat(5s);
             });
 
-            me->GetScheduler().Schedule(15s, [this](TaskContext context) /// End Legion Aegis event
+            me->GetScheduler().Schedule(15s, [this](TaskContext /*context*/) /// End Legion Aegis event
             {
                 me->SetReactState(REACT_AGGRESSIVE);
                 me->SetDisableGravity(true);
