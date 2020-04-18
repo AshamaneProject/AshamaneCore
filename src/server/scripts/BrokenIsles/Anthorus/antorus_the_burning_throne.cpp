@@ -269,7 +269,7 @@ struct npc_lightforged_beacon_128303 : public ScriptedAI
 {
     npc_lightforged_beacon_128303(Creature* creature) : ScriptedAI(creature) { }
 
-    void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId)
+    void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 /*gossipListId*/)
     {
         CloseGossipMenuFor(player);
         //player->AddDelayedConversation(5000, 5743);
