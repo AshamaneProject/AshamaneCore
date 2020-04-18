@@ -91,7 +91,7 @@ struct npc_ravenholdt_courier_102018 : public ScriptedAI
             me->RemoveAurasDueToSpell(SPELL_DELIVER_MESSAGE);
             Talk(RAVENHOLDT_COURIER_TEXT_01, player);
 
-            _scheduler.Schedule(Milliseconds(1000), [this](TaskContext context)
+            _scheduler.Schedule(Milliseconds(1000), [this](TaskContext /*context*/)
             {
                 me->DisappearAndDie();
             });
