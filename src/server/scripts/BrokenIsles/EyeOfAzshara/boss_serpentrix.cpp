@@ -340,7 +340,7 @@ class at_toxic_wound : public AreaTriggerEntityScript
             at_toxic_wound_AI(AreaTrigger* at) : AreaTriggerAI(at)
             {}
 
-            void OnInitialize()
+            void OnInitialize() override
             {
                 _serpentrix = nullptr;
                 _timerToxic = 0;
