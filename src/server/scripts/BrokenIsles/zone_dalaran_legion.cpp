@@ -256,7 +256,7 @@ class npc_hunter_talua : public CreatureScript
 public:
     npc_hunter_talua() : CreatureScript("npc_hunter_talua") { }
 
-    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 /*action*/) override
+    bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 /*sender*/, uint32 /*action*/) override
     {
         if (player->getLevel() < 98 || player->getClass() != CLASS_HUNTER)
             return true;
