@@ -106,7 +106,7 @@ class npc_cos_nightborne_boat : public CreatureScript
                 }
             }
 
-            void PassengerBoarded(Unit* passenger, int8 /*seatId*/, bool /*apply*/)
+            void PassengerBoarded(Unit* passenger, int8 /*seatId*/, bool /*apply*/) override
             {
                 if (!passenger)
                     return;
