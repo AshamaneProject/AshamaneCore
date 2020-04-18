@@ -253,7 +253,7 @@ class npc_eoa_call_the_seas : public CreatureScript
 
             }
 
-            void Reset()
+            void Reset() override
             {
                 me->SetReactState(REACT_PASSIVE);
                 me->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC));
