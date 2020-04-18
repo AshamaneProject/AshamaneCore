@@ -201,7 +201,7 @@ public:
             DoCast(me, SPELL_KNOCKBACK_AT, true);
         }
 
-        /*void EnterEvadeMode(EvadeReason /*why*) override
+        /*void EnterEvadeMode(EvadeReason /*why*/) override
         {
             BossAI::EnterEvadeMode();
             TeleportPlayer();
