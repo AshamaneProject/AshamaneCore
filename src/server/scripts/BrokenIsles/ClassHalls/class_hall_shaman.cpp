@@ -128,7 +128,7 @@ struct npc_stormbeak_104681 : public ScriptedAI
 {
     npc_stormbeak_104681(Creature* creature) : ScriptedAI(creature) { me->SetAIAnimKitId(0); }
 
-    void OnSpellClick(Unit* clicker, bool& /*result*/)
+    void OnSpellClick(Unit* clicker, bool& /*result*/) override
     {
         if (Player* player = clicker->ToPlayer())
         {
