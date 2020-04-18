@@ -5502,7 +5502,7 @@ void Spell::SummonGuardian(uint32 i, uint32 entry, SummonPropertiesEntry const* 
                 summon->SetDisplayId(1126); // modelid1
         }
 
-        if (properties->Control != SUMMON_TYPE_UNK17)
+        if (SummonTitle(properties->Control) != SummonTitle::Spirit)
             summon->AI()->EnterEvadeMode();
 
         CallScriptOnSummonHandlers(summon);
