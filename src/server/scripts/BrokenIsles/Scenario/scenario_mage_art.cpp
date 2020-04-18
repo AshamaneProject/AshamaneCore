@@ -73,7 +73,7 @@ struct scenario_mage_art : public InstanceScript
         }
     }
 
-    void OnCreatureCreate(Creature* creature) override
+    void OnCreatureCreate(Creature* /*creature*/) override
     {
 
     }
