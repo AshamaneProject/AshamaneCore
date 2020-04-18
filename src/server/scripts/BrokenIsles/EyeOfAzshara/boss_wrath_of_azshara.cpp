@@ -187,7 +187,7 @@ class boss_wrath_of_azshara : public CreatureScript
                 }
             }
 
-            void DamageTaken(Unit* attacker, uint32 & damage) override
+            void DamageTaken(Unit* /*attacker*/, uint32 & damage) override
             {
                 if (me->HealthBelowPct(10) && !_isWrathed)
                 {
