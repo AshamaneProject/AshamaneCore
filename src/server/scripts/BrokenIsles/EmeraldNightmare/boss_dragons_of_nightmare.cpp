@@ -22,7 +22,7 @@
 enum Spells
 {
     SPELL_BERSERK = 26662,
-    SPELL_CORRUPTED_BREATH = 203028,//all ¸¯»¯ÍÂÏ¢ 33s
+    SPELL_CORRUPTED_BREATH = 203028,//all è…åŒ–åæ¯ 33s
     SPELL_TAIL_LASH = 204122,//mythic
     SPELL_NIGHTMARE_BLAST = 203153,//16s
     //SUMMON
@@ -37,8 +37,8 @@ enum Spells
     SPELL_CALL_DEFILED_SPIRIT = 207573,//34s
     //
     NPC_DEFILED_DRUID_SPIRIT = 103080,
-    SPELL_DEFILED_VINES = 203770,//8s  ±»ÙôäÂµÄÌÙÂû
-    SPELL_DEFILED_ERUPTION = 203771,// ÙôäÂÅç·¢
+    SPELL_DEFILED_VINES = 203770,//8s  è¢«äºµæ¸çš„è—¤è”“
+    SPELL_DEFILED_ERUPTION = 203771,// äºµæ¸å–·å‘
 
 
     SPELL_DEVOUR_NIGHTMARE = 214490,
@@ -46,7 +46,7 @@ enum Spells
     //EMERISS
     SPELL_MARK_OF_EMERISS = 203125,
     SPELL_VOLATILE_INFECTION = 203787,
-    //SPELL_VOLATILE_INFECTION = 223699,//45s //When Emeriss reaches 100 Energy, approximately every 45 seconds, she will cast  ¿ìËÙ´«È¾ on two random non-tank players.
+    //SPELL_VOLATILE_INFECTION = 223699,//45s //When Emeriss reaches 100 Energy, approximately every 45 seconds, she will cast  å¿«é€Ÿä¼ æŸ“ on two random non-tank players.
     SPELL_ESSENCE_OF_CORRUPTION = 205298,//summon 30s
     //SUMMON
     NPC_ESSENCE_OF_CORRUPTION = 103691,
@@ -56,7 +56,7 @@ enum Spells
     SPELL_MARK_OF_LETHON = 203124,
     SPELL_LETHON = 102682,
     SPELL_SHADOW_BURST = 204040,// on fly
-    SPELL_SIPHON_SPIRIT = 203888,// mythic //When Lethon reaches 100 Energy, approximately every 50 seconds, he will cast  ºçÎüÁé»ê.
+    SPELL_SIPHON_SPIRIT = 203888,// mythic //When Lethon reaches 100 Energy, approximately every 50 seconds, he will cast  è™¹å¸çµé­‚.
     //summon
     NPC_SPIRIT_SHADE = 103100,
     SPELL_DARK_OFFERING = 203897,
@@ -64,15 +64,15 @@ enum Spells
     //Taerar
     SPELL_MARK_OF_TAERAR = 203121,
     SPELL_BELLOWING_ROAR = 204078,
-    //While Taerar is active, he will spawn two clouds of  ÉøÂ©Ö®Îí approximately every 15 seconds.
+    //While Taerar is active, he will spawn two clouds of  æ¸—æ¼ä¹‹é›¾ approximately every 15 seconds.
     NPC_SEEPING_FOG = 103697,
     SPELL_SEEPING_FOG = 205341,
 
     SPELL_SHADES_OF_TAERAR = 204100,
-    //When Taerar reaches 100 Energy, approximately every 50 seconds, he will summon  Ì©À­¶ûÖ®Ó°
+    //When Taerar reaches 100 Energy, approximately every 50 seconds, he will summon  æ³°æ‹‰å°”ä¹‹å½±
     //SUMMON
     NPC_SHADE_OF_TAERAR = 103145,
-    //SPELL_CORRUPTED_BREATH = 203028,// ¸¯»¯ÍÂÏ¢ 18s
+    //SPELL_CORRUPTED_BREATH = 203028,// è…åŒ–åæ¯ 18s
     /*        */
 };
 
@@ -265,7 +265,7 @@ struct npc_taerar_102681 : public ScriptedAI
         }
     }
 
-    void EnterEvadeMode(EvadeReason why)
+    void EnterEvadeMode(EvadeReason why) override
     {
         std::list<Creature*> list;
         me->GetCreatureListWithEntryInGrid(list, NPC_SHADE_OF_TAERAR, 500.0f);
