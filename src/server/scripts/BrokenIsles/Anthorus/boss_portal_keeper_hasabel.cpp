@@ -276,7 +276,7 @@ struct npc_gateway_portal_hasabel : public ScriptedAI
         IsLock = false;
     }
 
-    void DoAction(int32 param)
+    void DoAction(int32 param) override
     {
         switch (param)
         {
