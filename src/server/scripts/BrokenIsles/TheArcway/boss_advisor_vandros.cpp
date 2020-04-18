@@ -109,7 +109,7 @@ class boss_advisor_vandros : public CreatureScript
                     Talk(SAY_KILL);
             }
 
-            void JustReachedHome()
+            void JustReachedHome() override
             {
                 Talk(SAY_WIPE);
                 me->SetReactState(REACT_AGGRESSIVE);
