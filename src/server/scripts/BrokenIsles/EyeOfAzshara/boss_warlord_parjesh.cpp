@@ -379,7 +379,7 @@ class npc_eoa_hatecoil_crestrider : public CreatureScript
                 me->DespawnOrUnsummon(5000);
             }
 
-            void SpellHit(Unit* , SpellInfo const* spell)
+            void SpellHit(Unit* , SpellInfo const* spell) override
             {
                 if (!spell)
                     return;
