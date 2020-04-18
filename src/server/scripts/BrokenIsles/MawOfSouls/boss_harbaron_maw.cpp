@@ -116,7 +116,7 @@ class boss_harbaron : public CreatureScript
             boss_harbaron_AI(Creature* creature) : BossAI(creature, DATA_HARBARON)
             {}
 
-            void Reset()
+            void Reset() override
             {
                 _Reset();
             }
