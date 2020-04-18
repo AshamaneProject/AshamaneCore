@@ -103,7 +103,7 @@ public:
 
         EventMap events;
 
-        void EnterCombat(Unit* unit) override
+        void EnterCombat(Unit* /*unit*/) override
         {
             events.ScheduleEvent(EVENT_IMPALING_SHARD, 2s);
         }
