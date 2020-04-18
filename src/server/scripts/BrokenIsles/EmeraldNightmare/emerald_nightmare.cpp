@@ -31,7 +31,7 @@ struct npc_malfurion_stormrage_106482 : public ScriptedAI
         me->AddNpcFlag(UNIT_NPC_FLAG_GOSSIP);
     }
     //cast 214713,212630,212639
-    void DoAction(int32 param)
+    void DoAction(int32 param) override
     {
         switch (param)
         {
@@ -79,7 +79,7 @@ struct npc_malfurion_stormrage_106482 : public ScriptedAI
 
         ClearGossipMenuFor(player);
         std::string tempstr;
-        consoleToUtf8("��ʼ", tempstr);
+        consoleToUtf8("¿ªÊ¼", tempstr);
         AddGossipItemFor(player, GOSSIP_ICON_CHAT, tempstr, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
         SendGossipMenuFor(player, player->GetGossipTextId(me), me->GetGUID());
     }
