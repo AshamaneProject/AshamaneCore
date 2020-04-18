@@ -84,7 +84,7 @@ public:
 
     uint32 checkTimer = 5000;
     bool needRecast = true;
-    void OnUpdateArea(Player* player, Area* newArea, Area* /*oldArea*/)
+    void OnUpdateArea(Player* player, Area* newArea, Area* /*oldArea*/) override
     {
         if (newArea->GetId() == 9333)
         {
