@@ -167,7 +167,7 @@ public:
             }
         }
 
-        void DoAction(int32 action)
+        void DoAction(int32 action) override
         {
             if (action == ACTION_CAN_JOIN_COMBAT)
                 CanJoinCombat();
