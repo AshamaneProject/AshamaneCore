@@ -448,7 +448,7 @@ class npc_kara_midnight : public CreatureScript
                 }
             }
 
-            void Reset()
+            void Reset() override
             {
                 _events.Reset();
                 _summons.DespawnAll();
