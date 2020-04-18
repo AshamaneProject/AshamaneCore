@@ -60,7 +60,7 @@ class instance_cathedral_of_eternal_night : public InstanceMapScript
             {
        SetHeaders(DataHeader);
                 SetBossNumber(DATA_MAX_ENCOUNTERS);
-                //LoadDoorData(doorData);
+                LoadDoorData(doorData);
             }
             /*
             void OnGameObjectCreate(GameObject* go) override
