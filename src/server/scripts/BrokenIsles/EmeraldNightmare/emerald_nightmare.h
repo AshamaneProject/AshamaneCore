@@ -150,7 +150,7 @@ public:
     }
 
 private:
-    Unit& m_owner;
+    Unit& /*m_owner*/;
     ObjectGuid CasterGUID;
     Position pos;
     uint32 Spell;
