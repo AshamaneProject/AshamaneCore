@@ -156,7 +156,7 @@ struct scenario_artifact_ursocslair : public InstanceScript
         isComplete = false;
     }
 
-    uint32 GetStepID()
+    void uint32 GetStepID()
     {
         switch (StepID)
         {
@@ -187,6 +187,7 @@ struct scenario_artifact_ursocslair : public InstanceScript
         default:
             break;
         }
+    
     }
 
     void LoadNPC(uint32 event, const SpawnData* data)
