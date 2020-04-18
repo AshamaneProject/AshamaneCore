@@ -1236,7 +1236,7 @@ struct npc_high_overlord_saurfang_93773 : public ScriptedAI
 {
     npc_high_overlord_saurfang_93773(Creature* creature) : ScriptedAI(creature) { }
 
-    void DoAction(int32 param)
+    void DoAction(int32 param) override
     {
         switch (param)
         {
