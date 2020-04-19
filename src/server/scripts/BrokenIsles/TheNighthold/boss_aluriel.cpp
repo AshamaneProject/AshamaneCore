@@ -133,7 +133,7 @@ public:
             summons.DespawnAll();
         }
 
-        void DoAction(int32 param)
+        void DoAction(int32 param) override
         {
         }
 
