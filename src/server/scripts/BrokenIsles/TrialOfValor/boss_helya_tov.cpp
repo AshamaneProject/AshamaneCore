@@ -318,7 +318,7 @@ public:
                 isPhase3 = true;
             }
 
-            Map::PlayerList const& PlayerList = me->GetMap()->GetPlayers();
+            Map::PlayerList const& /*PlayerList*/ = me->GetMap()->GetPlayers();
 
             while (uint32 eventId = events.ExecuteEvent())
             {
