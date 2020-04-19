@@ -2,7 +2,7 @@
 * Copyright (C) 2016-2019 MagicStaorm
 *
 * Este codigo es de uso exclusivo y privado para la red de gaming
-* ColossusWoW est· totalmente prohibida su distribuciÛn y
+* ColossusWoW est√° totalmente prohibida su distribuci√≥n y
 * uso en proyectos ajenos, si has obtenido o encontrado este codigo
 * publicamente envianos un email a administracion@colossuswow.com
 * indicandonos como y donde has obtenido este codigo
@@ -59,7 +59,7 @@ public:
             events.Reset();
         }
 
-        void EnterEvadeMode(EvadeReason why) override
+        void EnterEvadeMode(EvadeReason /*why*/) override
         {
             BossAI::EnterEvadeMode();
 
