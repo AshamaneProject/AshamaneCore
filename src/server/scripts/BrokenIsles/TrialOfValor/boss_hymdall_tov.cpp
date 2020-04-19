@@ -109,7 +109,7 @@ public:
             //Talk(SAY_DIED);
         }
 
-        void KilledUnit(Unit* victim) override
+        void KilledUnit(Unit* /*victim*/) override
         {
             //if (victim->GetTypeId() == TYPEID_PLAYER)
             //    Talk(SAY_KILL);
