@@ -8,7 +8,7 @@ ALTER TABLE `currency_types`
   ADD `ConvertToPlayerExperience` int(11) NOT NULL DEFAULT '0' AFTER `ItemGroupSoundsID`,
   ADD `PlayerConditionID` int(11) NOT NULL DEFAULT '0' AFTER `ConvertToPlayerExperience`;
 
-ALTER TABLE `item_appearance` DROP IF EXISTS `SubclassID`;
+-- ALTER TABLE `item_appearance` DROP IF EXISTS `SubclassID`;
 
 ALTER TABLE `mount`
   ADD `MountSpecialRiderAnimKitID` int(11) NOT NULL DEFAULT '0' AFTER `UiModelSceneID`,
