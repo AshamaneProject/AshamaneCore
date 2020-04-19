@@ -128,7 +128,7 @@ public:
             _EnterEvadeMode();
         }
 
-        void DoAction(int32 param)
+        void DoAction(int32 param) override
         {
             if (param == 1)
             {
