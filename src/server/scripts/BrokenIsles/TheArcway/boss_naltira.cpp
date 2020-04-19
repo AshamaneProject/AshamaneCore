@@ -255,7 +255,7 @@ class npc_arc_vicious_manafang : public CreatureScript
                 _damage = 0;
             }
 
-            void MovementInform(uint32 type, uint32 id) override
+            void MovementInform(uint32 type, uint32 /*id*/) override
             {
                 if (type == POINT_MOTION_TYPE && !_isInLand)
                 {
