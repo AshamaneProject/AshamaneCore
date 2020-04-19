@@ -95,7 +95,7 @@ struct boss_fallen_avatar : public BossAI
         instance->DoDelayedConversation(5000, 4955);
     }
 
-    void DoAction(int32 param)
+    void DoAction(int32 param) override
     {
         switch (param)
         {
