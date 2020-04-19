@@ -19,8 +19,8 @@ ALTER TABLE `artifact_power_link` MODIFY `VerifiedBuild` int(11) NOT NULL DEFAUL
 ALTER TABLE `artifact_power_picker` MODIFY `VerifiedBuild` int(11) NOT NULL DEFAULT '0';
 ALTER TABLE `artifact_power_rank` MODIFY `VerifiedBuild` int(11) NOT NULL DEFAULT '0';
 ALTER TABLE `artifact_quest_xp` MODIFY `VerifiedBuild` int(11) NOT NULL DEFAULT '0';
-ALTER TABLE `artifact_tier` MODIFY `VerifiedBuild` int(11) NOT NULL DEFAULT '0';
-ALTER TABLE `artifact_unlock` MODIFY `VerifiedBuild` int(11) NOT NULL DEFAULT '0';
+ALTER TABLE `artifact_tier` ADD `VerifiedBuild` int(11) NOT NULL DEFAULT '0' AFTER `MinimumEmpowerKnowledge`;
+ALTER TABLE `artifact_unlock` ADD `VerifiedBuild` int(11) NOT NULL DEFAULT '0'AFTER `ArtifactID`;
 ALTER TABLE `auction_house` MODIFY `VerifiedBuild` int(11) NOT NULL DEFAULT '0';
 ALTER TABLE `auction_house_locale` MODIFY `VerifiedBuild` int(11) NOT NULL DEFAULT '0';
 ALTER TABLE `azerite_empowered_item` MODIFY `VerifiedBuild` int(11) NOT NULL DEFAULT '0';
