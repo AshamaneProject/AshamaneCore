@@ -318,7 +318,7 @@ class npc_arc_dread_felbat : public CreatureScript
                 me->SetReactState(REACT_PASSIVE);
             }
 
-            void MovementInform(uint32 type, uint32 id) override
+            void MovementInform(uint32 type, uint32 /*id*/) override
             {
                 if (type == CHASE_MOTION_TYPE && !_isInLand)
                 {
