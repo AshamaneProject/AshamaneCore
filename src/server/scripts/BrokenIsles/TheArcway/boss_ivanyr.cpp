@@ -116,7 +116,7 @@ class boss_ivanyr : public CreatureScript
                     return;
 
                // auto & vertices = at->_polygonVertices;
-                uint8 index = 0;
+                /*uint8 index = 0;*/
 
                 //for (auto & it :  vertices)
                    // it = _vertexs.at(index++);
