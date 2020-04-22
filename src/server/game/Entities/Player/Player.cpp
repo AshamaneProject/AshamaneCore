@@ -4336,6 +4336,10 @@ void Player::DeleteFromDB(ObjectGuid playerguid, uint32 accountId, bool updateRe
             stmt->setUInt64(0, guid);
             trans->Append(stmt);
 
+            stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_CHARACTER_FAVORITE_AUCTIONS_BY_CHAR);
+            stmt->setUInt64(0, guid);
+            trans->Append(stmt);
+
             Corpse::DeleteFromDB(playerguid, trans);
 
             for (uint8 garrType = GARRISON_TYPE_MIN; garrType < GARRISON_TYPE_MAX; ++garrType)
@@ -12180,7 +12184,7 @@ InventoryResult Player::CanUseItem(Item* pItem, bool not_loading) const
             if (getLevel() < pItem->GetRequiredLevel())
                 return EQUIP_ERR_CANT_EQUIP_LEVEL_I;
 
-            InventoryResult res = CanUseItem(pProto);
+            InventoryResult res = CanUseItem(pProto, true);
             if (res != EQUIP_ERR_OK)
                 return res;
 
@@ -12217,7 +12221,7 @@ InventoryResult Player::CanUseItem(Item* pItem, bool not_loading) const
     return EQUIP_ERR_ITEM_NOT_FOUND;
 }
 
-InventoryResult Player::CanUseItem(ItemTemplate const* proto) const
+InventoryResult Player::CanUseItem(ItemTemplate const* proto, bool skipRequiredLevelCheck /*= false*/) const
 {
     // Used by group, function GroupLoot, to know if a prototype can be used by a player
 
@@ -12247,7 +12251,7 @@ InventoryResult Player::CanUseItem(ItemTemplate const* proto) const
     if (proto->GetRequiredSpell() != 0 && !HasSpell(proto->GetRequiredSpell()))
         return EQUIP_ERR_PROFICIENCY_NEEDED;
 
-    if (getLevel() < proto->GetBaseRequiredLevel())
+    if (!skipRequiredLevelCheck && getLevel() < proto->GetBaseRequiredLevel())
         return EQUIP_ERR_CANT_EQUIP_LEVEL_I;
 
     // If World Event is not active, prevent using event dependant items
@@ -19347,9 +19351,9 @@ void Player::_LoadInventory(PreparedQueryResult result, PreparedQueryResult arti
     //        spellItemEnchantmentAllSpecs, spellItemEnchantmentSpec1, spellItemEnchantmentSpec2, spellItemEnchantmentSpec3, spellItemEnchantmentSpec4,
     //                29           30           31                32          33           34           35                36          37           38           39                40
     //        gemItemId1, gemBonuses1, gemContext1, gemScalingLevel1, gemItemId2, gemBonuses2, gemContext2, gemScalingLevel2, gemItemId3, gemBonuses3, gemContext3, gemScalingLevel3
-    //                       41                      42
-    //        fixedScalingLevel, artifactKnowledgeLevel FROM item_instance
-    //         43    44
+    //                       41                      42           43              44               45               46               47                  48
+    //        fixedScalingLevel, artifactKnowledgeLevel, challengeId, challengeLevel, challengeAffix1, challengeAffix2, challengeAffix3, challengeIsCharged FROM item_instance
+    //         49    50
     //        bag, slot
     // FROM character_inventory ci
     // JOIN item_instance ii ON ci.item = ii.guid
@@ -19400,8 +19404,8 @@ void Player::_LoadInventory(PreparedQueryResult result, PreparedQueryResult arti
                             azeriteEmpoweredItem->LoadAzeriteEmpoweredItemData(this, *addionalDataPtr->AzeriteEmpoweredItem);
                 }
 
-                ObjectGuid bagGuid = fields[43].GetUInt64() ? ObjectGuid::Create<HighGuid::Item>(fields[43].GetUInt64()) : ObjectGuid::Empty;
-                uint8 slot = fields[44].GetUInt8();
+                ObjectGuid bagGuid = fields[49].GetUInt64() ? ObjectGuid::Create<HighGuid::Item>(fields[49].GetUInt64()) : ObjectGuid::Empty;
+                uint8 slot = fields[50].GetUInt8();
 
                 GetSession()->GetCollectionMgr()->CheckHeirloomUpgrades(item);
                 GetSession()->GetCollectionMgr()->AddItemAppearance(item);
@@ -20857,6 +20861,17 @@ bool Player::_LoadHomeBind(PreparedQueryResult result)
 
 void Player::SaveToDB(bool create /*=false*/)
 {
+    CharacterDatabaseTransaction trans = CharacterDatabase.BeginTransaction();
+    LoginDatabaseTransaction loginTransaction = LoginDatabase.BeginTransaction();
+
+    SaveToDB(loginTransaction, trans, create);
+
+    CharacterDatabase.CommitTransaction(trans);
+    LoginDatabase.CommitTransaction(loginTransaction);
+}
+
+void Player::SaveToDB(LoginDatabaseTransaction loginTransaction, CharacterDatabaseTransaction trans, bool create /* = false */)
+{
     // delay auto save at any saves (manual, in code, or autosave)
     m_nextSave = sWorld->getIntConfig(CONFIG_INTERVAL_SAVE);
 
@@ -20876,7 +20891,6 @@ void Player::SaveToDB(bool create /*=false*/)
     if (!create)
         sScriptMgr->OnPlayerSave(this);
 
-    CharacterDatabaseTransaction trans = CharacterDatabase.BeginTransaction();
     CharacterDatabasePreparedStatement* stmt = nullptr;
     uint8 index = 0;
 
@@ -21235,10 +21249,7 @@ void Player::SaveToDB(bool create /*=false*/)
     if (m_session->isLogingOut() || !sWorld->getBoolConfig(CONFIG_STATS_SAVE_ONLY_ON_LOGOUT))
         _SaveStats(trans);
 
-    CharacterDatabase.CommitTransaction(trans);
-
     // TODO: Move this out
-    LoginDatabaseTransaction loginTransaction = LoginDatabase.BeginTransaction();
     GetSession()->GetCollectionMgr()->SaveAccountToys(loginTransaction);
     GetSession()->GetBattlePetMgr()->SaveToDB(loginTransaction);
     GetSession()->GetCollectionMgr()->SaveAccountHeirlooms(loginTransaction);
@@ -21260,8 +21271,6 @@ void Player::SaveToDB(bool create /*=false*/)
     loginStmt->setUInt64(5, GetGUID().GetCounter());
     loginStmt->setUInt32(6, time(nullptr));
     loginTransaction->Append(loginStmt);
-
-    LoginDatabase.CommitTransaction(loginTransaction);
 
     // save pet (hunter pet level and experience and all type pets health/mana).
     if (Pet* pet = GetPet())
@@ -28114,7 +28123,7 @@ void Player::ActivateTalentGroup(ChrSpecializationEntry const* spec)
         stmt->setUInt8(1, GetActiveTalentGroup());
 
         WorldSession* mySess = GetSession();
-        mySess->GetQueryProcessor().AddQuery(CharacterDatabase.AsyncQuery(stmt)
+        mySess->GetQueryProcessor().AddCallback(CharacterDatabase.AsyncQuery(stmt)
             .WithPreparedCallback([mySess](PreparedQueryResult result)
         {
             // safe callback, we can't pass this pointer directly
