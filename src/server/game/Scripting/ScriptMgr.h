@@ -70,7 +70,7 @@ class RestResponse;
 class ZoneScript;
 
 struct AreaTriggerEntry;
-struct AuctionEntry;
+struct AuctionPosting;
 struct ConditionSourceInfo;
 struct Condition;
 struct CreatureTemplate;
@@ -577,16 +577,16 @@ class TC_GAME_API AuctionHouseScript : public ScriptObject
     public:
 
         // Called when an auction is added to an auction house.
-        virtual void OnAuctionAdd(AuctionHouseObject* /*ah*/, AuctionEntry* /*entry*/) { }
+        virtual void OnAuctionAdd(AuctionHouseObject* /*ah*/, AuctionPosting* /*auction*/) { }
 
         // Called when an auction is removed from an auction house.
-        virtual void OnAuctionRemove(AuctionHouseObject* /*ah*/, AuctionEntry* /*entry*/) { }
+        virtual void OnAuctionRemove(AuctionHouseObject* /*ah*/, AuctionPosting* /*auction*/) { }
 
         // Called when an auction was succesfully completed.
-        virtual void OnAuctionSuccessful(AuctionHouseObject* /*ah*/, AuctionEntry* /*entry*/) { }
+        virtual void OnAuctionSuccessful(AuctionHouseObject* /*ah*/, AuctionPosting* /*auction*/) { }
 
         // Called when an auction expires.
-        virtual void OnAuctionExpire(AuctionHouseObject* /*ah*/, AuctionEntry* /*entry*/) { }
+        virtual void OnAuctionExpire(AuctionHouseObject* /*ah*/, AuctionPosting* /*auction*/) { }
 };
 
 class TC_GAME_API ConditionScript : public ScriptObject
@@ -1180,10 +1180,10 @@ class TC_GAME_API ScriptMgr
 
     public: /* AuctionHouseScript */
 
-        void OnAuctionAdd(AuctionHouseObject* ah, AuctionEntry* entry);
-        void OnAuctionRemove(AuctionHouseObject* ah, AuctionEntry* entry);
-        void OnAuctionSuccessful(AuctionHouseObject* ah, AuctionEntry* entry);
-        void OnAuctionExpire(AuctionHouseObject* ah, AuctionEntry* entry);
+        void OnAuctionAdd(AuctionHouseObject* ah, AuctionPosting* auction);
+        void OnAuctionRemove(AuctionHouseObject* ah, AuctionPosting* auction);
+        void OnAuctionSuccessful(AuctionHouseObject* ah, AuctionPosting* auction);
+        void OnAuctionExpire(AuctionHouseObject* ah, AuctionPosting* auction);
 
     public: /* ConditionScript */
 

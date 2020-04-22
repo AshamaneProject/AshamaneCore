@@ -159,6 +159,53 @@ LOCK TABLES `arena_team_member` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `auction_bidders`
+--
+
+DROP TABLE IF EXISTS `auction_bidders`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `auction_bidders` (
+  `auctionId` int unsigned NOT NULL,
+  `playerGuid` bigint unsigned NOT NULL,
+  PRIMARY KEY (`auctionId`,`playerGuid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `auction_bidders`
+--
+
+LOCK TABLES `auction_bidders` WRITE;
+/*!40000 ALTER TABLE `auction_bidders` DISABLE KEYS */;
+/*!40000 ALTER TABLE `auction_bidders` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `auction_items`
+--
+
+DROP TABLE IF EXISTS `auction_items`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `auction_items` (
+  `auctionId` int unsigned NOT NULL,
+  `itemGuid` bigint unsigned NOT NULL,
+  PRIMARY KEY (`auctionId`,`itemGuid`),
+  UNIQUE KEY `idx_itemGuid` (`itemGuid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `auction_items`
+--
+
+LOCK TABLES `auction_items` WRITE;
+/*!40000 ALTER TABLE `auction_items` DISABLE KEYS */;
+/*!40000 ALTER TABLE `auction_items` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `auctionhouse`
 --
 
@@ -167,17 +214,16 @@ DROP TABLE IF EXISTS `auctionhouse`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `auctionhouse` (
   `id` int(10) unsigned NOT NULL DEFAULT '0',
-  `auctioneerguid` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `itemguid` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `itemowner` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `buyoutprice` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `time` int(10) unsigned NOT NULL DEFAULT '0',
-  `buyguid` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `lastbid` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `startbid` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `auctionHouseId` int(10) unsigned NOT NULL DEFAULT '0',
+  `owner` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `bidder` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `minBid` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `buyoutOrUnitPrice` bigint(20) unsigned NOT NULL DEFAULT '0',
   `deposit` bigint(20) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `item_guid` (`itemguid`)
+  `bidAmount` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `startTime` int(10) unsigned NOT NULL DEFAULT '0',
+  `endTime` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -731,6 +777,33 @@ CREATE TABLE `character_equipmentsets` (
 LOCK TABLES `character_equipmentsets` WRITE;
 /*!40000 ALTER TABLE `character_equipmentsets` DISABLE KEYS */;
 /*!40000 ALTER TABLE `character_equipmentsets` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `character_favorite_auctions`
+--
+
+DROP TABLE IF EXISTS `character_favorite_auctions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `character_favorite_auctions` (
+  `guid` bigint(20) unsigned NOT NULL,
+  `order` int(10) unsigned NOT NULL DEFAULT '0',
+  `itemId` int(10) unsigned NOT NULL DEFAULT '0',
+  `itemLevel` int(10) unsigned NOT NULL DEFAULT '0',
+  `battlePetSpeciesId` int(10) unsigned NOT NULL DEFAULT '0',
+  `suffixItemNameDescriptionId` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`guid`,`order`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `character_favorite_auctions`
+--
+
+LOCK TABLES `character_favorite_auctions` WRITE;
+/*!40000 ALTER TABLE `character_favorite_auctions` DISABLE KEYS */;
+/*!40000 ALTER TABLE `character_favorite_auctions` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
