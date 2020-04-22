@@ -1698,6 +1698,7 @@ bool Creature::LoadCreatureFromDB(ObjectGuid::LowType spawnId, Map* map, bool ad
     m_creatureData = data;
     m_respawnradius = data->spawndist;
     m_respawnDelay = data->spawntimesecs;
+
     if (!Create(map->GenerateLowGuid<HighGuid::Creature>(), map, data->id, data->posX, data->posY, data->posZ, data->orientation, data, 0))
         return false;
 
@@ -1707,6 +1708,9 @@ bool Creature::LoadCreatureFromDB(ObjectGuid::LowType spawnId, Map* map, bool ad
     m_deathState = ALIVE;
 
     m_respawnTime = GetMap()->GetCreatureRespawnTime(m_spawnId);
+
+    if (data->corpsetimesecs >= 0)
+        m_corpseDelay = data->corpsetimesecs;
 
     // Is the creature script objecting to us spawning? If yes, delay by one second (then re-check in ::Update)
     if (!m_respawnTime && !sScriptMgr->CanSpawn(spawnId, GetEntry(), GetCreatureTemplate(), GetCreatureData(), map))

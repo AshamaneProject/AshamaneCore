@@ -526,7 +526,7 @@ struct EquipmentInfo
 struct CreatureData
 {
     CreatureData() : id(0), mapid(0), areaId(0), displayid(0), equipmentId(0),
-                     posX(0.0f), posY(0.0f), posZ(0.0f), orientation(0.0f), spawntimesecs(0),
+                     posX(0.0f), posY(0.0f), posZ(0.0f), orientation(0.0f), spawntimesecs(0), corpsetimesecs(-1),
                      spawndist(0.0f), currentwaypoint(0), curhealth(0), curmana(0), movementType(0),
                      spawnDifficulties(), npcflag(0), unit_flags(0), unit_flags2(0), unit_flags3(0), dynamicflags(0),
                      phaseUseFlags(0), phaseId(0), phaseGroup(0), terrainSwapMap(-1), ScriptId(0), dbData(true) { }
@@ -540,6 +540,7 @@ struct CreatureData
     float posZ;
     float orientation;
     uint32 spawntimesecs;
+    int32 corpsetimesecs;
     float spawndist;
     uint32 currentwaypoint;
     uint32 curhealth;

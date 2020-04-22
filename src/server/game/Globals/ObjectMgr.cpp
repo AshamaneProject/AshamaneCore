@@ -2040,11 +2040,11 @@ void ObjectMgr::LoadCreatures()
 {
     uint32 oldMSTime = getMSTime();
 
-    //                                               0              1   2    3       4        5             6           7           8           9            10             11
-    QueryResult result = WorldDatabase.Query("SELECT creature.guid, id, map, areaId, modelid, equipment_id, position_x, position_y, position_z, orientation, spawntimesecs, spawndist, "
-    //   12               13         14       15            16                 17          18          19                20                   21                    22
+    //                                               0              1   2    3       4        5             6           7           8           9            10             11              12
+    QueryResult result = WorldDatabase.Query("SELECT creature.guid, id, map, areaId, modelid, equipment_id, position_x, position_y, position_z, orientation, spawntimesecs, corpsetimesecs, spawndist, "
+    //   12               14         15       16            17                 18          19          20                21                   22                    23
         "currentwaypoint, curhealth, curmana, MovementType, spawnDifficulties, eventEntry, pool_entry, creature.npcflag, creature.unit_flags, creature.unit_flags2, creature.unit_flags3, "
-    //   23                     24                      25                26                   27                       28
+    //   24                     25                      26                27                   28                       29
         "creature.dynamicflags, creature.phaseUseFlags, creature.phaseid, creature.phasegroup, creature.terrainSwapMap, creature.ScriptName "
         "FROM creature "
         "LEFT OUTER JOIN game_event_creature ON creature.guid = game_event_creature.guid "
@@ -2093,24 +2093,25 @@ void ObjectMgr::LoadCreatures()
         data.posZ           = fields[8].GetFloat();
         data.orientation    = fields[9].GetFloat();
         data.spawntimesecs  = fields[10].GetUInt32();
-        data.spawndist      = fields[11].GetFloat();
-        data.currentwaypoint= fields[12].GetUInt32();
-        data.curhealth      = fields[13].GetUInt32();
-        data.curmana        = fields[14].GetUInt32();
-        data.movementType   = fields[15].GetUInt8();
-        data.spawnDifficulties      = ParseSpawnDifficulties(fields[16].GetString(), "creature", guid, data.mapid, spawnMasks[data.mapid]);
-        int16 gameEvent     = fields[17].GetInt8();
-        uint32 PoolId       = fields[18].GetUInt32();
-        data.npcflag        = fields[19].GetUInt64();
-        data.unit_flags     = fields[20].GetUInt32();
-        data.unit_flags2    = fields[21].GetUInt32();
-        data.unit_flags3    = fields[22].GetUInt32();
-        data.dynamicflags   = fields[23].GetUInt32();
-        data.phaseUseFlags  = fields[24].GetUInt8();
-        data.phaseId        = fields[25].GetUInt32();
-        data.phaseGroup     = fields[26].GetUInt32();
-        data.terrainSwapMap = fields[27].GetInt32();
-        data.ScriptId       = GetScriptIdOrAdd(fields[28].GetString());
+        data.corpsetimesecs = fields[11].GetInt32();
+        data.spawndist      = fields[12].GetFloat();
+        data.currentwaypoint= fields[13].GetUInt32();
+        data.curhealth      = fields[14].GetUInt32();
+        data.curmana        = fields[15].GetUInt32();
+        data.movementType   = fields[16].GetUInt8();
+        data.spawnDifficulties      = ParseSpawnDifficulties(fields[17].GetString(), "creature", guid, data.mapid, spawnMasks[data.mapid]);
+        int16 gameEvent     = fields[18].GetInt8();
+        uint32 PoolId       = fields[19].GetUInt32();
+        data.npcflag        = fields[20].GetUInt64();
+        data.unit_flags     = fields[21].GetUInt32();
+        data.unit_flags2    = fields[22].GetUInt32();
+        data.unit_flags3    = fields[23].GetUInt32();
+        data.dynamicflags   = fields[24].GetUInt32();
+        data.phaseUseFlags  = fields[25].GetUInt8();
+        data.phaseId        = fields[26].GetUInt32();
+        data.phaseGroup     = fields[27].GetUInt32();
+        data.terrainSwapMap = fields[28].GetInt32();
+        data.ScriptId       = GetScriptIdOrAdd(fields[29].GetString());
 
         MapEntry const* mapEntry = sMapStore.LookupEntry(data.mapid);
         if (!mapEntry)
