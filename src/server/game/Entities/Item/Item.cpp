@@ -922,12 +922,12 @@ bool Item::LoadFromDB(ObjectGuid::LowType guid, ObjectGuid ownerGuid, Field* fie
     SetModifier(ITEM_MODIFIER_TIMEWALKER_LEVEL, fields[41].GetUInt32());
     SetModifier(ITEM_MODIFIER_ARTIFACT_KNOWLEDGE_LEVEL, fields[42].GetUInt32());
 
-    SetModifier(ITEM_MODIFIER_CHALLENGE_MAP_CHALLENGE_MODE_ID,  fields[45].GetUInt32());
-    SetModifier(ITEM_MODIFIER_CHALLENGE_KEYSTONE_LEVEL,         fields[46].GetUInt32());
-    SetModifier(ITEM_MODIFIER_CHALLENGE_KEYSTONE_AFFIX_ID_1,    fields[47].GetUInt32());
-    SetModifier(ITEM_MODIFIER_CHALLENGE_KEYSTONE_AFFIX_ID_2,    fields[48].GetUInt32());
-    SetModifier(ITEM_MODIFIER_CHALLENGE_KEYSTONE_AFFIX_ID_3,    fields[49].GetUInt32());
-    SetModifier(ITEM_MODIFIER_CHALLENGE_KEYSTONE_AFFIX_ID_4,    fields[50].GetUInt32());
+    SetModifier(ITEM_MODIFIER_CHALLENGE_MAP_CHALLENGE_MODE_ID,  fields[43].GetUInt32());
+    SetModifier(ITEM_MODIFIER_CHALLENGE_KEYSTONE_LEVEL,         fields[44].GetUInt32());
+    SetModifier(ITEM_MODIFIER_CHALLENGE_KEYSTONE_AFFIX_ID_1,    fields[45].GetUInt32());
+    SetModifier(ITEM_MODIFIER_CHALLENGE_KEYSTONE_AFFIX_ID_2,    fields[46].GetUInt32());
+    SetModifier(ITEM_MODIFIER_CHALLENGE_KEYSTONE_AFFIX_ID_3,    fields[47].GetUInt32());
+    SetModifier(ITEM_MODIFIER_CHALLENGE_KEYSTONE_AFFIX_ID_4,    fields[48].GetUInt32());
 
     // Enchants must be loaded after all other bonus/scaling data
     Tokenizer enchantmentTokens(fields[8].GetString(), ' ');
