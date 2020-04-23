@@ -847,15 +847,18 @@ public:
 
     void OnUpdateArea(Player* player, Area* newArea, Area* /*oldArea*/)
     {
+        if (!newArea)
+            return;
+
         switch (newArea->GetId())
         {
-        case 7357:
-        case 7355:
-            if (player->HasQuest(42108))
-                player->CastSpell(player, 210554, true);
-            break;
-        default:
-            break;
+            case 7357:
+            case 7355:
+                if (player->HasQuest(42108))
+                    player->CastSpell(player, 210554, true);
+                break;
+            default:
+                break;
         }
     }
 };

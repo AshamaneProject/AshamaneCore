@@ -16210,7 +16210,10 @@ void Player::RewardQuest(Quest const* quest, uint32 reward, Object* questGiver, 
     {
         SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(quest->GetRewSpell());
         Unit* caster = this;
-        if (questGiver && questGiver->isType(TYPEMASK_UNIT) && !quest->HasFlag(QUEST_FLAGS_PLAYER_CAST_ON_COMPLETE) && !spellInfo->HasTargetType(TARGET_UNIT_CASTER))
+        if (questGiver && questGiver->isType(TYPEMASK_UNIT) &&
+            !quest->HasFlag(QUEST_FLAGS_PLAYER_CAST_ON_COMPLETE) &&
+            !spellInfo->HasTargetType(TARGET_UNIT_CASTER) &&
+            !spellInfo->HasEffect(SPELL_EFFECT_LEARN_SPELL))
             if (Unit* unit = questGiver->ToUnit())
                 caster = unit;
 
@@ -16988,23 +16991,23 @@ void Player::RemoveRewardedQuest(uint32 questId, bool update /*= true*/)
 
 void Player::SendQuestUpdate(uint32 /*questId*/)
 {
-    if (!GetArea())
-        return;
-
-    auto areaTree = GetArea()->GetTree();
-    // Reverse the tree, we need to start by zone
-    std::reverse(areaTree.begin(), areaTree.end());
-
-    for (Area* area : areaTree)
+    if (Area* area = GetArea())
     {
-        SpellAreaForAreaMapBounds saBounds = sSpellMgr->GetSpellAreaForAreaMapBounds(area->GetId());
-        for (SpellAreaForAreaMap::const_iterator itr = saBounds.first; itr != saBounds.second; ++itr)
+        auto areaTree = GetArea()->GetTree();
+        // Reverse the tree, we need to start by zone
+        std::reverse(areaTree.begin(), areaTree.end());
+
+        for (Area* area : areaTree)
         {
-            if (itr->second->flags & SPELL_AREA_FLAG_AUTOREMOVE && !itr->second->IsFitToRequirements(this, GetZoneId(), GetAreaId()))
-                RemoveAurasDueToSpell(itr->second->spellId);
-            else if (itr->second->flags & SPELL_AREA_FLAG_AUTOCAST && !(itr->second->flags & SPELL_AREA_FLAG_IGNORE_AUTOCAST_ON_QUEST_STATUS_CHANGE))
-                if (!HasAura(itr->second->spellId))
-                    CastSpell(this, itr->second->spellId, true);
+            SpellAreaForAreaMapBounds saBounds = sSpellMgr->GetSpellAreaForAreaMapBounds(area->GetId());
+            for (SpellAreaForAreaMap::const_iterator itr = saBounds.first; itr != saBounds.second; ++itr)
+            {
+                if (itr->second->flags & SPELL_AREA_FLAG_AUTOREMOVE && !itr->second->IsFitToRequirements(this, GetZoneId(), GetAreaId()))
+                    RemoveAurasDueToSpell(itr->second->spellId);
+                else if (itr->second->flags & SPELL_AREA_FLAG_AUTOCAST && !(itr->second->flags & SPELL_AREA_FLAG_IGNORE_AUTOCAST_ON_QUEST_STATUS_CHANGE))
+                    if (!HasAura(itr->second->spellId))
+                        CastSpell(this, itr->second->spellId, true);
+            }
         }
     }
 
