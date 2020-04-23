@@ -51,6 +51,7 @@ struct ObjectData : public IsUpdateFieldStructureTag, public HasChangesMask<4>
 
     void WriteCreate(ByteBuffer& data, EnumClassFlag<UpdateFieldFlag> fieldVisibilityFlags, Object const* owner, Player const* receiver) const;
     void WriteUpdate(ByteBuffer& data, EnumClassFlag<UpdateFieldFlag> fieldVisibilityFlags, Object const* owner, Player const* receiver) const;
+    void WriteUpdate(ByteBuffer& data, UpdateMask<4> const& changesMask, bool ignoreNestedChangesMask, Object const* owner, Player const* receiver) const;
     void ClearChangesMask();
 };
 
@@ -62,7 +63,7 @@ struct ItemEnchantment : public IsUpdateFieldStructureTag, public HasChangesMask
     UpdateField<uint16, 0, 4> Inactive;
 
     void WriteCreate(ByteBuffer& data, Item const* owner, Player const* receiver) const;
-    void WriteUpdate(ByteBuffer& data, Item const* owner, Player const* receiver) const;
+    void WriteUpdate(ByteBuffer& data, bool ignoreChangesMask, Item const* owner, Player const* receiver) const;
     void ClearChangesMask();
 };
 
@@ -73,7 +74,7 @@ struct ArtifactPower : public IsUpdateFieldStructureTag
     uint8 CurrentRankWithBonus;
 
     void WriteCreate(ByteBuffer& data, Item const* owner, Player const* receiver) const;
-    void WriteUpdate(ByteBuffer& data, Item const* owner, Player const* receiver) const;
+    void WriteUpdate(ByteBuffer& data, bool ignoreChangesMask, Item const* owner, Player const* receiver) const;
 };
 
 struct SocketedGem : public IsUpdateFieldStructureTag, public HasChangesMask<20>
@@ -83,7 +84,7 @@ struct SocketedGem : public IsUpdateFieldStructureTag, public HasChangesMask<20>
     UpdateFieldArray<uint16, 16, 3, 4> BonusListIDs;
 
     void WriteCreate(ByteBuffer& data, Item const* owner, Player const* receiver) const;
-    void WriteUpdate(ByteBuffer& data, Item const* owner, Player const* receiver) const;
+    void WriteUpdate(ByteBuffer& data, bool ignoreChangesMask, Item const* owner, Player const* receiver) const;
     void ClearChangesMask();
 };
 
@@ -113,8 +114,9 @@ struct ItemData : public IsUpdateFieldStructureTag, public HasChangesMask<40>
 
     void WriteCreate(ByteBuffer& data, EnumClassFlag<UpdateFieldFlag> fieldVisibilityFlags, Item const* owner, Player const* receiver) const;
     void WriteUpdate(ByteBuffer& data, EnumClassFlag<UpdateFieldFlag> fieldVisibilityFlags, Item const* owner, Player const* receiver) const;
+    void WriteUpdate(ByteBuffer& data, UpdateMask<40> const& changesMask, bool ignoreNestedChangesMask, Item const* owner, Player const* receiver) const;
     void AppendAllowedFieldsMaskForFlag(UpdateMask<40>& allowedMaskForTarget, EnumClassFlag<UpdateFieldFlag> fieldVisibilityFlags) const;
-    void WriteUpdate(ByteBuffer& data, UpdateMask<40> const& changesMask, EnumClassFlag<UpdateFieldFlag> fieldVisibilityFlags, Item const* owner, Player const* receiver) const;
+    void FilterDisallowedFieldsMaskForFlag(UpdateMask<40>& changesMask, EnumClassFlag<UpdateFieldFlag> fieldVisibilityFlags) const;
     void ClearChangesMask();
 };
 
@@ -125,6 +127,7 @@ struct ContainerData : public IsUpdateFieldStructureTag, public HasChangesMask<3
 
     void WriteCreate(ByteBuffer& data, EnumClassFlag<UpdateFieldFlag> fieldVisibilityFlags, Bag const* owner, Player const* receiver) const;
     void WriteUpdate(ByteBuffer& data, EnumClassFlag<UpdateFieldFlag> fieldVisibilityFlags, Bag const* owner, Player const* receiver) const;
+    void WriteUpdate(ByteBuffer& data, UpdateMask<39> const& changesMask, bool ignoreNestedChangesMask, Bag const* owner, Player const* receiver) const;
     void ClearChangesMask();
 };
 
@@ -134,6 +137,7 @@ struct AzeriteEmpoweredItemData : public IsUpdateFieldStructureTag, public HasCh
 
     void WriteCreate(ByteBuffer& data, EnumClassFlag<UpdateFieldFlag> fieldVisibilityFlags, AzeriteEmpoweredItem const* owner, Player const* receiver) const;
     void WriteUpdate(ByteBuffer& data, EnumClassFlag<UpdateFieldFlag> fieldVisibilityFlags, AzeriteEmpoweredItem const* owner, Player const* receiver) const;
+    void WriteUpdate(ByteBuffer& data, UpdateMask<6> const& changesMask, bool ignoreNestedChangesMask, AzeriteEmpoweredItem const* owner, Player const* receiver) const;
     void ClearChangesMask();
 };
 
@@ -143,7 +147,7 @@ struct UnlockedAzeriteEssence : public IsUpdateFieldStructureTag
     uint32 Rank;
 
     void WriteCreate(ByteBuffer& data, AzeriteItem const* owner, Player const* receiver) const;
-    void WriteUpdate(ByteBuffer& data, AzeriteItem const* owner, Player const* receiver) const;
+    void WriteUpdate(ByteBuffer& data, bool ignoreChangesMask, AzeriteItem const* owner, Player const* receiver) const;
 };
 
 struct SelectedAzeriteEssences : public IsUpdateFieldStructureTag, public HasChangesMask<8>
@@ -153,7 +157,7 @@ struct SelectedAzeriteEssences : public IsUpdateFieldStructureTag, public HasCha
     UpdateFieldArray<uint32, 4, 3, 4> AzeriteEssenceID;
 
     void WriteCreate(ByteBuffer& data, AzeriteItem const* owner, Player const* receiver) const;
-    void WriteUpdate(ByteBuffer& data, AzeriteItem const* owner, Player const* receiver) const;
+    void WriteUpdate(ByteBuffer& data, bool ignoreChangesMask, AzeriteItem const* owner, Player const* receiver) const;
     void ClearChangesMask();
 };
 
@@ -170,8 +174,9 @@ struct AzeriteItemData : public IsUpdateFieldStructureTag, public HasChangesMask
 
     void WriteCreate(ByteBuffer& data, EnumClassFlag<UpdateFieldFlag> fieldVisibilityFlags, AzeriteItem const* owner, Player const* receiver) const;
     void WriteUpdate(ByteBuffer& data, EnumClassFlag<UpdateFieldFlag> fieldVisibilityFlags, AzeriteItem const* owner, Player const* receiver) const;
+    void WriteUpdate(ByteBuffer& data, UpdateMask<9> const& changesMask, bool ignoreNestedChangesMask, AzeriteItem const* owner, Player const* receiver) const;
     void AppendAllowedFieldsMaskForFlag(UpdateMask<9>& allowedMaskForTarget, EnumClassFlag<UpdateFieldFlag> fieldVisibilityFlags) const;
-    void WriteUpdate(ByteBuffer& data, UpdateMask<9> const& changesMask, EnumClassFlag<UpdateFieldFlag> fieldVisibilityFlags, AzeriteItem const* owner, Player const* receiver) const;
+    void FilterDisallowedFieldsMaskForFlag(UpdateMask<9>& changesMask, EnumClassFlag<UpdateFieldFlag> fieldVisibilityFlags) const;
     void ClearChangesMask();
 };
 
@@ -181,7 +186,7 @@ struct UnitChannel : public IsUpdateFieldStructureTag
     int32 SpellXSpellVisualID;
 
     void WriteCreate(ByteBuffer& data, Unit const* owner, Player const* receiver) const;
-    void WriteUpdate(ByteBuffer& data, Unit const* owner, Player const* receiver) const;
+    void WriteUpdate(ByteBuffer& data, bool ignoreChangesMask, Unit const* owner, Player const* receiver) const;
 };
 
 struct VisibleItem : public IsUpdateFieldStructureTag, public HasChangesMask<4>
@@ -191,7 +196,7 @@ struct VisibleItem : public IsUpdateFieldStructureTag, public HasChangesMask<4>
     UpdateField<uint16, 0, 3> ItemVisual;
 
     void WriteCreate(ByteBuffer& data, Unit const* owner, Player const* receiver) const;
-    void WriteUpdate(ByteBuffer& data, Unit const* owner, Player const* receiver) const;
+    void WriteUpdate(ByteBuffer& data, bool ignoreChangesMask, Unit const* owner, Player const* receiver) const;
     void ClearChangesMask();
 };
 
@@ -201,7 +206,7 @@ struct PassiveSpellHistory : public IsUpdateFieldStructureTag
     int32 AuraSpellID;
 
     void WriteCreate(ByteBuffer& data, Unit const* owner, Player const* receiver) const;
-    void WriteUpdate(ByteBuffer& data, Unit const* owner, Player const* receiver) const;
+    void WriteUpdate(ByteBuffer& data, bool ignoreChangesMask, Unit const* owner, Player const* receiver) const;
 };
 
 struct UnitData : public IsUpdateFieldStructureTag, public HasChangesMask<192>
@@ -340,8 +345,9 @@ struct UnitData : public IsUpdateFieldStructureTag, public HasChangesMask<192>
 
     void WriteCreate(ByteBuffer& data, EnumClassFlag<UpdateFieldFlag> fieldVisibilityFlags, Unit const* owner, Player const* receiver) const;
     void WriteUpdate(ByteBuffer& data, EnumClassFlag<UpdateFieldFlag> fieldVisibilityFlags, Unit const* owner, Player const* receiver) const;
+    void WriteUpdate(ByteBuffer& data, UpdateMask<192> const& changesMask, bool ignoreNestedChangesMask, Unit const* owner, Player const* receiver) const;
     void AppendAllowedFieldsMaskForFlag(UpdateMask<192>& allowedMaskForTarget, EnumClassFlag<UpdateFieldFlag> fieldVisibilityFlags) const;
-    void WriteUpdate(ByteBuffer& data, UpdateMask<192> const& changesMask, EnumClassFlag<UpdateFieldFlag> fieldVisibilityFlags, Unit const* owner, Player const* receiver) const;
+    void FilterDisallowedFieldsMaskForFlag(UpdateMask<192>& changesMask, EnumClassFlag<UpdateFieldFlag> fieldVisibilityFlags) const;
     void ClearChangesMask();
 };
 
@@ -355,7 +361,7 @@ struct QuestLog : public IsUpdateFieldStructureTag, public HasChangesMask<31>
     UpdateFieldArray<int16, 24, 6, 7> ObjectiveProgress;
 
     void WriteCreate(ByteBuffer& data, Player const* owner, Player const* receiver) const;
-    void WriteUpdate(ByteBuffer& data, Player const* owner, Player const* receiver) const;
+    void WriteUpdate(ByteBuffer& data, bool ignoreChangesMask, Player const* owner, Player const* receiver) const;
     void ClearChangesMask();
 };
 
@@ -370,7 +376,7 @@ struct ArenaCooldown : public IsUpdateFieldStructureTag, public HasChangesMask<8
     UpdateField<uint8, 0, 7> MaxCharges;
 
     void WriteCreate(ByteBuffer& data, Player const* owner, Player const* receiver) const;
-    void WriteUpdate(ByteBuffer& data, Player const* owner, Player const* receiver) const;
+    void WriteUpdate(ByteBuffer& data, bool ignoreChangesMask, Player const* owner, Player const* receiver) const;
     void ClearChangesMask();
 };
 
@@ -418,8 +424,9 @@ struct PlayerData : public IsUpdateFieldStructureTag, public HasChangesMask<192>
 
     void WriteCreate(ByteBuffer& data, EnumClassFlag<UpdateFieldFlag> fieldVisibilityFlags, Player const* owner, Player const* receiver) const;
     void WriteUpdate(ByteBuffer& data, EnumClassFlag<UpdateFieldFlag> fieldVisibilityFlags, Player const* owner, Player const* receiver) const;
+    void WriteUpdate(ByteBuffer& data, UpdateMask<192> const& changesMask, bool ignoreNestedChangesMask, Player const* owner, Player const* receiver) const;
     void AppendAllowedFieldsMaskForFlag(UpdateMask<192>& allowedMaskForTarget, EnumClassFlag<UpdateFieldFlag> fieldVisibilityFlags) const;
-    void WriteUpdate(ByteBuffer& data, UpdateMask<192> const& changesMask, EnumClassFlag<UpdateFieldFlag> fieldVisibilityFlags, Player const* owner, Player const* receiver) const;
+    void FilterDisallowedFieldsMaskForFlag(UpdateMask<192>& changesMask, EnumClassFlag<UpdateFieldFlag> fieldVisibilityFlags) const;
     void ClearChangesMask();
     bool IsQuestLogChangesMaskSkipped() const { return false; } // bandwidth savings aren't worth the cpu time
 };
@@ -435,7 +442,7 @@ struct SkillInfo : public IsUpdateFieldStructureTag, public HasChangesMask<1793>
     UpdateFieldArray<uint16, 256, 0, 1537> SkillPermBonus;
 
     void WriteCreate(ByteBuffer& data, Player const* owner, Player const* receiver) const;
-    void WriteUpdate(ByteBuffer& data, Player const* owner, Player const* receiver) const;
+    void WriteUpdate(ByteBuffer& data, bool ignoreChangesMask, Player const* owner, Player const* receiver) const;
     void ClearChangesMask();
 };
 
@@ -445,7 +452,7 @@ struct RestInfo : public IsUpdateFieldStructureTag, public HasChangesMask<3>
     UpdateField<uint8, 0, 2> StateID;
 
     void WriteCreate(ByteBuffer& data, Player const* owner, Player const* receiver) const;
-    void WriteUpdate(ByteBuffer& data, Player const* owner, Player const* receiver) const;
+    void WriteUpdate(ByteBuffer& data, bool ignoreChangesMask, Player const* owner, Player const* receiver) const;
     void ClearChangesMask();
 };
 
@@ -462,7 +469,7 @@ struct PVPInfo : public IsUpdateFieldStructureTag, public HasChangesMask<10>
     UpdateField<uint32, 0, 9> Field_20;
 
     void WriteCreate(ByteBuffer& data, Player const* owner, Player const* receiver) const;
-    void WriteUpdate(ByteBuffer& data, Player const* owner, Player const* receiver) const;
+    void WriteUpdate(ByteBuffer& data, bool ignoreChangesMask, Player const* owner, Player const* receiver) const;
     void ClearChangesMask();
 };
 
@@ -474,7 +481,7 @@ struct CharacterRestriction : public IsUpdateFieldStructureTag
     uint32 Type;
 
     void WriteCreate(ByteBuffer& data, Player const* owner, Player const* receiver) const;
-    void WriteUpdate(ByteBuffer& data, Player const* owner, Player const* receiver) const;
+    void WriteUpdate(ByteBuffer& data, bool ignoreChangesMask, Player const* owner, Player const* receiver) const;
 };
 
 struct SpellPctModByLabel : public IsUpdateFieldStructureTag
@@ -484,7 +491,7 @@ struct SpellPctModByLabel : public IsUpdateFieldStructureTag
     int32 LabelID;
 
     void WriteCreate(ByteBuffer& data, Player const* owner, Player const* receiver) const;
-    void WriteUpdate(ByteBuffer& data, Player const* owner, Player const* receiver) const;
+    void WriteUpdate(ByteBuffer& data, bool ignoreChangesMask, Player const* owner, Player const* receiver) const;
 };
 
 struct SpellFlatModByLabel : public IsUpdateFieldStructureTag
@@ -494,7 +501,7 @@ struct SpellFlatModByLabel : public IsUpdateFieldStructureTag
     int32 LabelID;
 
     void WriteCreate(ByteBuffer& data, Player const* owner, Player const* receiver) const;
-    void WriteUpdate(ByteBuffer& data, Player const* owner, Player const* receiver) const;
+    void WriteUpdate(ByteBuffer& data, bool ignoreChangesMask, Player const* owner, Player const* receiver) const;
 };
 
 struct Research : public IsUpdateFieldStructureTag
@@ -502,7 +509,7 @@ struct Research : public IsUpdateFieldStructureTag
     int16 ResearchProjectID;
 
     void WriteCreate(ByteBuffer& data, Player const* owner, Player const* receiver) const;
-    void WriteUpdate(ByteBuffer& data, Player const* owner, Player const* receiver) const;
+    void WriteUpdate(ByteBuffer& data, bool ignoreChangesMask, Player const* owner, Player const* receiver) const;
 };
 
 struct ReplayedQuest : public IsUpdateFieldStructureTag, public HasChangesMask<3>
@@ -511,7 +518,7 @@ struct ReplayedQuest : public IsUpdateFieldStructureTag, public HasChangesMask<3
     UpdateField<uint32, 0, 2> ReplayTime;
 
     void WriteCreate(ByteBuffer& data, Player const* owner, Player const* receiver) const;
-    void WriteUpdate(ByteBuffer& data, Player const* owner, Player const* receiver) const;
+    void WriteUpdate(ByteBuffer& data, bool ignoreChangesMask, Player const* owner, Player const* receiver) const;
     void ClearChangesMask();
 };
 
@@ -521,7 +528,7 @@ struct QuestSession : public IsUpdateFieldStructureTag, public HasChangesMask<87
     UpdateFieldArray<uint64, 875, 2, 3> QuestCompleted;
 
     void WriteCreate(ByteBuffer& data, Player const* owner, Player const* receiver) const;
-    void WriteUpdate(ByteBuffer& data, Player const* owner, Player const* receiver) const;
+    void WriteUpdate(ByteBuffer& data, bool ignoreChangesMask, Player const* owner, Player const* receiver) const;
     void ClearChangesMask();
 };
 
@@ -647,6 +654,7 @@ struct ActivePlayerData : public IsUpdateFieldStructureTag, public HasChangesMas
 
     void WriteCreate(ByteBuffer& data, EnumClassFlag<UpdateFieldFlag> fieldVisibilityFlags, Player const* owner, Player const* receiver) const;
     void WriteUpdate(ByteBuffer& data, EnumClassFlag<UpdateFieldFlag> fieldVisibilityFlags, Player const* owner, Player const* receiver) const;
+    void WriteUpdate(ByteBuffer& data, UpdateMask<1494> const& changesMask, bool ignoreNestedChangesMask, Player const* owner, Player const* receiver) const;
     void ClearChangesMask();
 };
 
@@ -677,6 +685,7 @@ struct GameObjectData : public IsUpdateFieldStructureTag, public HasChangesMask<
 
     void WriteCreate(ByteBuffer& data, EnumClassFlag<UpdateFieldFlag> fieldVisibilityFlags, GameObject const* owner, Player const* receiver) const;
     void WriteUpdate(ByteBuffer& data, EnumClassFlag<UpdateFieldFlag> fieldVisibilityFlags, GameObject const* owner, Player const* receiver) const;
+    void WriteUpdate(ByteBuffer& data, UpdateMask<20> const& changesMask, bool ignoreNestedChangesMask, GameObject const* owner, Player const* receiver) const;
     void ClearChangesMask();
 };
 
@@ -691,6 +700,7 @@ struct DynamicObjectData : public IsUpdateFieldStructureTag, public HasChangesMa
 
     void WriteCreate(ByteBuffer& data, EnumClassFlag<UpdateFieldFlag> fieldVisibilityFlags, DynamicObject const* owner, Player const* receiver) const;
     void WriteUpdate(ByteBuffer& data, EnumClassFlag<UpdateFieldFlag> fieldVisibilityFlags, DynamicObject const* owner, Player const* receiver) const;
+    void WriteUpdate(ByteBuffer& data, UpdateMask<7> const& changesMask, bool ignoreNestedChangesMask, DynamicObject const* owner, Player const* receiver) const;
     void ClearChangesMask();
 };
 
@@ -716,6 +726,7 @@ struct CorpseData : public IsUpdateFieldStructureTag, public HasChangesMask<40>
 
     void WriteCreate(ByteBuffer& data, EnumClassFlag<UpdateFieldFlag> fieldVisibilityFlags, Corpse const* owner, Player const* receiver) const;
     void WriteUpdate(ByteBuffer& data, EnumClassFlag<UpdateFieldFlag> fieldVisibilityFlags, Corpse const* owner, Player const* receiver) const;
+    void WriteUpdate(ByteBuffer& data, UpdateMask<40> const& changesMask, bool ignoreNestedChangesMask, Corpse const* owner, Player const* receiver) const;
     void ClearChangesMask();
 };
 
@@ -727,7 +738,7 @@ struct ScaleCurve : public IsUpdateFieldStructureTag, public HasChangesMask<7>
     UpdateFieldArray<TaggedPosition<Position::XY>, 2, 4, 5> Points;
 
     void WriteCreate(ByteBuffer& data, AreaTrigger const* owner, Player const* receiver) const;
-    void WriteUpdate(ByteBuffer& data, AreaTrigger const* owner, Player const* receiver) const;
+    void WriteUpdate(ByteBuffer& data, bool ignoreChangesMask, AreaTrigger const* owner, Player const* receiver) const;
     void ClearChangesMask();
 };
 
@@ -749,6 +760,7 @@ struct AreaTriggerData : public IsUpdateFieldStructureTag, public HasChangesMask
 
     void WriteCreate(ByteBuffer& data, EnumClassFlag<UpdateFieldFlag> fieldVisibilityFlags, AreaTrigger const* owner, Player const* receiver) const;
     void WriteUpdate(ByteBuffer& data, EnumClassFlag<UpdateFieldFlag> fieldVisibilityFlags, AreaTrigger const* owner, Player const* receiver) const;
+    void WriteUpdate(ByteBuffer& data, UpdateMask<14> const& changesMask, bool ignoreNestedChangesMask, AreaTrigger const* owner, Player const* receiver) const;
     void ClearChangesMask();
 };
 
@@ -761,6 +773,7 @@ struct SceneObjectData : public IsUpdateFieldStructureTag, public HasChangesMask
 
     void WriteCreate(ByteBuffer& data, EnumClassFlag<UpdateFieldFlag> fieldVisibilityFlags, Object const* owner, Player const* receiver) const;
     void WriteUpdate(ByteBuffer& data, EnumClassFlag<UpdateFieldFlag> fieldVisibilityFlags, Object const* owner, Player const* receiver) const;
+    void WriteUpdate(ByteBuffer& data, UpdateMask<5> const& changesMask, bool ignoreNestedChangesMask, Object const* owner, Player const* receiver) const;
     void ClearChangesMask();
 };
 
@@ -773,7 +786,7 @@ struct ConversationLine : public IsUpdateFieldStructureTag
     uint8 Flags;
 
     void WriteCreate(ByteBuffer& data, Conversation const* owner, Player const* receiver) const;
-    void WriteUpdate(ByteBuffer& data, Conversation const* owner, Player const* receiver) const;
+    void WriteUpdate(ByteBuffer& data, bool ignoreChangesMask, Conversation const* owner, Player const* receiver) const;
 };
 
 struct ConversationActor : public IsUpdateFieldStructureTag
@@ -785,7 +798,7 @@ struct ConversationActor : public IsUpdateFieldStructureTag
     uint32 Type;
 
     void WriteCreate(ByteBuffer& data, Conversation const* owner, Player const* receiver) const;
-    void WriteUpdate(ByteBuffer& data, Conversation const* owner, Player const* receiver) const;
+    void WriteUpdate(ByteBuffer& data, bool ignoreChangesMask, Conversation const* owner, Player const* receiver) const;
 };
 
 struct ConversationData : public IsUpdateFieldStructureTag, public HasChangesMask<5>
@@ -797,6 +810,7 @@ struct ConversationData : public IsUpdateFieldStructureTag, public HasChangesMas
 
     void WriteCreate(ByteBuffer& data, EnumClassFlag<UpdateFieldFlag> fieldVisibilityFlags, Conversation const* owner, Player const* receiver) const;
     void WriteUpdate(ByteBuffer& data, EnumClassFlag<UpdateFieldFlag> fieldVisibilityFlags, Conversation const* owner, Player const* receiver) const;
+    void WriteUpdate(ByteBuffer& data, UpdateMask<5> const& changesMask, bool ignoreNestedChangesMask, Conversation const* owner, Player const* receiver) const;
     void ClearChangesMask();
 };
 
