@@ -3639,6 +3639,17 @@ CREATE TABLE `updates` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `updates`
+--
+
+LOCK TABLES `updates` WRITE;
+/*!40000 ALTER TABLE `updates` DISABLE KEYS */;
+INSERT INTO `updates` VALUES
+('2020_04_20_00_characters.sql','977B5E0C894E0A7E80B2A9626F17CA636A69BD22','RELEASED','2020-04-20 19:08:18',0);
+/*!40000 ALTER TABLE `updates` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `updates_include`
 --
 
