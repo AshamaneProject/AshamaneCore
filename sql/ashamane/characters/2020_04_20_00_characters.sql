@@ -42,5 +42,5 @@ ALTER TABLE `auctionhouse` CHANGE `startbid` `minBid` bigint(20) unsigned NOT NU
 ALTER TABLE `auctionhouse` CHANGE `buyoutprice` `buyoutOrUnitPrice` bigint(20) unsigned NOT NULL DEFAULT '0' AFTER `lastbid`;
 ALTER TABLE `auctionhouse` MODIFY `deposit` bigint(20) unsigned NOT NULL DEFAULT '0' AFTER `buyoutOrUnitPrice`;
 ALTER TABLE `auctionhouse` CHANGE `lastbid` `bidAmount` bigint(20) unsigned NOT NULL DEFAULT '0' AFTER `deposit`;
-ALTER TABLE `auctionhouse` ADD `startTime` int(10) unsigned NOT NULL DEFAULT '0' AFTER `deposit`;
+ALTER TABLE `auctionhouse` ADD `startTime` int(10) unsigned NOT NULL DEFAULT '0' AFTER `bidAmount`;
 ALTER TABLE `auctionhouse` CHANGE `time` `endTime` int(10) unsigned NOT NULL DEFAULT '0' AFTER `startTime`;
