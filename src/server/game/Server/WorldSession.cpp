@@ -138,14 +138,10 @@ WorldSession::WorldSession(uint32 id, std::string&& name, uint32 battlenetAccoun
     m_currentBankerGUID(),
     _timeSyncClockDeltaQueue(6),
     _timeSyncClockDelta(0),
-    _pendingTimeSyncRequests(),
     _battlePetMgr(Trinity::make_unique<BattlePetMgr>(this)),
     _collectionMgr(Trinity::make_unique<CollectionMgr>(this))
 {
     memset(_tutorials, 0, sizeof(_tutorials));
-
-    _timeSyncNextCounter = 0;
-    _timeSyncTimer = 0;
 
     if (sock)
     {
