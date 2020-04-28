@@ -29,7 +29,7 @@ void Trinity::Banner::Show(char const* applicationName, void(*log)(char const* t
     log("   / /\ \ / __| '_ \ / _` | '_ ` _ \ / _` | '_ \ / _ \");
     log("  / ____ \\__ \ | | | (_| | | | | | | (_| | | | |  __/");
     log(" /_/    \_\___/_| |_|\__,_|_| |_| |_|\__,_|_| |_|\___|\n");
-    log("          The Ashamane Project");
+    log("          The Ashamane Project - Ashamane Core");
     log("                                                      ");
     log("");
     log("Based on TrinityCore, http://TrinityCore.org");
