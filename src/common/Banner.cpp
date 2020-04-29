@@ -21,21 +21,22 @@
 
 void Trinity::Banner::Show(char const* applicationName, void(*log)(char const* text), void(*logExtraInfo)())
 {
-    log(Trinity::StringFormat("%s (%s)", GitRevision::GetFullVersion(), applicationName).c_str());
+    log(" ");
+	log(Trinity::StringFormat("%s (%s)", GitRevision::GetFullVersion(), applicationName).c_str());
     log("<Ctrl-C> to stop.\n");
     log("               _                                      ");
-    log("     /\       | |                                     ");
-    log("    /  \   ___| |__   __ _ _ __ ___   __ _ _ __   ___ ");
-    log("   / /\ \ / __| '_ \ / _` | '_ ` _ \ / _` | '_ \ / _ \");
-    log("  / ____ \\__ \ | | | (_| | | | | | | (_| | | | |  __/");
-    log(" /_/    \_\___/_| |_|\__,_|_| |_| |_|\__,_|_| |_|\___|\n");
+    log("     /\\       | |                                     ");
+    log("    /  \\   ___| |__   __ _ _ __ ___   __ _ _ __   ___ ");
+    log("   / /\\ \\ / __| '_ \\ / _` | '_ ` _ \\ / _` | '_ \\ / _ \\");
+    log("  / ____ \\\\__ \\ | | | (_| | | | | | | (_| | | | |  __/");
+    log(" /_/    \\_\\___/_| |_|\\__,_|_| |_| |_|\\__,_|_| |_|\\___|\n");
     log("          The Ashamane Project - Ashamane Core");
-    log("                                                      ");
-    log("");
-    log("Based on TrinityCore, http://TrinityCore.org");
-    log("");
-    log("");
-
+    log(" ");
+    log(" ");
+    log("Based on TrinityCore, with credit to their team and contributions.");
+    log("http://TrinityCore.org");
+    log(" ");
+    log(" ");
 
     if (logExtraInfo)
         logExtraInfo();
