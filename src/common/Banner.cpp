@@ -1,5 +1,5 @@
 /*
- * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
+ * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -23,7 +23,6 @@ void Trinity::Banner::Show(char const* applicationName, void(*log)(char const* t
 {
     log(" ");
 	log(Trinity::StringFormat("%s (%s)", GitRevision::GetFullVersion(), applicationName).c_str());
-    log(" ");
     log("<Ctrl-C> to stop.\n");
     log("               _                                      ");
     log("     /\\       | |                                     ");
