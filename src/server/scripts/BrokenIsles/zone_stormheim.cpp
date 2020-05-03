@@ -37,7 +37,7 @@ class go_volatile_barrel_stormheim : public GameObjectScript
 public:
     go_volatile_barrel_stormheim() : GameObjectScript("go_volatile_barrel_stormheim") { }
 
-    bool OnGossipHello(Player* player, GameObject* go) override
+    bool OnGossipHello(Player* player, GameObject* /*go*/) override
     {
         SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(181981);
 
