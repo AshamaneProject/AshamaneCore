@@ -140,7 +140,7 @@ class npc_vereesa_windrunner_121754 : public CreatureScript
 public:
     npc_vereesa_windrunner_121754() : CreatureScript("npc_vereesa_windrunner_121754") { }
 
-    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 /*action*/) override
+    bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 /*sender*/, uint32 /*action*/) override
     {
         if (!player)
             return false;
