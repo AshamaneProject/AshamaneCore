@@ -124,7 +124,7 @@ struct npc_cyrille_107350 : public ScriptedAI
 {
     npc_cyrille_107350(Creature* creature) : ScriptedAI(creature) { me->SetAIAnimKitId(0); }
 
-    void sGossipSelect(Player* player, uint32 menuId, uint32 gossipListId) override
+    void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId) override
     {
         if (player->HasQuest(MAKE_YOUR_MARK))
         {
