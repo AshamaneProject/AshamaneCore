@@ -204,7 +204,7 @@ public:
                     if (Creature* arator_the_redeemer = me->FindNearestCreature(NPC_ARATOR_THE_REDEEMER, me->GetVisibilityRange()))
                     {
 
-                        arator_the_redeemer->GetScheduler().Schedule(4s, [arator_the_redeemer](TaskContext context)
+                        arator_the_redeemer->GetScheduler().Schedule(4s, [arator_the_redeemer](TaskContext /*context*/)
                         {
                             arator_the_redeemer->AI()->Talk(SAY_EVENT);
                         });
