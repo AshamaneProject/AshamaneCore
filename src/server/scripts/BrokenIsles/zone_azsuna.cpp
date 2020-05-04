@@ -759,7 +759,7 @@ class npc_quest_43521 : public CreatureScript
 public:
     npc_quest_43521() : CreatureScript("npc_quest_43521") { }
 
-    bool OnQuestReward(Player* player, Creature* creature, const Quest *_Quest, uint32 /*slot*/) override
+    bool OnQuestReward(Player* player, Creature* /*creature*/, const Quest *_Quest, uint32 /*slot*/) override
     {
         if (_Quest->GetQuestId() == 43521)
         {
