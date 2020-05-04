@@ -281,7 +281,7 @@ public:
         npc_great_eagleAI(Creature* creature) : ScriptedAI(creature) { }
 
         uint8 curID;
-        void Reset()
+        void Reset() override
         {
         }
 
