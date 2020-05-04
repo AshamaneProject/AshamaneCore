@@ -147,7 +147,7 @@ public:
         uint32 movieTimer;
         ObjectGuid playerGuid;
 
-        void Reset()
+        void Reset() override
         {
             isScene = false;
             isMovie = false;
