@@ -1,4 +1,4 @@
-# AshamaneCore
+# Wow_Addicts
 
 --------------
 
@@ -15,16 +15,14 @@
 
 
 
-## Build Status
-
-[![master Build Status](https://travis-ci.org/AshamaneProject/AshamaneCore.svg?branch=master)](https://travis-ci.org/AshamaneProject/AshamaneCore)
-[![Build status](https://ci.appveyor.com/api/projects/status/kb0wjxh3va9c3e0k/branch/master?svg=true)](https://ci.appveyor.com/project/Traesh/ashamanecore/branch/master)
+## Build Status 
+[![master Build Status](https://travis-ci.org/Daniel25/AshamaneCore.svg?branch=master)](https://travis-ci.org/github/Daniel25/AshamaneCore)
 
 ## Introduction
 
-AshamaneCore is a *MMORPG* Framework based mostly in C++.
+Wow_Addicts is a *MMORPG* Framework based mostly in C++.
 
-It is fully based on *TrinityCore*, with upgrades like :
+It is fully based on *TrinityCore* and *Ashamanecore, with upgrades like :
 
 - Class Hall/War Campaign Basics (WIP)
 - World Quests
@@ -56,7 +54,7 @@ It is fully based on *TrinityCore*, with upgrades like :
 - Pandaria Scripts
     - all dungeons & world bosses
 
-with Ashamane Database (ADB) :
+with Wow_Addicts Database (ADB) :
 
 - All Cataclysm zones spawns
 - All Mist of Pandaria zones spawns
@@ -79,16 +77,6 @@ Windows, Linux and macOS.
 Detailed installation guides are available in the [wiki](https://www.trinitycore.info/display/tc/Installation+Guide) for
 Windows, Linux and macOS.
 
-## Contribute
-
-You can help Ashamane using our [Patreon Page](https://www.patreon.com/ashamane). All the collected money will be used to pay developers for their work using bountysource
-
-## Reporting issues
-
-Issues can be reported via our [Mantis issue tracker](https://bt.ashamane.com).
-
-Please take the time to review existing issues before submitting your own to
-prevent duplicates.
 
 ## Submitting fixes
 
@@ -107,7 +95,6 @@ Read file [AUTHORS](AUTHORS).
 
 ## Links
 
-* [Website](https://www.ashamane.com)
 * [Wiki](https://www.trinitycore.info)
 * [Forums](https://community.trinitycore.org)
 * [Discord](https://discord.trinitycore.org/)
