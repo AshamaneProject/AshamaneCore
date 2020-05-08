@@ -15,9 +15,8 @@
 
 
 
-## Build Status
-
-[![master Build Status]https://travis-ci.org/Daniel25/AshamaneCore.svg?branch=master)](https://travis-ci.org/github/Daniel25/AshamaneCore)
+## Build Status 
+[![master Build Status](https://travis-ci.org/Daniel25/AshamaneCore.svg?branch=master)](https://travis-ci.org/github/Daniel25/AshamaneCore)
 [![Build status](https://ci.appveyor.com/api/projects/status/kb0wjxh3va9c3e0k/branch/master?svg=true)](https://ci.appveyor.com/project/Traesh/ashamanecore/branch/master)
 
 ## Introduction
