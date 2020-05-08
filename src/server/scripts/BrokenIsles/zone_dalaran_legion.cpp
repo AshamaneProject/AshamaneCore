@@ -291,7 +291,7 @@ public:
             me->GetMotionMaster()->MovePoint(1, -854.9718f, 4185.322f, 754.1122f);
         }
 
-        void MovementInform(uint32 type, uint32 id)
+        void MovementInform(uint32 type, uint32 id) override
         {
             if (type != POINT_MOTION_TYPE)
                 return;

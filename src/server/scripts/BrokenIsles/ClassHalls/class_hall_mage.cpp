@@ -83,7 +83,7 @@ struct npc_meryl_felstorm_102700 : public ScriptedAI
     }
 
     ///107589
-    void sGossipHello(Player* player)
+    void sGossipHello(Player* player) override
     {
 
         if (player->HasQuest(QUEST_FINDING_BONCHILL) && (player->GetQuestObjectiveData(QUEST_FINDING_BONCHILL, 0) ) && !player->GetQuestObjectiveData(QUEST_FINDING_BONCHILL, 6))

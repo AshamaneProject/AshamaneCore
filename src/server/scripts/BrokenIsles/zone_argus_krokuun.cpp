@@ -213,7 +213,7 @@ public:
                     if (Creature* vindicator_boros = me->FindNearestCreature(NPC_VINDICATOR_BOROS, me->GetVisibilityRange()))
                     {
 
-                        vindicator_boros->GetScheduler().Schedule(5s, [vindicator_boros](TaskContext context)
+                        vindicator_boros->GetScheduler().Schedule(5s, [vindicator_boros](TaskContext /*context*/)
                         {
                             vindicator_boros->AI()->Talk(SAY_EVENT);
                         });

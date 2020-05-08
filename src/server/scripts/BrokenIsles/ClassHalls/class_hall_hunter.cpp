@@ -186,7 +186,7 @@ class npc_40618_artifact : public CreatureScript
 public:
     npc_40618_artifact() : CreatureScript("npc_40618_artifact") { }
 
-    bool OnQuestAccept(Player* player, Creature* creature, Quest const* quest) override
+    bool OnQuestAccept(Player* player, Creature* /*creature*/, Quest const* quest) override
     {
         if (quest->GetQuestId() == 40618)
         {

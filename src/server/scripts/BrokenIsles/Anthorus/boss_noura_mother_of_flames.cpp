@@ -313,7 +313,7 @@ struct npc_asara_mother_of_night_122467 : public ScriptedAI
         }
     }
 
-    void EnterCombat(Unit* /*victim*/)
+    void EnterCombat(Unit* /*victim*/) override
     {
         Talk(0);
        events.ScheduleEvent(SPELL_SHADOW_BLADES, 11s);

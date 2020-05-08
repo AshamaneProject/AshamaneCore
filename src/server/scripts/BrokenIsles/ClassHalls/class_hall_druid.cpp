@@ -218,7 +218,7 @@ struct npc_archdruid_hamuul_runetotem_101064 : public ScriptedAI
 {
     npc_archdruid_hamuul_runetotem_101064(Creature* creature) : ScriptedAI(creature) {  }
 
-    void DoAction(int32 param)
+    void DoAction(int32 param) override
     {
         switch (param)
         {

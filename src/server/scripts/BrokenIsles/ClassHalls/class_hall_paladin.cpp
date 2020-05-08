@@ -106,7 +106,7 @@ struct npc_tahu_sagewind_105727 : public ScriptedAI
 {
    npc_tahu_sagewind_105727(Creature* creature) : ScriptedAI(creature) {  }
 
-    void sGossipSelect(Player* player, uint32 menuId, uint32 gossipListId)
+    void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId)
     {
         if (player->HasQuest(QUEST_The_End_of_the_Saga))
         {

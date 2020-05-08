@@ -258,7 +258,7 @@ class npc_subdued_nightwing : public CreatureScript
 public:
     npc_subdued_nightwing() : CreatureScript("npc_subdued_nightwing") { }
 
-    bool OnGossipHello(Player* player, Creature* creature) override
+    bool OnGossipHello(Player* player, Creature* /*creature*/) override
     {
         if (player->GetQuestStatus(43702) == QUEST_STATUS_INCOMPLETE)
             if (Creature* creature = player->SummonCreature(109827, 0.0f, 0.0f, 0.0f, 0.0f, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 300000))

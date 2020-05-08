@@ -247,7 +247,7 @@ public:
         DATA_START_ANIM = 56,
     };
 
-     bool OnQuestAccept(Player* player, Creature* creature, Quest const* quest) override
+     bool OnQuestAccept(Player* /*player*/, Creature* creature, Quest const* quest) override
     {
         if (quest->GetQuestId() == QUEST_UNBRIDLED_POWER)
             creature->AI()->Talk(TEXT_1);
