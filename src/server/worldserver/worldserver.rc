@@ -35,7 +35,7 @@
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDI_APPICON             ICON                    "worldserver.ico"
+IDI_APPICON             ICON                    "worldazgath.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 // Neutre (Par défaut système) resources
@@ -75,12 +75,12 @@ BEGIN
         BLOCK "080004b0"
         BEGIN
             VALUE "CompanyName",        VER_COMPANYNAME_STR
-            VALUE "FileDescription",    "TrinityCore World Server Daemon"
+            VALUE "FileDescription",    "AzgathCore World Server Daemon"
             VALUE "FileVersion",        VER_FILEVERSION_STR
-            VALUE "InternalName",       "worldserver"
+            VALUE "InternalName",       "worldazgath"
             VALUE "LegalCopyright",     VER_LEGALCOPYRIGHT_STR
-            VALUE "OriginalFilename",   "worldserver.exe"
-            VALUE "ProductName",        "TrinityCore World Server"
+            VALUE "OriginalFilename",   "worldazgath.exe"
+            VALUE "ProductName",        "AzgathCore World Server"
             VALUE "ProductVersion",     VER_PRODUCTVERSION_STR
         END
     END
