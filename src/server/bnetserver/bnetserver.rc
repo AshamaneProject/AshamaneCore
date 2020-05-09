@@ -35,7 +35,7 @@
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDI_APPICON             ICON                    "bnetserver.ico"
+IDI_APPICON             ICON                    "bnetazgath.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 // Neutre (Par défaut système) resources
@@ -75,12 +75,12 @@ BEGIN
         BLOCK "080004b0"
         BEGIN
             VALUE "CompanyName",        VER_COMPANYNAME_STR
-            VALUE "FileDescription",    "TrinityCore Battle.net Server Daemon"
+            VALUE "FileDescription",    "AzgathCore Battle.net Server Daemon"
             VALUE "FileVersion",        VER_FILEVERSION_STR
-            VALUE "InternalName",       "bnetserver"
+            VALUE "InternalName",       "bnetazgath"
             VALUE "LegalCopyright",     VER_LEGALCOPYRIGHT_STR
-            VALUE "OriginalFilename",   "bnetserver.exe"
-            VALUE "ProductName",        "TrinityCore Battle.net Server"
+            VALUE "OriginalFilename",   "bnetazgath.exe"
+            VALUE "ProductName",        "AzgathCore Battle.net Server"
             VALUE "ProductVersion",     VER_PRODUCTVERSION_STR
         END
     END
