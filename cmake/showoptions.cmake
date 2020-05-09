@@ -1,8 +1,8 @@
 # output generic information about the core and buildtype chosen
 message("")
-message("* TrinityCore revision   : ${rev_hash} ${rev_date} (${rev_branch} branch)")
+message("* AzgathCore revision   : ${rev_hash} ${rev_date} (${rev_branch} branch)")
 if( UNIX )
-  message("* TrinityCore buildtype  : ${CMAKE_BUILD_TYPE}")
+  message("* AzgathCore buildtype  : ${CMAKE_BUILD_TYPE}")
 endif()
 message("")
 
