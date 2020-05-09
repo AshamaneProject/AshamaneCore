@@ -1,5 +1,5 @@
 /*
- * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
+ * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -21,17 +21,22 @@
 
 void Trinity::Banner::Show(char const* applicationName, void(*log)(char const* text), void(*logExtraInfo)())
 {
-    log(Trinity::StringFormat("%s (%s)", GitRevision::GetFullVersion(), applicationName).c_str());
+    log(" ");
+	log(Trinity::StringFormat("%s (%s)", GitRevision::GetFullVersion(), applicationName).c_str());
     log("<Ctrl-C> to stop.\n");
-    log(" ______                       __");
-    log("/\\__  _\\       __          __/\\ \\__");
-    log("\\/_/\\ \\/ _ __ /\\_\\    ___ /\\_\\ \\, _\\  __  __");
-    log("   \\ \\ \\/\\`'__\\/\\ \\ /' _ `\\/\\ \\ \\ \\/ /\\ \\/\\ \\");
-    log("    \\ \\ \\ \\ \\/ \\ \\ \\/\\ \\/\\ \\ \\ \\ \\ \\_\\ \\ \\_\\ \\");
-    log("     \\ \\_\\ \\_\\  \\ \\_\\ \\_\\ \\_\\ \\_\\ \\__\\\\/`____ \\");
-    log("      \\/_/\\/_/   \\/_/\\/_/\\/_/\\/_/\\/__/ `/___/> \\");
-    log("                                 C O R E  /\\___/");
-    log("http://TrinityCore.org                    \\/__/\n");
+    log("               _                                      ");
+    log("     /\\       | |                                     ");
+    log("    /  \\   ___| |__   __ _ _ __ ___   __ _ _ __   ___ ");
+    log("   / /\\ \\ / __| '_ \\ / _` | '_ ` _ \\ / _` | '_ \\ / _ \\");
+    log("  / ____ \\\\__ \\ | | | (_| | | | | | | (_| | | | |  __/");
+    log(" /_/    \\_\\___/_| |_|\\__,_|_| |_| |_|\\__,_|_| |_|\\___|\n");
+    log("          The Ashamane Project - Ashamane Core");
+    log(" ");
+    log(" ");
+    log("Based on TrinityCore, with credit to their team and contributions.");
+    log("http://TrinityCore.org");
+    log(" ");
+    log(" ");
 
     if (logExtraInfo)
         logExtraInfo();
