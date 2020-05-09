@@ -1173,9 +1173,6 @@ class TC_GAME_API WorldSession
         uint32 GetRecruiterId() const { return recruiterId; }
         bool IsARecruiter() const { return isRecruiter; }
 
-        // Time Synchronisation
-        void ResetTimeSync();
-        void SendTimeSync();
 
         // Battle Pets
         BattlePetMgr* GetBattlePetMgr() const { return _battlePetMgr.get(); }
@@ -1978,10 +1975,6 @@ class TC_GAME_API WorldSession
         boost::circular_buffer<std::pair<int64, uint32>> _timeSyncClockDeltaQueue; // first member: clockDelta. Second member: latency of the packet exchange that was used to compute that clockDelta.
         int64 _timeSyncClockDelta;
         void ComputeNewClockDelta();
-
-        std::map<uint32, uint32> _pendingTimeSyncRequests; // key: counter. value: server time when packet with that counter was sent.
-        uint32 _timeSyncNextCounter;
-        uint32 _timeSyncTimer;
 
         std::unique_ptr<BattlePetMgr> _battlePetMgr;
 
