@@ -1,4 +1,4 @@
-# Wow_Addicts
+# AshamaneCore
 
 --------------
 
@@ -20,7 +20,7 @@
 
 ## Introduction
 
-Wow_Addicts is a *MMORPG* Framework based mostly in C++.
+AshamaneCore is a *MMORPG* Framework based mostly in C++.
 
 It is fully based on *TrinityCore* and *Ashamanecore, with upgrades like :
 
