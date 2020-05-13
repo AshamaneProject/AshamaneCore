@@ -98,10 +98,10 @@ LogsDir = ""
 #                                                                 section my.ini)
 #                     ".;/path/to/unix_socket;username;password;database" - (use Unix sockets on
 #                                                                           Unix/Linux)
-#        Default:     "127.0.0.1;3306;trinity;trinity;auth"       - (LoginDatabaseInfo)
-#                     "127.0.0.1;3306;trinity;trinity;world"      - (WorldDatabaseInfo)
-#                     "127.0.0.1;3306;trinity;trinity;characters" - (CharacterDatabaseInfo)
-#                     "127.0.0.1;3306;trinity;trinity;hotfixes"   - (HotfixDatabaseInfo)
+#        Default:     "127.0.0.1;3306;azgath;azgath;az_auth"       - (LoginDatabaseInfo)
+#                     "127.0.0.1;3306;azgath;azgath;az_world"      - (WorldDatabaseInfo)
+#                     "127.0.0.1;3306;azgath;azgath;az_characters" - (CharacterDatabaseInfo)
+#                     "127.0.0.1;3306;azgath;azgath;az_hotfixes"   - (HotfixDatabaseInfo)
 #
 #    Don't change hostname unless you are hosting mysql on a different machine, if you need help
 #    with configuration allowing to connect from diferent machine than the one running server
@@ -109,10 +109,10 @@ LogsDir = ""
 #    Don't open port on firewall to external connections (it belongs to mysql, not to wow server).
 #    The username you choose must have permisions to create/alter/rename tables.
 
-LoginDatabaseInfo     = "127.0.0.1;3306;trinity;trinity;auth"
-WorldDatabaseInfo     = "127.0.0.1;3306;trinity;trinity;world"
-CharacterDatabaseInfo = "127.0.0.1;3306;trinity;trinity;characters"
-HotfixDatabaseInfo    = "127.0.0.1;3306;trinity;trinity;hotfixes"
+LoginDatabaseInfo     = "127.0.0.1;3306;azgath;azgath;az_auth"
+WorldDatabaseInfo     = "127.0.0.1;3306;azgath;azgath;az_world"
+CharacterDatabaseInfo = "127.0.0.1;3306;azgath;azgath;az_characters"
+HotfixDatabaseInfo    = "127.0.0.1;3306;azgath;azgath;az_hotfixes"
 
 #
 #    LoginDatabase.WorkerThreads
@@ -1220,7 +1220,7 @@ BeepAtStart = 1
 #        Example:     "Welcome to John's Server!@This server is proud to be powered by Trinity Core."
 #        Default:     "Welcome to a Trinity Core server."
 
-Motd = "Welcome to a Trinity Core server."
+Motd = "Welcome to a AzgathCore server."
 
 #
 #    Server.LoginInfo
@@ -1341,7 +1341,7 @@ FeatureSystem.WarMode.Enabled = 1
 #                     4  - (Enable world only)
 #                     0  - (All Disabled)
 
-Updates.EnableDatabases = 15
+Updates.EnableDatabases = 0
 
 #
 #    Updates.AutoSetup
