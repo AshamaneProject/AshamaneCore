@@ -40,6 +40,8 @@ void AddSC_boss_yazma();
 void AddSC_atal_dazar();
 void AddSC_instance_atal_dazar();
 
+
+
 void AddZandalarScripts()
 {
     AddSC_zone_nazmir();
@@ -66,4 +68,6 @@ void AddZandalarScripts()
     AddSC_boss_yazma();
     AddSC_atal_dazar();
     AddSC_instance_atal_dazar();
+	
+
 }
