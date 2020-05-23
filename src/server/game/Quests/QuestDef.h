@@ -224,7 +224,8 @@ enum QuestSpecialFlags
     QUEST_SPECIAL_FLAGS_SPEAKTO              = 0x100,   // Internal flag computed only
     QUEST_SPECIAL_FLAGS_KILL                 = 0x200,   // Internal flag computed only
     QUEST_SPECIAL_FLAGS_TIMED                = 0x400,   // Internal flag computed only
-    QUEST_SPECIAL_FLAGS_PLAYER_KILL          = 0x800    // Internal flag computed only
+    QUEST_SPECIAL_FLAGS_PLAYER_KILL          = 0x800,    // Internal flag computed only
+    QUEST_SPECIAL_FLAGS_COMPLETED_AT_START   = 0x1000   // Internal flag computed only
 };
 
 enum QuestObjectiveType
@@ -480,41 +481,41 @@ class TC_GAME_API Quest
         WorldPacket QueryData[TOTAL_LOCALES];
 
     private:
-        uint32 _rewChoiceItemsCount;
-        uint32 _rewItemsCount;
-        uint16 _eventIdForQuest;
-        uint32 _rewCurrencyCount;
+        uint32 _rewChoiceItemsCount = 0;
+        uint32 _rewItemsCount = 0;
+        uint16 _eventIdForQuest = 0;
+        uint32 _rewCurrencyCount = 0;
 
     public:
         // wdb data (quest query response)
-        uint32 ID;
-        uint32 Type;
-        int32  Level;
-        int32  ScalingFactionGroup;
-        int32  MaxScalingLevel;
-        uint32 PackageID;
-        int32  MinLevel;
-        int32  QuestSortID;
-        uint32 QuestInfoID;
-        uint32 SuggestedPlayers;
-        uint32 NextQuestInChain;
-        uint32 RewardXPDifficulty;
-        float  RewardXPMultiplier;
-        int32  RewardMoney;
-        uint32 RewardMoneyDifficulty;
-        float  RewardMoneyMultiplier;
-        uint32 RewardBonusMoney;
+        uint32 ID = 0;
+        uint32 Type = 0;
+        int32  Level = 0;
+        int32  ScalingFactionGroup = 0;
+        int32  MaxScalingLevel = 0;
+        uint32 PackageID = 0;
+        int32  MinLevel = 0;
+        int32  QuestSortID = 0;
+        uint32 QuestInfoID = 0;
+        uint32 SuggestedPlayers = 0;
+        uint32 NextQuestInChain = 0;
+        uint32 RewardXPDifficulty = 0;
+        float  RewardXPMultiplier = 0.f;
+        int32  RewardMoney = 0;
+        uint32 RewardMoneyDifficulty = 0;
+        float  RewardMoneyMultiplier = 0.f;
+        uint32 RewardBonusMoney = 0;
         uint32 RewardDisplaySpell[QUEST_REWARD_DISPLAY_SPELL_COUNT];
-        uint32 RewardSpell;
-        uint32 RewardHonor;
-        uint32 RewardKillHonor;
-        uint32 RewardArtifactXPDifficulty;
-        float  RewardArtifactXPMultiplier;
-        uint32 RewardArtifactCategoryID;
-        uint32 SourceItemId;
-        uint32 Flags;
-        uint32 FlagsEx;
-        uint32 FlagsEx2;
+        uint32 RewardSpell = 0;
+        uint32 RewardHonor = 0;
+        uint32 RewardKillHonor = 0;
+        uint32 RewardArtifactXPDifficulty = 0;
+        float  RewardArtifactXPMultiplier = 0.f;
+        uint32 RewardArtifactCategoryID = 0;
+        uint32 SourceItemId = 0;
+        uint32 Flags = 0;
+        uint32 FlagsEx = 0;
+        uint32 FlagsEx2 = 0;
         uint32 RewardItemId[QUEST_REWARD_ITEM_COUNT];
         uint32 RewardItemCount[QUEST_REWARD_ITEM_COUNT];
         uint32 ItemDrop[QUEST_ITEM_DROP_COUNT];
@@ -522,33 +523,33 @@ class TC_GAME_API Quest
         uint32 RewardChoiceItemId[QUEST_REWARD_CHOICES_COUNT];
         uint32 RewardChoiceItemCount[QUEST_REWARD_CHOICES_COUNT];
         uint32 RewardChoiceItemDisplayId[QUEST_REWARD_CHOICES_COUNT];
-        uint32 POIContinent;
-        float  POIx;
-        float  POIy;
-        uint32 POIPriority;
-        uint32 RewardTitleId;
-        int32  RewardArenaPoints;
-        uint32 RewardSkillId;
-        uint32 RewardSkillPoints;
-        uint32 QuestGiverPortrait;
-        int32 QuestGiverPortraitMount;
-        uint32 QuestTurnInPortrait;
+        uint32 POIContinent = 0;
+        float  POIx = 0.f;
+        float  POIy = 0.f;
+        uint32 POIPriority = 0;
+        uint32 RewardTitleId = 0;
+        int32  RewardArenaPoints = 0;
+        uint32 RewardSkillId = 0;
+        uint32 RewardSkillPoints = 0;
+        uint32 QuestGiverPortrait = 0;
+        int32 QuestGiverPortraitMount = 0;
+        uint32 QuestTurnInPortrait = 0;
         uint32 RewardFactionId[QUEST_REWARD_REPUTATIONS_COUNT];
         int32  RewardFactionValue[QUEST_REWARD_REPUTATIONS_COUNT];
         int32  RewardFactionOverride[QUEST_REWARD_REPUTATIONS_COUNT];
         uint32 RewardFactionCapIn[QUEST_REWARD_REPUTATIONS_COUNT];
-        uint32 RewardReputationMask;
+        uint32 RewardReputationMask = 0;
         uint32 RewardCurrencyId[QUEST_REWARD_CURRENCY_COUNT];
         uint32 RewardCurrencyCount[QUEST_REWARD_CURRENCY_COUNT];
-        uint32 SoundAccept;
-        uint32 SoundTurnIn;
-        uint32 AreaGroupID;
-        uint32 LimitTime;
+        uint32 SoundAccept = 0;
+        uint32 SoundTurnIn = 0;
+        uint32 AreaGroupID = 0;
+        uint32 LimitTime = 0;
         Trinity::RaceMask<uint64> AllowableRaces;
-        int32 TreasurePickerID;
-        int32 Expansion;
-        int32 ManagedWorldStateID;
-        int32 QuestSessionBonus;
+        int32 TreasurePickerID = 0;
+        int32 Expansion = 0;
+        int32 ManagedWorldStateID = 0;
+        int32 QuestSessionBonus = 0;
         QuestObjectives Objectives;
         std::string LogTitle;
         std::string LogDescription;

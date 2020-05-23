@@ -252,7 +252,7 @@ void Quest::LoadQuestObjectiveVisualEffect(Field* fields)
         {
             uint8 effectIndex = fields[3].GetUInt8();
             if (effectIndex >= obj.VisualEffects.size())
-                obj.VisualEffects.resize(effectIndex+1, 0);
+                obj.VisualEffects.resize(effectIndex + 1, 0);
 
             obj.VisualEffects[effectIndex] = fields[4].GetInt32();
             break;

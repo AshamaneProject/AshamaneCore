@@ -15655,8 +15655,8 @@ void Player::AddQuestAndCheckCompletion(Quest const* quest, Object* questGiver)
     switch (questGiver->GetTypeId())
     {
         case TYPEID_UNIT:
-            sScriptMgr->OnQuestAccept(this, questGiver->ToCreature(), quest);
-            questGiver->ToCreature()->AI()->sQuestAccept(this, quest);
+            PlayerTalkClass->ClearMenus();
+            questGiver->ToCreature()->AI()->sQuestAccept(this, quest);//prueba
             break;
         case TYPEID_ITEM:
         case TYPEID_CONTAINER:
@@ -15683,7 +15683,7 @@ void Player::AddQuestAndCheckCompletion(Quest const* quest, Object* questGiver)
             break;
         }
         case TYPEID_GAMEOBJECT:
-            sScriptMgr->OnQuestAccept(this, questGiver->ToGameObject(), quest);
+            PlayerTalkClass->ClearMenus();//prueba
             questGiver->ToGameObject()->AI()->QuestAccept(this, quest);
             break;
         default:
@@ -17071,6 +17071,7 @@ QuestGiverStatus Player::GetQuestDialogStatus(Object* questgiver)
     QuestRelationBounds qr;
     QuestRelationBounds qir;
 
+    PlayerTalkClass->ClearMenus();//prueba
     switch (questgiver->GetTypeId())
     {
     case TYPEID_GAMEOBJECT:
