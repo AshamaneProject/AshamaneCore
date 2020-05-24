@@ -21,7 +21,7 @@ insert into `areatrigger` values
 (66,100007,1642,1,-2647.25,2388.37,10.0474,''),
 (65,100007,1594,8388870,624.86,-3617.66,-1.472,'');
 
-252247
+
 -- instance template
 delete from `instance_template` where `map`=1594;
 insert into `instance_template` (`map`, `parent`, `script`, `allowMount`, `insideResurrection`) values
