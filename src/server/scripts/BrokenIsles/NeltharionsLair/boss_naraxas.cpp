@@ -1,20 +1,19 @@
 /*
-* Copyright (C) 2008-2018 TrinityCore <http://www.trinitycore.org/>
-*
-* This program is free software; you can redistribute it and/or modify it
-* under the terms of the GNU General Public License as published by the
-* Free Software Foundation; either version 2 of the License, or (at your
-* option) any later version.
-*
-* This program is distributed in the hope that it will be useful, but WITHOUT
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
-* more details.
-*
-* You should have received a copy of the GNU General Public License along
-
-* with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #include "AreaTriggerAI.h"
 #include "ScriptMgr.h"
@@ -79,7 +78,7 @@ public:
         EVENT_PLAYER_DEVOURING               = 6,
         EVENT_TO_1_PHASE                     = 7
     };
-    
+
     enum eSpells
     {
         SPELL_DEVOURING                      = 199705,
@@ -93,7 +92,7 @@ public:
 
     struct boss_naraxas_AI : public BossAI
     {
-        boss_naraxas_AI(Creature* creature) : BossAI(creature, DATA_NARAXAS) 
+        boss_naraxas_AI(Creature* creature) : BossAI(creature, DATA_NARAXAS)
         {
             me->SetReactState(REACT_DEFENSIVE);
             me->AddUnitState(UNIT_STATE_ROOT);
@@ -129,7 +128,7 @@ public:
             me->SetInCombatWithZone();
             me->SetPower(POWER_MANA, 0);
             me->RemoveAllAuras();
-            
+
             events.ScheduleEvent(EVENT_MANAREGEN_TICK, 1s);
             events.ScheduleEvent(EVENT_SUMMON_WORMSPEACKER_DEVOUT, 5s);
             events.ScheduleEvent(EVENT_RANCID_MAW, 4s);
@@ -279,7 +278,7 @@ public:
 
             DoMeleeAttackIfReady();
         }
-    }; 
+    };
 };
 
 // 101075
@@ -300,7 +299,7 @@ public:
         InstanceScript* instance;
         bool phraseSayd = false;
 
-        mob_wormspeaker_devout_AI(Creature* creature) : ScriptedAI(creature) 
+        mob_wormspeaker_devout_AI(Creature* creature) : ScriptedAI(creature)
         {
             me->SetReactState(REACT_PASSIVE);
             instance = me->GetInstanceScript();
@@ -330,8 +329,8 @@ public:
 
     struct mob_angry_crowd_AI : public ScriptedAI
     {
-        
-        mob_angry_crowd_AI(Creature* creature) : ScriptedAI(creature) 
+
+        mob_angry_crowd_AI(Creature* creature) : ScriptedAI(creature)
         {
             me->SetReactState(REACT_PASSIVE);
         }
@@ -351,8 +350,8 @@ public:
 
     struct mob_emberhusk_dominator_AI : public ScriptedAI
     {
-        
-        mob_emberhusk_dominator_AI(Creature* creature) : ScriptedAI(creature) 
+
+        mob_emberhusk_dominator_AI(Creature* creature) : ScriptedAI(creature)
         {
             me->SetReactState(REACT_AGGRESSIVE);
         }

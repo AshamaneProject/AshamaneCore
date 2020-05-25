@@ -1,5 +1,5 @@
 /*
-* Copyright (C) Latin Core Team
+* Copyright (C) 2008-2017 TrinityCore <http://www.trinitycore.org/>
 *
 * This program is free software; you can redistribute it and/or modify it
 * under the terms of the GNU General Public License as published by the
@@ -446,5 +446,5 @@ void AddSC_boss_flotsam()
     new spell_flotsam_getsam_target();
     new spell_flotsam_jetsam_target();
     new spell_flotsam_oozing_bile_aura();
-    new spell_flotsam_yaksam_target();
+    //new spell_flotsam_yaksam_target();
 }

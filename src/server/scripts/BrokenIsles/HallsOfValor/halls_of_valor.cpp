@@ -24,6 +24,10 @@ enum hallsOfValorSpells
     SPELL_UNRULY_YELL       = 199726,
     SPELL_CALL_ANCESTOR     = 200969,
     SPELL_WICKED_DAGGER     = 199674,
+    SPELL_MIGHT_OF_THE_SCREAMING_ABYSS = 199593,
+    SPELL_MIGHT_OF_THE_ROCKY_CLIFFS = 199591,
+    SPELL_MIGHT_OF_THE_BLACK_STORM = 199592,
+    SPELL_MIGHT_OF_THE_BRUTAL_SIEGE = 199590,
 };
 
 enum hallsOfValorEvents
@@ -47,12 +51,12 @@ struct boss_king_ranulf : public BossAI
 
     ObjectGuid targetGuid;
 
-    void sGossipHello(Player* /*player*/) override
+    void sGossipSelect(Player* /*player*/, uint32 /*menuId*/, uint32 /*gossipListId*/) override
     {
         me->setFaction(14);
         me->SetReactState(REACT_DEFENSIVE);
-        me->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
-        me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
+        me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE));
+        me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE));
         if (InstanceScript* instance = me->GetInstanceScript())
             instance->SetBossState(DATA_GODKING_SKOVALD, NOT_STARTED);
     }
@@ -64,7 +68,14 @@ struct boss_king_ranulf : public BossAI
         if (instance)
             instance->SendEncounterUnit(ENCOUNTER_FRAME_ENGAGE, me, 1);
 
-        events.ScheduleEvent(EVENT_SEVER, 3000);
+        if (me->HasAura(SPELL_MIGHT_OF_THE_SCREAMING_ABYSS))
+            events.ScheduleEvent(EVENT_UNRULY_YELL, 6000);
+        if (me->HasAura(SPELL_MIGHT_OF_THE_ROCKY_CLIFFS))
+            events.ScheduleEvent(EVENT_SEVER, 3000);
+        if (me->HasAura(SPELL_MIGHT_OF_THE_BRUTAL_SIEGE))
+            events.ScheduleEvent(EVENT_CALL_ANCESTOR, 10000);
+        if (me->HasAura(SPELL_MIGHT_OF_THE_BLACK_STORM))
+            events.ScheduleEvent(EVENT_WICKED_DAGGER, 8000);
     }
 
     void JustDied(Unit* /*killer*/) override
@@ -73,188 +84,24 @@ struct boss_king_ranulf : public BossAI
 
         if (instance)
             instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
+
+        addAuraToTheRest(SPELL_MIGHT_OF_THE_SCREAMING_ABYSS);
     }
 
-    void UpdateAI(uint32 diff) override
+    void addAuraToTheRest(int auraId)
     {
-        if (!UpdateVictim())
-            return;
-
-        events.Update(diff);
-
-        while (uint32 eventId = events.ExecuteEvent())
-        {
-            switch (eventId)
-            {
-                case EVENT_UNRULY_YELL:
-                    if (Unit* target = me->GetVictim())
-                        me->CastSpell(target, SPELL_UNRULY_YELL, true);
-
-                    events.ScheduleEvent(EVENT_UNRULY_YELL, 16000);
-                    break;
-            }
-        }
-
-        DoMeleeAttackIfReady();
-    }
-};
-
-// 95843 - King Haldor
-struct boss_king_haldor : public BossAI
-{
-    boss_king_haldor(Creature* creature) : BossAI(creature, DATA_KING_HALDOR)  { }
-
-    ObjectGuid targetGuid;
-
-    void sGossipHello(Player* /*player*/) override
-    {
-        me->setFaction(14);
-        me->SetReactState(REACT_DEFENSIVE);
-        me->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
-        me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
-        if (InstanceScript* instance = me->GetInstanceScript())
-            instance->SetBossState(DATA_KING_HALDOR, NOT_STARTED);
-    }
-
-    void EnterCombat(Unit* /*who*/) override
-    {
-        _EnterCombat();
-
-        events.ScheduleEvent(EVENT_SEVER, 3000);
-
-        if (instance)
-            instance->SendEncounterUnit(ENCOUNTER_FRAME_ENGAGE, me, 1);
-    }
-
-    void JustDied(Unit* /*killer*/) override
-    {
-        _JustDied();
-
-        if (instance)
-            instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
-    }
-
-    void UpdateAI(uint32 diff) override
-    {
-        if (!UpdateVictim())
-            return;
-
-        events.Update(diff);
-
-        while (uint32 eventId = events.ExecuteEvent())
-        {
-            switch (eventId)
-            {
-                case EVENT_SEVER:
-                {
-                    if (Unit* target = me->GetVictim())
-                        me->CastSpell(target, SPELL_SEVER, true);
-
-                    events.ScheduleEvent(EVENT_SEVER, 16000);
-                    break;
-                }
-                default:
-                    break;
-            }
-        }
-
-        DoMeleeAttackIfReady();
-    }
-};
-
-// 97081 - King Bjorn
-struct boss_king_bjorn : public BossAI
-{
-    boss_king_bjorn(Creature* creature) : BossAI(creature, DATA_KING_BJORN) { }
-
-    ObjectGuid targetGuid;
-
-    void sGossipHello(Player* /*player*/) override
-    {
-        me->setFaction(14);
-        me->SetReactState(REACT_DEFENSIVE);
-        me->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
-        me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
-        if (InstanceScript* instance = me->GetInstanceScript())
-            instance->SetBossState(DATA_KING_BJORN, NOT_STARTED);
-    }
-
-    void EnterCombat(Unit* /*who*/) override
-    {
-        _EnterCombat();
-
-        events.ScheduleEvent(EVENT_WICKED_DAGGER, 3000);
-
-        if (instance)
-            instance->SetBossState(DATA_KING_BJORN, IN_PROGRESS);
-    }
-
-    void JustDied(Unit* /*killer*/) override
-    {
-        _JustDied();
-
-        if (instance)
-            instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
-    }
-
-    void UpdateAI(uint32 diff) override
-    {
-        if (!UpdateVictim())
-            return;
-
-        events.Update(diff);
-
-        while (uint32 eventId = events.ExecuteEvent())
-        {
-            switch (eventId)
-            {
-
-                case EVENT_WICKED_DAGGER:
-                    if (Unit* target = me->GetVictim())
-                        me->CastSpell(target, SPELL_WICKED_DAGGER, true);
-
-                    events.ScheduleEvent(EVENT_WICKED_DAGGER, 16000);
-                    break;
-            }
-        }
-
-        DoMeleeAttackIfReady();
-    }
-};
-
-// 97084 - King Tor
-struct boss_king_tor : public BossAI
-{
-    boss_king_tor(Creature* creature) : BossAI(creature, DATA_KING_TOR) { }
-
-    void sGossipHello(Player* /*player*/) override
-    {
-        me->setFaction(14);
-        me->SetReactState(REACT_DEFENSIVE);
-        me->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
-        me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
-        if (InstanceScript* instance = me->GetInstanceScript())
-            instance->SetBossState(DATA_KING_TOR, NOT_STARTED);
-    }
-
-    ObjectGuid targetGuid;
-
-    void EnterCombat(Unit* /*who*/) override
-    {
-        _EnterCombat();
-
-        events.ScheduleEvent(EVENT_CALL_ANCESTOR, 1000);
-
-        if (instance)
-            instance->SendEncounterUnit(ENCOUNTER_FRAME_ENGAGE, me, 1);
-    }
-
-    void JustDied(Unit* /*killer*/) override
-    {
-        _JustDied();
-
-        if (instance)
-            instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
+        if (Creature* tor = instance->GetCreature(NPC_KING_TOR))
+            if (tor->IsAlive())
+                tor->AddAura(auraId);
+        if (Creature* bjorn = instance->GetCreature(NPC_KING_BJORN))
+            if (bjorn->IsAlive())
+                bjorn->AddAura(auraId);
+        if (Creature* haldor = instance->GetCreature(NPC_KING_HALDOR))
+            if (haldor->IsAlive())
+                haldor->AddAura(auraId);
+        if (Creature* ranulf = instance->GetCreature(NPC_KING_RANULF))
+            if (ranulf->IsAlive())
+                ranulf->AddAura(auraId);
     }
 
     void UpdateAI(uint32 diff) override
@@ -277,22 +124,407 @@ struct boss_king_tor : public BossAI
         {
             switch (eventId)
             {
-                case EVENT_CALL_ANCESTOR:
-                {
-                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 50.0f, true))
-                        me->CastSpell(target, SPELL_CALL_ANCESTOR, true);
+            case EVENT_CALL_ANCESTOR:
+            {
+                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 50.0f, true))
+                    me->CastSpell(target, SPELL_CALL_ANCESTOR, true);
 
-                    if (Creature* creature = me->FindNearestCreature(101326, 50.0f))
-                    {
-                        creature->SetLevel(110);
-                        creature->setFaction(14);
-                        creature->GetMotionMaster()->MovePoint(0, me->GetPosition(), true);
-                    }
-                    events.ScheduleEvent(EVENT_CALL_ANCESTOR, 16000);
-                    break;
+                if (Creature* creature = me->FindNearestCreature(101326, 50.0f))
+                {
+                    creature->SetLevel(110);
+                    creature->setFaction(14);
+                    creature->GetMotionMaster()->MovePoint(0, me->GetPosition(), true);
                 }
-                default:
-                    break;
+                events.ScheduleEvent(EVENT_CALL_ANCESTOR, 16000);
+                break;
+            }
+            case EVENT_UNRULY_YELL:
+                if (Unit* target = me->GetVictim())
+                    me->CastSpell(target, SPELL_UNRULY_YELL, true);
+
+                events.ScheduleEvent(EVENT_UNRULY_YELL, 16000);
+                break;
+            case EVENT_SEVER:
+            {
+                if (Unit* target = me->GetVictim())
+                    me->CastSpell(target, SPELL_SEVER, true);
+
+                events.ScheduleEvent(EVENT_SEVER, 16000);
+                break;
+            }
+            case EVENT_WICKED_DAGGER:
+                if (Unit* target = me->GetVictim())
+                    me->CastSpell(target, SPELL_WICKED_DAGGER, true);
+
+                events.ScheduleEvent(EVENT_WICKED_DAGGER, 16000);
+                break;
+            }
+        }
+
+        DoMeleeAttackIfReady();
+    }
+};
+
+// 95843 - King Haldor
+struct boss_king_haldor : public BossAI
+{
+    boss_king_haldor(Creature* creature) : BossAI(creature, DATA_KING_HALDOR) { }
+
+    ObjectGuid targetGuid;
+
+    void sGossipSelect(Player* /*player*/, uint32 /*menuId*/, uint32 /*gossipListId*/) override
+    {
+        me->setFaction(14);
+        me->SetReactState(REACT_DEFENSIVE);
+        me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE));
+        me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE));
+        if (InstanceScript* instance = me->GetInstanceScript())
+            instance->SetBossState(DATA_KING_HALDOR, NOT_STARTED);
+    }
+
+    void EnterCombat(Unit* /*who*/) override
+    {
+        _EnterCombat();
+
+        if (instance)
+            instance->SendEncounterUnit(ENCOUNTER_FRAME_ENGAGE, me, 1);
+
+        if (me->HasAura(SPELL_MIGHT_OF_THE_SCREAMING_ABYSS))
+            events.ScheduleEvent(EVENT_UNRULY_YELL, 6000);
+        if (me->HasAura(SPELL_MIGHT_OF_THE_ROCKY_CLIFFS))
+            events.ScheduleEvent(EVENT_SEVER, 3000);
+        if (me->HasAura(SPELL_MIGHT_OF_THE_BRUTAL_SIEGE))
+            events.ScheduleEvent(EVENT_CALL_ANCESTOR, 10000);
+        if (me->HasAura(SPELL_MIGHT_OF_THE_BLACK_STORM))
+            events.ScheduleEvent(EVENT_WICKED_DAGGER, 8000);
+    }
+
+    void JustDied(Unit* /*killer*/) override
+    {
+        _JustDied();
+
+        if (instance)
+            instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
+
+        addAuraToTheRest(SPELL_MIGHT_OF_THE_ROCKY_CLIFFS);
+    }
+
+    void addAuraToTheRest(int auraId)
+    {
+        if (Creature* tor = instance->GetCreature(NPC_KING_TOR))
+            if (tor->IsAlive())
+                tor->AddAura(auraId);
+        if (Creature* bjorn = instance->GetCreature(NPC_KING_BJORN))
+            if (bjorn->IsAlive())
+                bjorn->AddAura(auraId);
+        if (Creature* haldor = instance->GetCreature(NPC_KING_HALDOR))
+            if (haldor->IsAlive())
+                haldor->AddAura(auraId);
+        if (Creature* ranulf = instance->GetCreature(NPC_KING_RANULF))
+            if (ranulf->IsAlive())
+                ranulf->AddAura(auraId);
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        if (!UpdateVictim())
+            return;
+
+        events.Update(diff);
+
+        if (Creature* creature = me->FindNearestCreature(101326, 50.0f))
+        {
+            if (me->IsWithinMeleeRange(creature))
+            {
+                me->CastSpell(me, 199747, true);
+                creature->DespawnOrUnsummon(0);
+            }
+        }
+
+        while (uint32 eventId = events.ExecuteEvent())
+        {
+            switch (eventId)
+            {
+            case EVENT_CALL_ANCESTOR:
+            {
+                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 50.0f, true))
+                    me->CastSpell(target, SPELL_CALL_ANCESTOR, true);
+
+                if (Creature* creature = me->FindNearestCreature(101326, 50.0f))
+                {
+                    creature->SetLevel(110);
+                    creature->setFaction(14);
+                    creature->GetMotionMaster()->MovePoint(0, me->GetPosition(), true);
+                }
+                events.ScheduleEvent(EVENT_CALL_ANCESTOR, 16000);
+                break;
+            }
+            case EVENT_UNRULY_YELL:
+                if (Unit* target = me->GetVictim())
+                    me->CastSpell(target, SPELL_UNRULY_YELL, true);
+
+                events.ScheduleEvent(EVENT_UNRULY_YELL, 16000);
+                break;
+            case EVENT_SEVER:
+            {
+                if (Unit* target = me->GetVictim())
+                    me->CastSpell(target, SPELL_SEVER, true);
+
+                events.ScheduleEvent(EVENT_SEVER, 16000);
+                break;
+            }
+            case EVENT_WICKED_DAGGER:
+                if (Unit* target = me->GetVictim())
+                    me->CastSpell(target, SPELL_WICKED_DAGGER, true);
+
+                events.ScheduleEvent(EVENT_WICKED_DAGGER, 16000);
+                break;
+            default:
+                break;
+            }
+        }
+
+        DoMeleeAttackIfReady();
+    }
+};
+
+// 97081 - King Bjorn
+struct boss_king_bjorn : public BossAI
+{
+    boss_king_bjorn(Creature* creature) : BossAI(creature, DATA_KING_BJORN) { }
+
+    ObjectGuid targetGuid;
+
+    void sGossipSelect(Player* /*player*/, uint32 /*menuId*/, uint32 /*gossipListId*/) override
+    {
+        me->setFaction(14);
+        me->SetReactState(REACT_DEFENSIVE);
+        me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE));
+        me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE));
+        if (InstanceScript* instance = me->GetInstanceScript())
+            instance->SetBossState(DATA_KING_BJORN, NOT_STARTED);
+    }
+
+    void EnterCombat(Unit* /*who*/) override
+    {
+        _EnterCombat();
+
+        if (instance)
+            instance->SetBossState(DATA_KING_BJORN, IN_PROGRESS);
+
+        if (me->HasAura(SPELL_MIGHT_OF_THE_SCREAMING_ABYSS))
+            events.ScheduleEvent(EVENT_UNRULY_YELL, 6000);
+        if (me->HasAura(SPELL_MIGHT_OF_THE_ROCKY_CLIFFS))
+            events.ScheduleEvent(EVENT_SEVER, 3000);
+        if (me->HasAura(SPELL_MIGHT_OF_THE_BRUTAL_SIEGE))
+            events.ScheduleEvent(EVENT_CALL_ANCESTOR, 10000);
+        if (me->HasAura(SPELL_MIGHT_OF_THE_BLACK_STORM))
+            events.ScheduleEvent(EVENT_WICKED_DAGGER, 8000);
+    }
+
+    void JustDied(Unit* /*killer*/) override
+    {
+        _JustDied();
+
+        if (instance)
+            instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
+
+        addAuraToTheRest(SPELL_MIGHT_OF_THE_BLACK_STORM);
+    }
+
+    void addAuraToTheRest(int auraId)
+    {
+        if (Creature* tor = instance->GetCreature(NPC_KING_TOR))
+            if (tor->IsAlive())
+                tor->AddAura(auraId);
+        if (Creature* bjorn = instance->GetCreature(NPC_KING_BJORN))
+            if (bjorn->IsAlive())
+                bjorn->AddAura(auraId);
+        if (Creature* haldor = instance->GetCreature(NPC_KING_HALDOR))
+            if (haldor->IsAlive())
+                haldor->AddAura(auraId);
+        if (Creature* ranulf = instance->GetCreature(NPC_KING_RANULF))
+            if (ranulf->IsAlive())
+                ranulf->AddAura(auraId);
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        if (!UpdateVictim())
+            return;
+
+        events.Update(diff);
+
+        if (Creature* creature = me->FindNearestCreature(101326, 50.0f))
+        {
+            if (me->IsWithinMeleeRange(creature))
+            {
+                me->CastSpell(me, 199747, true);
+                creature->DespawnOrUnsummon(0);
+            }
+        }
+
+        while (uint32 eventId = events.ExecuteEvent())
+        {
+            switch (eventId)
+            {
+            case EVENT_CALL_ANCESTOR:
+            {
+                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 50.0f, true))
+                    me->CastSpell(target, SPELL_CALL_ANCESTOR, true);
+
+                if (Creature* creature = me->FindNearestCreature(101326, 50.0f))
+                {
+                    creature->SetLevel(110);
+                    creature->setFaction(14);
+                    creature->GetMotionMaster()->MovePoint(0, me->GetPosition(), true);
+                }
+                events.ScheduleEvent(EVENT_CALL_ANCESTOR, 16000);
+                break;
+            }
+            case EVENT_UNRULY_YELL:
+                if (Unit* target = me->GetVictim())
+                    me->CastSpell(target, SPELL_UNRULY_YELL, true);
+
+                events.ScheduleEvent(EVENT_UNRULY_YELL, 16000);
+                break;
+            case EVENT_SEVER:
+            {
+                if (Unit* target = me->GetVictim())
+                    me->CastSpell(target, SPELL_SEVER, true);
+
+                events.ScheduleEvent(EVENT_SEVER, 16000);
+                break;
+            }
+            case EVENT_WICKED_DAGGER:
+                if (Unit* target = me->GetVictim())
+                    me->CastSpell(target, SPELL_WICKED_DAGGER, true);
+
+                events.ScheduleEvent(EVENT_WICKED_DAGGER, 16000);
+                break;
+            }
+        }
+
+        DoMeleeAttackIfReady();
+    }
+};
+
+// 97084 - King Tor
+struct boss_king_tor : public BossAI
+{
+    boss_king_tor(Creature* creature) : BossAI(creature, DATA_KING_TOR) { }
+
+    void sGossipSelect(Player* /*player*/, uint32 /*menuId*/, uint32 /*gossipListId*/) override
+    {
+        me->setFaction(14);
+        me->SetReactState(REACT_DEFENSIVE);
+        me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE));
+        me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE));
+        if (InstanceScript* instance = me->GetInstanceScript())
+            instance->SetBossState(DATA_KING_TOR, NOT_STARTED);
+    }
+
+    ObjectGuid targetGuid;
+
+    void EnterCombat(Unit* /*who*/) override
+    {
+        _EnterCombat();
+
+        if (instance)
+            instance->SendEncounterUnit(ENCOUNTER_FRAME_ENGAGE, me, 1);
+
+        if (me->HasAura(SPELL_MIGHT_OF_THE_SCREAMING_ABYSS))
+            events.ScheduleEvent(EVENT_UNRULY_YELL, 6000);
+        if (me->HasAura(SPELL_MIGHT_OF_THE_ROCKY_CLIFFS))
+            events.ScheduleEvent(EVENT_SEVER, 3000);
+        if (me->HasAura(SPELL_MIGHT_OF_THE_BRUTAL_SIEGE))
+            events.ScheduleEvent(EVENT_CALL_ANCESTOR, 10000);
+        if (me->HasAura(SPELL_MIGHT_OF_THE_BLACK_STORM))
+            events.ScheduleEvent(EVENT_WICKED_DAGGER, 8000);
+    }
+
+    void JustDied(Unit* /*killer*/) override
+    {
+        _JustDied();
+
+        if (instance)
+            instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
+
+        addAuraToTheRest(SPELL_MIGHT_OF_THE_BRUTAL_SIEGE);
+    }
+
+    void addAuraToTheRest(int auraId)
+    {
+        if (Creature* tor = instance->GetCreature(NPC_KING_TOR))
+            if (tor->IsAlive())
+                tor->AddAura(auraId);
+        if (Creature* bjorn = instance->GetCreature(NPC_KING_BJORN))
+            if (bjorn->IsAlive())
+                bjorn->AddAura(auraId);
+        if (Creature* haldor = instance->GetCreature(NPC_KING_HALDOR))
+            if (haldor->IsAlive())
+                haldor->AddAura(auraId);
+        if (Creature* ranulf = instance->GetCreature(NPC_KING_RANULF))
+            if (ranulf->IsAlive())
+                ranulf->AddAura(auraId);
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        if (!UpdateVictim())
+            return;
+
+        events.Update(diff);
+
+        if (Creature* creature = me->FindNearestCreature(101326, 50.0f))
+        {
+            if (me->IsWithinMeleeRange(creature))
+            {
+                me->CastSpell(me, 199747, true);
+                creature->DespawnOrUnsummon(0);
+            }
+        }
+
+        while (uint32 eventId = events.ExecuteEvent())
+        {
+            switch (eventId)
+            {
+            case EVENT_CALL_ANCESTOR:
+            {
+                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 50.0f, true))
+                    me->CastSpell(target, SPELL_CALL_ANCESTOR, true);
+
+                if (Creature* creature = me->FindNearestCreature(101326, 50.0f))
+                {
+                    creature->SetLevel(110);
+                    creature->setFaction(14);
+                    creature->GetMotionMaster()->MovePoint(0, me->GetPosition(), true);
+                }
+                events.ScheduleEvent(EVENT_CALL_ANCESTOR, 16000);
+                break;
+            }
+            case EVENT_UNRULY_YELL:
+                if (Unit* target = me->GetVictim())
+                    me->CastSpell(target, SPELL_UNRULY_YELL, true);
+
+                events.ScheduleEvent(EVENT_UNRULY_YELL, 16000);
+                break;
+            case EVENT_SEVER:
+            {
+                if (Unit* target = me->GetVictim())
+                    me->CastSpell(target, SPELL_SEVER, true);
+
+                events.ScheduleEvent(EVENT_SEVER, 16000);
+                break;
+            }
+            case EVENT_WICKED_DAGGER:
+                if (Unit* target = me->GetVictim())
+                    me->CastSpell(target, SPELL_WICKED_DAGGER, true);
+
+                events.ScheduleEvent(EVENT_WICKED_DAGGER, 16000);
+                break;
+            default:
+                break;
             }
         }
 

@@ -249,7 +249,7 @@ struct scenario_artifact_restoacqusition : public InstanceScript
             NextStep();
             if (Creature* lyessa = instance->GetCreature(_lyessaGUID))
             {
-                lyessa->GetScheduler().Schedule(Milliseconds(2000), [lyessa](TaskContext context)
+                lyessa->GetScheduler().Schedule(Milliseconds(2000), [lyessa](TaskContext /*context*/)
                 {
                     lyessa->Say(108566);
                 });

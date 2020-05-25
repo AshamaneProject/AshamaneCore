@@ -60,19 +60,18 @@ private:
 class MoveSmoothPathEvent : public BasicEvent
 {
 public:
-    MoveSmoothPathEvent(Unit* scorpid, Movement::PointsArray points) : _scorpid(scorpid), _points(points) { }
+    MoveSmoothPathEvent(Unit* scorpid, Position const* points) : _scorpid(scorpid), _points(points) { }
 
     bool Execute(uint64 /*time*/, uint32 /*diff*/)
     {
         if (_scorpid && _scorpid->IsInWorld())
-            //_scorpid->GetMotionMaster()->MoveSmoothPath(1, _points, false);
-            return false;
+            _scorpid->GetMotionMaster()->MoveSmoothPath(1, _points, false);
         return true;
     }
 
 private:
     Unit* _scorpid;
-    Movement::PointsArray _points;
+    Position const* _points;
 };
 
 enum Spells
@@ -212,18 +211,24 @@ public:
                         _prevHealthForRemoveStack -= roundedValue;
                     }
                 }
+
                 else
+
                 {
+
                     if (!me->HasAura(SPELL_CHITINOUS_EXOSKELETON_VISUAL) && me->HealthBelowPctDamaged(99, damage))
+
                     {
-                        events.Reset();
-                        DoCastSelf(SPELL_EXOSKELETAL_VULNERABILITY, true);
-                        me->CastCustomSpell(SPELL_CHITINOUS_EXOSKELETON, SPELLVALUE_AURA_STACK, 25, me, TRIGGERED_NONE);
-                        events.ScheduleEvent(EVENT_INFUSED_EXOSKELETON, 15000);
-                        events.ScheduleEvent(EVENT_ARCANOSLASH, 16000);
-                        events.ScheduleEvent(EVENT_FOCUSED_BLAST, 19000);
-                        events.ScheduleEvent(EVENT_CALL_OF_THE_SCORPID, 29000);
+                    events.Reset();
+                    DoCastSelf(SPELL_EXOSKELETAL_VULNERABILITY, true);
+                    me->CastCustomSpell(SPELL_CHITINOUS_EXOSKELETON, SPELLVALUE_AURA_STACK, 25, me, TRIGGERED_NONE);
+                    events.ScheduleEvent(EVENT_INFUSED_EXOSKELETON, 15000);
+                    events.ScheduleEvent(EVENT_ARCANOSLASH, 16000);
+                    events.ScheduleEvent(EVENT_FOCUSED_BLAST, 19000);
+                    events.ScheduleEvent(EVENT_CALL_OF_THE_SCORPID, 29000);
+
                     }
+
                 }
             }
         }
@@ -260,7 +265,7 @@ public:
                 {
                     if (auto crystallineScorpid = me->SummonCreature(NPC_CRYSTALLINE_SCORPID, scorpidSpawnPosition, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 10000))
                     {
-                        //crystallineScorpid->GetMotionMaster()->MoveSmoothPath(1, itr->second, false);
+                        crystallineScorpid->GetMotionMaster()->MoveSmoothPath(1, itr->second, false);
                         _scorpidsSummonMap[crystallineScorpid->GetGUID()] = itr->second;
                         _scorpidsSummonMap.erase(itr);
                     }
@@ -331,7 +336,7 @@ public:
         }
 
     private:
-        std::map<ObjectGuid, Movement::PointsArray> _scorpidsSummonMap;
+        std::map<ObjectGuid, Position const*> _scorpidsSummonMap;
         float _prevHealthForRemoveStack;
         uint8 _calcTime;
     };
@@ -359,7 +364,7 @@ public:
             DoCastSelf(SPELL_LOS_BLOCKER);
         }
 
-        void MoveInLineOfSight(Unit* who) override
+        void MoveInLineOfSight(Unit* who)
         {
             if (who->ToPlayer() && who->GetExactDist(me) <= 5.0f && me->HasInArc(static_cast<float>(M_PI), who))
                 who->RemoveAura(SPELL_BROKEN_SHARD);
@@ -443,7 +448,7 @@ public:
             DoCastSelf(SPELL_SHROUDED);
         }
 
-        void MoveInLineOfSight(Unit* who) override
+        void MoveInLineOfSight(Unit* who)
         {
             if (who->ToPlayer() && who->GetExactDist(me) <= 5.0f && me->HasAura(SPELL_SHROUDED))
             {
@@ -458,7 +463,7 @@ public:
             events.ScheduleEvent(EVENT_BOON_OF_THE_SCORPID, 10000);
         }
 
-        void MovementInform(uint32 /*uiType*/, uint32 uiPointId) override
+        void MovementInform(uint32 /*uiType*/, uint32 uiPointId)
         {
             if (uiPointId == 1)
                 DoCastSelf(SPELL_AVAILABLE);
@@ -511,7 +516,7 @@ public:
     {
         PrepareAuraScript(spell_skorpyron_power_AuraScript);
 
-        bool Load() override
+        bool Load()
         {
             return GetCaster() && GetCaster()->ToCreature();
         }
@@ -550,7 +555,7 @@ public:
     {
         PrepareAuraScript(spell_skorpyron_arcanoslash_periodic_AuraScript);
 
-        bool Load() override
+        bool Load()
         {
             return GetCaster() && GetCaster()->ToCreature();
         }
@@ -847,7 +852,7 @@ public:
             });
         }
 
-        bool Load() override
+        bool Load()
         {
             return GetCaster() && GetCaster()->ToTempSummon();
         }
@@ -859,7 +864,6 @@ public:
                 return;
 
             if (Unit* summoner = caster->GetSummoner())
-            {
                 if (summoner->GetExactDist(caster) <= 10.0f)
                 {
                     caster->CastSpell(summoner, SPELL_ARCANE_TETHER_VISUAL_TENTACLES, true);
@@ -870,7 +874,6 @@ public:
                     summoner->RemoveAura(SPELL_ARCANE_TETHER_VISUAL_CHAIN);
                     caster->DespawnOrUnsummon();
                 }
-            }
         }
 
         void Register() override
@@ -1022,7 +1025,7 @@ public:
             return ValidateSpellInfo({ SPELL_BROKEN_SHARD });
         }
 
-        bool Load() override
+        bool Load()
         {
             return GetCaster() && GetCaster()->ToCreature();
         }

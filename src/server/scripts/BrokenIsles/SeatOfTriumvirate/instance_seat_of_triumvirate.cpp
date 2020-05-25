@@ -16,20 +16,11 @@
  */
 
 #include "ScriptMgr.h"
+#include "Conversation.h"
 #include "Player.h"
 #include "InstanceScript.h"
 #include "seat_of_triumvirate.h"
 
-struct instance_seat_of_triumvirate : public InstanceScript
-{
-    instance_seat_of_triumvirate(InstanceMap* map) : InstanceScript(map)
-    {
-        SetHeaders(DataHeader);
-        SetBossNumber(EncounterCount);
-    }
-};
-
 void AddSC_instance_seat_of_triumvirate()
 {
-    RegisterInstanceScript(instance_seat_of_triumvirate, 1753);
 }

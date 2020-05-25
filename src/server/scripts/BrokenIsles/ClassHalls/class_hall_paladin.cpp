@@ -104,9 +104,9 @@ struct npc_orik_trueheart_108693 : public ScriptedAI
 
 struct npc_tahu_sagewind_105727 : public ScriptedAI
 {
-    npc_tahu_sagewind_105727(Creature* creature) : ScriptedAI(creature) {  }
+   npc_tahu_sagewind_105727(Creature* creature) : ScriptedAI(creature) {  }
 
-    void sGossipSelect(Player* player, uint32 menuId, uint32 gossipListId)
+    void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId)
     {
         if (player->HasQuest(QUEST_The_End_of_the_Saga))
         {
@@ -139,7 +139,7 @@ struct npc_orik_trueheart_105813 : public ScriptedAI
 {
     npc_orik_trueheart_105813(Creature* creature) : ScriptedAI(creature) {  }
 
-    void sQuestAccept(Player* player, Quest const* quest) override
+    void sQuestAccept(Player* /*player*/, Quest const* quest) override
     {
         if (quest->GetQuestId() == QUEST_SHRINE_OF_THE_TRUTHGUARD)
         {

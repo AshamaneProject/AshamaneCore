@@ -36,6 +36,7 @@
 #include "Unit.h"
 #include "ObjectAccessor.h"
 #include "MotionMaster.h"
+#include <G3D/Vector3.h>
 
 enum Spells
 {
@@ -139,11 +140,13 @@ public:
 
         void StartCyclePath()
         {
+            Movement::PointsArray path(WaypointChronomaticAnomaly, WaypointChronomaticAnomaly + WaypointChronomaticAnomalySize);
+
             Movement::MoveSplineInit init(me);
             init.SetCyclic();
             init.SetSmooth();
             init.SetVelocity(4.0f);
-            init.MovebyPath(WaypointChronomaticAnomaly, 0);
+            init.MovebyPath(path, 0);
             init.Launch();
         }
 
@@ -257,30 +260,28 @@ public:
         {
             switch (events.GetPhaseMask())
             {
-                case EVENT_PHASE_NORMAL_SLOW_FAST:
-                    if (me->HasAura(SPELL_SPEED_SLOW))
-                        StartFastSpeed();
-                    else if (me->HasAura(SPELL_SPEED_NORMAL))
-                        StartSlowSpeed();
-                    else if (me->HasAura(SPELL_SPEED_FAST))
-                    {
-                        StartNormalSpeed();
-                        events.SetPhase(EVENT_PHASE_NORMAL_FAST_SLOW);
-                    }
-                    break;
-                case EVENT_PHASE_NORMAL_FAST_SLOW:
-                    if (me->HasAura(SPELL_SPEED_SLOW))
-                    {
-                        StartNormalSpeed();
-                        events.SetPhase(EVENT_PHASE_NORMAL_SLOW_FAST);
-                    }
-                    else if (me->HasAura(SPELL_SPEED_NORMAL))
-                        StartFastSpeed();
-                    else if (me->HasAura(SPELL_SPEED_FAST))
-                        StartSlowSpeed();
-                    break;
-                default:
-                    break;
+            case EVENT_PHASE_NORMAL_SLOW_FAST:
+                if (me->HasAura(SPELL_SPEED_SLOW))
+                    StartFastSpeed();
+                else if (me->HasAura(SPELL_SPEED_NORMAL))
+                    StartSlowSpeed();
+                else if (me->HasAura(SPELL_SPEED_FAST))
+                {
+                    StartNormalSpeed();
+                    events.SetPhase(EVENT_PHASE_NORMAL_FAST_SLOW);
+                }
+                break;
+            case EVENT_PHASE_NORMAL_FAST_SLOW:
+                if (me->HasAura(SPELL_SPEED_SLOW))
+                {
+                    StartNormalSpeed();
+                    events.SetPhase(EVENT_PHASE_NORMAL_SLOW_FAST);
+                }
+                else if (me->HasAura(SPELL_SPEED_NORMAL))
+                    StartFastSpeed();
+                else if (me->HasAura(SPELL_SPEED_FAST))
+                    StartSlowSpeed();
+                break;
             }
         }
 
@@ -336,9 +337,8 @@ public:
                         me->CastSpell(temporalOrbsSpawnPosition.GetPositionX(), temporalOrbsSpawnPosition.GetPositionY(), temporalOrbsSpawnPosition.GetPositionZ(), SPELL_TEMPORAL_ORB_AREATRIGGER_FIRST, true);
                     for (auto at : me->GetAreaTriggers(SPELL_TEMPORAL_ORB_AREATRIGGER_FIRST))
                     {
-//                        at->AI()->DoAction(_triggersCount);
-                        if (at->IsAreaTrigger())
-                            _triggersCount++;
+                        at->AI()->DoAction(_triggersCount);
+                        _triggersCount++;
                     }
                     DoCast(SPELL_TEMPORAL_ORBS_PERIODIC);
                     break;
@@ -347,9 +347,8 @@ public:
                         me->CastSpell(temporalOrbsSpawnPosition.GetPositionX(), temporalOrbsSpawnPosition.GetPositionY(), temporalOrbsSpawnPosition.GetPositionZ(), SPELL_TEMPORAL_ORB_AREATRIGGER_SECOND, true);
                     for (auto at : me->GetAreaTriggers(SPELL_TEMPORAL_ORB_AREATRIGGER_SECOND))
                     {
- //                       at->AI()->DoAction(_triggersCount);
-                        if (at->IsAreaTrigger())
-                            _triggersCount++;
+                        at->AI()->DoAction(_triggersCount);
+                        _triggersCount++;
                     }
                     break;
                 case EVENT_CHRONOMETRIC_PARTICLES:
@@ -413,7 +412,7 @@ public:
             _instance->SendEncounterUnit(ENCOUNTER_FRAME_ENGAGE, me, 1);
         }
 
-        void JustDied(Unit* /*killer*/) override
+        void JustDied(Unit* /*killer*/)
         {
             DoCastSelf(SPELL_TEMPORAL_RIFT, true);
             DoCastSelf(SPELL_FADE_OUT, true);
@@ -487,7 +486,7 @@ public:
     {
         npc_fragmented_time_particleAI(Creature* creature) : ScriptedAI(creature) { }
 
-        void IsSummonedBy(Unit* /*summoner*/) override
+        void IsSummonedBy(Unit* summoner) override
         {
             me->SetControlled(true, UNIT_STATE_ROOT);
             DoCastSelf(SPELL_PASSAGE_OF_TIME);
@@ -495,7 +494,7 @@ public:
             events.ScheduleEvent(EVENT_WARP_NIGHTWELL, 10000);
         }
 
-        void JustDied(Unit* /*killer*/) override
+        void JustDied(Unit* /*killer*/)
         {
             DoCastSelf(SPELL_TEMPORAL_RIFT, true);
             DoCastSelf(SPELL_FADE_OUT, true);
@@ -783,7 +782,7 @@ public:
             return false;
         }
 
-        void HandleEffectProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
+        void HandleEffectProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
         {
             Unit* target = GetTarget();
             if (!target)
@@ -1235,7 +1234,7 @@ public:
             _posIndex = param;
         }
 
-        void OnUpdate(uint32 diff) override
+        void OnUpdate(uint32 diff)
         {
             if (_timer <= diff && canStartPath)
             {

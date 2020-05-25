@@ -17,55 +17,80 @@
 
 #include "ScriptMgr.h"
 #include "InstanceScript.h"
-#include "Player.h"
 #include "GameObject.h"
-#include "PassiveAI.h"
 #include "maw_of_souls.h"
 
-struct instance_maw_of_souls : public InstanceScript
+DoorData const doorData[] =
 {
-    instance_maw_of_souls(InstanceMap* map) : InstanceScript(map)
-    {
-        SetHeaders(DataHeader);
-        SetBossNumber(EncounterCount);
-    }
+    { GO_WALL_OF_SOULS,     DATA_HARBARON, DOOR_TYPE_ROOM },
+    { GO_WALL_OF_SOULS_2,   DATA_HARBARON, DOOR_TYPE_ROOM },
+    { GO_WALL_OF_SOULS_3,   DATA_HARBARON, DOOR_TYPE_ROOM },
+    { GO_MURKY_FOG,         DATA_HARBARON, DOOR_TYPE_ROOM },
+    { GO_COLLISION_WALL,    DATA_HARBARON, DOOR_TYPE_ROOM },
+    { 0, 0, DOOR_TYPE_ROOM}
+};
 
-    bool SetBossState(uint32 type, EncounterState state) override
+
+class instance_maw_of_souls : public InstanceMapScript
+{
+public:
+    instance_maw_of_souls() : InstanceMapScript(MOSScriptName, 1492) { }
+
+    struct instance_maw_of_souls_InstanceScript : public InstanceScript
     {
-        if(!InstanceScript::SetBossState(type, state))
+        instance_maw_of_souls_InstanceScript(InstanceMap* map) : InstanceScript(map)
         {
-            return false;
+            SetHeaders(DataHeader);
+            SetBossNumber(EncounterCount);
+            LoadDoorData(doorData);
         }
 
-        switch (type)
+        void OnGameObjectCreate(GameObject* go) override
         {
-            case DATA_YMIRON_MAW:
+            if (!go)
+                return;
+
+            switch (go->GetEntry())
             {
-                if (state == DONE)
-                {
-                    // Add code for horn GO
-                }
-                break;
-            }
-            case DATA_HELYA_MAW:
-            {
-                if (state == FAIL)
-                {
-                    // Repair ship
-                }
-                else if (state == DONE)
-                {
-                    // Spawn Loot Chest
-                }
-                break;
+                case GO_WALL_OF_SOULS:
+                case GO_WALL_OF_SOULS_2:
+                case GO_WALL_OF_SOULS_3:
+                case GO_MURKY_FOG:
+                case GO_COLLISION_WALL:
+                    AddDoor(go, true);
+                    break;
+
+                default : break;
             }
         }
 
-        return true;
+        void OnGameObjectRemove(GameObject* go) override
+        {
+            if (!go)
+                return;
+
+            switch (go->GetEntry())
+            {
+                case GO_WALL_OF_SOULS:
+                case GO_WALL_OF_SOULS_2:
+                case GO_WALL_OF_SOULS_3:
+                case GO_MURKY_FOG:
+                case GO_COLLISION_WALL:
+                    AddDoor(go, false);
+                    break;
+
+                default : break;
+            }
+        }
+    };
+
+    InstanceScript* GetInstanceScript(InstanceMap* map) const override
+    {
+        return new instance_maw_of_souls_InstanceScript(map);
     }
 };
 
 void AddSC_instance_maw_of_souls()
 {
-    RegisterInstanceScript(instance_maw_of_souls, 1492);
+    new instance_maw_of_souls();
 }

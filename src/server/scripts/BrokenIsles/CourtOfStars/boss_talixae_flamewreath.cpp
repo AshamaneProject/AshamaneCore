@@ -7,7 +7,7 @@
  * option) any later version.
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ *  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
  * more details.
  *
@@ -16,301 +16,655 @@
  */
 
 #include "ScriptMgr.h"
+#include "ScriptedCreature.h"
+#include "AreaTriggerTemplate.h"
+#include "AreaTriggerAI.h"
+#include "AreaTrigger.h"
 #include "court_of_stars.h"
-
-enum Says
-{
-    SAY_AGGRO_BAD = 3,
-    SAY_KILL = 4,
-    SAY_AGGRO = 5,
-    SAY_DEATH = 6,
-    SAY_BURNING = 7
-};
 
 enum Spells
 {
-    SPELL_BURNING_INTENSITY = 207906,
-    SPELL_WITHERING_SOUL = 208165,
-    SPELL_INFERNAL_ERUPTION = 207881,
+    // Talixae Flamewreath
+    SPELL_WITHERING_SOUL            = 208165,
+    SPELL_INFERNAL_ERUPTION         = 207881,
+    SPELL_INFERNAL_ERUPTION_MISSILE = 207883,
+    SPELL_INFERNAL_ERUPTION_AREA    = 211457,
+    SPELL_INFERNAL_ERUPTION_DMG     = 207887,
+    SPELL_BURNING_INTESITY_AURA     = 207906,
+    SPELL_BURNING_INTESITY_DMG      = 207907,
 
-    SPELL_BOND_OF_FLAME_AT = 209723, //Boss
-    SPELL_BOND_OF_STRENGTH_AT = 207819, //NPC_JAZSHARIU
-    SPELL_BOND_OF_CRUELTY_AT = 209717, //NPC_BAALGAR_THE_WATCHFUL
-    SPELL_BOND_OF_CUNNING_AT = 209712, //NPC_IMACUTYA
+    // Bonds Buffs
+    SPELL_BOND_OF_CRUELTY           = 209719,
+    SPELL_BOND_OF_CUNNING           = 209713,
+    SPELL_BOND_OF_STRENGTH          = 207850,
+    SPELL_BOND_OF_FLAME             = 209722,
 
-    //Christmas
-    SPELL_CHRISTMAS_CAP = 220861
+    // Infernal Imp
+    SPELL_FIREBOLT                  = 224374,
+    SPELL_DRIFTING_EMBERS           = 224375,
+    SPELL_DRIFTING_EMBERS_TARGET    = 224376,
+    SPELL_DRIFTING_EMBERS_DMG       = 224377,
+
+    // Minions
+    SPELL_SHOCKWAVE                 = 207979,
+    SPELL_DISINTEGRATION_BEAM       = 207980,
+    SPELL_WHIRLING_BLADES           = 209378,
 };
 
-enum eEvents
+enum Events
 {
-    EVENT_BURNING_INTENSITY = 1,
-    EVENT_WITHERING_SOUL = 2,
-    EVENT_INFERNAL_ERUPTION = 3
+    EVENT_BURNING_INTESITY      = 1,
+    EVENT_WITHERING_SOUL        = 2,
+    EVENT_INFERNAL_ERUPTION     = 3,
+
+    // Minions
+    EVENT_WHIRLING_BLADES       = 4,
+    EVENT_DISINTEGRATION_BEAM   = 5,
+    EVENT_SHOCK_WAVE            = 6,
+
+    // Imp
+    EVENT_FIREBOLT              = 7,
+    EVENT_DRIFTING_EMBERS       = 8,
 };
 
-Position const mBossPos[3] =
+enum Says
 {
-    {1081.21f, 3313.43f, 25.05f, 0.23f}, //NPC_JAZSHARIU
-    {1083.43f, 3307.68f, 24.98f, 0.81f}, //NPC_BAALGAR_THE_WATCHFUL
-    {1088.88f, 3306.01f, 25.05f, 1.43f}  //NPC_IMACUTYA
+    SAY_EVENT_1             = 0,
+    SAY_EVENT_2             = 1,
+    SAY_EVENT_3             = 2,
+    SAY_AGGRO               = 3,
+    SAY_AGGRO_MINIONS       = 4,
+    SAY_BURNING_INTESITY    = 5,
+    SAY_KILL                = 6,
+    SAY_WIPE                = 7,
+    SAY_DEATH               = 8,
 };
 
-Position const patrolPos[3] =
+enum Adds
 {
-    {1161.85f, 3279.33f, 20.00f, 3.82f}, //NPC_FELBOUND_ENFORCER
-    {1041.14f, 3388.77f, 19.96f, 3.27f},
-    {1182.30f, 3350.27f, 20.00f, 1.57f}
+    NPC_INFERNAL_IMP            = 112668,
 };
 
-Position const gCheckPos[3] =
+enum Actions
 {
-    {1133.87f, 3278.71f, 20.1f},
-    {1156.15f, 3327.12f, 20.9f},
-    {1053.71f, 3357.99f, 19.84f}
+    ACTION_MINIONS_DEAD         = 1,
 };
 
-//104217
+using SpellTargets = std::list<WorldObject*>;
+
+struct PlayerFilter
+{
+    bool operator() (WorldObject*& object)
+    {
+        if (object->ToPlayer())
+            return false;
+
+        return true;
+    }
+};
+
+void CheckMinionsDead(Creature* me)
+{
+    if (!me)
+        return;
+
+    Creature* baalgar = nullptr;
+    Creature* imacutya = nullptr;
+    Creature* talixae = nullptr;
+    Creature* jazshariu = nullptr;
+
+    if (me->GetEntry() == NPC_JAZSHARIU)
+    {
+        baalgar = me->FindNearestCreature(NPC_BAALGAR, 10.0f, true);
+        imacutya = me->FindNearestCreature(NPC_IMACUTYA, 10.0f, true);
+        talixae = me->FindNearestCreature(BOSS_TALIXAE_FLAMEWREATH, 10.0f, true);
+
+        if (baalgar)
+            me->CastSpell(me, SPELL_BOND_OF_CUNNING, true);
+        else
+            me->RemoveAurasDueToSpell(SPELL_BOND_OF_CUNNING);
+
+        if (imacutya)
+            me->CastSpell(me, SPELL_BOND_OF_CRUELTY, true);
+        else
+            me->RemoveAurasDueToSpell(SPELL_BOND_OF_CRUELTY);
+
+        if (talixae)
+            me->CastSpell(me, SPELL_BOND_OF_FLAME, true);
+        else
+            me->RemoveAurasDueToSpell(SPELL_BOND_OF_FLAME);
+
+    }
+    else if (me->GetEntry() == NPC_IMACUTYA)
+    {
+        baalgar = me->FindNearestCreature(NPC_BAALGAR, 10.0f, true);
+        jazshariu = me->FindNearestCreature(NPC_JAZSHARIU, 10.0f, true);
+        talixae = me->FindNearestCreature(BOSS_TALIXAE_FLAMEWREATH, 10.0f, true);
+
+        if (baalgar)
+            me->CastSpell(me, SPELL_BOND_OF_CUNNING, true);
+        else
+            me->RemoveAurasDueToSpell(SPELL_BOND_OF_CUNNING);
+
+        if (jazshariu)
+            me->CastSpell(me, SPELL_BOND_OF_STRENGTH, true);
+        else
+            me->RemoveAurasDueToSpell(SPELL_BOND_OF_STRENGTH);
+
+        if (talixae)
+            me->CastSpell(me, SPELL_BOND_OF_FLAME, true);
+        else
+            me->RemoveAurasDueToSpell(SPELL_BOND_OF_FLAME);
+
+    }
+    else if (me->GetEntry() == NPC_BAALGAR)
+    {
+        jazshariu = me->FindNearestCreature(NPC_JAZSHARIU, 10.0f, true);
+        imacutya = me->FindNearestCreature(NPC_IMACUTYA, 10.0f, true);
+        talixae = me->FindNearestCreature(BOSS_TALIXAE_FLAMEWREATH, 10.0f, true);
+
+        if (jazshariu)
+            me->CastSpell(me, SPELL_BOND_OF_STRENGTH, true);
+        else
+            me->RemoveAurasDueToSpell(SPELL_BOND_OF_STRENGTH);
+
+        if (imacutya)
+            me->CastSpell(me, SPELL_BOND_OF_CRUELTY, true);
+        else
+            me->RemoveAurasDueToSpell(SPELL_BOND_OF_CRUELTY);
+
+        if (talixae)
+            me->CastSpell(me, SPELL_BOND_OF_FLAME, true);
+        else
+            me->RemoveAurasDueToSpell(SPELL_BOND_OF_FLAME);
+    }
+    else if (me->GetEntry() == BOSS_TALIXAE_FLAMEWREATH)
+    {
+        jazshariu = me->FindNearestCreature(NPC_JAZSHARIU, 10.0f, true);
+        imacutya = me->FindNearestCreature(NPC_IMACUTYA, 10.0f, true);
+        baalgar = me->FindNearestCreature(NPC_BAALGAR, 10.0f, true);
+
+        if (jazshariu)
+            me->CastSpell(me, SPELL_BOND_OF_STRENGTH, true);
+        else
+            me->RemoveAurasDueToSpell(SPELL_BOND_OF_STRENGTH);
+
+        if (imacutya)
+            me->CastSpell(me, SPELL_BOND_OF_CRUELTY, true);
+        else
+            me->RemoveAurasDueToSpell(SPELL_BOND_OF_CRUELTY);
+
+        if (baalgar)
+            me->CastSpell(me, SPELL_BOND_OF_CUNNING, true);
+        else
+            me->RemoveAurasDueToSpell(SPELL_BOND_OF_CUNNING);
+    }
+}
+
 class boss_talixae_flamewreath : public CreatureScript
 {
-public:
-    boss_talixae_flamewreath() : CreatureScript("boss_talixae_flamewreath") {}
+    public:
+        boss_talixae_flamewreath() : CreatureScript("boss_talixae_flamewreath")
+        {}
 
-    struct boss_talixae_flamewreathAI : public BossAI
-    {
-        boss_talixae_flamewreathAI(Creature* creature) : BossAI(creature, DATA_TALIXAE), summons(me)
+        struct boss_talixae_flamewreath_AI : public BossAI
         {
-            SummonEventCreature();
-        }
+            boss_talixae_flamewreath_AI(Creature* creature) : BossAI(creature, DATA_TALIXAE_FLAMEWREATH)
+            {}
 
-        SummonList summons;
-        ObjectGuid guardsGUID[3];
-
-        uint8 pDiedCount;
-        uint8 guardsDiedCount;
-
-        void SummonEventCreature()
-        {
-            pDiedCount = 0;
-            guardsDiedCount = 0;
-
-            if (Creature* guard = me->SummonCreature(NPC_JAZSHARIU, mBossPos[0]))
-                guardsGUID[2] = guard->GetGUID();
-            if (Creature* guard = me->SummonCreature(NPC_BAALGAR_THE_WATCHFUL, mBossPos[1]))
-                guardsGUID[1] = guard->GetGUID();
-            if (Creature* guard = me->SummonCreature(NPC_IMACUTYA, mBossPos[2]))
-                guardsGUID[0] = guard->GetGUID();
-
-            for (int8 i = 0; i < 3; i++)
-                me->SummonCreature(NPC_FELBOUND_ENFORCER, patrolPos[i]);
-        }
-
-        void SummonedCreatureDies(Creature* summon, Unit* /*killer*/) override
-        {
-            switch (summon->GetEntry())
+            void Reset() override
             {
-            case NPC_FELBOUND_ENFORCER:
+                _Reset();
+                CheckMinionsDead(me);
+            }
+
+            void DoAction(int32 action) override
             {
-                summon->AI()->Talk(0);
-                for (uint8 i = pDiedCount; i < 3; i++)
+                if (action == ACTION_MINIONS_DEAD)
                 {
-                   // if (Creature* guard = me->GetCreature(*me, guardsGUID[i]))
-                       // if (guard && guard->isAlive())
-                        {
-                            for (uint8 n = 0; n < 3; n++)
-                                if (summon->GetDistance(gCheckPos[n]) < 40.0f)
-                                {
-                                    Talk(pDiedCount);
-                                    pDiedCount++;
-                                   // guard->SetHomePosition(gCheckPos[n]);
-                                //    guard->GetMotionMaster()->MovePoint(1, gCheckPos[n]);
-                                }
-                            return;
-                        }
+                    CheckMinionsDead(me);
+
+                    if (Creature* baalgar = me->FindNearestCreature(NPC_BAALGAR, 10.0f, true))
+                        baalgar->AI()->DoAction(ACTION_MINIONS_DEAD);
+
+                    if (Creature* jazshariu = me->FindNearestCreature(NPC_JAZSHARIU, 10.0f, true))
+                        jazshariu->AI()->DoAction(ACTION_MINIONS_DEAD);
+
+                    if (Creature* imacutya = me->FindNearestCreature(NPC_IMACUTYA, 10.0f, true))
+                        imacutya->AI()->DoAction(ACTION_MINIONS_DEAD);
                 }
-                break;
             }
-            case NPC_JAZSHARIU:
-            case NPC_BAALGAR_THE_WATCHFUL:
-            case NPC_IMACUTYA:
-                guardsDiedCount++;
-                if (guardsDiedCount == 3)
-                    me->RemoveAurasDueToSpell(SPELL_BOND_OF_FLAME_AT);
-                break;
-            }
-        }
 
-        void Reset() override
-        {
-            _Reset();
-
-            if (guardsDiedCount < 3)
-                DoCast(me, SPELL_BOND_OF_FLAME_AT, true);
-
-           // if (sGameEventMgr->IsActiveEvent(2))
-                DoCast(SPELL_CHRISTMAS_CAP);
-           // else
+            bool IsAliveAMinion()
             {
-                if (me->HasAura(SPELL_CHRISTMAS_CAP))
-                    me->RemoveAura(SPELL_CHRISTMAS_CAP);
+                if (me->FindNearestCreature(NPC_BAALGAR, 10.0f, true) || me->FindNearestCreature(NPC_JAZSHARIU, 10.0f, true) || me->FindNearestCreature(NPC_IMACUTYA, 10.0f, true))
+                    return true;
+
+                return false;
             }
-        }
 
-        void EnterCombat(Unit* who) override
-        {
-            if (guardsDiedCount < 3)
-                Talk(SAY_AGGRO_BAD);
-            else
-                Talk(SAY_AGGRO);
+            void EnterCombat(Unit* /**/) override
+            {
+                if (IsAliveAMinion())
+                    Talk(SAY_AGGRO_MINIONS);
+                else
+                    Talk(SAY_AGGRO);
 
-            _EnterCombat();
+                _EnterCombat();
 
-            for (int8 i = 0; i < 3; i++)
-              //  if (Creature* guard = me->GetCreature(*me, guardsGUID[i]))
-                  //  if (guard && guard->isAlive())
-                    //    guard->AI()->DoZoneInCombat(guard, 100.0f);
+                CheckMinionsDead(me);
+                events.ScheduleEvent(EVENT_BURNING_INTESITY, 5 * IN_MILLISECONDS);
+                events.ScheduleEvent(EVENT_WITHERING_SOUL, 12 * IN_MILLISECONDS);
+                events.ScheduleEvent(EVENT_INFERNAL_ERUPTION, 16 * IN_MILLISECONDS);
+            }
 
-            events.RescheduleEvent(EVENT_BURNING_INTENSITY, 6000);
-            events.RescheduleEvent(EVENT_WITHERING_SOUL, 12000);
-            events.RescheduleEvent(EVENT_INFERNAL_ERUPTION, 20000);
-        }
+            void KilledUnit(Unit* target) override
+            {
+                if (!target)
+                    return;
 
-        void JustDied(Unit* /*killer*/) override
-        {
-            Talk(SAY_DEATH);
-            _JustDied();
-            if (Creature* lilet = me->FindNearestCreature(106468, 100.0f, true))
-                lilet->AI()->Talk(0);
-        }
+                if (target->GetTypeId() == TYPEID_PLAYER)
+                    Talk(SAY_KILL);
+            }
 
-        void KilledUnit(Unit* victim) override
-        {
-            if (victim->GetTypeId() != TYPEID_PLAYER)
-                return;
+            void EnterEvadeMode(EvadeReason reason) override
+            {
+                me->RemoveAllAreaTriggers();
+                CreatureAI::EnterEvadeMode(reason);
+            }
 
-            Talk(SAY_KILL);
-        }
+            void JustDied(Unit* /**/) override
+            {
+                Talk(SAY_DEATH);
+                _JustDied();
+            }
 
-        void UpdateAI(uint32 diff) override
-        {
-            if (!UpdateVictim())
-                return;
+            void JustReachedHome() override
+            {
+                Talk(SAY_WIPE);
+                _JustReachedHome();
+            }
 
-            events.Update(diff);
-
-            if (me->HasUnitState(UNIT_STATE_CASTING))
-                return;
-
-            if (uint32 eventId = events.ExecuteEvent())
+            void ExecuteEvent(uint32 eventId) override
             {
                 switch (eventId)
                 {
-                case EVENT_BURNING_INTENSITY:
-                    DoCast(SPELL_BURNING_INTENSITY);
-                    Talk(SAY_BURNING);
-                    break;
-                case EVENT_WITHERING_SOUL:
-                    DoCast(SPELL_WITHERING_SOUL);
-                    events.RescheduleEvent(EVENT_WITHERING_SOUL, 15000);
-                    break;
-                case EVENT_INFERNAL_ERUPTION:
-                    DoCast(SPELL_INFERNAL_ERUPTION);
-                    events.RescheduleEvent(EVENT_INFERNAL_ERUPTION, 32000);
-                    break;
+                    case EVENT_BURNING_INTESITY:
+                    {
+                        Talk(SAY_BURNING_INTESITY);
+                        DoCast(me, SPELL_BURNING_INTESITY_AURA);
+                        events.ScheduleEvent(EVENT_BURNING_INTESITY, 23 * IN_MILLISECONDS);
+                        break;
+                    }
+
+                    case EVENT_WITHERING_SOUL:
+                    {
+                        DoCast(me, SPELL_WITHERING_SOUL);
+                        events.ScheduleEvent(EVENT_WITHERING_SOUL, 14 * IN_MILLISECONDS);
+                        break;
+                    }
+
+                    case EVENT_INFERNAL_ERUPTION:
+                    {
+                        DoCast(me, SPELL_INFERNAL_ERUPTION);
+                        events.ScheduleEvent(EVENT_INFERNAL_ERUPTION, 30 * IN_MILLISECONDS);
+                        break;
+                    }
+
+                    default : break;
                 }
             }
-            DoMeleeAttackIfReady();
-        }
-    };
+        };
 
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new boss_talixae_flamewreathAI(creature);
-    }
+        CreatureAI* GetAI(Creature* creature) const override
+        {
+            return new boss_talixae_flamewreath_AI(creature);
+        }
 };
 
-//104273, 104274, 104275
-class npc_talixae_guards : public CreatureScript
+class npc_cots_talixae_minion : public CreatureScript
 {
-public:
-    npc_talixae_guards() : CreatureScript("npc_talixae_guards") {}
+    public:
+        npc_cots_talixae_minion() : CreatureScript("npc_cots_talixae_minion")
+        {}
 
-    struct npc_talixae_guardsAI : public ScriptedAI
-    {
-        npc_talixae_guardsAI(Creature* creature) : ScriptedAI(creature) {}
-
-        EventMap events;
-
-        void Reset() override
+        struct npc_cots_talixae_minion_AI : public ScriptedAI
         {
-            events.Reset();
-
-            switch (me->GetEntry())
+            npc_cots_talixae_minion_AI(Creature* creature) : ScriptedAI(creature)
             {
-            case NPC_JAZSHARIU:
-                DoCast(me, SPELL_BOND_OF_STRENGTH_AT, true);
-                break;
-            case NPC_BAALGAR_THE_WATCHFUL:
-                DoCast(me, SPELL_BOND_OF_CRUELTY_AT, true);
-                break;
-            case NPC_IMACUTYA:
-                DoCast(me, SPELL_BOND_OF_CUNNING_AT, true);
-                break;
+                CheckMinionsDead(me);
             }
-        }
 
-        void EnterCombat(Unit* who) override
-        {
-            if (me->GetEntry() == 104275)
-                events.RescheduleEvent(1, 3000); // 209378 17
-            if (me->GetEntry() == 104274)
-                events.RescheduleEvent(2, 3000); // 207980 13
-            if (me->GetEntry() == 104273)
-                events.RescheduleEvent(3, 7000); // 207979 11
-        }
-
-        void UpdateAI(uint32 diff) override
-        {
-            if (!UpdateVictim())
-                return;
-
-            events.Update(diff);
-
-            if (me->HasUnitState(UNIT_STATE_CASTING))
-                return;
-
-            if (uint32 eventId = events.ExecuteEvent())
+            void Reset() override
             {
-                switch (eventId)
+                _events.Reset();
+                CheckMinionsDead(me);
+            }
+
+            void DoAction(int32 action)
+            {
+                if (action == ACTION_MINIONS_DEAD)
+                    CheckMinionsDead(me);
+            }
+
+            void JustReachedHome()
+            {
+                CheckMinionsDead(me);
+            }
+
+            void EnterCombat(Unit* /**/) override
+            {
+                CheckMinionsDead(me);
+                DoZoneInCombat();
+
+                switch (me->GetEntry())
                 {
-                case 1:
-                    DoCast(209378);
-                    events.RescheduleEvent(1, 17000);
-                    break;
-                case 2:
-                    DoCast(207980);
-                    events.RescheduleEvent(2, 13000);
-                    break;
-                case 3:
-                    DoCast(207979);
-                    events.RescheduleEvent(3, 11000);
-                    break;
-                default:
-                    break;
+                    case NPC_BAALGAR:
+                        _events.ScheduleEvent(EVENT_DISINTEGRATION_BEAM, 6 * IN_MILLISECONDS);
+                        break;
+
+                    case NPC_JAZSHARIU:
+                        _events.ScheduleEvent(EVENT_SHOCK_WAVE, 20 * IN_MILLISECONDS);
+                        break;
+
+                    case NPC_IMACUTYA:
+                        _events.ScheduleEvent(EVENT_WHIRLING_BLADES, 7 * IN_MILLISECONDS);
+                        break;
                 }
             }
-            DoMeleeAttackIfReady();
-        }
-    };
 
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new npc_talixae_guardsAI(creature);
-    }
+            void UpdateAI(uint32 diff) override
+            {
+                if (!UpdateVictim())
+                    return;
+
+                _events.Update(diff);
+
+                if (me->HasUnitState(UNIT_STATE_CASTING))
+                    return;
+
+                while (uint32 eventId = _events.ExecuteEvent())
+                {
+                    switch (eventId)
+                    {
+                        case EVENT_WHIRLING_BLADES:
+                            DoCast(me, SPELL_WHIRLING_BLADES);
+                            _events.ScheduleEvent(EVENT_WHIRLING_BLADES, 15 * IN_MILLISECONDS);
+                            break;
+
+                        case EVENT_SHOCK_WAVE:
+                            DoCastVictim(SPELL_SHOCKWAVE);
+                            _events.ScheduleEvent(EVENT_SHOCK_WAVE, 10 * IN_MILLISECONDS);
+                            break;
+
+                        case EVENT_DISINTEGRATION_BEAM:
+                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0, true))
+                                DoCast(target, SPELL_DISINTEGRATION_BEAM);
+                            _events.ScheduleEvent(EVENT_DISINTEGRATION_BEAM, 14 * IN_MILLISECONDS);
+                            break;
+
+                        default : break;
+                    }
+                }
+
+                DoMeleeAttackIfReady();
+            }
+
+            private:
+                EventMap _events;
+        };
+
+        CreatureAI* GetAI(Creature* creature) const override
+        {
+            return new npc_cots_talixae_minion_AI(creature);
+        }
+};
+
+class npc_cots_infernal_imp : public CreatureScript
+{
+    public:
+        npc_cots_infernal_imp() : CreatureScript("npc_cots_infernal_imp")
+        {}
+
+        struct npc_cots_infernal_imp_AI : public ScriptedAI
+        {
+            npc_cots_infernal_imp_AI(Creature* creature) : ScriptedAI(creature)
+            {}
+
+            void Reset() override
+            {
+                _castTimes = _maxCast = 0;
+                _events.Reset();
+            }
+
+            void EnterCombat(Unit* /**/) override
+            {
+                _events.ScheduleEvent(EVENT_DRIFTING_EMBERS, Seconds(2));
+            }
+
+            void UpdateAI(uint32 diff) override
+            {
+                if (!UpdateVictim())
+                    return;
+
+                _events.Update(diff);
+
+                if (me->HasUnitState(UNIT_STATE_CASTING))
+                    return;
+
+                while (uint32 eventId = _events.ExecuteEvent())
+                {
+                    if (eventId == EVENT_DRIFTING_EMBERS)
+                    {
+                        _maxCast = urand(1,3);
+                        _castTimes = 0;
+                        DoCast(me, SPELL_DRIFTING_EMBERS, true);
+                        _events.ScheduleEvent(EVENT_FIREBOLT, Seconds(3));
+                    }
+                    else if (eventId == EVENT_FIREBOLT)
+                    {
+                        _castTimes++;
+
+                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0, true))
+                            DoCast(target, SPELL_FIREBOLT);
+
+                        if (_castTimes == _maxCast)
+                            _events.ScheduleEvent(EVENT_DRIFTING_EMBERS, Seconds(2));
+                        else
+                            _events.ScheduleEvent(EVENT_FIREBOLT, Seconds(3));
+                    }
+                }
+            }
+
+            private:
+                EventMap _events;
+                uint8 _castTimes, _maxCast;
+        };
+
+        CreatureAI* GetAI(Creature* creature) const override
+        {
+            return new npc_cots_infernal_imp_AI(creature);
+        }
+};
+
+class spell_talixae_whitering_soul : public SpellScriptLoader
+{
+    public:
+        spell_talixae_whitering_soul() : SpellScriptLoader("spell_talixae_whitering_soul")
+        {}
+
+        class spell_talixae_whitering_soul_SpellScript : public SpellScript
+        {
+            public:
+                PrepareSpellScript(spell_talixae_whitering_soul_SpellScript);
+
+                void FilterTargets(SpellTargets& targets)
+                {
+                    if (targets.empty())
+                        return;
+
+                    targets.remove_if(PlayerFilter());
+                }
+
+                void Register()
+                {
+                    OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_talixae_whitering_soul_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_SRC_AREA_ENEMY);
+                }
+        };
+
+        SpellScript* GetSpellScript() const
+        {
+            return new spell_talixae_whitering_soul_SpellScript();
+        }
+};
+
+class spell_talixae_infernal_eruption : public SpellScriptLoader
+{
+    public:
+        spell_talixae_infernal_eruption() : SpellScriptLoader("spell_talixae_infernal_eruption")
+        {}
+
+        class spell_talixae_infernal_eruption_SpellScript : public SpellScript
+        {
+            public:
+                PrepareSpellScript(spell_talixae_infernal_eruption_SpellScript);
+
+                void HandleDummy(SpellEffIndex /**/)
+                {
+                    if (!GetCaster() || !GetHitUnit())
+                        return;
+
+                    GetCaster()->CastSpell(GetHitUnit(), SPELL_INFERNAL_ERUPTION_MISSILE, true);
+                }
+
+                void Register()
+                {
+                    OnEffectHitTarget += SpellEffectFn(spell_talixae_infernal_eruption_SpellScript::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
+                }
+        };
+
+        SpellScript* GetSpellScript() const
+        {
+            return new spell_talixae_infernal_eruption_SpellScript();
+        }
+};
+
+class spell_talixae_infernal_eruption_dmg : public SpellScriptLoader
+{
+    public:
+        spell_talixae_infernal_eruption_dmg() : SpellScriptLoader("spell_talixae_infernal_eruption_dmg")
+        {}
+
+        class spell_talixae_infernal_eruption_dmg_SpellScript : public SpellScript
+        {
+            public:
+                PrepareSpellScript(spell_talixae_infernal_eruption_dmg_SpellScript);
+
+                void FilterTargets(SpellTargets & targets)
+                {
+                    if (targets.empty())
+                        return;
+
+                    targets.remove_if(PlayerFilter());
+                }
+
+                void Register()
+                {
+                    OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_talixae_infernal_eruption_dmg_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_DEST_AREA_ENEMY);
+                    OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_talixae_infernal_eruption_dmg_SpellScript::FilterTargets, EFFECT_1, TARGET_UNIT_DEST_AREA_ENEMY);
+                }
+        };
+
+        SpellScript* GetSpellScript() const
+        {
+            return new spell_talixae_infernal_eruption_dmg_SpellScript();
+        }
+};
+
+class spell_cots_drifting_embers_dmg : public SpellScriptLoader
+{
+    public:
+        spell_cots_drifting_embers_dmg() : SpellScriptLoader("spell_cots_drifting_embers_dmg")
+        {}
+
+        class spell_cots_drifting_embers_dmg_SpellScript : public SpellScript
+        {
+            public:
+                PrepareSpellScript(spell_cots_drifting_embers_dmg_SpellScript);
+
+                void HandleDummy(SpellEffIndex /**/)
+                {
+                    if (!GetCaster() || !GetHitUnit())
+                        return;
+
+                    GetCaster()->CastSpell(GetHitUnit(), SPELL_DRIFTING_EMBERS_DMG, true);
+                }
+
+                void FilterTargets(SpellTargets & targets)
+                {
+                    if (targets.empty())
+                        return;
+
+                    targets.remove_if(PlayerFilter());
+                }
+
+                void Register()
+                {
+                    OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_cots_drifting_embers_dmg_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_SRC_AREA_ENEMY);
+                    OnEffectHitTarget += SpellEffectFn(spell_cots_drifting_embers_dmg_SpellScript::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
+                }
+
+        };
+
+        SpellScript* GetSpellScript() const
+        {
+            return new spell_cots_drifting_embers_dmg_SpellScript();
+        }
+};
+
+class at_cots_infernal_eruption : public AreaTriggerEntityScript
+{
+    public:
+        at_cots_infernal_eruption() : AreaTriggerEntityScript("at_cots_infernal_eruption")
+        {}
+
+        struct at_cots_infernal_eruption_AI : public AreaTriggerAI
+        {
+            at_cots_infernal_eruption_AI(AreaTrigger* at) : AreaTriggerAI(at)
+            {}
+
+            void OnInitialize()
+            {
+                if (!at->GetCaster())
+                    return;
+
+                at->GetCaster()->SummonCreature(NPC_INFERNAL_IMP, at->GetPosition(), TEMPSUMMON_CORPSE_TIMED_DESPAWN, 5 * IN_MILLISECONDS);
+            }
+
+            void OnUnitEnter(Unit* target) override
+            {
+                if (!target || !at->GetCaster())
+                    return;
+
+                if (target->ToPlayer())
+                    at->GetCaster()->CastSpell(target, SPELL_INFERNAL_ERUPTION_AREA, true);
+            }
+        };
+
+        AreaTriggerAI* GetAI(AreaTrigger* at) const override
+        {
+            return new at_cots_infernal_eruption_AI(at);
+        }
 };
 
 void AddSC_boss_talixae_flamewreath()
 {
     new boss_talixae_flamewreath();
-    new npc_talixae_guards();
+    new npc_cots_talixae_minion();
+    new npc_cots_infernal_imp();
+    new spell_talixae_whitering_soul();
+    new spell_talixae_infernal_eruption();
+    new spell_talixae_infernal_eruption_dmg();
+    new spell_cots_drifting_embers_dmg();
+    new at_cots_infernal_eruption();
 }

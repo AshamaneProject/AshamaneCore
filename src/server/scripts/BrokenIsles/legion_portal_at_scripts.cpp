@@ -17,8 +17,8 @@
 
 #include "AreaTrigger.h"
 #include "AreaTriggerAI.h"
-#include "Player.h"
 #include "ObjectMgr.h"
+#include "Player.h"
 #include "ScriptMgr.h"
 
 class at_legion_instance_portal : public AreaTriggerEntityScript
@@ -29,7 +29,7 @@ public:
     {
         WorldSafeLocsEntry const* safeLoc = sObjectMgr->GetWorldSafeLoc(worldSafeLocs);
         ASSERT(safeLoc);
-        _tpLocation = WorldLocation(safeLoc->Loc);
+        _tpLocation = safeLoc->Loc;
     }
 
     WorldLocation _tpLocation;

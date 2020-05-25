@@ -1,5 +1,5 @@
 /*
- * Copyright (C) Latin Core Team
+ * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -27,7 +27,7 @@
 #include "CreatureTextMgr.h"
 #include "PhasingHandler.h"
 
- // Zone 8574
+// Zone 8574
 class zone_argus_krokuun : public ZoneScript
 {
 public:
@@ -73,7 +73,7 @@ enum
 {
     QUEST_A_THE_HAND_OF_FATE = 47221,
     QUEST_THE_DREAMWAY = 40644,
-    SPELL_ASSIGN_DRUID_SPELL_BAR = 204543,
+    SPELL_ASSIGN_DRUID_SPELL_BAR= 204543,
     QUEST_H_THE_HAND_OF_FATE = 47835,
     KILLED_MONSTER_CREDIT_THE_HAND_OF_FATE = 121751,
 
@@ -91,7 +91,7 @@ enum
 
     NPC_VINDICATOR_BOROS = 121756, //??????
     NPC_ARATOR_THE_REDEEMER = 121755, //???????
-    NPC_VEREESA_WINDRUNNER = 121754,///Alliance
+    NPC_VEREESA_WINDRUNNER =  121754,///Alliance
     NPC_LADY_LIADRIN_122065 = 122065,///Horde
 
     NPC_ILLIDAN_STORMRAGE_120978 = 120978,
@@ -104,31 +104,31 @@ enum
 
 enum
 {
-    TALK_01 = 0,
-    TALK_02 = 1,
-    TALK_03 = 2,
-    TALK_04 = 3,
-    TALK_05 = 4,
-    TALK_06 = 5,
-    TALK_07 = 6,
-    TALK_08 = 7,
+    TALK_01                                 = 0,
+    TALK_02                                 = 1,
+    TALK_03                                 = 2,
+    TALK_04                                 = 3,
+    TALK_05                                 = 4,
+    TALK_06                                 = 5,
+    TALK_07                                 = 6,
+    TALK_08                                 = 7,
 
-    EVENT_TALK_01 = 1,
-    EVENT_TALK_02 = 2,
-    EVENT_TALK_03 = 3,
-    EVENT_TALK_04 = 4,
-    EVENT_TALK_05 = 5,
-    EVENT_TALK_06 = 6,
-    EVENT_TALK_07 = 7,
-    EVENT_TALK_08 = 8,
-    EVENT_TALK_09 = 9
+    EVENT_TALK_01                           = 1,
+    EVENT_TALK_02                           = 2,
+    EVENT_TALK_03                           = 3,
+    EVENT_TALK_04                           = 4,
+    EVENT_TALK_05                           = 5,
+    EVENT_TALK_06                           = 6,
+    EVENT_TALK_07                           = 7,
+    EVENT_TALK_08                           = 8,
+    EVENT_TALK_09                           = 9
 };
 
 enum
 {
-    SAY_EVENT = 0,
-    SAY_EVENT_2 = 1,
-    SAY_EVENT_3 = 2
+    SAY_EVENT                               = 0,
+    SAY_EVENT_2                             = 1,
+    SAY_EVENT_3                             = 2
 };
 
 /*********************************\
@@ -140,7 +140,7 @@ class npc_vereesa_windrunner_121754 : public CreatureScript
 public:
     npc_vereesa_windrunner_121754() : CreatureScript("npc_vereesa_windrunner_121754") { }
 
-    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 /*action*/) override
+    bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 /*sender*/, uint32 /*action*/) override
     {
         if (!player)
             return false;
@@ -150,7 +150,7 @@ public:
         if (player->HasQuest(QUEST_A_TWO_IF_BY_SEA))
         {
             player->KilledMonsterCredit(KILLED_MONSTER_CREDIT_TWO_IF_BY_SEA);
-            player->TeleportTo(1750, -4235.34f, -11335.4f, 8.85f, 4.432787f);
+            player->TeleportTo(1750 ,-4235.34f, -11335.4f, 8.85f, 4.432787f);
         }
 
         return true;
@@ -204,7 +204,7 @@ public:
                     if (Creature* arator_the_redeemer = me->FindNearestCreature(NPC_ARATOR_THE_REDEEMER, me->GetVisibilityRange()))
                     {
 
-                        arator_the_redeemer->GetScheduler().Schedule(4s, [arator_the_redeemer](TaskContext context)
+                        arator_the_redeemer->GetScheduler().Schedule(4s, [arator_the_redeemer](TaskContext /*context*/)
                         {
                             arator_the_redeemer->AI()->Talk(SAY_EVENT);
                         });
@@ -213,7 +213,7 @@ public:
                     if (Creature* vindicator_boros = me->FindNearestCreature(NPC_VINDICATOR_BOROS, me->GetVisibilityRange()))
                     {
 
-                        vindicator_boros->GetScheduler().Schedule(5s, [vindicator_boros](TaskContext context)
+                        vindicator_boros->GetScheduler().Schedule(5s, [vindicator_boros](TaskContext /*context*/)
                         {
                             vindicator_boros->AI()->Talk(SAY_EVENT);
                         });
@@ -243,18 +243,18 @@ public:
 
 enum QuestLightsExodus
 {
-    QUEST_LIGHTS_EXODUS = 47223,
+    QUEST_LIGHTS_EXODUS                     = 47223,
 
-    EVENT_STEP_01 = 1,
-    EVENT_STEP_02 = 2,
-    EVENT_STEP_03 = 3,
-    EVENT_STEP_04 = 4,
-    EVENT_STEP_05 = 5,
-    EVENT_STEP_06 = 6,
+    EVENT_STEP_01                           = 1,
+    EVENT_STEP_02                           = 2,
+    EVENT_STEP_03                           = 3,
+    EVENT_STEP_04                           = 4,
+    EVENT_STEP_05                           = 5,
+    EVENT_STEP_06                           = 6,
 
-    ACTION_START_ANIMATION = 1,
+    ACTION_START_ANIMATION                  = 1,
 
-    SAY_BOROS_TEXT_01 = 1,
+    SAY_BOROS_TEXT_01                       = 1,
 };
 
 class npc_vindicator_boros_121756 : public CreatureScript
@@ -290,7 +290,7 @@ public:
             _playerGUID = ObjectGuid::Empty;
         }
 
-        void DoAction(int32 action)
+        void DoAction(int32 action) override
         {
             if (action == ACTION_START_ANIMATION)
                 events.ScheduleEvent(EVENT_STEP_01, 1s);
@@ -310,28 +310,28 @@ public:
             {
                 switch (eventId)
                 {
-                case EVENT_STEP_01:
-                    if (Player* player = ObjectAccessor::GetPlayer(*me, _playerGUID))
-                        me->SetFacingToObject(player);
-                    events.ScheduleEvent(EVENT_STEP_02, 3s);
-                    break;
-                case EVENT_STEP_02:
-                    Talk(SAY_BOROS_TEXT_01);
-                    events.ScheduleEvent(EVENT_STEP_03, 2s);
-                    break;
-                case EVENT_STEP_03:
-                {
-                    AddWaypoint(1, -4242.758301f, -11345.727539f, 8.943564f, 0);
-                    AddWaypoint(2, -4247.899902f, -11348.519742f, 10.034762f, 0);
-                    AddWaypoint(3, -4258.516602f, -11349.978516f, 4.728858f, 0);
-                    AddWaypoint(4, -4264.603027f, -11354.836914f, 4.856225f, 0);
-                    AddWaypoint(5, -4261.898926f, -11360.919922f, 5.132911f, 0);
+                    case EVENT_STEP_01:
+                        if (Player* player = ObjectAccessor::GetPlayer(*me, _playerGUID))
+                            me->SetFacingToObject(player);
+                        events.ScheduleEvent(EVENT_STEP_02, 3s);
+                        break;
+                    case EVENT_STEP_02:
+                        Talk(SAY_BOROS_TEXT_01);
+                        events.ScheduleEvent(EVENT_STEP_03, 2s);
+                        break;
+                    case EVENT_STEP_03:
+                    {
+                        AddWaypoint(1, -4242.758301f, -11345.727539f, 8.943564f, 0);
+                        AddWaypoint(2, -4247.899902f, -11348.519742f, 10.034762f, 0);
+                        AddWaypoint(3, -4258.516602f, -11349.978516f, 4.728858f, 0);
+                        AddWaypoint(4, -4264.603027f, -11354.836914f, 4.856225f, 0);
+                        AddWaypoint(5, -4261.898926f, -11360.919922f, 5.132911f, 0);
 
-                    Start(true, true, ObjectGuid::Empty, nullptr, false, false);
-                    break;
-                }
-                case EVENT_STEP_04:
-                    break;
+                        Start(true, true, ObjectGuid::Empty, nullptr, false, false);
+                        break;
+                    }
+                    case EVENT_STEP_04:
+                        break;
                 }
             }
         }
@@ -359,13 +359,13 @@ struct npc_lady_liadrin_122065 : public ScriptedAI
     void UpdateAI(uint32 diff) override
     {
         _scheduler.Update(diff);
-    }
+     }
 
     void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId)
     {
         CloseGossipMenuFor(player);
 
-        if (player->HasQuest(QUEST_H_TWO_IF_BY_SEA) || player->GetQuestStatus(QUEST_H_TWO_IF_BY_SEA) == QUEST_STATUS_COMPLETE || player->GetQuestStatus(QUEST_H_TWO_IF_BY_SEA) == QUEST_STATUS_REWARDED)
+        if (player->HasQuest(QUEST_H_TWO_IF_BY_SEA) || player->GetQuestStatus(QUEST_H_TWO_IF_BY_SEA)== QUEST_STATUS_COMPLETE|| player->GetQuestStatus(QUEST_H_TWO_IF_BY_SEA) == QUEST_STATUS_REWARDED)
         {
             player->KilledMonsterCredit(KILLED_MONSTER_CREDIT_TWO_IF_BY_SEA);
             player->TeleportTo(1750, -4295.41f, -11368.2f, 10.64f, 5.764124f);///SMSG_CUSTOM_LOAD_SCREEN TeleportSpellID: 247215 LoadingScreenID: 1377
@@ -406,7 +406,7 @@ struct npc_lady_liadrin_122065 : public ScriptedAI
         Player* player = who->GetCharmerOrOwnerPlayerOrPlayerItself();
         if (!player)
             return;
-        if (!HasPlayer(player->GetGUID()) && (player->HasQuest(QUEST_H_THE_HAND_OF_FATE)) && !player->GetQuestObjectiveData(QUEST_H_THE_HAND_OF_FATE, 0))
+        if (!HasPlayer(player->GetGUID()) && (player->HasQuest(QUEST_H_THE_HAND_OF_FATE) ) && !player->GetQuestObjectiveData(QUEST_H_THE_HAND_OF_FATE, 0))
         {
             m_playerGUID = player->GetGUID();
             AddPlayer();
@@ -490,10 +490,10 @@ public:
 };
 enum {
     CONVERSATION_NEAR_TO_VELEN = 5063,
-    CONVERSATION_ACCEPT_INTO_THE_NIGHT = 5711,
+    CONVERSATION_ACCEPT_INTO_THE_NIGHT =5711,
     MENU_ID_TO_ARGUS = 21013,
     OPTION_ID_TO_ARGUS = 0,
-    NPC_TEXT_TO_ARGUS = 31708,
+    NPC_TEXT_TO_ARGUS  = 31708,
 };
 // npc_prophet_velen_120977
 class npc_prophet_velen_120977 : public CreatureScript
@@ -503,27 +503,27 @@ public:
 
     bool OnGossipHello(Player* player, Creature* creature)
     {
-        TC_LOG_ERROR("server.worldserver", "OnGossipHello ");
-        if (player->GetQuestStatus(QUEST_LIGHTS_EXODUS) == QUEST_STATUS_COMPLETE)
-        {
-            //TC_LOG_ERROR("server.worldserver", "QUEST_LIGHTS_EXODUS OnGossipHello ");
-            if (creature->IsQuestGiver())
-                player->PrepareQuestMenu(creature->GetGUID()); /* return true*/
-            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
-        }
-        else if (player->GetMapId() == 1750 && (player->GetQuestStatus(QUEST_INTO_THE_NIGHT) == QUEST_STATUS_INCOMPLETE || player->GetQuestStatus(QUEST_INTO_THE_NIGHT) == QUEST_STATUS_COMPLETE || player->GetQuestStatus(QUEST_INTO_THE_NIGHT) == QUEST_STATUS_REWARDED))
-        {
-            //TC_LOG_ERROR("server.worldserver", "QUEST_INTO_THE_NIGHT OnGossipHello ");
-            ClearGossipMenuFor(player);
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_VEREESA_READY, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-            SendGossipMenuFor(player, NPC_TEXT_TO_ARGUS, creature->GetGUID());
-        }
-        else
-        {
-            if (creature->IsQuestGiver())
-                player->PrepareQuestMenu(creature->GetGUID()); /* return true*/
-            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
-        }
+            TC_LOG_ERROR("server.worldserver", "OnGossipHello ");
+            if (player->GetQuestStatus(QUEST_LIGHTS_EXODUS)== QUEST_STATUS_COMPLETE)
+            {
+                //TC_LOG_ERROR("server.worldserver", "QUEST_LIGHTS_EXODUS OnGossipHello ");
+                if (creature->IsQuestGiver())
+                    player->PrepareQuestMenu(creature->GetGUID()); /* return true*/
+                SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
+            }
+            else if (player->GetMapId()==1750 && (player->GetQuestStatus(QUEST_INTO_THE_NIGHT) == QUEST_STATUS_INCOMPLETE || player->GetQuestStatus(QUEST_INTO_THE_NIGHT) == QUEST_STATUS_COMPLETE || player->GetQuestStatus(QUEST_INTO_THE_NIGHT) == QUEST_STATUS_REWARDED))
+            {
+                //TC_LOG_ERROR("server.worldserver", "QUEST_INTO_THE_NIGHT OnGossipHello ");
+                ClearGossipMenuFor(player);
+                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_VEREESA_READY, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+                SendGossipMenuFor(player, NPC_TEXT_TO_ARGUS, creature->GetGUID());
+            }
+            else
+            {
+                if (creature->IsQuestGiver())
+                    player->PrepareQuestMenu(creature->GetGUID()); /* return true*/
+                SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
+            }
 
         return true;
     }
@@ -622,7 +622,7 @@ public:
 
         void DoAction(int32 param)
         {
-            if (param == EVENT_TALK_04)
+            if (param== EVENT_TALK_04)
                 events.ScheduleEvent(EVENT_TALK_04, 1s);
         }
 
@@ -788,25 +788,25 @@ public:
         {
             events.Update(diff);
             switch (events.ExecuteEvent())
-            {
-            case EVENT_UPDATE_PHASES:
-                std::list<Player*> players;
-                me->GetPlayerListInGrid(players, me->GetVisibilityRange());
-                for (std::list<Player*>::const_iterator itr = players.begin(); itr != players.end(); ++itr)
                 {
-                    if ((*itr)->ToPlayer()->GetQuestStatus(QUEST_THE_VINDICAAR) == QUEST_STATUS_INCOMPLETE && (*itr)->ToPlayer()->GetQuestObjectiveData(QUEST_THE_VINDICAAR, 2))
+                case EVENT_UPDATE_PHASES:
+                    std::list<Player*> players;
+                    me->GetPlayerListInGrid(players, me->GetVisibilityRange());
+                    for (std::list<Player*>::const_iterator itr = players.begin(); itr != players.end(); ++itr)
                     {
-                        TC_LOG_ERROR("server.worldserver", "EVENT_UPDATE_PHASES");
-                        PhasingHandler::AddPhase(*itr, DB_PHASE_AFTER_THE_VINDICAAR, true);
-                        PhasingHandler::RemovePhase(*itr, DB_PHASE_THE_VINDICAAR, true);
+                        if ((*itr)->ToPlayer()->GetQuestStatus(QUEST_THE_VINDICAAR) == QUEST_STATUS_INCOMPLETE && (*itr)->ToPlayer()->GetQuestObjectiveData(QUEST_THE_VINDICAAR,2))
+                        {
+                            TC_LOG_ERROR("server.worldserver", "EVENT_UPDATE_PHASES");
+                            PhasingHandler::AddPhase(*itr, DB_PHASE_AFTER_THE_VINDICAAR, true);
+                            PhasingHandler::RemovePhase(*itr, DB_PHASE_THE_VINDICAAR, true);
+                        }
                     }
+                    break;
                 }
-                break;
-            }
 
         }
-        //private:
-        //    EventMap events;
+    //private:
+    //    EventMap events;
 
     };
 
@@ -1028,9 +1028,9 @@ struct npc_imp_mother_laglath : public ScriptedAI
 
     enum SpellData
     {
-        SPELL_ELDER_WRATH = 251683,
-        SPELL_MATRON_RAGE = 251689,
-        SPELL_WRATH_BOLT = 251703
+        SPELL_ELDER_WRATH   = 251683,
+        SPELL_MATRON_RAGE   = 251689,
+        SPELL_WRATH_BOLT    = 251703
     };
 
     void Reset() override
@@ -1045,13 +1045,13 @@ struct npc_imp_mother_laglath : public ScriptedAI
             GetContextUnit()->CastSpell(nullptr, SPELL_MATRON_RAGE, false);
             context.Repeat();
         })
-            .Schedule(3s, [this](TaskContext context)
+        .Schedule(3s, [this](TaskContext context)
         {
             if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
                 GetContextUnit()->CastSpell(target, SPELL_WRATH_BOLT, false);
             context.Repeat();
         })
-            .Schedule(1s, [this](TaskContext context)
+        .Schedule(1s, [this](TaskContext context)
         {
             if (Unit* target = SelectTarget(SELECT_TARGET_NEAREST, 0))
                 if (me->IsWithinCombatRange(target, 5.f))

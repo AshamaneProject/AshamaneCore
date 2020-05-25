@@ -7,7 +7,7 @@
  * option) any later version.
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ *  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
  * more details.
  *
@@ -16,151 +16,189 @@
  */
 
 #include "ScriptMgr.h"
-#include "Player.h"
 #include "InstanceScript.h"
 #include "court_of_stars.h"
 
-DoorData const doorData[] =
+ObjectData const creatureData[] =
 {
-    {GO_GERDO_DOOR,           DATA_CAPTAIN_GERDO,       DOOR_TYPE_PASSAGE},
-    {GO_MELANDRUS_DOOR_1,     DATA_TALIXAE,             DOOR_TYPE_PASSAGE},
-    {GO_MELANDRUS_DOOR_2,     DATA_MELANDRUS_EVENT,     DOOR_TYPE_PASSAGE},
-    {GO_MELANDRUS_DOOR_2,     DATA_MELANDRUS,           DOOR_TYPE_ROOM}
+    { BOSS_PATROL_CAPTAIN_GERDO, DATA_PATROL_CAPTAIN_GERDO },
+    { BOSS_TALIXAE_FLAMEWREATH,  DATA_TALIXAE_FLAMEWREATH },
+    { BOSS_ADVISOR_MELANDRUS,    DATA_ADVISOR_MELANDRUS },
+    { 0, 0 } // END
 };
 
 class instance_court_of_stars : public InstanceMapScript
 {
 public:
-    instance_court_of_stars() : InstanceMapScript("instance_court_of_stars", 1571) {}
+    instance_court_of_stars() : InstanceMapScript(COSScriptName, 1571) { }
 
-    InstanceScript* GetInstanceScript(InstanceMap* map) const override
+    struct instance_court_of_stars_InstanceScript : public InstanceScript
     {
-        return new instance_court_of_stars_InstanceMapScript(map);
-    }
-
-    struct instance_court_of_stars_InstanceMapScript : public InstanceScript
-    {
-        instance_court_of_stars_InstanceMapScript(InstanceMap* map) : InstanceScript(map)
+        instance_court_of_stars_InstanceScript(InstanceMap* map) : InstanceScript(map)
         {
-            SetBossNumber(MAX_ENCOUNTER);
-        }
-
-        WorldLocation loc_res_pla;
-
-        ObjectGuid guidEvent;
-        ObjectGuid guidEventSave;
-        ObjectGuid GerdoGUID;
-
-        std::list<ObjectGuid> beaconsGUID;
-
-        void Initialize() override
-        {
-            LoadDoorData(doorData);
+            SetHeaders(DataHeader);
+            SetBossNumber(EncounterCount);
+            LoadObjectData(creatureData, nullptr);
+            _melandrusGUID = ObjectGuid::Empty;
+            _talixaeGUID = ObjectGuid::Empty;
+            _captainGerdoGUID = ObjectGuid::Empty;
+            _jazshariuGUID = _imacutyaGUID = _baalgarGUID = ObjectGuid::Empty;
+            _enforcersDead = 0;
         }
 
         void OnCreatureCreate(Creature* creature) override
         {
+            if (!creature)
+                return;
+
             switch (creature->GetEntry())
             {
-            case NPC_PATROL_CAPTAIN_GERDO:
-                GerdoGUID = creature->GetGUID();
-                break;
-            case NPC_GERDO_ARCANE_BEACON:
-                beaconsGUID.push_back(creature->GetGUID());
-                break;
-            case 107435:
-                if (!guidEvent)
-                    if (urand(0, 100) >= 70)
-                        guidEvent = creature->GetGUID();
-                guidEventSave = creature->GetGUID();
-                break;
+                case BOSS_PATROL_CAPTAIN_GERDO:
+                    _captainGerdoGUID = creature->GetGUID();
+                    break;
+
+                case NPC_FLASK_OF_THE_SOLEMN_NIGHT:
+                    FlaskOfTheSolemnNightGUID = creature->GetGUID();
+                    break;
+
+                case BOSS_TALIXAE_FLAMEWREATH:
+                    _talixaeGUID = creature->GetGUID();
+                    break;
+
+                case BOSS_ADVISOR_MELANDRUS:
+                    _melandrusGUID = creature->GetGUID();
+                    break;
+
+                case NPC_BAALGAR:
+                    _baalgarGUID = creature->GetGUID();
+                    break;
+
+                case NPC_IMACUTYA:
+                    _imacutyaGUID = creature->GetGUID();
+                    break;
+
+                case NPC_JAZSHARIU:
+                    _jazshariuGUID = creature->GetGUID();
+                    break;
             }
         }
 
-        void OnGameObjectCreate(GameObject* go) override
+        void ActivateTalixaeMinion()
         {
-         //   switch (go->GetEntry())
+            switch (_enforcersDead)
             {
-          //  case GO_GERDO_DOOR:
-          //  case GO_MELANDRUS_DOOR_1:
-         //   case GO_MELANDRUS_DOOR_2:
-                AddDoor(go, true);
-          //      break;
-          //  default:
-          //      break;
-            }
-        }
-
-        bool SetBossState(uint32 type, EncounterState state) override
-        {
-            if (!InstanceScript::SetBossState(type, state))
-                return false;
-
-            return true;
-        }
-
-        void SetData(uint32 type, uint32 data) override
-        {
-            switch (type)
-            {
-            case DATA_BEACON_ACTIVATE:
-                if (Creature* gerdo = instance->GetCreature(GerdoGUID))
+                case 1:
                 {
-                    for (std::list<ObjectGuid>::iterator itr = beaconsGUID.begin(); itr != beaconsGUID.end(); ++itr)
-                        if (Creature* beacon = instance->GetCreature(*itr))
-                            if (beacon && !beacon->HasAura(210257)) //SPELL_BEACON_DISABLED
-                                beacon->CastSpell(beacon, 210435, true, 0, 0, gerdo->GetGUID()); //SPELL_SUM_VIGILANT_NIGHTWATCH
+                    Creature* talixae = instance->GetCreature(_talixaeGUID);
+                    if (talixae)
+                        talixae->AI()->Talk(0);
+
+                    if (Creature* imacutya = instance->GetCreature(_imacutyaGUID))
+                    {
+                        imacutya->SetHomePosition(_enforcerPos);
+                        imacutya->GetMotionMaster()->MoveTargetedHome();
+                    }
+                    RemoveAurasBuffs();
+                    break;
                 }
-                break;
-            default:
-                break;
+
+                case 2:
+                {
+                    Creature* talixae = instance->GetCreature(_talixaeGUID);
+                    if (talixae)
+                        talixae->AI()->Talk(1);
+
+                    if (Creature* baalgar = instance->GetCreature(_baalgarGUID))
+                    {
+                        baalgar->SetHomePosition(_enforcerPos);
+                        baalgar->GetMotionMaster()->MoveTargetedHome();
+                    }
+                    RemoveAurasBuffs();
+                    break;
+                }
+
+                case 3:
+                {
+                    Creature* talixae = instance->GetCreature(_talixaeGUID);
+                    if (talixae)
+                        talixae->AI()->Talk(2);
+
+                    if (Creature* jazshariu = instance->GetCreature(_jazshariuGUID))
+                    {
+                        jazshariu->SetHomePosition(_enforcerPos);
+                        jazshariu->GetMotionMaster()->MoveTargetedHome();
+                    }
+                    RemoveAurasBuffs();
+                    break;
+                }
+
+                default : break;
             }
+        }
+
+        void OnUnitDeath(Unit* unit) override
+        {
+            if (!unit)
+                return;
+
+            switch (unit->GetEntry())
+            {
+                case NPC_FELBOUND_ENFORCER:
+                    _enforcersDead++;
+                    _enforcerPos = unit->GetPosition();
+                    ActivateTalixaeMinion();
+                    break;
+
+                case NPC_IMACUTYA:
+                    RemoveAurasBuffs();
+                    break;
+
+                case NPC_JAZSHARIU:
+                    RemoveAurasBuffs();
+                    break;
+
+                case NPC_BAALGAR:
+                    RemoveAurasBuffs();
+                    break;
+            }
+        }
+
+        void RemoveAurasBuffs()
+        {
+            if (Creature* talixae = instance->GetCreature(_talixaeGUID))
+                talixae->AI()->DoAction(1);
         }
 
         ObjectGuid GetGuidData(uint32 type) const override
         {
             switch (type)
             {
-            case 107435:
-                return !guidEvent ? guidEventSave : guidEvent;
+                case DATA_PATROL_CAPTAIN_GERDO: return _captainGerdoGUID;
+                case DATA_FLASK_OF_THE_SOLEMN_NIGHT: return FlaskOfTheSolemnNightGUID;
+                case DATA_TALIXAE_FLAMEWREATH: return _talixaeGUID;
+                case DATA_ADVISOR_MELANDRUS: return _melandrusGUID;
+
+                default : break;
             }
+
             return ObjectGuid::Empty;
         }
 
-        uint32 GetData(uint32 type) const override
-        {
-            return 0;
-        }
-/*
-     //   WorldLocation* GetClosestGraveYard(float x, float y, float z) override
-      //  {
-            loc_res_pla.Relocate(x, y, z);
-            loc_res_pla.SetMapId(1571);
+    private:
+        ObjectGuid _captainGerdoGUID;
+        ObjectGuid _talixaeGUID;
+        ObjectGuid _melandrusGUID;
+        ObjectGuid FlaskOfTheSolemnNightGUID;
+        ObjectGuid _baalgarGUID, _imacutyaGUID, _jazshariuGUID;
+        uint8 _enforcersDead;
+        Position _enforcerPos;
 
-            uint32 graveyardId = 5432;
-
-            if (GetBossState(DATA_TALIXAE) == DONE)
-                graveyardId = 5483;
-            else if (GetBossState(DATA_CAPTAIN_GERDO) == DONE)
-                graveyardId = 5502;
-
-            if (graveyardId)
-            {
-               // if (WorldSafeLocsEntry const* gy = sWorldSafeLocsStore.LookupEntry(graveyardId))
-                {
-                  //  loc_res_pla.Relocate(gy->Loc.X, gy->Loc.Y, gy->Loc.Z);
-                 //   loc_res_pla.SetMapId(gy->MapID);
-                }
-            }
-            return &loc_res_pla;
-        }
-        */
-         void Update(uint32 diff)
-        {
-            // Challenge
-            InstanceScript::Update(diff);
-        } 
     };
+
+    InstanceScript* GetInstanceScript(InstanceMap* map) const override
+    {
+        return new instance_court_of_stars_InstanceScript(map);
+    }
 };
 
 void AddSC_instance_court_of_stars()

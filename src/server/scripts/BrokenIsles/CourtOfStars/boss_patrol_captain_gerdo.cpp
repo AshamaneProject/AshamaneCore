@@ -7,7 +7,7 @@
  * option) any later version.
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ *  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
  * more details.
  *
@@ -16,558 +16,756 @@
  */
 
 #include "ScriptMgr.h"
-#include "court_of_stars.h"
-#include "ScriptMgr.h"
 #include "ScriptedCreature.h"
+#include "AreaTrigger.h"
 #include "court_of_stars.h"
+#include "CreatureAIImpl.h"
+#include "GridNotifiersImpl.h"
+#include "InstanceScript.h"
+#include "SpellHistory.h"
+#include "CellImpl.h"
+#include "ScriptedCreature.h"
+#include "SpellAuraEffects.h"
+#include <G3D/Vector3.h>
+#include "MotionMaster.h"
+#include "ObjectAccessor.h"
 
-enum Says
+enum Texts
 {
     SAY_AGGRO = 0,
-    SAY_ARCANE_LOCKDOWN = 1,
-    SAY_SIGNAL = 2,
-    SAY_FLASK = 3,
-    SAY_DEATH = 4,
+    SAY_DEATH,
+    SAY_DEATH_SOLEMN_NIGHT,
+    SAY_PLAYER_KILL,
+    SAY_SIGNAL_BEACON,
+    SAY_ARCANE_LOCKDOWN,
+    SAY_FLASH_OF_SOLEMN_NIGHT,
+
+    EMOTE_ARCANE_LOCKDOWN,
 };
 
 enum Spells
 {
-    SPELL_RESONANT_SLASH = 207261,
-    SPELL_RESONANT_SLASH_FRONT = 206574,
-    SPELL_RESONANT_SLASH_BACK = 206580,
-    SPELL_ARCANE_LOCKDOWN = 207278,
-    SPELL_SIGNAL_BEACON = 207806,
-    SPELL_SUM_VIGILANT_NIGHTWATCH = 210435,
-    SPELL_FLASK_SOLEMN_NIGHT = 207815,
-    SPELL_STREETSWEEPER = 219488,
-
-    //Guards
-    SPELL_HINDER = 215204,
-
-    //Streetsweeper
-    SPELL_STREETSWEEPER_VISUAL = 219475,
-    SPELL_STREETSWEEPER_VISUAL_BEAM = 219483,
-    SPELL_STREETSWEEPER_AT = 219477,
-
-    //Beacon
-    SPELL_WATCHPOST_VICINITY = 212479, //?
-    SPELL_WATCHPOST_VICINITY_AT = 212480, //?
-    SPELL_CAST_DISABLE_BEACON = 210253,
-    SPELL_BEACON_DISABLED = 210257,
+    SPELL_AREA_SECURED              = 227147,
+    SPELL_RESONANT_SLASH            = 207261,
+    SPELL_RESONANT_SLASH_DMG        = 206574,
+    SPELL_STREETSWEEPER             = 219488,
+    SPELL_STREETSWEEPER_VISUAL      = 219475,
+    SPELL_STREETSWEEPER_BEAM        = 219483,
+    SPELL_STREETSWEEPER_VISUAL_LINE = 219477,
+    SPELL_STREETSWEEPER_AURA        = 219482,
+    SPELL_STREETSWEEPER_DMG         = 219498,
+    SPELL_ARCANE_LOCKDOWN           = 207278,
+    SPELL_SIGNAL_BEACON             = 207806,
+    SPELL_CALL_VIGILANT_NIGHT_WATCH = 210435,
+    SPELL_FLASK_OF_THE_SOLEMN_NIGHT = 207815,
+    SPELL_HINDER                    = 215204,
+    SPELL_DISABLE_BEACON            = 210253,
 };
 
-enum eEvents
+enum Events
 {
-    EVENT_RESONANT_SLASH = 1,
-    EVENT_ARCANE_LOCKDOWN = 2,
-    EVENT_SIGNAL_BEACON = 3,
-    EVENT_FLASK_SOLEMN_NIGHT = 4,
-    EVENT_FLASK_SOLEMN_NIGHT_END = 5,
-    EVENT_STREETSWEEPER = 6
+    EVENT_RESONANT_SLASH            = 1,
+    EVENT_STREETSWEEPER             = 2,
+    EVENT_ARCANE_LOCKDOWN           = 3,
+    EVENT_SIGNAL_BEACON             = 4,
+    EVENT_FLASK_OF_SOLEMN_NIGHT     = 5,
+    EVENT_SOLEMN_FLASK_DRINKED      = 6,
+    EVENT_DEATH_BY_POISONED         = 7,
+
+    EVENT_HINDER                    = 8,
+
+    EVENT_STREETSWEEPER_CAST        = 9,
 };
 
-Position const flaskPos = { 1308.29f, 3537.42f, 20.76f };
-
-//104215
-class boss_patrol_captain_gerdo : public CreatureScript
+enum Points
 {
-public:
-    boss_patrol_captain_gerdo() : CreatureScript("boss_patrol_captain_gerdo") {}
-
-    struct boss_patrol_captain_gerdoAI : public BossAI
-    {
-        boss_patrol_captain_gerdoAI(Creature* creature) : BossAI(creature, DATA_CAPTAIN_GERDO) {}
-
-        bool flaskEvent;
-
-        void Reset() override
-        {
-            _Reset();
-            flaskEvent = false;
-            me->SetReactState(REACT_AGGRESSIVE);
-        }
-
-        void EnterCombat(Unit* /*who*/) override
-            //06:03
-        {
-            Talk(SAY_AGGRO);
-            _EnterCombat();
-
-            events.RescheduleEvent(EVENT_RESONANT_SLASH, 7000);   //06:10, 06:32, 06:44
-            events.RescheduleEvent(EVENT_ARCANE_LOCKDOWN, 15000); //06:18, 06:52, 07:20
-            events.RescheduleEvent(EVENT_SIGNAL_BEACON, 23000);   //06:26
-            events.RescheduleEvent(EVENT_STREETSWEEPER, 18000);
-        }
-
-        void JustDied(Unit* /*killer*/) override
-        {
-            Talk(SAY_DEATH);
-            _JustDied();
-            if (Creature* sayer = me->FindNearestCreature(104694, 250.0f, true))
-                sayer->AI()->Talk(0);
-        }
-
-        void SpellHit(Unit* target, const SpellInfo* spell) override
-        {
-            if (spell->Id == SPELL_SIGNAL_BEACON)
-                instance->SetData(DATA_BEACON_ACTIVATE, IN_PROGRESS);
-        }
-
-        void DamageTaken(Unit* /*attacker*/, uint32& damage) override
-        {
-            if (me->HealthBelowPct(26) && !flaskEvent)
-            {
-                flaskEvent = true;
-                Talk(SAY_FLASK);
-                events.RescheduleEvent(EVENT_FLASK_SOLEMN_NIGHT, 500);
-            }
-        }
-
-        void MovementInform(uint32 type, uint32 id) override
-        {
-            if (type != POINT_MOTION_TYPE)
-                return;
-
-            if (id == 1)
-                events.RescheduleEvent(EVENT_FLASK_SOLEMN_NIGHT_END, 500);
-        }
-
-        void UpdateAI(uint32 diff) override
-        {
-            if (!UpdateVictim())
-                return;
-
-            events.Update(diff);
-
-            if (me->HasUnitState(UNIT_STATE_CASTING))
-                return;
-
-            if (uint32 eventId = events.ExecuteEvent())
-            {
-                switch (eventId)
-                {
-                case EVENT_RESONANT_SLASH:
-                {
-                    DoCast(SPELL_RESONANT_SLASH);
-                    float angle = 0.0f;
-                    Position pos;
-                    me->GetNearPosition(4.0f, angle);
-                    if (Creature* frontTrig = me->SummonCreature(NPC_GERDO_TRIG_FRONT, pos))
-                    {
-                        angle += 3.14f;
-                        frontTrig->CastSpell(frontTrig, SPELL_RESONANT_SLASH_FRONT);
-                    }
-                    me->GetNearPosition(4.0f, angle);
-                    if (Creature* backTrig = me->SummonCreature(NPC_GERDO_TRIG_BACK, pos))
-                        backTrig->CastSpell(backTrig, SPELL_RESONANT_SLASH_BACK);
-                    events.RescheduleEvent(EVENT_RESONANT_SLASH, 12000);
-                    break;
-                }
-                case EVENT_ARCANE_LOCKDOWN:
-                    DoCast(SPELL_ARCANE_LOCKDOWN);
-                    Talk(SAY_ARCANE_LOCKDOWN);
-                    events.RescheduleEvent(EVENT_ARCANE_LOCKDOWN, 28000);
-                    break;
-                case EVENT_SIGNAL_BEACON:
-                    DoCast(SPELL_SIGNAL_BEACON);
-                    Talk(SAY_SIGNAL);
-                    break;
-                case EVENT_FLASK_SOLEMN_NIGHT:
-                    me->SetReactState(REACT_PASSIVE);
-                    me->GetMotionMaster()->MovePoint(1, flaskPos);
-                    break;
-                case EVENT_FLASK_SOLEMN_NIGHT_END:
-                    DoCast(SPELL_FLASK_SOLEMN_NIGHT);
-                    me->SetReactState(REACT_AGGRESSIVE);
-                    break;
-                case EVENT_STREETSWEEPER:
-                    DoCast(SPELL_STREETSWEEPER);
-                    events.RescheduleEvent(EVENT_STREETSWEEPER, 18000);
-                    break;
-                }
-            }
-            DoMeleeAttackIfReady();
-        }
-    };
-
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new boss_patrol_captain_gerdoAI(creature);
-    }
+    POINT_FLASK = 0
 };
 
-//104918
-class npc_captain_gerdo_vigilant_duskwatch : public CreatureScript
+enum Actions
 {
-public:
-    npc_captain_gerdo_vigilant_duskwatch() : CreatureScript("npc_captain_gerdo_vigilant_duskwatch") {}
-
-    struct npc_captain_gerdo_vigilant_duskwatchAI : public ScriptedAI
-    {
-        npc_captain_gerdo_vigilant_duskwatchAI(Creature* creature) : ScriptedAI(creature) {}
-
-        EventMap events;
-
-        void Reset() override
-        {
-            events.Reset();
-        }
-
-        void IsSummonedBy(Unit* summoner) override
-        {
-            DoZoneInCombat(me, 100.0f);
-            events.RescheduleEvent(1, 5000);
-        }
-
-        void UpdateAI(uint32 diff) override
-        {
-            if (!UpdateVictim())
-                return;
-
-            events.Update(diff);
-
-            if (me->HasUnitState(UNIT_STATE_CASTING))
-                return;
-
-            if (uint32 eventId = events.ExecuteEvent())
-            {
-                switch (eventId)
-                {
-                case 1:
-                    DoCastVictim(SPELL_HINDER);
-                    events.RescheduleEvent(1, 10000);
-                    break;
-                default:
-                    break;
-                }
-            }
-            DoMeleeAttackIfReady();
-        }
-    };
-
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new npc_captain_gerdo_vigilant_duskwatchAI(creature);
-    }
+    ACTION_FLASK_OF_THE_SOLEMN_NIGHT            = 0,
+    ACTION_FLASK_OF_THE_SOLEMN_NIGHT_POISONED    = 1,
 };
 
-//105729
-class npc_signal_lantern : public CreatureScript
+enum Data
 {
-public:
-    npc_signal_lantern() : CreatureScript("npc_signal_lantern") { }
+    DATA_BEACON_ACTIVATED = 1,
+};
 
-    bool OnGossipHello(Player* player, Creature* creature) override
-    {
-        if (!player->HasAura(210295))
-        {
-            //player->ADD_GOSSIP_ITEM_DB(19515, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-           // player->SEND_GOSSIP_MENU(28836, creature->GetGUID());
-        }
-        return true;
-    }
+using SpellTargets = std::list<WorldObject*>;
 
-    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
+struct PlayerFilter
+{
+    bool operator() (WorldObject* target)
     {
-      //  if (action != GOSSIP_ACTION_INFO_DEF + 1)
+        if (target->ToPlayer())
             return false;
-        player->AddAura(210295, player);
-        player->CastSpell(player, 209524);    //213505
-       // player->CLOSE_GOSSIP_MENU();
 
         return true;
     }
 };
 
-//
-class npc_nightborne_boat : public CreatureScript
+const Position FlaskPosition = { 1309.9564f, 3537.9099f, 20.762846f, 0.219f };
+
+class boss_patrol_captain_gerdo: public CreatureScript
 {
-public:
-    npc_nightborne_boat() : CreatureScript("npc_nightborne_boat") {}
+    public:
 
-    struct npc_nightborne_boatAI : public ScriptedAI
-    {
-        npc_nightborne_boatAI(Creature* creature) : ScriptedAI(creature) {}
+        boss_patrol_captain_gerdo() : CreatureScript("boss_patrol_captain_gerdo")
+        { }
 
-        uint32 timer;
-        bool event;
-
-        void IsSummonedBy(Unit* summoner) override
+        struct boss_patrol_captain_gerdo_AI : public BossAI
         {
-            me->GetMotionMaster()->MovePath(9100402, false);  //213505
-            timer = 13000;
-            event = false;
-        }
-
-        void PassengerBoarded(Unit* player, int8 /* */, bool /* */) override
-        {
-            if (player->GetTypeId() != TYPEID_PLAYER)
-                return;
-            me->GetMotionMaster()->MovePath(9100403, false);
-            timer = 48000;
-            event = true;
-            // player->CastSpell(player, 215170, true);
-        }
-
-        void UpdateAI(uint32 diff) override
-        {
-            if (timer <= diff)
+            boss_patrol_captain_gerdo_AI(Creature* creature) : BossAI(creature, DATA_PATROL_CAPTAIN_GERDO)
             {
-                if (!event)
+                CheckBeacons();
+            }
+
+            void Reset() override
+            {
+                _Reset();
+                _flask = false;
+                _signal_beacon = false;
+                _poisonFlask = false;
+            }
+
+            void EnterEvadeMode(EvadeReason reason) override
+            {
+                instance->SendEncounterUnit(ENCOUNTER_FRAME_ENGAGE, me);
+                CreatureAI::EnterEvadeMode(reason);
+            }
+
+            void EnterCombat(Unit* /*who*/) override
+            {
+                Talk(SAY_AGGRO);
+                instance->SendEncounterUnit(ENCOUNTER_FRAME_ENGAGE, me);
+                _EnterCombat();
+
+                events.ScheduleEvent(EVENT_RESONANT_SLASH, Seconds(7));
+                events.ScheduleEvent(EVENT_ARCANE_LOCKDOWN, Seconds(15));
+                events.ScheduleEvent(EVENT_STREETSWEEPER, Seconds(13));
+            }
+
+            void JustSummoned(Creature* summon) override
+            {
+                BossAI::JustSummoned(summon);
+
+                switch(summon->GetEntry())
                 {
-                    if (Unit* owner = me->ToTempSummon()->GetSummoner())
-                        owner->CastSpell(me, 213507, true);
-                }
-                else
-                {
-                    if (Unit* owner = me->ToTempSummon()->GetSummoner())
-                        owner->CastSpell(owner, 208703, true);
-                    me->DespawnOrUnsummon(3000);
+                    case NPC_RESONANT_STALKER:
+                        summon->CastSpell(summon, SPELL_RESONANT_SLASH_DMG);
+                        summon->DespawnOrUnsummon(Seconds(5));
+                        break;
+                    case NPC_VIGILANT_DUSKWATCH:
+                        summon->AI()->AttackStart(me->GetVictim());
+                        break;
+
                 }
             }
-            else timer -= diff;
-        }
-    };
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new npc_nightborne_boatAI(creature);
-    }
-};
 
-//
-class npc_lilet_lunarh : public CreatureScript
-{
-public:
-    npc_lilet_lunarh() : CreatureScript("npc_lilet_lunarh") {}
+            void CheckBeacons()
+            {
+                std::list<Creature*> beacons;
+                uint8 beaconsActivated = 0;
 
-    struct npc_lilet_lunarhAI : public ScriptedAI
-    {
-        npc_lilet_lunarhAI(Creature* creature) : ScriptedAI(creature) {}
+                me->GetCreatureListWithEntryInGrid(beacons, NPC_ARCANE_BEACON, 500.f);
 
-        uint32 timer;
-        uint8 talk;
-        bool event;
-        Player* owner = nullptr;
+                if (beacons.empty())
+                    return;
 
-        void IsSummonedBy(Unit* summoner) override
-        {
-            if (summoner->GetTypeId() == TYPEID_PLAYER)
-                owner = summoner->ToPlayer();
-            timer = 13000;
-            event = true;
-            talk = 0;
-        }
+                for (auto & it : beacons)
+                {
+                    if (it->HasNpcFlag(UNIT_NPC_FLAG_SPELLCLICK))
+                        beaconsActivated++;
+                }
 
-        void UpdateAI(uint32 diff) override
-        {
-            if (event)
-                if (talk < 4)
-                    if (timer <= diff)
+                for (uint8 i = 0; i < beaconsActivated; ++i)
+                    me->CastSpell(me, SPELL_AREA_SECURED, true);
+
+            }
+
+            void CheckLockDown()
+            {
+                Map::PlayerList const & players = me->GetMap()->GetPlayers();
+
+                if (players.isEmpty())
+                    return;
+
+                for (auto & it : players)
+                {
+                    if (Player* player = it.GetSource())
                     {
-                        if (owner)
-                         //   Talk(talk, owner->GetGUID());
-                        talk++;
-                        timer = 16000;
+                        if (player->GetPositionZ() >= me->GetPositionZ() + 1.0f)
+                        {
+                            if (Aura* aura = player->GetAura(SPELL_ARCANE_LOCKDOWN))
+                                aura->ModStackAmount(-1);
+                        }
                     }
-                    else timer -= diff;
-        }
-
-    };
-
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new npc_lilet_lunarhAI(creature);
-    }
-};
-
-//104251
-class npc_duskwatch_sentry : public CreatureScript
-{
-public:
-    npc_duskwatch_sentry() : CreatureScript("npc_duskwatch_sentry") {}
-
-    struct npc_duskwatch_sentryAI : public ScriptedAI
-    {
-        npc_duskwatch_sentryAI(Creature* creature) : ScriptedAI(creature) {}
-
-        void EnterCombat(Unit* who) override
-        {
-            me->SetReactState(REACT_PASSIVE);
-            DoCast(who, 209036);
-            Talk(0);
-            if (Creature* target = me->FindNearestCreature(104245, 100.0f))
-            {
-                me->GetMotionMaster()->MovePoint(1, target->GetPositionX() + irand(-7, 7), target->GetPositionY() + irand(-7, 7), target->GetPositionZ());
+                }
             }
-        }
 
-        void MovementInform(uint32 type, uint32 id) override
-        {
-            if (type != POINT_MOTION_TYPE)
-                return;
-
-            if (id == 1)
-                DoCast(me, 210261); //Alarm TO-DO: Sniff for npc
-        }
-    };
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new npc_duskwatch_sentryAI(creature);
-    }
-};
-
-//104245
-class npc_gerdo_arcane_beacon : public CreatureScript
-{
-public:
-    npc_gerdo_arcane_beacon() : CreatureScript("npc_gerdo_arcane_beacon") {}
-
-    struct npc_gerdo_arcane_beaconAI : public ScriptedAI
-    {
-        npc_gerdo_arcane_beaconAI(Creature* creature) : ScriptedAI(creature)
-        {
-            me->SetReactState(REACT_PASSIVE);
-            me->AddUnitFlag(UnitFlags(UNIT_NPC_FLAG_SPELLCLICK));
-        }
-
-        void Reset() override {}
-
-        void OnSpellClick(Unit* clicker, bool& result) override
-        {
-            if (!me->HasAura(SPELL_BEACON_DISABLED))
-                clicker->CastSpell(me, SPELL_CAST_DISABLE_BEACON);
-        }
-
-        void SpellHit(Unit* target, const SpellInfo* spell) override
-        {
-            if (spell->Id == SPELL_CAST_DISABLE_BEACON)
+            void SpellHit(Unit* /**/, SpellInfo const* spell) override
             {
-                me->RemoveUnitFlag(UnitFlags(UNIT_NPC_FLAG_SPELLCLICK));
-                DoCast(me, SPELL_BEACON_DISABLED, true);
+                if (!spell)
+                    return;
+
+                if (spell->Id == SPELL_FLASK_OF_THE_SOLEMN_NIGHT)
+                {
+                    if (_poisonFlask)
+                        me->KillSelf();
+                }
             }
-        }
-    };
 
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new npc_gerdo_arcane_beaconAI(creature);
-    }
-};
-
-//110403
-class npc_gerdo_streetsweeper : public CreatureScript
-{
-public:
-    npc_gerdo_streetsweeper() : CreatureScript("npc_gerdo_streetsweeper") {}
-
-    struct npc_gerdo_streetsweeperAI : public ScriptedAI
-    {
-        npc_gerdo_streetsweeperAI(Creature* creature) : ScriptedAI(creature)
-        {
-            me->SetReactState(REACT_PASSIVE);
-        }
-
-        EventMap events;
-
-        void Reset() override {}
-
-        void EnterCombat(Unit* who) override {}
-
-        void IsSummonedBy(Unit* summoner) override
-        {
-            DoCast(me, SPELL_STREETSWEEPER_VISUAL, true);
-            events.RescheduleEvent(1, 500);
-        }
-
-        void UpdateAI(uint32 diff) override
-        {
-            events.Update(diff);
-
-            if (uint32 eventId = events.ExecuteEvent())
+            void JustDied(Unit* /*killer*/) override
             {
+                Talk(me->HasAura(SPELL_FLASK_OF_THE_SOLEMN_NIGHT) ? SAY_DEATH_SOLEMN_NIGHT : SAY_DEATH);
+                _JustDied();
+                instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
+            }
+
+            void KilledUnit(Unit* victim) override
+            {
+                if (!victim)
+                    return;
+
+                if (victim->GetTypeId() == TYPEID_PLAYER)
+                    Talk(SAY_PLAYER_KILL);
+            }
+
+            void MovementInform(uint32 type, uint32 id) override
+            {
+                if (type == POINT_MOTION_TYPE)
+                {
+                    switch (id)
+                    {
+                        case POINT_FLASK:
+                            if (Creature* flask = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_FLASK_OF_THE_SOLEMN_NIGHT)))
+                                flask->AI()->DoAction(ACTION_FLASK_OF_THE_SOLEMN_NIGHT);
+                            break;
+                    }
+                }
+            }
+
+            void DoAction(int32 action) override
+            {
+                if (action == ACTION_FLASK_OF_THE_SOLEMN_NIGHT)
+                    events.ScheduleEvent(EVENT_SOLEMN_FLASK_DRINKED, Seconds(5));
+                else if (action == ACTION_FLASK_OF_THE_SOLEMN_NIGHT_POISONED)
+                    _poisonFlask = true;
+            }
+
+            void DamageTaken(Unit* /*atacker*/, uint32 &/*damage*/) override
+            {
+                if (me->HealthBelowPct(75) && !_signal_beacon)
+                {
+                    _signal_beacon = true;
+                    events.ScheduleEvent(EVENT_SIGNAL_BEACON, Seconds(1));
+                }
+
+                if (me->HealthBelowPct(25) && !_flask)
+                {
+                    _flask = true;
+                    Talk(SAY_FLASH_OF_SOLEMN_NIGHT);
+                    events.Reset();
+                    events.ScheduleEvent(EVENT_FLASK_OF_SOLEMN_NIGHT, 100);
+                }
+            }
+
+            void SummonResonantsStalkers()
+            {
+                Position pos = me->GetPosition();
+
+                DoSummon(NPC_RESONANT_STALKER, pos,  6 * IN_MILLISECONDS, TEMPSUMMON_TIMED_DESPAWN);
+
+                pos.SetOrientation(pos.GetOrientation() + float(M_PI));
+
+                DoSummon(NPC_RESONANT_STALKER, pos,  6 * IN_MILLISECONDS, TEMPSUMMON_TIMED_DESPAWN);
+            }
+
+            void ExecuteEvent(uint32 eventId) override
+            {
+                me->GetSpellHistory()->ResetAllCooldowns();
                 switch (eventId)
                 {
-                case 1:
-                    if (Unit* owner = me->GetOwner())
-                        if (Creature* summoner = owner->ToCreature())
-                            if (Unit* target = summoner->AI()->SelectTarget(SELECT_TARGET_RANDOM, 0, 40.0f, true))
-                                me->SetFacingToObject(target);
-                    events.RescheduleEvent(2, 500);
-                    break;
-                case 2:
-                    DoCast(me, SPELL_STREETSWEEPER_AT, true);
-                    events.RescheduleEvent(3, 2000);
-                    break;
-                case 3:
-                    DoCast(me, SPELL_STREETSWEEPER_VISUAL_BEAM, true);
-                    break;
+                    case EVENT_RESONANT_SLASH:
+                    {
+                        DoCast(me, SPELL_RESONANT_SLASH);
+                        SummonResonantsStalkers();
+
+                        if (_flask)
+                            events.ScheduleEvent(EVENT_RESONANT_SLASH, Seconds(10));
+                        else
+                            events.ScheduleEvent(EVENT_RESONANT_SLASH, Seconds(12));
+                        break;
+                    }
+
+                    case EVENT_SIGNAL_BEACON:
+                    {
+                        Talk(SAY_SIGNAL_BEACON);
+                        DoCast(me, SPELL_SIGNAL_BEACON);
+                        break;
+                    }
+
+                    case EVENT_ARCANE_LOCKDOWN:
+                    {
+                        Talk(EMOTE_ARCANE_LOCKDOWN);
+                        DoCast(me, SPELL_ARCANE_LOCKDOWN);
+                        events.ScheduleEvent(EVENT_ARCANE_LOCKDOWN, Seconds(30));
+                        break;
+                    }
+
+                    case EVENT_FLASK_OF_SOLEMN_NIGHT:
+                    {
+                        me->SetReactState(REACT_PASSIVE);
+                        me->AttackStop();
+                        me->GetMotionMaster()->MovePoint(POINT_FLASK, FlaskPosition);
+                        Talk(SAY_FLASH_OF_SOLEMN_NIGHT);
+                        break;
+                    }
+
+                    case EVENT_STREETSWEEPER:
+                    {
+                        DoCast(SPELL_STREETSWEEPER);
+                        events.ScheduleEvent(EVENT_STREETSWEEPER, Seconds(6));
+                        break;
+                    }
+
+                    case EVENT_SOLEMN_FLASK_DRINKED:
+                    {
+                        me->SetReactState(REACT_AGGRESSIVE);
+                        me->GetMotionMaster()->MoveChase(me->GetVictim());
+                        events.ScheduleEvent(EVENT_ARCANE_LOCKDOWN, Seconds(5));
+                        events.ScheduleEvent(EVENT_STREETSWEEPER, Seconds(15));
+                        events.ScheduleEvent(EVENT_RESONANT_SLASH, Seconds(10));
+                        break;
+                    }
+
+                    default : break;
                 }
             }
-        }
-    };
 
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new npc_gerdo_streetsweeperAI(creature);
-    }
-};
-
-//207278
-class spell_patrol_arcane_lockdown : public SpellScriptLoader
-{
-public:
-    spell_patrol_arcane_lockdown() : SpellScriptLoader("spell_patrol_arcane_lockdown") { }
-
-    class spell_patrol_arcane_lockdown_AuraScript : public AuraScript
-    {
-        PrepareAuraScript(spell_patrol_arcane_lockdown_AuraScript);
-
-        uint8 stack = 0;
-
-        void OnApply(AuraEffect const* aurEff, AuraEffectHandleModes /*mode*/)
-        {
-            if (!GetTarget())
-                return;
-
-           // if (Aura* aura = GetTarget()->GetAura(GetId()))
-                //ura->SetStackAmount(aura->GetStackAmount() + 2);
-        }
-
-        void OnProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
-        {
-            if (Aura* aura = GetTarget()->GetAura(GetId()))
+            void UpdateAI(uint32 diff) override
             {
-                //stack = aura->GetStackAmount();
+                _timerLockdown += diff;
 
-              //  if (stack > 1)
-                 //   aura->SetStackAmount(stack - 1);
-               // else
-               //     aurEff->GetBase()->Remove();
+                if (_timerLockdown >= 250)
+                {
+                    CheckLockDown();
+                    _timerLockdown = 0;
+                }
+
+                BossAI::UpdateAI(diff);
             }
-        }
 
-        void Register() override
+        private:
+            uint32 _timerLockdown;
+            bool _flask, _signal_beacon, _poisonFlask;
+        };
+
+        CreatureAI* GetAI(Creature* creature) const override
         {
-            OnEffectApply += AuraEffectApplyFn(spell_patrol_arcane_lockdown_AuraScript::OnApply, EFFECT_1, SPELL_AURA_MOD_DECREASE_SPEED, AURA_EFFECT_HANDLE_REAL);
-            OnEffectProc += AuraEffectProcFn(spell_patrol_arcane_lockdown_AuraScript::OnProc, EFFECT_1, SPELL_AURA_MOD_DECREASE_SPEED);
+            return GetCourtofStarsAI<boss_patrol_captain_gerdo_AI>(creature);
         }
-    };
-
-    AuraScript* GetAuraScript() const override
-    {
-        return new spell_patrol_arcane_lockdown_AuraScript();
-    }
 };
+
+class npc_cos_streetsweeper : public CreatureScript
+{
+    public:
+        npc_cos_streetsweeper() : CreatureScript("npc_cos_streetsweeper") {}
+
+        struct npc_cos_streetsweeper_AI : public ScriptedAI
+        {
+            npc_cos_streetsweeper_AI(Creature* creature) : ScriptedAI(creature)
+            {
+                _summoner = nullptr;
+            }
+
+            void Reset()
+            {
+                _events.Reset();
+                DoCast(me, SPELL_STREETSWEEPER_VISUAL, true);
+            }
+
+            void IsSummonedBy(Unit* summoner) override
+            {
+                if (!summoner)
+                    return;
+
+
+                Unit* target = summoner->GetAI()->SelectTarget(SELECT_TARGET_RANDOM, 0, 0, true);
+
+                if (target)
+                {
+                    me->SetFacingToObject(target, true);
+                    _events.ScheduleEvent(EVENT_STREETSWEEPER, 500);
+                    _events.ScheduleEvent(EVENT_STREETSWEEPER_CAST, Seconds(3));
+                }
+            }
+
+            void JustRegisteredAreaTrigger(AreaTrigger* at) override
+            {
+                if (!at)
+                    return;
+
+                at->SetDuration(3500);
+            }
+
+            void UpdateAI(uint32 diff)
+            {
+                _events.Update(diff);
+
+                while (uint32 eventId = _events.ExecuteEvent())
+                {
+                    switch (eventId)
+                    {
+                        case EVENT_STREETSWEEPER:
+                        {
+                            me->CastSpell(me, SPELL_STREETSWEEPER_VISUAL_LINE, true);
+                            break;
+                        }
+                        case EVENT_STREETSWEEPER_CAST:
+                        {
+                            DoCast(me, SPELL_STREETSWEEPER_BEAM, true);
+                            me->CastSpell(me, SPELL_STREETSWEEPER_DMG, TRIGGERED_IGNORE_TARGET_CHECK);
+                            me->DespawnOrUnsummon(Seconds(2));
+                        }
+
+                        default : break;
+                    }
+                }
+            }
+
+            private:
+                Unit* _summoner;
+                EventMap _events;
+        };
+
+        CreatureAI* GetAI(Creature* creature) const override
+        {
+            return new npc_cos_streetsweeper_AI(creature);
+        }
+};
+
+class npc_cos_vigilant_duskwatch : public CreatureScript
+{
+    public:
+        npc_cos_vigilant_duskwatch() : CreatureScript("npc_cos_vigilant_duskwatch")
+        {}
+
+        struct npc_cos_vigilant_duskwatch_AI : public ScriptedAI
+        {
+            npc_cos_vigilant_duskwatch_AI(Creature* creature) : ScriptedAI(creature)
+            {}
+
+            void Reset() override
+            {
+                _events.Reset();
+
+                if (Creature* gerdo = me->FindNearestCreature(BOSS_PATROL_CAPTAIN_GERDO, 1000.f, true))
+                    gerdo->AI()->JustSummoned(me);
+            }
+
+            void EnterCombat(Unit* /**/) override
+            {
+                _events.ScheduleEvent(EVENT_HINDER, Seconds(7));
+            }
+
+            void UpdateAI(uint32 diff) override
+            {
+                if (!UpdateVictim())
+                    return;
+
+                _events.Update(diff);
+
+                if (me->HasUnitState(UNIT_STATE_CASTING))
+                    return;
+
+                while (uint32 eventId = _events.ExecuteEvent())
+                {
+                    if (eventId == EVENT_HINDER)
+                    {
+                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0, true))
+                            DoCast(target, SPELL_HINDER);
+
+                        _events.ScheduleEvent(EVENT_HINDER, Seconds(urand(10, 15)));
+                    }
+                }
+
+                DoMeleeAttackIfReady();
+            }
+
+            private:
+                EventMap _events;
+        };
+
+        CreatureAI* GetAI(Creature* creature) const override
+        {
+            return new npc_cos_vigilant_duskwatch_AI(creature);
+        }
+};
+
+class npc_cos_flask_of_the_solemn_night : public CreatureScript
+{
+    public:
+        npc_cos_flask_of_the_solemn_night() : CreatureScript("npc_cos_flask_of_the_solemn_night") { }
+
+        struct npc_cos_flask_of_the_solemn_night_AI : public ScriptedAI
+        {
+            npc_cos_flask_of_the_solemn_night_AI(Creature* creature) : ScriptedAI(creature)
+            {
+                instance = creature->GetInstanceScript();
+                _poison = false;
+            }
+
+            void OnSpellClick(Unit* clicker, bool & result)
+            {
+                if (!clicker)
+                {
+                    result = false;
+                    return;
+                }
+
+                if (clicker->GetTypeId() != TYPEID_PLAYER)
+                {
+                    result = false;
+                    return;
+                }
+
+                if (Player* player  = clicker->ToPlayer())
+                {
+                    if (player->getClass() == CLASS_ROGUE || player->HasSkill(SKILL_ALCHEMY))
+                    {
+                        _poison = true;
+                        result = true;
+                        me->RemoveNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
+                    }
+                    else
+                    {
+                        result = false;
+                        return;
+                    }
+                }
+            }
+
+            void DoAction(int32 action) override
+            {
+                if (action == ACTION_FLASK_OF_THE_SOLEMN_NIGHT)
+                {
+                    if (Creature* patrol = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_PATROL_CAPTAIN_GERDO)))
+                    {
+                        patrol->AI()->DoCastSelf(SPELL_FLASK_OF_THE_SOLEMN_NIGHT);
+                        if (_poison)
+                            patrol->AI()->DoAction(ACTION_FLASK_OF_THE_SOLEMN_NIGHT_POISONED);
+                        else
+                            patrol->AI()->DoAction(ACTION_FLASK_OF_THE_SOLEMN_NIGHT);
+                    }
+                }
+            }
+
+        private:
+            InstanceScript* instance;
+            bool _poison;
+        };
+
+        CreatureAI* GetAI(Creature *creature) const override
+        {
+            return GetInstanceAI<npc_cos_flask_of_the_solemn_night_AI>(creature, COSScriptName);
+        }
+};
+
+class npc_cos_arcane_beacon : public CreatureScript
+{
+    public:
+        npc_cos_arcane_beacon() : CreatureScript("npc_cos_arcane_beacon")
+        {}
+
+        struct npc_cos_arcane_beacon_AI : public ScriptedAI
+        {
+            npc_cos_arcane_beacon_AI(Creature* creature) : ScriptedAI(creature)
+            {}
+
+            void SpellHit(Unit* caster, SpellInfo const* spell)
+            {
+                if (!spell || !caster)
+                    return;
+
+                if (spell->Id == SPELL_DISABLE_BEACON)
+                {
+                    me->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NOT_SELECTABLE));
+                    me->RemoveNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
+
+                    if (Creature* gerdo = me->FindNearestCreature(BOSS_PATROL_CAPTAIN_GERDO, 500.0f))
+                    {
+                        if (Aura* securedArea = gerdo->GetAura(SPELL_AREA_SECURED))
+                            securedArea->ModStackAmount(-1);
+                    }
+                }
+            }
+
+        };
+
+        CreatureAI* GetAI(Creature* creature) const override
+        {
+            return new npc_cos_arcane_beacon_AI(creature);
+        }
+
+};
+
+class spell_gerdo_arcane_lockdown : public SpellScriptLoader
+{
+    public:
+
+        spell_gerdo_arcane_lockdown() : SpellScriptLoader("spell_gerdo_arcane_lockdown")
+        {}
+
+        class spell_arcane_lockdown_AuraScript : public AuraScript
+        {
+            PrepareAuraScript(spell_arcane_lockdown_AuraScript);
+
+            void HandleOnApply(AuraEffect const* /**/, AuraEffectHandleModes mode)
+            {
+                if (!GetUnitOwner())
+                    return;
+
+                SetStackAmount(3);
+            }
+
+            void Register()
+            {
+                OnEffectApply += AuraEffectApplyFn(spell_arcane_lockdown_AuraScript::HandleOnApply, EFFECT_0, SPELL_AURA_PERIODIC_DAMAGE, AURA_EFFECT_HANDLE_REAL);
+                OnEffectApply += AuraEffectApplyFn(spell_arcane_lockdown_AuraScript::HandleOnApply, EFFECT_1, SPELL_AURA_MOD_DECREASE_SPEED, AURA_EFFECT_HANDLE_REAL);
+            }
+        };
+
+        AuraScript* GetAuraScript() const override
+        {
+            return new spell_arcane_lockdown_AuraScript();
+        }
+};
+
+class spell_gerdo_signal_beacon : public SpellScriptLoader
+{
+    public:
+        spell_gerdo_signal_beacon() : SpellScriptLoader("spell_gerdo_signal_beacon")
+        {}
+
+        class spell_gerdo_signal_beacon_SpellScript : public SpellScript
+        {
+            public:
+                PrepareSpellScript(spell_gerdo_signal_beacon_SpellScript);
+
+                void HandleDummy(SpellEffIndex)
+                {
+                    if (!GetCaster())
+                        return;
+
+                    std::list<Creature*> beacons;
+                    Unit* caster = GetCaster();
+
+                    caster->GetCreatureListWithEntryInGrid(beacons, NPC_ARCANE_BEACON, 500.0f);
+
+                    if (beacons.empty())
+                        return;
+
+                    for (auto & it : beacons)
+                    {
+                        if (it->HasNpcFlag(UNIT_NPC_FLAG_SPELLCLICK))
+                            it->CastSpell(it, SPELL_CALL_VIGILANT_NIGHT_WATCH, true);
+                    }
+                }
+
+                void Register() override
+                {
+                    OnEffectHitTarget += SpellEffectFn(spell_gerdo_signal_beacon_SpellScript::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
+                }
+        };
+
+        SpellScript* GetSpellScript() const
+        {
+            return new spell_gerdo_signal_beacon_SpellScript();
+        }
+};
+
+class spell_gerdo_streetsweeper_dmg : public SpellScriptLoader
+{
+    public:
+        spell_gerdo_streetsweeper_dmg() : SpellScriptLoader("spell_gerdo_streetsweeper_dmg")
+        {}
+
+        class spell_gerdo_streetsweeper_dmg_SpellScript : public SpellScript
+        {
+            public:
+                PrepareSpellScript(spell_gerdo_streetsweeper_dmg_SpellScript);
+
+                void FilterTargets(SpellTargets & targets)
+                {
+                    if (targets.empty())
+                        return;
+
+                    if (GetCaster()->GetEntry() != NPC_STREETSWEEPER)
+                    {
+                        targets.clear();
+                        return;
+                    }
+
+                    Unit* caster = GetCaster();
+
+                    float radius = 100.0f;
+
+                    G3D::Vector2 v1, v2, v3;
+
+                    v1.x = caster->GetPositionX();
+                    v1.y = caster->GetPositionY();
+
+                    v2.x = caster->GetPositionX() + (radius * cosf(caster->GetOrientation()));
+                    v2.y = caster->GetPositionY() + (radius * sinf(caster->GetOrientation()));
+
+                    v3 = v2 - v1;
+
+
+                    targets.remove_if([&] (WorldObject* target)
+                    {
+                        std::cout << "Caster In Front: " << caster->isInFront(caster) << std::endl;
+                        std::cout << "Target In Front: " << target->isInFront(caster) << std::endl;
+
+                        G3D::Vector2 v4 = { target->GetPositionX() - caster->GetPositionX(), target->GetPositionY() - caster->GetPositionY() };
+
+                        float angle = (v3.dot(v4) / (v3.length() * v4.length()));
+
+                        angle = std::acos(angle);
+
+                        float dist = v4.length() * sinf(angle);
+
+                        if (dist > 2.0f)
+                            return true;
+
+                        return false;
+                    });
+
+                }
+
+                void Register() override
+                {
+                    OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_gerdo_streetsweeper_dmg_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_CONE_ENEMY_104);
+                }
+        };
+
+        SpellScript* GetSpellScript() const override
+        {
+            return new spell_gerdo_streetsweeper_dmg_SpellScript();
+        }
+};
+
 
 void AddSC_boss_patrol_captain_gerdo()
 {
     new boss_patrol_captain_gerdo();
-    new npc_captain_gerdo_vigilant_duskwatch();
-    new npc_signal_lantern();
-    new npc_nightborne_boat();
-    new npc_lilet_lunarh();
-    new npc_duskwatch_sentry();
-    new npc_gerdo_arcane_beacon();
-    new npc_gerdo_streetsweeper();
-    new spell_patrol_arcane_lockdown();
+    new npc_cos_streetsweeper();
+    new npc_cos_flask_of_the_solemn_night();
+    new npc_cos_arcane_beacon();
+    new npc_cos_vigilant_duskwatch();
+    new spell_gerdo_arcane_lockdown();
+    new spell_gerdo_signal_beacon();
+    new spell_gerdo_streetsweeper_dmg();
 }

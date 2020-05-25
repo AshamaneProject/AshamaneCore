@@ -14,257 +14,260 @@
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
+#include "ScriptedCreature.h"
+#include "ScriptMgr.h"
+#include "ScriptedGossip.h"
 #include "emerald_nightmare.h"
+#include "Log.h"
 
-enum Says
+struct npc_malfurion_stormrage_106482 : public ScriptedAI
 {
-    //SAY_1           = ,
-};
+    npc_malfurion_stormrage_106482(Creature* creature) : ScriptedAI(creature) { Initialize(); }
 
-enum Spells
-{
-    //SPELL_    = ,
-    //SPELL_    = ,
-    //SPELL_    = ,
-    //SPELL_    = ,
-};
-
-enum eEvents
-{
-    //EVENT_    = 1,
-    //EVENT_    = 2,
-    //EVENT_    = 3,
-    //EVENT_    = 4,
-};
-
-class spell_vantus_rune_the_emerald_nightmare : public SpellScriptLoader
-{
-public:
-    spell_vantus_rune_the_emerald_nightmare() : SpellScriptLoader("spell_vantus_rune_the_emerald_nightmare") {}
-
-    class spell_vantus_rune_the_emerald_nightmare_AuraScript : public AuraScript
+    void Initialize()
     {
-        PrepareAuraScript(spell_vantus_rune_the_emerald_nightmare_AuraScript);
-
-        uint16 checkOnProc;
-        uint16 checkOnRemove;
-
-        bool Load()
+        IsLock = false;
+        instance = me->GetInstanceScript();
+        me->AddNpcFlag(UNIT_NPC_FLAG_GOSSIP);
+    }
+    //cast 214713,212630,212639
+    void DoAction(int32 param) override
+    {
+        switch (param)
         {
-            checkOnProc = 1000;
-            checkOnRemove = 1000;
-            return true;
-        }
-
-        void OnUpdate(uint32 diff, AuraEffect* aurEff)
-        {
-            Unit* player = GetCaster();
-            if (!player)
-                return;
-
-            InstanceScript* instance = player->GetInstanceScript();
-            if (!instance)
-                return;
-
-            if (checkOnProc <= diff)
+        case 1:
+            if (Creature* target = me->FindNearestCreature(104636, 1000.0f, true))
             {
-                switch (GetSpellInfo()->Id)
+                me->NearTeleportTo(Position(11362.3f, -12698.02f, 487.034f));
+                me->GetScheduler().Schedule(Milliseconds(2000), [this, target](TaskContext context)
                 {
-                case 192761:
-                    if (instance->GetBossState(DATA_NYTHENDRA) == IN_PROGRESS && !player->HasAura(208844))
-                        player->CastSpell(player, 208844, false);
-                    break;
-                case 192765:
-                    if (instance->GetBossState(DATA_RENFERAL) == IN_PROGRESS && !player->HasAura(208848))
-                        player->CastSpell(player, 208848, false);
-                    break;
-                case 192762:
-                    if (instance->GetBossState(DATA_ILGYNOTH) == IN_PROGRESS && !player->HasAura(208845))
-                        player->CastSpell(player, 208852, false);
-                    break;
-                case 191464:
-                    if (instance->GetBossState(DATA_URSOC) == IN_PROGRESS && !player->HasAura(208843))
-                        player->CastSpell(player, 208843, false);
-                    break;
-                case 191463:
-                    if (instance->GetBossState(DATA_DRAGON_NIGHTMARE) == IN_PROGRESS && !player->HasAura(208846))
-                        player->CastSpell(player, 208846, false);
-                    break;
-                case 192766:
-                    if (instance->GetBossState(DATA_CENARIUS) == IN_PROGRESS && !player->HasAura(208849))
-                        player->CastSpell(player, 208849, false);
-                    break;
-                case 192764:
-                    if (instance->GetBossState(DATA_XAVIUS) == IN_PROGRESS && !player->HasAura(208847))
-                        player->CastSpell(player, 208847, false);
-                    break;
-                }
+                    me->RemoveAurasDueToSpell(223184);
+                    me->SetFacingToObject(target);
+                    me->SetHomePosition(me->GetPosition());
+                });
             }
             else
-                checkOnProc -= diff;
-
-            if (checkOnRemove <= diff)
             {
-                if (player->HasAura(208844))
+                Talk(0);
+                me->GetScheduler().Schedule(Milliseconds(2000), [this](TaskContext context)
                 {
-                    if (instance->GetBossState(DATA_NYTHENDRA) == DONE || instance->GetBossState(DATA_NYTHENDRA) == NOT_STARTED)
-                    {
-                        player->RemoveAura(208844);
-                        checkOnProc = 1000;
-                        checkOnRemove = 1000;
-                    }
-                }
-
-                if (player->HasAura(208848))
-                {
-                    if (instance->GetBossState(DATA_RENFERAL) == DONE || instance->GetBossState(DATA_RENFERAL) == NOT_STARTED)
-                    {
-                        player->RemoveAura(208848);
-                        checkOnProc = 1000;
-                        checkOnRemove = 1000;
-                    }
-                }
-
-                if (player->HasAura(208846))
-                {
-                    if (instance->GetBossState(DATA_ILGYNOTH) == DONE || instance->GetBossState(DATA_ILGYNOTH) == NOT_STARTED)
-                    {
-                        player->RemoveAura(208846);
-                        checkOnProc = 1000;
-                        checkOnRemove = 1000;
-                    }
-                }
-
-                if (player->HasAura(208843))
-                {
-                    if (instance->GetBossState(DATA_URSOC) == DONE || instance->GetBossState(DATA_URSOC) == NOT_STARTED)
-                    {
-                        player->RemoveAura(208843);
-                        checkOnProc = 1000;
-                        checkOnRemove = 1000;
-                    }
-                }
-
-                if (player->HasAura(208856))
-                {
-                    if (instance->GetBossState(DATA_DRAGON_NIGHTMARE) == DONE || instance->GetBossState(DATA_DRAGON_NIGHTMARE) == NOT_STARTED)
-                    {
-                        player->RemoveAura(208856);
-                        checkOnProc = 1000;
-                        checkOnRemove = 1000;
-                    }
-                }
-
-                if (player->HasAura(208849))
-                {
-                    if (instance->GetBossState(DATA_CENARIUS) == DONE || instance->GetBossState(DATA_CENARIUS) == NOT_STARTED)
-                    {
-                        player->RemoveAura(208849);
-                        checkOnProc = 1000;
-                        checkOnRemove = 1000;
-                    }
-                }
-
-                if (player->HasAura(208847))
-                {
-                    if (instance->GetBossState(DATA_XAVIUS) == DONE || instance->GetBossState(DATA_XAVIUS) == NOT_STARTED)
-                    {
-                        player->RemoveAura(208847);
-                        checkOnProc = 1000;
-                        checkOnRemove = 1000;
-                    }
-                }
-            }
-            else
-                checkOnRemove -= diff;
-        }
-
-        void Register() override
-        {
-         //   OnEffectUpdate += AuraEffectUpdateFn(spell_vantus_rune_the_emerald_nightmare_AuraScript::OnUpdate, EFFECT_0, SPELL_AURA_PROC_TRIGGER_SPELL);
-        }
-    };
-
-    AuraScript* GetAuraScript() const override
-    {
-        return new spell_vantus_rune_the_emerald_nightmare_AuraScript();
-    }
-
-    class spell_vantus_rune_the_emerald_nightmare_SpellScript : public SpellScript
-    {
-        PrepareSpellScript(spell_vantus_rune_the_emerald_nightmare_SpellScript);
-
-        SpellCastResult CheckCast()
-        {
-            if (auto player = GetCaster()->ToPlayer())
-                if (!player->GetQuestRewardStatus(39695))
-                    return SPELL_CAST_OK;
-
-            SetCustomCastResultMessage(SPELL_CUSTOM_ERROR_YOU_ALREADY_USED_VANTUS_RUNE);
-            return SPELL_FAILED_CUSTOM_ERROR;
-        }
-
-        void HandleOnHit()
-        {
-            if (auto player = GetCaster()->ToPlayer())
-              //  if (Quest const* quest = sQuestDataStore->GetQuestTemplate(39695))
-                   // if (player->CanTakeQuest(quest, false))
-                        player->CompleteQuest(39695);
-        }
-
-        void Register() override
-        {
-            OnCheckCast += SpellCheckCastFn(spell_vantus_rune_the_emerald_nightmare_SpellScript::CheckCast);
-            OnHit += SpellHitFn(spell_vantus_rune_the_emerald_nightmare_SpellScript::HandleOnHit);
-        }
-    };
-
-    SpellScript* GetSpellScript() const override
-    {
-        return new spell_vantus_rune_the_emerald_nightmare_SpellScript();
-    }
-};
-/*
-//1000
-class eventobject_en_into : public EventObjectScript
-{
-public:
-    eventobject_en_into() : EventObjectScript("eventobject_en_into") {}
-
-    bool event_elerethe_Done = false;
-
-    bool OnTrigger(Player* plr, EventObject* eo, bool enter) override
-    {
-        if (!enter)
-            return true;
-
-        InstanceScript* instance = plr->GetInstanceScript();
-        if (!instance)
-            return false;
-
-        switch (eo->GetEntry())
-        {
-        case 1000:
-        {
-            if (!event_elerethe_Done)
-            {
-                event_elerethe_Done = true;
-                plr->CreateConversation(3626);
-                plr->AddDelayedEvent(6000, [plr]() -> void
-                {
-                    plr->CreateConversation(3635);
+                    Talk(1);
                 });
             }
             break;
+        case 2:
+            me->CastSpell(me, 225790, true);
+            Talk(2);
+            me->GetScheduler().Schedule(Milliseconds(4000), [this](TaskContext context)
+            {
+                Talk(3);
+            });
+            me->GetScheduler().Schedule(Milliseconds(6000), [this](TaskContext context)
+            {
+                Talk(4);
+            });
+            me->GetScheduler().Schedule(Milliseconds(8000), [this](TaskContext context)
+            {
+                Talk(5);
+            });
+            break;
         }
+    }
+
+    void sGossipHello(Player* player)
+    {
+
+        ClearGossipMenuFor(player);
+        std::string tempstr;
+        consoleToUtf8("¿ªÊ¼", tempstr);
+        AddGossipItemFor(player, GOSSIP_ICON_CHAT, tempstr, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
+        SendGossipMenuFor(player, player->GetGossipTextId(me), me->GetGUID());
+    }
+
+    void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId)
+    {
+        CloseGossipMenuFor(player);
+        if (instance)
+            player->TeleportTo(1520, Position(11196.4f, -12614.2f, 549.707f, 20.4509f));
+    }
+
+    void MoveInLineOfSight(Unit* who) override
+    {
+        if (!who || !who->IsInWorld() || !me->IsWithinDist(who, 15.0f, false))
+            return;
+
+        Player* player = who->GetCharmerOrOwnerPlayerOrPlayerItself();
+        if (!player || !instance)
+            return;
+
+        if (!IsLock && instance->GetBossState(DATA_URSOC) != DONE && instance->GetBossState(DATA_ILGYNOTH) != DONE && instance->GetBossState(DATA_ELERETHE_RENFERAL) != DONE && instance->GetBossState(DATA_DRAGONS_OF_NIGHTMARE) != DONE)
+        {
+            IsLock = true;
+            instance->DoPlayConversation(3608);
+            SetUnlock(120000);
         }
-        return true;
+        if (!IsLock && instance->GetBossState(DATA_URSOC) == DONE && instance->GetBossState(DATA_ILGYNOTH) == DONE && instance->GetBossState(DATA_ELERETHE_RENFERAL) == DONE && instance->GetBossState(DATA_DRAGONS_OF_NIGHTMARE) == DONE)
+        {
+            IsLock = true;
+            instance->DoPlayConversation(3620);
+            SetUnlock(120000);
+        }
+        if (!IsLock && instance->GetBossState(DATA_CENARIUS) != DONE)
+        {
+            IsLock = true;
+            DoAction(1);
+            SetUnlock(120000);
+        }
+    }
+private:
+    InstanceScript * instance;
+};
+
+enum
+{
+    SPELL_CRUSH_ARMOR = 223912,
+    SPELL_INTIMIDATING_ROAR = 223914,
+};
+struct npc_bolan_the_marked_111860 : public ScriptedAI
+{
+    npc_bolan_the_marked_111860(Creature* creature) : ScriptedAI(creature) { }
+
+    void EnterCombat(Unit* victim)
+    {
+        events.ScheduleEvent(SPELL_CRUSH_ARMOR, 3s, 5s);
+    }
+
+    void DamageTaken(Unit* /*attacker*/, uint32& damage) override
+    {
+        if(me->HealthWillBeBelowPctDamaged(40, damage))
+            events.ScheduleEvent(SPELL_INTIMIDATING_ROAR, 2s);
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        events.Update(diff);
+
+        if (!UpdateVictim())
+            return;
+
+        if (me->HasUnitState(UNIT_STATE_CASTING))
+           return;
+
+        while (uint32 eventId = events.ExecuteEvent())
+        {
+            switch (eventId)
+            {
+            case SPELL_CRUSH_ARMOR:
+            {
+                DoCast(SPELL_CRUSH_ARMOR);
+                events.Repeat(12s, 15s);
+                break;
+            }
+            case SPELL_INTIMIDATING_ROAR:
+            {
+                DoCast(SPELL_INTIMIDATING_ROAR);
+                events.Repeat(22s, 25s);
+                break;
+            }
+            }
+        }
+        DoMeleeAttackIfReady();
     }
 };
-*/
+
+struct npc_corrupted_feeler_113088 : public ScriptedAI
+{
+    npc_corrupted_feeler_113088(Creature* creature) : ScriptedAI(creature) {}
+
+    void Reset() override
+    {
+        SetCombatMovement(false);
+    }
+
+    enum Spells
+    {
+        SPELL_CORRUPT = 225042,
+    };
+
+    void EnterCombat(Unit* /*attacker*/) override
+    {
+        events.ScheduleEvent(SPELL_CORRUPT, 5s);
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        if (!UpdateVictim())
+            return;
+        if (me->HasUnitState(UNIT_STATE_CASTING))
+            return;
+        events.Update(diff);
+        switch (events.ExecuteEvent())
+        {
+        case SPELL_CORRUPT:
+        {
+            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0.f, true))
+                me->CastSpell(target, SPELL_CORRUPT, true);
+            events.Repeat(12s, 15s);
+            break;
+        }
+        }
+        DoMeleeAttackIfReady();
+    }
+};
+
+struct npc_flail_of_ilgynoth_113920 : public ScriptedAI
+{
+    npc_flail_of_ilgynoth_113920(Creature* creature) : ScriptedAI(creature) {}
+
+    void Reset() override
+    {
+        SetCombatMovement(false);
+    }
+
+    enum Spells
+    {
+        SPELL_SPEW_ICHOR = 226936,
+        SPELL_WILD_FLAIL = 226935,
+    };
+
+    void EnterCombat(Unit* /*attacker*/) override
+    {
+        events.ScheduleEvent(SPELL_SPEW_ICHOR, 5s);
+        events.ScheduleEvent(SPELL_WILD_FLAIL, 5s, 8s);
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        if (!UpdateVictim())
+            return;
+        if (me->HasUnitState(UNIT_STATE_CASTING))
+            return;
+        events.Update(diff);
+        switch (events.ExecuteEvent())
+        {
+        case SPELL_SPEW_ICHOR:
+        {
+            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0.f, true))
+                me->CastSpell(target, SPELL_SPEW_ICHOR, true);
+            events.Repeat(5s, 8s);
+            break;
+        }
+        case SPELL_WILD_FLAIL:
+        {
+            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0.f, true))
+                me->CastSpell(target, SPELL_WILD_FLAIL, true);
+            events.Repeat(5s, 8s);
+            break;
+        }
+        }
+        DoMeleeAttackIfReady();
+    }
+};
+
 void AddSC_emerald_nightmare()
 {
-    new spell_vantus_rune_the_emerald_nightmare();
-   // new (eventobject_en_into);
+    RegisterCreatureAI(npc_malfurion_stormrage_106482);
+    RegisterCreatureAI(npc_bolan_the_marked_111860);
+    RegisterCreatureAI(npc_corrupted_feeler_113088);
+    RegisterCreatureAI(npc_flail_of_ilgynoth_113920);
 }

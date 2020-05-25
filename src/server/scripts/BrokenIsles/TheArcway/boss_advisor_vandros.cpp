@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 #include "AreaTrigger.h"
@@ -53,7 +70,7 @@ enum Says
     SAY_DEATH           = 8,
 };
 
-Position VandrosTeleportLocations [] = 
+Position VandrosTeleportLocations [] =
 {
     { 3144.530f, 4662.319f, 574.185f, 1.41f }, // Naltira Room
     { 3319.854f, 4522.469f, 570.788f, 1.53f }, // Xakal Room
@@ -63,7 +80,7 @@ Position VandrosTeleportLocations [] =
 
 uint32 ROOM_POSITION = 0;
 constexpr uint32 DATA_LOST_IN_TIME = 1;
-//constexpr uint32 LOST_IN_TIME_PHASE = 290;
+constexpr uint32 LOST_IN_TIME_PHASE = 290;
 
 class boss_advisor_vandros : public CreatureScript
 {
@@ -91,7 +108,7 @@ class boss_advisor_vandros : public CreatureScript
                 if (victim && victim->GetTypeId() == TYPEID_PLAYER)
                     Talk(SAY_KILL);
             }
-            
+
             void JustReachedHome() override
             {
                 Talk(SAY_WIPE);
@@ -105,7 +122,7 @@ class boss_advisor_vandros : public CreatureScript
                 me->RemoveAllAreaTriggers();
                 CreatureAI::EnterEvadeMode(why);
             }
-            
+
             void JustDied(Unit* /**/) override
             {
                 instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
@@ -124,7 +141,7 @@ class boss_advisor_vandros : public CreatureScript
                 events.ScheduleEvent(EVENT_ACCELERATING_BLAST, Seconds(3));
             }
 
-            void DamageTaken(Unit* /**/, uint32& /*damage*/) override
+            void DamageTaken(Unit* /**/, uint32 & damage) override
             {
                 if (me->HealthBelowPct(50) && !_lostInTime)
                 {
@@ -140,7 +157,7 @@ class boss_advisor_vandros : public CreatureScript
             {
                 if (!spell)
                     return;
-                
+
                 if (spell->HasEffect(SPELL_EFFECT_INTERRUPT_CAST) && me->HasAura(SPELL_BANISH_IN_TIME))
                 {
                     _reachSuccesful = true;
@@ -198,7 +215,7 @@ class boss_advisor_vandros : public CreatureScript
                     {
                         if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0, true))
                             DoCast(target, SPELL_UNSTABLE_MANA);
-                        
+
                         events.ScheduleEvent(EVENT_UNSTABLE_MANA, Seconds(40));
                         break;
                     }
@@ -230,7 +247,7 @@ class npc_arc_chrono_shard : public CreatureScript
             {
                 me->CastSpell(me, SPELL_CHRONO_SHARD_SPAWN, true);
             }
-            
+
             void IsSummonedBy(Unit* /**/) override
             {
                 me->CastSpell(me, SPELL_CHRONO_SHARD_PULSE, true);
@@ -258,6 +275,7 @@ class npc_arc_chrono_shard : public CreatureScript
 
             private:
                 uint32 _timerExplotion;
+                bool _isCasted;
         };
 
         CreatureAI* GetAI(Creature* creature) const override
@@ -277,7 +295,7 @@ class npc_arc_timeless_wraith : public CreatureScript
             explicit npc_arc_timeless_wraith_AI(Creature* creature) : ScriptedAI(creature)
             {}
 
-            void Reset() override
+            void Reset()
             {
                 //me->SetInPhase(2, true, true);
                 _events.Reset();
@@ -290,7 +308,7 @@ class npc_arc_timeless_wraith : public CreatureScript
 
                 if (!victim->HasAura(SPELL_BANISH_IN_TIME_AURA))
                     return;
-                
+
                 DoZoneInCombat();
                 DoCast(victim, SPELL_TIME_LOCK);
                 _events.ScheduleEvent(EVENT_TIME_LOCK, Seconds(2));
@@ -300,10 +318,10 @@ class npc_arc_timeless_wraith : public CreatureScript
             {
                 if (!target)
                     return false;
-                
+
                 if (!target->HasAura(SPELL_BANISH_IN_TIME_AURA))
                     return false;
-                
+
                 return true;
             }
 
@@ -311,7 +329,7 @@ class npc_arc_timeless_wraith : public CreatureScript
             {
                 if (!spell)
                     return;
-                
+
                 if (spell->HasEffect(SPELL_EFFECT_INTERRUPT_CAST) && me->HasUnitState(UNIT_STATE_CASTING))
                     _events.RescheduleEvent(EVENT_TIME_LOCK, Seconds(5));
             }
@@ -329,11 +347,11 @@ class npc_arc_timeless_wraith : public CreatureScript
                     {
                         if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0, true))
                             DoCast(target, SPELL_TIME_LOCK, false);
-                        
+
                         _events.ScheduleEvent(EVENT_TIME_LOCK, Seconds(8));
                     }
                 }
-                
+
                 DoMeleeAttackIfReady();
             };
 
@@ -362,7 +380,7 @@ class spell_vandros_force_bomb : public SpellScriptLoader
                 {
                     if (!GetHitUnit())
                         return;
-                    
+
                     GetCaster()->CastSpell(GetHitUnit(), SPELL_FORCE_BOMB_AREA, true);
                 }
 
@@ -388,12 +406,12 @@ class spell_vandros_unstable_mana : public SpellScriptLoader
         {
             public:
                 PrepareAuraScript(spell_unstable_mana_AuraScript);
-        
+
                 void HandlePeriodic(AuraEffect const* /**/)
                 {
                     if (!GetUnitOwner())
                         return;
-                    
+
                     Unit*&& owner = GetUnitOwner();
 
                     owner->CastSpell(owner, SPELL_UNSTABLE_MANA_DMG, true);
@@ -471,7 +489,7 @@ class spell_vandros_banish_in_time : public SpellScriptLoader
         {
             return new spell_banish_in_time_SpellScript();
         }
-        
+
 };
 
 class spell_vandros_banish_in_time_buff : public SpellScriptLoader
@@ -489,7 +507,7 @@ class spell_vandros_banish_in_time_buff : public SpellScriptLoader
                 {
                     if (!GetUnitOwner())
                         return;
-                    
+
                     GetUnitOwner()->CastSpell(GetUnitOwner(), SPELL_BANISH_IN_TIME_TELE, true);
                     //GetUnitOwner()->SetInPhase(2, true, true);
                 }
@@ -521,7 +539,7 @@ class spell_vandros_banish_in_time_tele : public SpellScriptLoader
         spell_vandros_banish_in_time_tele() : SpellScriptLoader("spell_vandros_banish_in_time_tele")
         {
         }
-        
+
         class spell_banish_in_time_tele_SpellScript : public SpellScript
         {
             public:
@@ -532,7 +550,7 @@ class spell_vandros_banish_in_time_tele : public SpellScriptLoader
                     WorldLocation pos;
 
                     pos.Relocate(VandrosTeleportLocations[ROOM_POSITION]);
-                    
+
                     SetExplTargetDest(pos);
                 }
 
@@ -563,7 +581,7 @@ class spell_arc_breach : public SpellScriptLoader
                 {
                     if (!GetUnitOwner())
                         return;
-                    
+
                     GetUnitOwner()->CastSpell(GetUnitOwner(), SPELL_BREACH_DMG, true);
                 }
 
@@ -635,16 +653,16 @@ class at_arc_force_nova : public AreaTriggerEntityScript
                 if (_timerForce >= 500)
                 {
                     _timerForce = 0;
-                    
+
                     for (auto & it : at->GetMap()->GetPlayers())
                     {
                         Player* ptr = it.GetSource();
 
                         if (!ptr)
                             continue;
-                        
+
                         float dist = ptr->GetDistance2d(at);
-                        
+
                         if (std::fabs(dist - _radius) <= 3.f)
                             OnUnitEnter(ptr);
                         else
@@ -653,12 +671,12 @@ class at_arc_force_nova : public AreaTriggerEntityScript
                     _radius += 4.f;
                 }
             }
-            
+
             void OnUnitEnter(Unit* target) override
             {
                 if (target && target->GetTypeId() == TYPEID_PLAYER)
                 {
-                    //float dist = target->GetDistance2d(at);
+                    float dist = target->GetDistance2d(at);
                     target->CastSpell(target, SPELL_FORCE_NOVA_DMG, true);
                 }
             }

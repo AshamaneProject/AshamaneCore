@@ -69,7 +69,7 @@ struct npc_calia_102343 : public ScriptedAI
 {
     npc_calia_102343(Creature* creature) : ScriptedAI(creature) {  }
 
-    void sGossipSelect(Player* player, uint32 menuId, uint32 gossipListId)
+    void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId)
     {
         if (player->HasQuest(QUEST_PRIESTLY_MATTERS))
         {

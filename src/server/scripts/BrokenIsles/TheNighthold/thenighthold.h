@@ -27,7 +27,7 @@
 static const Position scorpidSpawnPosition = { 133.3403f, 3399.205f, -250.1467f };
 static const Position temporalOrbsSpawnPosition = { 276.3507f, 3136.081f, -236.9497f };
 
-static const Movement::PointsArray WaypointScorpid1 =
+static const Position WaypointScorpid1[] =
 {
     { 132.6806f, 3400.784f, -250.1467f },
     { 127.6649f, 3408.174f, -250.1467f },
@@ -43,7 +43,7 @@ static const Movement::PointsArray WaypointScorpid1 =
     { 78.17709f, 3473.611f, -250.0633f }
 };
 
-static const Movement::PointsArray WaypointScorpid2 =
+static const Position WaypointScorpid2[] =
 {
     { 132.6806f, 3400.784f, -250.1467f },
     { 127.6649f, 3408.174f, -250.1467f },
@@ -57,7 +57,7 @@ static const Movement::PointsArray WaypointScorpid2 =
     { 123.2099f, 3433.407f, -250.1082f }
 };
 
-static const Movement::PointsArray WaypointScorpid3 =
+static const Position WaypointScorpid3[] =
 {
     { 132.6806f, 3400.784f, -250.1467f },
     { 127.6649f, 3408.174f, -250.1467f },
@@ -71,7 +71,7 @@ static const Movement::PointsArray WaypointScorpid3 =
     { 101.6649f, 3480.065f, -250.0634f }
 };
 
-static const Movement::PointsArray WaypointScorpid4 =
+static const Position WaypointScorpid4[] =
 {
     { 132.6806f, 3400.784f, -250.1467f },
     { 127.6649f, 3408.174f, -250.1467f },
@@ -86,7 +86,7 @@ static const Movement::PointsArray WaypointScorpid4 =
     { 90.82813f, 3479.208f, -250.0634f }
 };
 
-static const Movement::PointsArray WaypointScorpid5 =
+static const Position WaypointScorpid5[] =
 {
     { 132.6806f, 3400.784f, -250.1467f },
     { 127.6649f, 3408.174f, -250.1467f },
@@ -99,7 +99,7 @@ static const Movement::PointsArray WaypointScorpid5 =
     { 59.93056f, 3424.537f, -250.0633f }
 };
 
-static const Movement::PointsArray WaypointScorpid6 =
+static const Position WaypointScorpid6[] =
 {
     { 132.6806f, 3400.784f, -250.1467f },
     { 127.6649f, 3408.174f, -250.1467f },
@@ -110,7 +110,7 @@ static const Movement::PointsArray WaypointScorpid6 =
     { 121.1094f, 3424.732f, -250.0877f }
 };
 
-static const Movement::PointsArray WaypointScorpid7 =
+static const Position WaypointScorpid7[] =
 {
     { 132.6806f, 3400.784f, -250.1467f },
     { 127.6649f, 3408.174f, -250.1467f },
@@ -123,7 +123,7 @@ static const Movement::PointsArray WaypointScorpid7 =
     { 84.27084f, 3405.892f, -250.0633f }
 };
 
-static const Movement::PointsArray WaypointScorpid8 =
+static const Position WaypointScorpid8[] =
 {
     { 132.6806f, 3400.784f, -250.1467f },
     { 127.6649f, 3408.174f, -250.1467f },
@@ -135,7 +135,7 @@ static const Movement::PointsArray WaypointScorpid8 =
     { 91.38889f, 3409.027f, -250.0998f }
 };
 
-static const Movement::PointsArray WaypointScorpid9 =
+static const Position WaypointScorpid9[] =
 {
     { 132.6806f, 3400.784f, -250.1467f },
     { 127.6649f, 3408.174f, -250.1467f },
@@ -149,7 +149,7 @@ static const Movement::PointsArray WaypointScorpid9 =
     { 124.9809f, 3443.604f, -250.0211f }
 };
 
-static const Movement::PointsArray WaypointScorpid10 =
+static const Position WaypointScorpid10[] =
 {
     { 132.6806f, 3400.784f, -250.1467f },
     { 127.6649f, 3408.174f, -250.1467f },
@@ -164,7 +164,7 @@ static const Movement::PointsArray WaypointScorpid10 =
     { 60.8941f, 3456.313f, -250.0633f }
 };
 
-static const Movement::PointsArray WaypointScorpid11 =
+static const Position WaypointScorpid11[] =
 {
     { 132.6806f, 3400.784f, -250.1467f },
     { 127.6649f, 3408.174f, -250.1467f },
@@ -175,7 +175,7 @@ static const Movement::PointsArray WaypointScorpid11 =
     { 104.2378f, 3412.229f, -250.0798f }
 };
 
-static const Movement::PointsArray WaypointScorpid12 =
+static const Position WaypointScorpid12[] =
 {
     { 132.6806f, 3400.784f, -250.1467f },
     { 127.6649f, 3408.174f, -250.1467f },
@@ -189,7 +189,7 @@ static const Movement::PointsArray WaypointScorpid12 =
     { 121.5347f, 3458.441f, -250.0633f }
 };
 
-static const Movement::PointsArray WaypointScorpid13 =
+static const Position WaypointScorpid13[] =
 {
     { 132.6806f, 3400.784f, -250.1467f },
     { 127.6649f, 3408.174f, -250.1467f },
@@ -199,7 +199,7 @@ static const Movement::PointsArray WaypointScorpid13 =
     { 116.1736f, 3419.587f, -250.0128f },
 };
 
-static const Movement::PointsArray WaypointScorpid14 =
+static const Position WaypointScorpid14[] =
 {
     { 132.6806f, 3400.784f, -250.1467f },
     { 127.6649f, 3408.174f, -250.1467f },
@@ -214,7 +214,7 @@ static const Movement::PointsArray WaypointScorpid14 =
     { 53.85938f, 3452.537f, -250.0114f }
 };
 
-static const Movement::PointsArray WaypointScorpid15 =
+static const Position WaypointScorpid15[] =
 {
     { 132.6806f, 3400.784f, -250.1467f },
     { 127.6649f, 3408.174f, -250.1467f },
@@ -227,7 +227,7 @@ static const Movement::PointsArray WaypointScorpid15 =
     { 80.56077f, 3411.691f, -250.0633f }
 };
 
-static const Movement::PointsArray WaypointScorpid16 =
+static const Position WaypointScorpid16[] =
 {
     { 132.6806f, 3400.784f, -250.1467f },
     { 127.6649f, 3408.174f, -250.1467f },
@@ -243,7 +243,7 @@ static const Movement::PointsArray WaypointScorpid16 =
     { 80.73264f, 3479.064f, -250.0633f }
 };
 
-static const Movement::PointsArray WaypointScorpid17 =
+static const Position WaypointScorpid17[] =
 {
     { 132.6806f, 3400.784f, -250.1467f },
     { 127.6649f, 3408.174f, -250.1467f },
@@ -258,7 +258,7 @@ static const Movement::PointsArray WaypointScorpid17 =
     { 57.83681f, 3444.625f, -250.0633f }
 };
 
-static const Movement::PointsArray WaypointScorpid18 =
+static const Position WaypointScorpid18[] =
 {
     { 132.6806f, 3400.784f, -250.1467f },
     { 127.6649f, 3408.174f, -250.1467f },
@@ -273,7 +273,7 @@ static const Movement::PointsArray WaypointScorpid18 =
     { 105.1563f, 3475.252f, -250.0633f }
 };
 
-static const Movement::PointsArray WaypointScorpid19 =
+static const Position WaypointScorpid19[] =
 {
     { 132.6806f, 3400.784f, -250.1467f },
     { 127.6649f, 3408.174f, -250.1467f },
@@ -285,7 +285,7 @@ static const Movement::PointsArray WaypointScorpid19 =
     { 98.14284f, 3406.671f, -249.8512f }
 };
 
-static const Movement::PointsArray WaypointScorpid20 =
+static const Position WaypointScorpid20[] =
 {
     { 132.6806f, 3400.784f, -250.1467f },
     { 127.6649f, 3408.174f, -250.1467f },
@@ -300,7 +300,7 @@ static const Movement::PointsArray WaypointScorpid20 =
     { 54.29688f, 3438.09f, -250.0633f }
 };
 
-static const Movement::PointsArray WaypointScorpid21 =
+static const Position WaypointScorpid21[] =
 {
     { 132.6806f, 3400.784f, -250.1467f },
     { 127.6649f, 3408.174f, -250.1467f },
@@ -316,7 +316,7 @@ static const Movement::PointsArray WaypointScorpid21 =
     { 62.34028f, 3463.875f, -250.0633f }
 };
 
-static const Movement::PointsArray WaypointScorpid22 =
+static const Position WaypointScorpid22[] =
 {
     { 132.6806f, 3400.784f, -250.1467f },
     { 127.6649f, 3408.174f, -250.1467f },
@@ -329,7 +329,7 @@ static const Movement::PointsArray WaypointScorpid22 =
     { 128.125f, 3447.628f, -249.9836f }
 };
 
-static const Movement::PointsArray WaypointScorpid23 =
+static const Position WaypointScorpid23[] =
 {
     { 132.6806f, 3400.784f, -250.1467f },
     { 127.6649f, 3408.174f, -250.1467f },
@@ -345,7 +345,7 @@ static const Movement::PointsArray WaypointScorpid23 =
     { 97.3941f, 3475.97f, -250.0633f }
 };
 
-static const Movement::PointsArray WaypointScorpid24 =
+static const Position WaypointScorpid24[] =
 {
     { 132.6806f, 3400.784f, -250.1467f },
     { 127.6649f, 3408.174f, -250.1467f },
@@ -360,7 +360,7 @@ static const Movement::PointsArray WaypointScorpid24 =
     { 112.0208f, 3474.897f, -250.0633f }
 };
 
-static const Movement::PointsArray WaypointScorpid25 =
+static const Position WaypointScorpid25[] =
 {
     { 132.6806f, 3400.784f, -250.1467f },
     { 127.6649f, 3408.174f, -250.1467f },
@@ -374,7 +374,7 @@ static const Movement::PointsArray WaypointScorpid25 =
     { 127.1858f, 3453.653f, -250.0633f }
 };
 
-static const Movement::PointsArray WaypointScorpid26 =
+static const Position WaypointScorpid26[] =
 {
     { 132.6806f, 3400.784f, -250.1467f },
     { 127.6649f, 3408.174f, -250.1467f },
@@ -389,7 +389,7 @@ static const Movement::PointsArray WaypointScorpid26 =
     { 60.54167f, 3433.258f, -250.0633f }
 };
 
-static const Movement::PointsArray WaypointScorpid27 =
+static const Position WaypointScorpid27[] =
 {
     { 132.6806f, 3400.784f, -250.1467f },
     { 127.6649f, 3408.174f, -250.1467f },
@@ -403,7 +403,7 @@ static const Movement::PointsArray WaypointScorpid27 =
     { 124.5417f, 3462.165f, -250.0634f }
 };
 
-static const Movement::PointsArray WaypointScorpid28 =
+static const Position WaypointScorpid28[] =
 {
     { 132.6806f, 3400.784f, -250.1467f },
     { 127.6649f, 3408.174f, -250.1467f },
@@ -416,7 +416,7 @@ static const Movement::PointsArray WaypointScorpid28 =
     { 71.3125f, 3411.25f, -250.0413f }
 };
 
-static const std::vector<Movement::PointsArray> scorpidsPath =
+static const std::array<Position const*, 28> scorpidsPath =
 {
     WaypointScorpid1,
     WaypointScorpid2,
@@ -448,7 +448,8 @@ static const std::vector<Movement::PointsArray> scorpidsPath =
     WaypointScorpid28
 };
 
-static const Movement::PointsArray WaypointChronomaticAnomaly =
+uint32 const WaypointChronomaticAnomalySize = 13;
+G3D::Vector3 const WaypointChronomaticAnomaly[WaypointChronomaticAnomalySize] =
 {
     { 242.7361f, 3169.684f, -234.9167f },
     { 258.3084f, 3180.089f, -236.8933f },
@@ -459,7 +460,7 @@ static const Movement::PointsArray WaypointChronomaticAnomaly =
     { 324.6772f, 3135.743f, -236.8933f },
     { 321.0234f, 3117.374f, -236.8933f },
     { 310.6183f, 3101.802f, -236.8933f },
-    { 295.046f, 3091.397f, -236.8933f },
+    { 295.0460f, 3091.397f, -236.8933f },
     { 276.6772f, 3087.743f, -236.8933f },
     { 258.3084f, 3091.397f, -236.8933f },
     { 242.7361f, 3101.802f, -236.8933f },
@@ -468,10 +469,10 @@ static const Movement::PointsArray WaypointChronomaticAnomaly =
 static const Position temporalOrbsDestPositions[72] =
 {
     { 191.4979f, 3220.934f, -236.9497f },
-    { 178.0525f, 3204.91f, -236.9497f },
+    { 178.0525f, 3204.910f, -236.9497f },
     { 167.5938f, 3186.795f, -236.9497f },
     { 160.4396f, 3167.139f, -236.9497f },
-    { 156.8073f, 3146.54f, -236.9497f },
+    { 156.8073f, 3146.540f, -236.9497f },
     { 156.8073f, 3125.622f, -236.9497f },
     { 160.4396f, 3105.022f, -236.9497f },
     { 167.5938f, 3085.367f, -236.9497f },
@@ -479,27 +480,27 @@ static const Position temporalOrbsDestPositions[72] =
     { 191.4979f, 3051.228f, -236.9497f },
     { 207.5215f, 3037.782f, -236.9497f },
     { 225.6365f, 3027.324f, -236.9497f },
-    { 245.2924f, 3020.17f, -236.9497f },
-    { 265.892f, 3016.537f, -236.9497f },
+    { 245.2924f, 3020.170f, -236.9497f },
+    { 265.8920f, 3016.537f, -236.9497f },
     { 286.8094f, 3016.537f, -236.9497f },
-    { 307.409f, 3020.17f, -236.9497f },
+    { 307.4090f, 3020.170f, -236.9497f },
     { 327.0649f, 3027.324f, -236.9497f },
     { 345.1799f, 3037.782f, -236.9497f },
     { 361.2035f, 3051.228f, -236.9497f },
-    { 374.649f, 3067.252f, -236.9497f },
+    { 374.6490f, 3067.252f, -236.9497f },
     { 385.1076f, 3085.367f, -236.9497f },
     { 392.2618f, 3105.022f, -236.9497f },
     { 395.8941f, 3125.622f, -236.9497f },
-    { 395.8941f, 3146.54f, -236.9497f },
+    { 395.8941f, 3146.540f, -236.9497f },
     { 392.2618f, 3167.139f, -236.9497f },
     { 385.1076f, 3186.795f, -236.9497f },
-    { 374.649f, 3204.91f, -236.9497f },
+    { 374.6490f, 3204.910f, -236.9497f },
     { 361.2035f, 3220.934f, -236.9497f },
     { 345.1799f, 3234.379f, -236.9497f },
     { 327.0649f, 3244.838f, -236.9497f },
-    { 307.409f, 3251.992f, -236.9497f },
+    { 307.4090f, 3251.992f, -236.9497f },
     { 286.8094f, 3255.624f, -236.9497f },
-    { 265.892f, 3255.624f, -236.9497f },
+    { 265.8920f, 3255.624f, -236.9497f },
     { 245.2924f, 3251.992f, -236.9497f },
     { 225.6365f, 3244.838f, -236.9497f },
     { 207.5215f, 3234.379f, -236.9497f },
@@ -507,7 +508,7 @@ static const Position temporalOrbsDestPositions[72] =
     { 317.3931f, 3023.318f, -236.9497f },
     { 336.3507f, 3032.158f, -236.9497f },
     { 353.4852f, 3044.156f, -236.9497f },
-    { 368.276f, 3058.946f, -236.9497f },
+    { 368.2760f, 3058.946f, -236.9497f },
     { 380.2737f, 3076.081f, -236.9497f },
     { 389.1138f, 3095.038f, -236.9497f },
     { 394.5276f, 3115.243f, -236.9497f },
@@ -515,7 +516,7 @@ static const Position temporalOrbsDestPositions[72] =
     { 394.5276f, 3156.919f, -236.9497f },
     { 389.1138f, 3177.123f, -236.9497f },
     { 380.2737f, 3196.081f, -236.9497f },
-    { 368.276f, 3213.215f, -236.9497f },
+    { 368.2760f, 3213.215f, -236.9497f },
     { 353.4852f, 3228.006f, -236.9497f },
     { 336.3507f, 3240.004f, -236.9497f },
     { 317.3931f, 3248.844f, -236.9497f },
@@ -547,7 +548,8 @@ static const Position waningTimeParticleSpawnPositions[2] =
     { 296.969727f, 3179.675293f, -237.012833f }
 };
 
-static const Movement::PointsArray WaypointAlurielAnomaly =
+uint32 const WaypointAlurielAnomalySize = 10;
+G3D::Vector3 const WaypointAlurielAnomaly[WaypointAlurielAnomalySize] =
 {
     { 360.707f, 3290.48f, 142.136f },
     { 345.7813f, 3282.544f,  142.1351f },
@@ -591,14 +593,14 @@ enum TheNightholdGOBs
     GO_CHRONOMATIC_ANOMALY_01       = 252349,
     GO_CHRONOMATIC_ANOMALY_02       = 252348,
     GO_TRILLIAX_DOOR_01             = 251397,
-    GO_TRILLIAX_DOOR_02             = 250243,
+	GO_TRILLIAX_DOOR_02             = 250243,
 };
 
 enum TheNightholdBosses
 {
     BOSS_SKORPYRON                  = 0,
     BOSS_CHRONOMATIC_ANOMALY        = 1,
-    BOSS_TRILLIAX                   = 2,
+	BOSS_TRILLIAX                   = 2,
     BOSS_ALURIEL                    = 3,
     MAX_ENCOUNTER
 };
