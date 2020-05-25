@@ -285,7 +285,7 @@ public:
         {
         }
 
-        void SpellHit(Unit* caster, SpellInfo const* spell) override
+        void SpellHit(Unit* /*caster*/, SpellInfo const* spell) override
         {
             me->GetMotionMaster()->MoveDistract(1000);
             me->GetMotionMaster()->MovePoint(1, -854.9718f, 4185.322f, 754.1122f);

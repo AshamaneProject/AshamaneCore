@@ -85,7 +85,7 @@ struct npc_glowing_sentry_120300 : public ScriptedAI
         SetCombatMovement(false);
     }
 
-    void UpdateAI(uint32 diff) override
+    void UpdateAI(uint32 /*diff*/) override
     {
         if (!UpdateVictim())
             return;

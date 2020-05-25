@@ -94,7 +94,7 @@ public:
         }
     }
 
-    void OnSuccessfulSpellCast(Player* player, Spell* spell)
+    void OnSuccessfulSpellCast(Player* player, Spell* spell) override
     {
         if (player->GetAreaId() == 9333)
         {

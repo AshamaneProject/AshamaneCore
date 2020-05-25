@@ -219,7 +219,7 @@ struct npc_lord_jorach_ravenholdt_101513 : public ScriptedAI
 {
     npc_lord_jorach_ravenholdt_101513(Creature* creature) : ScriptedAI(creature) { }
 
-    void DoAction(int32 param)
+    void DoAction(int32 param) override
     {
         switch (param)
         {

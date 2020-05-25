@@ -31,7 +31,7 @@ struct npc_malfurion_stormrage_106482 : public ScriptedAI
         me->AddNpcFlag(UNIT_NPC_FLAG_GOSSIP);
     }
     //cast 214713,212630,212639
-    void DoAction(int32 param)
+    void DoAction(int32 param) override
     {
         switch (param)
         {

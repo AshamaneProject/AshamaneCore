@@ -227,22 +227,22 @@ struct npc_archdruid_hamuul_runetotem_101064 : public ScriptedAI
             {
                 player->CastSpell(player, 199439, true);
                 ///103487  delay 5000
-                _scheduler.Schedule(Milliseconds(5000), [this, player](TaskContext context)
+                _scheduler.Schedule(Milliseconds(5000), [this, player](TaskContext /*context*/)
                 {
                     me->Say(103487, player);
                 });
                 ///103485 delay 5000
-                _scheduler.Schedule(Milliseconds(10000), [this, player](TaskContext context)
+                _scheduler.Schedule(Milliseconds(10000), [this, player](TaskContext /*context*/)
                 {
                     me->Say(103485, player);
                 });
                 ///103486 delay 5000
-                _scheduler.Schedule(Milliseconds(15000), [this, player](TaskContext context)
+                _scheduler.Schedule(Milliseconds(15000), [this, player](TaskContext /*context*/)
                 {
                     me->Say(103486, player);
                 });
                 ///delay 500
-                _scheduler.Schedule(Milliseconds(18000), [this, player](TaskContext context)
+                _scheduler.Schedule(Milliseconds(18000), [this, player](TaskContext /*context*/)
                 {
                     me->Say(103489, player);
                 });

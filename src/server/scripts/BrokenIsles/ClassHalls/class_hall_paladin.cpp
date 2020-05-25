@@ -139,7 +139,7 @@ struct npc_orik_trueheart_105813 : public ScriptedAI
 {
     npc_orik_trueheart_105813(Creature* creature) : ScriptedAI(creature) {  }
 
-    void sQuestAccept(Player* player, Quest const* quest) override
+    void sQuestAccept(Player* /*player*/, Quest const* quest) override
     {
         if (quest->GetQuestId() == QUEST_SHRINE_OF_THE_TRUTHGUARD)
         {

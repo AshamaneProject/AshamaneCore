@@ -620,7 +620,7 @@ class boss_opera_coggleston : public CreatureScript
                 me->CastSpell(me, SPELL_SPECTRAL_SERVICE, true);
             }
 
-            void Reset()
+            void Reset() override
             {
                 _minionsDead = 0;
                 _Reset();

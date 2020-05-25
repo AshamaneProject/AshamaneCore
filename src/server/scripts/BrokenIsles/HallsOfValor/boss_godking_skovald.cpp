@@ -98,7 +98,7 @@ struct boss_god_king_kovald : public BossAI
     }
 
 
-    void JustDied(Unit* killer) override
+    void JustDied(Unit* /*killer*/) override
     {
         _JustDied();
         me->RemoveAllAreaTriggers();

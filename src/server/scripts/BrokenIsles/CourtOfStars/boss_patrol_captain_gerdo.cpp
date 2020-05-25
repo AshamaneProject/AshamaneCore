@@ -255,7 +255,7 @@ class boss_patrol_captain_gerdo: public CreatureScript
                     _poisonFlask = true;
             }
 
-            void DamageTaken(Unit* /*atacker*/, uint32 &damage) override
+            void DamageTaken(Unit* /*atacker*/, uint32 &/*damage*/) override
             {
                 if (me->HealthBelowPct(75) && !_signal_beacon)
                 {

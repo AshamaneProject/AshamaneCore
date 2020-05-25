@@ -18,7 +18,7 @@ EndScriptData */
 #include "PhasingHandler.h"
 #include "Creature.h"
 #include "World.h"
-#include <Windows.h>
+
 class CommadExportHelper
 {
     //friend class ObjectMgr;

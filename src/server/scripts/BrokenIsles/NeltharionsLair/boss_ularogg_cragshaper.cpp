@@ -214,7 +214,7 @@ public:
             me->SetPower(POWER_MANA, 0);
 
             bool manaRegenerated = false;
-            bool inSecondPhase = false;
+            //bool inSecondPhase = false;
             bool isJumpedToCenter = false;
             bool allowUpdateVictim = false;
             uint8 idolsPoint = 0;

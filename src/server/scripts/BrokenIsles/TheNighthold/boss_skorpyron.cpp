@@ -201,6 +201,7 @@ public:
             // We must remove 1 stack of Chitinous Exoskeleton for each 1% HP
             // If aura from Chitinous Exoskeleton is absent, then we cast Exoskeletal Vulnerability
             if (me->HealthBelowPctDamaged(_prevHealthForRemoveStack, damage) && !me->HasAura(SPELL_EXOSKELETAL_VULNERABILITY))
+            {
                 if (Aura* exoskeleton = me->GetAura(SPELL_CHITINOUS_EXOSKELETON))
                 {
                     if (_prevHealthForRemoveStack - healthPctDamage >= 1)
@@ -210,19 +211,26 @@ public:
                         _prevHealthForRemoveStack -= roundedValue;
                     }
                 }
+
                 else
+
                 {
+
                     if (!me->HasAura(SPELL_CHITINOUS_EXOSKELETON_VISUAL) && me->HealthBelowPctDamaged(99, damage))
+
                     {
-                        events.Reset();
-                        DoCastSelf(SPELL_EXOSKELETAL_VULNERABILITY, true);
-                        me->CastCustomSpell(SPELL_CHITINOUS_EXOSKELETON, SPELLVALUE_AURA_STACK, 25, me, TRIGGERED_NONE);
-                        events.ScheduleEvent(EVENT_INFUSED_EXOSKELETON, 15000);
-                        events.ScheduleEvent(EVENT_ARCANOSLASH, 16000);
-                        events.ScheduleEvent(EVENT_FOCUSED_BLAST, 19000);
-                        events.ScheduleEvent(EVENT_CALL_OF_THE_SCORPID, 29000);
+                    events.Reset();
+                    DoCastSelf(SPELL_EXOSKELETAL_VULNERABILITY, true);
+                    me->CastCustomSpell(SPELL_CHITINOUS_EXOSKELETON, SPELLVALUE_AURA_STACK, 25, me, TRIGGERED_NONE);
+                    events.ScheduleEvent(EVENT_INFUSED_EXOSKELETON, 15000);
+                    events.ScheduleEvent(EVENT_ARCANOSLASH, 16000);
+                    events.ScheduleEvent(EVENT_FOCUSED_BLAST, 19000);
+                    events.ScheduleEvent(EVENT_CALL_OF_THE_SCORPID, 29000);
+
                     }
+
                 }
+            }
         }
 
         void DoAction(int32 action) override

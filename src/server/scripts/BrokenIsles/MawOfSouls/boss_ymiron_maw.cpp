@@ -248,7 +248,7 @@ class at_bane_essence : public AreaTriggerEntityScript
             at_bane_essence_AI(AreaTrigger* at) : AreaTriggerAI(at)
             {}
 
-            void OnInitialize()
+            void OnInitialize() override
             {
                 if (!at->GetCaster())
                     return;

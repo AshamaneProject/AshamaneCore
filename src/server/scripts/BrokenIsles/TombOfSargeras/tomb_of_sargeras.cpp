@@ -268,7 +268,7 @@ public:
     {
         PrepareSpellScript(spell_goroth_summon_SpellScript);
 
-        void HandleDummy(SpellEffIndex effIndex)
+        void HandleDummy(SpellEffIndex /*effIndex*/)
         {
             /*if (Unit* caster = GetCaster())
             {

@@ -256,11 +256,11 @@ public:
             ScriptedAI::EnterEvadeMode(why);
         }
 
-        /*void MovementInform(uint32 type, uint32 /*id*//*) override
-        {
-            if (type == ROTATE_MOTION_TYPE && me->IsInCombat())
-                me->GetMotionMaster()->MoveRotate(180000, urand(0, 1) ? ROTATE_DIRECTION_LEFT : ROTATE_DIRECTION_RIGHT);
-        }*/
+        //void MovementInform(uint32 type, uint32 /*id*/) override
+        //{
+        //    if (type == ROTATE_MOTION_TYPE && me->IsInCombat())
+        //        me->GetMotionMaster()->MoveRotate(180000, urand(0, 1) ? ROTATE_DIRECTION_LEFT : ROTATE_DIRECTION_RIGHT);
+        //}
 
         void UpdateAI(uint32 diff) override
         {

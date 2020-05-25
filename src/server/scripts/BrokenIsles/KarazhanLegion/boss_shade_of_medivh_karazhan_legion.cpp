@@ -92,7 +92,7 @@ class boss_new_shade_of_medivh : public CreatureScript
         {
             explicit boss_new_shade_of_medivh_AI(Creature* creature) : BossAI(creature, DATA_SHADE_OF_MEDIVH) { }
 
-            void ScheduleTasks()
+            void ScheduleTasks() override
             {
                 uint8 order = urand(0, 2);
 

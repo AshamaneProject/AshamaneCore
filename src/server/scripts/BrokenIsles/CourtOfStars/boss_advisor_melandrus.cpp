@@ -120,7 +120,7 @@ class boss_advisor_melandrus : public CreatureScript
             boss_advisor_melandrus_AI(Creature* creature) : BossAI(creature, DATA_ADVISOR_MELANDRUS)
             {}
 
-            void Reset()
+            void Reset() override
             {
                 _Reset();
             }

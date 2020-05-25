@@ -344,7 +344,7 @@ struct npc_collapsing_world_122425 : public ScriptedAI
 {
     npc_collapsing_world_122425(Creature* creature) : ScriptedAI(creature) { SetCombatMovement(false); }
 
-    void UpdateAI(uint32 diff) override
+    void UpdateAI(uint32 /*diff*/) override
     {
         if (!IsLock)
         {

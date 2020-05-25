@@ -159,7 +159,7 @@ struct npc_sturmschnabel_98383 : public ScriptedAI
 {
     npc_sturmschnabel_98383(Creature* creature) : ScriptedAI(creature) { me->SetAIAnimKitId(0); }
 
-    void OnSpellClick(Unit* clicker, bool& /*result*/)
+    void OnSpellClick(Unit* clicker, bool& /*result*/) override
     {
         if (Player* player = clicker->ToPlayer())
         {

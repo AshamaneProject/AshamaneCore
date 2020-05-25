@@ -1253,7 +1253,7 @@ struct npc_high_overlord_saurfang_93773 : public ScriptedAI
         }
     }
 
-    void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId)
+    void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId) override
     {
         if (player->HasQuest(QUEST_H_A_DESPERATE_PLEA))
         {

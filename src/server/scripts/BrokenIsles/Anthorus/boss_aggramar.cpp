@@ -425,7 +425,7 @@ struct npc_magni_bronzebeard_128169 : public ScriptedAI
     {
         CloseGossipMenuFor(player);
         player->CastSpell(player, SPELL_TITANS_ASSEMBLE_MOVIE, true);
-        player->TeleportTo(4000, 1712, 2826.39f, -4567.94f, 291.95f, 0.02513274f);
+        player->TeleportTo(1712, 2826.39f, -4567.94f, 291.95f, 0.02513274f, 4000);
     }
 };
 

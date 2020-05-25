@@ -142,7 +142,7 @@ class boss_new_moroes : public CreatureScript
                 ChoseGuests();
             }
 
-            void DamageTaken(Unit* /**/, uint32 & damage) override
+            void DamageTaken(Unit* /**/, uint32 & /*damage*/) override
             {
                 if (me->HealthBelowPct(60) && !_IsPurged)
                 {

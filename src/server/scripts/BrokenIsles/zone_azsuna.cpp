@@ -1395,7 +1395,7 @@ public:
     struct npc_agapant_90543AI : public ScriptedAI
     {
         npc_agapant_90543AI(Creature* creature) : ScriptedAI(creature) { }
-        void Reset()
+        void Reset() override
         {
             say = false;
         }

@@ -120,7 +120,7 @@ class boss_lady_hatecoil : public CreatureScript
                 RespawnDunes();
             }
 
-            void Reset()
+            void Reset() override
             {
                 _Reset();
             }

@@ -302,7 +302,7 @@ class boss_helya_maw : public CreatureScript
                 Initialize();
             }
 
-            void EnterEvadeMode(EvadeReason reason) override
+            void EnterEvadeMode(EvadeReason /*reason*/) override
             {
                 for (auto & it : _pools)
                 {

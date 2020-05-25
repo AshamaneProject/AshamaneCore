@@ -301,7 +301,7 @@ class npc_92850: public CreatureScript
 public:
     npc_92850() : CreatureScript("npc_92850") { }
 
-    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
+    bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 /*sender*/, uint32 action) override
     {
         switch (action)
         {

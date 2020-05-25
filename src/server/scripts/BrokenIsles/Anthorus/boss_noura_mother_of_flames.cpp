@@ -438,7 +438,7 @@ struct npc_diima_mother_of_gloom_122469 : public ScriptedAI
         }
     }
 
-    void EnterCombat(Unit* /*victim*/)
+    void EnterCombat(Unit* /*victim*/) override
     {
         Talk(0);
         events.ScheduleEvent(SPELL_FLASHFREEZE, 10s);

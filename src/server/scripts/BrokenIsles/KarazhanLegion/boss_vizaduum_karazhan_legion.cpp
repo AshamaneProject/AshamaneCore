@@ -221,7 +221,7 @@ class boss_new_vizaduum : public CreatureScript
                 }
             }
 
-            void DamageTaken(Unit* /**/, uint32 & damage) override
+            void DamageTaken(Unit* /**/, uint32 & /*damage*/) override
             {
                 if (me->HealthBelowPct(66) && !_firstPhase)
                 {

@@ -335,7 +335,7 @@ class npc_cots_talixae_minion : public CreatureScript
                 CheckMinionsDead(me);
             }
 
-            void Reset()
+            void Reset() override
             {
                 _events.Reset();
                 CheckMinionsDead(me);

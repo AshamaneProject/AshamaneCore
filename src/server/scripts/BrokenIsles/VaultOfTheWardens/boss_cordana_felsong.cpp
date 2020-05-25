@@ -177,7 +177,7 @@ struct npc_drelanim_whisperwind_103860 : public ScriptedAI
         case 1:
             me->SetHomePosition(Position(4050.29f, -297.5246f, -281.5895f, 0.0746f));
             me->GetMotionMaster()->MoveTargetedHome();
-            me->GetScheduler().Schedule(Milliseconds(6000), [this](TaskContext context)
+            me->GetScheduler().Schedule(Milliseconds(6000), [this](TaskContext /*context*/)
             {
                 Talk(0);
                 me->AddNpcFlag(UNIT_NPC_FLAG_GOSSIP);

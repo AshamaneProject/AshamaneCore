@@ -154,7 +154,7 @@ struct npc_lorin_107349 : public ScriptedAI
 {
     npc_lorin_107349(Creature* creature) : ScriptedAI(creature) { me->SetAIAnimKitId(0); }
 
-    void sGossipSelect(Player* player, uint32 menuId, uint32 gossipListId) override
+    void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId) override
     {
         if (player->HasQuest(MAKE_YOUR_MARK))
         {

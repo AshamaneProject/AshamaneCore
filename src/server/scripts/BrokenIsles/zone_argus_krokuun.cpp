@@ -290,7 +290,7 @@ public:
             _playerGUID = ObjectGuid::Empty;
         }
 
-        void DoAction(int32 action)
+        void DoAction(int32 action) override
         {
             if (action == ACTION_START_ANIMATION)
                 events.ScheduleEvent(EVENT_STEP_01, 1s);

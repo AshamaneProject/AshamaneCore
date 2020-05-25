@@ -344,7 +344,7 @@ struct npc_lightforged_teleport_pod_128289 : public ScriptedAI
     };
     using Path01Size = std::extent<decltype(Path01)>;
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(Unit* /*summoner*/) override
     {
         me->AddNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
     }

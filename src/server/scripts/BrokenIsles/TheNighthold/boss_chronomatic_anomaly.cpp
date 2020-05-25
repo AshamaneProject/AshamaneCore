@@ -256,7 +256,7 @@ public:
             Talk(SAY_DEATH);
         }
 
-        void DoAction(int32 action) override
+        void DoAction(int32 /*action*/) override
         {
             switch (events.GetPhaseMask())
             {

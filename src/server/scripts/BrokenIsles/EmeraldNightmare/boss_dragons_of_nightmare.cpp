@@ -265,7 +265,7 @@ struct npc_taerar_102681 : public ScriptedAI
         }
     }
 
-    void EnterEvadeMode(EvadeReason why)
+    void EnterEvadeMode(EvadeReason why) override
     {
         std::list<Creature*> list;
         me->GetCreatureListWithEntryInGrid(list, NPC_SHADE_OF_TAERAR, 500.0f);
