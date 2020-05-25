@@ -177,6 +177,7 @@ struct npc_kurtalos_whirling_blade : public ScriptedAI
 {
     npc_kurtalos_whirling_blade(Creature* creature) : ScriptedAI(creature) { }
 
+
     void Reset() override
     {
         me->SetReactState(REACT_PASSIVE);

@@ -1,19 +1,6 @@
 /*
- * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation; either version 2 of the License, or (at your
- * option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
- * more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program. If not, see <http://www.gnu.org/licenses/>.
- */
+LatinCore BFA and Nordrassil Project Legion Cuba 2020  
+*/
 
 #include "AreaTrigger.h"
 #include "AreaTriggerAI.h"
@@ -22,6 +9,17 @@
 #include "SpellAuraEffects.h"
 #include "ScriptMgr.h"
 #include "eye_of_azshara.h"
+
+// 97171
+struct npc_hatecoil_arcanist : public ScriptedAI
+{
+    npc_hatecoil_arcanist(Creature* creature) : ScriptedAI(creature) { }
+
+    void JustDied(Unit* /*killer*/) override
+    {
+        me->GetInstanceScript()->SetData(DATA_ARCANIST_DIED, 0);
+    }
+};
 
 // 196027
 class spell_hatecoil_arcanist_aqua_spout : public SpellScript
@@ -266,6 +264,8 @@ class spell_eoa_lightning_strikes_damage : public SpellScript
 
 void AddSC_eye_of_azshara()
 {
+    RegisterCreatureAI(npc_hatecoil_arcanist);
+
     RegisterSpellScript(spell_hatecoil_arcanist_aqua_spout);
     RegisterSpellScript(spell_animated_storm_water_spout);
     RegisterSpellScript(spell_skrog_tidestomper_massive_quake);

@@ -29,63 +29,63 @@
 enum ClassHallDH
 {
     /// DH Quests
-    QUEST_CALL_OF_THE_ILLIDARI_39261        = 39261,
-    QUEST_CALL_OF_THE_ILLIDARI_39047        = 39047,
+    QUEST_CALL_OF_THE_ILLIDARI_39261 = 39261,
+    QUEST_CALL_OF_THE_ILLIDARI_39047 = 39047,
 
-    QUEST_WEAPONS_OF_LEGEND_1               = 40816,
-    QUEST_WEAPONS_OF_LEGEND_2               = 40814,
-    QUEST_ONE_MORE_LEGEND                   = 44043,
+    QUEST_WEAPONS_OF_LEGEND_1 = 40816,
+    QUEST_WEAPONS_OF_LEGEND_2 = 40814,
+    QUEST_ONE_MORE_LEGEND = 44043,
 
     // Havoc
-    QUEST_MAKING_ARRANGEMENTS_1             = 40819,
-    QUEST_BY_ANY_MEANS_1                    = 39051,
-    QUEST_THE_HUNT_1                        = 39247,
+    QUEST_MAKING_ARRANGEMENTS_1 = 40819,
+    QUEST_BY_ANY_MEANS_1 = 39051,
+    QUEST_THE_HUNT_1 = 39247,
 
-    QUEST_MAKING_ARRANGEMENTS_2             = 41120,
-    QUEST_BY_ANY_MEANS_2                    = 41121,
-    QUEST_THE_HUNT_2                        = 41119,
+    QUEST_MAKING_ARRANGEMENTS_2 = 41120,
+    QUEST_BY_ANY_MEANS_2 = 41121,
+    QUEST_THE_HUNT_2 = 41119,
 
     // Vengeance
-    QUEST_VENGEANCE_WILL_BE_OURS_1          = 40249,
-    QUEST_VENGEANCE_WILL_BE_OURS_2          = 41863,
+    QUEST_VENGEANCE_WILL_BE_OURS_1 = 40249,
+    QUEST_VENGEANCE_WILL_BE_OURS_2 = 41863,
 
     /// Texts
-    KORVAS_BLOODTHORN_TEXT_00               = 0,
-    KORVAS_BLOODTHORN_TEXT_01               = 1,
+    KORVAS_BLOODTHORN_TEXT_00 = 0,
+    KORVAS_BLOODTHORN_TEXT_01 = 1,
 
     /// Spells
-    SPELL_WEAPONS_OF_LEGEND_PLAYER_CHOICE   = 201092,
-    SPELL_CALL_OF_THE_WARBLADES             = 208464,
-    SPELL_FELLSOUL_SLAM                     = 216164,
-    SPELL_SIGIL_OF_POWER                    = 216228,
-    SPELL_SOUL_CARVER                       = 216188,
+    SPELL_WEAPONS_OF_LEGEND_PLAYER_CHOICE = 201092,
+    SPELL_CALL_OF_THE_WARBLADES = 208464,
+    SPELL_FELLSOUL_SLAM = 216164,
+    SPELL_SIGIL_OF_POWER = 216228,
+    SPELL_SOUL_CARVER = 216188,
 
     /// Events
-    EVENT_CALL_OF_THE_WARBLADES             = 1,
-    EVENT_FELLSOUL_SLAM                     = 2,
-    EVENT_SIGIL_OF_POWER                    = 3,
-    EVENT_SOUL_CARVER                       = 4,
+    EVENT_CALL_OF_THE_WARBLADES = 1,
+    EVENT_FELLSOUL_SLAM = 2,
+    EVENT_SIGIL_OF_POWER = 3,
+    EVENT_SOUL_CARVER = 4,
 
     /// Misc
-    PLAYER_CHOICE_DH_SELECTION              = 255,
+    PLAYER_CHOICE_DH_SELECTION = 255,
 
-    ACTION_RESPONSEID_1                     = 600, // Havoc
-    ACTION_RESPONSEID_2                     = 601, // Vengeance
-    QUEST_THE_POWER_TO_SURVIVE              = 40816,
-    SPELL_PLAYERCHOICE                      = 201092,
-    PLAYER_CHOICE_DH_ARTIFACT_SELECTION     = 255,
-    PLAYER_CHOICE_DH_HAVOC                  = 641,
-    PLAYER_CHOICE_DH_VENGEANCE              = 640,
-    SPELL_DH_SPEC_HAVOK                     = 201093,
-    SPELL_DH_SPEC_VENGEANCE                 = 201094,
-    QUEST_ALDRACHI_WARBLADES_CHOSEN         = 40818,
-    QUEST_TWINBLADES_OFTHE_DECEIVER_CHOSEN  = 40817,
-    KILL_CREDIT_DH_ARTIFACT_CHOSEN          = 105177,
+    ACTION_RESPONSEID_1 = 600, // Havoc
+    ACTION_RESPONSEID_2 = 601, // Vengeance
+    QUEST_THE_POWER_TO_SURVIVE = 40816,
+    SPELL_PLAYERCHOICE = 201092,
+    PLAYER_CHOICE_DH_ARTIFACT_SELECTION = 255,
+    PLAYER_CHOICE_DH_HAVOC = 641,
+    PLAYER_CHOICE_DH_VENGEANCE = 640,
+    SPELL_DH_SPEC_HAVOK = 201093,
+    SPELL_DH_SPEC_VENGEANCE = 201094,
+    QUEST_ALDRACHI_WARBLADES_CHOSEN = 40818,
+    QUEST_TWINBLADES_OFTHE_DECEIVER_CHOSEN = 40817,
+    KILL_CREDIT_DH_ARTIFACT_CHOSEN = 105177,
 };
 
 enum DataTypes
 {
-    DATA_STAGE_7                            = 7
+    DATA_STAGE_7 = 7
 };
 
 struct npc_korvas_bloodthorn_99343 : public ScriptedAI
@@ -142,28 +142,28 @@ public:
 
         switch (responseID)
         {
-            case PLAYER_CHOICE_DH_HAVOC:
-            {
-                player->RemoveRewardedQuest(QUEST_ALDRACHI_WARBLADES_CHOSEN);
-                player->KilledMonsterCredit(KILL_CREDIT_DH_ARTIFACT_CHOSEN);
+        case PLAYER_CHOICE_DH_HAVOC:
+        {
+            player->RemoveRewardedQuest(QUEST_ALDRACHI_WARBLADES_CHOSEN);
+            player->KilledMonsterCredit(KILL_CREDIT_DH_ARTIFACT_CHOSEN);
 
-                if (ChrSpecializationEntry const* spec = sChrSpecializationStore.AssertEntry(577))
-                    player->ActivateTalentGroup(spec);
+            if (ChrSpecializationEntry const* spec = sChrSpecializationStore.AssertEntry(577))
+                player->ActivateTalentGroup(spec);
 
-                break;
-            }
-            case PLAYER_CHOICE_DH_VENGEANCE:
-            {
-                player->RemoveRewardedQuest(QUEST_TWINBLADES_OFTHE_DECEIVER_CHOSEN);
-                player->KilledMonsterCredit(KILL_CREDIT_DH_ARTIFACT_CHOSEN);
+            break;
+        }
+        case PLAYER_CHOICE_DH_VENGEANCE:
+        {
+            player->RemoveRewardedQuest(QUEST_TWINBLADES_OFTHE_DECEIVER_CHOSEN);
+            player->KilledMonsterCredit(KILL_CREDIT_DH_ARTIFACT_CHOSEN);
 
-                if (ChrSpecializationEntry const* spec = sChrSpecializationStore.AssertEntry(581))
-                    player->ActivateTalentGroup(spec);
+            if (ChrSpecializationEntry const* spec = sChrSpecializationStore.AssertEntry(581))
+                player->ActivateTalentGroup(spec);
 
-                break;
-            }
-            default:
-                break;
+            break;
+        }
+        default:
+            break;
         }
     }
 };
@@ -173,7 +173,7 @@ class go_mardum_control_console : public GameObjectScript
 public:
     go_mardum_control_console() : GameObjectScript("go_mardum_control_console") { }
 
-     enum eCage {
+    enum eCage {
         NPC_ALTRUIS = 95237,
         NPC_KAYN = 95240,
         DATA_ACTION_START = 56,
@@ -219,12 +219,12 @@ public:
     }
 };
 
- class npc_mardum_altruis_ch : public CreatureScript
+class npc_mardum_altruis_ch : public CreatureScript
 {
 public:
     npc_mardum_altruis_ch() : CreatureScript("npc_mardum_altruis_ch") { }
 
-     enum {
+    enum {
         TEXT_1 = 0, // Whenever you\'re ready.
         TEXT_2 = 1, // This way.Your forces await.
         TEXT_3 = 2, // The Fel Hammer is ours at last. Gaze upon the might of the Twinblades of the Deceiver!
@@ -247,33 +247,33 @@ public:
         DATA_START_ANIM = 56,
     };
 
-     bool OnQuestAccept(Player* /*player*/, Creature* creature, Quest const* quest) override
+    bool OnQuestAccept(Player* player, Creature* creature, Quest const* quest) override
     {
         if (quest->GetQuestId() == QUEST_UNBRIDLED_POWER)
             creature->AI()->Talk(TEXT_1);
 
-         return true;
+        return true;
     }
 
-     struct npc_mardum_altruis_ch_AI : public ScriptedAI
+    struct npc_mardum_altruis_ch_AI : public ScriptedAI
     {
         npc_mardum_altruis_ch_AI(Creature* creature) : ScriptedAI(creature) {
             Initialize();
         }
 
-         void Reset() override
+        void Reset() override
         {
             _events.Reset();
         }
 
-         void Initialize() {}
+        void Initialize() {}
 
-         void UpdateAI(uint32 diff) override
+        void UpdateAI(uint32 diff) override
         {
             UpdateVictim();
             _events.Update(diff);
 
-             while (uint32 eventId = _events.ExecuteEvent())
+            while (uint32 eventId = _events.ExecuteEvent())
             {
                 switch (eventId)
                 {
@@ -330,7 +330,7 @@ public:
             // no melee attacks
         }
 
-         void SetData(uint32 id, uint32 /*value*/) override
+        void SetData(uint32 id, uint32 /*value*/) override
         {
             switch (id) {
             case DATA_START_ANIM:
@@ -342,22 +342,22 @@ public:
             }
         }
 
-     private:
+    private:
         EventMap _events;
     };
 
-     CreatureAI* GetAI(Creature* creature) const override
+    CreatureAI* GetAI(Creature* creature) const override
     {
         return new npc_mardum_altruis_ch_AI(creature);
     }
 };
 
- // npc 98650 for the quest 41070 'Spoils of Victory'
+// npc 98650 for the quest 41070 'Spoils of Victory'
 class npc_mardum_battlelord_gaardoun : public CreatureScript {
 public:
     npc_mardum_battlelord_gaardoun() : CreatureScript("npc_mardum_battlelord_gaardoun") { }
 
-     enum eGaardoun {
+    enum eGaardoun {
         QUEST_SPOILS_OF_VICTORY = 41070,
         FOLLOW_GAARDOUN_KILLCREDIT = 103047,
         PHASE_NONE = 0,
@@ -373,7 +373,7 @@ public:
         WP_LAST_TALK = 17,
     };
 
-     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 /*action*/) override
+    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 /*action*/) override
     {
         if (player->GetQuestStatus(QUEST_SPOILS_OF_VICTORY) == QUEST_STATUS_INCOMPLETE)
         {
@@ -388,47 +388,47 @@ public:
             }
         }
 
-         return true;
+        return true;
     }
 
-     struct npc_mardum_battlelord_gaardoun_AI : public npc_escortAI
+    struct npc_mardum_battlelord_gaardoun_AI : public npc_escortAI
     {
         npc_mardum_battlelord_gaardoun_AI(Creature* creature) : npc_escortAI(creature)
         {
             Initialize();
         }
 
-         void Initialize()
+        void Initialize()
         {
             _phase = PHASE_NONE;
             _moveTimer = 0;
         }
 
-         ObjectGuid GetGUID(int32 type) const override
+        ObjectGuid GetGUID(int32 type) const override
         {
             if (type == DATA_EVENT_STARTER_GUID)
                 return _eventStarterGuid;
 
-             return ObjectGuid::Empty;
+            return ObjectGuid::Empty;
         }
 
-         void SetGUID(ObjectGuid guid, int32 /*id*/) override
+        void SetGUID(ObjectGuid guid, int32 /*id*/) override
         {
             _eventStarterGuid = guid;
             Start(false, true, guid);
             SetDespawnAtFar(false);
         }
 
-         void LastWaypointReached() override
+        void LastWaypointReached() override
         {
             me->DespawnOrUnsummon();
             me->SetOrientation(2.990351f);
 
-             if (Player* player = ObjectAccessor::FindPlayer(_eventStarterGuid))
+            if (Player* player = ObjectAccessor::FindPlayer(_eventStarterGuid))
                 player->KilledMonsterCredit(FOLLOW_GAARDOUN_KILLCREDIT, ObjectGuid::Empty);
         }
 
-         void Reset() override
+        void Reset() override
         {
             me->SetWalk(false);
             me->SetSpeed(MOVE_RUN, 3.2f);
@@ -436,21 +436,21 @@ public:
             _events.Reset();
         }
 
-         void UpdateAI(uint32 diff) override
+        void UpdateAI(uint32 diff) override
         {
             _events.Update(diff);
 
-             if (UpdateVictim())
+            if (UpdateVictim())
             {
                 DoMeleeAttackIfReady();
             }
 
-             if (HasEscortState(STATE_ESCORT_NONE))
+            if (HasEscortState(STATE_ESCORT_NONE))
                 return;
 
-             npc_escortAI::UpdateAI(diff);
+            npc_escortAI::UpdateAI(diff);
 
-             if (_phase)
+            if (_phase)
             {
                 if (_moveTimer <= diff)
                 {
@@ -470,13 +470,13 @@ public:
             }
         }
 
-         void WaypointReached(uint32 waypointId) override
+        void WaypointReached(uint32 waypointId) override
         {
             Player* player = GetPlayerForEscort();
             if (!player)
                 return;
 
-             switch (waypointId)
+            switch (waypointId)
             {
             case WP_START_TALK:
                 Talk(2);
@@ -492,14 +492,14 @@ public:
             }
         }
 
-     private:
+    private:
         int8 _phase;
         uint32 _moveTimer;
         ObjectGuid _eventStarterGuid;
         EventMap _events;
     };
 
-     CreatureAI* GetAI(Creature* creature) const override
+    CreatureAI* GetAI(Creature* creature) const override
     {
         return new npc_mardum_battlelord_gaardoun_AI(creature);
     }
@@ -510,13 +510,13 @@ enum eQuests {
     OBJECTIVE_CURSED_FORGE_OF_NATHREZIM = 46840,
 };
 
- // npc 103025 for the quest 41064 'Cursed Forge of the Nathrezim'
+// npc 103025 for the quest 41064 'Cursed Forge of the Nathrezim'
 class npc_mardum_battlelord_gaardoun_103025 : public CreatureScript
 {
 public:
     npc_mardum_battlelord_gaardoun_103025() : CreatureScript("npc_mardum_battlelord_gaardoun_103025") { }
 
-     bool OnQuestAccept(Player* player, Creature* /*creature*/, Quest const* quest) override
+    bool OnQuestAccept(Player* player, Creature* /*creature*/, Quest const* quest) override
     {
         if (quest->GetQuestId() == QUEST_CURSED_FORGE_OF_NATHREZIM)
         {
@@ -529,15 +529,15 @@ public:
     }
 };
 
- // temporary until necessary criteria will be implemented
+// temporary until necessary criteria will be implemented
 class PlayerScript_mardum_artifact_empowered : public PlayerScript
 {
 public:
     PlayerScript_mardum_artifact_empowered() : PlayerScript("PlayerScript_mardum_artifact_empowered") {}
 
-     uint32 checkTimer = 1000;
+    uint32 checkTimer = 1000;
 
-     void OnUpdate(Player* player, uint32 diff) override
+    void OnUpdate(Player* player, uint32 diff) override
     {
         if (checkTimer <= diff)
         {
@@ -554,13 +554,13 @@ public:
                                     }
             }
 
-             checkTimer = 1000;
+            checkTimer = 1000;
         }
         else checkTimer -= diff;
     }
 };
 
- enum eQuest41066 {
+enum eQuest41066 {
     QUEST_THE_HUNTERS_GAZE = 41066,
     GO_EMPOWERED_NETHER_CRUCIBLE = 250677,
     KILLCREDIT_SPELL_GAZING = 203803,
@@ -569,13 +569,13 @@ public:
     SCENE_GAZE_UPON_LEGION_ID = 1203,
 };
 
- // scene 1203 "Gazing Upon Legion" - teleport player back to the fel hammer on complete
+// scene 1203 "Gazing Upon Legion" - teleport player back to the fel hammer on complete
 class scene_gaze_upon_legion : public SceneScript
 {
 public:
     scene_gaze_upon_legion() : SceneScript("scene_gaze_upon_legion") { }
 
-     void OnSceneComplete(Player* player, uint32 /*sceneInstanceID*/, SceneTemplate const* /*sceneTemplate*/) override
+    void OnSceneComplete(Player* player, uint32 /*sceneInstanceID*/, SceneTemplate const* /*sceneTemplate*/) override
     {
         player->TeleportTo(1519, 1568.698f, 1414.967f, 217.799f, 3.3862f);
         player->KilledMonsterCredit(KILLCREDIT_GAZE_UPON_LEGION, ObjectGuid::Empty);
@@ -583,13 +583,13 @@ public:
     }
 };
 
- // gameobject 250677 for quest 41066 (The Hunters Gaze)
+// gameobject 250677 for quest 41066 (The Hunters Gaze)
 class go_mardum_empowered_nether_crusible : public GameObjectScript
 {
 public:
     go_mardum_empowered_nether_crusible() : GameObjectScript("go_mardum_empowered_nether_crusible") { }
 
-     bool OnGossipSelect(Player* player, GameObject* /*go*/, uint32 /*sender*/, uint32 /*action*/) override
+    bool OnGossipSelect(Player* player, GameObject* go, uint32 /*sender*/, uint32 /*action*/) override
     {
         if (player->GetQuestStatus(QUEST_THE_HUNTERS_GAZE) == QUEST_STATUS_INCOMPLETE)
         {
@@ -599,16 +599,16 @@ public:
     }
 };
 
- // playerscript to start scene after teleportation
+// playerscript to start scene after teleportation
 class PlayerScript_start_gazing : public PlayerScript
 {
 public:
     PlayerScript_start_gazing() : PlayerScript("PlayerScript_start_gazing") {}
 
-     uint32 checkTimer = 200;
+    uint32 checkTimer = 200;
     bool _sceneStarted = false;
 
-     void OnUpdate(Player* player, uint32 diff) override
+    void OnUpdate(Player* player, uint32 diff) override
     {
         if (checkTimer <= diff)
         {
@@ -626,12 +626,12 @@ public:
     }
 };
 
- class q_paradise_lost : public QuestScript
+class q_paradise_lost : public QuestScript
 {
 public:
     q_paradise_lost() : QuestScript("q_paradise_lost") { }
 
-     void OnQuestStatusChange(Player* player, Quest const* /*quest*/, QuestStatus oldStatus, QuestStatus newStatus) override
+    void OnQuestStatusChange(Player* player, Quest const* /*quest*/, QuestStatus oldStatus, QuestStatus newStatus) override
     {
         if (oldStatus == QUEST_STATUS_NONE && newStatus == QUEST_STATUS_INCOMPLETE)
         {
@@ -640,12 +640,12 @@ public:
     }
 };
 
- class q_stormheim : public QuestScript
+class q_stormheim : public QuestScript
 {
 public:
     q_stormheim() : QuestScript("q_stormheim") { }
 
-     void OnQuestStatusChange(Player* player, Quest const* /*quest*/, QuestStatus oldStatus, QuestStatus newStatus) override
+    void OnQuestStatusChange(Player* player, Quest const* /*quest*/, QuestStatus oldStatus, QuestStatus newStatus) override
     {
         if (oldStatus == QUEST_STATUS_NONE && newStatus == QUEST_STATUS_INCOMPLETE)
         {
@@ -654,12 +654,12 @@ public:
     }
 };
 
- class q_the_lone_mountain : public QuestScript
+class q_the_lone_mountain : public QuestScript
 {
 public:
     q_the_lone_mountain() : QuestScript("q_the_lone_mountain") { }
 
-     void OnQuestStatusChange(Player* player, Quest const* /*quest*/, QuestStatus oldStatus, QuestStatus newStatus) override
+    void OnQuestStatusChange(Player* player, Quest const* /*quest*/, QuestStatus oldStatus, QuestStatus newStatus) override
     {
         if (oldStatus == QUEST_STATUS_NONE && newStatus == QUEST_STATUS_INCOMPLETE)
         {
@@ -668,12 +668,12 @@ public:
     }
 };
 
- class q_the_tranquil_forest : public QuestScript
+class q_the_tranquil_forest : public QuestScript
 {
 public:
     q_the_tranquil_forest() : QuestScript("q_the_tranquil_forest") { }
 
-     void OnQuestStatusChange(Player* player, Quest const* /*quest*/, QuestStatus oldStatus, QuestStatus newStatus) override
+    void OnQuestStatusChange(Player* player, Quest const* /*quest*/, QuestStatus oldStatus, QuestStatus newStatus) override
     {
         if (oldStatus == QUEST_STATUS_NONE && newStatus == QUEST_STATUS_INCOMPLETE)
         {

@@ -33,15 +33,15 @@ enum
 
 enum ClassHallhunter
 {
-    SPELL_PLAYERCHOICE                      = 198430,
+    SPELL_PLAYERCHOICE = 198430,
     PLAYER_CHOICE_HUNTER_ARTIFACT_SELECTION = 240,
-    PLAYER_CHOICE_Hunter_Shooting           = 451,
-    PLAYER_CHOICE_Hunter_Survival           = 450,
-    PLAYER_CHOICE_Hunter_Beast_Mastery      = 452,
-    SPELL_Hunter_SPEC_Beast_Mastery              = 198433,
-    SPELL_Hunter_SPEC_Survival                   = 198435,
-    SPELL_Hunter_SPEC_Shooting                   = 198436,
-    KILL_CREDIT_HUNTER_ARTIFACT_CHOSEN          = 104634,
+    PLAYER_CHOICE_Hunter_Shooting = 451,
+    PLAYER_CHOICE_Hunter_Survival = 450,
+    PLAYER_CHOICE_Hunter_Beast_Mastery = 452,
+    SPELL_Hunter_SPEC_Beast_Mastery = 198433,
+    SPELL_Hunter_SPEC_Survival = 198435,
+    SPELL_Hunter_SPEC_Shooting = 198436,
+    KILL_CREDIT_HUNTER_ARTIFACT_CHOSEN = 104634,
 };
 
 struct npc_snowfeather_100786 : public ScriptedAI
@@ -145,38 +145,38 @@ public:
 
         switch (responseID)
         {
-            case PLAYER_CHOICE_Hunter_Shooting:
-            {
-                player->RemoveRewardedQuest(40618);
-                player->KilledMonsterCredit(KILL_CREDIT_HUNTER_ARTIFACT_CHOSEN);
+        case PLAYER_CHOICE_Hunter_Shooting:
+        {
+            player->RemoveRewardedQuest(40618);
+            player->KilledMonsterCredit(KILL_CREDIT_HUNTER_ARTIFACT_CHOSEN);
 
-                if (ChrSpecializationEntry const* spec = sChrSpecializationStore.AssertEntry(577))
-                    player->ActivateTalentGroup(spec);
+            if (ChrSpecializationEntry const* spec = sChrSpecializationStore.AssertEntry(577))
+                player->ActivateTalentGroup(spec);
 
-                break;
-            }
-            case PLAYER_CHOICE_Hunter_Beast_Mastery:
-            {
-                player->RemoveRewardedQuest(40618);
-                player->KilledMonsterCredit(KILL_CREDIT_HUNTER_ARTIFACT_CHOSEN);
+            break;
+        }
+        case PLAYER_CHOICE_Hunter_Beast_Mastery:
+        {
+            player->RemoveRewardedQuest(40618);
+            player->KilledMonsterCredit(KILL_CREDIT_HUNTER_ARTIFACT_CHOSEN);
 
-                if (ChrSpecializationEntry const* spec = sChrSpecializationStore.AssertEntry(581))
-                    player->ActivateTalentGroup(spec);
+            if (ChrSpecializationEntry const* spec = sChrSpecializationStore.AssertEntry(581))
+                player->ActivateTalentGroup(spec);
 
-                break;
-            }
-            case PLAYER_CHOICE_Hunter_Survival:
-            {
-                player->RemoveRewardedQuest(40618);
-                player->KilledMonsterCredit(KILL_CREDIT_HUNTER_ARTIFACT_CHOSEN);
+            break;
+        }
+        case PLAYER_CHOICE_Hunter_Survival:
+        {
+            player->RemoveRewardedQuest(40618);
+            player->KilledMonsterCredit(KILL_CREDIT_HUNTER_ARTIFACT_CHOSEN);
 
-                if (ChrSpecializationEntry const* spec = sChrSpecializationStore.AssertEntry(582))
-                    player->ActivateTalentGroup(spec);
+            if (ChrSpecializationEntry const* spec = sChrSpecializationStore.AssertEntry(582))
+                player->ActivateTalentGroup(spec);
 
-                break;
-            }
-            default:
-                break;
+            break;
+        }
+        default:
+            break;
         }
     }
 };
@@ -186,7 +186,7 @@ class npc_40618_artifact : public CreatureScript
 public:
     npc_40618_artifact() : CreatureScript("npc_40618_artifact") { }
 
-    bool OnQuestAccept(Player* player, Creature* /*creature*/, Quest const* quest) override
+    bool OnQuestAccept(Player* player, Creature* creature, Quest const* quest) override
     {
         if (quest->GetQuestId() == 40618)
         {
@@ -209,7 +209,7 @@ public:
         return true;
     }
 
-    bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 /*sender*/, uint32 action) override
+    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
         ClearGossipMenuFor(player);
 

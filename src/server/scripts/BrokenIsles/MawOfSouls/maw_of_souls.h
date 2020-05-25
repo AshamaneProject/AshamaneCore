@@ -16,64 +16,37 @@
 * with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef DEF_MAW_OF_SOULS_H
-#define DEF_MAW_OF_SOULS_H
+#ifndef MAW_OF_SOULS_H_
+#define MAW_OF_SOULS_H_
 
-#include "Map.h"
-#include "Creature.h"
-#include "ObjectMgr.h"
-
+#define MawOfSoulsScriptName "instance_maw_of_souls"
 #define DataHeader "MOS"
-#define MOSScriptName "instance_maw_of_souls"
 
-constexpr uint32 EncounterCount = 3;
-
-enum MOSCreatureIds
-{
-    BOSS_YMIRON_FALLEN  = 96756,
-    BOSS_HARBARON       = 96754,
-    BOSS_HELYA          = 96759,
-};
+uint32 const EncounterCount = 3;
 
 enum MOSDataTypes
 {
-    DATA_YMIRON     = 1,
-    DATA_HARBARON   = 2,
-    DATA_HELYA      = 3,
+    // Encounter States/Boss GUIDs
+    DATA_YMIRON_MAW     = 0,
+    DATA_HARBARON_MAW   = 1,
+    DATA_HELYA_MAW      = 2,
 };
 
-enum MOSGameObjectsIds
+enum MOSCreatureIds
 {
-    GO_HORN_OF_DAMMED   = 247041,
-    GO_WALL_OF_SOULS    = 246947,
-    GO_WALL_OF_SOULS_2  = 246948,
-    GO_COLLISION_WALL   = 243403,
-    GO_MURKY_FOG        = 265476,
-    GO_WALL_OF_SOULS_3  = 246435,
-    GO_TRAP_DOOR_01     = 246840,
-    GO_TRAP_DOOR_02     = 246842,
-    GO_TRAP_DOOR_03     = 246843,
-    GO_TRAP_DOOR_04     = 246844,
-    GO_TRAP_DOOR_05     = 246839,
-    GO_TRAP_DOOR_06     = 246838,
-    GO_TRAP_DOOR_07     = 246834,
-    GO_TRAP_DOOR_09     = 246835,
-    GO_TRAP_DOOR_10     = 246837,
-    GO_TRAP_DOOR_11     = 246841,
-    GO_NAGLFAR          = 246919,
+    // NPCs
+    NPC_YMIRON_MAW      = 96756,
+    NPC_HARBARON_MAW    = 96754,
+    NPC_SKJAL_MAW       = 99307,
+    NPC_HELYA_MAW       = 96759,
+
+    // Triggers
 };
 
-using SpellTargets = std::list<WorldObject*>;
-
-struct PlayerFilter
+template<class AI>
+AI* GetMawOfSoulsAI(Creature* creature)
 {
-    bool operator() (WorldObject*& target)
-    {
-        if (target->ToPlayer())
-            return false;
+    return GetInstanceAI<AI>(creature, MawOfSoulsScriptName);
+}
 
-        return true;
-    }
-};
-
-#endif
+#endif // MAW_OF_SOULS_H_

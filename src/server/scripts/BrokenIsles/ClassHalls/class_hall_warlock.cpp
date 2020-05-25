@@ -21,15 +21,15 @@
 enum WarlockClassHall
 {
     // Creatures
-    NPC_RITSSYN_FLAMESCOWL_103506           = 103506,
+    NPC_RITSSYN_FLAMESCOWL_103506 = 103506,
 
     // Texts
-    RITSSYN_FLAMESCOWL_TEXT_00              = 0,
-    RITSSYN_FLAMESCOWL_TEXT_01              = 1,
+    RITSSYN_FLAMESCOWL_TEXT_00 = 0,
+    RITSSYN_FLAMESCOWL_TEXT_01 = 1,
 
     // Quests
-    QUEST_THE_SIXTH                         = 40716,
-    QUEST_THE_NEW_BLOOD                     = 40729
+    QUEST_THE_SIXTH = 40716,
+    QUEST_THE_NEW_BLOOD = 40729
 };
 
 struct npc_ritssyn_flamescowl_103506 : public ScriptedAI

@@ -16,6 +16,9 @@
  */
 
 #include "ScriptMgr.h"
+#include "Conversation.h"
+#include "Player.h"
+#include "InstanceScript.h"
 #include "seat_of_triumvirate.h"
 
 void AddSC_seat_of_triumvirate()

@@ -44,17 +44,17 @@
 enum
 {
     NPC_THRALL_91731 = 91731,
- NPC_THRALL_RING = 965270,
- NPC_THRALL_RINGS = 965271,
- NPC_MILRA_STORMCALLER = 113709,
+    NPC_THRALL_RING = 965270,
+    NPC_THRALL_RINGS = 965271,
+    NPC_MILRA_STORMCALLER = 113709,
     QUEST_A_RING_UNBROKEN = 39746,
     SPELL_CAST_GOB = 11789,
- SPELL_CAST_ART = 209685,
- SPELL_CAST_ARTY = 209684,
- SPELL_ADEL_STAFF = 221207,
+    SPELL_CAST_ART = 209685,
+    SPELL_CAST_ARTY = 209684,
+    SPELL_ADEL_STAFF = 221207,
     ADEll_STAFF = 111102,
- NPC_ERANAK_STONSPEAK = 1028267,
- NPC_REGAL_KING = 966541,
+    NPC_ERANAK_STONSPEAK = 1028267,
+    NPC_REGAL_KING = 966541,
     GO_PORTAL = 278434,
 };
 
@@ -98,37 +98,37 @@ class npc_portal_1970193 : public CreatureScript
 {
 public:
     npc_portal_1970193() : CreatureScript("npc_portal_1970193") { }
-     struct npc_portal_1970193AI : public ScriptedAI
-     {
-         npc_portal_1970193AI(Creature* creature) : ScriptedAI(creature) { }
-         void MoveInLineOfSight(Unit* who) override
-         {
+    struct npc_portal_1970193AI : public ScriptedAI
+    {
+        npc_portal_1970193AI(Creature* creature) : ScriptedAI(creature) { }
+        void MoveInLineOfSight(Unit* who) override
+        {
             if (Player* player = who->ToPlayer())
             {
                 if (player->GetQuestStatus(39746) == QUEST_STATUS_INCOMPLETE)
                 {
                     if (player->IsInDist(me, 65.0f))
-     {
-                       if (!me->FindNearestCreature(104681, 70.0f))
+                    {
+                        if (!me->FindNearestCreature(104681, 70.0f))
                         {
-                           player->SummonCreature(104681, Position(-826.172f, 4260.53f, 746.251f, 1.75139f), TEMPSUMMON_MANUAL_DESPAWN);
+                            player->SummonCreature(104681, Position(-826.172f, 4260.53f, 746.251f, 1.75139f), TEMPSUMMON_MANUAL_DESPAWN);
                         }
-     }
+                    }
                 }
             }
-         }
-     };
-     CreatureAI* GetAI(Creature* creature) const override
-          {
-          return new npc_portal_1970193AI(creature);
-          }
+        }
+    };
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_portal_1970193AI(creature);
+    }
 };
 
 struct npc_stormbeak_104681 : public ScriptedAI
 {
     npc_stormbeak_104681(Creature* creature) : ScriptedAI(creature) { me->SetAIAnimKitId(0); }
 
-    void OnSpellClick(Unit* clicker, bool& /*result*/) override
+    void OnSpellClick(Unit* clicker, bool& /*result*/)
     {
         if (Player* player = clicker->ToPlayer())
         {
@@ -142,7 +142,7 @@ struct npc_stormbeak_104681 : public ScriptedAI
         }
     }
 
- void MoveInLineOfSight(Unit* who) override
+    void MoveInLineOfSight(Unit* who) override
     {
         if (Player* player = who->ToPlayer())
         {
@@ -159,12 +159,12 @@ struct npc_sturmschnabel_98383 : public ScriptedAI
 {
     npc_sturmschnabel_98383(Creature* creature) : ScriptedAI(creature) { me->SetAIAnimKitId(0); }
 
-    void OnSpellClick(Unit* clicker, bool& /*result*/) override
+    void OnSpellClick(Unit* clicker, bool& /*result*/)
     {
         if (Player* player = clicker->ToPlayer())
         {
 
-   {
+            {
                 me->SetAIAnimKitId(4061);
                 player->AddConversationDelayedTeleport(1800, 1325, 646, Position(1029.35f, 668.829f, 156.672f, 4.37562f));
             }
@@ -178,13 +178,13 @@ struct npc_sturmschnabel_98383 : public ScriptedAI
         }
     }
 
- void MoveInLineOfSight(Unit* who) override
+    void MoveInLineOfSight(Unit* who) override
     {
         if (Player* player = who->ToPlayer())
         {
             if (me->IsWithinDist(player, 15.0f, false))
             {
-              me->AddNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
+                me->AddNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
             }
         }
     }
@@ -199,7 +199,7 @@ struct npc_sturmschnabel_983830 : public ScriptedAI
         if (Player* player = clicker->ToPlayer())
         {
 
-   {
+            {
                 me->SetAIAnimKitId(4061);
                 player->AddConversationDelayedTeleport(1800, 1325, 1469, Position(813.921f, 1039.71f, 48.4425f, 5.8136f));
             }
@@ -213,13 +213,13 @@ struct npc_sturmschnabel_983830 : public ScriptedAI
         }
     }
 
- void MoveInLineOfSight(Unit* who) override
+    void MoveInLineOfSight(Unit* who) override
     {
         if (Player* player = who->ToPlayer())
         {
             if (me->IsWithinDist(player, 15.0f, false))
             {
-              me->AddNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
+                me->AddNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
             }
         }
     }
@@ -230,42 +230,42 @@ class npc_portal_1970191 : public CreatureScript
 {
 public:
     npc_portal_1970191() : CreatureScript("npc_portal_1970191") { }
-     struct npc_portal_1970191AI : public ScriptedAI
-     {
+    struct npc_portal_1970191AI : public ScriptedAI
+    {
         npc_portal_1970191AI(Creature* creature) : ScriptedAI(creature) { }
-         void MoveInLineOfSight(Unit* who) override
-         {
+        void MoveInLineOfSight(Unit* who) override
+        {
             if (Player* player = who->ToPlayer())
             {
                 if (player->GetQuestStatus(40224) == QUEST_STATUS_INCOMPLETE)
                 {
                     if (player->IsInDist(me, 54.0f))
-     {
-                       if (!me->FindNearestGameObject(251961, 70.0f))
+                    {
+                        if (!me->FindNearestGameObject(251961, 70.0f))
                         {
-                     player->SummonGameObject(251961, 2371.68f, 179.208f, 181.966f, 0.0188644f, QuaternionData(), 0);
+                            player->SummonGameObject(251961, 2371.68f, 179.208f, 181.966f, 0.0188644f, QuaternionData(), 0);
                         }
-     }
+                    }
                 }
             }
-         }
-     };
-     CreatureAI* GetAI(Creature* creature) const override
-          {
-          return new npc_portal_1970191AI(creature);
-          }
+        }
+    };
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_portal_1970191AI(creature);
+    }
 };
 
 enum Spells
 {
-    SPELL_SHATTERING_AXE  = 199169,
-    SPELL_FEL_SPIKES  = 199094,
+    SPELL_SHATTERING_AXE = 199169,
+    SPELL_FEL_SPIKES = 199094,
 };
 
 enum Events
 {
-    EVENT_SHATTERING_AXE         = 1,
-    EVENT_FEL_SPIKES             = 2,
+    EVENT_SHATTERING_AXE = 1,
+    EVENT_FEL_SPIKES = 2,
 };
 
 class npc_gethzun_98379 : public CreatureScript
@@ -286,12 +286,12 @@ public:
             events.Reset();
         }
 
-  void EnterEvadeMode(EvadeReason /*why*/) override
+        void EnterEvadeMode(EvadeReason /*why*/) override
         {
             Reset();
         }
 
-    void EnterCombat(Unit* who) override
+        void EnterCombat(Unit* who) override
         {
             if (!who)
                 return;
@@ -303,7 +303,7 @@ public:
             events.ScheduleEvent(EVENT_FEL_SPIKES, 13000);
         }
 
-  void UpdateAI(uint32 diff) override
+        void UpdateAI(uint32 diff) override
         {
             UpdateVictim();
 
@@ -320,11 +320,11 @@ public:
                     events.ScheduleEvent(EVENT_FEL_SPIKES, 13000);
                 }
             }
-   while (uint32 eventId = events.ExecuteEvent())
+            while (uint32 eventId = events.ExecuteEvent())
             {
                 switch (eventId)
                 {
-     case EVENT_SHATTERING_AXE:
+                case EVENT_SHATTERING_AXE:
                 {
                     Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0.0f, 10.0f, true);
                     if (!target)
@@ -349,15 +349,15 @@ public:
             DoMeleeAttackIfReady();
         }
 
-  void JustDied(Unit* who/*killer*/) override
+        void JustDied(Unit* who/*killer*/) override
+        {
+            if (Player* player = who->ToPlayer())
             {
-               if (Player* player = who->ToPlayer())
-       {
-                    player->KilledMonsterCredit(54240);
-     if (instance)
-     instance->DoPlayScenePackageIdOnPlayers(1491);
-                }
-   }
+                player->KilledMonsterCredit(54240);
+                if (instance)
+                    instance->DoPlayScenePackageIdOnPlayers(1491);
+            }
+        }
 
     };
 
@@ -369,146 +369,146 @@ public:
 
 struct npc_thrall_965270 : public CreatureScript
 {
-    public:
-        npc_thrall_965270() : CreatureScript("npc_thrall_965270") { }
+public:
+    npc_thrall_965270() : CreatureScript("npc_thrall_965270") { }
 
-        struct npc_thrall_965270AI : public ScriptedAI
+    struct npc_thrall_965270AI : public ScriptedAI
+    {
+        npc_thrall_965270AI(Creature* creature) : ScriptedAI(creature)
         {
-            npc_thrall_965270AI(Creature* creature) : ScriptedAI(creature)
-            {
-                instance = creature->GetInstanceScript();
-            }
+            instance = creature->GetInstanceScript();
+        }
 
         InstanceScript* instance;
 
-    void Reset()
-    {
-        say = false;
-    }
-
-  void MoveInLineOfSight(Unit* who) override
-    {
-        if (Creature* Thrall = me->FindNearestCreature(NPC_THRALL_RING, 10.0f, true))
+        void Reset()
         {
-            if(!say)
+            say = false;
+        }
+
+        void MoveInLineOfSight(Unit* who) override
+        {
+            if (Creature* Thrall = me->FindNearestCreature(NPC_THRALL_RING, 10.0f, true))
             {
-                say=true;
-                Thrall->GetScheduler().Schedule(2s, [Thrall](TaskContext context)
+                if (!say)
+                {
+                    say = true;
+                    Thrall->GetScheduler().Schedule(2s, [Thrall](TaskContext context)
                     {
-                    Thrall->AI()->Talk(0);
+                        Thrall->AI()->Talk(0);
                     });
-                Thrall->GetScheduler().Schedule(7s, [Thrall](TaskContext context)
+                    Thrall->GetScheduler().Schedule(7s, [Thrall](TaskContext context)
                     {
-                    Thrall->AI()->Talk(1);
+                        Thrall->AI()->Talk(1);
                     });
-                return;
+                    return;
+                }
             }
         }
-    }
     private:
-    bool say;
+        bool say;
 
-        };
-        CreatureAI* GetAI(Creature* creature) const
-        {
-            return new npc_thrall_965270AI(creature);
-        }
+    };
+    CreatureAI* GetAI(Creature* creature) const
+    {
+        return new npc_thrall_965270AI(creature);
+    }
 };
 
 struct npc_milra_113709 : public CreatureScript
 {
-    public:
-        npc_milra_113709() : CreatureScript("npc_milra_113709") { }
+public:
+    npc_milra_113709() : CreatureScript("npc_milra_113709") { }
 
-        struct npc_milra_113709AI : public ScriptedAI
+    struct npc_milra_113709AI : public ScriptedAI
+    {
+        npc_milra_113709AI(Creature* creature) : ScriptedAI(creature)
         {
-            npc_milra_113709AI(Creature* creature) : ScriptedAI(creature)
-            {
-                instance = creature->GetInstanceScript();
-            }
+            instance = creature->GetInstanceScript();
+        }
 
         InstanceScript* instance;
 
-    void Reset()
-    {
-        say = false;
-    }
-
-    void MoveInLineOfSight(Unit* who) override
-    {
-        if (Creature* Milra = me->FindNearestCreature(NPC_MILRA_STORMCALLER, 7.0f, true))
+        void Reset()
         {
-            if(!say)
+            say = false;
+        }
+
+        void MoveInLineOfSight(Unit* who) override
+        {
+            if (Creature* Milra = me->FindNearestCreature(NPC_MILRA_STORMCALLER, 7.0f, true))
             {
-                say=true;
-                Milra->GetScheduler().Schedule(2s, [Milra](TaskContext context)
+                if (!say)
+                {
+                    say = true;
+                    Milra->GetScheduler().Schedule(2s, [Milra](TaskContext context)
                     {
-                    Milra->AI()->Talk(0);
+                        Milra->AI()->Talk(0);
                     });
-                Milra->GetScheduler().Schedule(7s, [Milra](TaskContext context)
+                    Milra->GetScheduler().Schedule(7s, [Milra](TaskContext context)
                     {
-                    Milra->AI()->Talk(1);
+                        Milra->AI()->Talk(1);
                     });
-                return;
+                    return;
+                }
             }
         }
-    }
     private:
-    bool say;
+        bool say;
 
-        };
-        CreatureAI* GetAI(Creature* creature) const
-        {
-            return new npc_milra_113709AI(creature);
-        }
+    };
+    CreatureAI* GetAI(Creature* creature) const
+    {
+        return new npc_milra_113709AI(creature);
+    }
 };
 
 struct npc_thrall_965271 : public CreatureScript
 {
-    public:
-        npc_thrall_965271() : CreatureScript("npc_thrall_965271") { }
+public:
+    npc_thrall_965271() : CreatureScript("npc_thrall_965271") { }
 
-        struct npc_thrall_965271AI : public ScriptedAI
+    struct npc_thrall_965271AI : public ScriptedAI
+    {
+        npc_thrall_965271AI(Creature* creature) : ScriptedAI(creature)
         {
-            npc_thrall_965271AI(Creature* creature) : ScriptedAI(creature)
-            {
-                instance = creature->GetInstanceScript();
-            }
+            instance = creature->GetInstanceScript();
+        }
 
         InstanceScript* instance;
 
-    void Reset()
-    {
-        say = false;
-    }
-
-  void MoveInLineOfSight(Unit* who) override
-    {
-        if (Creature* Thralls = me->FindNearestCreature(NPC_THRALL_RINGS, 30.0f, true))
+        void Reset()
         {
-            if(!say)
+            say = false;
+        }
+
+        void MoveInLineOfSight(Unit* who) override
+        {
+            if (Creature* Thralls = me->FindNearestCreature(NPC_THRALL_RINGS, 30.0f, true))
             {
-                say=true;
-                Thralls->GetScheduler().Schedule(2s, [Thralls](TaskContext context)
+                if (!say)
+                {
+                    say = true;
+                    Thralls->GetScheduler().Schedule(2s, [Thralls](TaskContext context)
                     {
-                    Thralls->AI()->Talk(0);
+                        Thralls->AI()->Talk(0);
                     });
-                Thralls->GetScheduler().Schedule(6s, [Thralls](TaskContext context)
+                    Thralls->GetScheduler().Schedule(6s, [Thralls](TaskContext context)
                     {
-                    Thralls->AI()->Talk(1);
+                        Thralls->AI()->Talk(1);
                     });
-                return;
+                    return;
+                }
             }
         }
-    }
     private:
-    bool say;
+        bool say;
 
-        };
-        CreatureAI* GetAI(Creature* creature) const
-        {
-            return new npc_thrall_965271AI(creature);
-        }
+    };
+    CreatureAI* GetAI(Creature* creature) const
+    {
+        return new npc_thrall_965271AI(creature);
+    }
 };
 
 struct npc_bubble_112142 : public ScriptedAI
@@ -529,13 +529,13 @@ struct npc_bubble_112142 : public ScriptedAI
         }
     }
 
- void MoveInLineOfSight(Unit* who) override
+    void MoveInLineOfSight(Unit* who) override
     {
         if (Player* player = who->ToPlayer())
         {
             if (me->IsWithinDist(player, 15.0f, false))
             {
-              me->AddNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
+                me->AddNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
             }
         }
     }
@@ -570,7 +570,7 @@ public:
                 {
                     instance->DoKilledMonsterCredit(40341, 105787);
                     instance->DoCastSpellOnPlayers(209685);
-     instance->DoCastSpellOnPlayers(209684);
+                    instance->DoCastSpellOnPlayers(209684);
                     instance->DoSendScenarioEvent(49820);
                     if (Creature* weapon = go->FindNearestCreature(105787, 25.0f))
                         weapon->DespawnOrUnsummon();
@@ -598,7 +598,7 @@ public:
         go->UseDoorOrButton();
         if (player->GetQuestStatus(43645) == QUEST_STATUS_INCOMPLETE)
         {
-   player->KilledMonsterCredit(252304);
+            player->KilledMonsterCredit(252304);
             return true;
         }
         return false;
@@ -615,7 +615,7 @@ public:
         go->UseDoorOrButton();
         if (player->GetQuestStatus(43645) == QUEST_STATUS_INCOMPLETE)
         {
-   player->KilledMonsterCredit(111104);
+            player->KilledMonsterCredit(111104);
             return true;
         }
         return false;
@@ -632,7 +632,7 @@ public:
         go->UseDoorOrButton();
         if (player->GetQuestStatus(43645) == QUEST_STATUS_INCOMPLETE)
         {
-   player->KilledMonsterCredit(111102);
+            player->KilledMonsterCredit(111102);
             return true;
         }
         return false;
@@ -643,10 +643,10 @@ class npc_adelees_staff_111102 : public CreatureScript
 {
 public:
     npc_adelees_staff_111102() : CreatureScript("npc_adelees_staff_111102") { }
-     struct npc_adelees_staff_111102AI : public ScriptedAI
+    struct npc_adelees_staff_111102AI : public ScriptedAI
     {
         npc_adelees_staff_111102AI(Creature* creature) : ScriptedAI(creature) { }
-         void MoveInLineOfSight(Unit* who) override
+        void MoveInLineOfSight(Unit* who) override
         {
             if (Player* player = who->ToPlayer())
             {
@@ -655,22 +655,22 @@ public:
                     if (player->IsInDist(me, 95.0f))
                     {
                         me->CastSpell(ADEll_STAFF, SPELL_ADEL_STAFF, true);
-      me->AddNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
+                        me->AddNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
                     }
                 }
             }
         }
 
-         void OnSpellClick(Unit* clicker, bool& /*result*/)
-         {
-             if (Player* player = clicker->ToPlayer())
-             {
-               if (player->GetQuestStatus(43645) == QUEST_STATUS_INCOMPLETE)
-                 player->KilledMonsterCredit(111102);
-             }
-         }
+        void OnSpellClick(Unit* clicker, bool& /*result*/)
+        {
+            if (Player* player = clicker->ToPlayer())
+            {
+                if (player->GetQuestStatus(43645) == QUEST_STATUS_INCOMPLETE)
+                    player->KilledMonsterCredit(111102);
+            }
+        }
     };
-     CreatureAI* GetAI(Creature* creature) const override
+    CreatureAI* GetAI(Creature* creature) const override
     {
         return new npc_adelees_staff_111102AI(creature);
     }
@@ -680,10 +680,10 @@ class npc_tele_40341 : public CreatureScript
 {
 public:
     npc_tele_40341() : CreatureScript("npc_tele_40341") { }
-     struct npc_tele_40341AI : public ScriptedAI
+    struct npc_tele_40341AI : public ScriptedAI
     {
         npc_tele_40341AI(Creature* creature) : ScriptedAI(creature) { }
-         void MoveInLineOfSight(Unit* who) override
+        void MoveInLineOfSight(Unit* who) override
         {
             if (Player* player = who->ToPlayer())
             {
@@ -697,7 +697,7 @@ public:
             }
         }
     };
-     CreatureAI* GetAI(Creature* creature) const override
+    CreatureAI* GetAI(Creature* creature) const override
     {
         return new npc_tele_40341AI(creature);
     }
@@ -707,10 +707,10 @@ class npc_quesr_40341 : public CreatureScript
 {
 public:
     npc_quesr_40341() : CreatureScript("npc_quesr_40341") { }
-     struct npc_quesr_40341AI : public ScriptedAI
+    struct npc_quesr_40341AI : public ScriptedAI
     {
         npc_quesr_40341AI(Creature* creature) : ScriptedAI(creature) { }
-         void MoveInLineOfSight(Unit* who) override
+        void MoveInLineOfSight(Unit* who) override
         {
             if (Player* player = who->ToPlayer())
             {
@@ -719,13 +719,13 @@ public:
                     if (player->IsInDist(me, 45.0f))
                     {
                         player->KilledMonsterCredit(105805);
-      player->KilledMonsterCredit(111286);
+                        player->KilledMonsterCredit(111286);
                     }
                 }
             }
         }
     };
-     CreatureAI* GetAI(Creature* creature) const override
+    CreatureAI* GetAI(Creature* creature) const override
     {
         return new npc_quesr_40341AI(creature);
     }
@@ -733,54 +733,54 @@ public:
 
 struct npc_eranak_1028267 : public CreatureScript
 {
-    public:
-        npc_eranak_1028267() : CreatureScript("npc_eranak_1028267") { }
+public:
+    npc_eranak_1028267() : CreatureScript("npc_eranak_1028267") { }
 
-        struct npc_eranak_1028267AI : public ScriptedAI
+    struct npc_eranak_1028267AI : public ScriptedAI
+    {
+        npc_eranak_1028267AI(Creature* creature) : ScriptedAI(creature)
         {
-            npc_eranak_1028267AI(Creature* creature) : ScriptedAI(creature)
-            {
-                instance = creature->GetInstanceScript();
-            }
+            instance = creature->GetInstanceScript();
+        }
 
         InstanceScript* instance;
 
-    void Reset()
-    {
-        say = false;
-    }
-
-  void MoveInLineOfSight(Unit* who) override
-    {
-        if (Creature* Eranak = me->FindNearestCreature(NPC_ERANAK_STONSPEAK, 7.0f, true))
+        void Reset()
         {
-            if(!say)
+            say = false;
+        }
+
+        void MoveInLineOfSight(Unit* who) override
+        {
+            if (Creature* Eranak = me->FindNearestCreature(NPC_ERANAK_STONSPEAK, 7.0f, true))
             {
-                say=true;
-                Eranak->GetScheduler().Schedule(2s, [Eranak](TaskContext context)
-                    {
-                    Eranak->AI()->Talk(0);
-                    });
-                Eranak->GetScheduler().Schedule(7s, [Eranak](TaskContext context)
-                    {
-                    Eranak->AI()->Talk(1);
-                    });
-                Eranak->GetScheduler().Schedule(8s, [Eranak](TaskContext context)
+                if (!say)
                 {
-                    Eranak->SummonCreature(1121423, Position(-214.111f, 807.373f, 264.208f, 3.12209f), TEMPSUMMON_MANUAL_DESPAWN);
-                });
-                return;
+                    say = true;
+                    Eranak->GetScheduler().Schedule(2s, [Eranak](TaskContext context)
+                    {
+                        Eranak->AI()->Talk(0);
+                    });
+                    Eranak->GetScheduler().Schedule(7s, [Eranak](TaskContext context)
+                    {
+                        Eranak->AI()->Talk(1);
+                    });
+                    Eranak->GetScheduler().Schedule(8s, [Eranak](TaskContext context)
+                    {
+                        Eranak->SummonCreature(1121423, Position(-214.111f, 807.373f, 264.208f, 3.12209f), TEMPSUMMON_MANUAL_DESPAWN);
+                    });
+                    return;
+                }
             }
         }
-    }
     private:
-    bool say;
+        bool say;
 
-        };
-        CreatureAI* GetAI(Creature* creature) const
-        {
-            return new npc_eranak_1028267AI(creature);
-        }
+    };
+    CreatureAI* GetAI(Creature* creature) const
+    {
+        return new npc_eranak_1028267AI(creature);
+    }
 };
 
 struct npc_bubble_1121423 : public ScriptedAI
@@ -823,8 +823,8 @@ struct npc_bubble_222143 : public ScriptedAI
             if (player->GetQuestStatus(40341) == QUEST_STATUS_INCOMPLETE)
             {
                 me->SetAIAnimKitId(4061);
-    player->CastSpell(player, SPELL_CAST_ART, true);
-    player->CastSpell(player, SPELL_CAST_ARTY, true);
+                player->CastSpell(player, SPELL_CAST_ART, true);
+                player->CastSpell(player, SPELL_CAST_ARTY, true);
                 player->KilledMonsterCredit(105806);
                 player->AddConversationDelayedTeleport(1800, 1325, 1469, Position(824.465f, 1036.18f, 48.26f, 1.46014f));
                 player->RemoveSpell(SPELL_CAST_GOB, true);
@@ -832,13 +832,13 @@ struct npc_bubble_222143 : public ScriptedAI
         }
     }
 
- void MoveInLineOfSight(Unit* who) override
+    void MoveInLineOfSight(Unit* who) override
     {
         if (Player* player = who->ToPlayer())
         {
             if (me->IsWithinDist(player, 15.0f, false))
             {
-              me->AddNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
+                me->AddNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
             }
         }
     }
@@ -862,13 +862,13 @@ struct npc_graddoc_113354 : public ScriptedAI
         }
     }
 
- void MoveInLineOfSight(Unit* who) override
+    void MoveInLineOfSight(Unit* who) override
     {
         if (Player* player = who->ToPlayer())
         {
             if (me->IsWithinDist(player, 15.0f, false))
             {
-              me->AddNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
+                me->AddNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
             }
         }
     }
@@ -879,27 +879,27 @@ class npc_quest_1970194 : public CreatureScript
 {
 public:
     npc_quest_1970194() : CreatureScript("npc_quest_1970194") { }
-     struct npc_quest_1970194AI : public ScriptedAI
-     {
-         npc_quest_1970194AI(Creature* creature) : ScriptedAI(creature) { }
-         void MoveInLineOfSight(Unit* who) override
-         {
+    struct npc_quest_1970194AI : public ScriptedAI
+    {
+        npc_quest_1970194AI(Creature* creature) : ScriptedAI(creature) { }
+        void MoveInLineOfSight(Unit* who) override
+        {
             if (Player* player = who->ToPlayer())
             {
                 if (player->GetQuestStatus(43338) == QUEST_STATUS_INCOMPLETE)
                 {
                     if (player->IsInDist(me, 15.0f))
-                        {
-                           player->KilledMonsterCredit(110802);
-                        }
+                    {
+                        player->KilledMonsterCredit(110802);
+                    }
                 }
             }
-         }
-     };
-     CreatureAI* GetAI(Creature* creature) const override
-          {
-          return new npc_quest_1970194AI(creature);
-          }
+        }
+    };
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_quest_1970194AI(creature);
+    }
 };
 
 // Quest39771
@@ -907,81 +907,81 @@ class npc_quest_1970195 : public CreatureScript
 {
 public:
     npc_quest_1970195() : CreatureScript("npc_quest_1970195") { }
-     struct npc_quest_1970195AI : public ScriptedAI
-     {
-         npc_quest_1970195AI(Creature* creature) : ScriptedAI(creature) { }
-         void MoveInLineOfSight(Unit* who) override
-         {
+    struct npc_quest_1970195AI : public ScriptedAI
+    {
+        npc_quest_1970195AI(Creature* creature) : ScriptedAI(creature) { }
+        void MoveInLineOfSight(Unit* who) override
+        {
             if (Player* player = who->ToPlayer())
             {
                 if (player->GetQuestStatus(39771) == QUEST_STATUS_INCOMPLETE)
                 {
                     if (player->IsInDist(me, 35.0f))
-                        {
-                           player->KilledMonsterCredit(97131);
-                        }
+                    {
+                        player->KilledMonsterCredit(97131);
+                    }
                 }
             }
-         }
-     };
-     CreatureAI* GetAI(Creature* creature) const override
-          {
-          return new npc_quest_1970195AI(creature);
-          }
+        }
+    };
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_quest_1970195AI(creature);
+    }
 };
 
 struct npc_regar_966541 : public CreatureScript
 {
-    public:
-        npc_regar_966541() : CreatureScript("npc_regar_966541") { }
+public:
+    npc_regar_966541() : CreatureScript("npc_regar_966541") { }
 
-        struct npc_regar_966541AI : public ScriptedAI
+    struct npc_regar_966541AI : public ScriptedAI
+    {
+        npc_regar_966541AI(Creature* creature) : ScriptedAI(creature)
         {
-            npc_regar_966541AI(Creature* creature) : ScriptedAI(creature)
-            {
-                instance = creature->GetInstanceScript();
-            }
+            instance = creature->GetInstanceScript();
+        }
 
         InstanceScript* instance;
 
-    void Reset()
-    {
-        say = false;
-    }
+        void Reset()
+        {
+            say = false;
+        }
 
-  void MoveInLineOfSight(Unit* who) override
-    {
+        void MoveInLineOfSight(Unit* who) override
+        {
             if (Player* player = who->ToPlayer())
             {
-        if (player->GetQuestStatus(39771) == QUEST_STATUS_INCOMPLETE)
-        {
-   if (Creature* Regal = me->FindNearestCreature(NPC_REGAL_KING, 10.0f, true))
-            {
-                if(!say)
+                if (player->GetQuestStatus(39771) == QUEST_STATUS_INCOMPLETE)
                 {
-                  say=true;
-                    Regal->GetScheduler().Schedule(2s, [Regal](TaskContext context)
+                    if (Creature* Regal = me->FindNearestCreature(NPC_REGAL_KING, 10.0f, true))
+                    {
+                        if (!say)
                         {
-                         Regal->AI()->Talk(0);
-                        });
-                    Regal->GetScheduler().Schedule(7s, [Regal](TaskContext context)
-                        {
-                         Regal->AI()->Talk(1);
-                        });
-                return;
+                            say = true;
+                            Regal->GetScheduler().Schedule(2s, [Regal](TaskContext context)
+                            {
+                                Regal->AI()->Talk(0);
+                            });
+                            Regal->GetScheduler().Schedule(7s, [Regal](TaskContext context)
+                            {
+                                Regal->AI()->Talk(1);
+                            });
+                            return;
+                        }
+                    }
                 }
             }
-  }
-            }
-    }
-    private:
-    bool say;
-
-        };
-        CreatureAI* GetAI(Creature* creature) const
-        {
-            return new npc_regar_966541AI(creature);
         }
+    private:
+        bool say;
+
+    };
+    CreatureAI* GetAI(Creature* creature) const
+    {
+        return new npc_regar_966541AI(creature);
+    }
 };
 
 class lord_kravos105183 : public CreatureScript
@@ -1044,13 +1044,13 @@ public:
             {
                 if (player->GetQuestStatus(39771) == QUEST_STATUS_INCOMPLETE)
                 {
-                       if (who->GetTypeId() == TYPEID_PLAYER)
-                       {
-                              player->KilledMonsterCredit(53726);
-                              who->ToPlayer()->AddItem(128935, 1);
-                              player->SummonGameObject(278434, 3792.25f, 533.892f, 639.007f, 3.02942f, QuaternionData(), 0);
-                              player->SummonCreature(96541, Position(835.073f, 1042.62f, 48.512f, 3.86797f), TEMPSUMMON_MANUAL_DESPAWN);
-                       }
+                    if (who->GetTypeId() == TYPEID_PLAYER)
+                    {
+                        player->KilledMonsterCredit(53726);
+                        who->ToPlayer()->AddItem(128935, 1);
+                        player->SummonGameObject(278434, 3792.25f, 533.892f, 639.007f, 3.02942f, QuaternionData(), 0);
+                        player->SummonCreature(96541, Position(835.073f, 1042.62f, 48.512f, 3.86797f), TEMPSUMMON_MANUAL_DESPAWN);
+                    }
                 }
             }
         }
@@ -1065,30 +1065,30 @@ public:
 
 void AddSC_class_hall_shaman()
 {
- RegisterCreatureAI(npc_stormbeak_104681);
- RegisterCreatureAI(npc_sturmschnabel_98383);
- RegisterCreatureAI(npc_trall_91731);
+    RegisterCreatureAI(npc_stormbeak_104681);
+    RegisterCreatureAI(npc_sturmschnabel_98383);
+    RegisterCreatureAI(npc_trall_91731);
     new npc_portal_1970193();
- new npc_portal_1970191();
+    new npc_portal_1970191();
     new npc_thrall_965270();
- new npc_thrall_965271();
- new npc_milra_113709();
- RegisterCreatureAI(npc_sturmschnabel_983830);
- new npc_gethzun_98379();
+    new npc_thrall_965271();
+    new npc_milra_113709();
+    RegisterCreatureAI(npc_sturmschnabel_983830);
+    new npc_gethzun_98379();
     new go_sharas_dal_249342();
- RegisterCreatureAI(npc_bubble_112142);
- new go_highborne_203213();
- new go_highborne_203218();
- new go_highborne_203212();
- new npc_adelees_staff_111102();
- new npc_tele_40341();
- new npc_quesr_40341();
- new npc_eranak_1028267();
+    RegisterCreatureAI(npc_bubble_112142);
+    new go_highborne_203213();
+    new go_highborne_203218();
+    new go_highborne_203212();
+    new npc_adelees_staff_111102();
+    new npc_tele_40341();
+    new npc_quesr_40341();
+    new npc_eranak_1028267();
     RegisterCreatureAI(npc_bubble_1121423);
- RegisterCreatureAI(npc_bubble_222143);
- RegisterCreatureAI(npc_graddoc_113354);
- new npc_quest_1970194();
- new npc_quest_1970195();
- new npc_regar_966541();
+    RegisterCreatureAI(npc_bubble_222143);
+    RegisterCreatureAI(npc_graddoc_113354);
+    new npc_quest_1970194();
+    new npc_quest_1970195();
+    new npc_regar_966541();
     new lord_kravos105183();
 }

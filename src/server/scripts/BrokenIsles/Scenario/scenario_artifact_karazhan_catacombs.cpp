@@ -230,7 +230,7 @@ struct npc_revil_kost_101282 : public ScriptedAI
         ACTION_STAGE_3_kill_conservator = 3,
         ACTION_STAGE_7 = 4,
     };
-    void DoAction(int32 param) override
+    void DoAction(int32 param)
     {
         switch (param)
         {

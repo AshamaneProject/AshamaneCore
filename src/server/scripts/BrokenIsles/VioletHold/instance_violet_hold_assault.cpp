@@ -397,7 +397,7 @@ class instance_violet_hold_assault : public InstanceMapScript
                 }
             }
 
-            void Update(uint32 diff) override
+            /*void Update(uint32 diff) override
             {
                 _events.Update(diff);
 
@@ -497,7 +497,7 @@ class instance_violet_hold_assault : public InstanceMapScript
                     }
                 }
 
-            }
+            }*/
 
             private:
                 uint8 _eliteDead;

@@ -85,7 +85,7 @@ struct boss_viceroy_nezhar : public BossAI
         {
         case SPELL_NB_TARGET:
         {
-            if(Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0.0, true) )
+            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0.0, true))
                 DoCast(target, SPELL_NB_TARGET);
             events.Repeat(20s);
             break;
@@ -93,7 +93,7 @@ struct boss_viceroy_nezhar : public BossAI
         case SPELL_IP_TARGET:
         {
 
-            if(Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0.0, true))
+            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0.0, true))
                 DoCast(target, SPELL_IP_TARGET);
             events.Repeat(20s);
             break;

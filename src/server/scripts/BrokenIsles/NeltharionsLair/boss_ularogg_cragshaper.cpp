@@ -1,19 +1,20 @@
 /*
- * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation; either version 2 of the License, or (at your
- * option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
- * more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program. If not, see <http://www.gnu.org/licenses/>.
- */
+* Copyright (C) 2008-2018 TrinityCore <http://www.trinitycore.org/>
+*
+* This program is free software; you can redistribute it and/or modify it
+* under the terms of the GNU General Public License as published by the
+* Free Software Foundation; either version 2 of the License, or (at your
+* option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+* more details.
+*
+* You should have received a copy of the GNU General Public License along
+
+* with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
 
 #include "AreaTriggerAI.h"
 #include "AreaTrigger.h"
@@ -173,10 +174,10 @@ public:
 
     struct boss_ularogg_cragshaper_AI : public BossAI
     {
-        boss_ularogg_cragshaper_AI(Creature* creature) : BossAI(creature, DATA_ULAROGG_CRAGSHAPER)
-        {
+        boss_ularogg_cragshaper_AI(Creature* creature) : BossAI(creature, DATA_ULAROGG_CRAGSHAPER) 
+        { 
             me->SetReactState(REACT_PASSIVE);
-            me->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC));
+            me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
         }
 
         EventMap events;
@@ -213,11 +214,11 @@ public:
             events.Reset();
             me->SetPower(POWER_MANA, 0);
 
-            bool manaRegenerated = false;
-            //bool inSecondPhase = false;
-            bool isJumpedToCenter = false;
-            bool allowUpdateVictim = false;
-            uint8 idolsPoint = 0;
+            manaRegenerated = false;
+            inSecondPhase = false;
+            isJumpedToCenter = false;
+            allowUpdateVictim = false;
+            idolsPoint = 0;
             me->SetVisible(true);
 
             if (instance)
@@ -227,7 +228,7 @@ public:
             }
         }
 
-        void EnterCombat(Unit* who) override
+        void EnterCombat(Unit* /*who*/) override
         {
             Talk(TALK_AGGRO);
             me->SetInCombatWithZone();
@@ -279,8 +280,8 @@ public:
         }
 
         int32 round(float v)
-        {
-            return floor(v + 0.5f);
+        { 
+            return floor(v + 0.5f); 
         }
 
         void FillIdolsPositions(Creature* leftIdol, Creature* centerIdol, Creature* rightIdol, Creature* backIdol, Creature* frontIdol)
@@ -338,7 +339,7 @@ public:
             {
                 me->GetMotionMaster()->MoveJump(me->GetPositionX(), me->GetPositionY(), me->GetPositionX(), me->GetOrientation(), 55.0f, 55.0f, EVENT_JUMP, true);
                 me->SetVisible(true);
-                me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC));
+                me->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                 me->SetReactState(REACT_AGGRESSIVE);
                 me->RemoveAllAuras();
                 allowUpdateVictim = true;
@@ -373,7 +374,7 @@ public:
                             {
                                 manaRegenerated = true;
                                 events.ScheduleEvent(EVENT_PHASE_2, 3s);
-                                me->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC));
+                                me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                                 me->SetReactState(REACT_PASSIVE);
                                 me->RemoveAllAuras();
                                 me->RemoveAllAttackers();
@@ -424,7 +425,7 @@ public:
                     if (!inSecondPhase)
                     {
                         me->SetReactState(REACT_DEFENSIVE);
-                        me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC));
+                        me->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                         allowUpdateVictim = true;
                     }
                     break;
@@ -530,8 +531,8 @@ public:
                         {
                             if (Idol)
                             {
-                                Idol->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE));
-                                Idol->RemoveUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC));
+                                Idol->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
+                                Idol->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                                 Idol->AddAura(193267, Idol);
                             }
                         }
@@ -539,10 +540,10 @@ public:
                     }
                     break;
             }
-
+            
             DoMeleeAttackIfReady();
         }
-    };
+    }; 
 };
 
 // 100818
@@ -566,11 +567,11 @@ public:
     {
         InstanceScript* instance;
 
-        mob_bellowing_idol_mountain_stance_AI(Creature* creature) : ScriptedAI(creature)
+        mob_bellowing_idol_mountain_stance_AI(Creature* creature) : ScriptedAI(creature) 
         {
             me->SetReactState(REACT_PASSIVE);
-            me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE));
-            me->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC));
+            me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
+            me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
             float allSpeed = 3.0f;
             me->SetSpeedRate(MOVE_WALK, allSpeed);
             me->SetSpeedRate(MOVE_RUN, allSpeed);
@@ -653,7 +654,7 @@ public:
 
     struct mob_bellowing_idol_AI : public ScriptedAI
     {
-        mob_bellowing_idol_AI(Creature* creature) : ScriptedAI(creature)
+        mob_bellowing_idol_AI(Creature* creature) : ScriptedAI(creature) 
         {
             me->SetReactState(REACT_PASSIVE);
             me->AddAura(SPELL_DERBIS_AURA, me);

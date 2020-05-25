@@ -18,7 +18,7 @@
 
 #include "trial_of_valor.h"
 
-// 209 Trial of Valor area 2
+ // 209 Trial of Valor area 2
 class npc_enter_the_eternal_battlefield : public CreatureScript
 {
 public:
@@ -32,7 +32,7 @@ public:
 
         void UpdateAI(uint32 diff)
         {
-            if (player == me->SelectNearestPlayer(2.0f))
+            if (player = me->SelectNearestPlayer(2.0f))
                 player->TeleportTo(1648, 340.323f, 354.52f, 30.7229f, 0.89f);
         }
     };

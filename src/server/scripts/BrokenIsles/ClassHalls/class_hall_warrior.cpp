@@ -32,80 +32,80 @@
 enum WarriorClassHall
 {
     // Emotes
-    ONE_SHOT_TALK                                               = 1,
-    ONE_SHOT_LAUGH                                              = 11,
-    ONE_SHOT_ROAR                                               = 15,
-    ONE_SHOT_SHOT                                               = 22,
-    ONE_SHOT_POINT                                              = 25,
-    ONE_SHOT_SALUTE                                             = 66,
-    ONE_SHOT_CHEER_NO_SHEATHE                                   = 71,
-    ONE_SHOT_EAT_NO_SHEATHE                                     = 92,
-    ONE_SHOT_LAUGH_NO_SHEATHE                                   = 153,
-    ONE_SHOT_NO                                                 = 274,
+    ONE_SHOT_TALK = 1,
+    ONE_SHOT_LAUGH = 11,
+    ONE_SHOT_ROAR = 15,
+    ONE_SHOT_SHOT = 22,
+    ONE_SHOT_POINT = 25,
+    ONE_SHOT_SALUTE = 66,
+    ONE_SHOT_CHEER_NO_SHEATHE = 71,
+    ONE_SHOT_EAT_NO_SHEATHE = 92,
+    ONE_SHOT_LAUGH_NO_SHEATHE = 153,
+    ONE_SHOT_NO = 274,
 
     // Texts
-    EITRIGG_TEXT_00                                             = 0,
-    EITRIGG_TEXT_01                                             = 1,
-    SERGEANT_DALTON_TEXT_00                                     = 0,
-    SERGEANT_DALTON_TEXT_01                                     = 1,
-    SERGEANT_DALTON_TEXT_02                                     = 2,
-    SAY_FIRST_LINE                                              = 1,
-    SAY_SECOND_LINE                                             = 2,
-    SAY_THIRD_LINE                                              = 3,
+    EITRIGG_TEXT_00 = 0,
+    EITRIGG_TEXT_01 = 1,
+    SERGEANT_DALTON_TEXT_00 = 0,
+    SERGEANT_DALTON_TEXT_01 = 1,
+    SERGEANT_DALTON_TEXT_02 = 2,
+    SAY_FIRST_LINE = 1,
+    SAY_SECOND_LINE = 2,
+    SAY_THIRD_LINE = 3,
 
     // Spells
-    SPELL_EMOTE_BELCH                                           = 65937,
-    SPELL_WARRIOR_ORDER_FORMATION_SCENE                         = 193709,
-    SPELL_CANCEL_COMPLETE_SCENE_WARRIOR_ORDER_FORMATION         = 193711,
-    SPELL_TELE_DALARAN                                          = 191473,
-    SPELL_TELE_STORMHEIM                                        = 225220,
-    SPELL_TELE_ASZUNA                                           = 225163,
-    SPELL_TELE_VALSHARAH                                        = 225115,
-    SPELL_TELE_HIGHMOUNTAIN                                     = 205813,
-    SPELL_TELE_SURAMAR                                          = 225233,
-    SPELL_TELE_BROKEN_SHORE                                     = 241928,
+    SPELL_EMOTE_BELCH = 65937,
+    SPELL_WARRIOR_ORDER_FORMATION_SCENE = 193709,
+    SPELL_CANCEL_COMPLETE_SCENE_WARRIOR_ORDER_FORMATION = 193711,
+    SPELL_TELE_DALARAN = 191473,
+    SPELL_TELE_STORMHEIM = 225220,
+    SPELL_TELE_ASZUNA = 225163,
+    SPELL_TELE_VALSHARAH = 225115,
+    SPELL_TELE_HIGHMOUNTAIN = 205813,
+    SPELL_TELE_SURAMAR = 225233,
+    SPELL_TELE_BROKEN_SHORE = 241928,
 
     // Phases
-    PHASE_CLASS_WARRIOR_HORDE                                   = 7300,
-    PHASE_CLASS_WARRIOR_ALIANCE                                 = 7302,
-    PHASE_ODYN                                                  = 5107,
-    PHASE_DANICA                                                = 5090,
+    PHASE_CLASS_WARRIOR_HORDE = 7300,
+    PHASE_CLASS_WARRIOR_ALIANCE = 7302,
+    PHASE_ODYN = 5107,
+    PHASE_DANICA = 5090,
 
     // Quests
-    QUEST_H_A_DESPERATE_PLEA                                    = 41052,
-    QUEST_H_RETURN_TO_THE_BROKEN_SHORE                          = 38904,
-    QUEST_A_AN_IMPORTANT_MISSION                                = 42814,
-    QUEST_ODYN_AND_THE_VALARJAR                                 = 39654,
+    QUEST_H_A_DESPERATE_PLEA = 41052,
+    QUEST_H_RETURN_TO_THE_BROKEN_SHORE = 38904,
+    QUEST_A_AN_IMPORTANT_MISSION = 42814,
+    QUEST_ODYN_AND_THE_VALARJAR = 39654,
 
     // Creatures
-    NPC_EITRIGG_93775                                           = 93775,
-    NPC_SERGEANT_DALTON_108961                                  = 108961,
-    NPC_KILL_CREDIT_FOLLOWED_DANICA                             = 103036,
-    NPC_DANICA_THE_RECLAIMER                                    = 93823,
-    NPC_KILL_CREDIT_ARRIVED_AT_ODYN                             = 96532,
+    NPC_EITRIGG_93775 = 93775,
+    NPC_SERGEANT_DALTON_108961 = 108961,
+    NPC_KILL_CREDIT_FOLLOWED_DANICA = 103036,
+    NPC_DANICA_THE_RECLAIMER = 93823,
+    NPC_KILL_CREDIT_ARRIVED_AT_ODYN = 96532,
 
     // Items
-    ITEM_MONSTER_ITEM_MUTTON_WITH_BITE                          = 2202,
-    ITEM_MONSTER_ITEM_TANKARD_WOODEN                            = 2703,
-    ITEM_HOV_2H_AXE                                             = 137176,
-    ITEM_HOV_1H_SWORD                                           = 137263,
-    ITEM_HOV_SHIELD_2                                           = 137265,
+    ITEM_MONSTER_ITEM_MUTTON_WITH_BITE = 2202,
+    ITEM_MONSTER_ITEM_TANKARD_WOODEN = 2703,
+    ITEM_HOV_2H_AXE = 137176,
+    ITEM_HOV_1H_SWORD = 137263,
+    ITEM_HOV_SHIELD_2 = 137265,
 
     // Points
-    POINT_FORGE_OF_ODYN                                         = 1,
-    POINT_INTRODUCE_MEAD_HALL                                   = 2,
-    POINT_ODYN                                                  = 3,
-    POINT_LEAVING                                               = 1,
-    POINT_TABLE                                                 = 1,
-    POINT_ODYN_1                                                = 2,
-    POINT_DESPAWN                                               = 3,
-    POINT_DESPAWN_1                                             = 4,
-    POINT_DESPAWN_2                                             = 1,
-    POINT_JUMP                                                  = 2,
-    POINT_DESPAWN_JUMP                                          = 3,
+    POINT_FORGE_OF_ODYN = 1,
+    POINT_INTRODUCE_MEAD_HALL = 2,
+    POINT_ODYN = 3,
+    POINT_LEAVING = 1,
+    POINT_TABLE = 1,
+    POINT_ODYN_1 = 2,
+    POINT_DESPAWN = 3,
+    POINT_DESPAWN_1 = 4,
+    POINT_DESPAWN_2 = 1,
+    POINT_JUMP = 2,
+    POINT_DESPAWN_JUMP = 3,
 
     // Misc
-    ZONE_LEGION_DALARAN                                         = 7502
+    ZONE_LEGION_DALARAN = 7502
 };
 
 struct npc_eitrigg_93775 : public ScriptedAI
@@ -265,29 +265,29 @@ struct npc_class_hall_warrior_aerylia : public ScriptedAI
 
         switch (gossipListId)
         {
-            case 2:
-                spellId = SPELL_TELE_DALARAN;
-                break;
-            case 3:
-                spellId = SPELL_TELE_STORMHEIM;
-                break;
-            case 4:
-                spellId = SPELL_TELE_ASZUNA;
-                break;
-            case 5:
-                spellId = SPELL_TELE_VALSHARAH;
-                break;
-            case 6:
-                spellId = SPELL_TELE_HIGHMOUNTAIN;
-                break;
-            case 7:
-                spellId = SPELL_TELE_SURAMAR;
-                break;
-            case 8:
-                spellId = SPELL_TELE_BROKEN_SHORE;
-                break;
-            default:
-                break;
+        case 2:
+            spellId = SPELL_TELE_DALARAN;
+            break;
+        case 3:
+            spellId = SPELL_TELE_STORMHEIM;
+            break;
+        case 4:
+            spellId = SPELL_TELE_ASZUNA;
+            break;
+        case 5:
+            spellId = SPELL_TELE_VALSHARAH;
+            break;
+        case 6:
+            spellId = SPELL_TELE_HIGHMOUNTAIN;
+            break;
+        case 7:
+            spellId = SPELL_TELE_SURAMAR;
+            break;
+        case 8:
+            spellId = SPELL_TELE_BROKEN_SHORE;
+            break;
+        default:
+            break;
         }
 
         if (spellId != 0)
@@ -360,30 +360,30 @@ struct npc_danica_the_reclaimer : public ScriptedAI
     {
         switch (id)
         {
-            case POINT_FORGE_OF_ODYN:
-                _scheduler.Schedule(10s, [this](TaskContext /*context*/)
-                {
-                    Player* player = ObjectAccessor::FindConnectedPlayer(_summonerGuid);
-                    me->GetMotionMaster()->MoveSmoothPath(POINT_INTRODUCE_MEAD_HALL, DanicaPath02, DanicaPath02Size::value, false, true);
-                    Talk(SAY_SECOND_LINE, player);
-                });
-                break;
-            case POINT_INTRODUCE_MEAD_HALL:
-                _scheduler.Schedule(10s, [this](TaskContext /*context*/)
-                {
-                    Player* player = ObjectAccessor::FindConnectedPlayer(_summonerGuid);
-                    me->GetMotionMaster()->MoveSmoothPath(POINT_ODYN_1, DanicaPath03, DanicaPath03Size::value, false, true);
-                    Talk(SAY_THIRD_LINE, player);
+        case POINT_FORGE_OF_ODYN:
+            _scheduler.Schedule(10s, [this](TaskContext /*context*/)
+            {
+                Player* player = ObjectAccessor::FindConnectedPlayer(_summonerGuid);
+                me->GetMotionMaster()->MoveSmoothPath(POINT_INTRODUCE_MEAD_HALL, DanicaPath02, DanicaPath02Size::value, false, true);
+                Talk(SAY_SECOND_LINE, player);
+            });
+            break;
+        case POINT_INTRODUCE_MEAD_HALL:
+            _scheduler.Schedule(10s, [this](TaskContext /*context*/)
+            {
+                Player* player = ObjectAccessor::FindConnectedPlayer(_summonerGuid);
+                me->GetMotionMaster()->MoveSmoothPath(POINT_ODYN_1, DanicaPath03, DanicaPath03Size::value, false, true);
+                Talk(SAY_THIRD_LINE, player);
 
-                    if (player)
-                        player->KilledMonsterCredit(NPC_KILL_CREDIT_FOLLOWED_DANICA);
-                });
-                break;
-            case POINT_ODYN:
-                me->DisappearAndDie();
-                break;
-            default:
-                break;
+                if (player)
+                    player->KilledMonsterCredit(NPC_KILL_CREDIT_FOLLOWED_DANICA);
+            });
+            break;
+        case POINT_ODYN:
+            me->DisappearAndDie();
+            break;
+        default:
+            break;
         }
     }
 
@@ -453,11 +453,11 @@ struct npc_feasting_valarjar : public ScriptedAI
     {
         switch (id)
         {
-            case POINT_LEAVING:
-                me->DisappearAndDie();
-                break;
-            default:
-                break;
+        case POINT_LEAVING:
+            me->DisappearAndDie();
+            break;
+        default:
+            break;
         }
     }
 
@@ -493,37 +493,37 @@ struct npc_valarjar_paying_respect_to_odyn : ScriptedAI
     {
         switch (id)
         {
-            case POINT_TABLE:
-                _scheduler.Schedule(3s, 6s, [this](TaskContext /*context*/)
-                {
-                    me->HandleEmoteCommand(Trinity::Containers::SelectRandomContainerElement(_randomEmotes));
-                });
+        case POINT_TABLE:
+            _scheduler.Schedule(3s, 6s, [this](TaskContext /*context*/)
+            {
+                me->HandleEmoteCommand(Trinity::Containers::SelectRandomContainerElement(_randomEmotes));
+            });
 
-                _scheduler.Schedule(7s, 15s, [this](TaskContext /*context*/)
-                {
-                    me->GetMotionMaster()->MoveSmoothPath(POINT_ODYN, GetPathToOdyn(), GetPathToOdynSize(), true);
-                });
-                break;
+            _scheduler.Schedule(7s, 15s, [this](TaskContext /*context*/)
+            {
+                me->GetMotionMaster()->MoveSmoothPath(POINT_ODYN, GetPathToOdyn(), GetPathToOdynSize(), true);
+            });
+            break;
 
-            case POINT_ODYN:
-                _scheduler.Schedule(1s, 3s, [this](TaskContext /*context*/)
-                {
-                    me->PlayOneShotAnimKitId(1431);
+        case POINT_ODYN:
+            _scheduler.Schedule(1s, 3s, [this](TaskContext /*context*/)
+            {
+                me->PlayOneShotAnimKitId(1431);
 
-                    _scheduler.Schedule(3s, 10s, [this](TaskContext /*context*/)
-                    {
-                        me->GetMotionMaster()->MoveSmoothPath(POINT_DESPAWN, GetPathToDespawnPoint(), GetPathToDespawnPointSize());
-                    });
-                });
-                break;
-            case POINT_DESPAWN_1:
-                _scheduler.Schedule(2s, [this](TaskContext /*context*/)
+                _scheduler.Schedule(3s, 10s, [this](TaskContext /*context*/)
                 {
-                    me->DisappearAndDie();
+                    me->GetMotionMaster()->MoveSmoothPath(POINT_DESPAWN, GetPathToDespawnPoint(), GetPathToDespawnPointSize());
                 });
-                break;
-            default:
-                break;
+            });
+            break;
+        case POINT_DESPAWN_1:
+            _scheduler.Schedule(2s, [this](TaskContext /*context*/)
+            {
+                me->DisappearAndDie();
+            });
+            break;
+        default:
+            break;
         }
     }
 
@@ -872,11 +872,11 @@ struct npc_spectating_valarjar : public ScriptedAI
     {
         switch (id)
         {
-            case 0:
-                me->DisappearAndDie();
-                break;
-            default:
-                break;
+        case 0:
+            me->DisappearAndDie();
+            break;
+        default:
+            break;
         }
     }
 
@@ -915,29 +915,29 @@ struct npc_valkyr_of_odyn : public ScriptedAI
     {
         switch (id)
         {
-            case POINT_JUMP:
-                _scheduler.Schedule(250ms, [this](TaskContext /*context*/)
-                {
-                    /*
-                    * (MovementMonsterSpline) (MovementSpline) MoveTime: 3111
-                    * (MovementMonsterSpline) (MovementSpline) JumpGravity: 19.2911 -> +-Movement::gravity
-                    * 1.4125f is guessed value. Which makes the JumpGravity way closer to the intended one. Not sure how to do it 100% blizzlike.
-                    * Also the MoveTime is not correct but I don't know how to set it here.
-                    */
-                    me->GetMotionMaster()->MoveJump({ 1107.84f, 7222.57f, 38.9725f, me->GetOrientation() }, me->GetSpeed(MOVE_RUN), Movement::gravity * 1.4125f, POINT_DESPAWN_JUMP);
-                });
-                break;
-            case POINT_DESPAWN_2:
-                _scheduler.Schedule(500ms, [this](TaskContext /*context*/)
-                {
-                    me->DisappearAndDie();
-                });
-                break;
-            case POINT_DESPAWN_JUMP:
+        case POINT_JUMP:
+            _scheduler.Schedule(250ms, [this](TaskContext /*context*/)
+            {
+                /*
+                * (MovementMonsterSpline) (MovementSpline) MoveTime: 3111
+                * (MovementMonsterSpline) (MovementSpline) JumpGravity: 19.2911 -> +-Movement::gravity
+                * 1.4125f is guessed value. Which makes the JumpGravity way closer to the intended one. Not sure how to do it 100% blizzlike.
+                * Also the MoveTime is not correct but I don't know how to set it here.
+                */
+                me->GetMotionMaster()->MoveJump({ 1107.84f, 7222.57f, 38.9725f, me->GetOrientation() }, me->GetSpeed(MOVE_RUN), Movement::gravity * 1.4125f, POINT_DESPAWN_JUMP);
+            });
+            break;
+        case POINT_DESPAWN_2:
+            _scheduler.Schedule(500ms, [this](TaskContext /*context*/)
+            {
                 me->DisappearAndDie();
-                break;
-            default:
-                break;
+            });
+            break;
+        case POINT_DESPAWN_JUMP:
+            me->DisappearAndDie();
+            break;
+        default:
+            break;
         }
     }
 
@@ -1236,12 +1236,12 @@ struct npc_high_overlord_saurfang_93773 : public ScriptedAI
 {
     npc_high_overlord_saurfang_93773(Creature* creature) : ScriptedAI(creature) { }
 
-    void DoAction(int32 param) override
+    void DoAction(int32 param)
     {
         switch (param)
         {
-            case 1:
-                break;
+        case 1:
+            break;
         }
     }
 
@@ -1253,7 +1253,7 @@ struct npc_high_overlord_saurfang_93773 : public ScriptedAI
         }
     }
 
-    void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId) override
+    void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId)
     {
         if (player->HasQuest(QUEST_H_A_DESPERATE_PLEA))
         {
@@ -1277,8 +1277,8 @@ struct npc_makka_100519 : public ScriptedAI
     {
         switch (param)
         {
-            case 1:
-                break;
+        case 1:
+            break;
         }
     }
 

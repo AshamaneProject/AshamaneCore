@@ -247,7 +247,7 @@ struct scenario_artifact_brokenshore : public InstanceScript
 
     void SummonFelsoulPortals()
     {
-        //GameObject* felsoulPortal1 = instance->SummonGameObject(GO_FELSOUL_PORTAL_1, Position(-2648.52f, 19.5848f, 48.6442f, 0.85781f), QuaternionData(-0.0f, -0.0f, -0.415875f, -0.909422f), 300);
+        GameObject* felsoulPortal1 = instance->SummonGameObject(GO_FELSOUL_PORTAL_1, Position(-2648.52f, 19.5848f, 48.6442f, 0.85781f), QuaternionData(-0.0f, -0.0f, -0.415875f, -0.909422f), 300);
         GameObject* felsoulPortal2 = instance->SummonGameObject(GO_FELSOUL_PORTAL_2, Position(-2618.59f, 78.8602f, 38.1285f, 6.15595f), QuaternionData(-0.0f, -0.0f, -0.0635752f, 0.997977f), 300);
 
         /*TempSummon* portalController1 = instance->SummonCreature(105204, Position(-2620.5f, 78.9889f, 38.6922f, 6.24634f));

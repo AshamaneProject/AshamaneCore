@@ -35,122 +35,122 @@
 
 enum MardumQuests
 {
-    QUEST_INVASION_BEGIN                              = 40077,
-    QUEST_ASHTONGUE_FORCES                            = 40378,
-    QUEST_COILSKAR_FORCES                             = 40379,
-    QUEST_EYE_ON_THE_PRIZE                            = 39049,
-    QUEST_MEETING_WITH_QUEEN                          = 39050,
-    QUEST_SHIVARRA_FORCES                             = 38765,
-    QUEST_BEFORE_OVERRUN                              = 38766,
-    QUEST_HIDDEN_NO_MORE                              = 39495,
-    QUEST_ON_FELBAT_WINGS                             = 39663,
-    QUEST_THE_KEYSTONE                                = 38728,
-    QUEST_CRY_HAVOC                                   = 39516,
-    QUEST_THEIR_NUMBERS_ARE_LEGION                    = 38819
+    QUEST_INVASION_BEGIN = 40077,
+    QUEST_ASHTONGUE_FORCES = 40378,
+    QUEST_COILSKAR_FORCES = 40379,
+    QUEST_EYE_ON_THE_PRIZE = 39049,
+    QUEST_MEETING_WITH_QUEEN = 39050,
+    QUEST_SHIVARRA_FORCES = 38765,
+    QUEST_BEFORE_OVERRUN = 38766,
+    QUEST_HIDDEN_NO_MORE = 39495,
+    QUEST_ON_FELBAT_WINGS = 39663,
+    QUEST_THE_KEYSTONE = 38728,
+    QUEST_CRY_HAVOC = 39516,
+    QUEST_THEIR_NUMBERS_ARE_LEGION = 38819
 };
 
 enum MardumSpells
 {
     // Inquisitor Baleful
-    SPELL_INCITE_MADNESS                              = 194529,
-    SPELL_INFERNAL_SMASH                              = 192709,
-    SPELL_LEGION_AEGIS                                = 192665,
-    SPELL_LEARN_EYE_BEAM                              = 195447,
+    SPELL_INCITE_MADNESS = 194529,
+    SPELL_INFERNAL_SMASH = 192709,
+    SPELL_LEGION_AEGIS = 192665,
+    SPELL_LEARN_EYE_BEAM = 195447,
 
     // Doom Commander Beliash
-    SPELL_SHADOW_BLAZE                                = 195401,
-    SPELL_SHADOW_BOLT_VOLLEY                          = 196403,
-    SPELL_SHADOW_RETREAT                              = 196625
+    SPELL_SHADOW_BLAZE = 195401,
+    SPELL_SHADOW_BOLT_VOLLEY = 196403,
+    SPELL_SHADOW_RETREAT = 196625
 };
 
 enum MardumEvents
 {
     // Doom Commander Beliash
-    EVENT_SHADOW_BLAZE                                = 0,
-    EVENT_SHADOW_BOLT_VOLLEY                          = 1,
-    EVENT_SHADOW_RETREAT                              = 2
+    EVENT_SHADOW_BLAZE = 0,
+    EVENT_SHADOW_BOLT_VOLLEY = 1,
+    EVENT_SHADOW_RETREAT = 2
 };
 
 enum MardumTexts
 {
     // Inquisitor Baleful
-    SAY_AGGRO_INQUISITOR_BALEFUL                      = 0,
-    SAY_DEATH_INQUISITOR_BALEFUL                      = 1,
-    SAY_60_HP_PCT_INQUISITOR_BALEFUL                  = 2,
+    SAY_AGGRO_INQUISITOR_BALEFUL = 0,
+    SAY_DEATH_INQUISITOR_BALEFUL = 1,
+    SAY_60_HP_PCT_INQUISITOR_BALEFUL = 2,
 
     // Doom Commander Beliash
-    SAY_AGGRO_DOOM_COMMANDER_BELIASH                  = 0,
-    SAY_AGGRO_QUEEN_TYRANNA                           = 0,
+    SAY_AGGRO_DOOM_COMMANDER_BELIASH = 0,
+    SAY_AGGRO_QUEEN_TYRANNA = 0,
 
     // Kayn Sunfury
-    SAY_KAYN_SUNFURY_TEXT_1                           = 0,
-    SAY_KAYN_SUNFURY_TEXT_2                           = 1,
-    SAY_KAYN_SUNFURY_TEXT_3                           = 2
+    SAY_KAYN_SUNFURY_TEXT_1 = 0,
+    SAY_KAYN_SUNFURY_TEXT_2 = 1,
+    SAY_KAYN_SUNFURY_TEXT_3 = 2
 };
 
 enum MardumCreatures
 {
-    NPC_POWER_QUEST_KILL_CREDIT                       = 105946,
-    NPC_COLOSSAL_INFERNAL                             = 96159,
-    NPC_LEGION_GATEWAY_KILL_CREDIT                    = 94406,
-    NPC_FIRST_SUMMONED_GUARDIAN_QUEST_KILL_CREDIT     = 97831,
-    NPC_QUEEN_TYRANNA                                 = 95048,
-    NPC_BELIASH_CREDIT                                = 106003,
-    NPC_ASHTONGUE_CAPTAIN                             = 90247,
-    NPC_COILSKAR_CAPTAIN                              = 93693,
-    NPC_SHIVARRA_CAPTAIN                              = 94435
+    NPC_POWER_QUEST_KILL_CREDIT = 105946,
+    NPC_COLOSSAL_INFERNAL = 96159,
+    NPC_LEGION_GATEWAY_KILL_CREDIT = 94406,
+    NPC_FIRST_SUMMONED_GUARDIAN_QUEST_KILL_CREDIT = 97831,
+    NPC_QUEEN_TYRANNA = 95048,
+    NPC_BELIASH_CREDIT = 106003,
+    NPC_ASHTONGUE_CAPTAIN = 90247,
+    NPC_COILSKAR_CAPTAIN = 93693,
+    NPC_SHIVARRA_CAPTAIN = 94435
 };
 
 enum MardumGameObjects
 {
-    GOB_CAVERN_STONES                                 = 245045
+    GOB_CAVERN_STONES = 245045
 };
 
 enum MardumScenes
 {
-    SPELL_SCENE_MARDUM_WELCOME                        = 193525,
-    SPELL_SCENE_MARDUM_LEGION_BANNER                  = 191677,
-    SPELL_SCENE_MARDUM_ASHTONGUE_FORCES               = 189261,
-    SPELL_SCENE_MARDUM_COILSKAR_FORCES                = 190793,
-    SPELL_SCENE_MEETING_WITH_QUEEN                    = 188539,
-    SPELL_SCENE_MARDUM_SHIVARRA_FORCES                = 190851,
+    SPELL_SCENE_MARDUM_WELCOME = 193525,
+    SPELL_SCENE_MARDUM_LEGION_BANNER = 191677,
+    SPELL_SCENE_MARDUM_ASHTONGUE_FORCES = 189261,
+    SPELL_SCENE_MARDUM_COILSKAR_FORCES = 190793,
+    SPELL_SCENE_MEETING_WITH_QUEEN = 188539,
+    SPELL_SCENE_MARDUM_SHIVARRA_FORCES = 190851,
 
-    SCENE_ASHTONGUE                                   = 191315,
-    SCENE_COILSKAR                                    = 191400,
-    SCENE_SHIVARRA                                    = 191402
+    SCENE_ASHTONGUE = 191315,
+    SCENE_COILSKAR = 191400,
+    SCENE_SHIVARRA = 191402
 };
 
 enum MardumPhaseSpells
 {
-    SPELL_PHASE_170                                   = 59073,
-    SPELL_PHASE_171                                   = 59074,
-    SPELL_PHASE_172                                   = 59087,
-    SPELL_PHASE_173                                   = 54341,
+    SPELL_PHASE_170 = 59073,
+    SPELL_PHASE_171 = 59074,
+    SPELL_PHASE_172 = 59087,
+    SPELL_PHASE_173 = 54341,
 
-    SPELL_PHASE_175                                   = 57569,
-    SPELL_PHASE_176                                   = 74789,
-    SPELL_PHASE_177                                   = 69819,
+    SPELL_PHASE_175 = 57569,
+    SPELL_PHASE_176 = 74789,
+    SPELL_PHASE_177 = 69819,
 
-    SPELL_PHASE_179                                   = 67789,
-    SPELL_PHASE_180                                   = 68480,
-    SPELL_PHASE_181                                   = 68481
+    SPELL_PHASE_179 = 67789,
+    SPELL_PHASE_180 = 68480,
+    SPELL_PHASE_181 = 68481
 };
 
 enum MardumPhases
 {
-    SPELL_PHASE_MARDUM_WELCOME                        = SPELL_PHASE_170,
-    SPELL_PHASE_MARDUM_FELSABBER                      = SPELL_PHASE_172,
+    SPELL_PHASE_MARDUM_WELCOME = SPELL_PHASE_170,
+    SPELL_PHASE_MARDUM_FELSABBER = SPELL_PHASE_172,
 
-    SPELL_PHASE_ILLIDARI_OUTPOST_ASHTONGUE            = SPELL_PHASE_175,
-    SPELL_PHASE_ILLIDARI_OUTPOST_COILSKAR             = SPELL_PHASE_176,
-    SPELL_PHASE_ILLIDARI_OUTPOST_SHIVARRA             = SPELL_PHASE_177
+    SPELL_PHASE_ILLIDARI_OUTPOST_ASHTONGUE = SPELL_PHASE_175,
+    SPELL_PHASE_ILLIDARI_OUTPOST_COILSKAR = SPELL_PHASE_176,
+    SPELL_PHASE_ILLIDARI_OUTPOST_SHIVARRA = SPELL_PHASE_177
 };
 
 enum MardumMisc
 {
-    PLAYER_CHOICE_DH_SPEC_SELECTION                   = 231,
-    PLAYER_CHOICE_DH_SPEC_SELECTION_DEVASTATION       = 478,
-    PLAYER_CHOICE_DH_SPEC_SELECTION_VENGEANCE         = 479
+    PLAYER_CHOICE_DH_SPEC_SELECTION = 231,
+    PLAYER_CHOICE_DH_SPEC_SELECTION_DEVASTATION = 478,
+    PLAYER_CHOICE_DH_SPEC_SELECTION_VENGEANCE = 479
 };
 
 Position const NPCsPos[2] =
@@ -422,7 +422,7 @@ struct npc_inquisitor_baleful : public ScriptedAI
                     context.Repeat(5s);
             });
 
-            me->GetScheduler().Schedule(15s, [this](TaskContext /*context*/) /// End Legion Aegis event
+            me->GetScheduler().Schedule(15s, [this](TaskContext context) /// End Legion Aegis event
             {
                 me->SetReactState(REACT_AGGRESSIVE);
                 me->SetDisableGravity(true);
@@ -668,20 +668,20 @@ public:
 
         switch (creature->GetEntry())
         {
-            case NPC_ASHTONGUE_CAPTAIN:
-                sceneSpellId = SCENE_ASHTONGUE;
-                phaseSpellId = SPELL_PHASE_ILLIDARI_OUTPOST_ASHTONGUE;
-                break;
-            case NPC_COILSKAR_CAPTAIN:
-                sceneSpellId = SCENE_COILSKAR;
-                phaseSpellId = SPELL_PHASE_ILLIDARI_OUTPOST_COILSKAR;
-                break;
-            case NPC_SHIVARRA_CAPTAIN:
-                sceneSpellId = SCENE_SHIVARRA;
-                phaseSpellId = SPELL_PHASE_ILLIDARI_OUTPOST_SHIVARRA;
-                break;
-            default:
-                break;
+        case NPC_ASHTONGUE_CAPTAIN:
+            sceneSpellId = SCENE_ASHTONGUE;
+            phaseSpellId = SPELL_PHASE_ILLIDARI_OUTPOST_ASHTONGUE;
+            break;
+        case NPC_COILSKAR_CAPTAIN:
+            sceneSpellId = SCENE_COILSKAR;
+            phaseSpellId = SPELL_PHASE_ILLIDARI_OUTPOST_COILSKAR;
+            break;
+        case NPC_SHIVARRA_CAPTAIN:
+            sceneSpellId = SCENE_SHIVARRA;
+            phaseSpellId = SPELL_PHASE_ILLIDARI_OUTPOST_SHIVARRA;
+            break;
+        default:
+            break;
         }
 
         if (sceneSpellId)
@@ -732,7 +732,7 @@ public:
         if (GameObject* personnalCavernStone = player->SummonGameObject(GOB_CAVERN_STONES, 1237.150024f, 1642.619995f, 103.152f, 5.80559f, QuaternionData(0, 0, 20372944, 20372944), 0, true))
         {
             personnalCavernStone->GetScheduler().
-            Schedule(2s, [](TaskContext context)
+                Schedule(2s, [](TaskContext context)
             {
                 GetContextGameObject()->SetLootState(GO_READY);
                 GetContextGameObject()->UseDoorOrButton(10000);
@@ -862,20 +862,20 @@ public:
 
         switch (go->GetEntry())
         {
-            case 243968:
-                devastatorEntry = 96732;
-                killCreditEntry = 96734;
-                break;
-            case 243967:
-                devastatorEntry = 96731;
-                killCreditEntry = 96733;
-                break;
-            case 243965:
-                devastatorEntry = 93762;
-                killCreditEntry = 96692;
-                break;
-            default:
-                break;
+        case 243968:
+            devastatorEntry = 96732;
+            killCreditEntry = 96734;
+            break;
+        case 243967:
+            devastatorEntry = 96731;
+            killCreditEntry = 96733;
+            break;
+        case 243965:
+            devastatorEntry = 93762;
+            killCreditEntry = 96692;
+            break;
+        default:
+            break;
         }
 
         if (Creature* devastator = player->FindNearestCreature(devastatorEntry, 50.0f))
@@ -915,7 +915,7 @@ class PlayerScript_mardum_spec_choice : public PlayerScript
 public:
     PlayerScript_mardum_spec_choice() : PlayerScript("PlayerScript_mardum_spec_choice") {}
 
-// OnPlayerChoiceResponse
+    // OnPlayerChoiceResponse
     void OnCompleteQuestChoice(Player* player, uint32 choiceID, uint32 responseID)
     {
         if (choiceID != PLAYER_CHOICE_DH_SPEC_SELECTION)
@@ -925,18 +925,18 @@ public:
 
         switch (responseID)
         {
-            case PLAYER_CHOICE_DH_SPEC_SELECTION_DEVASTATION:
-                player->CastSpell(player, 194940, true);
-                break;
-            case PLAYER_CHOICE_DH_SPEC_SELECTION_VENGEANCE:
-                player->CastSpell(player, 194939, true);
+        case PLAYER_CHOICE_DH_SPEC_SELECTION_DEVASTATION:
+            player->CastSpell(player, 194940, true);
+            break;
+        case PLAYER_CHOICE_DH_SPEC_SELECTION_VENGEANCE:
+            player->CastSpell(player, 194939, true);
 
-                if (ChrSpecializationEntry const* spec = sChrSpecializationStore.AssertEntry(581))
-                    player->ActivateTalentGroup(spec);
+            if (ChrSpecializationEntry const* spec = sChrSpecializationStore.AssertEntry(581))
+                player->ActivateTalentGroup(spec);
 
-                break;
-            default:
-                break;
+            break;
+        default:
+            break;
         }
     }
 };
@@ -985,11 +985,11 @@ public:
 
         switch (action)
         {
-            case GOSSIP_ACTION_INFO_DEF:
-                player->CastSpell(creature, 195020, true);
-                creature->AI()->Talk(0);
-                CloseGossipMenuFor(player);
-                break;
+        case GOSSIP_ACTION_INFO_DEF:
+            player->CastSpell(creature, 195020, true);
+            creature->AI()->Talk(0);
+            CloseGossipMenuFor(player);
+            break;
         }
 
         return true;
@@ -999,7 +999,7 @@ public:
 // 96655
 struct npc_allari : public ScriptedAI
 {
-   npc_allari(Creature* creature) : ScriptedAI(creature) {  }
+    npc_allari(Creature* creature) : ScriptedAI(creature) {  }
 
     void sGossipSelect(Player* player, uint32 menuId, uint32 gossipListId)
     {
@@ -1018,7 +1018,7 @@ struct npc_allari : public ScriptedAI
 // 96420
 struct npc_cyana : public ScriptedAI
 {
-   npc_cyana(Creature* creature) : ScriptedAI(creature) {  }
+    npc_cyana(Creature* creature) : ScriptedAI(creature) {  }
 
     void sGossipSelect(Player* player, uint32 menuId, uint32 gossipListId)
     {
@@ -1037,7 +1037,7 @@ struct npc_cyana : public ScriptedAI
 // 99045
 struct npc_korvas : public ScriptedAI
 {
-   npc_korvas(Creature* creature) : ScriptedAI(creature) {  }
+    npc_korvas(Creature* creature) : ScriptedAI(creature) {  }
 
     void sGossipSelect(Player* player, uint32 menuId, uint32 gossipListId)
     {
@@ -1424,7 +1424,7 @@ public:
     {
         npc_brood_queen_tyrannaAI(Creature* creature) : ScriptedAI(creature) {
             Initialize();
-    }
+        }
 
         void Initialize()
         {
@@ -1537,41 +1537,41 @@ public:
             {
                 switch (eventId)
                 {
-                    case EVENT_BROOD_SWARM:
-                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0, true))
-                        {
-                            Talk(TEXT_CHILDREN, me->GetOwner());
-                            // commented out cast of the brood swarm spell because I've failed with the implementation
-                            // leave here a workaround with the regular summon
-                            // DoCast(target, SPELL_BROOD_SWARM);
-                            SummomNearTarget(2, NPC_TYRANNA_SPAWN, target->GetPosition(), 20 * TimeConstants::IN_MILLISECONDS); // 2 bigger spiders
-                            SummomNearTarget(3, NPC_SKITTERING_BROODLING, target->GetPosition(), 15 * TimeConstants::IN_MILLISECONDS); // 3 small spiders
-                        }
+                case EVENT_BROOD_SWARM:
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0, true))
+                    {
+                        Talk(TEXT_CHILDREN, me->GetOwner());
+                        // commented out cast of the brood swarm spell because I've failed with the implementation
+                        // leave here a workaround with the regular summon
+                        // DoCast(target, SPELL_BROOD_SWARM);
+                        SummomNearTarget(2, NPC_TYRANNA_SPAWN, target->GetPosition(), 20 * TimeConstants::IN_MILLISECONDS); // 2 bigger spiders
+                        SummomNearTarget(3, NPC_SKITTERING_BROODLING, target->GetPosition(), 15 * TimeConstants::IN_MILLISECONDS); // 3 small spiders
+                    }
 
-                        _events.ScheduleEvent(EVENT_BROOD_SWARM, 16s);
-                        _swarmSummoned++;
-                        break;
-                    case EVENT_QUEENS_BITE:
-                        Talk(TEXT_KISS, me->GetOwner());
-                        DoCast(SelectTarget(SELECT_TARGET_RANDOM, 1), SPELL_QUEENS_BITE, true);
-                        _events.ScheduleEvent(EVENT_QUEENS_BITE, 18s, 24s);
-                        break;
-                    case EVENT_INTO_THE_SHADOWS:
-                        DoCast(me, SPELL_INTO_THE_SHADOWS, true);
-                        _events.RescheduleEvent(EVENT_QUEENS_BITE, 34s, 44s);
-                        _events.RescheduleEvent(EVENT_BROOD_SWARM, 40s, 46s);
-                        _events.ScheduleEvent(EVENT_INTO_THE_SHADOWS, 20s + 20s);
-                        break;
-                    case EVENT_SAY_TEXT_2:
-                        Talk(TEXT_KEYSTONE, me->GetOwner());
-                        break;
-                    case EVENT_SAY_TEXT_1:
-                        Talk(TEXT_START_COMBAT, me->GetOwner());
-                        _events.ScheduleEvent(EVENT_SAY_TEXT_2, 3s);
-                        break;
-                    case EVENT_TYRANNA_DIED:
-                        Talk(TEXT_TYRANNA_DEATH, me->GetOwner());
-                        break;
+                    _events.ScheduleEvent(EVENT_BROOD_SWARM, 16s);
+                    _swarmSummoned++;
+                    break;
+                case EVENT_QUEENS_BITE:
+                    Talk(TEXT_KISS, me->GetOwner());
+                    DoCast(SelectTarget(SELECT_TARGET_RANDOM, 1), SPELL_QUEENS_BITE, true);
+                    _events.ScheduleEvent(EVENT_QUEENS_BITE, 18s, 24s);
+                    break;
+                case EVENT_INTO_THE_SHADOWS:
+                    DoCast(me, SPELL_INTO_THE_SHADOWS, true);
+                    _events.RescheduleEvent(EVENT_QUEENS_BITE, 34s, 44s);
+                    _events.RescheduleEvent(EVENT_BROOD_SWARM, 40s, 46s);
+                    _events.ScheduleEvent(EVENT_INTO_THE_SHADOWS, 20s + 20s);
+                    break;
+                case EVENT_SAY_TEXT_2:
+                    Talk(TEXT_KEYSTONE, me->GetOwner());
+                    break;
+                case EVENT_SAY_TEXT_1:
+                    Talk(TEXT_START_COMBAT, me->GetOwner());
+                    _events.ScheduleEvent(EVENT_SAY_TEXT_2, 3s);
+                    break;
+                case EVENT_TYRANNA_DIED:
+                    Talk(TEXT_TYRANNA_DEATH, me->GetOwner());
+                    break;
                 }
             }
             DoMeleeAttackIfReady();
@@ -1661,9 +1661,9 @@ void AddSC_zone_mardum()
     new scene_mardum_welcome_ashtongue();
     RegisterSpellScript(spell_learn_felsaber);
     RegisterCreatureAI(npc_mardum_allari);
-    new go_mardum_cage("go_mardum_cage_belath",     94400);
-    new go_mardum_cage("go_mardum_cage_cyana",      94377);
-    new go_mardum_cage("go_mardum_cage_izal",       93117);
+    new go_mardum_cage("go_mardum_cage_belath", 94400);
+    new go_mardum_cage("go_mardum_cage_cyana", 94377);
+    new go_mardum_cage("go_mardum_cage_izal", 93117);
     new go_mardum_cage("go_mardum_cage_mannethrel", 93230);
     RegisterCreatureAI(npc_inquisitor_baleful);
     RegisterSpellScript(spell_mardum_infernal_smash);

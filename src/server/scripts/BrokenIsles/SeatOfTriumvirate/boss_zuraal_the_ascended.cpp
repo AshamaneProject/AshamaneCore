@@ -22,35 +22,35 @@
 
 enum Spells
 {
-    SPELL_VOID_CONTAINMENT      = 246922,
-    SPELL_VOID_PHASED           = 246913,
+    SPELL_VOID_CONTAINMENT = 246922,
+    SPELL_VOID_PHASED = 246913,
 
-    SPELL_NULL_PALM             = 246134,
-    SPELL_NULL_PALM_MISSILE     = 246135,
-    SPELL_NULL_PALM_DAMAGE      = 246136,
+    SPELL_NULL_PALM = 246134,
+    SPELL_NULL_PALM_MISSILE = 246135,
+    SPELL_NULL_PALM_DAMAGE = 246136,
 
-    SPELL_DECIMATE              = 244579,
+    SPELL_DECIMATE = 244579,
 
-    SPELL_COALESCED_VOID        = 244602,
-    SPELL_DARK_EXPULSION        = 244599,
-    SPELL_UMBRAL_EJECTION       = 244731,
-    SPELL_VOID_SLUDGE           = 244588,
-    SPELL_VOID_INFUSION         = 244300,
+    SPELL_COALESCED_VOID = 244602,
+    SPELL_DARK_EXPULSION = 244599,
+    SPELL_UMBRAL_EJECTION = 244731,
+    SPELL_VOID_SLUDGE = 244588,
+    SPELL_VOID_INFUSION = 244300,
 
-    SPELL_UMBRA_SHIFT           = 244433,
-    SPELL_FIXATE                = 244657,
-    SPELL_MADDENED_FRENZY       = 247038,
+    SPELL_UMBRA_SHIFT = 244433,
+    SPELL_FIXATE = 244657,
+    SPELL_MADDENED_FRENZY = 247038,
 
-    SPELL_RELEASE_VOID_ENERGY   = 244618,
-    SPELL_VOID_TEAR             = 244621,
+    SPELL_RELEASE_VOID_ENERGY = 244618,
+    SPELL_VOID_TEAR = 244621,
 
     SPELL_PHYSICAL_REALM_COSMETIC = 244087,
 };
 
 enum Npcs
 {
-    NPC_COALESCED_VOID          = 122716,
-    NPC_DARK_ABERRATION         = 122482
+    NPC_COALESCED_VOID = 122716,
+    NPC_DARK_ABERRATION = 122482
 };
 
 // 122313
@@ -64,8 +64,8 @@ struct boss_zuraal_the_ascended : public BossAI
         me->RemoveAurasDueToSpell(SPELL_PHYSICAL_REALM_COSMETIC);
         me->setActive(true);
         DoZoneInCombat();
-        events.ScheduleEvent(SPELL_NULL_PALM,   10s);
-        events.ScheduleEvent(SPELL_DECIMATE,    10s);
+        events.ScheduleEvent(SPELL_NULL_PALM, 10s);
+        events.ScheduleEvent(SPELL_DECIMATE, 10s);
         events.ScheduleEvent(SPELL_UMBRA_SHIFT, 10s);
     }
 
@@ -78,30 +78,30 @@ struct boss_zuraal_the_ascended : public BossAI
 
         switch (eventId)
         {
-            case SPELL_NULL_PALM:
-            {
-                me->CastSpell(nullptr, SPELL_NULL_PALM, false);
-                events.Repeat(10s);
-                break;
-            }
-            case SPELL_DECIMATE:
-            {
-                if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
-                    me->CastSpell(target, SPELL_DECIMATE, false);
+        case SPELL_NULL_PALM:
+        {
+            me->CastSpell(nullptr, SPELL_NULL_PALM, false);
+            events.Repeat(10s);
+            break;
+        }
+        case SPELL_DECIMATE:
+        {
+            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                me->CastSpell(target, SPELL_DECIMATE, false);
 
-                events.Repeat(10s);
-                break;
-            }
-            case SPELL_UMBRA_SHIFT:
-            {
-                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 1))
-                    me->CastSpell(target, SPELL_UMBRA_SHIFT, false);
+            events.Repeat(10s);
+            break;
+        }
+        case SPELL_UMBRA_SHIFT:
+        {
+            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 1))
+                me->CastSpell(target, SPELL_UMBRA_SHIFT, false);
 
-                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 1, 0.f, true, -SPELL_UMBRA_SHIFT))
-                    me->CastSpell(target, SPELL_FIXATE, false);
+            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 1, 0.f, true, -SPELL_UMBRA_SHIFT))
+                me->CastSpell(target, SPELL_FIXATE, false);
 
-                break;
-            }
+            break;
+        }
         }
     }
 };

@@ -7,7 +7,7 @@
  * option) any later version.
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT
- *  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
  * more details.
  *
@@ -16,490 +16,569 @@
  */
 
 #include "ScriptMgr.h"
-#include "ScriptedCreature.h"
-#include "SpellHistory.h"
-#include "AreaTriggerTemplate.h"
-#include "AreaTriggerAI.h"
 #include "court_of_stars.h"
-
-enum Spells
-{
-    SPELL_PIERCING_GALE                 = 209628,
-    SPELL_PIERCING_GALE_BEHIND          = 209630,
-    SPELL_BLADE_SURGE                   = 209602,
-    SPELL_BLADE_SURGE_DMG               = 209667,
-    SPELL_BLADE_SURGE_SUMMON            = 209613,
-    SPELL_SLICING_MAELSTROM             = 209676,
-    SPELL_SLICING_MAELSTROM_DMG         = 209678,
-    SPELL_SLICING_MAELSTROM_IMAGE_AURA  = 209741,
-    SPELL_SLICING_MAELSTROM_IMAGE_DMG   = 209742,
-    SPELL_ENVELOPING_WINDS              = 224327,
-    SPELL_ENVELOPING_WINDS_TARGETING    = 224328,
-    SPELL_ENVELOPING_WINDS_SUMMON       = 224329,
-    SPELL_ENVELOPING_WINDS_AREA         = 224330,
-    SPELL_ENVELOPING_WINDS_DMG          = 224333,
-    SPELL_GHOST_VISUAL                  = 188272,
-};
-
-enum Events
-{
-    EVENT_PIERCING_GALE     = 1,
-    EVENT_BLADE_SURGE       = 2,
-    EVENT_SLICING_MAELSTROM = 3,
-    EVENT_ENVELOPING_WINDS  = 4,
-};
-
-enum Adds
-{
-    NPC_IMAGE_OF_MELANDRUS  = 105754,
-    NPC_ENVELOPING_WINDS    = 112687,
-    NPC_GALE_STALKER        = 105765,
-};
-
-enum Actions
-{
-    ACTION_SLICING_MAELSTROM    = 1,
-    ACTION_PIERCING_GALE        = 2,
-    ACTION_INTRO                = 3,
-    ACTION_INTRO_ACHIEVEMENT    = 4,
-    ACTION_MELISSANDE_ANSWER    = 5,
-    ACTION_PLAYERS_DETECTED     = 6,
-};
+#include "ScriptedCreature.h"
 
 enum Says
 {
-    SAY_INTRO                   = 0,
-    SAY_PLAYERS_LOCATED         = 1,
-    SAY_INTRO_ACHIEVEMENT       = 2,
-    SAY_MELISSANDE_ACHIEVEMENT  = 3,
-    SAY_AGGRO                   = 4,
-    SAY_SLICING                 = 5,
-    SAY_BLADE_SURGE             = 6,
-    SAY_KILL                    = 7,
-    SAY_WIPE                    = 8,
-    SAY_DEATH                   = 9,
+    SAY_AGGRO = 2,
+    SAY_MAELSTROM = 3,
+    SAY_BLADE = 4,
+    SAY_KILL = 5,
+    SAY_EVADE = 6,
+    SAY_DEATH = 7,
 };
 
-using SpellTargets = std::list<WorldObject*>;
-
-struct PlayerFilter
+enum Spells
 {
-    bool operator() (WorldObject*& target)
-    {
-        if (target && target->ToPlayer())
-            return false;
-
-        return true;
-    }
+    SPELL_PIERCING_GALE = 209628,
+    SPELL_SLICING_MAELSTROM = 209676,
+    SPELL_BLADE_SURGE = 209602,
+    SPELL_WIND_IMAGE = 209614,
+    SPELL_SLICING_MAELSTROM_2 = 209741, //Image Melandrus cast
+    SPELL_ENVELOPING_WINDS_FILTER = 224327,
+    SPELL_ENVELOPING_WINDS_AT = 224330,
+    SPELL_ENVELOPING_WINDS_STUN = 224333,
 };
 
-void SummonGaleStalker(Creature* caster)
+enum eEvents
 {
-    if (!caster)
-        return;
+    EVENT_PIERCING_GALE = 1,
+    EVENT_SLICING_MAELSTROM = 2,
+    EVENT_BLADE_SURGE = 3,
+    EVENT_ENVELOPING_WINDS = 4
+};
 
-    Position pos = caster->GetPosition();
-    pos.SetOrientation(pos.GetOrientation() + float(M_PI));
+Position const groupCheckPos[4] =
+{
+    {938.15f, 3147.17f, 52.24f},  //???? ????
+    {931.61f, 3171.08f, 49.57f},  //???? ?????
+    {947.74f, 3202.11f, 22.57f},  //??? ?????
+    {973.10f, 3166.68f, 22.57f},  //??? ???? 
+};
 
-    Creature* stalker = caster->SummonCreature(NPC_GALE_STALKER, pos, TEMPSUMMON_TIMED_DESPAWN, 8 * IN_MILLISECONDS);
-
-    if (!stalker)
-        return;
-
-    stalker->CastSpell(stalker, SPELL_PIERCING_GALE, false);
-}
+uint32 const pathId[4] =
+{
+    9100408,
+    9100407,
+    9100406,
+    9100405
+};
 
 class boss_advisor_melandrus : public CreatureScript
 {
-    public:
-        boss_advisor_melandrus() : CreatureScript("boss_advisor_melandrus")
-        {}
+public:
+    boss_advisor_melandrus() : CreatureScript("boss_advisor_melandrus") {}
 
-        struct boss_advisor_melandrus_AI : public BossAI
+    struct boss_advisor_melandrusAI : public BossAI
+    {
+        boss_advisor_melandrusAI(Creature* creature) : BossAI(creature, DATA_MELANDRUS)
         {
-            boss_advisor_melandrus_AI(Creature* creature) : BossAI(creature, DATA_ADVISOR_MELANDRUS)
-            {}
+            me->SetReactState(REACT_PASSIVE);
+            me->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC));
+            elisanda = me->SummonCreature(110443, 871.28f, 3111.11f, 54.93f, 5.87f);
+            introDone = false;
+            event = false;
+            checkrange = true;
+            checkrangetimer = 1000;
+        }
 
-            void Reset() override
-            {
-                _Reset();
-            }
+        Creature* elisanda;
+        bool introDone;
+        bool event;
+        bool queue;
+        bool checkrange;
+        uint32 checkrangetimer;
+        uint32 timer;
+        uint8 text;
 
-            void DoAction(int32 action) override
-            {
-                switch (action)
+        void Reset() override
+        {
+            _Reset();
+        }
+
+        void EnterCombat(Unit* /*who*/) override
+            //48:11
+        {
+            Talk(SAY_AGGRO);
+            _EnterCombat();
+
+            events.RescheduleEvent(EVENT_PIERCING_GALE, 6000); //48:17, 48:37, 48:56
+            events.RescheduleEvent(EVENT_SLICING_MAELSTROM, 11000); //48:22, 48:43, 49:01
+            events.RescheduleEvent(EVENT_BLADE_SURGE, 19000); //48:31, 48:50, 49:09
+            events.RescheduleEvent(EVENT_ENVELOPING_WINDS, 10000);
+        }
+
+        void JustDied(Unit* /*killer*/) override
+        {
+            Talk(SAY_DEATH);
+            _JustDied();
+        }
+
+        void KilledUnit(Unit* victim) override
+        {
+            if (victim->GetTypeId() != TYPEID_PLAYER)
+                return;
+
+            Talk(SAY_KILL);
+        }
+
+        void UpdateAI(uint32 diff) override
+        {
+            if (event)
+                if (elisanda)
+                    if (timer <= diff)
+                    {
+                        if (queue)
+                            Talk(text);
+                        else
+                        {
+                            elisanda->AI()->Talk(text);
+                            text++;
+                        }
+
+                        queue = (queue == true ? false : true);
+
+                        if (text < 2)
+                            timer = 5000;
+                        else
+                        {
+                            event = false;
+                            me->SetReactState(REACT_AGGRESSIVE);
+                            me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC));
+                            elisanda->DespawnOrUnsummon(100);
+                           // if (Unit* target = me->FindNearestPlayer(30))
+                             //   me->AI()->AttackStart(target);
+                        }
+                    }
+                    else timer -= diff;
+
+
+            if (checkrange)
+                if (checkrangetimer <= diff)
                 {
-                    case ACTION_INTRO:
-                        Talk(SAY_INTRO);
-                        break;
-
-                    case ACTION_INTRO_ACHIEVEMENT:
-                        Talk(SAY_INTRO_ACHIEVEMENT);
-                        break;
-
-                    case ACTION_MELISSANDE_ANSWER:
-                        Talk(SAY_MELISSANDE_ACHIEVEMENT);
-                        break;
-
-                    case ACTION_PLAYERS_DETECTED:
-                        Talk(SAY_PLAYERS_LOCATED);
-                        break;
-
-                    default : break;
+                 //   if (Unit* target = me->FindNearestPlayer(50))
+                      //  if (me->IsWithinMeleeRange(target, 8))
+                        {
+                            introDone = true;
+                            timer = 1000;
+                            text = 0;
+                            event = true;
+                            queue = true;
+                            checkrange = false;
+                        }
+                    checkrangetimer = 1000;
                 }
-            }
+                else checkrangetimer -= diff;
 
-            void EnterEvadeMode(EvadeReason reason) override
-            {
-                instance->DoRemoveAurasDueToSpellOnPlayers(SPELL_BLADE_SURGE_DMG);
-                me->RemoveAllAreaTriggers();
-                CreatureAI::EnterEvadeMode(reason);
-            }
+            if (!UpdateVictim())
+                return;
 
-            void JustReachedHome() override
-            {
-                Talk(SAY_WIPE);
-                _JustReachedHome();
-            }
+            events.Update(diff);
 
-            void JustDied(Unit* /**/) override
-            {
-                Talk(SAY_DEATH);
-                _JustDied();
-            }
+            if (me->HasUnitState(UNIT_STATE_CASTING))
+                return;
 
-            void EnterCombat(Unit* ) override
-            {
-                Talk(SAY_AGGRO);
-                _EnterCombat();
-                events.ScheduleEvent(EVENT_SLICING_MAELSTROM, Seconds(11));
-                events.ScheduleEvent(EVENT_PIERCING_GALE, Seconds(6));
-                events.ScheduleEvent(EVENT_ENVELOPING_WINDS, Seconds(14));
-            }
-
-            void KilledUnit(Unit* target) override
-            {
-                if (!target)
-                    return;
-
-                if (target->GetTypeId() == TYPEID_PLAYER)
-                    Talk(SAY_KILL);
-            }
-
-            void ActivateImages(uint32 action)
-            {
-                std::list<Creature*> images;
-                me->GetCreatureListWithEntryInGrid(images, NPC_IMAGE_OF_MELANDRUS, 250.f);
-
-                if (images.empty())
-                    return;
-
-                for (auto & it : images)
-                {
-                    if (it)
-                        it->AI()->DoAction(action);
-                }
-            }
-
-
-
-            void ExecuteEvent(uint32 eventId) override
+            if (uint32 eventId = events.ExecuteEvent())
             {
                 switch (eventId)
                 {
-                    case EVENT_BLADE_SURGE:
-                    {
-                        me->GetSpellHistory()->ResetAllCooldowns();
-                        Talk(SAY_BLADE_SURGE);
-                        Unit* target = SelectTarget(SELECT_TARGET_FARTHEST, 0, NonTankTargetSelector(me, true));
+                case EVENT_PIERCING_GALE:
+                {
+                    DoCastVictim(SPELL_PIERCING_GALE);
+                    EntryCheckPredicate pred(NPC_IMAGE_MELANDRUS);
+                    summons.DoAction(EVENT_PIERCING_GALE, pred);
+                    events.RescheduleEvent(EVENT_PIERCING_GALE, 20000);
+                    break;
+                }
+                case EVENT_SLICING_MAELSTROM:
+                {
+                    DoCast(SPELL_SLICING_MAELSTROM);
+                    EntryCheckPredicate pred(NPC_IMAGE_MELANDRUS);
+                    summons.DoAction(EVENT_SLICING_MAELSTROM, pred);
+                    Talk(SAY_MAELSTROM);
+                    events.RescheduleEvent(EVENT_SLICING_MAELSTROM, 18000);
+                    break;
+                }
+                case EVENT_BLADE_SURGE:
+                    if (Unit* pTarget = SelectTarget(SELECT_TARGET_RANDOM, 0, 40, true))
+                        DoCast(pTarget, SPELL_BLADE_SURGE);
+                    Talk(SAY_BLADE);
+                    events.RescheduleEvent(EVENT_BLADE_SURGE, 19000);
+                    break;
+                case EVENT_ENVELOPING_WINDS:
+                    DoCast(me, SPELL_ENVELOPING_WINDS_FILTER, true);
+                    events.RescheduleEvent(EVENT_ENVELOPING_WINDS, 20000);
+                    break;
+                }
+            }
+            DoMeleeAttackIfReady();
+        }
+    };
 
-                        if (target)
-                            DoCast(target, SPELL_BLADE_SURGE);
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new boss_advisor_melandrusAI(creature);
+    }
+};
+
+//105754
+class npc_image_of_advisor_melandrus : public CreatureScript
+{
+public:
+    npc_image_of_advisor_melandrus() : CreatureScript("npc_image_of_advisor_melandrus") {}
+
+    struct npc_image_of_advisor_melandrusAI : public ScriptedAI
+    {
+        npc_image_of_advisor_melandrusAI(Creature* creature) : ScriptedAI(creature)
+        {
+            me->SetReactState(REACT_PASSIVE);
+        }
+
+        void Reset() override
+        {
+            DoCast(me, SPELL_WIND_IMAGE, true);
+        }
+
+        void DoAction(int32 const action) override
+        {
+            if (action == EVENT_PIERCING_GALE)
+                DoCast(SPELL_PIERCING_GALE);
+
+            if (action == EVENT_SLICING_MAELSTROM)
+                DoCast(SPELL_SLICING_MAELSTROM_2);
+        }
+
+        void UpdateAI(uint32 diff) override {}
+    };
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_image_of_advisor_melandrusAI(creature);
+    }
+};
+
+// 107435
+class npc_suspicious_noble : public CreatureScript
+{
+public:
+    npc_suspicious_noble() : CreatureScript("npc_suspicious_noble") {}
+
+    bool OnGossipHello(Player* player, Creature* creature) override
+    {
+        if (player->HasAura(213213) && !player->HasAura(213304))
+        {
+           // player->ADD_GOSSIP_ITEM_DB(19764, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+          //  player->SEND_GOSSIP_MENU(29265, creature->GetGUID());
+        }
+        return true;
+    }
+
+    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
+    {
+      //  if (action != GOSSIP_ACTION_INFO_DEF + 1)
+            return false;
+
+        if (creature->GetGUID() == creature->GetInstanceScript()->GetGuidData(107435))
+        {
+           // creature->AI()->Talk(1, player->GetGUID());
+            CAST_AI(npc_suspicious_noble::npc_suspicious_nobleAI, (creature->AI()))->start = true;
+            creature->RemoveUnitFlag(UnitFlags(UNIT_NPC_FLAG_GOSSIP));
+        }
+        else
+        {
+          //  creature->AI()->Talk(0, player->GetGUID());
+            player->AddAura(213304, player);
+        }
+       // player->CLOSE_GOSSIP_MENU();
+        return true;
+    }
+
+    struct npc_suspicious_nobleAI : public ScriptedAI
+    {
+        npc_suspicious_nobleAI(Creature* creature) : ScriptedAI(creature)
+        {
+            me->SetReactState(REACT_PASSIVE);
+            me->SetSpeed(MOVE_WALK, 2.0f);
+            instance = me->GetInstanceScript();
+            if (me->GetGUID() == instance->GetGuidData(107435) && instance->GetBossState(DATA_MELANDRUS_EVENT) != DONE)
+                instance->SetBossState(DATA_MELANDRUS_EVENT, NOT_STARTED);
+        }
+
+        InstanceScript* instance;
+        EventMap events;
+        uint32 Path;
+        uint32 pointchek;
+
+        bool start = false;
+        bool WPEnd = false;
+        uint32 starttimer = 1000;
+
+        void Reset() override {}
+
+        void EnterCombat(Unit* who) override
+        {
+            Talk(2);
+            me->SetDisplayId(66917);
+            events.RescheduleEvent(1, 3000); // 214688 25
+            events.RescheduleEvent(2, 9000); // 214690
+            events.RescheduleEvent(3, 16000); // 214692
+        }
+
+        void JustDied(Unit* who) override
+        {
+            instance->SetBossState(DATA_MELANDRUS_EVENT, DONE);
+          //  Conversation* conversation = new Conversation;
+          //  if (!conversation->CreateConversation(sObjectMgr->GetGenerator<HighGuid::Conversation>()->Generate(), 2402, who, NULL, *who))
+           //     delete conversation;
+
+            instance->DoUpdateAchievementCriteria(CRITERIA_TYPE_BE_SPELL_TARGET, 219722);
+        }
+
+      /*  void LastWPReached() override
+        {
+            if (!WPEnd)
+            {
+                WPEnd = true;
+                me->SetHomePosition(me->GetPosition());
+                me->SetReactState(REACT_DEFENSIVE);
+                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                me->setFaction(16);
+            }
+        }*/
+
+        void UpdateAI(uint32 diff) override
+        {
+            if (start)
+            {
+                if (starttimer <= diff)
+                {
+                    if (me->GetPositionZ() > 48.0f)
+                    {
+                        if (me->GetPositionY() > 3160.80f)
+                            Path = 9100407;
                         else
-                            DoCastVictim(SPELL_BLADE_SURGE);
+                            Path = 9100408;
+                    }
+                    else
+                    {
+                        if (me->GetPositionY() > 3189.18f)
+                            Path = 9100406;
+                        else
+                            Path = 9100405;
+                    }
 
+                    me->GetMotionMaster()->MovePath(Path, false);
+
+                    switch (Path)
+                    {
+                    case 9100405:
+                        pointchek = 19;
+                        break;
+                    case 9100406:
+                        pointchek = 18;
+                        break;
+                    case 9100407:
+                    case 9100408:
+                        pointchek = 9;
+                        break;
+                    default:
                         break;
                     }
+                    start = false;
 
-                    case EVENT_PIERCING_GALE:
-                    {
-                        me->GetSpellHistory()->ResetAllCooldowns();
-
-                        DoCast(me, SPELL_PIERCING_GALE);
-                        SummonGaleStalker(me);
-
-                        ActivateImages(ACTION_PIERCING_GALE);
-
-                        events.ScheduleEvent(EVENT_PIERCING_GALE, Seconds(17));
-                        events.ScheduleEvent(EVENT_BLADE_SURGE, Seconds(10));
-                        break;
-                    }
-
-                    case EVENT_SLICING_MAELSTROM:
-                    {
-                        me->GetSpellHistory()->ResetAllCooldowns();
-                        Talk(SAY_SLICING);
-                        ActivateImages(ACTION_SLICING_MAELSTROM);
-                        DoCast(me, SPELL_SLICING_MAELSTROM);
-                        events.ScheduleEvent(EVENT_SLICING_MAELSTROM, Seconds(17));
-                        break;
-                    }
-
-                    case EVENT_ENVELOPING_WINDS:
-                    {
-                        DoCast(me, SPELL_ENVELOPING_WINDS, true);
-                        events.ScheduleEvent(EVENT_ENVELOPING_WINDS, Seconds(urand(15, 25)));
-                        break;
-                    }
-
-                    default : break;
-                };
+                }
+                else starttimer -= diff;
             }
-        };
 
-        CreatureAI* GetAI(Creature* creature) const override
-        {
-            return new boss_advisor_melandrus_AI(creature);
+            if (!UpdateVictim())
+                return;
+
+            events.Update(diff);
+
+            if (me->HasUnitState(UNIT_STATE_CASTING))
+                return;
+
+            if (uint32 eventId = events.ExecuteEvent())
+            {
+                switch (eventId)
+                {
+                case 1:
+                    DoCast(214688);
+                    events.RescheduleEvent(1, 25000); // 214688 25
+                    break;
+                case 2:
+                    DoCast(214690);
+                    events.RescheduleEvent(2, 25000); // 214690
+                    break;
+                case 3:
+                    DoCast(214692);
+                    events.RescheduleEvent(3, 25000); // 214692
+                    break;
+                }
+            }
+            DoMeleeAttackIfReady();
         }
+    };
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_suspicious_nobleAI(creature);
+    }
 };
 
-class npc_cots_image_of_melandrus : public CreatureScript
+//
+class npc_advisor_hall_checker : public CreatureScript
 {
-    public:
-        npc_cots_image_of_melandrus() : CreatureScript("npc_cots_image_of_melandrus")
-        {}
+public:
+    npc_advisor_hall_checker() : CreatureScript("npc_advisor_hall_checker") {}
 
-        struct npc_cots_image_of_melandrus_AI : public ScriptedAI
+    struct npc_advisor_hall_checkerAI : public ScriptedAI
+    {
+        npc_advisor_hall_checkerAI(Creature* creature) : ScriptedAI(creature)
         {
-            npc_cots_image_of_melandrus_AI(Creature* creature) : ScriptedAI(creature)
-            {}
-
-            void Reset() override
-            {
-                me->CastSpell(me, SPELL_GHOST_VISUAL, true);
-                me->AddUnitState(UNIT_STATE_ROOT);
-                me->SetReactState(REACT_PASSIVE);
-            }
-
-            void DoAction(int32 action) override
-            {
-                me->GetSpellHistory()->ResetAllCooldowns();
-
-                if (action == ACTION_PIERCING_GALE)
-                {
-                    DoCast(me, SPELL_PIERCING_GALE);
-                    SummonGaleStalker(me);
-                }
-                else if (action == ACTION_SLICING_MAELSTROM)
-                    DoCast(me, SPELL_SLICING_MAELSTROM_IMAGE_AURA);
-            }
-
-            void EnterEvadeMode(EvadeReason reason) override
-            {
-
-            }
-
-            void UpdateAI(uint32 diff) override
-            {
-
-            }
-        };
-
-        CreatureAI* GetAI(Creature* creature) const override
-        {
-            return new npc_cots_image_of_melandrus_AI(creature);
+            _conversation = false;
         }
+
+        bool _conversation;
+
+        void MoveInLineOfSight(Unit* who) override
+        {
+            if (who->GetTypeId() != TYPEID_PLAYER)
+                return;
+
+            if (me->IsWithinDistInMap(who, 20.0f))
+            {
+                if (!who->HasAura(213213))
+                {
+                    who->CastSpell(who, 213233, true);
+                    return;
+                }
+
+                if (!_conversation)
+                {
+                  //  Conversation* conversation = new Conversation;
+                  //  if (!conversation->CreateConversation(sObjectMgr->GetGenerator<HighGuid::Conversation>()->Generate(), 2405, who, NULL, *who))
+                   //     delete conversation;
+                 //   _conversation = true;
+                }
+            }
+        }
+
+    };
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_advisor_hall_checkerAI(creature);
+    }
 };
 
-class npc_cots_enveloping_wind : public CreatureScript
+//112687
+class npc_advisor_enveloping_winds : public CreatureScript
 {
-    public:
-        npc_cots_enveloping_wind() : CreatureScript("npc_cots_enveloping_wind")
-        {}
+public:
+    npc_advisor_enveloping_winds() : CreatureScript("npc_advisor_enveloping_winds") {}
 
-        struct npc_cots_enveloping_wind_AI : public ScriptedAI
+    struct npc_advisor_enveloping_windsAI : public ScriptedAI
+    {
+        npc_advisor_enveloping_windsAI(Creature* creature) : ScriptedAI(creature)
         {
-            npc_cots_enveloping_wind_AI(Creature* creature) : ScriptedAI(creature)
-            {}
-
-            void Reset() override
-            {
-                me->SetSpeed(MOVE_RUN, 0.4f);
-                me->SetSpeed(MOVE_WALK, 0.4f);
-                DoCast(me, SPELL_ENVELOPING_WINDS_AREA, true);
-                _timerMoved = _timerDmg = 0;
-                _moved = false;
-            }
-
-            void CheckPlayersNear()
-            {
-                Map::PlayerList const & players = me->GetMap()->GetPlayers();
-
-                if (!players.isEmpty())
-                {
-                    for (auto & it : players)
-                    {
-                        if (Player* player = it.GetSource())
-                        {
-                            if (me->GetDistance2d(player) <= 1.4f && !player->HasAura(SPELL_ENVELOPING_WINDS_DMG))
-                                me->CastSpell(player, SPELL_ENVELOPING_WINDS_DMG, true);
-                        }
-                    }
-                }
-            }
-
-            void UpdateAI(uint32 diff)
-            {
-                _timerMoved += diff;
-                _timerDmg += diff;
-
-                if (_timerMoved >= 5 * IN_MILLISECONDS && !_moved)
-                {
-                    me->GetMotionMaster()->MoveRandom(5.0f);
-                    _moved = true;
-                }
-
-                if (_timerDmg >= 500 && _moved)
-                {
-                    _timerDmg = 0;
-                    CheckPlayersNear();
-                }
-            }
-
-            private:
-                uint32 _timerMoved, _timerDmg;
-                bool _moved;
-        };
-
-        CreatureAI* GetAI(Creature* creature) const override
-        {
-            return new npc_cots_enveloping_wind_AI(creature);
+            me->SetReactState(REACT_PASSIVE);
+            me->SetSpeed(MOVE_RUN, 0.15f);
+            me->SetSpeed(MOVE_WALK, 0.15f);
         }
+
+        EventMap events;
+
+        void Reset() override {}
+
+        void IsSummonedBy(Unit* summoner) override
+        {
+            events.RescheduleEvent(1, 500);
+            events.RescheduleEvent(2, 5000);
+        }
+
+        //void OnAreaTriggerCast(Unit* caster, Unit* target, uint32 spellId, uint32 createATSpellId) override
+      //  {
+      //      if (spellId == SPELL_ENVELOPING_WINDS_STUN)
+      /*          me->DespawnOrUnsummon(1000);
+        }
+
+        void MovementInform(uint32 type, uint32 id) override
+        {
+            if (type != POINT_MOTION_TYPE)
+                return;
+
+            if (id == 1)
+                events.RescheduleEvent(EVENT_2, 1000);
+        }
+        */
+        void UpdateAI(uint32 diff) override
+        {
+            events.Update(diff);
+
+            if (uint32 eventId = events.ExecuteEvent())
+            {
+                switch (eventId)
+                {
+                case 1:
+                    DoCast(me, SPELL_ENVELOPING_WINDS_AT, true);
+                    break;
+                case 2:
+                    if (Unit* summoner = me->GetOwner())
+                        if (Unit* target = summoner->GetAI()->SelectTarget(SELECT_TARGET_RANDOM, 0, 60.0f, true))
+                            me->GetMotionMaster()->MovePoint(1, target->GetPosition());
+                    break;
+                }
+            }
+        }
+    };
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_advisor_enveloping_windsAI(creature);
+    }
 };
 
-class spell_melandrus_piercing_gale : public SpellScriptLoader
+// 213304
+class spell_righteous_indignation : public SpellScriptLoader
 {
-    public:
-        spell_melandrus_piercing_gale() : SpellScriptLoader("spell_melandrus_piercing_gale")
-        {}
+public:
+    spell_righteous_indignation() : SpellScriptLoader("spell_righteous_indignation") {}
 
-        class spell_melandrus_piercing_gale_SpellScript : public SpellScript
+    class spell_righteous_indignation_AuraScript : public AuraScript
+    {
+        PrepareAuraScript(spell_righteous_indignation_AuraScript);
+
+        void OnRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
         {
-            public:
-                PrepareSpellScript(spell_melandrus_piercing_gale_SpellScript);
+            Unit* target = GetTarget();
+            if (!target)
+                return;
 
-                void FilterTargets(SpellTargets & targets)
-                {
-                    if (targets.empty())
-                        return;
+            target->RemoveAura(213213);
+            target->CastSpell(target, 213233, true);
 
-                    targets.remove_if([&] (WorldObject* target)
-                    {
-
-                        float dx = GetCaster()->GetPositionX() - target->GetPositionX();
-                        float dy = GetCaster()->GetPositionY() - target->GetPositionY();
-
-                        dy = std::fabs(dy);
-                        dx = std::fabs(dx);
-
-                        if (std::fabs(dx-dy) > 2.5f)
-                            return true;
-
-                        return false;
-                    });
-
-                }
-
-                void Register() override
-                {
-                    OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_melandrus_piercing_gale_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_CONE_ENEMY_104);
-                    OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_melandrus_piercing_gale_SpellScript::FilterTargets, EFFECT_1, TARGET_UNIT_CONE_ENEMY_104);
-                }
-        };
-
-        SpellScript* GetSpellScript() const
-        {
-            return new spell_melandrus_piercing_gale_SpellScript();
         }
-};
 
-class spell_melandrus_blade_surge : public SpellScriptLoader
-{
-    public:
-        spell_melandrus_blade_surge() : SpellScriptLoader("spell_melandrus_blade_surge")
-        {}
-
-        class spell_melandrus_blade_surge_SpellScript : public SpellScript
+        void Register() override
         {
-            public:
-                PrepareSpellScript(spell_melandrus_blade_surge_SpellScript);
-
-                void HandleTrigger(SpellEffIndex /**/)
-                {
-                    if (!GetCaster())
-                        return;
-
-                    GetCaster()->CastSpell(GetCaster(), SPELL_BLADE_SURGE_SUMMON, true);
-                }
-
-                void Register() override
-                {
-                    OnEffectHitTarget += SpellEffectFn(spell_melandrus_blade_surge_SpellScript::HandleTrigger, EFFECT_2, SPELL_EFFECT_TRIGGER_SPELL);
-                }
-        };
-
-        SpellScript* GetSpellScript() const
-        {
-            return new spell_melandrus_blade_surge_SpellScript();
+            OnEffectRemove += AuraEffectRemoveFn(spell_righteous_indignation_AuraScript::OnRemove, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
         }
-};
+    };
 
-class spell_melandrus_enveloping_winds : public SpellScriptLoader
-{
-    public:
-        spell_melandrus_enveloping_winds() : SpellScriptLoader("spell_melandrus_enveloping_winds")
-        {}
-
-        class spell_melandrus_enveloping_winds_SpellScript : public SpellScript
-        {
-            public:
-                PrepareSpellScript(spell_melandrus_enveloping_winds_SpellScript);
-
-                void HandleDummy(SpellEffIndex)
-                {
-                    if (!GetCaster() || !GetHitUnit())
-                        return;
-
-                    GetCaster()->CastSpell(GetHitUnit(), SPELL_ENVELOPING_WINDS_TARGETING, true);
-                }
-
-                void FilterTargets(SpellTargets& targets)
-                {
-                    if (targets.empty())
-                        return;
-
-                    targets.remove_if(PlayerFilter());
-                }
-
-                void Register()
-                {
-                    OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_melandrus_enveloping_winds_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_SRC_AREA_ENEMY);
-                    OnEffectHitTarget += SpellEffectFn(spell_melandrus_enveloping_winds_SpellScript::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
-                }
-        };
-
-        SpellScript* GetSpellScript() const
-        {
-            return new spell_melandrus_enveloping_winds_SpellScript();
-        }
+    AuraScript* GetAuraScript() const override
+    {
+        return new spell_righteous_indignation_AuraScript();
+    }
 };
 
 void AddSC_boss_advisor_melandrus()
 {
     new boss_advisor_melandrus();
-    new npc_cots_image_of_melandrus();
-    new npc_cots_enveloping_wind();
-    new spell_melandrus_piercing_gale();
-    new spell_melandrus_blade_surge();
-    new spell_melandrus_enveloping_winds();
+    new npc_image_of_advisor_melandrus();
+    new npc_suspicious_noble();
+    new npc_advisor_hall_checker();
+    new npc_advisor_enveloping_winds();
+    new spell_righteous_indignation();
 }

@@ -38,7 +38,7 @@ enum SOTCreatureIds
     NPC_VICEROY_NEZHAR      = 124309,
     NPC_LURA                = 122314,
 
-    NPC_LURA_DOOR = 125104,
+    NPC_LURA_DOOR           = 125104,
 };
 
 enum SOTSpells

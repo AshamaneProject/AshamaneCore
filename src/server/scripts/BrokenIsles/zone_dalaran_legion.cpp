@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
+ * Copyright (C) Latin Core Team
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -33,16 +33,16 @@
 #include "Vehicle.h"
 #include "CombatAI.h"
 
-/*
- * Dalaran above Karazhan
- *
- * Legion Intro
- */
+ /*
+  * Dalaran above Karazhan
+  *
+  * Legion Intro
+  */
 
 enum
 {
-    PHASE_DALARAN_KARAZHAN  = 5829,
-    QUEST_BLINK_OF_AN_EYE   = 44663,
+    PHASE_DALARAN_KARAZHAN = 5829,
+    QUEST_BLINK_OF_AN_EYE = 44663,
 };
 
 // TODO : All this script is temp fix,
@@ -54,13 +54,13 @@ public:
 
     enum
     {
-        SPELL_MAGE_LEARN_GUARDIAN_HALL_TP   = 204287,
-        SPELL_WAR_LEARN_JUMP_TO_SKYHOLD     = 192084,
-        SPELL_DRUID_CLASS_HALL_TP           = 204874,
-        SPELL_CREATE_CLASS_HALL_ALLIANCE    = 185506,
-        SPELL_CREATE_CLASS_HALL_HORDE       = 192191,
+        SPELL_MAGE_LEARN_GUARDIAN_HALL_TP = 204287,
+        SPELL_WAR_LEARN_JUMP_TO_SKYHOLD = 192084,
+        SPELL_DRUID_CLASS_HALL_TP = 204874,
+        SPELL_CREATE_CLASS_HALL_ALLIANCE = 185506,
+        SPELL_CREATE_CLASS_HALL_HORDE = 192191,
 
-        CONVERSATION_KHADGAR_BLINK_OF_EYE   = 3827,
+        CONVERSATION_KHADGAR_BLINK_OF_EYE = 3827,
     };
 
     void OnLogin(Player* player, bool firstLogin) override
@@ -80,20 +80,20 @@ public:
     {
         switch (player->getClass())
         {
-            case CLASS_MAGE:
-                player->CastSpell(player, SPELL_MAGE_LEARN_GUARDIAN_HALL_TP, true);
-                break;
-            case CLASS_WARRIOR:
-                player->CastSpell(player, SPELL_WAR_LEARN_JUMP_TO_SKYHOLD, true);
-                break;
-            case CLASS_DRUID:
-                player->CastSpell(player, SPELL_DRUID_CLASS_HALL_TP, true);
-                break;
-            case CLASS_HUNTER:
-                player->m_taxi.SetTaximaskNode(1848); // Hunter Class Hall
-                break;
-            default:
-                break;
+        case CLASS_MAGE:
+            player->CastSpell(player, SPELL_MAGE_LEARN_GUARDIAN_HALL_TP, true);
+            break;
+        case CLASS_WARRIOR:
+            player->CastSpell(player, SPELL_WAR_LEARN_JUMP_TO_SKYHOLD, true);
+            break;
+        case CLASS_DRUID:
+            player->CastSpell(player, SPELL_DRUID_CLASS_HALL_TP, true);
+            break;
+        case CLASS_HUNTER:
+            player->m_taxi.SetTaximaskNode(1848); // Hunter Class Hall
+            break;
+        default:
+            break;
         }
 
         player->CastSpell(player, player->IsInAlliance() ? SPELL_CREATE_CLASS_HALL_ALLIANCE : SPELL_CREATE_CLASS_HALL_HORDE, true);
@@ -115,7 +115,7 @@ public:
 
     enum
     {
-        QUEST_UNITING_THE_ISLES     = 43341,
+        QUEST_UNITING_THE_ISLES = 43341,
     };
 
     void OnLogin(Player* player, bool firstLogin) override
@@ -213,7 +213,7 @@ public:
  * Legion Dalaran
  */
 
-// Zone 8392
+ // Zone 8392
 class zone_legion_dalaran_underbelly : public ZoneScript
 {
 public:
@@ -256,7 +256,7 @@ class npc_hunter_talua : public CreatureScript
 public:
     npc_hunter_talua() : CreatureScript("npc_hunter_talua") { }
 
-    bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 /*sender*/, uint32 /*action*/) override
+    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 /*action*/) override
     {
         if (player->getLevel() < 98 || player->getClass() != CLASS_HUNTER)
             return true;
@@ -281,17 +281,17 @@ public:
         npc_great_eagleAI(Creature* creature) : ScriptedAI(creature) { }
 
         uint8 curID;
-        void Reset() override
+        void Reset()
         {
         }
 
-        void SpellHit(Unit* /*caster*/, SpellInfo const* spell) override
+        void SpellHit(Unit* caster, SpellInfo const* spell) override
         {
             me->GetMotionMaster()->MoveDistract(1000);
             me->GetMotionMaster()->MovePoint(1, -854.9718f, 4185.322f, 754.1122f);
         }
 
-        void MovementInform(uint32 type, uint32 id) override
+        void MovementInform(uint32 type, uint32 id)
         {
             if (type != POINT_MOTION_TYPE)
                 return;
@@ -312,28 +312,28 @@ public:
 
 enum ChoicesAndKillcredits
 {
-    HUNTER_CHOICE                           = 240,
-    HUNTER_ARTIFACT_QUEST_KILLCREDIT        = 104634,
-    ROGUE_CHOICE                            = 280,
-    ROGUE_ARTIFACT_QUEST_KILLCREDIT         = 105953,
-    PALADIN_CHOICE                          = 235,
-    PALADIN_ARTIFACT_QUEST_KILLCREDIT       = 90369,
-    DEATH_KNIGHT_CHOICE                     = 253,
-    DEATH_KNIGHT_ARTIFACT_QUEST_KILLCREDIT  = 101441,
-    PRIEST_CHOICE                           = 248,
-    PRIEST_ARTIFACT_QUEST_KILLCREDIT        = 100583,
-    DEMON_HUNTER_CHOICE                     = 255,
-    DEMON_HUNTER_ARTIFACT_QUEST_KILLCREDIT  = 105177,
-    MAGE_CHOICE                             = 265,
-    MAGE_ARTIFACT_QUEST_KILLCREDIT          = 103037,
-    WARLOCK_CHOICE                          = 245,
-    WARLOCK_ARTIFACT_QUEST_KILLCREDIT       = 101095,
-    WARRIOR_CHOICE                          = 236,
-    WARRIOR_ARTIFACT_QUEST_KILLCREDIT       = 100583,
-    SHAMAN_CHOICE                           = 266,
-    SHAMAN_ARTIFACT_QUEST_KILLCREDIT        = 96527,
-    MONK_CHOICE                             = 242,
-    MONK_ARTIFACT_QUEST_KILLCREDIT          = 100438,
+    HUNTER_CHOICE = 240,
+    HUNTER_ARTIFACT_QUEST_KILLCREDIT = 104634,
+    ROGUE_CHOICE = 280,
+    ROGUE_ARTIFACT_QUEST_KILLCREDIT = 105953,
+    PALADIN_CHOICE = 235,
+    PALADIN_ARTIFACT_QUEST_KILLCREDIT = 90369,
+    DEATH_KNIGHT_CHOICE = 253,
+    DEATH_KNIGHT_ARTIFACT_QUEST_KILLCREDIT = 101441,
+    PRIEST_CHOICE = 248,
+    PRIEST_ARTIFACT_QUEST_KILLCREDIT = 100583,
+    DEMON_HUNTER_CHOICE = 255,
+    DEMON_HUNTER_ARTIFACT_QUEST_KILLCREDIT = 105177,
+    MAGE_CHOICE = 265,
+    MAGE_ARTIFACT_QUEST_KILLCREDIT = 103037,
+    WARLOCK_CHOICE = 245,
+    WARLOCK_ARTIFACT_QUEST_KILLCREDIT = 101095,
+    WARRIOR_CHOICE = 236,
+    WARRIOR_ARTIFACT_QUEST_KILLCREDIT = 100583,
+    SHAMAN_CHOICE = 266,
+    SHAMAN_ARTIFACT_QUEST_KILLCREDIT = 96527,
+    MONK_CHOICE = 242,
+    MONK_ARTIFACT_QUEST_KILLCREDIT = 100438,
 };
 
 class player_artifact_choice : public PlayerScript
@@ -345,39 +345,39 @@ public:
     {
         switch (choiceId)
         {
-            case HUNTER_CHOICE:
-                player->KilledMonsterCredit(HUNTER_ARTIFACT_QUEST_KILLCREDIT);
-                break;
-            case ROGUE_CHOICE:
-                player->KilledMonsterCredit(ROGUE_ARTIFACT_QUEST_KILLCREDIT);
-                break;
-            case PALADIN_CHOICE:
-                player->KilledMonsterCredit(PALADIN_ARTIFACT_QUEST_KILLCREDIT);
-                break;
-            case DEATH_KNIGHT_CHOICE:
-                player->KilledMonsterCredit(DEATH_KNIGHT_ARTIFACT_QUEST_KILLCREDIT);
-                break;
-            case PRIEST_CHOICE:
-                player->KilledMonsterCredit(PRIEST_ARTIFACT_QUEST_KILLCREDIT);
-                break;
-            case DEMON_HUNTER_CHOICE:
-                player->KilledMonsterCredit(DEMON_HUNTER_ARTIFACT_QUEST_KILLCREDIT);
-                break;
-            case MAGE_CHOICE:
-                player->KilledMonsterCredit(MAGE_ARTIFACT_QUEST_KILLCREDIT);
-                break;
-            case WARLOCK_CHOICE:
-                player->KilledMonsterCredit(WARLOCK_ARTIFACT_QUEST_KILLCREDIT);
-                break;
-            case WARRIOR_CHOICE:
-                player->KilledMonsterCredit(WARRIOR_ARTIFACT_QUEST_KILLCREDIT);
-                break;
-            case SHAMAN_CHOICE:
-                player->KilledMonsterCredit(SHAMAN_ARTIFACT_QUEST_KILLCREDIT);
-                break;
-            case MONK_CHOICE:
-                player->KilledMonsterCredit(MONK_ARTIFACT_QUEST_KILLCREDIT);
-                break;
+        case HUNTER_CHOICE:
+            player->KilledMonsterCredit(HUNTER_ARTIFACT_QUEST_KILLCREDIT);
+            break;
+        case ROGUE_CHOICE:
+            player->KilledMonsterCredit(ROGUE_ARTIFACT_QUEST_KILLCREDIT);
+            break;
+        case PALADIN_CHOICE:
+            player->KilledMonsterCredit(PALADIN_ARTIFACT_QUEST_KILLCREDIT);
+            break;
+        case DEATH_KNIGHT_CHOICE:
+            player->KilledMonsterCredit(DEATH_KNIGHT_ARTIFACT_QUEST_KILLCREDIT);
+            break;
+        case PRIEST_CHOICE:
+            player->KilledMonsterCredit(PRIEST_ARTIFACT_QUEST_KILLCREDIT);
+            break;
+        case DEMON_HUNTER_CHOICE:
+            player->KilledMonsterCredit(DEMON_HUNTER_ARTIFACT_QUEST_KILLCREDIT);
+            break;
+        case MAGE_CHOICE:
+            player->KilledMonsterCredit(MAGE_ARTIFACT_QUEST_KILLCREDIT);
+            break;
+        case WARLOCK_CHOICE:
+            player->KilledMonsterCredit(WARLOCK_ARTIFACT_QUEST_KILLCREDIT);
+            break;
+        case WARRIOR_CHOICE:
+            player->KilledMonsterCredit(WARRIOR_ARTIFACT_QUEST_KILLCREDIT);
+            break;
+        case SHAMAN_CHOICE:
+            player->KilledMonsterCredit(SHAMAN_ARTIFACT_QUEST_KILLCREDIT);
+            break;
+        case MONK_CHOICE:
+            player->KilledMonsterCredit(MONK_ARTIFACT_QUEST_KILLCREDIT);
+            break;
         }
 
     }
@@ -388,10 +388,10 @@ class npc_tele_q38970 : public CreatureScript
 {
 public:
     npc_tele_q38970() : CreatureScript("npc_tele_q38970") { }
-     struct npc_tele_q38970AI : public ScriptedAI
+    struct npc_tele_q38970AI : public ScriptedAI
     {
         npc_tele_q38970AI(Creature* creature) : ScriptedAI(creature) { }
-         void MoveInLineOfSight(Unit* who) override
+        void MoveInLineOfSight(Unit* who) override
         {
             if (Player* player = who->ToPlayer())
             {
@@ -399,13 +399,13 @@ public:
                 {
                     if (player->IsInDist(me, 2.0f))
                     {
-                       player->KilledMonsterCredit(94259);
+                        player->KilledMonsterCredit(94259);
                     }
                 }
             }
         }
     };
-     CreatureAI* GetAI(Creature* creature) const override
+    CreatureAI* GetAI(Creature* creature) const override
     {
         return new npc_tele_q38970AI(creature);
     }
@@ -474,10 +474,10 @@ class npc_tele_q47223 : public CreatureScript
 {
 public:
     npc_tele_q47223() : CreatureScript("npc_tele_q47223") { }
-     struct npc_tele_q47223AI : public ScriptedAI
+    struct npc_tele_q47223AI : public ScriptedAI
     {
         npc_tele_q47223AI(Creature* creature) : ScriptedAI(creature) { }
-         void MoveInLineOfSight(Unit* who) override
+        void MoveInLineOfSight(Unit* who) override
         {
             if (Player* player = who->ToPlayer())
             {
@@ -485,13 +485,13 @@ public:
                 {
                     if (player->IsInDist(me, 2.0f))
                     {
-                       player->KilledMonsterCredit(122006);
+                        player->KilledMonsterCredit(122006);
                     }
                 }
             }
         }
     };
-     CreatureAI* GetAI(Creature* creature) const override
+    CreatureAI* GetAI(Creature* creature) const override
     {
         return new npc_tele_q47223AI(creature);
     }
@@ -502,10 +502,10 @@ class npc_tele_q48507 : public CreatureScript
 {
 public:
     npc_tele_q48507() : CreatureScript("npc_tele_q48507") { }
-     struct npc_tele_q48507AI : public ScriptedAI
+    struct npc_tele_q48507AI : public ScriptedAI
     {
         npc_tele_q48507AI(Creature* creature) : ScriptedAI(creature) { }
-         void MoveInLineOfSight(Unit* who) override
+        void MoveInLineOfSight(Unit* who) override
         {
             if (Player* player = who->ToPlayer())
             {
@@ -513,13 +513,13 @@ public:
                 {
                     if (player->IsInDist(me, 2.0f))
                     {
-                       player->KilledMonsterCredit(124365);
+                        player->KilledMonsterCredit(124365);
                     }
                 }
             }
         }
     };
-     CreatureAI* GetAI(Creature* creature) const override
+    CreatureAI* GetAI(Creature* creature) const override
     {
         return new npc_tele_q48507AI(creature);
     }
@@ -530,10 +530,10 @@ class npc_tele_q42454 : public CreatureScript
 {
 public:
     npc_tele_q42454() : CreatureScript("npc_tele_q42454") { }
-     struct npc_tele_q42454AI : public ScriptedAI
+    struct npc_tele_q42454AI : public ScriptedAI
     {
         npc_tele_q42454AI(Creature* creature) : ScriptedAI(creature) { }
-         void MoveInLineOfSight(Unit* who) override
+        void MoveInLineOfSight(Unit* who) override
         {
             if (Player* player = who->ToPlayer())
             {
@@ -541,13 +541,13 @@ public:
                 {
                     if (player->IsInDist(me, 2.0f))
                     {
-                       player->KilledMonsterCredit(107587);
+                        player->KilledMonsterCredit(107587);
                     }
                 }
             }
         }
     };
-     CreatureAI* GetAI(Creature* creature) const override
+    CreatureAI* GetAI(Creature* creature) const override
     {
         return new npc_tele_q42454AI(creature);
     }
@@ -1075,10 +1075,10 @@ class npc_tele_q38564 : public CreatureScript
 {
 public:
     npc_tele_q38564() : CreatureScript("npc_tele_q38564") { }
-     struct npc_tele_q38564AI : public ScriptedAI
+    struct npc_tele_q38564AI : public ScriptedAI
     {
         npc_tele_q38564AI(Creature* creature) : ScriptedAI(creature) { }
-         void MoveInLineOfSight(Unit* who) override
+        void MoveInLineOfSight(Unit* who) override
         {
             if (Player* player = who->ToPlayer())
             {
@@ -1086,13 +1086,13 @@ public:
                 {
                     if (player->IsInDist(me, 2.0f))
                     {
-                       player->KilledMonsterCredit(92925);
+                        player->KilledMonsterCredit(92925);
                     }
                 }
             }
         }
     };
-     CreatureAI* GetAI(Creature* creature) const override
+    CreatureAI* GetAI(Creature* creature) const override
     {
         return new npc_tele_q38564AI(creature);
     }
@@ -1111,8 +1111,8 @@ struct npc_credit_portal_taken_110409 : public ScriptedAI
         Player* player = who->GetCharmerOrOwnerPlayerOrPlayerItself();
         if (!player)
             return;
-            player->KilledMonsterCredit(me->GetEntry());
-            player->KilledMonsterCredit(97481);
+        player->KilledMonsterCredit(me->GetEntry());
+        player->KilledMonsterCredit(97481);
     }
 };
 
@@ -1270,7 +1270,7 @@ enum
 
 };
 //
-class zone_legion_dalaran: public ZoneScript
+class zone_legion_dalaran : public ZoneScript
 {
 public:
     zone_legion_dalaran() : ZoneScript("zone_legion_dalaran") { }
@@ -1300,7 +1300,7 @@ public:
             // TODO : personalCreature->Talk(0);
         }
     }
-    void OnTempSummonNPCOnPOS(uint32 insideNpc, Player* player,Position npcPos)
+    void OnTempSummonNPCOnPOS(uint32 insideNpc, Player* player, Position npcPos)
     {
         _insideNpc = insideNpc;
         if (creature = player->FindNearestCreature(_insideNpc, 100.0f))
@@ -1424,7 +1424,7 @@ public:
             }
 
             //achievement 10596 npc 88317
-            if (player->HasAchieved(10596) && player->GetQuestStatus(QUEST_THE_DALARAN_FOUNTAIN) == QUEST_STATE_COMPLETE )
+            if (player->HasAchieved(10596) && player->GetQuestStatus(QUEST_THE_DALARAN_FOUNTAIN) == QUEST_STATE_COMPLETE)
             {
                 OnTempSummonNPC(NPC_NAT_PAGLE, player);
             }
@@ -1478,7 +1478,7 @@ public:
         }
         if (player->GetAreaId() == 7502 && player->getClass() == CLASS_WARRIOR)
         {
-            if(player->IsInHorde() && player->HasQuest(QUEST_H_A_DESPERATE_PLEA))
+            if (player->IsInHorde() && player->HasQuest(QUEST_H_A_DESPERATE_PLEA))
                 PhasingHandler::AddPhase(player, PHASE_CLASS_WARRIOR_HORDE);
             if (player->IsInAlliance() && player->HasQuest(QUEST_A_AN_IMPORTANT_MISSION))
                 PhasingHandler::AddPhase(player, PHASE_CLASS_WARRIOR_ALIANCE);
@@ -1514,8 +1514,8 @@ struct npc_emissary_auldbridge_111109 : public ScriptedAI
     {
         if (quest->GetQuestId() == QUEST_BLINK_OF_AN_EYE)
         {
-                m_playerGUID = player->GetGUID();
-                events.ScheduleEvent(DATA_TALK_1, 1s);
+            m_playerGUID = player->GetGUID();
+            events.ScheduleEvent(DATA_TALK_1, 1s);
         }
     }
     void UpdateAI(uint32 diff) override
@@ -1525,29 +1525,29 @@ struct npc_emissary_auldbridge_111109 : public ScriptedAI
         {
             switch (eventId)
             {
-                case DATA_TALK_1:
-                {
-                    Talk(SAY_FIRST_LINE);
-                    events.ScheduleEvent(DATA_TALK_2, 3s);
-                    break;
-                }
-                case DATA_TALK_2:
-                {
-                    Talk(SAY_SECOND_LINE);
-                    events.ScheduleEvent(DATA_TALK_3, 3s);
-                    break;
-                }
-                case DATA_TALK_3:
-                {
-                    Talk(SAY_THIRD_LINE);
-                    events.ScheduleEvent(DATA_GIVE_QUEST_CHECK, 3s);
-                    break;
-                }
-                case DATA_GIVE_QUEST_CHECK:
-                {
-                    CheckQuestGive();
-                    break;
-                }
+            case DATA_TALK_1:
+            {
+                Talk(SAY_FIRST_LINE);
+                events.ScheduleEvent(DATA_TALK_2, 3s);
+                break;
+            }
+            case DATA_TALK_2:
+            {
+                Talk(SAY_SECOND_LINE);
+                events.ScheduleEvent(DATA_TALK_3, 3s);
+                break;
+            }
+            case DATA_TALK_3:
+            {
+                Talk(SAY_THIRD_LINE);
+                events.ScheduleEvent(DATA_GIVE_QUEST_CHECK, 3s);
+                break;
+            }
+            case DATA_GIVE_QUEST_CHECK:
+            {
+                CheckQuestGive();
+                break;
+            }
             }
         }
     }
@@ -1606,7 +1606,7 @@ struct npc_emissary_auldbridge_111109 : public ScriptedAI
                         OnTempSummonNPC(NPC_SNOWFEATHER_100786, player);
                     }
                     //DEMON_HUNTER Quest
-                    if (player->getClass() == CLASS_DEMON_HUNTER && (player->GetQuestStatus(QUEST_CALL_OF_THE_ILLIDARI_39261) == QUEST_STATUS_NONE || player->GetQuestStatus(QUEST_CALL_OF_THE_ILLIDARI_39047) == QUEST_STATUS_NONE ) )
+                    if (player->getClass() == CLASS_DEMON_HUNTER && (player->GetQuestStatus(QUEST_CALL_OF_THE_ILLIDARI_39261) == QUEST_STATUS_NONE || player->GetQuestStatus(QUEST_CALL_OF_THE_ILLIDARI_39047) == QUEST_STATUS_NONE))
                     {
                         ///DH Quest
                         OnTempSummonNPC(NPC_KORVAS_BLOODTHORN_99343, player);
@@ -1614,7 +1614,7 @@ struct npc_emissary_auldbridge_111109 : public ScriptedAI
                     //WARRIOR Quest
                     if (player->getClass() == CLASS_WARRIOR)
                     {
-                        if(player->IsInAlliance()&& player->GetQuestStatus(QUEST_A_AN_IMPORTANT_MISSION) == QUEST_STATUS_NONE)
+                        if (player->IsInAlliance() && player->GetQuestStatus(QUEST_A_AN_IMPORTANT_MISSION) == QUEST_STATUS_NONE)
                             OnTempSummonNPC(NPC_SERGEANT_DALTON_108961, player);
                         if (player->IsInHorde() && player->GetQuestStatus(QUEST_H_A_DESPERATE_PLEA) == QUEST_STATUS_NONE)
                             OnTempSummonNPC(NPC_EITRIGG_93775, player);
@@ -1643,7 +1643,7 @@ struct npc_emissary_auldbridge_111109 : public ScriptedAI
                     //MONK Quest
                     if (player->getClass() == CLASS_MONK && player->GetQuestStatus(QUEST_DA_NEL) == QUEST_STATUS_NONE)
                     {
-                         OnTempSummonNPC(NPC_INITIATE_DA_NEL, player);
+                        OnTempSummonNPC(NPC_INITIATE_DA_NEL, player);
                     }
                 }
 
@@ -1812,11 +1812,11 @@ public:
         {
             switch (id)
             {
-                case DATA_START_EVENT:
-                {
-                    _events.ScheduleEvent(EVENT_TELEPORT_VIOLETHOLD, 3000);
-                    break;
-                }
+            case DATA_START_EVENT:
+            {
+                _events.ScheduleEvent(EVENT_TELEPORT_VIOLETHOLD, 3000);
+                break;
+            }
             }
         }
 
@@ -1986,7 +1986,7 @@ struct npc_Gryphon_108973 : public ScriptedAI
             {
                 me->SetAIAnimKitId(4061);
                 player->CastSpell(player, 197879, true);
-                player->AddDelayedTeleport(2000, 1500, Position(-2379.679f, 174.2f, 3.5625f, 3.733872f));
+                //player->AddDelayedTeleport(2000, 1500, Position(-2379.679f, 174.2f, 3.5625f, 3.733872f)); reparar luego
             }
         }
     }
@@ -2175,8 +2175,8 @@ struct npc_redoubt_belath : public ScriptedAI
             }
         }
     }
-    private:
-        EventMap _events;
+private:
+    EventMap _events;
 };
 
 // 215782 back to black temple

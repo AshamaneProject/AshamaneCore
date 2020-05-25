@@ -38,12 +38,12 @@ enum DataTypes
 
     ///paladin DATA_STAGE_7
     ///paladin area 7797
-    //SCENARIO_ID_PALADIN = 775, ///DATA_STAGE_7
-    //PHASE_PALADIN = 5171,
+    SCENARIO_ID_PALADIN = 775, ///DATA_STAGE_7
+    PHASE_PALADIN = 5171,
 
     //SCENARIO_ID_WARRIOR = 961, ///DATA_STAGE_5
-    //PHASE_WARRIOR = 6815,
-    //QUEST__RETURN_TO_THE_BROKEN_SHORE = 38904,
+    PHASE_WARRIOR = 6815,
+    QUEST__RETURN_TO_THE_BROKEN_SHORE = 38904,
     DATA_STEP_1 = 1939,
     DATA_STEP_2 = 2327,
     DATA_STEP_3 = 2030,
@@ -62,7 +62,7 @@ enum DataTypes
     EVENT_STEP_7 = 7,
     EVENT_STEP_8 = 8,
 
-    //SPELL_SCENE_MALGALOR_ARRIVES = 197593, ///warrior SceneID: 1144     PlaybackFlags : 25    SceneInstanceID : 1    SceneScriptPackageID : 1515
+    SPELL_SCENE_MALGALOR_ARRIVES = 197593, ///warrior SceneID: 1144     PlaybackFlags : 25    SceneInstanceID : 1    SceneScriptPackageID : 1515
 };
 
 struct scenario_artifact_tirisfal_glades : public InstanceScript
@@ -72,7 +72,7 @@ struct scenario_artifact_tirisfal_glades : public InstanceScript
     void Initialize() override
     {
         SetBossNumber(DATA_MAX_ENCOUNTERS);
-        //events.ScheduleEvent(DATA_STEP_1, 3s);
+        events.ScheduleEvent(DATA_STEP_1, 3s);
         SetData(DATA_ARTIFACT_TIRISFAL_GLADES, NOT_STARTED);
         ///default in paradin
         ClassMode = DATA_STAGE_7;
@@ -85,28 +85,28 @@ struct scenario_artifact_tirisfal_glades : public InstanceScript
         isComplete = false;
     }
 
-    void OnPlayerAreaUpdate(Player* player, Area* newArea, Area* /*oldArea*/) override
-    {
-        /*
-        if (newAreaId == 7796 && player->HasQuest(QUEST__RETURN_TO_THE_BROKEN_SHORE) && player->getClass() == CLASS_WARRIOR)
-        {
-            PhasingHandler::AddPhase(player, PHASE_WARRIOR);
-            ClassMode = DATA_STAGE_5;
-            //conversation
-            SendScenarioState(ScenarioData(SCENARIO_ID_WARRIOR, DATA_STEP_1));
-            ///SMSG_SET_DUNGEON_DIFFICULTY 12
-        }
-        ///.go -2421.58 144.59 7.7694 1500
-        if (newAreaId == 7797 && player->getClass() == CLASS_PALADIN)
-        {
-            PhasingHandler::AddPhase(player, PHASE_PALADIN);
-            ClassMode = DATA_STAGE_7;
-            //conversation
-            ///SendScenarioState(ScenarioData(SCENARIO_ID_PALADIN, DATA_STEP_1));
-            ///SMSG_SET_DUNGEON_DIFFICULTY 12
-        }
-        */
-    }
+    //void OnPlayerAreaUpdate(Player* player, uint32 newAreaId, uint32 /*oldAreaId*/)
+    //{
+    //    
+    //    if (newAreaId == 7796 && player->HasQuest(QUEST__RETURN_TO_THE_BROKEN_SHORE) && player->getClass() == CLASS_WARRIOR)
+    //    {
+    //        PhasingHandler::AddPhase(player, PHASE_WARRIOR);
+    //        ClassMode = DATA_STAGE_5;
+    //        //conversation
+    //       // SendScenarioState(ScenarioData(SCENARIO_ID_WARRIOR, DATA_STEP_1));
+    //        ///SMSG_SET_DUNGEON_DIFFICULTY 12
+    //    }
+    //    ///.go -2421.58 144.59 7.7694 1500
+    //    if (newAreaId == 7797 && player->getClass() == CLASS_PALADIN)
+    //    {
+    //        PhasingHandler::AddPhase(player, PHASE_PALADIN);
+    //        ClassMode = DATA_STAGE_7;
+    //        //conversation
+    //        ///SendScenarioState(ScenarioData(SCENARIO_ID_PALADIN, DATA_STEP_1));
+    //        ///SMSG_SET_DUNGEON_DIFFICULTY 12
+    //    }
+    //    
+    //}
 
     void NextStep()
     {

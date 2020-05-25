@@ -21,8 +21,6 @@
 #include "ScriptMgr.h"
 #include "SpellAuras.h"
 #include "halls_of_valor.h"
-#include "SpellAuraEffects.h"
-#include "Position.h"
 
 enum godKingKovaldSpells
 {
@@ -30,7 +28,6 @@ enum godKingKovaldSpells
     SPELL_AEGIS_OF_AGGRAMAR_ABS     = 193743,
     SPELL_AEGIS_SHIELD_VISUAL       = 194214,
     SPELL_AEGIS_SUMMON              = 193781,
-    SPELL_AEGIS_SPAWN_OBJECT        = 193940,
     SPELL_AEGIS_SPAWN               = 193769,
     SPELL_CLAIM_THE_AEGIS           = 194112,
     SPELL_AEGIS_RANDOM_POINT        = 193991,
@@ -53,13 +50,12 @@ enum godKingKovaldEvents
     EVENT_RAGNAROK,
     EVENT_FELBLAZE_RUSH,
     EVENT_FLAME_OF_WOE, // HEROIC
+    EVENT_CHECK_FOR_AEGIS,
     EVENT_SAVAGE_BLADE,
     EVENT_CLAIM_THE_AEGIS,
     EVENT_SUMMON_AEGIS,
     EVENT_START_TALK,
     EVENT_START_COMBAT,
-    EVENT_REMOVE_AEGIS_FROM_PLAYERS,
-    EVENT_PICKUP_AEGIS,
 };
 
 enum godKingKovaldSays
@@ -77,79 +73,33 @@ struct boss_god_king_kovald : public BossAI
 {
     boss_god_king_kovald(Creature* creature) : BossAI(creature, DATA_GODKING_SKOVALD)
     {
-        me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE));
-        me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE));
-        me->SetReactState(REACT_DEFENSIVE);
+        me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
+        me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
         me->SetVisible(false);
     }
+
+    Position aegisSpawn;
 
     void Reset() override
     {
         _Reset();
 
         me->SetReactState(REACT_DEFENSIVE);
-        me->SetPower(POWER_ENERGY, 80);
-        powerTimer = 1000;
-
-        if (instance->GetCreature(NPC_AEGIS) == NULL)
-            if (!me->HasUnitFlag(UNIT_FLAG_NOT_SELECTABLE))
-                if (Creature* odyn = instance->GetCreature(BOSS_ODYN))
-                    odyn->CastSpell(odyn, SPELL_AEGIS_SPAWN_OBJECT, true);
-    }
-
-
-    void JustDied(Unit* /*killer*/) override
-    {
-        _JustDied();
-        me->RemoveAllAreaTriggers();
-        instance->DoRemoveAurasDueToSpellOnPlayers(SPELL_AEGIS_SHIELD_PLAYER);
     }
 
     void EnterCombat(Unit* /*who*/) override
     {
         _EnterCombat();
 
+        if (Unit* target = me->GetVictim())
+            me->AddAura(SPELL_AEGIS_SHIELD_PLAYER, target);
+
         me->SetWalk(true);
 
-        events.ScheduleEvent(EVENT_FELBLAZE_RUSH, 7000);
-        events.ScheduleEvent(EVENT_SAVAGE_BLADE, 24000);
-    }
-
-    void SpellHitTarget(Unit* target, SpellInfo const* spellInfo) override
-    {
-        switch (spellInfo->Id)
-        {
-        case SPELL_SAVAGE_BLADE:
-        {
-            if (target->IsPlayer())
-                DoCast(target, 193686, true);
-            break;
-        }
-        default:
-            break;
-        }
-    }
-
-    void OnSpellCasted(SpellInfo const* spellInfo) override
-    {
-        if (spellInfo->Id == SPELL_CLAIM_THE_AEGIS)
-        {
-            me->SetReactState(REACT_AGGRESSIVE);
-            if (Unit* topAggro = SelectTarget(SELECT_TARGET_TOPAGGRO))
-                me->SetFacingToObject(topAggro);
-
-            AddTimedDelayedOperation(10, [this]() -> void
-            {
-                me->AddUnitFlag2(UNIT_FLAG2_DISABLE_TURN);
-                DoCast(me, 193983, true);
-
-                AddTimedDelayedOperation(10, [this]() -> void
-                {
-                    me->SetReactState(REACT_AGGRESSIVE);
-                    me->RemoveUnitFlag2(UNIT_FLAG2_DISABLE_TURN);
-                });
-            });
-        }
+        events.ScheduleEvent(EVENT_CHECK_FOR_AEGIS, 10000);
+        events.ScheduleEvent(EVENT_FELBLAZE_RUSH, 10000);
+        events.ScheduleEvent(EVENT_RAGNAROK, 14000);
+        events.ScheduleEvent(EVENT_SAVAGE_BLADE, 22000);
     }
 
     bool PlayerHasAegisAura()
@@ -164,18 +114,6 @@ struct boss_god_king_kovald : public BossAI
         return false;
     }
 
-    Player* PlayerWithAegisAura()
-    {
-        Map::PlayerList const &PlayerList = me->GetMap()->GetPlayers();
-        for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
-            if (Player *player = i->GetSource())
-                if (player->IsAlive() && player->GetDistance(me) <= 150.0f)
-                    if (player->HasAura(202711))
-                        return player;
-
-        return NULL;
-    }
-
     void DoAction(int32 action) override
     {
         if (action == ACTION_EVENT_START)
@@ -187,7 +125,6 @@ struct boss_god_king_kovald : public BossAI
             me->SetWalk(false);
             me->GetMotionMaster()->MovePoint(0, 2402.76f, 528.64f, 748.99f, true);
             events.ScheduleEvent(EVENT_START_TALK, 25 * IN_MILLISECONDS);
-            me->SetPower(POWER_ENERGY, 80);
         }
     }
 
@@ -198,34 +135,6 @@ struct boss_god_king_kovald : public BossAI
 
         events.Update(diff);
 
-        if (me->IsInCombat())
-        {
-            if (powerTimer <= diff)
-            {
-                power = me->GetPower(POWER_ENERGY);
-
-                if (power < 100)
-                {
-                    if (powerGrowth < 2)
-                    {
-                        powerGrowth++;
-                        me->SetPower(POWER_ENERGY, power + 2);
-                    }
-                    else
-                    {
-                        powerGrowth = 0;
-                        me->SetPower(POWER_ENERGY, power + 1);
-                    }
-                }
-                else if (!events.HasEvent(EVENT_RAGNAROK))
-                    events.ScheduleEvent(EVENT_RAGNAROK, 12000);
-
-                powerTimer = 1000;
-            }
-            else
-                powerTimer -= diff;
-        }
-
         if (me->HasUnitState(UNIT_STATE_CASTING))
             return;
 
@@ -233,149 +142,100 @@ struct boss_god_king_kovald : public BossAI
         {
             switch (eventId)
             {
-            case EVENT_RAGNAROK:
-                if (roll_chance_i(50))
-                    Talk(SAY_ETERNAL);
-                else
-                    Talk(SAY_POWER);
 
-                Talk(SAY_RAGNAROK);
-                me->CastSpell(me, SPELL_RAGNAROK_CHANNEL);
-               // events.ScheduleEvent(EVENT_REMOVE_AEGIS_FROM_PLAYERS, 3000);
-                break;
+                case EVENT_AEGIS_OF_AGGRAMAR:
+                    me->CastSpell(me, SPELL_AEGIS_OF_AGGRAMAR, true);
+                    me->CastSpell(me, SPELL_AEGIS_OF_AGGRAMAR_ABS, true);
+                    me->SummonGameObject(251991, me->GetPosition(), QuaternionData(), 0);
 
-            case EVENT_FELBLAZE_RUSH:
-                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 5.0f, true, 0))
-                    me->CastSpell(target, SPELL_FELBLAZE_RUSH, true);
+                    events.ScheduleEvent(EVENT_SUMMON_AEGIS, 9000);
+                    break;
 
-                break;
+                case EVENT_SUMMON_AEGIS:
+                    me->CastSpell(me, SPELL_AEGIS_SUMMON, true);
 
-            case EVENT_SAVAGE_BLADE:
-                if (Unit* target = me->GetVictim())
-                {
-                    me->CastSpell(target, SPELL_SAVAGE_BLADE, true);
-                    me->CastSpell(target, SPELL_RAGGED_SLASH, true);
-                }
+                    if (GameObject* aegis = me->FindNearestGameObject(251991, 500.0f))
+                        aegis->SendGameObjectDespawn();
 
-                events.ScheduleEvent(EVENT_SAVAGE_BLADE, 12000);
-                break;
+                    break;
 
-            case EVENT_START_TALK:
-                Talk(SAY_EVENT_2);
-                me->SetHomePosition(me->GetPosition());
-                events.ScheduleEvent(EVENT_START_COMBAT, 5 * IN_MILLISECONDS);
-                break;
+                case EVENT_RAGNAROK:
+                    if (roll_chance_i(50))
+                        Talk(SAY_ETERNAL);
+                    else
+                        Talk(SAY_POWER);
 
-            case EVENT_START_COMBAT:
-                me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE));
-                me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE));
-                break;
+                    Talk(SAY_RAGNAROK);
+                    me->AddAura(SPELL_RAGNAROK_CHANNEL, me);
+                    break;
 
-            default:
-                break;
+                case EVENT_FELBLAZE_RUSH:
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 5.0f, true, 0))
+                        me->CastSpell(target, SPELL_FELBLAZE_RUSH, true);
+                    break;
+
+                case EVENT_CHECK_FOR_AEGIS:
+                    if (!PlayerHasAegisAura())
+                        events.ScheduleEvent(EVENT_CLAIM_THE_AEGIS, 1000);
+                    else
+                        events.ScheduleEvent(EVENT_CHECK_FOR_AEGIS, 1000);
+                    break;
+
+                case EVENT_CLAIM_THE_AEGIS:
+                    me->CastSpell(me, SPELL_CLAIM_THE_AEGIS, true);
+                    me->CastSpell(me, SPELL_AEGIS_SHIELD_VISUAL, true);
+
+                    events.ScheduleEvent(EVENT_AEGIS_OF_AGGRAMAR, 1000);
+                    break;
+
+                case EVENT_SAVAGE_BLADE:
+                    if (Unit* target = me->GetVictim())
+                    {
+                        me->CastSpell(target, SPELL_SAVAGE_BLADE, true);
+                        me->CastSpell(target, SPELL_RAGGED_SLASH, true);
+                    }
+
+                    events.ScheduleEvent(EVENT_SAVAGE_BLADE, 12000);
+                    break;
+
+                case EVENT_START_TALK:
+                    Talk(SAY_EVENT_2);
+                    me->SetHomePosition(me->GetPosition());
+                    events.ScheduleEvent(EVENT_START_COMBAT, 5 * IN_MILLISECONDS);
+                    break;
+
+                case EVENT_START_COMBAT:
+                    me->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
+                    me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
+                    break;
+
+                default:
+                    break;
             }
         }
 
         DoMeleeAttackIfReady();
     }
-
-    private:
-        int32 power;
-        uint32 powerTimer;
-        uint32 powerGrowth;
 };
 
 // 98364 - Aegis of Aggramar
 struct npc_aegis_of_aggramar : public ScriptedAI
 {
-    npc_aegis_of_aggramar(Creature* creature) : ScriptedAI(creature)
+    npc_aegis_of_aggramar(Creature* creature) : ScriptedAI(creature) { }
+
+    void sGossipHello(Player* player) override
     {
-        me->SetReactState(REACT_PASSIVE);
-        me->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NON_ATTACKABLE));
+        player->CastSpell(player, SPELL_AEGIS_SHIELD_PLAYER, true);
+        if (player->HasAura(193720))
+            player->RemoveAurasDueToSpell(193720);
+
+        me->DespawnOrUnsummon(0);
     }
 
-    void OnSpellClick(Unit* clicker, bool& /*result*/) override
+    void Reset() override
     {
-        if (!clicked)
-        {
-            clicker->CastSpell(clicker, SPELL_AEGIS_SHIELD_PLAYER, true);
-            clicked = true;
-            me->ForcedDespawn(0);
-        }
-    }
-
-    void SpellHit(Unit* caster, SpellInfo const* spellInfo) override
-    {
-        if (spellInfo->Id == SPELL_CLAIM_THE_AEGIS)
-        {
-            DoCast(caster, 193988, true);
-            me->DespawnOrUnsummon();
-        }
-    }
-
-    void IsSummonedBy(Unit* summoner) override
-    {
-        clicked = false;
         me->CastSpell(me, SPELL_AEGIS_SPAWN, true);
-        //me->CastSpell(me, SPELL_AEGIS_RANDOM_POINT, true);
-
-        me->AddNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
-
-        me->SetInteractSpellId(SPELL_AEGIS_SHIELD_PLAYER);
-
-        if (summoner->IsPlayer())
-        {
-            me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE));
-        }
-    }
-
-private:
-    bool clicked;
-};
-
-// 193826 - Ragnarok
-class spell_ragnarok : public AuraScript
-{
-    PrepareAuraScript(spell_ragnarok);
-
-    void OnPeriodic(AuraEffect const* aurEff)
-    {
-        if (Unit* caster = GetCaster())
-        {
-            caster->CastSpell(caster, 193827, TRIGGERED_CAN_CAST_WHILE_CASTING_MASK);
-            caster->CastSpell(caster, 202494, TRIGGERED_CAN_CAST_WHILE_CASTING_MASK);
-        }
-    }
-
-    void Register() override
-    {
-        OnEffectPeriodic += AuraEffectPeriodicFn(spell_ragnarok::OnPeriodic, EFFECT_0, SPELL_AURA_PERIODIC_TRIGGER_SPELL);
-    }
-};
-
-// 193827 - Ragnarok Damage
-class spell_ragnarok_damage : public SpellScript
-{
-    PrepareSpellScript(spell_ragnarok_damage);
-
-    void RagnarokDamage(SpellMissInfo /*missInfo*/)
-    {
-        if (Unit* target = GetHitUnit())
-        {
-            if (target->HasAura(SPELL_AEGIS_OF_AGGRAMAR_ABS))
-                SetHitDamage(0);
-        }
-        else
-        {
-            if (Unit* caster = GetCaster())
-                if (Aura* aura = caster->GetAura(202494))
-                    SetHitDamage(GetHitDamage() + GetHitDamage() * aura->GetCharges());
-        }
-    }
-
-    void Register() override
-    {
-        BeforeHit += BeforeSpellHitFn(spell_ragnarok_damage::RagnarokDamage);
+        me->CastSpell(me, SPELL_AEGIS_RANDOM_POINT, true);
     }
 };
 
@@ -388,7 +248,7 @@ class spell_kovald_ragnarok : public SpellScript
     {
         if (Unit* caster = GetCaster())
             if (WorldLocation* dest = GetHitDest())
-                caster->CastSpell(dest->GetPositionX(), dest->GetPositionY(), dest->GetPositionZ(), SPELL_RAGNAROK_DAMAGE, TRIGGERED_CAN_CAST_WHILE_CASTING_MASK);
+                caster->CastSpell(dest->GetPositionX(), dest->GetPositionY(), dest->GetPositionZ(), SPELL_RAGNAROK_DAMAGE, true);
     }
 
     void Register() override
@@ -533,47 +393,6 @@ struct areatrigger_flame_of_woe : AreaTriggerAI
     }
 };
 
-// 202709 - aegis of aggramar
-class spell_aegis_of_agamar : public SpellScript
-{
-    PrepareSpellScript(spell_aegis_of_agamar);
-
-    void HandleDummy(SpellEffIndex /*effIndex*/)
-    {
-        if (Unit* caster = GetCaster())
-        {
-            caster->CastSpell(caster, 202711);
-        }
-    }
-
-    void Register() override
-    {
-        OnEffectHitTarget += SpellEffectFn(spell_aegis_of_agamar::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
-    }
-};
-
-//193940 spawn aegis
-class spell_spawn_aegis : public SpellScript
-{
-    PrepareSpellScript(spell_spawn_aegis);
-
-    void DoBeforeCast()
-    {
-        WorldLocation loc;
-        loc.m_positionX = 2402.76f;
-        loc.m_positionY = 528.64f;
-        loc.m_positionZ = 748.994f;
-        SetExplTargetDest(loc);
-    }
-
-    void Register() override
-    {
-        BeforeCast += SpellCastFn(spell_spawn_aegis::DoBeforeCast);
-    }
-};
-
-
-
 void AddSC_boss_godking_skovald()
 {
     RegisterCreatureAI(boss_god_king_kovald);
@@ -584,8 +403,4 @@ void AddSC_boss_godking_skovald()
     RegisterAreaTriggerAI(areatrigger_infernal_flames);
     RegisterAreaTriggerAI(areatrigger_flame_of_woe);
     RegisterCreatureAI(npc_flame_of_woe);
-    RegisterSpellScript(spell_aegis_of_agamar);
-    RegisterAuraScript(spell_ragnarok);
-    RegisterSpellScript(spell_ragnarok_damage);
-    RegisterSpellScript(spell_spawn_aegis);
 }

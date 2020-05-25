@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation; either version 2 of the License, or (at your
- * option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
- * more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program. If not, see <http://www.gnu.org/licenses/>.
- */
+* Copyright (C) Latin Core Team
+*
+* This program is free software; you can redistribute it and/or modify it
+* under the terms of the GNU General Public License as published by the
+* Free Software Foundation; either version 2 of the License, or (at your
+* option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+* more details.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
 
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
@@ -52,7 +52,7 @@ public:
         return true;
     }
 
-    bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 /*sender*/, uint32 action) override
+    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
         ClearGossipMenuFor(player);
 
@@ -147,7 +147,7 @@ public:
         uint32 movieTimer;
         ObjectGuid playerGuid;
 
-        void Reset() override
+        void Reset()
         {
             isScene = false;
             isMovie = false;
@@ -258,7 +258,7 @@ class npc_subdued_nightwing : public CreatureScript
 public:
     npc_subdued_nightwing() : CreatureScript("npc_subdued_nightwing") { }
 
-    bool OnGossipHello(Player* player, Creature* /*creature*/) override
+    bool OnGossipHello(Player* player, Creature* creature) override
     {
         if (player->GetQuestStatus(43702) == QUEST_STATUS_INCOMPLETE)
             if (Creature* creature = player->SummonCreature(109827, 0.0f, 0.0f, 0.0f, 0.0f, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 300000))
@@ -273,10 +273,10 @@ class npc_tele_q39702 : public CreatureScript
 {
 public:
     npc_tele_q39702() : CreatureScript("npc_tele_q39702") { }
-     struct npc_tele_q39702AI : public ScriptedAI
+    struct npc_tele_q39702AI : public ScriptedAI
     {
         npc_tele_q39702AI(Creature* creature) : ScriptedAI(creature) { }
-         void MoveInLineOfSight(Unit* who) override
+        void MoveInLineOfSight(Unit* who) override
         {
             if (Player* player = who->ToPlayer())
             {
@@ -284,24 +284,24 @@ public:
                 {
                     if (player->IsInDist(me, 2.0f))
                     {
-                       player->KilledMonsterCredit(96736);
+                        player->KilledMonsterCredit(96736);
                     }
                 }
             }
         }
     };
-     CreatureAI* GetAI(Creature* creature) const override
+    CreatureAI* GetAI(Creature* creature) const override
     {
         return new npc_tele_q39702AI(creature);
     }
 };
 
-class npc_92850: public CreatureScript
+class npc_92850 : public CreatureScript
 {
 public:
     npc_92850() : CreatureScript("npc_92850") { }
 
-    bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 /*sender*/, uint32 action) override
+    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
         switch (action)
         {

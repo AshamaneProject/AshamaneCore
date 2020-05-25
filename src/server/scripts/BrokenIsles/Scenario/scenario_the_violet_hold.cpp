@@ -126,7 +126,7 @@ struct scenario_the_violet_hold : public InstanceScript
     }
 
 
-    void OnUnitDeath(Unit* who) override
+    void OnUnitDeath(Unit* who)
     {
         if (who->GetEntry() == NPC_SIPHONING_RIFT_102787)
         {

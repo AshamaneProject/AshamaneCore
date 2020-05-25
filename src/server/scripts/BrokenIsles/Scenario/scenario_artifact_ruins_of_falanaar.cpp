@@ -274,7 +274,7 @@ class go_ruined_switch : public GameObjectScript
 public:
     go_ruined_switch() : GameObjectScript("go_ruined_switch") { isused = false; }
 
-    bool OnGossipHello(Player* /*player*/, GameObject* go) override
+    bool OnGossipHello(Player* player, GameObject* go) override
     {
         TC_LOG_ERROR("server.worldserver", "====================go_ruined_switch  OnGossipHello  ========= ");
         if (InstanceScript * instance = go->GetInstanceScript())

@@ -16,6 +16,8 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+ //Missing scripts
+
 #include "ScriptMgr.h"
 
 void AddSC_class_hall_dk()

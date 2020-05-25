@@ -16,13 +16,13 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*
-DELETE FROM `instance_template` WHERE `map` = 1648;
-INSERT INTO `instance_template` (`map`, `parent`, `script`, `allowMount`) VALUES (1648, 0, "instance_trials_of_valor", 0);
-INSERT INTO game_tele (position_x, position_y, position_z, orientation, map, NAME) VALUES
-(3797.596924, 529.043213, 603.330627, 3.162955, 1648, "TrialOfValorEphemeralWay"), // Instance start
-(2520.351074, 528.9219636, 748.995056, 3.162937, 1648, "TrialOfValorOdyn"), // Chamber of Glory
-*/
+ /*
+ DELETE FROM `instance_template` WHERE `map` = 1648;
+ INSERT INTO `instance_template` (`map`, `parent`, `script`, `allowMount`) VALUES (1648, 0, "instance_trials_of_valor", 0);
+ INSERT INTO game_tele (position_x, position_y, position_z, orientation, map, NAME) VALUES
+ (3797.596924, 529.043213, 603.330627, 3.162955, 1648, "TrialOfValorEphemeralWay"), // Instance start
+ (2520.351074, 528.9219636, 748.995056, 3.162937, 1648, "TrialOfValorOdyn"), // Chamber of Glory
+ */
 
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"

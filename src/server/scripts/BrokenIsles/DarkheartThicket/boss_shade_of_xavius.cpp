@@ -101,7 +101,7 @@ public:
             events.ScheduleEvent(EVENT_NIGHTMARE_BOLT, urand(17000, 25000));
             events.ScheduleEvent(EVENT_FEED_ON_THE_WEAK, urand(15000, 20000));
             events.ScheduleEvent(EVENT_FESTERING_RIP, urand(17000, 21000));
-            //events.ScheduleEvent(EVENT_INDUCED_PARANOIA, urand(18000, 28000));
+            events.ScheduleEvent(EVENT_INDUCED_PARANOIA, urand(18000, 28000));
 
             me->CastSpell(me, SPELL_SHADE_OF_XAVIUS_VISUAL, true);
 
@@ -126,7 +126,7 @@ public:
             events.ScheduleEvent(EVENT_NIGHTMARE_BOLT, urand(17000, 25000));
             events.ScheduleEvent(EVENT_FEED_ON_THE_WEAK, urand(15000, 20000));
             events.ScheduleEvent(EVENT_FESTERING_RIP, urand(17000, 21000));
-            //events.ScheduleEvent(EVENT_INDUCED_PARANOIA, urand(18000, 28000));
+            events.ScheduleEvent(EVENT_INDUCED_PARANOIA, urand(18000, 28000));
 
             Talk(SAY_PULL);
             instance->SetBossState(DATA_SHADE_OF_XAVIUS, IN_PROGRESS);
@@ -368,9 +368,9 @@ public:
             int32 deltaX = urand(0, 150);
             int32 deltaY = urand(0, 150);
 
-            if (Creature* tempSumm = caster->SummonCreature(WORLD_TRIGGER, caster->GetPositionX() + deltaX - 75, caster->GetPositionY() + deltaY - 75, caster->GetPositionZ(), 0, TEMPSUMMON_TIMED_DESPAWN, 2000))
+            if (TempSummon* tempSumm = caster->SummonCreature(WORLD_TRIGGER, caster->GetPositionX() + deltaX - 75, caster->GetPositionY() + deltaY - 75, caster->GetPositionZ(), 0, TEMPSUMMON_TIMED_DESPAWN, 2000))
             {
-                tempSumm->SetOwnerGUID(caster->GetGUID());
+                tempSumm->SetSummonerGUID(caster->GetGUID());
                 PhasingHandler::InheritPhaseShift(tempSumm, caster);
                 tempSumm->SetName(caster->GetName());
                 caster->CastSpell(tempSumm, SPELL_AN_TRIGGERMISSILE, false);

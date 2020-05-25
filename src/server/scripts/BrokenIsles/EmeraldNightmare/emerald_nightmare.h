@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -18,78 +18,44 @@
 #ifndef EMERALD_NIGHTMARE_H
 #define EMERALD_NIGHTMARE_H
 
-#include "ScriptMgr.h"
-#include "CreatureGroups.h"
-#include "LFGMgr.h"
-#include "LFGQueue.h"
-#include "LFGPackets.h"
-#include "DynamicObject.h"
-#include "ScriptedEscortAI.h"
-#include "CreatureTextMgr.h"
-#include "MiscPackets.h"
-#include "GameObjectAI.h"
-#include "ScriptMgr.h"
-#include "ScriptedCreature.h"
-#include "Player.h"
-#include "ObjectMgr.h"
-#include "Creature.h"
-#include "ObjectAccessor.h"
-#include "ObjectMgr.h"
-#include "ScriptedGossip.h"
-#include "Vehicle.h"
-#include "MotionMaster.h"
-#include "TemporarySummon.h"
-#include "GameObject.h"
-#include "CombatAI.h"
-#include "SpellInfo.h"
-#include "Conversation.h"
-#include "PhasingHandler.h"
-#include "SpellScript.h"
-#include "Chat.h"
-#include "GameObjectAI.h"
-#include "Map.h"
-#include "Transport.h"
-#include "InstanceScript.h"
-#include "DBCEnums.h"
-#include "SceneMgr.h"
-#include "MotionMaster.h"
-#include "InstanceScript.h"
-#include "GameObject.h"
-#include "Creature.h"
-#include "Unit.h"
-#include "SpellAuras.h"
-
-enum DataTypes
+enum eData
 {
-    DATA_NYTHENDRA              = 0,
-    DATA_ILGYNOTH               = 1,
-    DATA_ELERETHE_RENFERAL      = 2,
-    DATA_URSOC                  = 3,
-    DATA_DRAGONS_OF_NIGHTMARE   = 4,
-    DATA_CENARIUS               = 5,
-    DATA_XAVIUS                 = 6,
-    DATA_EYE_ILGYNOTH           = 7,
-    DATA_PRE_EVENT_XAVIUS       = 8,
+    DATA_NYTHENDRA = 0,
+    DATA_RENFERAL = 1,
+    DATA_ILGYNOTH = 2,
+    DATA_URSOC = 3,
+    DATA_DRAGON_NIGHTMARE = 4,
+    DATA_CENARIUS = 5,
+    DATA_XAVIUS = 6,
+    DATA_PRE_EVENT_XAVIUS = 7,
+    MAX_ENCOUNTER,
 
-    DATA_MAX_ENCOUNTERS
+    DATA_EYE_ILGYNOTH,
 };
 
-enum Creatures
+enum eCreatures
 {
-    NPC_NYTHENDRA           = 102672,
-    NPC_CORRUPTED_VERMIN    = 102998,
+    //Nythendra
+    NPC_NYTHENDRA = 102672,
+    NPC_GELATINIZED_DECAY = 111004,
+    NPC_BREATH_STALKER = 102930,
+    NPC_CORRUPTED_VERMIN = 102998,
+    NPC_CORRUPTED_VERMIN_2 = 111005,
 
-    NPC_ILGYNOTH            = 105393,
-    NPC_ELERETHE_RENFERAL   = 106087,
-    NPC_URSOC               = 100497,
-    NPC_YSONDRE             = 102679,
-    NPC_EMERISS             = 102683,
-    NPC_LETHON              = 102682,
-    NPC_TAERAR              = 102681,
-    NPC_CENARIUS            = 104636,
-    NPC_XAVIUS              = 103769,
+    //Elerethe Renferal
+    NPC_ELERETHE_RENFERAL = 106087,
+    NPC_TWISTING_SHADOWS = 106350, //Суммонится под игроком
+    NPC_TWISTING_SHADOWS_BRIDGE = 111439, //Суммонятся на паучих мостах
+    NPC_VILE_AMBUSH_STALKER = 107969,
+    NPC_WEB = 109519,
+    NPC_VENOMOUS_SPIDERLING = 107459,
+    NPC_SURGING_EGG_SAC = 108540,
+    NPC_PULSING_EGG_SAC = 112078, //Has aura 215581 - Pulsing Egg Cosmetic
+    NPC_INTRO_SHADOWFEATHER = 111975,
+    NPC_INTRO_NIGHTMOTHER = 111980,
 
     //Ilgynoth
+    NPC_ILGYNOTH = 105393,
     NPC_EYE_OF_ILGYNOTH = 105906,
     NPC_DOMINATOR_TENTACLE = 105304,
     NPC_DEATHGLARE_TENTACLE = 105322,
@@ -99,7 +65,51 @@ enum Creatures
     NPC_DEATH_BLOSSOM = 108659, //Mythic
     NPC_SHRIVELED_EYESTALK = 108821, //Mythic
 
+    //Ursoc
+    NPC_URSOC = 100497,
+    NPC_NIGHTMARE_IMAGE = 100576,
+
+    //Dragons of Nightmare
+    NPC_YSONDRE = 102679,
+    NPC_TAERAR = 102681,
+    NPC_LETHON = 102682,
+    NPC_EMERISS = 102683,
+    NPC_NIGHTMARE_BLOOM = 102804,
+    NPC_ESSENCE_OF_CORRUPTION = 103691,
+    NPC_SHADE_OF_TAERAR = 103145,
+    NPC_SEEPING_FOG = 103697,
+    NPC_SPIRIT_SHADE = 103100,
+    NPC_DREAD_HORROR = 103044,
+    NPC_CORRUPTED_MUSHROOM_SMALL = 103095,
+    NPC_CORRUPTED_MUSHROOM_MEDIUM = 103096,
+    NPC_CORRUPTED_MUSHROOM_BIG = 103097,
+
+    //Cenarius
+    NPC_CENARIUS = 104636,
+    NPC_MALFURION_STORMRAGE = 106482,
+
+    NPC_NIGHTMARE_SAPLING = 106427,
+    NPC_TORMENTED_SOULS = 106895,
+    NPC_CORRUPTED_EMERALD_EGG = 106898,
+    NPC_CORRUPTED_NATURE = 106899,
+
+    NPC_NIGHTMARE_ANCIENT = 105468,
+    NPC_CLEANSED_ANCIENT = 106667,
+    NPC_CORRUPTED_WISP = 106304,
+    NPC_ALLIES_WISP = 106659,
+    NPC_ROTTEN_DRAKE = 105494,
+    NPC_EMERALD_DRAKE = 106809,
+    NPC_TWISTED_SISTER = 105495,
+    NPC_REDEEMED_SISTER = 106831,
+
+    NPC_ROTTEN_BREATH_TRIG = 106562,
+    NPC_NIGHTMARE_BRAMBLES = 106167,
+    NPC_ENTANGLING_ROOTS = 108040,
+
+    NPC_BEAST_OF_NIGHTMARE = 108208, //Mythic
+
     //Xavius
+    NPC_XAVIUS = 103769,
     NPC_SLEEPING_VERSION = 104096,
     NPC_DREAD_ABOMINATION = 105343,
     NPC_LURKING_TERROR = 103694,
@@ -117,44 +127,39 @@ enum Creatures
     NPC_SMALL_TRASH = 111350
 };
 
-enum GameObjects
+enum eGameObjects
 {
-    GOB_NYTHENDRA_ENTRANCE_1    = 251533,
-    GOB_NYTHENDRA_ENTRANCE_2    = 251534,
-    GOB_NYTHENDRA_ENTRANCE_3    = 251535,
-    GOB_NYTHENDRA_ENTRANCE_4    = 251536,
-    GOB_NYTHENDRA_ENTRANCE_5    = 260550,
-    GOB_NYTHENDRA_ENTRANCE_6    = 260551,
-    GOB_NYTHENDRA_ENTRANCE_7    = 260552,
-    GOB_URSOC_DOOR              = 252042,
-    GOB_ILGYNOTH_DOOR_1         = 248848,
-    GOB_ILGYNOTH_DOOR_2         = 248849,
-    GOB_ILGYNOTH_DOOR_3         = 248850,
-    GOB_ILGYNOTH_DOOR           = 251555,
+    //Nythendra
+    GO_NYTHENDRA_DOOR_1 = 251533,
+    GO_NYTHENDRA_DOOR_2 = 251534,
+    GO_NYTHENDRA_DOOR_3 = 251535,
+    GO_NYTHENDRA_DOOR_4 = 251536,
+    GO_NYTHENDRA_DOOR_5 = 260550,
+    GO_NYTHENDRA_DOOR_6 = 260551,
+
+    //Elerethe Renferal
+    GO_RENFERAL_DOOR = 255000,
+
+    //Ursoc
+    GO_URSOC_DOOR_1 = 252042,
+    GO_URSOC_DOOR_2 = 252043,
+
+    //Ilgynoth
+    GO_ILGYNOTH_DOOR_1 = 248848,
+    GO_ILGYNOTH_DOOR_2 = 248849,
+    GO_ILGYNOTH_DOOR_3 = 248850,
+    GO_EYE_OF_ILGYNOTH_DOOR = 251555,
+
+    //Cenarius
+    GO_CENARIUS_CHEST = 254168,
+    GO_CENARIUS_PORTAL = 251980,
 };
 
-enum SpellVisualKit
+enum eOtherSpells
 {
-    SPELL_VISUAL_KIT_EMERALD_NIGHTMARE_ENTRANCE_LOCATION = 70900,
-    SPELL_VISUAL_KIT_EMERALD_NIGHTMATE_POST_XAVIUS_EXIT  = 74270,
-};
-
-class DelayDestCastEvent : public BasicEvent
-{
-public:
-    DelayDestCastEvent(Unit& owner, Position _pos, uint32 s, bool _triggered, ObjectGuid c = ObjectGuid::Empty) : BasicEvent(), m_owner(owner), CasterGUID(c), pos(_pos), Spell(s), triggered(_triggered) {}
-
-    bool Execute(uint64, uint32) override
-    {
-        return true;
-    }
-
-private:
-    Unit& m_owner;
-    ObjectGuid CasterGUID;
-    Position pos;
-    uint32 Spell;
-    bool triggered;
+    //Portal to Cenarius events
+    SPELL_PORTAL_IRIS_COSMETIC = 225937,
+    SPELL_PORTAL_IRIS = 224881,
 };
 
 #endif

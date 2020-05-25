@@ -1,20 +1,3 @@
-/*
- * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation; either version 2 of the License, or (at your
- * option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
- * more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program. If not, see <http://www.gnu.org/licenses/>.
- */
-
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 #include "the_arcway.h"
@@ -194,7 +177,7 @@ class boss_naltira : public CreatureScript
                             DoCast(target, SPELL_BLINK_STRIKES, true);
                         else
                             DoCastVictim(SPELL_BLINK_STRIKES, true);
-
+                        
                         events.ScheduleEvent(EVENT_BLINK_STRIKES_TANK, IN_MILLISECONDS);
                         events.ScheduleEvent(EVENT_BLINK_STRIKES, Seconds(30));
                         events.ScheduleEvent(EVENT_NETHER_VENOM, Seconds(10));
@@ -249,7 +232,7 @@ class npc_arc_vicious_manafang : public CreatureScript
                 me->SetDisableGravity(true);
                 me->AddUnitMovementFlag(MOVEMENTFLAG_FORWARD | MOVEMENTFLAG_DISABLE_GRAVITY);
                 me->AddExtraUnitMovementFlag(MOVEMENTFLAG2_JUMP_SPLINE_IN_AIR);
-
+                
                 _isInLand = false;
                 _target = nullptr;
                 _damage = 0;
@@ -264,13 +247,13 @@ class npc_arc_vicious_manafang : public CreatureScript
 
                     if (dummy)
                         dummy->RemoveAllAuras();
-
+                    
                     me->CastStop();
                     me->RemoveAllAuras();
-                    me->SetStandState(UNIT_STAND_STATE_STAND);
+                    //me->SetUInt32Value(UNIT_FIELD_BYTES_1, 0);
                     me->SetDisableGravity(false);
                     me->SetReactState(REACT_AGGRESSIVE);
-                    me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE));
+                    me->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                     me->RemoveUnitMovementFlag(MOVEMENTFLAG_FORWARD | MOVEMENTFLAG_DISABLE_GRAVITY);
                     me->RemoveExtraUnitMovementFlag(MOVEMENTFLAG2_JUMP_SPLINE_IN_AIR);
                     _events.ScheduleEvent(EVENT_DEVOUR, Seconds(10));
@@ -313,7 +296,7 @@ class npc_arc_vicious_manafang : public CreatureScript
                 {
                     auto* dummy = ObjectAccessor::GetCreature(*me, _dummyGUID);
                     auto* naltira = me->FindNearestCreature(BOSS_NALTIRA, 100.f, true);
-
+                    
                     if (dummy && naltira)
                     {
                         Position pos = dummy->GetPosition();
@@ -332,7 +315,7 @@ class npc_arc_vicious_manafang : public CreatureScript
             {
                 if (!UpdateVictim())
                     return;
-
+                
                 _events.Update(diff);
 
                 while (uint32 eventId = _events.ExecuteEvent())
@@ -382,7 +365,7 @@ class spell_naltira_blink_strikes : public SpellScriptLoader
                 {
                     if (!GetCaster()->ToCreature())
                         return;
-
+                        
                     GetCaster()->ToCreature()->SetReactState(REACT_PASSIVE);
                     GetCaster()->AddUnitState(UNIT_STATE_ROOT);
                     GetCaster()->AttackStop();
@@ -460,13 +443,13 @@ class spell_naltira_tangled_web : public SpellScriptLoader
                         GetCaster()->GetAI()->SetGUID(GetHitUnit()->GetGUID(), DATA_TANGLED_WEB_TARGET_1);
                     else
                         GetCaster()->GetAI()->SetGUID(GetHitUnit()->GetGUID(), DATA_TANGLED_WEB_TARGET_2);
-
+                    
                     _calls++;
-
+                    
                     GetHitUnit()->CastSpell(GetCaster(), SPELL_TANGLED_WEB_JUMP, true);
                     GetCaster()->CastSpell(GetHitUnit(), SPELL_TANGLED_WEB_DMG, true);
 
-
+                    
                 }
 
                 void Register() override
@@ -495,14 +478,14 @@ class spell_naltira_tangled_web_dmg : public SpellScriptLoader
             public:
                 PrepareAuraScript(spell_tangled_web_dmg_AuraScript);
 
-                bool Load()
+                bool Load() override
                 {
                     if (GetCaster()->GetAI())
                     {
                         _targetOne = GetCaster()->GetAI()->GetGUID(DATA_TANGLED_WEB_TARGET_1);
                         _targetTwo = GetCaster()->GetAI()->GetGUID(DATA_TANGLED_WEB_TARGET_2);
                     }
-
+                    
                     return true;
                 }
 
@@ -515,13 +498,13 @@ class spell_naltira_tangled_web_dmg : public SpellScriptLoader
                         targetOne->CastSpell(targetTwo, SPELL_TANGLED_WEB_BEAM, true);
                 }
 
-                void HandleOnPeriodic(AuraEffect const* aurEffect)
+                void HandleOnPeriodic(AuraEffect const* /*aurEffect*/)
                 {
                     if (!GetUnitOwner())
                         return;
-
+                    
                     GetUnitOwner()->CastSpell(GetUnitOwner(), SPELL_TANGLED_WEB_VISUAL_AOE, true);
-
+                    
                     Player* targetOne = ObjectAccessor::GetPlayer(*GetCaster(), _targetOne);
                     Player* targetTwo = ObjectAccessor::GetPlayer(*GetCaster(), _targetTwo);
 
@@ -574,7 +557,7 @@ class spell_naltira_nether_venom : public SpellScriptLoader
                 {
                     if (!GetHitUnit())
                         return;
-
+                    
                     Unit* target = GetHitUnit();
 
                     GetCaster()->CastSpell(target, SPELL_NETHER_VENOM, true);
@@ -607,7 +590,7 @@ class spell_naltira_nether_venom_dmg : public SpellScriptLoader
                 {
                     if (!GetHitDest())
                         return;
-
+                    
                     WorldLocation & pos = *GetHitDest();
 
                     GetCaster()->CastSpell(pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ(), SPELL_NETHER_VENOM_AREA, true);
@@ -672,7 +655,7 @@ class at_arc_nether_venom : public AreaTriggerEntityScript
             {
                 if (!target)
                     return;
-
+                
                 if (target->GetTypeId() == TYPEID_PLAYER)
                     target->CastSpell(target, SPELL_NETHER_VENOM_DMG, true);
             }
@@ -681,7 +664,7 @@ class at_arc_nether_venom : public AreaTriggerEntityScript
             {
                 if (!target)
                     return;
-
+                
                 if (target->GetTypeId() == TYPEID_PLAYER)
                     target->RemoveAurasDueToSpell(SPELL_NETHER_VENOM_DMG);
             }
