@@ -108,6 +108,3 @@ Read file [AUTHORS](AUTHORS).
 ## Links
 
 * [Website](https://www.ashamane.com)
-* [Wiki](https://www.trinitycore.info)
-* [Forums](https://community.trinitycore.org)
-* [Discord](https://discord.trinitycore.org/)
