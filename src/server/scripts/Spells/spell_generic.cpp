@@ -1976,9 +1976,9 @@ class spell_gen_mounted_charge: public SpellScriptLoader
 
             void Register() override
             {
-                SpellInfo const* spell = sSpellMgr->AssertSpellInfo(m_scriptSpellId);
+                SpellInfo const* spell = sSpellMgr->AssertSpellInfo(m_scriptSpellId, DIFFICULTY_NONE);
 
-                if (spell->HasEffect(DIFFICULTY_NONE, SPELL_EFFECT_SCRIPT_EFFECT))
+                if (spell->HasEffect(SPELL_EFFECT_SCRIPT_EFFECT))
                     OnEffectHitTarget += SpellEffectFn(spell_gen_mounted_charge_SpellScript::HandleScriptEffect, EFFECT_FIRST_FOUND, SPELL_EFFECT_SCRIPT_EFFECT);
 
                 if (spell->GetEffect(EFFECT_0)->Effect == SPELL_EFFECT_CHARGE)
@@ -2457,7 +2457,7 @@ class spell_gen_pet_summoned : public SpellScriptLoader
                 {
                     PetType newPetType = (player->getClass() == CLASS_HUNTER) ? HUNTER_PET : SUMMON_PET;
                     Pet* newPet = new Pet(player, newPetType);
-                    if (newPet->LoadPetData(player, 0, player->GetLastPetNumber(), true))
+                    if (newPet->LoadPetFromDB(player, 0, player->GetLastPetNumber(), true))
                     {
                         // revive the pet if it is dead
                         if (newPet->getDeathState() == DEAD)
@@ -3013,7 +3013,7 @@ class spell_gen_summon_elemental : public SpellScriptLoader
                 if (GetCaster())
                     if (Unit* owner = GetCaster()->GetOwner())
                         if (owner->GetTypeId() == TYPEID_PLAYER) /// @todo this check is maybe wrong
-                            owner->ToPlayer()->RemovePet(nullptr, PET_SAVE_DISMISS, true);
+                            owner->ToPlayer()->RemovePet(NULL, PET_SAVE_NOT_IN_SLOT, true);
             }
 
             void Register() override
@@ -3704,7 +3704,7 @@ class spell_gen_gm_freeze : public SpellScriptLoader
                 if (Player* player = GetTarget()->ToPlayer())
                 {
                     // stop combat + make player unattackable + duel stop + stop some spells
-                    player->setFaction(35);
+                    player->SetFaction(FACTION_FRIENDLY);
                     player->CombatStop();
                     if (player->IsNonMeleeSpellCast(true))
                         player->InterruptNonMeleeSpells(true);
@@ -3715,10 +3715,10 @@ class spell_gen_gm_freeze : public SpellScriptLoader
                     {
                         if (Pet* pet = player->GetPet())
                         {
-                            pet->SavePetToDB(PET_SAVE_CURRENT_STATE);
+                            pet->SavePetToDB(PET_SAVE_AS_CURRENT);
                             // not let dismiss dead pet
                             if (pet->IsAlive())
-                                player->RemovePet(pet, PET_SAVE_DISMISS);
+                                player->RemovePet(pet, PET_SAVE_NOT_IN_SLOT);
                         }
                     }
                 }

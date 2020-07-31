@@ -117,7 +117,7 @@ struct npc_korvas_bloodthorn_99343 : public ScriptedAI
         }
     }
 
-    void sQuestAccept(Player* player, Quest const* quest) override
+    void QuestAccept(Player* player, Quest const* quest) override
     {
         if (quest->GetQuestId() == QUEST_CALL_OF_THE_ILLIDARI_39261 || quest->GetQuestId() == QUEST_CALL_OF_THE_ILLIDARI_39047)
         {

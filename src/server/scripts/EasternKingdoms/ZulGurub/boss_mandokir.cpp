@@ -92,8 +92,6 @@ enum Misc
     POINT_START_REVIVE          = 1,
 
     DATA_OHGANOT_SO_FAST        = 5762,
-
-    FACTION_NONE                = 1665
 };
 
 enum SummonGroups
@@ -144,7 +142,7 @@ class boss_mandokir : public CreatureScript
                     {
                         if (Creature* chainedSpirit = ObjectAccessor::GetCreature(*me, *itr))
                             if (chainedSpirit->GetEntry() == NPC_CHAINED_SPIRIT && chainedSpirit->AI())
-                                chainedSpirit->setFaction(FACTION_NONE);
+                                chainedSpirit->SetFaction(FACTION_NONE);
                     }
                 }
 

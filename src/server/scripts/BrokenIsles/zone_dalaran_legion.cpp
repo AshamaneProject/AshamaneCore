@@ -262,7 +262,7 @@ public:
             return true;
 
         if (Pet* pet = player->GetPet())
-            player->RemovePet(nullptr, PET_SAVE_DISMISS, false);
+            player->RemovePet(nullptr, PET_SAVE_NOT_IN_SLOT, false);
 
         player->CastSpell(player, 216213, true);
         player->m_Events.AddEvent(new CastEventTP(player, 216216, true), player->m_Events.CalculateTime(10000));
@@ -659,7 +659,7 @@ public:
             _moveTimer = 0;
         }
 
-        void sQuestAccept(Player* player, Quest const* quest) override
+        void QuestAccept(Player* player, Quest const* quest) override
         {
             if (quest->GetQuestId() == QUEST_ASK_AND_YOU_SHALL_RECEIVE)
             {
@@ -948,13 +948,13 @@ public:
             _jaceGUID = ObjectGuid::Empty;
         }
 
-        void OnStateChanged(uint32 /*state*/, Unit* unit) override
+        void OnLootStateChanged(uint32 /*state*/, Unit* unit) override
         {
             if (unit)
                 if (unit->ToPlayer()->HasQuest(QUEST_ESTABLISHING_A_CONNECTION) &&
                     !unit->ToPlayer()->GetQuestObjectiveData(QUEST_ESTABLISHING_A_CONNECTION, 0))
-                    if (Creature* allari = go->FindNearestCreature(104909, 3.0f))
-                        if (Creature* jace = go->FindNearestCreature(99262, 5.0f))
+                    if (Creature* allari = me->FindNearestCreature(104909, 3.0f))
+                        if (Creature* jace = me->FindNearestCreature(99262, 5.0f))
                             if (Player* player = unit->ToPlayer())
                             {
                                 _playerGUID = player->GetGUID();
@@ -975,8 +975,8 @@ public:
                 {
                 case EVENT_TALK_JACE_00:
                 {
-                    if (Creature* jace = ObjectAccessor::GetCreature(*go, _jaceGUID))
-                        if (Player* player = ObjectAccessor::GetPlayer(*go, _playerGUID))
+                    if (Creature* jace = ObjectAccessor::GetCreature(*me, _jaceGUID))
+                        if (Player* player = ObjectAccessor::GetPlayer(*me, _playerGUID))
                         {
                             jace->AI()->SetData(DATA_COMMUNICATOR_ACTIVATED, DATA_COMMUNICATOR_ACTIVATED);
                             player->KilledMonsterCredit(KILLCREDIT_ACTIVATE_COMMUNICATOR, ObjectGuid::Empty);
@@ -985,24 +985,24 @@ public:
                 }
                 case EVENT_TALK_PART_00:
                 {
-                    if (Creature* allari = ObjectAccessor::GetCreature(*go, _allariGUID))
-                        if (Player* player = ObjectAccessor::GetPlayer(*go, _playerGUID))
+                    if (Creature* allari = ObjectAccessor::GetCreature(*me, _allariGUID))
+                        if (Player* player = ObjectAccessor::GetPlayer(*me, _playerGUID))
                             allari->AI()->SetData(DATA_GARBLED_POSITION, DATA_GARBLED_POSITION);
                     _events.ScheduleEvent(EVENT_TALK_PART_01, 6000);
                     break;
                 }
                 case EVENT_TALK_PART_01:
                 {
-                    if (Creature* allari = ObjectAccessor::GetCreature(*go, _allariGUID))
-                        if (Player* player = ObjectAccessor::GetPlayer(*go, _playerGUID))
+                    if (Creature* allari = ObjectAccessor::GetCreature(*me, _allariGUID))
+                        if (Player* player = ObjectAccessor::GetPlayer(*me, _playerGUID))
                             allari->AI()->SetData(DATA_GARBLED_INCOMING, DATA_GARBLED_INCOMING);
                     _events.ScheduleEvent(EVENT_GIVE_CREDIT, 2000);
                     break;
                 }
                 case EVENT_GIVE_CREDIT:
                 {
-                    if (Creature* allari = ObjectAccessor::GetCreature(*go, _allariGUID))
-                        if (Player* player = ObjectAccessor::GetPlayer(*go, _playerGUID))
+                    if (Creature* allari = ObjectAccessor::GetCreature(*me, _allariGUID))
+                        if (Player* player = ObjectAccessor::GetPlayer(*me, _playerGUID))
                         {
                             player->KilledMonsterCredit(KILLCREDIT_REPORT_RECEIVED, ObjectGuid::Empty);
                             allari->DespawnOrUnsummon(Seconds(2));
@@ -1012,8 +1012,8 @@ public:
                 }
                 case EVENT_TALK_JACE_01:
                 {
-                    if (Creature* jace = ObjectAccessor::GetCreature(*go, _jaceGUID))
-                        if (Player* player = ObjectAccessor::GetPlayer(*go, _playerGUID))
+                    if (Creature* jace = ObjectAccessor::GetCreature(*me, _jaceGUID))
+                        if (Player* player = ObjectAccessor::GetPlayer(*me, _playerGUID))
                             jace->AI()->SetData(DATA_REPORT_RECEIVED, DATA_REPORT_RECEIVED);
                     break;
                 }
@@ -1510,7 +1510,7 @@ struct npc_emissary_auldbridge_111109 : public ScriptedAI
         m_playerGUID = ObjectGuid::Empty;
     }
 
-    void sQuestReward(Player* player, Quest const* quest, uint32 /*opt*/)  override
+    void QuestReward(Player* player, Quest const* quest, uint32 /*opt*/)  override
     {
         if (quest->GetQuestId() == QUEST_BLINK_OF_AN_EYE)
         {

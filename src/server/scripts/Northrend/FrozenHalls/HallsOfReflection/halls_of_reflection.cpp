@@ -376,7 +376,7 @@ class npc_jaina_or_sylvanas_intro_hor : public CreatureScript
                 _instance = me->GetInstanceScript();
             }
 
-            void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId) override
+            bool GossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId) override
             {
                 ClearGossipMenuFor(player);
 
@@ -395,6 +395,8 @@ class npc_jaina_or_sylvanas_intro_hor : public CreatureScript
                     default:
                         break;
                 }
+
+                return false;
             }
 
             void Reset() override
@@ -870,7 +872,7 @@ class npc_jaina_or_sylvanas_escape_hor : public CreatureScript
                 }
             }
 
-            void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId) override
+            bool GossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId) override
             {
                 ClearGossipMenuFor(player);
 
@@ -884,6 +886,8 @@ class npc_jaina_or_sylvanas_escape_hor : public CreatureScript
                     default:
                         break;
                 }
+
+                return false;
             }
 
             void DestroyIceWall()

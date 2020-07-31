@@ -930,10 +930,10 @@ public:
             {
                 if (Unit* target = GetHitUnit())
                 {
-                    if (SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(SPELL_DIGESTIVE_ACID_DMG))
+                    if (SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(SPELL_DIGESTIVE_ACID_DMG, creature->GetMap()->GetDifficultyID()))
                     {
                         uint32 damage = (uint32(GetEffectValue()));
-                        SpellNonMeleeDamage damageInfo(creature, target, SPELL_DIGESTIVE_ACID_DMG, spellInfo->GetSpellXSpellVisualId(), spellInfo->SchoolMask);
+                        SpellNonMeleeDamage damageInfo(creature, target, spellInfo, spellInfo->GetSpellXSpellVisualId(), spellInfo->SchoolMask);
                         damageInfo.damage = damage;
                         creature->SendSpellNonMeleeDamageLog(&damageInfo);
                         creature->DealSpellDamage(&damageInfo, false);

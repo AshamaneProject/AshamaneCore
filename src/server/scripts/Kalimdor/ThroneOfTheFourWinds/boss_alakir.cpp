@@ -308,7 +308,7 @@ public:
                             {
                                 trigger->SetOrientation(trigger->GetAngle(player));
                                 float x, y, z;
-                                trigger->GetClosePoint(x, y, z, trigger->GetObjectSize() / 3, 80.0f);
+                                trigger->GetClosePoint(x, y, z, trigger->GetCombatReach() / 3, 80.0f);
 
                                 if (Creature *storm = player->SummonCreature(NPC_RELENTLESS_STORM, x, y, player->GetPositionZ(), 0.0f, TEMPSUMMON_MANUAL_DESPAWN))
                                 {
@@ -338,7 +338,7 @@ public:
                     {
                         for (int i = 1; i <= number; ++i)
                         {
-                            centerTrigger->GetClosePoint(x, y, z, centerTrigger->GetObjectSize() / 3, distance, i * intervale);
+                            centerTrigger->GetClosePoint(x, y, z, centerTrigger->GetCombatReach() / 3, distance, i * intervale);
                             me->SummonCreature(NPC_LIGHTNING_CLOUD_TRIGGER, x, y, z, 0.0f, TEMPSUMMON_TIMED_DESPAWN, 45000);
                         }
                         number += 4;
@@ -436,13 +436,13 @@ public:
 
                                 for (int i = 1; i < 17; i++)
                                 {
-                                    me->GetClosePoint(x, y, z, me->GetObjectSize()/10, 24.0f, i * 0.04188f);
+                                    me->GetClosePoint(x, y, z, me->GetCombatReach()/10, 24.0f, i * 0.04188f);
                                     if (Creature *trigger = me->SummonCreature(NPC_LIGHTNING_STRIKE_TRIGGER, x, y, z, 0.0f, TEMPSUMMON_TIMED_DESPAWN, 4000))
                                         me->CastSpell(trigger, SPELL_LIGHTNING_STRIKE_SINGLE, true);
                                 }
                                 for (int i = 1; i < 17; i++)
                                 {
-                                    me->GetClosePoint(x, y, z, me->GetObjectSize()/10, 24.0f, -i * 0.04188f);
+                                    me->GetClosePoint(x, y, z, me->GetCombatReach()/10, 24.0f, -i * 0.04188f);
                                     if (Creature *trigger = me->SummonCreature(NPC_LIGHTNING_STRIKE_TRIGGER, x, y, z, 0.0f, TEMPSUMMON_TIMED_DESPAWN, 4000))
                                         me->CastSpell(trigger, SPELL_LIGHTNING_STRIKE_SINGLE, true);
                                 }
@@ -742,7 +742,7 @@ public:
                 trigger->SetOrientation(orient + angelRain);
 
                 float x, y, z;
-                trigger->GetClosePoint(x, y, z, me->GetObjectSize() / 3, radiusRain);
+                trigger->GetClosePoint(x, y, z, me->GetCombatReach() / 3, radiusRain);
 
                 me->GetMotionMaster()->Clear(true);
                 me->GetMotionMaster()->MovePoint(0, x, y, z);
@@ -1151,7 +1151,7 @@ public:
                 trigger->SetOrientation(orient + angelStorm);
 
                 float x, y, z;
-                trigger->GetClosePoint(x, y, z, me->GetObjectSize() / 3, radiusStorm);
+                trigger->GetClosePoint(x, y, z, me->GetCombatReach() / 3, radiusStorm);
 
                 me->GetMotionMaster()->Clear(true);
                 me->GetMotionMaster()->MovePoint(0, x, y, me->GetPositionZ());
@@ -1296,7 +1296,7 @@ class AreaTrigger_at_reletness_storm : public AreaTriggerScript
                         {
                             trigger->SetOrientation(trigger->GetAngle(player));
                             float x, y, z;
-                            trigger->GetClosePoint(x, y, z, trigger->GetObjectSize() / 3, 80.0f);
+                            trigger->GetClosePoint(x, y, z, trigger->GetCombatReach() / 3, 80.0f);
 
                             if (Creature *storm = player->SummonCreature(NPC_RELENTLESS_STORM, x, y, player->GetPositionZ(), 0.0f, TEMPSUMMON_MANUAL_DESPAWN))
                             {

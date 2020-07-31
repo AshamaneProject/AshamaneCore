@@ -177,16 +177,14 @@ struct TC_GAME_API LootItem
     bool    is_counted        : 1;
     bool    needs_quest       : 1;                          // quest drop
     bool    follow_loot_rules : 1;
-    bool    canSave;
 
     // Constructor, copies most fields from LootStoreItem, generates random count and random suffixes/properties
     // Should be called for non-reference LootStoreItem entries only (reference = 0)
     explicit LootItem(LootStoreItem const& li);
 
     // Empty constructor for creating an empty LootItem to be filled in with DB data
-    LootItem() : itemid(0), type(LOOT_ITEM_TYPE_ITEM), randomBonusListId(0), context(ItemContext::NONE), count(0), is_looted(false), is_blocked(false),
-                 freeforall(false), is_underthreshold(false), is_counted(false), needs_quest(false), follow_loot_rules(false),
-                 canSave(true){ };
+    LootItem() : itemid(0), randomBonusListId(0), context(ItemContext::NONE), count(0), is_looted(false), is_blocked(false),
+                 freeforall(false), is_underthreshold(false), is_counted(false), needs_quest(false), follow_loot_rules(false) { };
 
     // Basic checks for player/item compatibility - if false no chance to see the item in the loot
     bool AllowedForPlayer(Player const* player) const;
@@ -251,10 +249,6 @@ struct TC_GAME_API Loot
 
     ObjectGuid const& GetGUID() const { return _GUID; }
     void SetGUID(ObjectGuid const& guid) { _GUID = guid; }
-
-    // For deleting items at loot removal since there is no backward interface to the Item()
-    void DeleteLootItemFromContainerItemDB(Player* player, uint32 itemID);
-    void DeleteLootMoneyFromContainerItemDB();
 
     // if loot becomes invalid this reference is used to inform the listener
     void addLootValidatorRef(LootValidatorRef* pLootValidatorRef)

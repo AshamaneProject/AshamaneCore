@@ -91,13 +91,8 @@ namespace WorldPackets
             void Read() override { }
         };
 
-        class PVPLogData final : public ServerPacket
+        struct PVPLogData
         {
-        public:
-            PVPLogData() : ServerPacket(SMSG_PVP_LOG_DATA, 0) { }
-
-            WorldPacket const* Write() override;
-
             struct RatingData
             {
                 int32 Prematch[2] = { };
@@ -148,10 +143,20 @@ namespace WorldPackets
             std::array<int8, 2> PlayerCount = { };
         };
 
+        class PVPLogDataMessage final : public ServerPacket
+        {
+        public:
+            PVPLogDataMessage() : ServerPacket(SMSG_PVP_LOG_DATA, 0) { }
+
+            WorldPacket const* Write() override;
+
+            PVPLogData Data;
+        };
+
         struct BattlefieldStatusHeader
         {
             WorldPackets::LFG::RideTicket Ticket;
-            uint64 QueueID = 0;
+            std::vector<uint64> QueueID;
             uint8 RangeMin = 0;
             uint8 RangeMax = 0;
             uint8 TeamSize = 0;
@@ -428,29 +433,70 @@ namespace WorldPackets
             void Read() override { }
         };
 
-        struct RatedInfo
-        {
-            uint32 ArenaPersonalRating;
-            uint32 BestRatingOfWeek;
-            uint32 BestRatingOfSeason;
-            uint32 ArenaMatchMakerRating;
-            uint32 WeekWins;
-            uint32 WeekGames;
-            uint32 PrevWeekWins;
-            uint32 PrevWeekGames;
-            uint32 SeasonWins;
-            uint32 SeasonGames;
-            uint32 ProjectedConquestCap;
-        };
-
-        class RatedBattleFieldInfo final : public ServerPacket
+        class RatedBattlefieldInfo final : public ServerPacket
         {
         public:
-            RatedBattleFieldInfo() : ServerPacket(SMSG_RATED_BATTLEFIELD_INFO, MAX_PVP_SLOT * sizeof(RatedInfo)) { }
+            RatedBattlefieldInfo() : ServerPacket(SMSG_RATED_BATTLEFIELD_INFO, 6 * sizeof(BracketInfo)) { }
 
             WorldPacket const* Write() override;
 
-            std::array<RatedInfo, MAX_PVP_SLOT> Infos;
+            struct BracketInfo
+            {
+                int32 PersonalRating = 0;
+                int32 Ranking = 0;
+                int32 SeasonPlayed = 0;
+                int32 SeasonWon = 0;
+                int32 Unused1 = 0;
+                int32 Unused2 = 0;
+                int32 WeeklyPlayed = 0;
+                int32 WeeklyWon = 0;
+                int32 BestWeeklyRating = 0;
+                int32 LastWeeksBestRating = 0;
+                int32 BestSeasonRating = 0;
+                int32 PvpTierID = 0;
+                int32 Unused3 = 0;
+                bool Unused4 = false;
+
+                int32 LastWeekWon = 0;
+                int32 LastWeekPlayed = 0;
+                int32 MatchMakerRating = 0;
+            } Bracket[6];
+        };
+
+        class PVPMatchInit final : public ServerPacket
+        {
+        public:
+            PVPMatchInit() : ServerPacket(SMSG_PVP_MATCH_INIT, 4 + 1 + 4 + 4 + 1 + 4 + 1) { }
+
+            WorldPacket const* Write() override;
+
+            enum MatchState : uint8
+            {
+                InProgress = 1,
+                Complete = 3,
+                Inactive = 4
+            };
+
+            uint32 MapID = 0;
+            MatchState State = Inactive;
+            time_t StartTime = time_t(0);
+            int32 Duration = 0;
+            uint8 ArenaFaction = 0;
+            uint32 BattlemasterListID = 0;
+            bool Registered = false;
+            bool AffectsRating = false;
+        };
+
+        class PVPMatchEnd final : public ServerPacket
+        {
+        public:
+            PVPMatchEnd() : ServerPacket(SMSG_PVP_MATCH_END) { }
+
+            WorldPacket const* Write() override;
+
+            uint8 Winner = 0;
+            int32 Duration = 0;
+            Optional<PVPLogData> LogData;
         };
     }
 }

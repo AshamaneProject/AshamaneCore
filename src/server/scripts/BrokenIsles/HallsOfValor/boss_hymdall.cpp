@@ -100,7 +100,7 @@ struct boss_hymdall : public BossAI
 
         if (summon->GetEntry() == NPC_DANCING_BLADE)
         {
-            summon->setFaction(me->getFaction());
+            summon->SetFaction(me->GetFaction());
             summon->SetReactState(REACT_PASSIVE);
             summon->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_NOT_SELECTABLE));
         }
@@ -114,7 +114,7 @@ struct boss_hymdall : public BossAI
 
             damage = 0;
             me->SetHealth(me->GetMaxHealth());
-            me->setFaction(35);
+            me->SetFaction(35);
             DoStopAttack();
             instance->DoCombatStopOnPlayers();
 
@@ -146,7 +146,7 @@ struct boss_hymdall : public BossAI
     {
         summons.DespawnAll();
 
-        if (me->getFaction() != 35)
+        if (me->GetFaction() != 35)
         {
             Talk(SAY_WIPE);
             BossAI::EnterEvadeMode();

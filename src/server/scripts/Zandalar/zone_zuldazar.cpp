@@ -60,7 +60,7 @@ struct npc_talanji_arrival : public ScriptedAI
 {
     npc_talanji_arrival(Creature* creature) : ScriptedAI(creature) { }
 
-    void sQuestAccept(Player* player, Quest const* /*quest*/) override
+    void QuestAccept(Player* player, Quest const* /*quest*/) override
     {
         me->DestroyForPlayer(player);
     }
@@ -121,9 +121,9 @@ struct npc_rastakhan_zuldazar_arrival : public ScriptedAI
 {
     npc_rastakhan_zuldazar_arrival(Creature* creature) : ScriptedAI(creature) { }
 
-    void sQuestAccept(Player* player, Quest const* quest) override
+    void QuestAccept(Player* player, Quest const* quest) override
     {
-        if (quest->ID == QUEST_SPEAKER_OF_THE_HORDE)
+        if (quest->GetQuestId() == QUEST_SPEAKER_OF_THE_HORDE)
             player->SummonCreature(NPC_ZOLANI, -1100.689941f, 817.934021f, 497.243011f, 6.062160f, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 120000, true);
     }
 };
@@ -133,7 +133,7 @@ struct npc_soth_zolani : public npc_escortAI
 {
     npc_soth_zolani(Creature* creature) : npc_escortAI(creature) { }
 
-    void sGossipHello(Player* player) override
+    bool GossipHello(Player* player) override
     {
         //Zolani at the beginning shouldn't start running through the air
         if (player->hasQuest(46931))
@@ -142,6 +142,8 @@ struct npc_soth_zolani : public npc_escortAI
             Start(false, false, player->GetGUID());
             Talk(0);
         }
+
+        return false;
     }
 
     void LastWaypointReached() override
@@ -205,9 +207,9 @@ struct npc_talanji_great_seal : public ScriptedAI
 {
     npc_talanji_great_seal(Creature* creature) : ScriptedAI(creature) { }
 
-    void sQuestAccept(Player* player, Quest const* quest) override
+    void QuestAccept(Player* player, Quest const* quest) override
     {
-        if (quest->ID == QUEST_NEED_EACH_OTHER)
+        if (quest->GetQuestId() == QUEST_NEED_EACH_OTHER)
             player->CastSpell(player, SPELL_PREVIEW_TO_ZANDALAR, true);
     }
 };
@@ -379,9 +381,10 @@ struct npc_paku : public ScriptedAI
         });
     }
 
-    void sGossipHello(Player* player) override
+    bool GossipHello(Player* player) override
     {
         player->KilledMonsterCredit(127377);
+        return false;
     }
 };
 

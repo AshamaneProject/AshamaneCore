@@ -570,7 +570,7 @@ public:
 
         TempSummon* GetOmra()
         {
-            if (Creature* omra = ObjectAccessor::GetCreature(*go, omraGuid))
+            if (Creature* omra = ObjectAccessor::GetCreature(*me, omraGuid))
                 return omra->ToTempSummon();
 
             return nullptr;
@@ -578,7 +578,7 @@ public:
 
         TempSummon* GetXan()
         {
-            if (Creature* xan = ObjectAccessor::GetCreature(*go, xanGuid))
+            if (Creature* xan = ObjectAccessor::GetCreature(*me, xanGuid))
                 return xan->ToTempSummon();
 
             return nullptr;
@@ -594,10 +594,10 @@ public:
                 {
                     case EVENT_SOUL_EFFIGY_01:
                     {
-                        if (Creature* gara = go->FindNearestCreature(NPC_GARA_BURIAL, 15, false))
+                        if (Creature* gara = me->FindNearestCreature(NPC_GARA_BURIAL, 15, false))
                             gara->Respawn();
 
-                        if (TempSummon* Omra = go->SummonCreature(NPC_MOTHER_OMRA_BURIAL, BurialEventPos[0], TEMPSUMMON_MANUAL_DESPAWN))
+                        if (TempSummon* Omra = me->SummonCreature(NPC_MOTHER_OMRA_BURIAL, BurialEventPos[0], TEMPSUMMON_MANUAL_DESPAWN))
                         {
                             omraGuid = Omra->GetGUID();
                             Omra->CastSpell(Omra, SPELL_SOULSTONE_VISUAL);
@@ -658,7 +658,7 @@ public:
                             Omra->CastSpell(Omra, SPELL_SOULSTONE_VISUAL);
                         }
                         events.ScheduleEvent(EVENT_SOUL_EFFIGY_07, 2 * IN_MILLISECONDS);
-                        if (TempSummon* Xan = go->SummonCreature(NPC_XAN, BurialEventPos[3], TEMPSUMMON_MANUAL_DESPAWN))
+                        if (TempSummon* Xan = me->SummonCreature(NPC_XAN, BurialEventPos[3], TEMPSUMMON_MANUAL_DESPAWN))
                         {
                             xanGuid = Xan->GetGUID();
                             Xan->SetReactState(REACT_PASSIVE);
@@ -684,7 +684,7 @@ public:
                         if (TempSummon* Xan = GetXan())
                             Xan->Say(SAY_XAN_02, LANG_UNIVERSAL, Xan);
 
-                        if (Creature* gara = go->FindNearestCreature(NPC_GARA_BURIAL, 15, true))
+                        if (Creature* gara = me->FindNearestCreature(NPC_GARA_BURIAL, 15, true))
                             gara->CastSpell(gara, SPELL_VOID_EFFECT);
                         events.ScheduleEvent(EVENT_SOUL_EFFIGY_END, 4 * IN_MILLISECONDS);
 
@@ -692,7 +692,7 @@ public:
                     }
                     case EVENT_SOUL_EFFIGY_END:
                     {
-                        if (Creature* gara = go->FindNearestCreature(NPC_GARA_BURIAL, 15))
+                        if (Creature* gara = me->FindNearestCreature(NPC_GARA_BURIAL, 15))
                         {
                             gara->TextEmote("Gara slowly disappear into the void.", gara);
                             gara->RemoveAllAuras();
@@ -848,7 +848,7 @@ public:
                     {
                         if (TempSummon* Xan = me->SummonCreature(NPC_XAN, VoidRealmEventPos[0], TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 60 * 60 * IN_MILLISECONDS))
                         {
-                            Xan->setFaction(14);
+                            Xan->SetFaction(14);
                             Xan->SetReactState(REACT_AGGRESSIVE);
                         }
                     }

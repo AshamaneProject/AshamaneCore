@@ -53,7 +53,7 @@ void Battlenet::Session::AccountInfo::LoadResult(PreparedQueryResult result)
 
 void Battlenet::Session::GameAccountInfo::LoadResult(Field* fields)
 {
-    // a.id, a.username, ab.unbandate, ab.unbandate = ab.bandate, aa.gmlevel
+    // a.id, a.username, ab.unbandate, ab.unbandate = ab.bandate, aa.SecurityLevel
     Id = fields[0].GetUInt32();
     Name = fields[1].GetString();
     UnbanDate = fields[2].GetUInt32();
@@ -218,7 +218,7 @@ uint32 Battlenet::Session::HandleLogon(authentication::v1::LogonRequest const* l
         return ERROR_BAD_PLATFORM;
     }
 
-    if (GetLocaleByName(logonRequest->locale()) == LOCALE_enUS && logonRequest->locale() != "enUS")
+    if (!IsValidLocale(GetLocaleByName(logonRequest->locale())))
     {
         TC_LOG_DEBUG("session", "[Battlenet::LogonRequest] %s attempted to log in with unsupported locale (using %s)!", GetClientInfo().c_str(), logonRequest->locale().c_str());
         return ERROR_BAD_LOCALE;

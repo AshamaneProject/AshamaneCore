@@ -298,7 +298,7 @@ struct boss_fallen_avatar : public BossAI
         {
         case NPC_MAIDEN_OF_VALOR:
         {
-            summon->setFaction(me->getFaction());
+            summon->SetFaction(me->GetFaction());
             uint64 health = (uint64)(me->GetMaxHealth()*0.5f);
             summon->SetMaxHealth(health);
             summon->SetHealth(health);
@@ -306,7 +306,7 @@ struct boss_fallen_avatar : public BossAI
         }
         case NPC_CORRUPTED_BLADE:
         {
-            summon->setFaction(me->getFaction());
+            summon->SetFaction(me->GetFaction());
             if (Unit* target1 = SelectTarget(SELECT_TARGET_RANDOM, 0.0, 0.0, true))
             {
                 AddTimedDelayedOperation(3000, [this, summon, target1]() -> void

@@ -168,7 +168,7 @@ public:
                     break;
                 case BOSS_OZUMAT:
                    ozumatGUID = summon->GetGUID();
-                   summon->setFaction(14);
+                   summon->SetFaction(14);
                    summon->SetInCombatWithZone();
                    break;
                 case NPC_BEAST:
@@ -441,7 +441,7 @@ public:
                 case PHASE_TWO:
                     if (me->HealthBelowPct(5) && Finished == false)
                     {
-                        me->setFaction(35);
+                        me->SetFaction(35);
 
                         if (Creature *Neptulon = instance->GetCreature(DATA_NEPTULON))
                             Neptulon->DespawnOrUnsummon(35000);

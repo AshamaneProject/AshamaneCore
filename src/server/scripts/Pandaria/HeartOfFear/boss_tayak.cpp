@@ -810,7 +810,7 @@ class npc_tempest_slash_tornado : public CreatureScript
                 if (events.ExecuteEvent() == EVENT_STORM_MOVE)
                 {
                     float x, y, z;
-                    me->GetClosePoint(x, y, z, me->GetObjectSize() / 3, frand(5.0f, 30.0f));
+                    me->GetClosePoint(x, y, z, me->GetCombatReach() / 3, frand(5.0f, 30.0f));
                     me->GetMotionMaster()->MovePoint(8, x, y, z);
                 }
             }

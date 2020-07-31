@@ -401,8 +401,8 @@ struct at_goroth_shattering_star : AreaTriggerAI
     void OnDestinationReached() override
     {
         if (Unit* caster = at->GetCaster())
-            if (SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(SPELL_SHATTERING_STAR_FINAL_DAMAGE))
-                if (SpellEffectInfo const* spellEffectInfo = spellInfo->GetEffect(caster->GetMap()->GetDifficultyID(), EFFECT_0))
+            if (SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(SPELL_SHATTERING_STAR_FINAL_DAMAGE, caster->GetMap()->GetDifficultyID()))
+                if (SpellEffectInfo const* spellEffectInfo = spellInfo->GetEffect(EFFECT_0))
                     caster->CastCustomSpell(SPELL_SHATTERING_STAR_FINAL_DAMAGE, SPELLVALUE_BASE_POINT0, spellEffectInfo->BasePoints / std::max(_infernalSpikeTouched, uint8(1)), nullptr, TRIGGERED_FULL_MASK);
 
         // TODO : Deal damage to target if _infernalSpikeTouched == 0

@@ -240,7 +240,10 @@ AreaTrigger* AreaTrigger::CreateAreaTrigger(uint32 spellMiscId, Unit* caster, Un
 
 AreaTrigger* AreaTrigger::CreateAreaTrigger(uint32 spellMiscId, Unit* caster, uint32 spellId, Position const& pos, int32 duration, float radius, float angle, uint32 timeToTarget, bool canLoop, bool counterClockwise)
 {
-    SpellInfo const* spellEntry = sSpellMgr->GetSpellInfo(spellId);
+    if (!caster)
+        return nullptr;
+
+    SpellInfo const* spellEntry = sSpellMgr->GetSpellInfo(spellId, caster->GetMap()->GetDifficultyID());
     if (!spellEntry)
         return nullptr;
 
@@ -686,11 +689,11 @@ bool UnitFitToActionRequirement(Unit* unit, Unit* caster, AreaTriggerAction cons
     {
         case AREATRIGGER_ACTION_USER_FRIEND:
         {
-            return caster->_IsValidAssistTarget(unit, sSpellMgr->GetSpellInfo(action.Param));
+            return caster->_IsValidAssistTarget(unit, sSpellMgr->GetSpellInfo(action.Param, caster->GetMap()->GetDifficultyID()));
         }
         case AREATRIGGER_ACTION_USER_ENEMY:
         {
-            return caster->_IsValidAttackTarget(unit, sSpellMgr->GetSpellInfo(action.Param));
+            return caster->_IsValidAttackTarget(unit, sSpellMgr->GetSpellInfo(action.Param, caster->GetMap()->GetDifficultyID()));
         }
         case AREATRIGGER_ACTION_USER_RAID:
         {
@@ -773,7 +776,7 @@ void AreaTrigger::InitSplines(std::vector<G3D::Vector3> splinePoints, uint32 tim
 
     _movementTime = 0;
 
-    _spline = Trinity::make_unique<::Movement::Spline<int32>>();
+    _spline = std::make_unique<::Movement::Spline<int32>>();
     _spline->init_spline(&splinePoints[0], splinePoints.size(), ::Movement::SplineBase::ModeCatmullrom);
     _spline->initLengths();
 

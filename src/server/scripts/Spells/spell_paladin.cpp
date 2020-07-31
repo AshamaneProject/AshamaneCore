@@ -606,7 +606,7 @@ class spell_pal_grand_crusader : public SpellScript
             caster->GetSpellHistory()->ResetCooldown(SPELL_PALADIN_AVENGERS_SHIELD, true);
 
             if (caster->HasAura(SPELL_PALADIN_CRUSADERS_JUDGMENT))
-                caster->GetSpellHistory()->RestoreCharge(sSpellMgr->AssertSpellInfo(SPELL_PALADIN_JUDGMENT)->ChargeCategoryId);
+                caster->GetSpellHistory()->RestoreCharge(sSpellMgr->AssertSpellInfo(SPELL_PALADIN_JUDGMENT, DIFFICULTY_NONE)->ChargeCategoryId);
         }
     }
 

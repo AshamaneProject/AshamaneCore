@@ -54,8 +54,6 @@ private:
     std::string _bindIP;
     std::string _authToken;
     RestResponse _response;
-    boost::asio::ip::tcp::endpoint _externalAddress;
-    boost::asio::ip::tcp::endpoint _localAddress;
     bool _started;
 };
 

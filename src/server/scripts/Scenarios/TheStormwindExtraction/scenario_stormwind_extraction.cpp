@@ -53,7 +53,7 @@ struct scenario_stormwind_extraction : public InstanceScript
         // Temp introduction fix
         player->GetScheduler().Schedule(2s, [player, talanjizulLionRest](TaskContext /*context*/)
         {
-            talanjizulLionRest->MoveGroupTo(-8671.096680f, 915.972229f, 89.469795f);
+            talanjizulLionRest->MoveGroupTo(Position(-8671.096680f, 915.972229f, 89.469795f));
             player->GetScenario()->SendScenarioEvent(player, SCENARIO_EVENT_STORMWIND_INFILTRATION);
         });
     }
@@ -131,7 +131,7 @@ struct scenario_stormwind_extraction : public InstanceScript
             }).Schedule(34s, [this](TaskContext /*context*/)
             {
                 if (CreatureGroup* creGroup = GetCreatureGroup(SUMMON_GROUP_ALL_AFTER_FREED))
-                    creGroup->MoveGroupTo(-8724.619141f, 877.957153f, 53.732788f);
+                    creGroup->MoveGroupTo(Position(-8724.619141f, 877.957153f, 53.732788f));
 
             }).Schedule(37s, [this](TaskContext /*context*/)
             {
@@ -158,7 +158,7 @@ struct scenario_stormwind_extraction : public InstanceScript
             }).Schedule(39s, [this](TaskContext /*context*/)
             {
                 if (CreatureGroup* creGroup = GetCreatureGroup(SUMMON_GROUP_ALL_AFTER_FREED))
-                    creGroup->MoveGroupTo(-8697.854492f, 899.180908f, 53.731392f);
+                    creGroup->MoveGroupTo(Position(-8697.854492f, 899.180908f, 53.731392f));
 
             }).Schedule(42s, [this](TaskContext /*context*/)
             {
@@ -178,7 +178,7 @@ struct scenario_stormwind_extraction : public InstanceScript
                     thalyssra->AI()->DoAction(3);
 
                 if (CreatureGroup* creGroup = GetCreatureGroup(SUMMON_GROUP_ALL_AFTER_FREED))
-                    creGroup->MoveGroupTo(-8645.526367f, 773.394714f, 45.399426f, true);
+                    creGroup->MoveGroupTo(Position(-8645.526367f, 773.394714f, 45.399426f), true);
             });
         }
         else if (type == EVENT_END_OF_PRISON_REACHED)
@@ -203,7 +203,7 @@ struct scenario_stormwind_extraction : public InstanceScript
                             thalyssra->GetScenario()->SetStep(step);
 
                     if (CreatureGroup* creGroup = GetCreatureGroup(SUMMON_GROUP_ALL_AFTER_FREED))
-                        creGroup->MoveGroupTo(escapeStockade->GetPositionX(), escapeStockade->GetPositionY(), escapeStockade->GetPositionZ());
+                        creGroup->MoveGroupTo(escapeStockade->GetPosition());
                 }
 
             }).Schedule(16s, [this](TaskContext /*context*/)
@@ -257,7 +257,7 @@ struct scenario_stormwind_extraction : public InstanceScript
                     thalyssra->GetMotionMaster()->MovePoint(1, -8743.606445f, 998.370361f, 44.149288f);
 
                     if (CreatureGroup* group = GetCreatureGroup(SUMMON_GROUP_GUARD_FIRST_ROOM))
-                        group->MoveGroupTo(-8747.977539f, 997.306824f, 44.148872f);
+                        group->MoveGroupTo(Position(-8747.977539f, 997.306824f, 44.148872f));
                 });
             }
         }

@@ -49,6 +49,7 @@ struct SpellModifier;
 struct SpellPowerCost;
 struct SpellValue;
 struct TargetInfo;
+enum Difficulty : uint8;
 enum class ItemContext : uint8;
 
 #define SPELL_EFFECT_ANY (uint16)-1
@@ -573,6 +574,9 @@ class TC_GAME_API SpellScript : public _SpellScript
         void FinishCast(SpellCastResult result, uint32* param1 = nullptr, uint32* param2 = nullptr);
 
         void SetCustomCastResultMessage(SpellCustomErrors result);
+
+        // returns desired cast difficulty for triggered spells
+        Difficulty GetCastDifficulty() const;
 };
 
 // AuraScript interface - enum used for runtime checks of script function calls
@@ -1080,6 +1084,9 @@ class TC_GAME_API AuraScript : public _SpellScript
         Unit* GetTarget() const;
         // returns AuraApplication object of currently processed target
         AuraApplication const* GetTargetApplication() const;
+
+        // returns desired cast difficulty for triggered spells
+        Difficulty GetCastDifficulty() const;
 };
 
 //

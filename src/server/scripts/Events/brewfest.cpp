@@ -142,7 +142,7 @@ public:
 
         void Reset() override
         {
-            me->setFaction(35);
+            me->SetFaction(35);
             me->SetReactState(REACT_AGGRESSIVE);
             me->SetVisible(false);
         }
@@ -184,7 +184,7 @@ public:
 
         void Reset() override
         {
-            me->setFaction(35);
+            me->SetFaction(35);
             me->SetReactState(REACT_AGGRESSIVE);
             me->SetVisible(false);
         }

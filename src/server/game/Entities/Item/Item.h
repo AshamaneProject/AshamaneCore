@@ -24,6 +24,7 @@
 #include "ItemDefines.h"
 #include "ItemEnchantmentMgr.h"
 #include "ItemTemplate.h"
+#include "IteratorPair.h"
 #include "Loot.h"
 
 class SpellInfo;
@@ -46,13 +47,6 @@ struct ItemSetEffect
 
 #define MAX_GEM_SOCKETS               MAX_ITEM_PROTO_SOCKETS// (BONUS_ENCHANTMENT_SLOT-SOCK_ENCHANTMENT_SLOT) and item proto size, equal value expected
 
-enum EnchantmentOffset
-{
-    ENCHANTMENT_ID_OFFSET       = 0,
-    ENCHANTMENT_DURATION_OFFSET = 1,
-    ENCHANTMENT_CHARGES_OFFSET  = 2                         // now here not only charges, but something new in wotlk
-};
-
 #define MAX_ENCHANTMENT_OFFSET    3
 
 enum ItemUpdateState
@@ -62,7 +56,6 @@ enum ItemUpdateState
     ITEM_NEW                                     = 2,
     ITEM_REMOVED                                 = 3
 };
-
 
 #define MAX_ITEM_SPELLS 5
 
@@ -93,6 +86,8 @@ struct BonusData
     int32 RequiredLevelOverride;
     int32 AzeriteTierUnlockSetId;
     uint32 Suffix;
+    std::array<ItemEffectEntry const*, 13> Effects;
+    std::size_t EffectCount;
     bool CanDisenchant;
     bool CanScrap;
     bool HasFixedLevel;
@@ -231,14 +226,6 @@ class TC_GAME_API Item : public Object
         virtual void DeleteFromDB(CharacterDatabaseTransaction& trans);
         static void DeleteFromInventoryDB(CharacterDatabaseTransaction& trans, ObjectGuid::LowType itemGuid);
 
-        // Lootable items and their contents
-        void ItemContainerSaveLootToDB();
-        bool ItemContainerLoadLootFromDB();
-        void ItemContainerDeleteLootItemsFromDB();
-        void ItemContainerDeleteLootItemFromDB(uint32 itemID);
-        void ItemContainerDeleteLootMoneyFromDB();
-        void ItemContainerDeleteLootMoneyAndLootItemsFromDB();
-
         void DeleteFromInventoryDB(CharacterDatabaseTransaction& trans);
         void SaveRefundDataToDB();
         void DeleteRefundDataFromDB(CharacterDatabaseTransaction* trans);
@@ -258,6 +245,7 @@ class TC_GAME_API Item : public Object
         bool IsNotEmptyBag() const;
         bool IsBroken() const { return *m_itemData->MaxDurability > 0 && *m_itemData->Durability == 0; }
         void SetDurability(uint32 durability) { SetUpdateFieldValue(m_values.ModifyValue(&Item::m_itemData).ModifyValue(&UF::ItemData::Durability), durability); }
+        void SetMaxDurability(uint32 maxDurability) { SetUpdateFieldValue(m_values.ModifyValue(&Item::m_itemData).ModifyValue(&UF::ItemData::MaxDurability), maxDurability); }
         bool CanBeTraded(bool mail = false, bool trade = false) const;
         void SetInTrade(bool b = true) { mb_in_trade = b; }
         bool IsInTrade() const { return mb_in_trade; }
@@ -352,6 +340,12 @@ class TC_GAME_API Item : public Object
         ItemDisenchantLootEntry const* GetDisenchantLoot(Player const* owner) const;
         static ItemDisenchantLootEntry const* GetDisenchantLoot(ItemTemplate const* itemTemplate, uint32 quality, uint32 itemLevel);
         void SetFixedLevel(uint8 level);
+        Trinity::IteratorPair<ItemEffectEntry const* const*> GetEffects() const { return { std::make_pair(&_bonusData.Effects[0], &_bonusData.Effects[0] + _bonusData.EffectCount) }; }
+        ItemEffectEntry const* GetEffect(std::size_t i) const
+        {
+            ASSERT(i < _bonusData.EffectCount, "Attempted to get effect at index " SZFMTD " but item has only " SZFMTD " effects!", i, _bonusData.EffectCount);
+            return _bonusData.Effects[i];
+        }
 
         // Item Refund system
         void SetNotRefundable(Player* owner, bool changestate = true, CharacterDatabaseTransaction* trans = nullptr, bool addToCollection = true);

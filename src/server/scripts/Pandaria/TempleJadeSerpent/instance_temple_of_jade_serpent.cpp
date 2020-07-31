@@ -499,7 +499,7 @@ public:
             switch (creature->GetEntry())
             {
                 case CREATURE_JADE_FIRE:
-                    creature->setFaction(14);
+                    creature->SetFaction(14);
                     creature->SetDisplayId(11686);
                     creature->SetReactState(REACT_PASSIVE);
                     creature->CastSpell(creature, 107108, true);
@@ -671,7 +671,7 @@ public:
                     sha_summoned.push_back(creature->GetGUID());
                     break;
                 case CREATURE_SUN_TRIGGER:
-                    creature->setFaction(14);
+                    creature->SetFaction(14);
                     creature->SetDisplayId(11686);
                     creature->SetReactState(REACT_PASSIVE);
                     sun_triggers.push_back(creature->GetGUID());

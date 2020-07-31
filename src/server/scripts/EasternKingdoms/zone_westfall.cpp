@@ -211,7 +211,7 @@ public:
                                     if (Creature* thug = GetThug(i))
                                     {
                                         thug->SetReactState(REACT_AGGRESSIVE);
-                                        thug->setFaction(14);
+                                        thug->SetFaction(14);
                                         thug->AddUnitFlag(UNIT_FLAG_PVP_ATTACKABLE);
                                     }
                                 }

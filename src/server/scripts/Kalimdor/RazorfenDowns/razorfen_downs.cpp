@@ -129,14 +129,14 @@ public:
             me->DespawnOrUnsummon(5000);
         }
 
-        void sQuestAccept(Player* /*player*/, Quest const* quest) override
+        void QuestAccept(Player* /*player*/, Quest const* quest) override
         {
             if (quest->GetQuestId() == QUEST_EXTINGUISHING_THE_IDOL)
             {
                 eventInProgress = true;
                 Talk(SAY_QUEST_ACCEPTED);
                 me->RemoveNpcFlag(UNIT_NPC_FLAG_QUESTGIVER);
-                me->setFaction(FACTION_ESCORT);
+                me->SetFaction(FACTION_ESCORT);
                 me->GetMotionMaster()->MovePath(PATH_ESCORT, false);
             }
         }

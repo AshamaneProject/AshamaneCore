@@ -19,7 +19,7 @@
 #include "Player.h"
 #include "WorldStatePackets.h"
 
-BattlegroundTTP::BattlegroundTTP()
+BattlegroundTTP::BattlegroundTTP(BattlegroundTemplate const* battlegroundTemplate) : Arena(battlegroundTemplate)
 {
     BgObjects.resize(BG_TTP_OBJECT_MAX);
 }

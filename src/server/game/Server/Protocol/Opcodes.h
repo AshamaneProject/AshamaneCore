@@ -837,8 +837,6 @@ enum OpcodeServer : uint16
     SMSG_AREA_TRIGGER_RE_PATH                         = 0x263F,
     SMSG_AREA_TRIGGER_RE_SHAPE                        = 0x2644,
     SMSG_ARENA_CROWD_CONTROL_SPELLS                   = 0x2652,
-    SMSG_ARENA_MATCH_END                              = 0x28A7,
-    SMSG_ARENA_MATCH_START                            = 0x28A6,
     SMSG_ARENA_PREP_OPPONENT_SPECIALIZATIONS          = 0x2668,
     SMSG_ARTIFACT_FORGE_OPENED                        = 0x27E8,
     SMSG_ARTIFACT_RESPEC_CONFIRM                      = 0x27EB,
@@ -1555,7 +1553,9 @@ enum OpcodeServer : uint16
     SMSG_PUSH_SPELL_TO_ACTION_BAR                     = 0x2C51,
     SMSG_PVP_CREDIT                                   = 0x271F,
     SMSG_PVP_LOG_DATA                                 = 0x25B4,
-    SMSG_PVP_MATCH_START                              = 0x28AC,
+    SMSG_PVP_MATCH_END                                = 0x28A7,
+    SMSG_PVP_MATCH_INIT                               = 0x28AC,
+    SMSG_PVP_MATCH_START                              = 0x28A6,
     SMSG_PVP_OPTIONS_ENABLED                          = 0x25B7,
     SMSG_PVP_SEASON                                   = 0x25D4,
     SMSG_QUERY_BATTLE_PET_NAME_RESPONSE               = 0x270E,
@@ -1846,7 +1846,6 @@ enum OpcodeServer : uint16
 
     // Deleted opcodes, here only to allow compile
     SMSG_ARENA_TEAM_STATS                             = 0xBADD,
-    SMSG_BUY_BANK_SLOT_RESULT                         = 0xBADD,
     SMSG_BF_MGR_EJECTED                               = 0xBADD,
     SMSG_BF_MGR_ENTERING                              = 0xBADD,
     SMSG_BF_MGR_ENTRY_INVITE                          = 0xBADD,

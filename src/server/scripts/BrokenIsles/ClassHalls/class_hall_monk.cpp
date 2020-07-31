@@ -48,7 +48,7 @@ struct npc_initiate_da_nel : public ScriptedAI
         }
     }
 
-    void sQuestAccept(Player* player, Quest const* quest) override
+    void QuestAccept(Player* player, Quest const* quest) override
     {
         if (quest->GetQuestId() == QUEST_DA_NEL)
         {

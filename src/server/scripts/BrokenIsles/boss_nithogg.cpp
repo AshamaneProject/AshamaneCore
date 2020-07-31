@@ -174,7 +174,7 @@ struct boss_nithogg : public WorldBossAI
                     //What I do here is make the cast happen from higher up, making the missiles travel more than they do at the moment.
                     if (TempSummon* tempSumm = me->SummonCreature(WORLD_TRIGGER, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ() + 14, 0, TEMPSUMMON_TIMED_DESPAWN, 10000))
                     {
-                        tempSumm->setFaction(me->getFaction());
+                        tempSumm->SetFaction(me->GetFaction());
                         tempSumm->SetSummonerGUID(me->GetGUID());
                         PhasingHandler::InheritPhaseShift(tempSumm, me);
                         tempSumm->SetLevel(me->getLevel());
@@ -393,7 +393,7 @@ class spell_nithogg_crackling_jolt_damage : public SpellScript
         if(!caster || !target)
             return;
 
-        if(GetTriggeringSpell() == sSpellMgr->GetSpellInfo(SPELL_CRACKLING_JOLT_MISSILE))
+        if(GetTriggeringSpell() == sSpellMgr->GetSpellInfo(SPELL_CRACKLING_JOLT_MISSILE, caster->GetMap()->GetDifficultyID()))
         {
             PreventHitEffect(effIndex);
             ObjectGuid targetGuid = target->GetGUID();

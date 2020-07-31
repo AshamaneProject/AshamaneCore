@@ -977,7 +977,7 @@ public:
                 Trigger->AddUnitFlag(UNIT_FLAG_STUNNED);
                 Trigger->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                 Trigger->SetReactState(REACT_AGGRESSIVE);
-                Trigger->setFaction(18);
+                Trigger->SetFaction(18);
                 Trigger->Attack(me, true);
                 me->AddThreat(Trigger, 200000.0f);
                 me->_addAttacker(Trigger);

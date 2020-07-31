@@ -70,13 +70,15 @@ class npc_beaten_corpse : public CreatureScript
             {
             }
 
-            void sGossipSelect(Player* player, uint32 menuId, uint32 gossipListId) override
+            bool GossipSelect(Player* player, uint32 menuId, uint32 gossipListId) override
             {
                 if (menuId == GOSSIP_MENU_OPTION_INSPECT_BODY && gossipListId == GOSSIP_OPTION_ID_BEATEN_CORPSE)
                 {
                     CloseGossipMenuFor(player);
                     player->TalkedToCreature(me->GetEntry(), me->GetGUID());
                 }
+
+                return false;
             }
         };
 
@@ -114,7 +116,7 @@ public:
     {
         if (quest->GetQuestId() == QUEST_FREE_FROM_HOLD)
         {
-            creature->setFaction(FACTION_ESCORTEE);
+            creature->SetFaction(FACTION_ESCORTEE);
             creature->SetStandState(UNIT_STAND_STATE_STAND);
 
             creature->AI()->Talk(SAY_GIL_START, player);
@@ -209,7 +211,7 @@ public:
         npc_taskmaster_fizzuleAI(Creature* creature) : ScriptedAI(creature)
         {
             Initialize();
-            factionNorm = creature->getFaction();
+            factionNorm = creature->GetFaction();
         }
 
         void Initialize()
@@ -227,7 +229,7 @@ public:
         void Reset() override
         {
             Initialize();
-            me->setFaction(factionNorm);
+            me->SetFaction(factionNorm);
         }
 
         void DoFriend()
@@ -239,7 +241,7 @@ public:
             me->StopMoving();
             me->GetMotionMaster()->MoveIdle();
 
-            me->setFaction(FACTION_FRIENDLY_F);
+            me->SetFaction(FACTION_FRIENDLY_F);
             me->HandleEmoteCommand(EMOTE_ONESHOT_SALUTE);
         }
 
@@ -279,7 +281,7 @@ public:
             {
                 if (FlareCount >= 2)
                 {
-                    if (me->getFaction() == FACTION_FRIENDLY_F)
+                    if (me->GetFaction() == FACTION_FRIENDLY_F)
                         return;
 
                     DoFriend();
@@ -432,7 +434,7 @@ public:
                             Creature* creature = me->SummonCreature(NPC_AFFRAY_CHALLENGER, AffrayChallengerLoc[i], TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 600000);
                             if (!creature)
                                 continue;
-                            creature->setFaction(35);
+                            creature->SetFaction(35);
                             creature->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                             creature->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                             creature->HandleEmoteCommand(EMOTE_ONESHOT_ROAR);
@@ -473,7 +475,7 @@ public:
                                 creature->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                                 creature->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                                 creature->HandleEmoteCommand(EMOTE_ONESHOT_ROAR);
-                                creature->setFaction(14);
+                                creature->SetFaction(14);
                                 creature->AI()->AttackStart(warrior);
                                 ++Wave;
                                 WaveTimer = 20000;
@@ -505,7 +507,7 @@ public:
                                 creature->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                                 creature->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                                 creature->HandleEmoteCommand(EMOTE_ONESHOT_ROAR);
-                                creature->setFaction(14);
+                                creature->SetFaction(14);
                                 creature->AI()->AttackStart(warrior);
                             }
                         }
@@ -666,7 +668,7 @@ public:
     {
         if (quest->GetQuestId() == QUEST_ESCAPE)
         {
-            creature->setFaction(FACTION_RATCHET);
+            creature->SetFaction(FACTION_RATCHET);
             creature->AI()->Talk(SAY_START);
             if (npc_escortAI* pEscortAI = CAST_AI(npc_wizzlecrank_shredder::npc_wizzlecrank_shredderAI, creature->AI()))
                 pEscortAI->Start(true, false, player->GetGUID());

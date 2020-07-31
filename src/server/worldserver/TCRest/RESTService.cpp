@@ -76,7 +76,7 @@ bool RESTService::Start()
                 throw std::runtime_error("Bad Authorization token header");
 
             boost::property_tree::ptree pt;
-            read_json(request->content, pt);
+            //boost::property_tree::read_json(request->content, pt);
 
             RestResponse restResponse;
             sScriptMgr->OnRestPostReceived(request->path, pt, restResponse);

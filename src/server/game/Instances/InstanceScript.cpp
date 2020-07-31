@@ -194,7 +194,7 @@ void InstanceScript::LoadBossBoundaries(const BossBoundaryData& data)
 {
     for (BossBoundaryEntry const& entry : data)
         if (entry.BossId < bosses.size())
-            bosses[entry.BossId].boundary.insert(entry.Boundary);
+            bosses[entry.BossId].boundary.push_back(entry.Boundary);
 }
 
 void InstanceScript::LoadMinionData(const MinionData* data)
@@ -1047,7 +1047,7 @@ void InstanceScript::UpdateEncounterState(EncounterCreditType type, uint32 credi
             {
                 dungeonId = encounter->lastEncounterDungeon;
                 TC_LOG_DEBUG("lfg", "UpdateEncounterState: Instance %s (instanceId %u) completed encounter %s. Credit Dungeon: %u",
-                    instance->GetMapName(), instance->GetInstanceId(), encounter->dbcEntry->Name->Str[sWorld->GetDefaultDbcLocale()], dungeonId);
+                    instance->GetMapName(), instance->GetInstanceId(), encounter->dbcEntry->Name[sWorld->GetDefaultDbcLocale()], dungeonId);
                 break;
             }
         }

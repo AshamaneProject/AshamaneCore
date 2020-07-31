@@ -257,7 +257,7 @@ struct boss_portal_keeper_hasabel : public BossAI
         case NPC_FELBLAZE_IMP:
         case NPC_FELCRUSH_PORTAL:
         {
-            summon->setFaction(me->getFaction());
+            summon->SetFaction(me->GetFaction());
             break;
         }
         }

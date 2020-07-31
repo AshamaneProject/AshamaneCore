@@ -611,7 +611,7 @@ public:
             return false;
         }
 
-        creature->setFaction(factionId);
+        creature->SetFaction(factionId);
 
         // Faction is set in creature_template - not inside creature
 
@@ -727,7 +727,7 @@ public:
 
         CreatureTemplate const* cInfo = target->GetCreatureTemplate();
 
-        uint32 faction = target->getFaction();
+        uint32 faction = target->GetFaction();
         uint64 npcflags;
         memcpy(&npcflags, target->m_unitData->NpcFlags.begin(), sizeof(npcflags));
         uint32 mechanicImmuneMask = cInfo->MechanicImmuneMask;
@@ -894,7 +894,7 @@ public:
                 const_cast<CreatureData*>(data)->posZ = z;
                 const_cast<CreatureData*>(data)->orientation = o;
             }
-            creature->SetPosition(x, y, z, o);
+            creature->UpdatePosition(x, y, z, o);
             creature->GetMotionMaster()->Initialize();
             if (creature->IsAlive())                            // dead creature will reset movement generator at respawn
             {
@@ -1467,14 +1467,14 @@ public:
 
         // place pet before player
         float x, y, z;
-        player->GetClosePoint (x, y, z, creatureTarget->GetObjectSize(), CONTACT_DISTANCE);
+        player->GetClosePoint (x, y, z, creatureTarget->GetCombatReach(), CONTACT_DISTANCE);
         pet->Relocate(x, y, z, float(M_PI) - player->GetOrientation());
 
         // set pet to defensive mode by default (some classes can't control controlled pets in fact).
         pet->SetReactState(REACT_DEFENSIVE);
 
         // calculate proper level
-        uint8 level = (creatureTarget->getLevel() < (player->getLevel() - 5)) ? (player->getLevel() - 5) : creatureTarget->getLevel();
+        uint8 level = std::max<uint8>(player->getLevel()-5, creatureTarget->getLevel());
 
         // prepare visual effect for levelup
         pet->SetLevel(level - 1);
@@ -1488,7 +1488,7 @@ public:
         // caster have pet now
         player->SetMinion(pet, true);
 
-        pet->SavePetToDB(PET_SAVE_NEW_PET);
+        pet->SavePetToDB(PET_SAVE_AS_CURRENT);
         player->PetSpellInitialize();
 
         return true;
@@ -1539,6 +1539,36 @@ public:
         return true;
     }
 
+    static void _ShowLootEntry(ChatHandler* handler, uint32 itemId, uint8 itemCount, bool alternateString = false)
+    {
+        ItemTemplate const* itemTemplate = sObjectMgr->GetItemTemplate(itemId);
+        char const* name = nullptr;
+        if (!itemTemplate)
+            name = itemTemplate->GetName(handler->GetSessionDbcLocale());
+        if (!name)
+            name = "Unknown item";
+        handler->PSendSysMessage(alternateString ? LANG_COMMAND_NPC_SHOWLOOT_ENTRY_2 : LANG_COMMAND_NPC_SHOWLOOT_ENTRY,
+            itemCount, ItemQualityColors[itemTemplate ? static_cast<ItemQualities>(itemTemplate->GetQuality()) : ITEM_QUALITY_POOR], itemId, name, itemId);
+    }
+
+    static void _IterateNotNormalLootMap(ChatHandler* handler, NotNormalLootItemMap const& map, std::vector<LootItem> const& items)
+    {
+        for (NotNormalLootItemMap::value_type const& pair : map)
+        {
+            if (!pair.second)
+                continue;
+            Player const* player = ObjectAccessor::FindConnectedPlayer(pair.first);
+            handler->PSendSysMessage(LANG_COMMAND_NPC_SHOWLOOT_SUBLABEL, player ? player->GetName() : Trinity::StringFormat("Offline player (GUID %s)", pair.first.ToString()).c_str(), pair.second->size());
+
+            for (auto it = pair.second->cbegin(); it != pair.second->cend(); ++it)
+            {
+                LootItem const& item = items[it->index];
+                if (!(it->is_looted) && !item.is_looted)
+                    _ShowLootEntry(handler, item.itemid, item.count, true);
+            }
+        }
+    }
+
     static bool HandleNpcReloadCommand(ChatHandler* handler, char const* args)
     {
         Creature* creatureTarget = handler->getSelectedCreature();
@@ -1548,7 +1578,6 @@ public:
             handler->SetSentErrorMessage(true);
             return false;
         }
-
         creatureTarget->ReLoad(false);
 
         if (args && stricmp(args, "all") == 0)

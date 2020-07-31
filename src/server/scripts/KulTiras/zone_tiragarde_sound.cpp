@@ -86,9 +86,9 @@ struct npc_jaina_boralus_intro : public ScriptedAI
 {
     npc_jaina_boralus_intro(Creature* creature) : ScriptedAI(creature) { }
 
-    void sQuestAccept(Player* player, Quest const* quest) override
+    void QuestAccept(Player* player, Quest const* quest) override
     {
-        if (quest->ID == QUEST_DAUGHTER_OF_THE_SEA)
+        if (quest->GetQuestId() == QUEST_DAUGHTER_OF_THE_SEA)
             player->CastSpell(player, SPELL_PROUDMOORE_KEEP_ESCORT, true);
     }
 };
@@ -181,9 +181,9 @@ struct npc_flynn_fairwind : public ScriptedAI
         TALK_NO = 3,
     };
 
-    void sQuestAccept(Player* player, Quest const* quest) override
+    void QuestAccept(Player* player, Quest const* quest) override
     {
-        if (quest->ID == QUEST_OUT_LIKE_FLYNN)
+        if (quest->GetQuestId() == QUEST_OUT_LIKE_FLYNN)
         {
             if (Creature* flynn = player->SummonCreature(me->GetEntry(), me->GetPosition(), TEMPSUMMON_CORPSE_DESPAWN, 0, 0, true))
             {
@@ -305,7 +305,7 @@ struct go_toldagor_cell_block_lever : public GameObjectAI
 {
     go_toldagor_cell_block_lever(GameObject* go) : GameObjectAI(go) { }
 
-    bool GossipHello(Player* player, bool /*isUse*/) override
+    bool GossipHello(Player* player) override
     {
         player->CastSpell(player, SPELL_SCENE_FLYNN_JAILBREAK, true);
         player->UnsummonCreatureByEntry(NPC_FLYNN_BEGIN);
@@ -640,11 +640,13 @@ class npc_cyrus_crestfall : public ScriptedAI
 public:
     npc_cyrus_crestfall(Creature* creature) : ScriptedAI(creature) { }
 
-    void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 /*gossipListId*/) override
+    bool GossipSelect(Player* player, uint32 /*menuId*/, uint32 /*gossipListId*/) override
     {
         player->KilledMonsterCredit(137009);
         player->PlayConversation(7653);
         CloseGossipMenuFor(player);
+
+        return false;
     }
 };
 
@@ -667,9 +669,10 @@ class npc_boralus_portal_maga : public ScriptedAI
 public:
     npc_boralus_portal_maga(Creature* creature) : ScriptedAI(creature) { }
 
-    void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 /*gossipListId*/) override
+    bool GossipSelect(Player* player, uint32 /*menuId*/, uint32 /*gossipListId*/) override
     {
         KillCreditMe(player);
+        return false;
     }
 };
 
@@ -679,15 +682,16 @@ class npc_taelia_harbormaster : public ScriptedAI
 public:
     npc_taelia_harbormaster(Creature* creature) : ScriptedAI(creature) { }
 
-    void sQuestAccept(Player* player, Quest const* quest) override
+    void QuestAccept(Player* player, Quest const* quest) override
     {
-        if (quest->ID == QUEST_NATION_DIVIDED)
+        if (quest->GetQuestId() == QUEST_NATION_DIVIDED)
             player->CastSpell(player, SPELL_SCENE_NATION_DIVIDED, true);
     }
 
-    void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 /*gossipListId*/) override
+    bool GossipSelect(Player* player, uint32 /*menuId*/, uint32 /*gossipListId*/) override
     {
         player->CastSpell(player, SPELL_SCENE_NATION_DIVIDED, true);
+        return false;
     }
 };
 
@@ -697,9 +701,10 @@ class npc_boralus_adventure_map : public ScriptedAI
 public:
     npc_boralus_adventure_map(Creature* creature) : ScriptedAI(creature) { }
 
-    void sGossipHello(Player* player) override
+    bool GossipHello(Player* player) override
     {
         KillCreditMe(player);
+        return false;
     }
 };
 
@@ -723,9 +728,9 @@ public:
                 KillCreditMe(player);
     }
 
-    void sQuestAccept(Player* player, Quest const* quest) override
+    void QuestAccept(Player* player, Quest const* quest) override
     {
-        if (quest->ID == QUEST_LOVESICK_ID)
+        if (quest->GetQuestId() == QUEST_LOVESICK_ID)
         {
             me->DestroyForPlayer(player);
             player->CastSpell(nullptr, SPELL_SUMMON_FLYNN_ESCORT_ID, true);
@@ -865,9 +870,9 @@ public:
 
     npc_hilde_firebreaker_queststarter(Creature* creature) : ScriptedAI(creature) { }
 
-    void sQuestAccept(Player* player, Quest const* quest) override
+    void QuestAccept(Player* player, Quest const* quest) override
     {
-        if (quest->ID != QUEST_BACKUP_WILL_I_PACK)
+        if (quest->GetQuestId() != QUEST_BACKUP_WILL_I_PACK)
             return;
 
         players.push_back(player);
@@ -1014,9 +1019,9 @@ public:
         }
     }
 
-    void sQuestAccept(Player* player, Quest const* quest) override
+    void QuestAccept(Player* player, Quest const* quest) override
     {
-        if (quest->ID == QUEST_HOLD_MY_HAND)
+        if (quest->GetQuestId() == QUEST_HOLD_MY_HAND)
         {
             player->CastSpell(player, SPELL_CANCEL_ESCORT_PENNY);
             player->CastSpell(player, SPELL_ESCORTING_PENNY_HARDWICK);

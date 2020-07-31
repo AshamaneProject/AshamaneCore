@@ -90,7 +90,7 @@ class boss_taran_zhu : public CreatureScript
             {
                 if (damage >= me->GetHealth())
                 {
-                    me->setFaction(35);
+                    me->SetFaction(35);
                     me->SetFullHealth();
                     me->RemoveAurasDueToSpell(SPELL_CORRUPTED);
                 }

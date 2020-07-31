@@ -783,7 +783,7 @@ class spell_attumen_spectral_charge : public SpellScriptLoader
 
                     Vector2 diff = (tgtV - srcV).direction();
                     SpellCastTargets target;
-                    SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(SPELL_SPECTRAL_CHARGE_AREA);
+                    SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(SPELL_SPECTRAL_CHARGE_AREA, GetCaster()->GetMap()->GetDifficultyID());
 
                     if (!spellInfo)
                         return;

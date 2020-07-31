@@ -41,7 +41,7 @@ uint32 BG_TP_Honor[BG_HONOR_MODE_NUM][BG_TP_REWARD_NUM] =
     {60, 40, 80}  // holiday
 };
 
-BattlegroundTP::BattlegroundTP()
+BattlegroundTP::BattlegroundTP(BattlegroundTemplate const* battlegroundTemplate) : Battleground(battlegroundTemplate)
 {
     BgObjects.resize(BG_TP_OBJECT_MAX);
     BgCreatures.resize(BG_CREATURES_MAX_TP);

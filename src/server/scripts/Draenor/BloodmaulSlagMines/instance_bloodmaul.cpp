@@ -126,7 +126,7 @@ namespace Instances
                                 m_MinerSpawnGuids[TEAM_NEUTRAL] = creature->GetGUID();
                                 break;
                             case uint32(MobEntries::EarthCrushStalker):
-                                creature->setFaction(2102);
+                                creature->SetFaction(2102);
                                 creature->SetReactState(ReactStates::REACT_PASSIVE);
                                 break;
                             case uint32(MobEntries::BloodmaulWarder):
@@ -333,12 +333,12 @@ namespace Instances
 
                                             if (i == TEAM_ALLIANCE && playersTeamId == TEAM_ALLIANCE)
                                             {
-                                                summon->setFaction(FACTION_A);
+                                                summon->SetFaction(FACTION_A);
                                                 mustAttackBoss = true;
                                             }
                                             else if (i == TEAM_HORDE && playersTeamId == TEAM_HORDE)
                                             {
-                                                summon->setFaction(FACTION_H);
+                                                summon->SetFaction(FACTION_H);
                                                 mustAttackBoss = true;
                                             }
 

@@ -78,7 +78,7 @@ public:
             x -= 3.5f;
             y -= 5.0f;
             me->GetMotionMaster()->Clear(false);
-            me->SetPosition(x, y, z, 0.0f);
+            me->UpdatePosition(x, y, z, 0.0f);
         }
 
         void UpdateAI(uint32 diff) override
@@ -101,7 +101,7 @@ public:
                         FlyBackTimer = 500;
                         break;
                     case 1:
-                        player->GetClosePoint(x, y, z, me->GetObjectSize());
+                        player->GetClosePoint(x, y, z, me->GetCombatReach());
                         z += 2.5f;
                         x -= 2.0f;
                         y -= 1.5f;

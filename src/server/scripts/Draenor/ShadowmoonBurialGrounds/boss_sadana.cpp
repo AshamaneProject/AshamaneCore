@@ -578,7 +578,7 @@ public:
 
             me->SetSpeed(UnitMoveType::MOVE_FLIGHT, frand(0.3f, 1.2f));
 
-            me->setFaction(HostileFaction);
+            me->SetFaction(HostileFaction);
             me->SetReactState(ReactStates::REACT_PASSIVE);
             me->CastSpell(me, eSadanaSpells::SpellTenebreuxViolet);
             me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_IMMUNE_TO_PC));
@@ -711,7 +711,7 @@ public:
         {
             events.Reset();
 
-            me->setFaction(HostileFaction);
+            me->SetFaction(HostileFaction);
             me->SetReactState(ReactStates::REACT_PASSIVE);
             me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_IMMUNE_TO_PC));
             me->AddUnitFlag2(UNIT_FLAG2_DISABLE_TURN);
@@ -809,7 +809,7 @@ public:
                     break;
             }
 
-            me->setFaction(FriendlyFaction);
+            me->SetFaction(FriendlyFaction);
             me->SetReactState(ReactStates::REACT_PASSIVE);
             me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC));
             me->AddUnitFlag2(UNIT_FLAG2_DISABLE_TURN);
@@ -903,7 +903,7 @@ public:
             m_ReadyForAction = false;
             m_ActionDiff = 2 * TimeConstants::IN_MILLISECONDS;
 
-            me->setFaction(FriendlyFaction);
+            me->SetFaction(FriendlyFaction);
             me->SetReactState(ReactStates::REACT_PASSIVE);
             me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC));
             me->AddUnitFlag2(UNIT_FLAG2_DISABLE_TURN);

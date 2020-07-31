@@ -102,7 +102,7 @@ class boss_apothecary_hummel : public CreatureScript
         {
             boss_apothecary_hummelAI(Creature* creature) : BossAI(creature, DATA_APOTHECARY_HUMMEL), _deadCount(0), _isDead(false) { }
 
-            void sGossipSelect(Player* player, uint32 menuId, uint32 gossipListId) override
+            bool GossipSelect(Player* player, uint32 menuId, uint32 gossipListId) override
             {
                 if (menuId == GOSSIP_MENU_HUMMEL && gossipListId == GOSSIP_OPTION_START)
                 {
@@ -110,6 +110,8 @@ class boss_apothecary_hummel : public CreatureScript
                     CloseGossipMenuFor(player);
                     DoAction(ACTION_START_EVENT);
                 }
+
+                return false;
             }
 
             void Reset() override
@@ -118,7 +120,7 @@ class boss_apothecary_hummel : public CreatureScript
                 _deadCount = 0;
                 _isDead = false;
                 events.SetPhase(PHASE_ALL);
-                me->setFaction(FACTION_APOTHECARY_FRIENDLY);
+                me->SetFaction(FACTION_APOTHECARY_FRIENDLY);
                 me->SummonCreatureGroup(1);
             }
 
@@ -137,7 +139,7 @@ class boss_apothecary_hummel : public CreatureScript
                     events.ScheduleEvent(EVENT_HUMMEL_SAY_0, Milliseconds(1));
 
                     me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
-                    me->setFaction(FACTION_APOTHECARY_HOSTILE);
+                    me->SetFaction(FACTION_APOTHECARY_HOSTILE);
                     DummyEntryCheckPredicate pred;
                     summons.DoAction(ACTION_START_EVENT, pred);
                 }
@@ -290,7 +292,7 @@ struct npc_apothecary_genericAI : public ScriptedAI
         if (action == ACTION_START_EVENT)
         {
             me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
-            me->setFaction(FACTION_APOTHECARY_HOSTILE);
+            me->SetFaction(FACTION_APOTHECARY_HOSTILE);
             me->GetMotionMaster()->MovePoint(1, _movePos);
         }
         else if (action == ACTION_START_FIGHT)

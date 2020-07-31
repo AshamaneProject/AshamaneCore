@@ -368,7 +368,7 @@ class npc_sinclari_vh : public CreatureScript
                 }
             }
 
-            void sGossipSelect(Player* player, uint32 menuId, uint32 gossipListId) override
+            bool GossipSelect(Player* player, uint32 menuId, uint32 gossipListId) override
             {
                 if (menuId == GOSSIP_MENU_START_ENCOUNTER && gossipListId == 0)
                 {
@@ -382,6 +382,8 @@ class npc_sinclari_vh : public CreatureScript
                     me->CastSpell(player, SPELL_TELEPORT_PLAYER, true);
                     player->PlayerTalkClass->SendCloseGossip();
                 }
+
+                return false;
             }
 
             void DoAction(int32 actionId) override

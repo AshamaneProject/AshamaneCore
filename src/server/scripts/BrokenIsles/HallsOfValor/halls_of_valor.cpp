@@ -51,14 +51,16 @@ struct boss_king_ranulf : public BossAI
 
     ObjectGuid targetGuid;
 
-    void sGossipSelect(Player* /*player*/, uint32 /*menuId*/, uint32 /*gossipListId*/) override
+    bool GossipSelect(Player* /*player*/, uint32 /*menuId*/, uint32 /*gossipListId*/) override
     {
-        me->setFaction(14);
+        me->SetFaction(14);
         me->SetReactState(REACT_DEFENSIVE);
         me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE));
         me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE));
         if (InstanceScript* instance = me->GetInstanceScript())
             instance->SetBossState(DATA_GODKING_SKOVALD, NOT_STARTED);
+
+        return false;
     }
 
     void EnterCombat(Unit* /*who*/) override
@@ -132,7 +134,7 @@ struct boss_king_ranulf : public BossAI
                 if (Creature* creature = me->FindNearestCreature(101326, 50.0f))
                 {
                     creature->SetLevel(110);
-                    creature->setFaction(14);
+                    creature->SetFaction(14);
                     creature->GetMotionMaster()->MovePoint(0, me->GetPosition(), true);
                 }
                 events.ScheduleEvent(EVENT_CALL_ANCESTOR, 16000);
@@ -172,14 +174,16 @@ struct boss_king_haldor : public BossAI
 
     ObjectGuid targetGuid;
 
-    void sGossipSelect(Player* /*player*/, uint32 /*menuId*/, uint32 /*gossipListId*/) override
+    bool GossipSelect(Player* /*player*/, uint32 /*menuId*/, uint32 /*gossipListId*/) override
     {
-        me->setFaction(14);
+        me->SetFaction(14);
         me->SetReactState(REACT_DEFENSIVE);
         me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE));
         me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE));
         if (InstanceScript* instance = me->GetInstanceScript())
             instance->SetBossState(DATA_KING_HALDOR, NOT_STARTED);
+
+        return false;
     }
 
     void EnterCombat(Unit* /*who*/) override
@@ -253,7 +257,7 @@ struct boss_king_haldor : public BossAI
                 if (Creature* creature = me->FindNearestCreature(101326, 50.0f))
                 {
                     creature->SetLevel(110);
-                    creature->setFaction(14);
+                    creature->SetFaction(14);
                     creature->GetMotionMaster()->MovePoint(0, me->GetPosition(), true);
                 }
                 events.ScheduleEvent(EVENT_CALL_ANCESTOR, 16000);
@@ -295,14 +299,16 @@ struct boss_king_bjorn : public BossAI
 
     ObjectGuid targetGuid;
 
-    void sGossipSelect(Player* /*player*/, uint32 /*menuId*/, uint32 /*gossipListId*/)
+    bool GossipSelect(Player* /*player*/, uint32 /*menuId*/, uint32 /*gossipListId*/)
     {
-        me->setFaction(14);
+        me->SetFaction(14);
         me->SetReactState(REACT_DEFENSIVE);
         me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE));
         me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE));
         if (InstanceScript* instance = me->GetInstanceScript())
             instance->SetBossState(DATA_KING_BJORN, NOT_STARTED);
+
+        return false;
     }
 
     void EnterCombat(Unit* /*who*/) override
@@ -376,7 +382,7 @@ struct boss_king_bjorn : public BossAI
                 if (Creature* creature = me->FindNearestCreature(101326, 50.0f))
                 {
                     creature->SetLevel(110);
-                    creature->setFaction(14);
+                    creature->SetFaction(14);
                     creature->GetMotionMaster()->MovePoint(0, me->GetPosition(), true);
                 }
                 events.ScheduleEvent(EVENT_CALL_ANCESTOR, 16000);
@@ -414,14 +420,16 @@ struct boss_king_tor : public BossAI
 {
     boss_king_tor(Creature* creature) : BossAI(creature, DATA_KING_TOR) { }
 
-    void sGossipSelect(Player* /*player*/, uint32 /*menuId*/, uint32 /*gossipListId*/) override
+    bool GossipSelect(Player* /*player*/, uint32 /*menuId*/, uint32 /*gossipListId*/) override
     {
-        me->setFaction(14);
+        me->SetFaction(14);
         me->SetReactState(REACT_DEFENSIVE);
         me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE));
         me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE));
         if (InstanceScript* instance = me->GetInstanceScript())
             instance->SetBossState(DATA_KING_TOR, NOT_STARTED);
+
+        return false;
     }
 
     ObjectGuid targetGuid;
@@ -497,7 +505,7 @@ struct boss_king_tor : public BossAI
                 if (Creature* creature = me->FindNearestCreature(101326, 50.0f))
                 {
                     creature->SetLevel(110);
-                    creature->setFaction(14);
+                    creature->SetFaction(14);
                     creature->GetMotionMaster()->MovePoint(0, me->GetPosition(), true);
                 }
                 events.ScheduleEvent(EVENT_CALL_ANCESTOR, 16000);

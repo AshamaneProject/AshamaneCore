@@ -1595,7 +1595,7 @@ public:
     {
         go_inversionAI(GameObject* go) : GameObjectAI(go) { }
 
-        bool GossipHello(Player* /*player*/, bool /*isUse*/) override
+        bool GossipHello(Player* /*player*/) override
         {
             return false;
         }
@@ -1617,7 +1617,7 @@ public:
     {
         go_cancelAI(GameObject* go) : GameObjectAI(go) { }
 
-        bool GossipHello(Player* /*player*/, bool /*isUse*/) override
+        bool GossipHello(Player* /*player*/) override
         {
             return false;
         }

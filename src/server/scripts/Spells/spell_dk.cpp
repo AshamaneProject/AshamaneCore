@@ -671,7 +671,7 @@ class spell_dk_festering_strike : public SpellScript
             uint32 amount = GetSpellInfo()->GetEffect(effIndex)->CalcValue();
 
             if (Aura* castiragorAura = GetCaster()->GetAura(SPELL_DK_CASTIGATOR))
-                amount += castiragorAura->GetSpellEffectInfo(EFFECT_0)->BasePoints;
+                amount += castiragorAura->GetSpellInfo()->GetEffect(EFFECT_0)->BasePoints;
 
             for (uint8 i = 0; i < amount; ++i)
                 GetCaster()->CastSpell(target, SPELL_DK_FESTERING_WOUND, true);
@@ -2555,12 +2555,12 @@ class spell_dk_scourge_strike : public SpellScript
                     caster->CastSpell(caster, SPELL_DK_UNHOLY_FRENZY_BUFF, true);
 
                 if (Aura* pestilentPustulesAura = caster->GetAura(SPELL_DK_PESTILENT_PUSTULES))
-                    if (festeringWoundAura->GetStackAmount() >= pestilentPustulesAura->GetSpellEffectInfo(EFFECT_0)->BasePoints)
+                    if (festeringWoundAura->GetStackAmount() >= pestilentPustulesAura->GetSpellInfo()->GetEffect(EFFECT_0)->BasePoints)
                         caster->ModifyPower(POWER_RUNES, 1);
 
                 uint8 festeringWoundBurst = 1;
                 if (Aura* castiragorAura = caster->GetAura(SPELL_DK_CASTIGATOR))
-                    festeringWoundBurst += castiragorAura->GetSpellEffectInfo(EFFECT_1)->BasePoints;
+                    festeringWoundBurst += castiragorAura->GetSpellInfo()->GetEffect(EFFECT_1)->BasePoints;
 
                 festeringWoundBurst = std::min(festeringWoundBurst, festeringWoundAura->GetStackAmount());
 

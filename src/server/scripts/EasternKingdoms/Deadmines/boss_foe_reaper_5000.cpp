@@ -435,7 +435,7 @@ public:
             {
                 if (!me->HasAura(SPELL_ON_FIRE))
                     me->AddAura(SPELL_ON_FIRE, me);
-                me->setFaction(35);
+                me->SetFaction(35);
             }
         }
 
@@ -455,7 +455,7 @@ public:
             Status = true;
             me->SetHealth(15);
             me->setRegeneratingHealth(false);
-            me->setFaction(35);
+            me->SetFaction(35);
             me->AddAura(SPELL_ON_FIRE, me);
             me->CastSpell(me, SPELL_ON_FIRE);
             me->SetInCombatWithZone();

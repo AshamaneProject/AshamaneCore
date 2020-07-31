@@ -84,7 +84,7 @@ public:
             if (_StinkerBrokenHeartTimer <= diff)
             {
                 DoCast(SPELL_STINKER_BROKEN_HEART);
-                me->setFaction(31);
+                me->SetFaction(31);
             }
             _StinkerBrokenHeartTimer -= diff;
         }

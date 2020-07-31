@@ -38,6 +38,8 @@ namespace UF
         Empath = 0x08
     };
 
+    DEFINE_ENUM_FLAG(UpdateFieldFlag);
+
     template<typename T, uint32 BlockBit, uint32 Bit>
     class UpdateField;
 

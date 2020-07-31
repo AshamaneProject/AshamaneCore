@@ -430,7 +430,7 @@ class spell_pri_shadowy_insight : public AuraScript
 
     void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
     {
-        GetTarget()->GetSpellHistory()->ResetCharges(sSpellMgr->AssertSpellInfo(SPELL_PRIEST_MIND_BLAST)->ChargeCategoryId);
+        GetTarget()->GetSpellHistory()->ResetCharges(sSpellMgr->AssertSpellInfo(SPELL_PRIEST_MIND_BLAST, DIFFICULTY_NONE)->ChargeCategoryId);
     }
 
     void Register() override
@@ -2501,7 +2501,7 @@ class spell_pri_shadow_mend : public SpellScript
         {
             if (sSpellMgr->GetSpellInfo(SPELL_PRIEST_MASOCHISM_HEAL)->GetEffect(EFFECT_0))
             {
-                int32 heal = int32(backfireDamage / sSpellMgr->GetSpellInfo(SPELL_PRIEST_MASOCHISM_HEAL)->GetMaxTicks(DIFFICULTY_NONE));
+                int32 heal = int32(backfireDamage / sSpellMgr->GetSpellInfo(SPELL_PRIEST_MASOCHISM_HEAL)->GetMaxTicks());
                 caster->CastCustomSpell(SPELL_PRIEST_MASOCHISM_HEAL, SPELLVALUE_BASE_POINT0, heal, caster, TRIGGERED_FULL_MASK);
             }
 
@@ -2510,7 +2510,7 @@ class spell_pri_shadow_mend : public SpellScript
 
         if (target->IsInCombat())
         {
-            int32 backfireTickDamage = int32(backfireDamage / sSpellMgr->GetSpellInfo(SPELL_PRIEST_SHADOW_MEND_AURA)->GetMaxTicks(DIFFICULTY_NONE));
+            int32 backfireTickDamage = int32(backfireDamage / sSpellMgr->GetSpellInfo(SPELL_PRIEST_SHADOW_MEND_AURA)->GetMaxTicks());
             uint32 remainingDamage = target->GetRemainingPeriodicAmount(caster->GetGUID(), SPELL_PRIEST_SHADOW_MEND_AURA, SPELL_AURA_PERIODIC_DUMMY);
             caster->CastCustomSpell(SPELL_PRIEST_SHADOW_MEND_AURA, SPELLVALUE_BASE_POINT0, int32(remainingDamage + backfireTickDamage), target, TRIGGERED_FULL_MASK);
         }

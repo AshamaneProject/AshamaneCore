@@ -470,7 +470,7 @@ public:
 
             creatureList.remove_if([](Creature* creature) -> bool
             {
-                if (creature->getFaction() != 2580)
+                if (creature->GetFaction() != 2580)
                     return true;
 
                 if (creature->GetPositionX() > 4450.0f ||

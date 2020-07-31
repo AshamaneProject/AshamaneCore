@@ -138,15 +138,15 @@ WorldSession::WorldSession(uint32 id, std::string&& name, uint32 battlenetAccoun
     m_currentBankerGUID(),
     _timeSyncClockDeltaQueue(6),
     _timeSyncClockDelta(0),
-    _battlePetMgr(Trinity::make_unique<BattlePetMgr>(this)),
-    _collectionMgr(Trinity::make_unique<CollectionMgr>(this))
+    _battlePetMgr(std::make_unique<BattlePetMgr>(this)),
+    _collectionMgr(std::make_unique<CollectionMgr>(this))
 {
     memset(_tutorials, 0, sizeof(_tutorials));
 
     if (sock)
     {
         m_Address = sock->GetRemoteIpAddress().to_string();
-        ResetTimeOutTime();
+        ResetTimeOutTime(false);
         LoginDatabase.PExecute("UPDATE account SET online = 1 WHERE id = %u;", GetAccountId());     // One-time query
     }
 
@@ -331,7 +331,8 @@ bool WorldSession::Update(uint32 diff, PacketFilter& updater)
     UpdateTimeOutTime(diff);
 
     ///- Before we process anything:
-    /// If necessary, kick the player from the character select screen
+    /// If necessary, kick the player because the client didn't send anything for too long
+    /// (or they've been idling in character select)
     if (IsConnectionIdle())
         m_Socket[CONNECTION_TYPE_REALM]->CloseSocket();
 
@@ -546,7 +547,8 @@ void WorldSession::LogoutPlayer(bool save)
 
         for (int i=0; i < PLAYER_MAX_BATTLEGROUND_QUEUES; ++i)
         {
-            if (BattlegroundQueueTypeId bgQueueTypeId = _player->GetBattlegroundQueueTypeId(i))
+            BattlegroundQueueTypeId bgQueueTypeId = _player->GetBattlegroundQueueTypeId(i);
+            if (bgQueueTypeId != BATTLEGROUND_QUEUE_NONE)
             {
                 _player->RemoveBattlegroundQueueId(bgQueueTypeId);
                 BattlegroundQueue& queue = sBattlegroundMgr->GetBattlegroundQueue(bgQueueTypeId);
@@ -564,7 +566,7 @@ void WorldSession::LogoutPlayer(bool save)
             guild->HandleMemberLogout(this);
 
         ///- Remove pet
-        _player->RemovePet(nullptr, PET_SAVE_LOGOUT, true);
+        _player->RemovePet(nullptr, PET_SAVE_AS_CURRENT, true);
 
         ///- Clear whisper whitelist
         _player->ClearWhisperWhiteList();
@@ -701,9 +703,12 @@ char const* WorldSession::GetTrinityString(uint32 entry) const
     return sObjectMgr->GetTrinityString(entry, GetSessionDbLocaleIndex());
 }
 
-void WorldSession::ResetTimeOutTime()
+void WorldSession::ResetTimeOutTime(bool onlyActive)
 {
-    m_timeOutTime = int32(sWorld->getIntConfig(CONFIG_SOCKET_TIMEOUTTIME));
+    if (GetPlayer())
+        m_timeOutTime = int32(sWorld->getIntConfig(CONFIG_SOCKET_TIMEOUTTIME_ACTIVE));
+    else if (!onlyActive)
+        m_timeOutTime = int32(sWorld->getIntConfig(CONFIG_SOCKET_TIMEOUTTIME));
 }
 
 void WorldSession::Handle_NULL(WorldPackets::Null& null)
@@ -711,10 +716,10 @@ void WorldSession::Handle_NULL(WorldPackets::Null& null)
     TC_LOG_ERROR("network.opcode", "Received unhandled opcode %s from %s", GetOpcodeNameForLogging(null.GetOpcode()).c_str(), GetPlayerInfo().c_str());
 }
 
-void WorldSession::Handle_EarlyProccess(WorldPacket& recvPacket)
+void WorldSession::Handle_EarlyProccess(WorldPackets::Null& null)
 {
     TC_LOG_ERROR("network.opcode", "Received opcode %s that must be processed in WorldSocket::OnRead from %s"
-        , GetOpcodeNameForLogging(static_cast<OpcodeClient>(recvPacket.GetOpcode())).c_str(), GetPlayerInfo().c_str());
+        , GetOpcodeNameForLogging(null.GetOpcode()).c_str(), GetPlayerInfo().c_str());
 }
 
 void WorldSession::SendConnectToInstance(WorldPackets::Auth::ConnectToSerial serial)
@@ -1073,7 +1078,7 @@ void WorldSession::InitializeSessionCallback(LoginDatabaseQueryHolder* realmHold
         SendAuthWaitQue(0);
 
     SetInQueue(false);
-    ResetTimeOutTime();
+    ResetTimeOutTime(false);
 
     SendSetTimeZoneInformation();
     SendFeatureSystemStatusGlueScreen();
@@ -1394,6 +1399,11 @@ uint32 WorldSession::DosProtection::GetMaxPacketCounterAllowed(uint16 opcode) co
         case CMSG_GET_ITEM_PURCHASE_DATA:               // not profiled
         {
             maxPacketCounterAllowed = PLAYER_SLOTS_COUNT;
+            break;
+        }
+        case CMSG_HOTFIX_REQUEST:                       // not profiled
+        {
+            maxPacketCounterAllowed = 1;
             break;
         }
         default:

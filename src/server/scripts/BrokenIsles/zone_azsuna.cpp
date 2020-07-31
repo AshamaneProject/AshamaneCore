@@ -489,7 +489,7 @@ public:
                     me->SetInCombatWith(summon);
                     summon->SetMaxHealth(1009570);
                     summon->SetHealth(1009570);
-                    summon->setFaction(14);
+                    summon->SetFaction(14);
                     me->AI()->AttackStart(summon);
                     summon->GetMotionMaster()->MoveChase(me, 20.0f, summon->GetOrientation());
                     targetGuid = summon->GetGUID();
@@ -510,7 +510,7 @@ public:
                     me->SetInCombatWith(summon);
                     summon->SetMaxHealth(1196528);
                     summon->SetHealth(1196528);
-                    summon->setFaction(14);
+                    summon->SetFaction(14);
                     me->AI()->AttackStart(summon);
                     summon->GetMotionMaster()->MoveChase(me, 20.0f, summon->GetOrientation());
                     targetGuid2 = summon->GetGUID();
@@ -985,7 +985,7 @@ public:
                 {
                     if (m_uiDuelTimer <= uiDiff)
                     {
-                        me->setFaction(FACTION_HOSTILE);
+                        me->SetFaction(FACTION_HOSTILE);
 
                         if (Unit* unit = ObjectAccessor::GetUnit(*me, m_uiDuelerGUID))
                             AttackStart(unit);

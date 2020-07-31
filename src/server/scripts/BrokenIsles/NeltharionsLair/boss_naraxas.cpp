@@ -20,7 +20,6 @@
 #include "ScriptedCreature.h"
 #include "neltharions_lair.h"
 #include "CreatureTextMgr.h"
-#include "EnumClassFlag.h"
 #include "ObjectAccessor.h"
 #include "GameObject.h"
 #include "PhasingHandler.h"

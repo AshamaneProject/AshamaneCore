@@ -1427,7 +1427,7 @@ public:
 
                     if (TempSummon * tempSumm = caster->SummonCreature(WORLD_TRIGGER, at->GetPositionX(), at->GetPositionY(), at->GetPositionZ(), 0, TEMPSUMMON_TIMED_DESPAWN, 100))
                     {
-                        tempSumm->setFaction(caster->getFaction());
+                        tempSumm->SetFaction(caster->GetFaction());
                         tempSumm->SetSummonerGUID(caster->GetGUID());
                         int32 bp = 0;
                         switch (at->GetTemplate()->Id)
@@ -1757,7 +1757,7 @@ public:
 
                         if (TempSummon* tempSumm = caster->SummonCreature(WORLD_TRIGGER, at->GetPositionX(), at->GetPositionY(), at->GetPositionZ(), 0, TEMPSUMMON_TIMED_DESPAWN, 100))
                         {
-                            tempSumm->setFaction(caster->getFaction());
+                            tempSumm->SetFaction(caster->GetFaction());
                             tempSumm->SetSummonerGUID(caster->GetGUID());
                             int32 bp = 0;
                             switch (at->GetTemplate()->Id)

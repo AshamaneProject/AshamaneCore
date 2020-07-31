@@ -405,7 +405,7 @@ public:
         {
             status = STATUS_ATTACK_PLAYER;
             me->SetReactState(REACT_AGGRESSIVE);
-            me->setFaction(16);
+            me->SetFaction(16);
         }
         EventMap events;
         uint8 status;
@@ -550,7 +550,7 @@ public:
             if (sum)
             {
                 pet_guid = sum->GetGUID();
-                sum->setFaction(me->getFaction());
+                sum->SetFaction(me->GetFaction());
             }
         }
 

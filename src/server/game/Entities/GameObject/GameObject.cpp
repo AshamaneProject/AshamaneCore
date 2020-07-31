@@ -43,6 +43,7 @@
 #include "ScriptMgr.h"
 #include "SpellMgr.h"
 #include "Transport.h"
+#include "GossipDef.h"
 #include "World.h"
 #include <G3D/Quat.h>
 #include <sstream>
@@ -165,12 +166,9 @@ bool GameObject::AIM_Initialize()
     return true;
 }
 
-std::string GameObject::GetAIName() const
+std::string const& GameObject::GetAIName() const
 {
-    if (GameObjectTemplate const* got = sObjectMgr->GetGameObjectTemplate(GetEntry()))
-        return got->AIName;
-
-    return "";
+    return sObjectMgr->GetGameObjectTemplate(GetEntry())->AIName;
 }
 
 void GameObject::CleanupsBeforeDelete(bool finalCleanup)
@@ -612,8 +610,8 @@ void GameObject::Update(uint32 diff)
                     m_lootState = GO_READY;                         // for other GOis same switched without delay to GO_READY
                     break;
             }
-            // NO BREAK for switch (m_lootState)
         }
+            /* fallthrough */
         case GO_READY:
         {
             if (m_respawnTime > 0)                          // timer on
@@ -884,7 +882,6 @@ void GameObject::Update(uint32 diff)
             break;
         }
     }
-    sScriptMgr->OnGameObjectUpdate(this, diff);
 }
 
 void GameObject::Refresh()
@@ -1343,7 +1340,7 @@ void GameObject::TriggeringLinkedGameObject(uint32 trapEntry, Unit* target)
     if (!trapInfo || trapInfo->type != GAMEOBJECT_TYPE_TRAP)
         return;
 
-    SpellInfo const* trapSpell = sSpellMgr->GetSpellInfo(trapInfo->trap.spell);
+    SpellInfo const* trapSpell = sSpellMgr->GetSpellInfo(trapInfo->trap.spell, GetMap()->GetDifficultyID());
     if (!trapSpell)                                          // checked at load already
         return;
 
@@ -1432,10 +1429,11 @@ void GameObject::Use(Unit* user)
 
     if (Player* playerUser = user->ToPlayer())
     {
+        playerUser->PlayerTalkClass->ClearMenus();
         if (sScriptMgr->OnGossipHello(playerUser, this))
             return;
 
-        if (AI()->GossipHello(playerUser, false))
+        if (AI()->GossipHello(playerUser))
             return;
     }
 
@@ -2069,7 +2067,7 @@ void GameObject::Use(Unit* user)
     if (!spellId)
         return;
 
-    SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(spellId);
+    SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(spellId, GetMap()->GetDifficultyID());
     if (!spellInfo)
     {
         if (user->GetTypeId() != TYPEID_PLAYER || !sOutdoorPvPMgr->HandleCustomSpell(user->ToPlayer(), spellId, this))
@@ -2095,12 +2093,12 @@ void GameObject::CastSpell(Unit* target, uint32 spellId, bool triggered /* = tru
 
 void GameObject::CastSpell(Unit* target, uint32 spellId, TriggerCastFlags triggered)
 {
-    SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(spellId);
+    SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(spellId, GetMap()->GetDifficultyID());
     if (!spellInfo)
         return;
 
     bool self = false;
-    for (SpellEffectInfo const* effect : spellInfo->GetEffectsForDifficulty(GetMap()->GetDifficultyID()))
+    for (SpellEffectInfo const* effect : spellInfo->GetEffects())
     {
         if (effect && effect->TargetA.GetTarget() == TARGET_UNIT_CASTER)
         {
@@ -2126,7 +2124,7 @@ void GameObject::CastSpell(Unit* target, uint32 spellId, TriggerCastFlags trigge
 
     if (Unit* owner = GetOwner())
     {
-        trigger->setFaction(owner->getFaction());
+        trigger->SetFaction(owner->GetFaction());
         if (owner->HasUnitFlag(UNIT_FLAG_PVP_ATTACKABLE))
             trigger->AddUnitFlag(UNIT_FLAG_PVP_ATTACKABLE);
         // copy pvp state flags from owner
@@ -2137,7 +2135,7 @@ void GameObject::CastSpell(Unit* target, uint32 spellId, TriggerCastFlags trigge
     }
     else
     {
-        trigger->setFaction(spellInfo->IsPositive() ? 35 : 14);
+        trigger->SetFaction(spellInfo->IsPositive() ? FACTION_FRIENDLY : FACTION_MONSTER);
         // Set owner guid for target if no owner available - needed by trigger auras
         // - trigger gets despawned and there's no caster avalible (see AuraEffect::TriggerSpell())
         trigger->CastSpell(target ? target : trigger, spellInfo, triggered, nullptr, nullptr, target ? target->GetGUID() : ObjectGuid::Empty);
@@ -2197,7 +2195,8 @@ void GameObject::EventInform(uint32 eventId, WorldObject* invoker /*= nullptr*/)
 uint32 GameObject::GetScriptId() const
 {
     if (GameObjectData const* gameObjectData = GetGOData())
-        return gameObjectData->ScriptId;
+        if (uint32 scriptId = gameObjectData->ScriptId)
+            return scriptId;
 
     return GetGOInfo()->ScriptId;
 }
@@ -2319,7 +2318,7 @@ void GameObject::SetDestructibleState(GameObjectDestructibleState state, Player*
         case GO_DESTRUCTIBLE_DAMAGED:
         {
             EventInform(m_goInfo->destructibleBuilding.DamagedEvent, eventInvoker);
-            sScriptMgr->OnGameObjectDamaged(this, eventInvoker);
+            AI()->Damaged(eventInvoker, m_goInfo->destructibleBuilding.DamagedEvent);
 
             RemoveFlag(GO_FLAG_DESTROYED);
             AddFlag(GO_FLAG_DAMAGED);
@@ -2343,8 +2342,8 @@ void GameObject::SetDestructibleState(GameObjectDestructibleState state, Player*
         }
         case GO_DESTRUCTIBLE_DESTROYED:
         {
-            sScriptMgr->OnGameObjectDestroyed(this, eventInvoker);
             EventInform(m_goInfo->destructibleBuilding.DestroyedEvent, eventInvoker);
+            AI()->Destroyed(eventInvoker, m_goInfo->destructibleBuilding.DestroyedEvent);
             if (eventInvoker)
                 if (Battleground* bg = eventInvoker->GetBattleground())
                     bg->DestroyGate(eventInvoker, this);
@@ -2397,8 +2396,7 @@ void GameObject::SetLootState(LootState state, Unit* unit)
     else
         m_lootStateUnitGUID.Clear();
 
-    AI()->OnStateChanged(state, unit);
-    sScriptMgr->OnGameObjectLootStateChanged(this, state, unit);
+    AI()->OnLootStateChanged(state, unit);
 
     if (GetGoType() == GAMEOBJECT_TYPE_DOOR) // only set collision for doors on SetGoState
         return;
@@ -2419,6 +2417,10 @@ void GameObject::SetGoState(GOState state)
     SetUpdateFieldValue(m_values.ModifyValue(&GameObject::m_gameObjectData).ModifyValue(&UF::GameObjectData::State), state);
 
     sScriptMgr->OnGameObjectStateChanged(this, state);
+
+    if (AI())
+        AI()->OnStateChanged(state);
+
     if (m_model && !IsTransport())
     {
         if (!IsInWorld())
@@ -2751,5 +2753,5 @@ private:
 
 GameObjectModel* GameObject::CreateModel()
 {
-    return GameObjectModel::Create(Trinity::make_unique<GameObjectModelOwnerImpl>(this), sWorld->GetDataPath());
+    return GameObjectModel::Create(std::make_unique<GameObjectModelOwnerImpl>(this), sWorld->GetDataPath());
 }

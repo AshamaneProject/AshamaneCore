@@ -68,7 +68,7 @@ public:
 
             defeat = false;
 
-            me->setFaction(14);
+            me->SetFaction(14);
 
             _Reset();
             if (instance)
@@ -103,7 +103,7 @@ public:
             }
 
             me->SetHealth(me->GetMaxHealth());
-            me->setFaction(35);
+            me->SetFaction(35);
             me->GetMotionMaster()->MoveTargetedHome();
 
             //Talk(SAY_DIED);

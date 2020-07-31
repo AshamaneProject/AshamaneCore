@@ -264,7 +264,7 @@ struct boss_noura_mother_of_flames : public BossAI
         {
         case 1:
         {
-            summon->setFaction(me->getFaction());
+            summon->SetFaction(me->GetFaction());
             break;
         }
         }
@@ -307,7 +307,7 @@ struct npc_asara_mother_of_night_122467 : public ScriptedAI
         {
         case NPC_SHADOW_BLADE:
         {
-            summon->setFaction(me->getFaction());
+            summon->SetFaction(me->GetFaction());
             break;
         }
         }
@@ -432,7 +432,7 @@ struct npc_diima_mother_of_gloom_122469 : public ScriptedAI
         {
         case 1:
         {
-            summon->setFaction(me->getFaction());
+            summon->SetFaction(me->GetFaction());
             break;
         }
         }

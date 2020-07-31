@@ -1047,16 +1047,16 @@ public:
 
         void EventInform(uint32 eventId) override
         {
-            if (Creature* tobias = ObjectAccessor::GetCreature(*go, m_tobiasGUID))
+            if (Creature* tobias = ObjectAccessor::GetCreature(*me, m_tobiasGUID))
                 tobias->AI()->DoAction(eventId);
 
-            if (Creature* trigger = ObjectAccessor::GetCreature(*go, m_triggerGUID))
+            if (Creature* trigger = ObjectAccessor::GetCreature(*me, m_triggerGUID))
                 trigger->AI()->DoAction(eventId);
 
             if (eventId == ACTION_EVENT_ID_25727) // ship is on destroy.. we must leave quickly.. or player char is destroyed in database storing..
             {
                 WorldLocation wLoc = WorldLocation(654, -1317.54f, 2121.90f, 5.6296f, 0.218f);
-                std::list<Player*> pList = go->SelectNearestPlayers(70.0f);
+                std::list<Player*> pList = me->SelectNearestPlayers(70.0f);
                 for (auto player : pList)
                     player->TeleportTo(wLoc);
             }
@@ -1083,11 +1083,11 @@ public:
                 case EVENT_CHECK_POSITIONS:
                 {
                     if (!m_playerGUID)
-                        if (Player* player = go->SelectNearestPlayer(100.0f))
+                        if (Player* player = me->SelectNearestPlayer(100.0f))
                             m_playerGUID = player->GetGUID();
 
                     if (!m_triggerGUID)
-                        if (Creature* trigger = go->FindNearestCreature(40350, 100.0f))
+                        if (Creature* trigger = me->FindNearestCreature(40350, 100.0f))
                             m_triggerGUID = trigger->GetGUID();
 
                      m_events.ScheduleEvent(EVENT_CHECK_POSITIONS, 2500);
@@ -1452,7 +1452,7 @@ public:
                             data.posZ = 10.4467f;
                             data.orientation = 2.010638f;
                             GameObject* go = trans->CreateGOPassenger(guid, &data);
-                            go->SetObjectScale(2.0f);
+                            me->SetObjectScale(2.0f);
                             sObjectMgr->AddGameobjectToGrid(guid, &data);
                         }
                         if (ObjectGuid::LowType guid = me->GetMap()->GenerateLowGuid<HighGuid::GameObject>())
@@ -1464,7 +1464,7 @@ public:
                             data.posZ = 10.4467f;
                             data.orientation = 2.010638f;
                             GameObject* go = trans->CreateGOPassenger(guid, &data);
-                            go->SetObjectScale(2.0f);
+                            me->SetObjectScale(2.0f);
                             sObjectMgr->AddGameobjectToGrid(guid, &data);
                         }
                         //
@@ -1477,7 +1477,7 @@ public:
                             data.posZ = 10.4467f;
                             data.orientation = 2.010638f;
                             GameObject* go = trans->CreateGOPassenger(guid, &data);
-                            go->SetObjectScale(2.0f);
+                            me->SetObjectScale(2.0f);
                             sObjectMgr->AddGameobjectToGrid(guid, &data);
                         }
                     }

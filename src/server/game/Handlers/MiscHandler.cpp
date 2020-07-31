@@ -77,7 +77,7 @@ void WorldSession::HandleRepopRequest(WorldPackets::Misc::RepopRequest& /*packet
         GetPlayer()->KillPlayer();
     }
 
-    GetPlayer()->RemovePet(nullptr, PET_SAVE_DISMISS, true);
+    GetPlayer()->RemovePet(nullptr, PET_SAVE_NOT_IN_SLOT, true);
 
     // If we are inside an instance, check if player should resurect at instance beginning
     if (InstanceTemplate const* instanceTemplate = sObjectMgr->GetInstanceTemplate(GetPlayer()->GetMapId()))
@@ -210,7 +210,7 @@ void WorldSession::HandleWhoOpcode(WorldPackets::Who::WhoRequestPkt& whoRequest)
         {
             std::string aName;
             if (AreaTableEntry const* areaEntry = sAreaTableStore.LookupEntry(target.GetZoneId()))
-                aName = areaEntry->AreaName->Str[GetSessionDbcLocale()];
+                aName = areaEntry->AreaName[GetSessionDbcLocale()];
 
             bool show = false;
             for (size_t i = 0; i < wWords.size(); ++i)
@@ -582,8 +582,7 @@ void WorldSession::HandleUpdateAccountData(WorldPackets::ClientConfig::UserClien
         return;
     }
 
-    ByteBuffer dest;
-    dest.resize(packet.Size);
+    ByteBuffer dest(packet.Size, ByteBuffer::Resize{});
 
     uLongf realSize = packet.Size;
     if (uncompress(dest.contents(), &realSize, packet.CompressedData.contents(), packet.CompressedData.size()) != Z_OK)

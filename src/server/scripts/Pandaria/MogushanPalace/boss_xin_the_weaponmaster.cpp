@@ -203,7 +203,7 @@ class mob_animated_staff : public CreatureScript
             {
                 if (summoned->GetEntry() == CREATURE_RING_OF_FIRE)
                 {
-                    summoned->setFaction(14);
+                    summoned->SetFaction(14);
                     summoned->SetReactState(REACT_PASSIVE);
                     summoned->AddAura(SPELL_RING_OF_FIRE_0, summoned);
                 }
@@ -336,7 +336,7 @@ class spell_dart: public SpellScriptLoader
                         {
                             if (object->IsInBetween(GetCaster(), trigger, 2.0f))
                             {
-                                const SpellInfo* damageSpell = sSpellMgr->GetSpellInfo(SPELL_THROW_DAMAGE);
+                                const SpellInfo* damageSpell = sSpellMgr->GetSpellInfo(SPELL_THROW_DAMAGE, GetCastDifficulty());
                                 GetCaster()->DealDamage(object->ToPlayer(), damageSpell->GetEffect(0)->BasePoints, 0, SPELL_DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, damageSpell);
                             }
                         }

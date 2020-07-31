@@ -567,7 +567,7 @@ public:
                 damage = me->GetHealth() - 1;
                 _events.Reset();
                 me->RemoveAllAuras();
-                me->setFaction(35);
+                me->SetFaction(35);
                 me->AddUnitFlag(UnitFlags(UNIT_FLAG_UNK_15 | UNIT_FLAG_IMMUNE_TO_PC));
                 me->AttackStop();
                 attacker->AttackStop();
@@ -1172,7 +1172,7 @@ public:
         {
             Unit* caster = GetCaster();
             float x, y, z;
-            caster->GetClosePoint(x, y, z, caster->GetObjectSize() / 2, frand(0, 3), frand(0, 2 * float(M_PI)));
+            caster->GetClosePoint(x, y, z, caster->GetCombatReach() / 2, frand(0, 3), frand(0, 2 * float(M_PI)));
             caster->CastSpell(x, y, z, SPELL_OOKSPLOSIONS_TRIGGERED, true);
         }
 
@@ -1932,7 +1932,7 @@ public:
             _events.ScheduleEvent(EVENT_UPDATE_PHASES, 5000);
         }
 
-        void sQuestAccept(Player* player, Quest const* quest) override
+        void QuestAccept(Player* player, Quest const* quest) override
         {
             if (quest->GetQuestId() == QUEST_RISKING_IT_ALL)
                 DoCast(player, SPELL_FORCECAST_SUMMON_AYSA, true);

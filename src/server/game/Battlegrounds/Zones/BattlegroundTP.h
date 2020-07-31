@@ -212,8 +212,7 @@ protected:
 class BattlegroundTP : public Battleground
 {
     public:
-        /* Construction */
-        BattlegroundTP();
+        BattlegroundTP(BattlegroundTemplate const* battlegroundTemplate);
         ~BattlegroundTP();
 
 

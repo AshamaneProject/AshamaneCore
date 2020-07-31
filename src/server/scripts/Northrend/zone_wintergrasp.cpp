@@ -345,8 +345,8 @@ class go_wg_vehicle_teleporter : public GameObjectScript
 
             bool IsFriendly(Unit* passenger)
             {
-                return ((go->GetFaction() == WintergraspFaction[TEAM_HORDE] && passenger->getFaction() == HORDE) ||
-                        (go->GetFaction() == WintergraspFaction[TEAM_ALLIANCE] && passenger->getFaction() == ALLIANCE));
+                return ((me->GetFaction() == WintergraspFaction[TEAM_HORDE] && passenger->GetFaction() == HORDE) ||
+                        (me->GetFaction() == WintergraspFaction[TEAM_ALLIANCE] && passenger->GetFaction() == ALLIANCE));
             }
 
             Creature* GetValidVehicle(Creature* cVeh)
@@ -355,7 +355,7 @@ class go_wg_vehicle_teleporter : public GameObjectScript
                     if (Vehicle* vehicle = cVeh->GetVehicleKit())
                         if (Unit* passenger = vehicle->GetPassenger(0))
                             if (IsFriendly(passenger))
-                                if (Creature* teleportTrigger = passenger->SummonTrigger(go->GetPositionX()-60.0f, go->GetPositionY(), go->GetPositionZ()+1.0f, cVeh->GetOrientation(), 1000))
+                                if (Creature* teleportTrigger = passenger->SummonTrigger(me->GetPositionX()-60.0f, me->GetPositionY(), me->GetPositionZ()+1.0f, cVeh->GetOrientation(), 1000))
                                     return teleportTrigger;
 
                 return nullptr;
@@ -368,7 +368,7 @@ class go_wg_vehicle_teleporter : public GameObjectScript
                 if (_checkTimer >= 1000)
                 {
                     for (uint8 i = 0; i < MAX_WINTERGRASP_VEHICLES; i++)
-                        if (Creature* vehicleCreature = go->FindNearestCreature(vehiclesList[i], 3.0f, true))
+                        if (Creature* vehicleCreature = me->FindNearestCreature(vehiclesList[i], 3.0f, true))
                             if (Creature* teleportTrigger = GetValidVehicle(vehicleCreature))
                                 teleportTrigger->CastSpell(vehicleCreature, SPELL_VEHICLE_TELEPORT, true);
 

@@ -102,7 +102,7 @@ public:
         creatureTarget->SetHealth(0); // just for nice GM-mode view
 
         pet->SetCreatorGUID(player->GetGUID());
-        pet->setFaction(player->getFaction());
+        pet->SetFaction(player->GetFaction());
 
         if (!pet->InitStatsForLevel(creatureTarget->getLevel()))
         {
@@ -126,7 +126,7 @@ public:
         pet->SetLevel(creatureTarget->getLevel());
 
         player->SetMinion(pet, true);
-        pet->SavePetToDB(PET_SAVE_NEW_PET);
+        pet->SavePetToDB(PET_SAVE_AS_CURRENT);
         player->PetSpellInitialize();
 
         return true;
@@ -148,7 +148,7 @@ public:
 
         uint32 spellId = handler->extractSpellIdFromLink((char*)args);
 
-        if (!spellId || !sSpellMgr->GetSpellInfo(spellId))
+        if (!spellId || !sSpellMgr->GetSpellInfo(spellId, DIFFICULTY_NONE))
             return false;
 
         // Check if pet already has it
@@ -160,7 +160,7 @@ public:
         }
 
         // Check if spell is valid
-        SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(spellId);
+        SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(spellId, DIFFICULTY_NONE);
         if (!spellInfo || !SpellMgr::IsSpellValid(spellInfo))
         {
             handler->PSendSysMessage(LANG_COMMAND_SPELL_BROKEN, spellId);

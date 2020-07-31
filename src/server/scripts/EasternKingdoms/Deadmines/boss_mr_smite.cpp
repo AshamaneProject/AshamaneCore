@@ -132,7 +132,7 @@ public:
                     if (GameObject* go = GameObject::GetGameObject(*me, instance->GetGuidData(DATA_SMITE_CHEST)))
                     {
                         me->GetMotionMaster()->Clear();
-                        me->GetMotionMaster()->MovePoint(1, go->GetPositionX() - 3.0f, go->GetPositionY(), go->GetPositionZ());
+                        me->GetMotionMaster()->MovePoint(1, me->GetPositionX() - 3.0f, me->GetPositionY(), me->GetPositionZ());
                         }*/
             }
 

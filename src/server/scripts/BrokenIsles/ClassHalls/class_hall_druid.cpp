@@ -201,7 +201,7 @@ struct npc_archdruid_hamuul_runetotem_101061 : public ScriptedAI
         }
     }
 
-    void sQuestAccept(Player* player, Quest const* quest) override
+    void QuestAccept(Player* player, Quest const* quest) override
     {
         if (quest->GetQuestId() == QUEST_A_SUMMONS_FROM_MOONGLADE)
         {
@@ -283,7 +283,7 @@ struct npc_archdruid_hamuul_runetotem_101064 : public ScriptedAI
         }
     }
 
-    void sQuestAccept(Player* player, Quest const* quest) override
+    void QuestAccept(Player* player, Quest const* quest) override
     {
         if (quest->GetQuestId() == QUEST_CALL_OF_THE_WILDS)
         {
@@ -306,7 +306,7 @@ struct npc_archdruid_hamuul_runetotem_101064 : public ScriptedAI
         }
     }
 
-    void sQuestReward(Player* player, Quest const* quest, uint32 /*opt*/)  override
+    void QuestReward(Player* player, Quest const* quest, uint32 /*opt*/)  override
     {
         if (quest->GetQuestId() == QUEST_CALL_OF_THE_WILDS)
         {
@@ -374,7 +374,7 @@ struct npc_zentabra_103135 : public ScriptedAI
         _scheduler.Update(diff);
     }
 
-    void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId)
+    bool GossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId)
     {
         CloseGossipMenuFor(player);
 
@@ -400,6 +400,7 @@ struct npc_zentabra_103135 : public ScriptedAI
                 DoAction(POINT_HOME);
             });
         }
+        return false;
     }
 
     void MovementInform(uint32 /*type*/, uint32 id) override
@@ -496,7 +497,7 @@ struct npc_zentabra_103136 : public ScriptedAI
         _scheduler.Update(diff);
     }
 
-    void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId)
+    bool GossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId)
     {
         CloseGossipMenuFor(player);
         if (player->HasQuest(QUEST_CALL_OF_THE_WILDS))
@@ -504,6 +505,7 @@ struct npc_zentabra_103136 : public ScriptedAI
             player->KilledMonsterCredit(me->GetEntry());
             Talk(0, player);
         }
+        return false;
     }
 
     void Initialize() { }
@@ -576,7 +578,7 @@ struct npc_naralex_103133 : public ScriptedAI
         DoCastSelf(204637, true);
     }
 
-    void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId)
+    bool GossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId)
     {
         player->CastSpell(player, 204250, true);
         CloseGossipMenuFor(player);
@@ -638,6 +640,7 @@ struct npc_naralex_103133 : public ScriptedAI
                 Initialize();
             });
         }
+        return false;
     }
 
     void MoveInLineOfSight(Unit* who) override
@@ -723,14 +726,14 @@ Facing: 4.793286
             _scheduler.Update(diff);
         }
 
-        void sQuestAccept(Player* player, Quest const* quest) override
+        void QuestAccept(Player* player, Quest const* quest) override
         {
             if (quest->GetQuestId() == QUEST_TO_THE_DREAMGROVE)
                 if(Creature * keeper_remulos= me->FindNearestCreature(NPC_KEEPER_REMULOS_101065,25.0f,true))
                     keeper_remulos->AI()->Talk(0);
         }
 
-        void sQuestReward(Player* player, Quest const* quest, uint32 /*opt*/)  override
+        void QuestReward(Player* player, Quest const* quest, uint32 /*opt*/)  override
         {
             if (quest->GetQuestId() == QUEST_THE_DREAMWAY)
                 player->RemoveAurasDueToSpell(SPELL_ASSIGN_DRUID_SPELL_BAR);
@@ -1072,7 +1075,7 @@ private:
         npc_skycaller_faeb_122095(Creature* creature) : ScriptedAI(creature) { }
 
 
-        void sGossipHello(Player* player)
+        bool GossipHello(Player* player) override
         {
             QuestStatus status = player->GetQuestStatus(QUEST_YOU_CANT_TAKE_THE_SKY_FROM_ME);
 
@@ -1101,9 +1104,11 @@ private:
                     player->PrepareQuestMenu(me->GetGUID()); /* return true*/
                 SendGossipMenuFor(player, player->GetGossipTextId(me), me->GetGUID());
             }
+
+            return false;
         }
 
-        void sGossipSelect(Player* player, uint32 menuId, uint32 gossipListId)
+        bool GossipSelect(Player* player, uint32 menuId, uint32 gossipListId)
         {
             CloseGossipMenuFor(player);
             if (CanSwitch)
@@ -1123,6 +1128,7 @@ private:
                 }
             }
 
+            return false;
         }
         bool CanSwitch;
         uint32 Action;
@@ -1299,7 +1305,7 @@ private:
             _scheduler.Update(diff);
         }
 
-        void sQuestAccept(Player* player, Quest const* quest) override
+        void QuestAccept(Player* player, Quest const* quest) override
         {
             if (quest->GetQuestId() == QUEST_WEAPONS_OF_LEGEND|| quest->GetQuestId() == QUEST_ANOTHER_WEAPON_OF_OLD || quest->GetQuestId() == QUEST_MORE_WEAPONS_OF_OLD || quest->GetQuestId() == QUEST_WEAPONS_OF_THE_ANCIENTS)
             {
@@ -1312,7 +1318,7 @@ private:
                 Talk(1);
         }
 
-        void sQuestReward(Player* player, Quest const* quest, uint32 /*opt*/)  override
+        void QuestReward(Player* player, Quest const* quest, uint32 /*opt*/)  override
         {
             ///https://www.wowhead.com/achievement=11063/hidden-tracking-1-acquision-line-completed
             ///https://www.wowhead.com/achievement=11174/hidden-tracking-2-acquision-line-completed
@@ -1328,7 +1334,7 @@ private:
             }
         }
         /*
-        void sGossipHello(Player* player)
+        bool GossipHello(Player* player) override
         {
             QuestStatus status = player->GetQuestStatus(QUEST_TO_THE_DREAMGROVE);
             if (status == QUEST_STATUS_INCOMPLETE || status == QUEST_STATUS_COMPLETE || status == QUEST_STATUS_REWARDED)
@@ -1348,12 +1354,15 @@ private:
                         player->PrepareQuestMenu(me->GetGUID());
                     SendGossipMenuFor(player, player->GetGossipTextId(me), me->GetGUID());
                 }
+
+            return false;
         }
         */
-        void sGossipSelect(Player* player, uint32 menuId, uint32 gossipListId)
+        bool GossipSelect(Player* player, uint32 menuId, uint32 gossipListId)
         {
             CloseGossipMenuFor(player);
             player->CastSpell(player, SPELL_WEAPONS_OF_LEGEND_PLAYER_CHOICE, true);
+            return false;
         }
 
     private:
@@ -1436,13 +1445,13 @@ private:
             _scheduler.Update(diff);
         }
 
-        void sQuestAccept(Player* player, Quest const* quest) override
+        void QuestAccept(Player* player, Quest const* quest) override
         {
             //if (quest->GetQuestId() == QUEST_WITNESS_TO_THE_WOUND)
            // {   }
         }
 
-        void sQuestReward(Player* player, Quest const* quest, uint32 /*opt*/)  override
+        void QuestReward(Player* player, Quest const* quest, uint32 /*opt*/)  override
         {
             //if (quest->GetQuestId() == QUEST_WITNESS_TO_THE_WOUND)
             //{ }
@@ -1480,7 +1489,7 @@ private:
             }
         }
 
-        void sQuestAccept(Player* player, Quest const* quest) override
+        void QuestAccept(Player* player, Quest const* quest) override
         {
             if (quest->GetQuestId() == QUEST_TO_THE_HILLS)
                 Talk(1);
@@ -1531,7 +1540,7 @@ private:
             }
         }
 
-        void sQuestReward(Player* player, Quest const* quest, uint32 /*opt*/)  override
+        void QuestReward(Player* player, Quest const* quest, uint32 /*opt*/)  override
         {
             if (quest->GetQuestId() == QUEST_FALLEN_OFFERINGS)
             {
@@ -1558,7 +1567,7 @@ private:
             }
         }
 
-        void sQuestAccept(Player* player, Quest const* quest) override
+        void QuestAccept(Player* player, Quest const* quest) override
         {
             if (quest->GetQuestId() == QUEST_WHEN_DREAMS_BECOME_NIGHTMARES)
             {
@@ -1720,7 +1729,7 @@ private:
             _scheduler.Update(diff);
         }
 
-        void sQuestAccept(Player* player, Quest const* quest) override
+        void QuestAccept(Player* player, Quest const* quest) override
         {
             if (player->HasQuest(QUEST_THE_FIRST_TRIAL_OF_URSOL))
             {
@@ -1737,7 +1746,7 @@ private:
 
         }
 
-        void sQuestReward(Player* player, Quest const* quest, uint32 /*opt*/)  override
+        void QuestReward(Player* player, Quest const* quest, uint32 /*opt*/)  override
         {
             if (quest->GetQuestId() == QUEST_THE_SECOND_TRIAL_OF_URSOL)
             {
@@ -1762,7 +1771,7 @@ private:
             m_playerGUID = player->GetGUID();
         }
 
-        void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId)
+        bool GossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId)
         {
             CloseGossipMenuFor(player);
             if (player->HasQuest(QUEST_THE_THIRD_TRIAL_OF_URSOL))
@@ -1771,6 +1780,7 @@ private:
                 me->Say(107156, player);
                 DoAction(ACTION_TRIAL_OF_URSOL_3);
             }
+            return false;
         }
     private:
         uint8 restSummonCount;
@@ -1976,7 +1986,7 @@ private:
             }
         }
 
-        void sQuestAccept(Player* player, Quest const* quest) override
+        void QuestAccept(Player* player, Quest const* quest) override
         {
             if (quest->GetQuestId() == QUEST_NECESSARY_PREPARATIONS)
             {
@@ -1998,7 +2008,7 @@ private:
     {
         npc_leafbeard_the_storied_97989(Creature* creature) : ScriptedAI(creature) { Intr = false; }
 
-        void sGossipHello(Player* player)
+        bool GossipHello(Player* player) override
         {
             if (player->GetQuestStatus(QUEST_NECESSARY_PREPARATIONS) == QUEST_STATUS_INCOMPLETE)
             {
@@ -2014,9 +2024,11 @@ private:
                     SendGossipMenuFor(player, 28594, me->GetGUID());
                 }
             }
+
+            return false;
         }
 
-        void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 /*gossipListId*/)
+        bool GossipSelect(Player* player, uint32 /*menuId*/, uint32 /*gossipListId*/)
         {
             CloseGossipMenuFor(player);
             if (player->HasQuest(QUEST_NECESSARY_PREPARATIONS) && !Intr)
@@ -2030,6 +2042,7 @@ private:
                 player->KilledMonsterCredit(104342);
                 Intr = false;
             }
+            return false;
         }
         bool Intr;
     };
@@ -2038,7 +2051,7 @@ private:
     {
         npc_naralex_104349(Creature* creature) : ScriptedAI(creature) { Initialize(); }
 
-        void sQuestAccept(Player* player, Quest const* quest) override
+        void QuestAccept(Player* player, Quest const* quest) override
         {
             if (quest->GetQuestId() == QUEST_IN_DEEP_SLUMBER)
             {
@@ -2300,7 +2313,7 @@ private:
     {
         npc_lyessa_bloomwatcher_104577(Creature* creature) : ScriptedAI(creature) { Initialize(); }
 
-        void sQuestAccept(Player* player, Quest const* quest) override
+        void QuestAccept(Player* player, Quest const* quest) override
         {
             if (quest->GetQuestId() == QUEST_CLEANSING_THE_MOTHER_TREE)
             {
@@ -2399,7 +2412,7 @@ private:
             }
         }
 
-        void sQuestAccept(Player* player, Quest const* quest) override
+        void QuestAccept(Player* player, Quest const* quest) override
         {
             if (quest->GetQuestId() == QUEST_THE_SHRINE_IN_PERIL)
             {
@@ -2582,7 +2595,7 @@ private:
     {
         npc_naralex_103778(Creature* creature) : ScriptedAI(creature) {}
 
-        void sQuestAccept(Player* player, Quest const* quest) override
+        void QuestAccept(Player* player, Quest const* quest) override
         {
             if (quest->GetQuestId() == QUEST_THE_SCYTHE_OF_ELUNE)
             {
@@ -2654,7 +2667,7 @@ private:
             }
         }
 
-        void sQuestAccept(Player* player, Quest const* quest) override
+        void QuestAccept(Player* player, Quest const* quest) override
         {
             m_playerGUID = player->GetGUID();
             if (quest->GetQuestId() == QUEST_ITS_RIGHTFUL_PLACE)
@@ -2699,7 +2712,7 @@ private:
     {
         npc_revil_kost_100323(Creature* creature) : ScriptedAI(creature) { Initialize(); }
 
-        void sQuestAccept(Player* player, Quest const* quest) override
+        void QuestAccept(Player* player, Quest const* quest) override
         {
             if (quest->GetQuestId() == QUEST_FOLLOWING_THE_CURSE)
             {
@@ -2789,7 +2802,7 @@ private:
     {
         npc_revil_kost_100729(Creature* creature) : ScriptedAI(creature) { Initialize(); }
 
-        void sQuestAccept(Player* player, Quest const* quest) override
+        void QuestAccept(Player* player, Quest const* quest) override
         {
             if (quest->GetQuestId() == QUEST_DISTURBING_THE_PAST)
             {
@@ -2809,7 +2822,7 @@ private:
             }
         }
 
-        void sQuestReward(Player* player, Quest const* quest, uint32 /*opt*/)  override
+        void QuestReward(Player* player, Quest const* quest, uint32 /*opt*/)  override
         {
             if (quest->GetQuestId() == QUEST_DISTURBING_THE_PAST)
             {
@@ -2858,7 +2871,7 @@ private:
     {
         npc_revil_kost_100812(Creature* creature) : ScriptedAI(creature) { Initialize(); }
 
-        void sQuestAccept(Player* player, Quest const* quest) override
+        void QuestAccept(Player* player, Quest const* quest) override
         {
             if (quest->GetQuestId() == QUEST_THE_DARK_RIDERS)
             {

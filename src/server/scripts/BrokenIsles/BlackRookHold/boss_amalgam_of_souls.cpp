@@ -154,7 +154,7 @@ struct npc_aos_soul_echo : public ScriptedAI
 
     void IsSummonedBy(Unit* summoner) override
     {
-        me->setFaction(16);
+        me->SetFaction(16);
         me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_IMMUNE_TO_PC));
         summoner->CastSpell(me, SPELL_SOUL_ECHOES_CLONE_CASTER, true);
 

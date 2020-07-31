@@ -377,7 +377,7 @@ struct boss_aggramar : public BossAI
         {
             case NPC_EMBER_OF_TAESHALACH:
             {
-                summon->setFaction(me->getFaction());
+                summon->SetFaction(me->GetFaction());
                 summon->GetMotionMaster()->MovePoint(1, Position(-12634.2f, -2255.2478f, 2514.2617f, 4.674f));
                 break;
             }
@@ -421,11 +421,12 @@ struct npc_magni_bronzebeard_128169 : public ScriptedAI
 {
     npc_magni_bronzebeard_128169(Creature* creature) : ScriptedAI(creature) { }
 
-    void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId)
+    bool GossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId)
     {
         CloseGossipMenuFor(player);
         player->CastSpell(player, SPELL_TITANS_ASSEMBLE_MOVIE, true);
         player->TeleportTo(4000, 1712, 2826.39f, -4567.94f, 291.95f, 0.02513274f);
+        return false;
     }
 };
 

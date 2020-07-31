@@ -77,7 +77,6 @@ struct CreatureTemplate;
 struct CreatureData;
 struct ItemTemplate;
 struct MapEntry;
-struct OutdoorPvPData;
 struct QuestObjective;
 struct SceneTemplate;
 
@@ -381,9 +380,6 @@ class TC_GAME_API ItemScript : public ScriptObject
         ItemScript(const char* name);
 
     public:
-
-        // Called when a dummy spell effect is triggered on the item.
-        virtual bool OnDummyEffect(Unit* /*caster*/, uint32 /*spellId*/, SpellEffIndex /*effIndex*/, Item* /*target*/) { return false; }
 
         // Called when a player accepts a quest from the item.
         virtual bool OnQuestAccept(Player* /*player*/, Item* /*item*/, Quest const* /*quest*/) { return false; }
@@ -1120,7 +1116,6 @@ class TC_GAME_API ScriptMgr
 
     public: /* ItemScript */
 
-        bool OnDummyEffect(Unit* caster, uint32 spellId, SpellEffIndex effIndex, Item* target);
         bool OnQuestAccept(Player* player, Item* item, Quest const* quest);
         bool OnItemUse(Player* player, Item* item, SpellCastTargets const& targets, ObjectGuid castId);
         bool OnItemExpire(Player* player, ItemTemplate const* proto);
@@ -1167,7 +1162,7 @@ class TC_GAME_API ScriptMgr
 
     public: /* OutdoorPvPScript */
 
-        OutdoorPvP* CreateOutdoorPvP(OutdoorPvPData const* data);
+        OutdoorPvP* CreateOutdoorPvP(uint32 scriptId);
 
     public: /* CommandScript */
 

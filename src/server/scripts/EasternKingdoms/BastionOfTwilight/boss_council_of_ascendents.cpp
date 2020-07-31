@@ -369,8 +369,8 @@ public:
                             ascendant[1]->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                             ascendant[2]->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                             ascendant[3]->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
-                            ascendant[2]->SetPosition(wayPos[0]);
-                            ascendant[3]->SetPosition(wayPos[1]);
+                            ascendant[2]->UpdatePosition(wayPos[0]);
+                            ascendant[3]->UpdatePosition(wayPos[1]);
                             ascendant[3]->Yell(SAY_AGGRO4, LANG_UNIVERSAL);
                             DoPlaySoundToSet(ascendant[3], SOU_AGGRO4);
 
@@ -1287,7 +1287,7 @@ public:
 
         void JustSummoned(Creature* summon) override
         {
-            summon->setFaction(me->getFaction());
+            summon->SetFaction(me->GetFaction());
             summon->SetInCombatWithZone();
         }
 
@@ -1413,7 +1413,7 @@ public: npc_council_frozen_orb() : CreatureScript("npc_council_frozen_orb") { }
             }
             else
                 me->DespawnOrUnsummon();
-            me->setFaction(monstrosity->getFaction());
+            me->SetFaction(monstrosity->GetFaction());
             speed = 0.8f;
             me->SetSpeed(MOVE_WALK,   speed);
             me->SetSpeed(MOVE_RUN,    speed);
@@ -1622,7 +1622,7 @@ public: npc_council_lava_seed() : CreatureScript("npc_council_lava_seed") {}
             if (!monstrosity)
                 me->DisappearAndDie();
             death = 7000;
-            me->setFaction(monstrosity->getFaction());
+            me->SetFaction(monstrosity->GetFaction());
             timer = 5000;
             me->AddAura(SPELL_LAVA_SEED_AURA, me);
             me->SetReactState(REACT_PASSIVE);
@@ -1678,7 +1678,7 @@ public: npc_council_inferno_rush() : CreatureScript("npc_council_inferno_rush") 
                 igna = instance->GetCreature(DATA_IGNACIOUS);
             else
                 me->DespawnOrUnsummon();
-            me->setFaction(igna->getFaction());
+            me->SetFaction(igna->GetFaction());
             me->SetReactState(REACT_PASSIVE);
             me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
             me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
@@ -1741,7 +1741,7 @@ public: npc_council_flamestrike() : CreatureScript("npc_council_flamestrike") {}
             return;
         }
 
-        me->setFaction(monstrosity->getFaction());
+        me->SetFaction(monstrosity->GetFaction());
         timer = 5000;
         me->SetReactState(REACT_PASSIVE);
         me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
@@ -1785,7 +1785,7 @@ public: npc_council_liquid_ice() : CreatureScript("npc_council_liquid_ice") {}
             else
                 me->DespawnOrUnsummon();
 
-            me->setFaction(monstrosity->getFaction());
+            me->SetFaction(monstrosity->GetFaction());
             me->AddAura(SPELL_LIQUID_ICE, me);
             me->SetReactState(REACT_PASSIVE);
             me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);

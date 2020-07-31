@@ -724,7 +724,7 @@ class mob_ellia_ravenmane : public CreatureScript
                 if (CHECK_STATUS(30725) || CHECK_STATUS(30739) || CHECK_STATUS(30727) || CHECK_STATUS(30732))
                 {
                     creature->AI()->SetGUID(player ? player->GetGUID() : ObjectGuid::Empty);
-                    creature->setFaction(14);
+                    creature->SetFaction(14);
 
                     if (creature->GetAI())
                     {
@@ -860,7 +860,7 @@ class mob_ellia_ravenmane : public CreatureScript
 
                 else if (action == ACTION_REINITIALIZE)
                 {
-                    me->setFaction(35);
+                    me->SetFaction(35);
                     me->CombatStop();
                     me->AddNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                 }
@@ -1008,7 +1008,7 @@ class mob_fat_long_fat : public CreatureScript
                 if (CHECK_STATUS(30728) || CHECK_STATUS(30737))
                 {
                     creature->AI()->SetGUID(player ? player->GetGUID() : ObjectGuid::Empty);
-                    creature->setFaction(14);
+                    creature->SetFaction(14);
 
                     if (creature->GetAI())
                     {
@@ -1108,7 +1108,7 @@ class mob_fat_long_fat : public CreatureScript
 
                 else if (action == ACTION_REINITIALIZE)
                 {
-                    me->setFaction(35);
+                    me->SetFaction(35);
                     me->CombatStop();
                     me->AddNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                 }
@@ -1221,7 +1221,7 @@ class mob_huck_wheelbarrow : public CreatureScript
                 if (CHECK_STATUS(30734))
                 {
                     creature->AI()->SetGUID(player ? player->GetGUID() : ObjectGuid::Empty);
-                    creature->setFaction(14);
+                    creature->SetFaction(14);
 
                     if (creature->GetAI())
                     {
@@ -1290,7 +1290,7 @@ class mob_huck_wheelbarrow : public CreatureScript
 
                 else if (action == ACTION_REINITIALIZE)
                 {
-                    me->setFaction(35);
+                    me->SetFaction(35);
                     me->CombatStop();
                     me->AddNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                 }
@@ -1380,7 +1380,7 @@ class mob_dextrous_izissha : public CreatureScript
                 if (CHECK_STATUS(30730))
                 {
                     creature->AI()->SetGUID(player ? player->GetGUID() : ObjectGuid::Empty);
-                    creature->setFaction(14);
+                    creature->SetFaction(14);
 
                     if (creature->GetAI())
                     {
@@ -1449,7 +1449,7 @@ class mob_dextrous_izissha : public CreatureScript
 
                 else if (action == ACTION_REINITIALIZE)
                 {
-                    me->setFaction(35);
+                    me->SetFaction(35);
                     me->CombatStop();
                     me->AddNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                 }
@@ -1539,7 +1539,7 @@ class mob_julia_bates : public CreatureScript
                 if (CHECK_STATUS(30729))
                 {
                     creature->AI()->SetGUID(player ? player->GetGUID() : ObjectGuid::Empty);
-                    creature->setFaction(14);
+                    creature->SetFaction(14);
 
                     if (creature->GetAI())
                     {
@@ -1607,7 +1607,7 @@ class mob_julia_bates : public CreatureScript
 
                 else if (action == ACTION_REINITIALIZE)
                 {
-                    me->setFaction(35);
+                    me->SetFaction(35);
                     me->CombatStop();
                     me->AddNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                 }
@@ -1691,7 +1691,7 @@ class mob_kuo_na : public CreatureScript
                 if (CHECK_STATUS(30731))
                 {
                     creature->AI()->SetGUID(player ? player->GetGUID() : ObjectGuid::Empty);
-                    creature->setFaction(14);
+                    creature->SetFaction(14);
 
                     if (creature->GetAI())
                     {
@@ -1760,7 +1760,7 @@ class mob_kuo_na : public CreatureScript
 
                 else if (action == ACTION_REINITIALIZE)
                 {
-                    me->setFaction(35);
+                    me->SetFaction(35);
                     me->CombatStop();
                     me->AddNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                 }
@@ -1850,7 +1850,7 @@ class mob_mindel_sunspeaker : public CreatureScript
                 if (CHECK_STATUS(30735))
                 {
                     creature->AI()->SetGUID(player ? player->GetGUID() : ObjectGuid::Empty);
-                    creature->setFaction(14);
+                    creature->SetFaction(14);
 
                     if (creature->GetAI())
                     {
@@ -1918,7 +1918,7 @@ class mob_mindel_sunspeaker : public CreatureScript
 
                 else if (action == ACTION_REINITIALIZE)
                 {
-                    me->setFaction(35);
+                    me->SetFaction(35);
                     me->CombatStop();
                     me->AddNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                 }
@@ -2003,7 +2003,7 @@ class mob_minh_do_tan : public CreatureScript
                 if (CHECK_STATUS(30726))
                 {
                     creature->AI()->SetGUID(player ? player->GetGUID() : ObjectGuid::Empty);
-                    creature->setFaction(14);
+                    creature->SetFaction(14);
 
                     if (creature->GetAI())
                     {
@@ -2071,7 +2071,7 @@ class mob_minh_do_tan : public CreatureScript
 
                 else if (action == ACTION_REINITIALIZE)
                 {
-                    me->setFaction(35);
+                    me->SetFaction(35);
                     me->CombatStop();
                     me->AddNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                 }
@@ -2156,7 +2156,7 @@ class mob_thelonius : public CreatureScript
                 if (CHECK_STATUS(30738))
                 {
                     creature->AI()->SetGUID(player ? player->GetGUID() : ObjectGuid::Empty);
-                    creature->setFaction(14);
+                    creature->SetFaction(14);
 
                     if (creature->GetAI())
                     {
@@ -2226,7 +2226,7 @@ class mob_thelonius : public CreatureScript
 
                 else if (action == ACTION_REINITIALIZE)
                 {
-                    me->setFaction(35);
+                    me->SetFaction(35);
                     me->CombatStop();
                     me->AddNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                 }
@@ -2321,7 +2321,7 @@ class mob_tukka_tuk : public CreatureScript
                 if (CHECK_STATUS(30733))
                 {
                     creature->AI()->SetGUID(player ? player->GetGUID() : ObjectGuid::Empty);
-                    creature->setFaction(14);
+                    creature->SetFaction(14);
 
                     if (creature->GetAI())
                     {
@@ -2390,7 +2390,7 @@ class mob_tukka_tuk : public CreatureScript
 
                 else if (action == ACTION_REINITIALIZE)
                 {
-                    me->setFaction(35);
+                    me->SetFaction(35);
                     me->CombatStop();
                     me->AddNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                 }
@@ -2480,7 +2480,7 @@ class mob_yan_quillpaw : public CreatureScript
                 if (CHECK_STATUS(30736))
                 {
                     creature->AI()->SetGUID(player ? player->GetGUID() : ObjectGuid::Empty);
-                    creature->setFaction(14);
+                    creature->SetFaction(14);
 
                     if (creature->GetAI())
                     {
@@ -2549,7 +2549,7 @@ class mob_yan_quillpaw : public CreatureScript
 
                 else if (action == ACTION_REINITIALIZE)
                 {
-                    me->setFaction(35);
+                    me->SetFaction(35);
                     me->CombatStop();
                     me->AddNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                 }

@@ -207,7 +207,7 @@ class spell_oakheart_strangling_roots_summon : public SpellScript
 
     void HandleSummon(Creature* creature)
     {
-        creature->setFaction(GetCaster()->getFaction());
+        creature->SetFaction(GetCaster()->GetFaction());
         //creature->CastSpell(creature, SPELL_STRANGLING_ROOTS_AT, false);
     }
 

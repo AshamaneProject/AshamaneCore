@@ -2833,17 +2833,13 @@ class spell_alysrazor_turn_monstrosity : public SpellScriptLoader
 
             bool Validate(SpellInfo const* /*spellInfo*/) override
             {
-                if (!sSpellMgr->GetSpellInfo(SPELL_GENERIC_DUMMY_CAST))
-                    return false;
-                if (!sSpellMgr->GetSpellInfo(SPELL_KNOCKBACK_RIGHT))
-                    return false;
-                if (!sSpellMgr->GetSpellInfo(SPELL_KNOCKBACK_LEFT))
-                    return false;
-                if (!sSpellMgr->GetSpellInfo(SPELL_KNOCKBACK_FORWARD))
-                    return false;
-                if (!sSpellMgr->GetSpellInfo(SPELL_KNOCKBACK_BACK))
-                    return false;
-                return true;
+                return ValidateSpellInfo({
+                    SPELL_GENERIC_DUMMY_CAST,
+                    SPELL_KNOCKBACK_RIGHT,
+                    SPELL_KNOCKBACK_LEFT,
+                    SPELL_KNOCKBACK_FORWARD,
+                    SPELL_KNOCKBACK_BACK,
+                });
             }
 
             void KnockBarrage(SpellEffIndex effIndex)

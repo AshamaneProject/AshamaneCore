@@ -574,7 +574,7 @@ class npc_bethtilac_cinderweb_spinner : public CreatureScript
                 if (bTaunted)
                     return;
 
-                if (spellInfo->HasEffect(SPELL_EFFECT_ATTACK_ME) || spellInfo->HasAura(DIFFICULTY_NONE, SPELL_AURA_MOD_TAUNT))
+                if (spellInfo->HasEffect(SPELL_EFFECT_ATTACK_ME) || spellInfo->HasAura(SPELL_AURA_MOD_TAUNT))
                 {
                     bTaunted = true;
                     me->SetReactState(REACT_AGGRESSIVE);

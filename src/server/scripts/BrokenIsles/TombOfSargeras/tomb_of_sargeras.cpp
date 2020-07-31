@@ -76,7 +76,7 @@ public:
             {
                 creature->SetReactState(REACT_PASSIVE);
                 creature->AttackStop();
-                creature->setFaction(35);
+                creature->SetFaction(35);
             }
 
             std::list<Unit*> unitList;

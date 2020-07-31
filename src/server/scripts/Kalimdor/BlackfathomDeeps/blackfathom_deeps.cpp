@@ -206,9 +206,10 @@ public:
             }
         }
 
-        void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 /*gossipListId*/) override
+        bool GossipSelect(Player* player, uint32 /*menuId*/, uint32 /*gossipListId*/) override
         {
             DoCast(player, SPELL_TELEPORT_DARNASSUS);
+            return false;
         }
     };
 

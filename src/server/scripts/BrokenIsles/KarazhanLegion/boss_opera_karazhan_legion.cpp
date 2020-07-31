@@ -1716,7 +1716,7 @@ class spell_opera_wash_away : public SpellScriptLoader
                 void HandleOnCast()
                 {
                     SpellCastTargets targets;
-                    SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(SPELL_WASH_AWAY_AREA);
+                    SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(SPELL_WASH_AWAY_AREA, GetCaster()->GetMap()->GetDifficultyID());
 
                     for (auto & it : WavesPositions)
                     {

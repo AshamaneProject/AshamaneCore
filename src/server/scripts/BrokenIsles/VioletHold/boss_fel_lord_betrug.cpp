@@ -482,7 +482,7 @@ class spell_betrug_seed_of_destruction : public SpellScriptLoader
                     Unit* caster = GetCaster();
                     Unit* owner = GetUnitOwner();
                     Position pos = owner->GetPosition();
-                    SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(SPELL_WAKE_OF_DESTRUCTION);
+                    SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(SPELL_WAKE_OF_DESTRUCTION, caster->GetMap()->GetDifficultyID());
 
                     for (uint8 i = 0; i < 4; ++i)
                     {

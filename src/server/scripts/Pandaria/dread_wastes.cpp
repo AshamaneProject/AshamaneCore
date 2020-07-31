@@ -1904,7 +1904,7 @@ class mob_klaxxi_traitor : public CreatureScript
             {
                 if (action == ACTION_START_COMBAT)
                 {
-                    me->setFaction(14);
+                    me->SetFaction(14);
 
                     if (Player* player = ObjectAccessor::GetPlayer(*me, playerGUID))
                         AttackStart(player);

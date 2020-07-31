@@ -46,7 +46,7 @@ public:
 				        me->RemoveAllAuras();
 				        me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
 				        me->AddUnitFlag(UNIT_FLAG_NOT_ATTACKABLE_1);
-				        me->setFaction(35);
+				        me->SetFaction(35);
 				        me->CombatStop(true);
 				        me->DeleteThreatList();
 				        me->AddNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);

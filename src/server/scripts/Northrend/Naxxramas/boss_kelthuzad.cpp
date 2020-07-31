@@ -881,20 +881,14 @@ public:
     {
         PrepareAuraScript(spell_kelthuzad_chains_AuraScript);
 
-        void HandleApply(AuraEffect const* /*eff*/, AuraEffectHandleModes /*mode*/)
+        void HandleApply(AuraEffect const* aurEff, AuraEffectHandleModes mode)
         {
-            Unit* target = GetTarget();
-            float scale = target->GetObjectScale();
-            ApplyPercentModFloatVar(scale, 200.0f, true);
-            target->SetObjectScale(scale);
+            aurEff->HandleAuraModScale(GetTargetApplication(), mode, true);
         }
 
-        void HandleRemove(AuraEffect const* /*eff*/, AuraEffectHandleModes /*mode*/)
+        void HandleRemove(AuraEffect const* aurEff, AuraEffectHandleModes mode)
         {
-            Unit* target = GetTarget();
-            float scale = target->GetObjectScale();
-            ApplyPercentModFloatVar(scale, 200.0f, false);
-            target->SetObjectScale(scale);
+            aurEff->HandleAuraModScale(GetTargetApplication(), mode, false);
         }
 
         void Register() override

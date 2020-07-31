@@ -382,13 +382,13 @@ class instance_violet_hold_assault : public InstanceMapScript
                     case BOSS_BLOOD_PRINCESS:
                     case BOSS_FESTERFACE:
                     case BOSS_MINDFLAYER_KAARHJ:
-                        creature->setFaction(35);
+                        creature->SetFaction(35);
                         _guids.push_back(NpcInfo(creature->GetEntry(), creature->GetGUID()));
                         break;
 
                     case BOSS_BELTRUG:
                     case BOSS_SAELORN:
-                        creature->setFaction(35);
+                        creature->SetFaction(35);
                         creature->SetVisible(false);
                         _guids.push_back(NpcInfo(creature->GetEntry(), creature->GetGUID()));
                         break;
@@ -444,7 +444,7 @@ class instance_violet_hold_assault : public InstanceMapScript
                                 {
                                     UnlockDoor(boss);
                                     boss->RemoveAllAuras();
-                                    boss->setFaction(16);
+                                    boss->SetFaction(16);
                                     boss->GetMotionMaster()->MovePoint(0, boss->GetNearPosition(10, 0));
                                 }
 
@@ -464,7 +464,7 @@ class instance_violet_hold_assault : public InstanceMapScript
                                 {
                                     UnlockDoor(boss);
                                     boss->RemoveAllAuras();
-                                    boss->setFaction(16);
+                                    boss->SetFaction(16);
                                     boss->GetMotionMaster()->MovePoint(0, boss->GetNearPosition(10, 0));
                                 }
 
@@ -486,7 +486,7 @@ class instance_violet_hold_assault : public InstanceMapScript
                                     boss->SetVisible(true);
                                     boss->NearTeleportTo(CenterRoom, true);
                                     boss->RemoveAllAuras();
-                                    boss->setFaction(16);
+                                    boss->SetFaction(16);
                                 }
                             }
 

@@ -22,6 +22,7 @@
 #include "EventMap.h"
 #include "ObjectGuid.h"
 #include "ThreatManager.h"
+#include <unordered_map>
 
 #define CAST_AI(a, b)   (dynamic_cast<a*>(b))
 #define ENSURE_AI(a,b)  (EnsureAI<a>(b))
@@ -40,6 +41,7 @@ class SpellInfo;
 class Unit;
 struct AISpellInfoType;
 enum DamageEffectType : uint8;
+enum Difficulty : uint8;
 enum SpellEffIndex : uint8;
 
 //Selection method used by SelectTarget
@@ -248,7 +250,6 @@ class TC_GAME_API UnitAI
 
         // Called at any Damage from any attacker (before damage apply)
         // Note: it for recalculation damage or special reaction at damage
-        // for attack reaction use AttackedBy called for not DOT damage in Unit::DealDamage also
         virtual void DamageTaken(Unit* /*attacker*/, uint32& /*damage*/) { }
 
         // Called when the creature receives heal
@@ -270,20 +271,34 @@ class TC_GAME_API UnitAI
         void DoCastAOE(uint32 spellId, bool triggered = false);
         void DoCastRandom(uint32 spellId, float dist, bool triggered = false, int32 aura = 0, uint32 position = 0);
 
+        virtual bool ShouldSparWith(Unit const* /*target*/) const { return false; }
+
         void DoMeleeAttackIfReady();
         bool DoSpellAttackIfReady(uint32 spellId);
 
-        static AISpellInfoType* AISpellInfo;
+        static std::unordered_map<std::pair<uint32, Difficulty>, AISpellInfoType> AISpellInfo;
         static void FillAISpellInfo();
 
-        virtual void sGossipHello(Player* /*player*/) { }
-        virtual void sGossipSelect(Player* /*player*/, uint32 /*menuId*/, uint32 /*gossipListId*/) { }
-        virtual void sGossipSelectCode(Player* /*player*/, uint32 /*menuId*/, uint32 /*gossipListId*/, char const* /*code*/) { }
-        virtual void sQuestAccept(Player* /*player*/, Quest const* /*quest*/) { }
-        virtual void sQuestSelect(Player* /*player*/, Quest const* /*quest*/) { }
-        virtual void sQuestReward(Player* /*player*/, Quest const* /*quest*/, uint32 /*opt*/) { }
-        virtual bool sOnDummyEffect(Unit* /*caster*/, uint32 /*spellId*/, SpellEffIndex /*effIndex*/) { return false; }
-        virtual void sOnGameEvent(bool /*start*/, uint16 /*eventId*/) { }
+        // Called when a player opens a gossip dialog with the creature.
+        virtual bool GossipHello(Player* /*player*/) { return false; }
+
+        // Called when a player selects a gossip item in the creature's gossip menu.
+        virtual bool GossipSelect(Player* /*player*/, uint32 /*menuId*/, uint32 /*gossipListId*/) { return false; }
+
+        // Called when a player selects a gossip with a code in the creature's gossip menu.
+        virtual bool GossipSelectCode(Player* /*player*/, uint32 /*menuId*/, uint32 /*gossipListId*/, const char* /*code*/) { return false; }
+
+        // Called when a player accepts a quest from the creature.
+        virtual void QuestAccept(Player* /*player*/, Quest const* /*quest*/) { }
+
+        // Called when a player completes a quest and is rewarded, opt is the selected item's index or 0
+        virtual void QuestReward(Player* /*player*/, Quest const* /*quest*/, uint32 /*opt*/) { }
+
+        // Called when a game event starts or ends
+        virtual void OnGameEvent(bool /*start*/, uint16 /*eventId*/) { }
+
+        // Called when the dialog status between a player and the creature is requested.
+        virtual uint32 GetDialogStatus(Player* player);
 
         /// Add timed delayed operation
         /// @p_Timeout  : Delay time

@@ -181,7 +181,7 @@ public:
                     {
                         DoZoneInCombat(creature);
                         float x,y,z;
-                        creature->GetClosePoint(x, y, z, creature->GetObjectSize(), 10);
+                        creature->GetClosePoint(x, y, z, creature->GetCombatReach(), 10);
                         creature->GetMotionMaster()->MoveJump(x, y, 807.638f, 0.0f, 15, 15);
                     }
 

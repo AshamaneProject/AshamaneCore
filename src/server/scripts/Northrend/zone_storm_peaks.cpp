@@ -88,14 +88,16 @@ public:
             DoMeleeAttackIfReady();
         }
 
-       void sGossipSelect(Player* player, uint32 menuId, uint32 gossipListId) override
+       bool GossipSelect(Player* player, uint32 menuId, uint32 gossipListId) override
         {
             if (menuId == GOSSIP_ID && gossipListId == GOSSIP_OPTION_ID)
             {
                 CloseGossipMenuFor(player);
-                me->setFaction(113);
+                me->SetFaction(113);
                 Start(true, true, player->GetGUID());
             }
+
+            return false;
         }
     };
 
@@ -479,11 +481,12 @@ public:
             objectCounter = 0;
         }
 
-        void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 /*gossipListId*/) override
+        bool GossipSelect(Player* player, uint32 /*menuId*/, uint32 /*gossipListId*/) override
         {
             CloseGossipMenuFor(player);
             playerGUID = player->GetGUID();
             events.ScheduleEvent(EVENT_SCRIPT_1, 100);
+            return false;
         }
 
         void UpdateAI(uint32 diff) override
@@ -1322,9 +1325,7 @@ public:
 
         bool Validate(SpellInfo const* spellInfo) override
         {
-            if (!sSpellMgr->GetSpellInfo(spellInfo->GetEffect(EFFECT_0)->CalcValue()))
-                return false;
-            return true;
+            return ValidateSpellInfo({ uint32(spellInfo->GetEffect(EFFECT_0)->CalcValue()) });
         }
 
         void HandleScript(SpellEffIndex /*effIndex*/)
@@ -1428,9 +1429,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_FATAL_STRIKE_DAMAGE))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_FATAL_STRIKE_DAMAGE });
         }
 
         void HandleDummy(SpellEffIndex /*effIndex*/)
@@ -1507,9 +1506,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_FIGHT_WYRM))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_FIGHT_WYRM });
         }
 
         void HandleDummy(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)

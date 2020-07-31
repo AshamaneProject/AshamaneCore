@@ -1289,7 +1289,7 @@ class spell_monk_touch_of_death : public AuraScript
     {
         canBeRecalculated = true;
         if (Unit* caster = GetCaster())
-            if (SpellEffectInfo const* effInfo = GetAura()->GetSpellEffectInfo(EFFECT_1))
+            if (SpellEffectInfo const* effInfo = GetAura()->GetSpellInfo()->GetEffect(EFFECT_1))
             {
                 amount = int32(caster->CountPctFromMaxHealth(effInfo->CalcValue()));
                 const_cast<AuraEffect*>(aurEff)->SetDamage(amount);
@@ -2031,7 +2031,7 @@ public:
         void CalculateAmount(const AuraEffect* aurEff, int32& amount, bool & /*canBeRecalculated*/)
         {
             if (Unit* caster = GetCaster())
-                if (SpellEffectInfo const* effInfo = GetAura()->GetSpellEffectInfo(EFFECT_2))
+                if (SpellEffectInfo const* effInfo = GetAura()->GetSpellInfo()->GetEffect(EFFECT_2))
                 {
                     amount = int32(caster->CountPctFromMaxHealth(effInfo->CalcValue()));
                     const_cast<AuraEffect*>(aurEff)->SetDamage(amount);
@@ -2047,7 +2047,7 @@ public:
             for (AuraApplication* aurApp : caster->GetTargetAuraApplications(SPELL_MONK_TOUCH_OF_KARMA))
                 if (aurApp->GetTarget() != caster)
                 {
-                    int32 periodicDamage = int32(dmgInfo.GetDamage() / sSpellMgr->GetSpellInfo(SPELL_MONK_TOUCH_OF_KARMA_DAMAGE)->GetMaxTicks(DIFFICULTY_NONE));
+                    int32 periodicDamage = int32(dmgInfo.GetDamage() / sSpellMgr->GetSpellInfo(SPELL_MONK_TOUCH_OF_KARMA_DAMAGE)->GetMaxTicks());
                     periodicDamage += int32(aurApp->GetTarget()->GetRemainingPeriodicAmount(GetCasterGUID(), SPELL_MONK_TOUCH_OF_KARMA_DAMAGE, SPELL_AURA_PERIODIC_DAMAGE));
                     caster->CastCustomSpell(SPELL_MONK_TOUCH_OF_KARMA_DAMAGE, SPELLVALUE_BASE_POINT0, periodicDamage, aurApp->GetTarget(), true, NULL, aurEff);
                 }
@@ -2528,7 +2528,7 @@ public:
         {
             if (GetExplTargetUnit()->GetEntry() != BlackOxStatusEntry)
             {
-                SpellInfo const* singleTarget = sSpellMgr->AssertSpellInfo(SPELL_MONK_PROVOKE_SINGLE_TARGET);
+                SpellInfo const* singleTarget = sSpellMgr->AssertSpellInfo(SPELL_MONK_PROVOKE_SINGLE_TARGET, DIFFICULTY_NONE);
                 SpellCastResult singleTargetExplicitResult = singleTarget->CheckExplicitTarget(GetCaster(), GetExplTargetUnit());
                 if (singleTargetExplicitResult != SPELL_CAST_OK)
                     return singleTargetExplicitResult;

@@ -236,7 +236,7 @@ void CreatureGroup::FormationReset(bool dismiss)
     m_Formed = !dismiss;
 }
 
-void CreatureGroup::MoveGroupTo(float x, float y, float z, bool fightMove /*= false*/)
+void CreatureGroup::MoveGroupTo(Position destination, bool fightMove /*= false*/)
 {
     if (!m_leader)
         return;
@@ -253,9 +253,9 @@ void CreatureGroup::MoveGroupTo(float x, float y, float z, bool fightMove /*= fa
 
     for (auto itr : m_members)
     {
-        float destX = itr.first->GetPositionX() + (x - centerX);
-        float destY = itr.first->GetPositionY() + (y - centerY);
-        float destZ = m_leader->GetMap()->GetHeight(m_leader->GetPhaseShift(), destX, destY, z + 1.f, true);
+        float destX = itr.first->GetPositionX() + (destination.GetPositionX() - centerX);
+        float destY = itr.first->GetPositionY() + (destination.GetPositionY() - centerY);
+        float destZ = m_leader->GetMap()->GetHeight(m_leader->GetPhaseShift(), destX, destY, destination.GetPositionZ() + 1.f, true);
 
         if (fightMove)
             static_cast<CombatAI*>(itr.first->AI())->MoveCombat(Position(destX, destY, destZ));
@@ -264,12 +264,14 @@ void CreatureGroup::MoveGroupTo(float x, float y, float z, bool fightMove /*= fa
     }
 }
 
-void CreatureGroup::LeaderMoveTo(float x, float y, float z)
+void CreatureGroup::LeaderMoveTo(Position destination, uint32 id /*= 0*/, uint32 moveType /*= 0*/, bool orientation /*= false*/)
 {
     //! To do: This should probably get its own movement generator or use WaypointMovementGenerator.
     //! If the leader's path is known, member's path can be plotted as well using formation offsets.
     if (!m_leader)
         return;
+
+    float x = destination.GetPositionX(), y = destination.GetPositionY(), z = destination.GetPositionZ();
 
     float pathangle = std::atan2(m_leader->GetPositionY() - y, m_leader->GetPositionX() - x);
 
@@ -297,12 +299,9 @@ void CreatureGroup::LeaderMoveTo(float x, float y, float z)
         if (!member->IsFlying())
             member->UpdateGroundPositionZ(dx, dy, dz);
 
-        if (member->IsWithinDist(m_leader, dist + MAX_DESYNC))
-            member->SetUnitMovementFlags(m_leader->GetUnitMovementFlags());
-        else
-            member->SetWalk(false);
+        Position point(dx, dy, dz, destination.GetOrientation());
 
-        member->GetMotionMaster()->MovePoint(0, dx, dy, dz);
+        member->GetMotionMaster()->MoveFormation(id, point, moveType, !member->IsWithinDist(m_leader, dist + MAX_DESYNC), orientation);
         member->SetHomePosition(dx, dy, dz, pathangle);
     }
 }

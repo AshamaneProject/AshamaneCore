@@ -154,9 +154,7 @@ class spell_summon_worgen_spirits : public SpellScriptLoader
 
             bool Validate(SpellInfo const* /*spellEntry*/) override
             {
-                if (!sSpellMgr->GetSpellInfo(SPELL_SUMMON_WORGEN_SPIRIT))
-                    return false;
-                return true;
+                return ValidateSpellInfo({ SPELL_SUMMON_WORGEN_SPIRIT });
             }
 
             void AfterCast(SpellEffIndex /*effIndex*/)

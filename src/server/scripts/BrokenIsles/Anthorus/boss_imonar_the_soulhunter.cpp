@@ -247,7 +247,7 @@ struct boss_imonar_the_soulhunter : public BossAI
         {
         case 1:
         {
-            summon->setFaction(me->getFaction());
+            summon->SetFaction(me->GetFaction());
             break;
         }
         }

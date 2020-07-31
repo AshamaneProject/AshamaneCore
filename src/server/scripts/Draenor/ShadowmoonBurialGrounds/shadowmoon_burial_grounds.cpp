@@ -236,12 +236,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_EXHUME_THE_CRYPTS_1))
-                return false;
-
-            if (!sSpellMgr->GetSpellInfo(SPELL_EXHUME_THE_CRYPTS_2))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_EXHUME_THE_CRYPTS_1, SPELL_EXHUME_THE_CRYPTS_2 });
         }
 
         void SelectTarget(std::list<WorldObject*>& targets)

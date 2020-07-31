@@ -1873,7 +1873,7 @@ class spell_grasping_energy_tendrils : public SpellScriptLoader
                 {
                     if (Unit* target = GetHitUnit())
                     {
-                        SpellInfo const* m_spellInfo = sSpellMgr->GetSpellInfo(SPELL_GRASPING_ENERGY_GRIP);
+                        SpellInfo const* m_spellInfo = sSpellMgr->GetSpellInfo(SPELL_GRASPING_ENERGY_GRIP, GetCastDifficulty());
                         if (!m_spellInfo)
                             return;
 

@@ -63,13 +63,6 @@ TC_COMMON_API std::string secsToTimeString(uint64 timeInSecs, bool shortText = f
 TC_COMMON_API uint32 TimeStringToSecs(const std::string& timestring);
 TC_COMMON_API std::string TimeToTimestampStr(time_t t);
 
-inline void ApplyPercentModFloatVar(float& var, float val, bool apply)
-{
-    if (val == -100.0f)     // prevent set var to zero
-        val = -99.99f;
-    var *= (apply ? (100.0f + val) / 100.0f : 100.0f / (100.0f + val));
-}
-
 // Percentage calculation
 template <class T, class U>
 inline T CalculatePct(T base, U pct)
@@ -424,15 +417,6 @@ public:
     inline bool operator !=(const flag128 &right) const
     {
         return !this->operator ==(right);
-    }
-
-    inline flag128 & operator =(const flag128 &right)
-    {
-        part[0] = right.part[0];
-        part[1] = right.part[1];
-        part[2] = right.part[2];
-        part[3] = right.part[3];
-        return *this;
     }
 
     inline flag128 operator &(const flag128 &right) const

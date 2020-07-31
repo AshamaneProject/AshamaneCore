@@ -508,7 +508,7 @@ void WorldPackets::Misc::SaveCUFProfiles::Read()
     CUFProfiles.resize(_worldPacket.read<uint32>());
     for (std::unique_ptr<CUFProfile>& cufProfile : CUFProfiles)
     {
-        cufProfile = Trinity::make_unique<CUFProfile>();
+        cufProfile = std::make_unique<CUFProfile>();
 
         uint8 strLen = _worldPacket.ReadBits(7);
 
@@ -753,9 +753,9 @@ void WorldPackets::Misc::AdventureJournalStartQuest::Read()
 
 WorldPacket const* WorldPackets::Misc::StartTimer::Write()
 {
-    _worldPacket << TimeLeft;
-    _worldPacket << TotalTime;
-    _worldPacket << Type;
+    _worldPacket << int32(TimeLeft);
+    _worldPacket << int32(TotalTime);
+    _worldPacket << int32(Type);
 
     return &_worldPacket;
 }

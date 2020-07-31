@@ -94,10 +94,10 @@ class npc_highmaul_gharg_arena_master : public CreatureScript
                 }
             }
 
-            void sGossipSelect(Player* player, uint32 /*p_Sender*/, uint32 /*action*/) override
+            bool GossipSelect(Player* player, uint32 /*p_Sender*/, uint32 /*action*/) override
             {
                 if (m_Instance == nullptr)
-                    return;
+                    return false;
 
                 /// Teleport player
                 //if (m_Instance->GetData(eHighmaulDatas::ElevatorActivated))
@@ -109,6 +109,7 @@ class npc_highmaul_gharg_arena_master : public CreatureScript
                 //}
 
                 CloseGossipMenuFor(player);
+                return false;
             }
 
             void MovementInform(uint32 type, uint32 id) override
@@ -1983,9 +1984,9 @@ class npc_highmaul_highmaul_conscript : public CreatureScript
                             Position pos;
 
                             me->GetContactPoint(target, pos.m_positionX, pos.m_positionY, pos.m_positionZ);
-                            pos = target->GetFirstCollisionPosition(target->GetObjectSize(), l_O);
+                            pos = target->GetFirstCollisionPosition(target->GetCombatReach(), l_O);
                             me->ClearUnitState(UnitState::UNIT_STATE_ROOT);
-                            me->GetMotionMaster()->MoveCharge(pos.m_positionX, pos.m_positionY, pos.m_positionZ + target->GetObjectSize());
+                            me->GetMotionMaster()->MoveCharge(pos.m_positionX, pos.m_positionY, pos.m_positionZ + target->GetCombatReach());
 
                             me->CastSpell(me, eSpells::ShieldCharge, true);
                         }
@@ -3663,7 +3664,7 @@ class go_highmaul_instance_portal : public GameObjectScript
                         m_CheckTimer = 1000;
 
                         std::list<Player*> playerList;
-                        go->GetPlayerListInGrid(playerList, 5.0f);
+                        me->GetPlayerListInGrid(playerList, 5.0f);
 
                         WorldSafeLocsEntry const* safeLoc = sObjectMgr->GetWorldSafeLoc(ExitTarget);
 
@@ -3715,7 +3716,7 @@ class go_highmaul_portal : public GameObjectScript
                         m_CheckTimer = 500;
 
                         std::list<Player*> playerList;
-                        go->GetPlayerListInGrid(playerList, 5.0f);
+                        me->GetPlayerListInGrid(playerList, 5.0f);
 
                         for (Player* player : playerList)
                         {

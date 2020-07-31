@@ -456,8 +456,8 @@ struct npc_krikthik : public ScriptedAI
         else
             actualAngle += (float)M_PI / 8.0f;
 
-        x = CenterPos.GetPositionX() + (me->GetObjectSize() + RADIUS_CIRCLE) * std::cos(actualAngle);
-        y = CenterPos.GetPositionY() + (me->GetObjectSize() + RADIUS_CIRCLE) * std::sin(actualAngle);
+        x = CenterPos.GetPositionX() + (me->GetCombatReach() + RADIUS_CIRCLE) * std::cos(actualAngle);
+        y = CenterPos.GetPositionY() + (me->GetCombatReach() + RADIUS_CIRCLE) * std::sin(actualAngle);
     }
 
     void UpdateAI(uint32 diff) override

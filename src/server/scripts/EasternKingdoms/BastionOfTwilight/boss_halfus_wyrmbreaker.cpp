@@ -327,7 +327,7 @@ class npc_halfus_dragon : public CreatureScript
             void Reset() override
             {
                 me->RemoveAllAuras();
-                me->setFaction(35);
+                me->SetFaction(35);
 
                 switch (me->GetEntry())
                 {
@@ -389,7 +389,7 @@ class npc_halfus_dragon : public CreatureScript
             CloseGossipMenuFor(player);
 
             creature->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
-            creature->setFaction(14);
+            creature->SetFaction(14);
             creature->SetReactState(REACT_AGGRESSIVE);
 
             if (InstanceScript* instance = creature->GetInstanceScript())
@@ -517,7 +517,7 @@ public:
             if (Creature* proto = instance->GetCreature(NPC_PROTO_BEHEMOTH))
                 (*itr)->AddAura(SPELL_ATROPHIC_POISON, proto);
 
-            (*itr)->setFaction(14);
+            (*itr)->SetFaction(14);
             (*itr)->SetReactState(REACT_AGGRESSIVE);
 
         }

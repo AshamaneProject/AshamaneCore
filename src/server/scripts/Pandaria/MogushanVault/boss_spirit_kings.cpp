@@ -812,7 +812,7 @@ class boss_spirit_kings : public CreatureScript
                         me->RemoveAurasDueToSpell(SPELL_INACTIVE_STUN);
                         me->RemoveAurasDueToSpell(SPELL_ACTIVATION_VISUAL);
                         me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_NOT_SELECTABLE));
-                        me->setFaction(14);
+                        me->SetFaction(14);
                         break;
                     }
                     case ACTION_REACH_HOME:

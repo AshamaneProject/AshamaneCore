@@ -167,7 +167,7 @@ class TC_GAME_API Creature : public Unit, public GridObject<Creature>, public Ma
         void UpdateMaxPower(Powers power) override;
         uint32 GetPowerIndex(Powers power) const override;
         void UpdateAttackPowerAndDamage(bool ranged = false) override;
-        void CalculateMinMaxDamage(WeaponAttackType attType, bool normalized, bool addTotalPct, float& minDamage, float& maxDamage) override;
+        void CalculateMinMaxDamage(WeaponAttackType attType, bool normalized, bool addTotalPct, float& minDamage, float& maxDamage) const override;
 
         void SetCanDualWield(bool value) override;
         int8 GetOriginalEquipmentId() const { return m_originalEquipmentId; }
@@ -186,7 +186,7 @@ class TC_GAME_API Creature : public Unit, public GridObject<Creature>, public Ma
         CreatureData const* GetCreatureData() const { return m_creatureData; }
         CreatureAddon const* GetCreatureAddon() const;
 
-        std::string GetAIName() const;
+        std::string const& GetAIName() const;
         std::string GetScriptName() const;
         uint32 GetScriptId() const;
         ScriptParam GetScriptParam(uint8 index) const;
@@ -297,9 +297,6 @@ class TC_GAME_API Creature : public Unit, public GridObject<Creature>, public Ma
         void SetCannotReachTarget(bool cannotReach) { if (cannotReach == m_cannotReachTarget) return; m_cannotReachTarget = cannotReach; m_cannotReachTimer = 0; }
         bool CanNotReachTarget() const { return m_cannotReachTarget; }
 
-        void SetPosition(float x, float y, float z, float o);
-        void SetPosition(const Position &pos) { SetPosition(pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ(), pos.GetOrientation()); }
-
         void SetHomePosition(float x, float y, float z, float o) { m_homePosition.Relocate(x, y, z, o); }
         void SetHomePosition(const Position &pos) { m_homePosition.Relocate(pos); }
         void GetHomePosition(float& x, float& y, float& z, float& ori) const { m_homePosition.GetPosition(x, y, z, ori); }
@@ -343,8 +340,10 @@ class TC_GAME_API Creature : public Unit, public GridObject<Creature>, public Ma
         void MustReacquireTarget() { m_shouldReacquireTarget = true; } // flags the Creature for forced (client displayed) target reacquisition in the next ::Update call
         void DoNotReacquireTarget() { m_shouldReacquireTarget = false; m_suppressedTarget = ObjectGuid::Empty; m_suppressedOrientation = 0.0f; }
         void FocusTarget(Spell const* focusSpell, WorldObject const* target);
-        bool IsFocusing(Spell const* focusSpell = nullptr, bool withDelay = false);
+        bool IsFocusing(Spell const* focusSpell = nullptr, bool withDelay = false) override;
         void ReleaseFocus(Spell const* focusSpell = nullptr, bool withDelay = true);
+
+        bool IsMovementPreventedByCasting() const override;
 
         // Part of Evade mechanics
         time_t GetLastDamagedTime() const { return _lastDamagedTime; }

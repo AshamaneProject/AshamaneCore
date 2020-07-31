@@ -43,14 +43,14 @@
 namespace lfg
 {
 
-LFGDungeonData::LFGDungeonData() : id(0), name(""), map(0), type(0), subtype(0), expansion(0), randomId(0), minlevel(0),
+LFGDungeonData::LFGDungeonData() : id(0), name(""), map(0), type(0), subtype(0), expansion(0), group(0), minlevel(0),
 maxlevel(0), difficulty(DIFFICULTY_NONE), seasonal(false), x(0.0f), y(0.0f), z(0.0f), o(0.0f),
 requiredItemLevel(0)
 {
 }
 
-LFGDungeonData::LFGDungeonData(LFGDungeonsEntry const* dbc) : id(dbc->ID), name(dbc->Name->Str[sWorld->GetDefaultDbcLocale()]), map(dbc->MapID),
-type(uint8(dbc->TypeID)), subtype(uint8(dbc->Subtype)), expansion(uint8(dbc->ExpansionLevel)), randomId(uint8(dbc->RandomID)),
+LFGDungeonData::LFGDungeonData(LFGDungeonsEntry const* dbc) : id(dbc->ID), name(dbc->Name[sWorld->GetDefaultDbcLocale()]), map(dbc->MapID),
+type(uint8(dbc->TypeID)), expansion(uint8(dbc->ExpansionLevel)), group(uint8(dbc->GroupID)),
 minlevel(uint8(dbc->MinLevel)), maxlevel(uint8(dbc->MaxLevel)), difficulty(Difficulty(dbc->DifficultyID)),
 seasonal((dbc->Flags[0] & LFG_FLAG_SEASONAL) != 0), x(0.0f), y(0.0f), z(0.0f), o(0.0f),
 requiredItemLevel(0)
@@ -268,7 +268,7 @@ void LFGMgr::LoadLFGDungeons(bool reload /* = false */)
         }
 
         if (dungeon.type != LFG_TYPE_RANDOM)
-            CachedDungeonMapStore[dungeon.randomId].insert(dungeon.id);
+            CachedDungeonMapStore[dungeon.group].insert(dungeon.id);
         CachedDungeonMapStore[0].insert(dungeon.id);
     }
 

@@ -558,7 +558,7 @@ public:
                     case EVENT_MOVE_TO_DOOR:
                     {
                         if (GameObject* go = ObjectAccessor::GetGameObject(*me, m_doorGUID))
-                            me->GetMotionMaster()->MovePoint(MOVE_TO_DOOR, go->GetPosition());
+                            me->GetMotionMaster()->MovePoint(MOVE_TO_DOOR, me->GetPosition());
                         break;
                     }
                     case EVENT_FOLLOW_CITIZEN1:
@@ -945,7 +945,7 @@ public:
                 case EVENT_MOVE_TO_DOOR:
                 {
                     if (GameObject* go = ObjectAccessor::GetGameObject(*me, m_doorGUID))
-                        me->GetMotionMaster()->MovePoint(MOVE_TO_DOOR, go->GetPosition());
+                        me->GetMotionMaster()->MovePoint(MOVE_TO_DOOR, me->GetPosition());
                     break;
                 }
                 case EVENT_MOVE_TO_PLAYER:
@@ -1079,7 +1079,7 @@ public:
                     case EVENT_MOVE_TO_DOOR:
                     {
                         if (GameObject* go = ObjectAccessor::GetGameObject(*me, m_doorGUID))
-                            me->GetMotionMaster()->MovePoint(MOVE_TO_DOOR, go->GetPosition());
+                            me->GetMotionMaster()->MovePoint(MOVE_TO_DOOR, me->GetPosition());
                         break;
                     }
                     case EVENT_MOVE_TO_PLAYER:
@@ -2709,7 +2709,7 @@ public:
         if (quest->GetQuestId() == QUEST_FROM_THE_SHADOWS)
         {
             if (Pet* pet = player->GetPet())
-                player->RemovePet(pet, PET_SAVE_CURRENT_STATE, true);
+                player->RemovePet(pet, PET_SAVE_AS_CURRENT, true);
             player->CastSpell(player, SPELL_SUMMON_GILNEAN_MASTIFF);
             creature->AI()->Talk(0);
         }

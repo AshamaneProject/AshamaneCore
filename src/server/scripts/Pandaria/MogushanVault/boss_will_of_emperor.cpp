@@ -213,7 +213,7 @@ class boss_jin_qin_xi : public CreatureScript
             {
                 pInstance = creature->GetInstanceScript();
                 me->SetDisplayId(DISPLAY_BOSS_INVISIBLE);
-                me->setFaction(35);
+                me->SetFaction(35);
                 me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC));
                 sumCourage = 0;
             }
@@ -589,7 +589,7 @@ class boss_jin_qin_xi : public CreatureScript
                     case EVENT_BOSS_WAIT_VISIBLE:
                     {
                         // Turn into ennemy and jump in the room
-                        me->setFaction(14);
+                        me->SetFaction(14);
                         // Landing coords 1st boss
                         float x = me->GetPositionX() + (15 * cos(me->GetOrientation()));
                         float y = me->GetPositionY() + (15 * sin(me->GetOrientation()));
@@ -904,7 +904,7 @@ class mob_woe_add_generic : public CreatureScript
                 if (!pInstance)
                     return;
                 // Won't attack
-                me->setFaction(35);
+                me->SetFaction(35);
                 // Invisible
                 me->SetDisplayId(DISPLAY_ADD_INVISIBLE);
                 me->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
@@ -1131,7 +1131,7 @@ class mob_woe_add_generic : public CreatureScript
                         }
                         case EVENT_WAIT_VISIBLE:
                         {
-                            me->setFaction(14);
+                            me->SetFaction(14);
                             // Landing coords
                             float x = me->GetPositionX() + (15 * cos(me->GetOrientation()));
                             float y = me->GetPositionY() + (15 * sin(me->GetOrientation()));

@@ -193,7 +193,7 @@ class npc_vha_spitting_scarab : public CreatureScript
             _anubesset = nullptr;
             _poisonTimer = 0;
 
-            if (SpellInfo const * spell = sSpellMgr->GetSpellInfo(SPELL_BURROW))
+            if (SpellInfo const * spell = sSpellMgr->GetSpellInfo(SPELL_BURROW, me->GetMap()->GetDifficultyID()))
             {
                 Position burrow_pos = me->GetRandomNearPosition(spell->GetEffect(EFFECT_0)->RadiusEntry->Radius);
                 me->CastSpell(burrow_pos.GetPositionX(), burrow_pos.GetPositionY(), burrow_pos.GetPositionZ(), SPELL_BURROW, true);

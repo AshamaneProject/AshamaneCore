@@ -104,7 +104,7 @@ public:
         void Reset() override
         {
             events.Reset();
-            me->setFaction(16);
+            me->SetFaction(16);
 
             m_X = 10.375f;
             m_Y = 4.538f;
@@ -299,7 +299,7 @@ public:
         void Reset() override
         {
             {
-                const SpellInfo* l_SpellInfo = sSpellMgr->GetSpellInfo(eNerzulSpells::SpellRitualOfBonesPeriodic);
+                const SpellInfo* l_SpellInfo = sSpellMgr->GetSpellInfo(eNerzulSpells::SpellRitualOfBonesPeriodic, me->GetMap()->GetDifficultyID());
 
                 if (!l_SpellInfo)
                     return;
@@ -365,7 +365,7 @@ public:
             }
 
             me->SetDisplayId(11686);
-            me->setFaction(35);
+            me->SetFaction(35);
             me->SetReactState(ReactStates::REACT_PASSIVE);
             me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_REMOVE_CLIENT_CONTROL));
 
@@ -426,7 +426,7 @@ public:
         void Reset() override
         {
             me->SetDisplayId(11686);
-            me->setFaction(35);
+            me->SetFaction(35);
             me->SetReactState(ReactStates::REACT_PASSIVE);
             me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_REMOVE_CLIENT_CONTROL));
         }
@@ -515,7 +515,7 @@ public:
         void Reset() override
         {
             me->SetDisplayId(11686);
-            me->setFaction(35);
+            me->SetFaction(35);
             me->SetReactState(ReactStates::REACT_PASSIVE);
             me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_REMOVE_CLIENT_CONTROL));
             me->SetDisableGravity(true);

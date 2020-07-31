@@ -64,7 +64,7 @@ public:
         if (action == GOSSIP_ACTION_INFO_DEF+1)
         {
             CloseGossipMenuFor(player);
-            creature->setFaction(FACTION_OGRE_HOSTILE);
+            creature->SetFaction(FACTION_OGRE_HOSTILE);
             creature->AI()->Talk(SAY_RALIQ_ATTACK, player);
             creature->AI()->AttackStart(player);
         }
@@ -135,8 +135,6 @@ enum Salsalabim
 {
     SAY_DEMONIC_AGGRO          = 0,
     OPTION_ID_ALTRUIS_SENT_ME  = 0,
-    FACTION_FRIENDLY           = 35,
-    FACTION_DEMON_HOSTILE      = 90,
     MENU_ID_ALTRUIS_SENT_ME    = 7725,
     NPC_TEXT_SAL_GROWLS_AT_YOU = 9435,
     PATIENCE_AND_UNDERSTANDING = 10004,
@@ -154,7 +152,7 @@ public:
         if (action == GOSSIP_ACTION_INFO_DEF+1)
         {
             CloseGossipMenuFor(player);
-            creature->setFaction(FACTION_DEMON_HOSTILE);
+            creature->SetFaction(FACTION_DEMON);
             creature->AI()->Talk(SAY_DEMONIC_AGGRO, player);
             creature->AI()->AttackStart(player);
         }
@@ -485,12 +483,14 @@ struct npc_vormu : public ScriptedAI
 {
     npc_vormu(Creature* creature) : ScriptedAI(creature) { }
 
-    void sGossipSelect(Player* player, uint32 /*sender*/, uint32 /*action*/) override
+    bool GossipSelect(Player* player, uint32 /*sender*/, uint32 /*action*/) override
     {
         ClearGossipMenuFor(player);
 
         if (!player->GetGroup() || player->GetGroup()->GetLeaderGUID() == player->GetGUID())
             sLFGMgr->JoinLfg(player, LFG_DUNGEON_TIME_WALKING_BLACK_TEMPLE);
+
+        return false;
     }
 };
 

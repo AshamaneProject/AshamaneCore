@@ -23,7 +23,7 @@ struct npc_94973 : public ScriptedAI
 {
    npc_94973(Creature* creature) : ScriptedAI(creature) {  }
 
-    void sGossipSelect(Player* player, uint32 menuId, uint32 gossipListId)
+    bool GossipSelect(Player* player, uint32 menuId, uint32 gossipListId)
     {
         if (player->HasQuest(40244))
         {
@@ -33,6 +33,7 @@ struct npc_94973 : public ScriptedAI
                 CloseGossipMenuFor(player);
             }
         }
+        return false;
     }
 };
 

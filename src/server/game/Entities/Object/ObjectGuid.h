@@ -19,11 +19,12 @@
 #define ObjectGuid_h__
 
 #include "Define.h"
-#include "EnumClassFlag.h"
+#include "EnumFlag.h"
 #include <deque>
 #include <functional>
 #include <list>
 #include <set>
+#include <string>
 #include <type_traits>
 #include <vector>
 #include <unordered_set>
@@ -131,6 +132,8 @@ enum class ObjectGuidSequenceSource
     Map     = 0x4
 };
 
+DEFINE_ENUM_FLAG(ObjectGuidSequenceSource);
+
 enum class ObjectGuidFormatType
 {
     Null,
@@ -154,14 +157,14 @@ enum class ObjectGuidFormatType
 template<HighGuid high>
 struct ObjectGuidTraits
 {
-    static constexpr EnumClassFlag<ObjectGuidSequenceSource> SequenceSource = ObjectGuidSequenceSource::None;
+    static constexpr EnumFlag<ObjectGuidSequenceSource> SequenceSource = ObjectGuidSequenceSource::None;
     using Format = std::integral_constant<ObjectGuidFormatType, ObjectGuidFormatType::Null>;
 };
 
 #define MAKE_GUID_TRAIT(high, sequence, format) \
     template<> struct ObjectGuidTraits<high> \
     { \
-        static constexpr EnumClassFlag<ObjectGuidSequenceSource> SequenceSource = sequence; \
+        static constexpr EnumFlag<ObjectGuidSequenceSource> SequenceSource = sequence; \
         using Format = std::integral_constant<ObjectGuidFormatType, format>; \
     }
 
@@ -170,8 +173,8 @@ MAKE_GUID_TRAIT(HighGuid::Uniq, ObjectGuidSequenceSource::None, ObjectGuidFormat
 MAKE_GUID_TRAIT(HighGuid::Player, ObjectGuidSequenceSource::Realm, ObjectGuidFormatType::Player);
 MAKE_GUID_TRAIT(HighGuid::Item, ObjectGuidSequenceSource::Realm, ObjectGuidFormatType::Item);
 MAKE_GUID_TRAIT(HighGuid::WorldTransaction, ObjectGuidSequenceSource::Map, ObjectGuidFormatType::WorldObject);
-MAKE_GUID_TRAIT(HighGuid::StaticDoor, EnumClassFlag<ObjectGuidSequenceSource>{ObjectGuidSequenceSource::Global} | ObjectGuidSequenceSource::Map, ObjectGuidFormatType::Transport);
-MAKE_GUID_TRAIT(HighGuid::Transport, EnumClassFlag<ObjectGuidSequenceSource>{ObjectGuidSequenceSource::Global} | ObjectGuidSequenceSource::Map, ObjectGuidFormatType::Transport);
+MAKE_GUID_TRAIT(HighGuid::StaticDoor, ObjectGuidSequenceSource::Global | ObjectGuidSequenceSource::Map, ObjectGuidFormatType::Transport);
+MAKE_GUID_TRAIT(HighGuid::Transport, ObjectGuidSequenceSource::Global | ObjectGuidSequenceSource::Map, ObjectGuidFormatType::Transport);
 MAKE_GUID_TRAIT(HighGuid::Conversation, ObjectGuidSequenceSource::Map, ObjectGuidFormatType::WorldObject);
 MAKE_GUID_TRAIT(HighGuid::Creature, ObjectGuidSequenceSource::Map, ObjectGuidFormatType::WorldObject);
 MAKE_GUID_TRAIT(HighGuid::Vehicle, ObjectGuidSequenceSource::Map, ObjectGuidFormatType::WorldObject);

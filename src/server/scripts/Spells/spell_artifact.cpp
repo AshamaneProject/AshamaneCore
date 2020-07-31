@@ -402,7 +402,7 @@ class spell_arti_warl_thalkiels_consumption : public SpellScript
     void Register() override
     {
         OnEffectHitTarget += SpellEffectFn(spell_arti_warl_thalkiels_consumption::HandleHit, EFFECT_0, SPELL_EFFECT_DUMMY);
-        OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_arti_warl_thalkiels_consumption::SaveDamage, EFFECT_1, TARGET_UNIT_CASTER_PET);
+        OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_arti_warl_thalkiels_consumption::SaveDamage, EFFECT_1, TARGET_UNIT_CASTER_AND_SUMMONS);
     }
 };
 

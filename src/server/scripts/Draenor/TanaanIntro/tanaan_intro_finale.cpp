@@ -610,8 +610,8 @@ public:
         {
             //go->SetCancelAnim(true);
 
-            if (go->GetPositionX() > 4060.0f || go->GetPositionY() > -2020.0f)
-                go->AddFlag(GO_FLAG_NOT_SELECTABLE);
+            if (me->GetPositionX() > 4060.0f || me->GetPositionY() > -2020.0f)
+                me->AddFlag(GO_FLAG_NOT_SELECTABLE);
         }
     };
 

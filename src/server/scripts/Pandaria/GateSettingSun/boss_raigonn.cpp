@@ -132,7 +132,7 @@ class boss_raigonn : public CreatureScript
 
                     if (Unit* passenger = meVehicle->GetPassenger(1)) // Check if weak_spot already spawned
                     {
-                        passenger->setFaction(35);
+                        passenger->SetFaction(35);
                         passenger->SetFullHealth();
                         passenger->AddUnitState(UNIT_STATE_UNATTACKABLE);
                         pInstance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, passenger);
@@ -185,7 +185,7 @@ class boss_raigonn : public CreatureScript
                 if (Creature* weakPoint = pInstance->instance->GetCreature(pInstance->GetGuidData(NPC_WEAK_SPOT)))
                 {
                     instance->SendEncounterUnit(ENCOUNTER_FRAME_ENGAGE, weakPoint);
-                    weakPoint->setFaction(16);
+                    weakPoint->SetFaction(16);
                     weakPoint->ClearUnitState(UNIT_STATE_UNATTACKABLE);
                     weakPoint->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                 }

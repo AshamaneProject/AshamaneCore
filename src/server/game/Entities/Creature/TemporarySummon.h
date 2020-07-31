@@ -165,6 +165,7 @@ class TC_GAME_API Guardian : public Minion
         void UpdateSpellPower();
 
         int32 GetBonusDamage() const { return m_bonusSpellDamage; }
+        float GetBonusStatFromOwner(Stats stat) const { return m_statFromOwner[stat]; }
         void SetBonusDamage(int32 damage);
         void UpdatePlayerFieldModPetHaste();
     protected:

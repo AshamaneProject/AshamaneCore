@@ -28,7 +28,7 @@ class TC_GAME_API AggressorAI : public CreatureAI
         explicit AggressorAI(Creature* c) : CreatureAI(c) { }
 
         void UpdateAI(uint32) override;
-        static int Permissible(const Creature*);
+        static int32 Permissible(Creature const* creature);
 };
 
 typedef std::vector<uint32> SpellVct;
@@ -56,7 +56,7 @@ class TC_GAME_API CombatAI : public CreatureAI
         void MovementInform(uint32 type, uint32 id) override;
         void EnterEvadeMode(EvadeReason why) override;
 
-        static int Permissible(Creature const* /*creature*/) { return PERMIT_BASE_NO; }
+        static int32 Permissible(Creature const* /*creature*/) { return PERMIT_BASE_NO; }
 
     protected:
         EventMap spellEvents;
@@ -84,7 +84,7 @@ struct TC_GAME_API ArcherAI : public CreatureAI
         void AttackStart(Unit* who) override;
         void UpdateAI(uint32 diff) override;
 
-        static int Permissible(Creature const* /*creature*/) { return PERMIT_BASE_NO; }
+        static int32 Permissible(Creature const* /*creature*/) { return PERMIT_BASE_NO; }
 
     protected:
         float m_minRange;
@@ -98,7 +98,7 @@ struct TC_GAME_API TurretAI : public CreatureAI
         void AttackStart(Unit* who) override;
         void UpdateAI(uint32 diff) override;
 
-        static int Permissible(Creature const* /*creature*/) { return PERMIT_BASE_NO; }
+        static int32 Permissible(Creature const* /*creature*/) { return PERMIT_BASE_NO; }
 
     protected:
         float m_minRange;
@@ -117,7 +117,7 @@ struct TC_GAME_API VehicleAI : public CreatureAI
         void AttackStart(Unit*) override { }
         void OnCharmed(bool apply) override;
 
-        static int Permissible(Creature const* /*creature*/) { return PERMIT_BASE_NO; }
+        static int32 Permissible(Creature const* creature);
 
     private:
         void LoadConditions();

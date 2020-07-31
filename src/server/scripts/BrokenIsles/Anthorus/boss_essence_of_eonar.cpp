@@ -156,10 +156,11 @@ struct boss_essence_of_eonar : public BossAI
         }
     }
 
-    void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId)
+    bool GossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId)
     {
         CloseGossipMenuFor(player);
         player->CastSpell(player, 240796, true);
+        return false;
     }
 
     void SwitchPhase(uint32 phase)

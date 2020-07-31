@@ -314,7 +314,7 @@ struct LFGDungeonData
     uint8 type;
     uint8 subtype;
     uint8 expansion;
-    uint8 randomId;
+    uint8 group;
     uint8 minlevel;
     uint8 maxlevel;
     Difficulty difficulty;

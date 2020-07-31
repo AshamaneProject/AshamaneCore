@@ -1,8 +1,8 @@
--- MySQL dump 10.16  Distrib 10.1.6-MariaDB, for Win64 (AMD64)
+-- MySQL dump 10.13  Distrib 5.7.29, for Linux (x86_64)
 --
 -- Host: localhost    Database: characters
 -- ------------------------------------------------------
--- Server version	10.1.6-MariaDB
+-- Server version	5.7.29-0ubuntu0.18.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -166,8 +166,8 @@ DROP TABLE IF EXISTS `auction_bidders`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `auction_bidders` (
-  `auctionId` int unsigned NOT NULL,
-  `playerGuid` bigint unsigned NOT NULL,
+  `auctionId` int(10) unsigned NOT NULL,
+  `playerGuid` bigint(20) unsigned NOT NULL,
   PRIMARY KEY (`auctionId`,`playerGuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -189,8 +189,8 @@ DROP TABLE IF EXISTS `auction_items`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `auction_items` (
-  `auctionId` int unsigned NOT NULL,
-  `itemGuid` bigint unsigned NOT NULL,
+  `auctionId` int(10) unsigned NOT NULL,
+  `itemGuid` bigint(20) unsigned NOT NULL,
   PRIMARY KEY (`auctionId`,`itemGuid`),
   UNIQUE KEY `idx_itemGuid` (`itemGuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -481,9 +481,9 @@ DROP TABLE IF EXISTS `character_arena_stats`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `character_arena_stats` (
-  `guid` bigint(20) NOT NULL,
-  `slot` tinyint(3) NOT NULL,
-  `matchMakerRating` smallint(5) NOT NULL,
+  `guid` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `slot` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `matchMakerRating` smallint(5) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`guid`,`slot`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -511,6 +511,7 @@ CREATE TABLE `character_aura` (
   `spell` int(10) unsigned NOT NULL,
   `effectMask` int(10) unsigned NOT NULL,
   `recalculateMask` int(10) unsigned NOT NULL DEFAULT '0',
+  `difficulty` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `stackCount` tinyint(3) unsigned NOT NULL DEFAULT '1',
   `maxDuration` int(11) NOT NULL DEFAULT '0',
   `remainTime` int(11) NOT NULL DEFAULT '0',
@@ -738,8 +739,8 @@ DROP TABLE IF EXISTS `character_equipmentsets`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `character_equipmentsets` (
-  `guid` bigint(20) NOT NULL DEFAULT '0',
-  `setguid` bigint(20) NOT NULL AUTO_INCREMENT,
+  `guid` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `setguid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `setindex` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `name` varchar(31) NOT NULL,
   `iconname` varchar(100) NOT NULL,
@@ -1867,7 +1868,7 @@ DROP TABLE IF EXISTS `creature_respawn`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `creature_respawn` (
   `guid` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Global Unique Identifier',
-  `respawnTime` int(10) unsigned NOT NULL DEFAULT '0',
+  `respawnTime` bigint(20) unsigned NOT NULL DEFAULT '0',
   `mapId` smallint(10) unsigned NOT NULL DEFAULT '0',
   `instanceId` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'Instance Identifier',
   PRIMARY KEY (`guid`,`instanceId`),
@@ -1941,7 +1942,7 @@ DROP TABLE IF EXISTS `gameobject_respawn`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `gameobject_respawn` (
   `guid` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Global Unique Identifier',
-  `respawnTime` int(10) unsigned NOT NULL DEFAULT '0',
+  `respawnTime` bigint(20) unsigned NOT NULL DEFAULT '0',
   `mapId` smallint(10) unsigned NOT NULL DEFAULT '0',
   `instanceId` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'Instance Identifier',
   PRIMARY KEY (`guid`,`instanceId`),
@@ -2588,7 +2589,7 @@ DROP TABLE IF EXISTS `instance`;
 CREATE TABLE `instance` (
   `id` int(10) unsigned NOT NULL DEFAULT '0',
   `map` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `resettime` int(10) unsigned NOT NULL DEFAULT '0',
+  `resettime` bigint(20) unsigned NOT NULL DEFAULT '0',
   `difficulty` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `completedEncounters` int(10) unsigned NOT NULL DEFAULT '0',
   `data` tinytext NOT NULL,
@@ -2619,7 +2620,7 @@ DROP TABLE IF EXISTS `instance_reset`;
 CREATE TABLE `instance_reset` (
   `mapid` smallint(5) unsigned NOT NULL DEFAULT '0',
   `difficulty` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `resettime` int(10) unsigned NOT NULL DEFAULT '0',
+  `resettime` bigint(20) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`mapid`,`difficulty`),
   KEY `difficulty` (`difficulty`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -2914,26 +2915,26 @@ CREATE TABLE `item_instance_azerite` (
   `xp` bigint(20) unsigned NOT NULL DEFAULT '0',
   `level` int(10) unsigned NOT NULL DEFAULT '1',
   `knowledgeLevel` int(10) unsigned NOT NULL DEFAULT '0',
-  `selectedAzeriteEssences1specId` int(10) unsigned NULL DEFAULT '0',
-  `selectedAzeriteEssences1azeriteEssenceId1` int(10) unsigned NULL DEFAULT '0',
-  `selectedAzeriteEssences1azeriteEssenceId2` int(10) unsigned NULL DEFAULT '0',
-  `selectedAzeriteEssences1azeriteEssenceId3` int(10) unsigned NULL DEFAULT '0',
-  `selectedAzeriteEssences1azeriteEssenceId4` int(10) unsigned NULL DEFAULT '0',
-  `selectedAzeriteEssences2specId` int(10) unsigned NULL DEFAULT '0',
-  `selectedAzeriteEssences2azeriteEssenceId1` int(10) unsigned NULL DEFAULT '0',
-  `selectedAzeriteEssences2azeriteEssenceId2` int(10) unsigned NULL DEFAULT '0',
-  `selectedAzeriteEssences2azeriteEssenceId3` int(10) unsigned NULL DEFAULT '0',
-  `selectedAzeriteEssences2azeriteEssenceId4` int(10) unsigned NULL DEFAULT '0',
-  `selectedAzeriteEssences3specId` int(10) unsigned NULL DEFAULT '0',
-  `selectedAzeriteEssences3azeriteEssenceId1` int(10) unsigned NULL DEFAULT '0',
-  `selectedAzeriteEssences3azeriteEssenceId2` int(10) unsigned NULL DEFAULT '0',
-  `selectedAzeriteEssences3azeriteEssenceId3` int(10) unsigned NULL DEFAULT '0',
-  `selectedAzeriteEssences3azeriteEssenceId4` int(10) unsigned NULL DEFAULT '0',
-  `selectedAzeriteEssences4specId` int(10) unsigned NULL DEFAULT '0',
-  `selectedAzeriteEssences4azeriteEssenceId1` int(10) unsigned NULL DEFAULT '0',
-  `selectedAzeriteEssences4azeriteEssenceId2` int(10) unsigned NULL DEFAULT '0',
-  `selectedAzeriteEssences4azeriteEssenceId3` int(10) unsigned NULL DEFAULT '0',
-  `selectedAzeriteEssences4azeriteEssenceId4` int(10) unsigned NULL DEFAULT '0',
+  `selectedAzeriteEssences1specId` int(10) unsigned DEFAULT '0',
+  `selectedAzeriteEssences1azeriteEssenceId1` int(10) unsigned DEFAULT '0',
+  `selectedAzeriteEssences1azeriteEssenceId2` int(10) unsigned DEFAULT '0',
+  `selectedAzeriteEssences1azeriteEssenceId3` int(10) unsigned DEFAULT '0',
+  `selectedAzeriteEssences1azeriteEssenceId4` int(10) unsigned DEFAULT '0',
+  `selectedAzeriteEssences2specId` int(10) unsigned DEFAULT '0',
+  `selectedAzeriteEssences2azeriteEssenceId1` int(10) unsigned DEFAULT '0',
+  `selectedAzeriteEssences2azeriteEssenceId2` int(10) unsigned DEFAULT '0',
+  `selectedAzeriteEssences2azeriteEssenceId3` int(10) unsigned DEFAULT '0',
+  `selectedAzeriteEssences2azeriteEssenceId4` int(10) unsigned DEFAULT '0',
+  `selectedAzeriteEssences3specId` int(10) unsigned DEFAULT '0',
+  `selectedAzeriteEssences3azeriteEssenceId1` int(10) unsigned DEFAULT '0',
+  `selectedAzeriteEssences3azeriteEssenceId2` int(10) unsigned DEFAULT '0',
+  `selectedAzeriteEssences3azeriteEssenceId3` int(10) unsigned DEFAULT '0',
+  `selectedAzeriteEssences3azeriteEssenceId4` int(10) unsigned DEFAULT '0',
+  `selectedAzeriteEssences4specId` int(10) unsigned DEFAULT '0',
+  `selectedAzeriteEssences4azeriteEssenceId1` int(10) unsigned DEFAULT '0',
+  `selectedAzeriteEssences4azeriteEssenceId2` int(10) unsigned DEFAULT '0',
+  `selectedAzeriteEssences4azeriteEssenceId3` int(10) unsigned DEFAULT '0',
+  `selectedAzeriteEssences4azeriteEssenceId4` int(10) unsigned DEFAULT '0',
   PRIMARY KEY (`itemGuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -2998,7 +2999,7 @@ LOCK TABLES `item_instance_azerite_milestone_power` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `item_instance_azerite`
+-- Table structure for table `item_instance_azerite_unlocked_essence`
 --
 
 DROP TABLE IF EXISTS `item_instance_azerite_unlocked_essence`;
@@ -3152,8 +3153,8 @@ DROP TABLE IF EXISTS `item_loot_money`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `item_loot_money` (
-  `container_id` bigint(20) NOT NULL DEFAULT '0' COMMENT 'guid of container (item_instance.guid)',
-  `money` int(10) NOT NULL DEFAULT '0' COMMENT 'money loot (in copper)',
+  `container_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'guid of container (item_instance.guid)',
+  `money` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'money loot (in copper)',
   PRIMARY KEY (`container_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -3314,6 +3315,7 @@ CREATE TABLE `pet_aura` (
   `spell` int(10) unsigned NOT NULL,
   `effectMask` int(10) unsigned NOT NULL,
   `recalculateMask` int(10) unsigned NOT NULL DEFAULT '0',
+  `difficulty` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `stackCount` tinyint(3) unsigned NOT NULL DEFAULT '1',
   `maxDuration` int(11) NOT NULL DEFAULT '0',
   `remainTime` int(11) NOT NULL DEFAULT '0',
@@ -3734,4 +3736,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-02-19 22:43:09
+-- Dump completed on 2020-06-17 17:04:58

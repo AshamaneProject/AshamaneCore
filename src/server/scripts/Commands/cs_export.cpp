@@ -302,7 +302,7 @@ public:
         std::string name;
         LocaleConstant defaultLocale = sWorld->GetDefaultDbcLocale();
         if ( SkillLineEntry const* skillInfo = sSkillLineStore.LookupEntry(skillID) )
-            return name = skillInfo->DisplayName->Str [defaultLocale];
+            return name = skillInfo->DisplayName.Str [defaultLocale];
         else
             return "THIS SKILL DONT EXIST";
     }

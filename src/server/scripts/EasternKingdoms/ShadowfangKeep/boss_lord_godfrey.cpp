@@ -178,7 +178,7 @@ public:
             {
                 float angle = -5 * M_PI / 24 + M_PI * i / 12;
                 float x, y, z;
-                GetCaster()->GetClosePoint(x, y, z, GetCaster()->GetObjectSize(), 30.0f, angle);
+                GetCaster()->GetClosePoint(x, y, z, GetCaster()->GetCombatReach(), 30.0f, angle);
                 GetCaster()->SummonCreature(entry, x, y, z, 0, TEMPSUMMON_TIMED_DESPAWN, 10000);
             }
         }
@@ -207,9 +207,7 @@ public:
 
         bool Validate(SpellInfo const* /*spell*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_PISTOL_BARRAGE))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_PISTOL_BARRAGE });
         }
 
         void OnPeriodic(AuraEffect const* /*aurEff*/)

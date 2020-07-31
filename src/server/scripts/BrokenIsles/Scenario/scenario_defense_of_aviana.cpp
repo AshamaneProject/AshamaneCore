@@ -249,7 +249,7 @@ struct scenario_defense_of_aviana : public InstanceScript
 
                     creaturenpc->GetMotionMaster()->MovePoint(1, 4902.825195f, -2754.8247f, 1437.6128f);
                     creaturenpc->SetFacingTo(0.737466f);
-                    //creaturenpc->setFaction(0);
+                    //creaturenpc->SetFaction(0);
                     //creaturenpc->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE| UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_IMMUNE_TO_PC));
                 }
 

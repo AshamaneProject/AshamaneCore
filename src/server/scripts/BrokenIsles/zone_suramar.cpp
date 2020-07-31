@@ -124,7 +124,7 @@ struct npc_cyrille_107350 : public ScriptedAI
 {
     npc_cyrille_107350(Creature* creature) : ScriptedAI(creature) { me->SetAIAnimKitId(0); }
 
-    void sGossipSelect(Player* player, uint32 menuId, uint32 gossipListId)
+    bool GossipSelect(Player* player, uint32 menuId, uint32 gossipListId) override
     {
         if (player->HasQuest(MAKE_YOUR_MARK))
         {
@@ -135,6 +135,8 @@ struct npc_cyrille_107350 : public ScriptedAI
                 Talk(0);
             }
         }
+
+        return false;
     }
 
     void MoveInLineOfSight(Unit* who) override
@@ -154,7 +156,7 @@ struct npc_lorin_107349 : public ScriptedAI
 {
     npc_lorin_107349(Creature* creature) : ScriptedAI(creature) { me->SetAIAnimKitId(0); }
 
-    void sGossipSelect(Player* player, uint32 menuId, uint32 gossipListId)
+    bool GossipSelect(Player* player, uint32 menuId, uint32 gossipListId)
     {
         if (player->HasQuest(MAKE_YOUR_MARK))
         {
@@ -165,6 +167,8 @@ struct npc_lorin_107349 : public ScriptedAI
                 Talk(0);
             }
         }
+
+        return false;
     }
 
     void MoveInLineOfSight(Unit* who) override
@@ -184,7 +188,7 @@ struct npc_sylessa_107348 : public ScriptedAI
 {
     npc_sylessa_107348(Creature* creature) : ScriptedAI(creature) { me->SetAIAnimKitId(0); }
 
-    void sGossipSelect(Player* player, uint32 menuId, uint32 gossipListId)
+    bool GossipSelect(Player* player, uint32 menuId, uint32 gossipListId)
     {
         if (player->HasQuest(MAKE_YOUR_MARK))
         {
@@ -195,6 +199,8 @@ struct npc_sylessa_107348 : public ScriptedAI
                 Talk(0);
             }
         }
+
+        return false;
     }
 
     void MoveInLineOfSight(Unit* who) override
@@ -215,7 +221,7 @@ struct npc_gondolier_107225 : public ScriptedAI
 {
     npc_gondolier_107225(Creature* creature) : ScriptedAI(creature) {  }
 
-    void sGossipSelect(Player* player, uint32 menuId, uint32 gossipListId)
+    bool GossipSelect(Player* player, uint32 menuId, uint32 gossipListId)
     {
         if (player->HasQuest(The_Gondolier))
         {
@@ -226,6 +232,8 @@ struct npc_gondolier_107225 : public ScriptedAI
                 Talk(0);
             }
         }
+
+        return false;
     }
 };
 
@@ -332,7 +340,7 @@ struct npc_astoril : public ScriptedAI
 {
    npc_astoril(Creature* creature) : ScriptedAI(creature) {  }
 
-    void sGossipSelect(Player* player, uint32 menuId, uint32 gossipListId)
+   bool GossipSelect(Player* player, uint32 menuId, uint32 gossipListId)
     {
         if (player->HasQuest(QUEST_A_Way_Back_In))
         {
@@ -342,6 +350,8 @@ struct npc_astoril : public ScriptedAI
                 CloseGossipMenuFor(player);
             }
         }
+
+        return false;
     }
 };
 

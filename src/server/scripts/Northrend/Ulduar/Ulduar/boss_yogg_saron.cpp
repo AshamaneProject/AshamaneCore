@@ -774,7 +774,7 @@ class boss_sara : public CreatureScript
             {
                 me->RemoveAllAuras();
                 me->SetReactState(REACT_PASSIVE);
-                me->setFaction(35);
+                me->SetFaction(35);
                 _events.Reset();
                 _events.SetPhase(PHASE_ONE);
             }
@@ -817,7 +817,7 @@ class boss_sara : public CreatureScript
                         case EVENT_TRANSFORM_3:
                             Talk(SAY_SARA_TRANSFORM_4);
                             DoCast(me, SPELL_FULL_HEAL);
-                            me->setFaction(16);
+                            me->SetFaction(16);
                             if (Creature* voice = ObjectAccessor::GetCreature(*me, _instance->GetGuidData(DATA_VOICE_OF_YOGG_SARON)))
                                 voice->AI()->DoAction(ACTION_PHASE_TWO);
                             if (Creature* mimiron = ObjectAccessor::GetCreature(*me, _instance->GetGuidData(DATA_MIMIRON_YS)))
@@ -1532,10 +1532,10 @@ class npc_observation_ring_keeper : public CreatureScript
                 DoCast(SPELL_KEEPER_ACTIVE);
             }
 
-            void sGossipSelect(Player* player, uint32 menuId, uint32 /*gossipListId*/) override
+            bool GossipSelect(Player* player, uint32 menuId, uint32 /*gossipListId*/) override
             {
                 if (menuId != 10333)
-                    return;
+                    return false;
 
                 me->RemoveNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                 me->DespawnOrUnsummon(2000);
@@ -1558,6 +1558,8 @@ class npc_observation_ring_keeper : public CreatureScript
                         me->SummonCreature(NPC_MIMIRON_YS, YSKeepersPos[3]);
                         break;
                 }
+
+                return false;
             }
 
             void UpdateAI(uint32 /*diff*/) override { }

@@ -457,7 +457,7 @@ public:
 
                         if (itr != pet->ToPet()->m_spells.end()) // If pet has Wild Hunt
                         {
-                            SpellInfo const* spellInfo = sSpellMgr->AssertSpellInfo(itr->first); // Then get the SpellProto and add the dummy effect value
+                            SpellInfo const* spellInfo = sSpellMgr->AssertSpellInfo(itr->first, DIFFICULTY_NONE); // Then get the SpellProto and add the dummy effect value
                             AddPct(mod, spellInfo->GetEffect(EFFECT_0)->CalcValue());
                         }
 
@@ -499,7 +499,7 @@ public:
 
                 if (itr != pet->ToPet()->m_spells.end()) // If pet has Wild Hunt
                 {
-                    SpellInfo const* spellInfo = sSpellMgr->AssertSpellInfo(itr->first); // Then get the SpellProto and add the dummy effect value
+                    SpellInfo const* spellInfo = sSpellMgr->AssertSpellInfo(itr->first, DIFFICULTY_NONE); // Then get the SpellProto and add the dummy effect value
                     mod += CalculatePct(1.0f, spellInfo->GetEffect(EFFECT_1)->CalcValue());
                 }
 
@@ -529,7 +529,7 @@ public:
 
                 if (itr != pet->ToPet()->m_spells.end()) // If pet has Wild Hunt
                 {
-                    SpellInfo const* spellInfo = sSpellMgr->AssertSpellInfo(itr->first); // Then get the SpellProto and add the dummy effect value
+                    SpellInfo const* spellInfo = sSpellMgr->AssertSpellInfo(itr->first, DIFFICULTY_NONE); // Then get the SpellProto and add the dummy effect value
                     mod += CalculatePct(1.0f, spellInfo->GetEffect(EFFECT_1)->CalcValue());
                 }
 

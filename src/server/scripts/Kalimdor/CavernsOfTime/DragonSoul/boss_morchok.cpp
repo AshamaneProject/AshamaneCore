@@ -265,7 +265,7 @@ class boss_morchok: public CreatureScript
                     summon->SetMaxHealth(me->GetMaxHealth());
                     summon->SetHealth(me->GetHealth());
                     summon->setActive(true);
-                    summon->setFaction(14);
+                    summon->SetFaction(14);
                     summon->AI()->AttackStart(me->GetVictim());
                     DoZoneInCombat(summon);
                 }

@@ -816,7 +816,7 @@ class boss_generic_guardian : public CreatureScript
                         if (me->GetPower(POWER_ENERGY) >= me->GetMaxPower(POWER_ENERGY))
                         {
                             std::ostringstream text;
-                            text << "|cffba2200|Hspell:" << spellOverloadId << "|h[" << sSpellMgr->GetSpellInfo(spellOverloadId)->SpellName << "]|h|r";
+                            text << "|cffba2200|Hspell:" << spellOverloadId << "|h[" << sSpellMgr->GetSpellInfo(spellOverloadId, GetDifficulty())->SpellName << "]|h|r";
                             me->TextEmote(text.str().c_str(), 0, true);
                             me->CastSpell(me, spellOverloadId, false);
                             // Removing petrification

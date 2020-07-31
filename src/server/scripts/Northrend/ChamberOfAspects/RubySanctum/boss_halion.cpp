@@ -1361,7 +1361,7 @@ class go_twilight_portal : public GameObjectScript
                 }
             }
 
-            bool GossipHello(Player* player, bool /*reportUse*/) override
+            bool GossipHello(Player* player) override
             {
                 if (_spellId != 0)
                     player->CastSpell(player, _spellId, true);
@@ -1376,7 +1376,7 @@ class go_twilight_portal : public GameObjectScript
                 if (!_deleted)
                 {
                     _deleted = true;
-                    go->Delete();
+                    me->Delete();
                 }
             }
 

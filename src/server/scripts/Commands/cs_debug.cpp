@@ -62,6 +62,7 @@ public:
             { "cinematic",     rbac::RBAC_PERM_COMMAND_DEBUG_PLAY_CINEMATIC, false, &HandleDebugPlayCinematicCommand,   "" },
             { "movie",         rbac::RBAC_PERM_COMMAND_DEBUG_PLAY_MOVIE,     false, &HandleDebugPlayMovieCommand,       "" },
             { "sound",         rbac::RBAC_PERM_COMMAND_DEBUG_PLAY_SOUND,     false, &HandleDebugPlaySoundCommand,       "" },
+            { "music",         rbac::RBAC_PERM_COMMAND_DEBUG_PLAY_MUSIC,     false, &HandleDebugPlayMusicCommand,       "" },
         };
         static std::vector<ChatCommand> debugSendCommandTable =
         {
@@ -86,7 +87,7 @@ public:
         static std::vector<ChatCommand> debugCommandTable =
         {
             { "threat",        rbac::RBAC_PERM_COMMAND_DEBUG_THREAT,        false, &HandleDebugThreatListCommand,       "" },
-            { "hostil",        rbac::RBAC_PERM_COMMAND_DEBUG_HOSTIL,        false, &HandleDebugHostileRefListCommand,   "" },
+            { "combat",        rbac::RBAC_PERM_COMMAND_DEBUG_COMBAT,        false, &HandleDebugCombatListCommand,       "" },
             { "anim",          rbac::RBAC_PERM_COMMAND_DEBUG_ANIM,          false, &HandleDebugAnimCommand,             "" },
             { "arena",         rbac::RBAC_PERM_COMMAND_DEBUG_ARENA,         true,  &HandleDebugArenaCommand,            "" },
             { "bg",            rbac::RBAC_PERM_COMMAND_DEBUG_BG,            true,  &HandleDebugBattlegroundCommand,     "" },
@@ -98,7 +99,7 @@ public:
             { "spawnvehicle",  rbac::RBAC_PERM_COMMAND_DEBUG_SPAWNVEHICLE,  false, &HandleDebugSpawnVehicleCommand,     "" },
             { "setvid",        rbac::RBAC_PERM_COMMAND_DEBUG_SETVID,        false, &HandleDebugSetVehicleIdCommand,     "" },
             { "entervehicle",  rbac::RBAC_PERM_COMMAND_DEBUG_ENTERVEHICLE,  false, &HandleDebugEnterVehicleCommand,     "" },
-            { "uws",           rbac::RBAC_PERM_COMMAND_DEBUG_UWS,           false, &HandleDebugUpdateWorldStateCommand, "" },
+            { "worldstate",    rbac::RBAC_PERM_COMMAND_DEBUG_WORLDSTATE,    false, &HandleDebugUpdateWorldStateCommand, "" },
             { "itemexpire",    rbac::RBAC_PERM_COMMAND_DEBUG_ITEMEXPIRE,    false, &HandleDebugItemExpireCommand,       "" },
             { "areatriggers",  rbac::RBAC_PERM_COMMAND_DEBUG_AREATRIGGERS,  false, &HandleDebugAreaTriggersCommand,     "" },
             { "los",           rbac::RBAC_PERM_COMMAND_DEBUG_LOS,           false, &HandleDebugLoSCommand,              "" },
@@ -128,8 +129,8 @@ public:
 
     static bool HandleDebugPlayCinematicCommand(ChatHandler* handler, char const* args)
     {
-        // USAGE: .debug play cinematic #cinematicid
-        // #cinematicid - ID decimal number from CinemaicSequences.dbc (1st column)
+        // USAGE: .debug play cinematic #cinematicId
+        // #cinematicId - ID decimal number from CinemaicSequences.dbc (1st column)
         if (!*args)
         {
             handler->SendSysMessage(LANG_BAD_VALUE);
@@ -137,12 +138,12 @@ public:
             return false;
         }
 
-        uint32 id = atoul(args);
+        uint32 cinematicId = atoul(args);
 
-        CinematicSequencesEntry const* cineSeq = sCinematicSequencesStore.LookupEntry(id);
+        CinematicSequencesEntry const* cineSeq = sCinematicSequencesStore.LookupEntry(cinematicId);
         if (!cineSeq)
         {
-            handler->PSendSysMessage(LANG_CINEMATIC_NOT_EXIST, id);
+            handler->PSendSysMessage(LANG_CINEMATIC_NOT_EXIST, cinematicId);
             handler->SetSentErrorMessage(true);
             return false;
         }
@@ -150,7 +151,7 @@ public:
         // Dump camera locations
         if (std::vector<FlyByCamera> const* flyByCameras = GetFlyByCameras(cineSeq->Camera[0]))
         {
-            handler->PSendSysMessage("Waypoints for sequence %u, camera %u", id, cineSeq->Camera[0]);
+            handler->PSendSysMessage("Waypoints for sequence %u, camera %u", cinematicId, cineSeq->Camera[0]);
             uint32 count = 1;
             for (FlyByCamera const& cam : *flyByCameras)
             {
@@ -160,14 +161,14 @@ public:
             handler->PSendSysMessage(SZFMTD " waypoints dumped", flyByCameras->size());
         }
 
-        handler->GetSession()->GetPlayer()->SendCinematicStart(id);
+        handler->GetSession()->GetPlayer()->SendCinematicStart(cinematicId);
         return true;
     }
 
     static bool HandleDebugPlayMovieCommand(ChatHandler* handler, char const* args)
     {
-        // USAGE: .debug play movie #movieid
-        // #movieid - ID decimal number from Movie.dbc (1st column)
+        // USAGE: .debug play movie #movieId
+        // #movieId - ID decimal number from Movie.dbc (1st column)
         if (!*args)
         {
             handler->SendSysMessage(LANG_BAD_VALUE);
@@ -175,24 +176,24 @@ public:
             return false;
         }
 
-        uint32 id = atoul(args);
+        uint32 movieId = atoul(args);
 
-        if (!sMovieStore.LookupEntry(id))
+        if (!sMovieStore.LookupEntry(movieId))
         {
-            handler->PSendSysMessage(LANG_MOVIE_NOT_EXIST, id);
+            handler->PSendSysMessage(LANG_MOVIE_NOT_EXIST, movieId);
             handler->SetSentErrorMessage(true);
             return false;
         }
 
-        handler->GetSession()->GetPlayer()->SendMovieStart(id);
+        handler->GetSession()->GetPlayer()->SendMovieStart(movieId);
         return true;
     }
 
     //Play sound
     static bool HandleDebugPlaySoundCommand(ChatHandler* handler, char const* args)
     {
-        // USAGE: .debug playsound #soundid
-        // #soundid - ID decimal number from SoundEntries.dbc (1st column)
+        // USAGE: .debug playsound #soundId
+        // #soundId - ID decimal number from SoundEntries.dbc (1st column)
         if (!*args)
         {
             handler->SendSysMessage(LANG_BAD_VALUE);
@@ -209,6 +210,8 @@ public:
             return false;
         }
 
+        Player* player = handler->GetSession()->GetPlayer();
+
         Unit* unit = handler->getSelectedUnit();
         if (!unit)
         {
@@ -217,12 +220,39 @@ public:
             return false;
         }
 
-        if (!handler->GetSession()->GetPlayer()->GetTarget().IsEmpty())
-            unit->PlayDistanceSound(soundId, handler->GetSession()->GetPlayer());
+        if (player->GetTarget().IsEmpty())
+            unit->PlayDistanceSound(soundId, player);
         else
-            unit->PlayDirectSound(soundId, handler->GetSession()->GetPlayer());
+            unit->PlayDirectSound(soundId, player);
 
         handler->PSendSysMessage(LANG_YOU_HEAR_SOUND, soundId);
+        return true;
+    }
+
+    static bool HandleDebugPlayMusicCommand(ChatHandler* handler, char const* args)
+    {
+        // USAGE: .debug play music #musicId
+        // #musicId - ID decimal number from SoundEntries.dbc (1st column)
+        if (!*args)
+        {
+            handler->SendSysMessage(LANG_BAD_VALUE);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        uint32 musicId = atoul(args);
+        if (!sSoundKitStore.LookupEntry(musicId))
+        {
+            handler->PSendSysMessage(LANG_SOUND_NOT_EXIST, musicId);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        Player* player = handler->GetSession()->GetPlayer();
+
+        player->PlayDirectMusic(musicId, player);
+
+        handler->PSendSysMessage(LANG_YOU_HEAR_SOUND, musicId);
         return true;
     }
 
@@ -851,7 +881,7 @@ public:
         return true;
     }
 
-    static bool HandleDebugHostileRefListCommand(ChatHandler* handler, char const* /*args*/)
+    static bool HandleDebugCombatListCommand(ChatHandler* handler, char const* /*args*/)
     {
         Unit* target = handler->getSelectedUnit();
         if (!target)
@@ -947,7 +977,7 @@ public:
         uint32 entry = atoul(e);
 
         float x, y, z, o = handler->GetSession()->GetPlayer()->GetOrientation();
-        handler->GetSession()->GetPlayer()->GetClosePoint(x, y, z, handler->GetSession()->GetPlayer()->GetObjectSize());
+        handler->GetSession()->GetPlayer()->GetClosePoint(x, y, z, handler->GetSession()->GetPlayer()->GetCombatReach());
 
         if (!i)
             return handler->GetSession()->GetPlayer()->SummonCreature(entry, x, y, z, o) != nullptr;
@@ -1054,8 +1084,15 @@ public:
     static bool HandleDebugLoSCommand(ChatHandler* handler, char const* /*args*/)
     {
         if (Unit* unit = handler->getSelectedUnit())
-            handler->PSendSysMessage("Unit %s (%s) is %sin LoS", unit->GetName().c_str(), unit->GetGUID().ToString().c_str(), handler->GetSession()->GetPlayer()->IsWithinLOSInMap(unit) ? "" : "not ");
-        return true;
+        {
+            Player* player = handler->GetSession()->GetPlayer();
+            handler->PSendSysMessage("Checking LoS %s -> %s:", player->GetName().c_str(), unit->GetName().c_str());
+            handler->PSendSysMessage("    VMAP LoS: %s", player->IsWithinLOSInMap(unit, LINEOFSIGHT_CHECK_VMAP) ? "clear" : "obstructed");
+            handler->PSendSysMessage("    GObj LoS: %s", player->IsWithinLOSInMap(unit, LINEOFSIGHT_CHECK_GOBJECT) ? "clear" : "obstructed");
+            handler->PSendSysMessage("%s is %sin line of sight of %s.", unit->GetName().c_str(), (player->IsWithinLOSInMap(unit) ? "" : "not "), player->GetName().c_str());
+            return true;
+        }
+        return false;
     }
 
     static bool HandleDebugSetAuraStateCommand(ChatHandler* handler, char const* args)
@@ -1237,31 +1274,62 @@ public:
         return true;
     }
 
-    static bool HandleDebugRaidResetCommand(ChatHandler* /*handler*/, char const* args)
+    static bool HandleDebugRaidResetCommand(ChatHandler* handler, char const* args)
     {
         char* map_str = args ? strtok((char*)args, " ") : nullptr;
         char* difficulty_str = args ? strtok(nullptr, " ") : nullptr;
 
         int32 map = map_str ? atoi(map_str) : -1;
-        if (map <= 0)
+        MapEntry const* mEntry = (map >= 0) ? sMapStore.LookupEntry(map) : nullptr;
+        if (!mEntry)
+        {
+            handler->PSendSysMessage("Invalid map specified.");
             return false;
-        MapEntry const* mEntry = sMapStore.LookupEntry(map);
-        if (!mEntry || !mEntry->IsRaid())
-            return false;
+        }
+        if (!mEntry->IsDungeon())
+        {
+            handler->PSendSysMessage("'%s' is not a dungeon map.",
+                    mEntry->MapName[handler->GetSessionDbcLocale()]);
+            return true;
+        }
         int32 difficulty = difficulty_str ? atoi(difficulty_str) : -1;
         if (!sDifficultyStore.HasRecord(difficulty) || difficulty < -1)
+        {
+            handler->PSendSysMessage("Invalid difficulty %d.", difficulty);
             return false;
+        }
+        if (difficulty >= 0 && !sDB2Manager.GetMapDifficultyData(mEntry->ID, Difficulty(difficulty)))
+        {
+            handler->PSendSysMessage("Difficulty %d is not valid for '%s'.",
+                    difficulty, mEntry->MapName[handler->GetSessionDbcLocale()]);
+            return true;
+        }
 
         if (difficulty == -1)
         {
-            for (DifficultyEntry const* difficulty : sDifficultyStore)
+            handler->PSendSysMessage("Resetting all difficulties for '%s'.",
+                    mEntry->MapName[handler->GetSessionDbcLocale()]);
+            for (DifficultyEntry const* diff : sDifficultyStore)
             {
-                if (sDB2Manager.GetMapDifficultyData(map, Difficulty(difficulty->ID)))
-                    sInstanceSaveMgr->ForceGlobalReset(map, Difficulty(difficulty->ID));
+                if (sDB2Manager.GetMapDifficultyData(map, Difficulty(diff->ID)))
+                {
+                    handler->PSendSysMessage("Resetting difficulty %d for '%s'.",
+                            diff->ID, mEntry->MapName[handler->GetSessionDbcLocale()]);
+                    sInstanceSaveMgr->ForceGlobalReset(map, Difficulty(diff->ID));
+                }
             }
         }
+        else if (mEntry->IsNonRaidDungeon() && difficulty == DIFFICULTY_NORMAL)
+        {
+            handler->PSendSysMessage("'%s' does not have any permanent saves for difficulty %d.",
+                    mEntry->MapName[handler->GetSessionDbcLocale()], difficulty);
+        }
         else
+        {
+            handler->PSendSysMessage("Resetting difficulty %d for '%s'.",
+                    difficulty, mEntry->MapName[handler->GetSessionDbcLocale()]);
             sInstanceSaveMgr->ForceGlobalReset(map, Difficulty(difficulty));
+        }
         return true;
     }
 

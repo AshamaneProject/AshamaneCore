@@ -1,8 +1,8 @@
--- MySQL dump 10.16  Distrib 10.1.6-MariaDB, for Win64 (AMD64)
+-- MySQL dump 10.13  Distrib 5.7.29, for Linux (x86_64)
 --
 -- Host: localhost    Database: auth
 -- ------------------------------------------------------
--- Server version	10.1.6-MariaDB
+-- Server version	5.7.29-0ubuntu0.18.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -73,10 +73,11 @@ DROP TABLE IF EXISTS `account_access`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `account_access` (
-  `id` int(10) unsigned NOT NULL,
-  `gmlevel` tinyint(3) unsigned NOT NULL,
+  `AccountID` int(10) unsigned NOT NULL,
+  `SecurityLevel` tinyint(3) unsigned NOT NULL,
   `RealmID` int(11) NOT NULL DEFAULT '-1',
-  PRIMARY KEY (`id`,`RealmID`)
+  `Comment` VARCHAR(255) DEFAULT NULL,
+  PRIMARY KEY (`AccountID`,`RealmID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -441,7 +442,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `build_info`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `build_info` (
   `build` int(11) NOT NULL,
   `majorVersion` int(11) DEFAULT NULL,
@@ -554,7 +555,11 @@ INSERT INTO `build_info` VALUES
 (33528,8,3,0,NULL,NULL,'0ECE033CA9B11D92F7D2792C785B47DF',NULL,NULL,NULL),
 (33724,8,3,0,NULL,NULL,'38F7BBCF284939DD20E8C64CDBF9FE77',NULL,NULL,NULL),
 (33775,8,3,0,NULL,NULL,'B826300A8449ED0F6EF16EA747FA2D2E','354D2DE619D124EE1398F76B0436FCFC',NULL,NULL),
-(33941,8,3,0,NULL,NULL,'88AF1A36D2770D0A6CA086497096A889',NULL,NULL,NULL);
+(33941,8,3,0,NULL,NULL,'88AF1A36D2770D0A6CA086497096A889',NULL,NULL,NULL),
+(34220,8,3,0,NULL,NULL,'B5E35B976C6BAF82505700E7D9666A2C',NULL,NULL,NULL),
+(34601,8,3,0,NULL,NULL,'0D7DF38F725FABA4F009257799A10563',NULL,NULL,NULL),
+(34769,8,3,0,NULL,NULL,'93F9B9AF6397E3E4EED94D36D16907D2',NULL,NULL,NULL),
+(34963,8,3,0,NULL,NULL,'7BA50C879C5D04221423B02AC3603A11','C5658A17E702163447BAAAE46D130A1B',NULL,NULL);
 /*!40000 ALTER TABLE `build_info` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -691,10 +696,10 @@ CREATE TABLE `rbac_default_permissions` (
 LOCK TABLES `rbac_default_permissions` WRITE;
 /*!40000 ALTER TABLE `rbac_default_permissions` DISABLE KEYS */;
 INSERT INTO `rbac_default_permissions` VALUES
-(0,195,-1),
-(1,194,-1),
+(3,192,-1),
 (2,193,-1),
-(3,192,-1);
+(1,194,-1),
+(0,195,-1);
 /*!40000 ALTER TABLE `rbac_default_permissions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1257,6 +1262,12 @@ INSERT INTO `rbac_linked_permissions` VALUES
 (197,819),
 (197,821),
 (197,827),
+(197,856),
+(197,857),
+(197,858),
+(197,859),
+(197,860),
+(197,865),
 (198,218),
 (198,300),
 (198,312),
@@ -1365,6 +1376,7 @@ INSERT INTO `rbac_linked_permissions` VALUES
 (198,828),
 (198,834),
 (198,852),
+(198,855),
 (198,868),
 (199,207),
 (199,209),
@@ -1566,7 +1578,7 @@ INSERT INTO `rbac_permissions` VALUES
 (304,'Command: debug bg'),
 (305,'Command: debug entervehicle'),
 (306,'Command: debug getitemstate'),
-(309,'Command: debug hostil'),
+(309,'Command: debug combat'),
 (310,'Command: debug itemexpire'),
 (311,'Command: debug lootrecipient'),
 (312,'Command: debug los'),
@@ -1591,7 +1603,7 @@ INSERT INTO `rbac_permissions` VALUES
 (335,'Command: debug setvid'),
 (336,'Command: debug spawnvehicle'),
 (337,'Command: debug threat'),
-(339,'Command: debug uws'),
+(339,'Command: debug worldstate'),
 (340,'Command: wpgps'),
 (341,'Command: deserter'),
 (342,'Command: deserter bg'),
@@ -2081,6 +2093,13 @@ INSERT INTO `rbac_permissions` VALUES
 (852,'Command: go offset'),
 (853,'Command: .reload conversation_template'),
 (854,'Command: .debug conversation'),
+(855,'Command: debug play music'),
+(856,'Command: npc spawngroup'),
+(857,'Command: npc despawngroup'),
+(858,'Command: gobject spawngroup'),
+(859,'Command: gobject despawngroup'),
+(860,'Command: list respawns'),
+(865,'Command: npc showloot'),
 (868,'Command: modify power'),
 (869,'Command: debug send playerchoice');
 /*!40000 ALTER TABLE `rbac_permissions` ENABLE KEYS */;
@@ -2130,7 +2149,7 @@ CREATE TABLE `realmlist` (
   `timezone` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `allowedSecurityLevel` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `population` float unsigned NOT NULL DEFAULT '0',
-  `gamebuild` int(10) unsigned NOT NULL DEFAULT '33941',
+  `gamebuild` int(10) unsigned NOT NULL DEFAULT '34963',
   `Region` tinyint(3) unsigned NOT NULL DEFAULT '1',
   `Battlegroup` tinyint(3) unsigned NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
@@ -2145,7 +2164,7 @@ CREATE TABLE `realmlist` (
 LOCK TABLES `realmlist` WRITE;
 /*!40000 ALTER TABLE `realmlist` DISABLE KEYS */;
 INSERT INTO `realmlist` VALUES
-(1,'Ashamane','127.0.0.1','127.0.0.1','255.255.255.0',8085,0,0,1,0,0,33941,1,1);
+(1,'Ashamane','127.0.0.1','127.0.0.1','255.255.255.0',8085,0,0,1,0,0,34963,1,1);
 /*!40000 ALTER TABLE `realmlist` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2225,4 +2244,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-02-19 22:43:07
+-- Dump completed on 2020-06-17 17:04:57

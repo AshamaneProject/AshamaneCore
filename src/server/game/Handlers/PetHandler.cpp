@@ -21,6 +21,7 @@
 #include "DatabaseEnv.h"
 #include "Group.h"
 #include "Log.h"
+#include "Map.h"
 #include "MotionMaster.h"
 #include "ObjectAccessor.h"
 #include "ObjectMgr.h"
@@ -34,6 +35,7 @@
 #include "SpellInfo.h"
 #include "SpellMgr.h"
 #include "SpellPackets.h"
+#include "PetAI.h"
 #include "Util.h"
 #include "World.h"
 #include "WorldPacket.h"
@@ -86,7 +88,7 @@ void WorldSession::HandlePetAction(WorldPackets::Pet::PetAction& packet)
 
     if (!pet->IsAlive())
     {
-        SpellInfo const* spell = (flag == ACT_ENABLED || flag == ACT_PASSIVE) ? sSpellMgr->GetSpellInfo(spellid) : NULL;
+        SpellInfo const* spell = (flag == ACT_ENABLED || flag == ACT_PASSIVE) ? sSpellMgr->GetSpellInfo(spellid, pet->GetMap()->GetDifficultyID()) : NULL;
         if (!spell)
             return;
         if (!spell->HasAttribute(SPELL_ATTR0_CASTABLE_WHILE_DEAD))
@@ -210,7 +212,11 @@ void WorldSession::HandlePetActionHelper(Unit* pet, ObjectGuid guid1, uint32 spe
                             charmInfo->SetIsCommandFollow(false);
                             charmInfo->SetIsReturning(false);
 
-                            pet->ToCreature()->AI()->AttackStart(TargetUnit);
+                            CreatureAI* AI = pet->ToCreature()->AI();
+                            if (PetAI* petAI = dynamic_cast<PetAI*>(AI))
+                                petAI->_AttackStart(TargetUnit); // force target switch
+                            else
+                                AI->AttackStart(TargetUnit);
 
                             //10% chance to play special pet attack talk, else growl
                             if (pet->IsPet() && ((Pet*)pet)->getPetType() == SUMMON_PET && pet != TargetUnit && urand(0, 100) < 10)
@@ -243,10 +249,8 @@ void WorldSession::HandlePetActionHelper(Unit* pet, ObjectGuid guid1, uint32 spe
                         ASSERT(pet->GetTypeId() == TYPEID_UNIT);
                         if (pet->IsPet())
                         {
-                            if (((Pet*)pet)->IsHunterPet())
-                            {
+                            if (((Pet*)pet)->getPetType() == HUNTER_PET)
                                 GetPlayer()->RemovePet((Pet*)pet, PET_SAVE_AS_DELETED);
-                            }
                             else
                                 //dismissing a summoned pet is like killing them (this prevents returning a soulshard...)
                                 pet->setDeathState(CORPSE);
@@ -265,7 +269,6 @@ void WorldSession::HandlePetActionHelper(Unit* pet, ObjectGuid guid1, uint32 spe
 
                     charmInfo->SetIsCommandAttack(false);
                     charmInfo->SetIsAtStay(true);
-                    charmInfo->SetIsCommandFollow(false);
                     charmInfo->SetIsFollowing(false);
                     charmInfo->SetIsReturning(false);
                     charmInfo->SaveStayPosition();
@@ -280,10 +283,9 @@ void WorldSession::HandlePetActionHelper(Unit* pet, ObjectGuid guid1, uint32 spe
                 case REACT_PASSIVE:                         //passive
                     pet->AttackStop();
                     pet->ClearInPetCombat();
-                    // no break;
+                    /* fallthrough */
                 case REACT_DEFENSIVE:                       //recovery
                 case REACT_AGGRESSIVE:                      //activete
-                case REACT_ASSIST:                          //
                     if (pet->GetTypeId() == TYPEID_UNIT)
                         pet->ToCreature()->SetReactState(ReactStates(spellid));
                     break;
@@ -299,14 +301,14 @@ void WorldSession::HandlePetActionHelper(Unit* pet, ObjectGuid guid1, uint32 spe
                 unit_target = ObjectAccessor::GetUnit(*_player, guid2);
 
             // do not cast unknown spells
-            SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(spellid);
+            SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(spellid, pet->GetMap()->GetDifficultyID());
             if (!spellInfo)
             {
                 TC_LOG_ERROR("spells.pet", "WORLD: unknown PET spell id %i", spellid);
                 return;
             }
 
-            for (SpellEffectInfo const* effect: spellInfo->GetEffectsForDifficulty(DIFFICULTY_NONE))
+            for (SpellEffectInfo const* effect: spellInfo->GetEffects())
             {
                 if (effect && (effect->TargetA.GetTarget() == TARGET_UNIT_SRC_AREA_ENEMY || effect->TargetA.GetTarget() == TARGET_UNIT_DEST_AREA_ENEMY || effect->TargetA.GetTarget() == TARGET_DEST_DYNOBJ_ENEMY))
                     return;
@@ -335,13 +337,15 @@ void WorldSession::HandlePetActionHelper(Unit* pet, ObjectGuid guid1, uint32 spe
             {
                 if (unit_target)
                 {
-                    pet->SetInFront(unit_target);
+                    if (!pet->IsFocusing())
+                        pet->SetInFront(unit_target);
                     if (Player* player = unit_target->ToPlayer())
                         pet->SendUpdateToPlayer(player);
                 }
                 else if (Unit* unit_target2 = spell->m_targets.GetUnitTarget())
                 {
-                    pet->SetInFront(unit_target2);
+                    if (!pet->IsFocusing())
+                        pet->SetInFront(unit_target2);
                     if (Player* player = unit_target2->ToPlayer())
                         pet->SendUpdateToPlayer(player);
                 }
@@ -373,7 +377,13 @@ void WorldSession::HandlePetActionHelper(Unit* pet, ObjectGuid guid1, uint32 spe
                     {
                         pet->GetMotionMaster()->Clear();
                         if (pet->ToCreature()->IsAIEnabled)
-                            pet->ToCreature()->AI()->AttackStart(unit_target);
+                        {
+                            CreatureAI* AI = pet->ToCreature()->AI();
+                            if (PetAI* petAI = dynamic_cast<PetAI*>(AI))
+                                petAI->_AttackStart(unit_target); // force victim switch
+                            else
+                                AI->AttackStart(unit_target);
+                        }
                     }
                 }
 
@@ -486,7 +496,7 @@ void WorldSession::HandlePetSetAction(WorldPackets::Pet::PetSetAction& packet)
     //if it's act for spell (en/disable/cast) and there is a spell given (0 = remove spell) which pet doesn't know, don't add
     if (!((act_state == ACT_ENABLED || act_state == ACT_DISABLED || act_state == ACT_PASSIVE) && spell_id && !pet->HasSpell(spell_id)))
     {
-        if (SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(spell_id))
+        if (SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(spell_id, pet->GetMap()->GetDifficultyID()))
         {
             //sign for autocast
             if (act_state == ACT_ENABLED)
@@ -523,7 +533,6 @@ void WorldSession::HandlePetRename(WorldPackets::Pet::PetRename& packet)
 
     Pet* pet = ObjectAccessor::GetPet(*_player, petguid);
                                                             // check it!
-
     if (!pet || !pet->IsPet() || ((Pet*)pet)->getPetType() != HUNTER_PET ||
         !pet->HasPetFlag(UNIT_PET_FLAG_CAN_BE_RENAMED) ||
         pet->GetOwnerGUID() != _player->GetGUID() || !pet->GetCharmInfo())
@@ -618,7 +627,7 @@ void WorldSession::HandlePetSpellAutocastOpcode(WorldPackets::Pet::PetSpellAutoc
         return;
     }
 
-    SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(packet.SpellID);
+    SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(packet.SpellID, pet->GetMap()->GetDifficultyID());
     if (!spellInfo)
     {
         TC_LOG_ERROR("spells.pet", "WorldSession::HandlePetSpellAutocastOpcode: Unknown spell id %u used by %s.", packet.SpellID, packet.PetGUID.ToString().c_str());
@@ -646,18 +655,18 @@ void WorldSession::HandlePetSpellAutocastOpcode(WorldPackets::Pet::PetSpellAutoc
 
 void WorldSession::HandlePetCastSpellOpcode(WorldPackets::Spells::PetCastSpell& petCastSpell)
 {
-    SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(petCastSpell.Cast.SpellID);
-    if (!spellInfo)
-    {
-        TC_LOG_ERROR("spells.pet", "WorldSession::HandlePetCastSpellOpcode: unknown spell id %i tried to cast by %s",
-            petCastSpell.Cast.SpellID, petCastSpell.PetGUID.ToString().c_str());
-        return;
-    }
-
     Unit* caster = ObjectAccessor::GetUnit(*_player, petCastSpell.PetGUID);
     if (!caster)
     {
         TC_LOG_ERROR("entities.pet", "WorldSession::HandlePetCastSpellOpcode: Caster %s not found.", petCastSpell.PetGUID.ToString().c_str());
+        return;
+    }
+
+    SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(petCastSpell.Cast.SpellID, caster->GetMap()->GetDifficultyID());
+    if (!spellInfo)
+    {
+        TC_LOG_ERROR("spells.pet", "WorldSession::HandlePetCastSpellOpcode: unknown spell id %i tried to cast by %s",
+            petCastSpell.Cast.SpellID, petCastSpell.PetGUID.ToString().c_str());
         return;
     }
 
@@ -709,7 +718,7 @@ void WorldSession::HandlePetCastSpellOpcode(WorldPackets::Spells::PetCastSpell& 
     {
         spell->SendPetCastResult(result);
 
-        if (!caster->GetSpellHistory()->HasCooldown(spellInfo->Id))
+        if (!caster->GetSpellHistory()->HasCooldown(spellInfo))
             caster->GetSpellHistory()->ResetCooldown(spellInfo->Id, true);
 
         spell->finish(false);
@@ -727,88 +736,3 @@ void WorldSession::SendPetNameInvalid(uint32 error, const std::string& name, Dec
 
     SendPacket(petNameInvalid.Write());
 }
-
-void WorldSession::UpdatePetSlot(uint32 petNumberA, uint8 oldPetSlot, uint8 newPetSlot)
-{
-    uint32 petNumberB = 0;
-    Pet* pet = _player->GetPet();
-
-    // first check check new PetSlot if another pet already exists there
-    PlayerPetData* playerPetDataA = _player->GetPlayerPetDataById(petNumberA);
-    PlayerPetData* playerPetDataB = _player->GetPlayerPetDataBySlot(newPetSlot);
-
-    CharacterDatabaseTransaction trans = CharacterDatabase.BeginTransaction();
-
-    // If Slot is already in use
-    if (playerPetDataB)
-    {
-        petNumberB = playerPetDataB->PetId;
-
-        // Check if current pet is the pet to swap
-        if (pet && pet->GetCharmInfo()->GetPetNumber() == petNumberB)
-        {
-            pet->SetSlot(oldPetSlot);
-            _player->RemovePet(pet, PET_SAVE_DISMISS);
-        }
-        else
-        {
-            CharacterDatabasePreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_UPD_CHAR_PET_SLOT_BY_SLOT);
-            stmt->setUInt32(0, oldPetSlot);
-            stmt->setUInt64(1, _player->GetGUID().GetCounter());
-            stmt->setUInt32(2, newPetSlot);
-            trans->Append(stmt);
-
-        }
-
-        playerPetDataB->Slot = oldPetSlot;
-    }
-
-    // Check if current pet is the pet to swap
-    if (pet && pet->GetCharmInfo()->GetPetNumber() == petNumberA)
-    {
-        pet->SetSlot(newPetSlot);
-        _player->RemovePet(pet, PET_SAVE_DISMISS);
-    }
-    else
-    {
-        CharacterDatabasePreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_UPD_CHAR_PET_SLOT_BY_ID);
-        stmt->setUInt32(0, newPetSlot);
-        stmt->setUInt64(1, _player->GetGUID().GetCounter());
-        stmt->setUInt32(2, petNumberA);
-        trans->Append(stmt);
-    }
-
-    playerPetDataA->Slot = newPetSlot;
-
-    CharacterDatabase.CommitTransaction(trans);
-
-    SendPetSlotUpdated(petNumberA, newPetSlot, petNumberB, oldPetSlot);
-    SendPetStableResult(STABLE_SUCCESS_STABLE);
-}
-
-void WorldSession::SendPetSlotUpdated(int32 petNumberA, int32 petSlotA, int32 petNumberB, int32 petSlotB)
-{
-    WorldPackets::Pet::PetSlotUpdated petSlotUpdated;
-    petSlotUpdated.PetNumberA = petNumberA;
-    petSlotUpdated.PetSlotA = petSlotA;
-    petSlotUpdated.PetNumberB = petNumberB;
-    petSlotUpdated.PetSlotB = petSlotB;
-
-    SendPacket(petSlotUpdated.Write());
-}
-
-void WorldSession::SendPetAdded(int32 petSlot, int32 petNumber, int32 creatureID, int32 displayID, int32 level, std::string name)
-{
-    WorldPackets::Pet::PetAdded pet;
-
-    pet.NewPet.PetSlot = petSlot;;
-    pet.NewPet.PetNumber = petNumber;
-    pet.NewPet.CreatureID = creatureID;
-    pet.NewPet.DisplayID = displayID;
-    pet.NewPet.ExperienceLevel = level;
-    pet.NewPet.PetFlags = 0;
-    pet.NewPet.PetName = name;
-
-    SendPacket(pet.Write());
-}
-

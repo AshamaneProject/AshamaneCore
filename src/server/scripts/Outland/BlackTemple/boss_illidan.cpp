@@ -765,7 +765,7 @@ public:
                 {
                     if (Creature* flame = me->SummonCreature(FLAME_OF_AZZINOTH, GlaivePosition[i+2], TEMPSUMMON_CORPSE_TIMED_DESPAWN, 5000))
                     {
-                        flame->setFaction(me->getFaction()); // Just in case the database has it as a different faction
+                        flame->SetFaction(me->GetFaction()); // Just in case the database has it as a different faction
                         flame->SetMeleeDamageSchool(SPELL_SCHOOL_FIRE);
                         FlameGUID[i] = flame->GetGUID(); // Record GUID in order to check if they're dead later on to move to the next phase
                         ENSURE_AI(npc_flame_of_azzinoth::flame_of_azzinothAI, flame->AI())->SetGlaiveGUID(GlaiveGUID[i]);
@@ -812,7 +812,7 @@ public:
                             GlaiveGUID[i] = Glaive->GetGUID();
                             Glaive->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                             Glaive->SetDisplayId(MODEL_INVISIBLE);
-                            Glaive->setFaction(me->getFaction());
+                            Glaive->SetFaction(me->GetFaction());
                             DoCast(Glaive, SPELL_THROW_GLAIVE2);
                         }
                     }
@@ -828,7 +828,7 @@ public:
                             GlaiveGUID[i] = Glaive->GetGUID();
                             Glaive->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                             Glaive->SetDisplayId(MODEL_INVISIBLE);
-                            Glaive->setFaction(me->getFaction());
+                            Glaive->SetFaction(me->GetFaction());
                             DoCast(Glaive, SPELL_THROW_GLAIVE, true);
                         }
                     }
@@ -1764,10 +1764,11 @@ public:
             DoMeleeAttackIfReady();
         }
 
-        void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 /*gossipListId*/) override
+        bool GossipSelect(Player* player, uint32 /*menuId*/, uint32 /*gossipListId*/) override
         {
             CloseGossipMenuFor(player);
             EnterPhase(PHASE_CHANNEL);
+            return false;
         }
 
     private:
@@ -1921,7 +1922,7 @@ void boss_illidan_stormrage::boss_illidan_stormrageAI::HandleTalkSequence()
                 x += 10; y += 10;
                 akama->GetMotionMaster()->Clear(false);
                 // Akama->GetMotionMaster()->MoveIdle();
-                akama->SetPosition(x, y, z, 0.0f);
+                akama->UpdatePosition(x, y, z, 0.0f);
                 akama->MonsterMoveWithSpeed(x, y, z, 0); // Illidan must not die until Akama arrives.
                 akama->GetMotionMaster()->MoveChase(me);
             }

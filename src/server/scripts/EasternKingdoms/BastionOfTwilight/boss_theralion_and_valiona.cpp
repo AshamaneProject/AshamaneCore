@@ -198,7 +198,7 @@ class boss_theralion : public CreatureScript
                 {
                     summon->CastSpell(summon, SPELL_FABOLOUS_FLAME_VISUAL, true);
                     DoZoneInCombat(summon);
-                    summon->setFaction(me->getFaction());
+                    summon->SetFaction(me->GetFaction());
                     summon->SetReactState(REACT_PASSIVE);
                     summon->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                     summon->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
@@ -725,7 +725,7 @@ class boss_valiona : public CreatureScript
                 {
                     DoZoneInCombat(summon);
                     summon->AddAura(SPELL_TWILIGHT_FLAME, summon);
-                    summon->setFaction(me->getFaction());
+                    summon->SetFaction(me->GetFaction());
                     summon->SetReactState(REACT_PASSIVE);
                     summon->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                     summon->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
@@ -768,7 +768,7 @@ class boss_valiona : public CreatureScript
                             {
                                 if (Creature* spTarget = me->SummonCreature(46588, target->GetPositionX(), target->GetPositionY(), target->GetPositionZ(), target->GetOrientation(), TEMPSUMMON_TIMED_DESPAWN, 8040))
                                 {
-                                    spTarget->setFaction(target->getFaction());
+                                    spTarget->SetFaction(target->GetFaction());
                                     spTarget->SetReactState(REACT_AGGRESSIVE);
                                     spTarget->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
                                     me->AddThreat(spTarget, 100000000.0f, SPELL_SCHOOL_MASK_NORMAL);

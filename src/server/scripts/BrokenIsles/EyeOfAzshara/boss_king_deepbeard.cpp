@@ -224,7 +224,7 @@ class npc_eoa_quake : public CreatureScript
         {
             npc_eoa_quake_AI(Creature* creature) : ScriptedAI(creature)
             {
-                me->setFaction(14);
+                me->SetFaction(14);
             }
 
             void Reset()

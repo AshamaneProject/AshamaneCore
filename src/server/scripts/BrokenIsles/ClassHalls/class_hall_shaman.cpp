@@ -79,7 +79,7 @@ struct npc_trall_91731 : public ScriptedAI
         }
     }
 
-    void sQuestAccept(Player* player, Quest const* quest) override
+    void QuestAccept(Player* player, Quest const* quest) override
     {
         if (quest->GetQuestId() == QUEST_A_RING_UNBROKEN)
         {

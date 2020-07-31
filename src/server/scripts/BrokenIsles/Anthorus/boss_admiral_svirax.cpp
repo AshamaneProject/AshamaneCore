@@ -233,12 +233,12 @@ struct boss_admiral_svirax : public BossAI
         BossAI::JustSummoned(summon);
         switch (summon->GetEntry())
         {
-        case NPC_CHIEF_ENGINEER_ISHKAR:
-        case NPC_GENERAL_ERODUS:
-        {
-            summon->setFaction(me->getFaction());
-            break;
-        }
+            case NPC_CHIEF_ENGINEER_ISHKAR:
+            case NPC_GENERAL_ERODUS:
+            {
+                summon->SetFaction(me->GetFaction());
+                break;
+            }
         }
     }
     uint8 PhaseStatus;

@@ -19,6 +19,7 @@
 #define DBCENUMS_H
 
 #include "Define.h"
+#include "EnumFlag.h"
 #include <array>
 
 #pragma pack(push, 1)
@@ -227,6 +228,14 @@ enum ChrSpecializationFlag
     CHR_SPECIALIZATION_FLAG_RECOMMENDED             = 0x40,
 };
 
+enum class CorruptionEffectsFlag
+{
+    None        = 0,
+    Disabled    = 0x1
+};
+
+DEFINE_ENUM_FLAG(CorruptionEffectsFlag);
+
 enum CriteriaCondition
 {
     CRITERIA_CONDITION_NONE            = 0,
@@ -234,11 +243,15 @@ enum CriteriaCondition
     CRITERIA_CONDITION_UNK2            = 2,     // only used in "Complete a daily quest every day for five consecutive days"
     CRITERIA_CONDITION_BG_MAP          = 3,     // requires you to be on specific map, reset at change
     CRITERIA_CONDITION_NO_LOSE         = 4,     // only used in "Win 10 arenas without losing"
-    CRITERIA_CONDITION_UNK5            = 5,     // Have spell?
-    CRITERIA_CONDITION_UNK8            = 8,
+    CRITERIA_CONDITION_REMOVE_AURA     = 5,     // reset when this aura is removed
+    CRITERIA_CONDITION_CAST_SPELL      = 8,     // reset when casting this spell
     CRITERIA_CONDITION_NO_SPELL_HIT    = 9,     // requires the player not to be hit by specific spell
     CRITERIA_CONDITION_NOT_IN_GROUP    = 10,    // requires the player not to be in group
-    CRITERIA_CONDITION_UNK13           = 13     // unk
+    CRITERIA_CONDITION_LOSE_PET_BATTLE = 11,    // reset when losing pet battle
+    CRITERIA_CONDITION_UNK13           = 13,    // unk
+    CRITERIA_CONDITION_EVENT           = 14,
+
+    CRITERIA_CONDITION_MAX
 };
 
 enum CriteriaAdditionalCondition
@@ -1029,7 +1042,8 @@ enum MapFlags2
 enum AbilytyLearnType
 {
     SKILL_LINE_ABILITY_LEARNED_ON_SKILL_VALUE  = 1, // Spell state will update depending on skill value
-    SKILL_LINE_ABILITY_LEARNED_ON_SKILL_LEARN  = 2  // Spell will be learned/removed together with entire skill
+    SKILL_LINE_ABILITY_LEARNED_ON_SKILL_LEARN  = 2, // Spell will be learned/removed together with entire skill
+    SKILL_LINE_ABILITY_REWARDED_FROM_QUEST     = 4  // Learned as quest reward, also re-learned if missing
 };
 
 enum GlyphSlotType
@@ -1088,8 +1102,10 @@ enum ItemBonusType
     ITEM_BONUS_RELIC_TYPE                       = 17,
     ITEM_BONUS_OVERRIDE_REQUIRED_LEVEL          = 18,
     ITEM_BONUS_AZERITE_TIER_UNLOCK_SET          = 19,
+    ITEM_BONUS_SCRAPPING_LOOT_ID                = 20,
     ITEM_BONUS_OVERRIDE_CAN_DISENCHANT          = 21,
-    ITEM_BONUS_OVERRIDE_CAN_SCRAP               = 22
+    ITEM_BONUS_OVERRIDE_CAN_SCRAP               = 22,
+    ITEM_BONUS_ITEM_EFFECT_ID                   = 23,
 };
 
 enum class ItemContext : uint8
@@ -1152,6 +1168,7 @@ enum class ItemContext : uint8
     World_Quest_13          = 55,
     PVP_Ranked_Jackpot      = 56,
     Tournament_Realm        = 57,
+    Relinquished            = 58,
 };
 
 enum ItemLimitCategoryMode
@@ -1346,6 +1363,8 @@ enum SpellProcsPerMinuteModType
     SPELL_PPM_MOD_ITEM_LEVEL    = 6,
     SPELL_PPM_MOD_BATTLEGROUND  = 7
 };
+
+constexpr std::size_t MAX_POWERS_PER_SPELL = 4;
 
 enum SpellShapeshiftFormFlags
 {

@@ -603,14 +603,11 @@ class spell_hun_tame_beast : public SpellScriptLoader
             SpellCastResult CheckCast()
             {
                 Unit* caster = GetCaster();
-                if (!caster->IsPlayer())
+                if (caster->GetTypeId() != TYPEID_PLAYER)
                     return SPELL_FAILED_DONT_REPORT;
 
                 if (!GetExplTargetUnit())
                     return SPELL_FAILED_BAD_IMPLICIT_TARGETS;
-
-                if (!caster->ToPlayer()->GetFirstUnusedActivePetSlot())
-                    return SPELL_FAILED_DONT_REPORT;
 
                 if (Creature* target = GetExplTargetUnit()->ToCreature())
                 {
@@ -2560,7 +2557,7 @@ public:
                         pet->EnergizeBySpell(pet, GetSpellInfo()->Id, -25, POWER_FOCUS);
                     }
 
-                    dmg *= pet->GetModifierValue(UNIT_MOD_DAMAGE_MAINHAND, TOTAL_PCT);
+                    dmg *= pet->GetPctModifierValue(UNIT_MOD_DAMAGE_MAINHAND, TOTAL_PCT);
 
                     dmg = pet->SpellDamageBonusDone(target, GetSpellInfo(), dmg, SPELL_DIRECT_DAMAGE, GetEffectInfo(EFFECT_0));
                     dmg = target->SpellDamageBonusTaken(pet, GetSpellInfo(), dmg, SPELL_DIRECT_DAMAGE, GetEffectInfo(EFFECT_0));
@@ -2670,7 +2667,7 @@ public:
 
             if (TempSummon* tempSumm = caster->SummonCreature(WORLD_TRIGGER, at->GetPosition(), TEMPSUMMON_TIMED_DESPAWN, 200))
             {
-                tempSumm->setFaction(caster->getFaction());
+                tempSumm->SetFaction(caster->GetFaction());
                 tempSumm->SetSummonerGUID(caster->GetGUID());
                 PhasingHandler::InheritPhaseShift(tempSumm, caster);
                 caster->CastSpell(tempSumm, SPELL_HUNTER_FLARE_EFFECT, true);
@@ -2723,7 +2720,7 @@ public:
                 {
                     if (TempSummon* tempSumm = caster->SummonCreature(WORLD_TRIGGER, at->GetPosition(), TEMPSUMMON_TIMED_DESPAWN, 200))
                     {
-                        tempSumm->setFaction(caster->getFaction());
+                        tempSumm->SetFaction(caster->GetFaction());
                         tempSumm->SetSummonerGUID(caster->GetGUID());
                         PhasingHandler::InheritPhaseShift(tempSumm, caster);
                         caster->CastSpell(tempSumm, SPELL_HUNTER_EXPLOSIVE_TRAP_DAMAGE, true);
@@ -2747,7 +2744,7 @@ public:
             {
                 if (TempSummon* tempSumm = caster->SummonCreature(WORLD_TRIGGER, at->GetPosition(), TEMPSUMMON_TIMED_DESPAWN, 200))
                 {
-                    tempSumm->setFaction(caster->getFaction());
+                    tempSumm->SetFaction(caster->GetFaction());
                     tempSumm->SetSummonerGUID(caster->GetGUID());
                     PhasingHandler::InheritPhaseShift(tempSumm, caster);
                     caster->CastSpell(tempSumm, SPELL_HUNTER_EXPLOSIVE_TRAP_DAMAGE, true);
@@ -2870,7 +2867,7 @@ public:
                 if (!caster->IsFriendlyTo(target))
                     if (TempSummon* tempSumm = caster->SummonCreature(WORLD_TRIGGER, at->GetPosition(), TEMPSUMMON_TIMED_DESPAWN, 200))
                     {
-                        tempSumm->setFaction(caster->getFaction());
+                        tempSumm->SetFaction(caster->GetFaction());
                         tempSumm->SetSummonerGUID(caster->GetGUID());
                         PhasingHandler::InheritPhaseShift(tempSumm, caster);
                         caster->CastSpell(tempSumm, SPELL_HUNTER_ACTIVATE_TAR_TRAP, true);
@@ -2893,7 +2890,7 @@ public:
             {
                 if (TempSummon* tempSumm = caster->SummonCreature(WORLD_TRIGGER, at->GetPosition(), TEMPSUMMON_TIMED_DESPAWN, 200))
                 {
-                    tempSumm->setFaction(caster->getFaction());
+                    tempSumm->SetFaction(caster->GetFaction());
                     tempSumm->SetSummonerGUID(caster->GetGUID());
                     PhasingHandler::InheritPhaseShift(tempSumm, caster);
                     caster->CastSpell(tempSumm, SPELL_HUNTER_ACTIVATE_TAR_TRAP, true);

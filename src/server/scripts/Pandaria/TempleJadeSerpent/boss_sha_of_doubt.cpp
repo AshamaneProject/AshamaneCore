@@ -285,7 +285,7 @@ class mob_figment_of_doubt : public CreatureScript
                                     if (!creature)
                                         return;
 
-                                    const SpellInfo* spellInfo = sSpellMgr->GetSpellInfo(SPELL_RELEASE_DOUBT);
+                                    const SpellInfo* spellInfo = sSpellMgr->GetSpellInfo(SPELL_RELEASE_DOUBT, GetDifficulty());
                                     if (!spellInfo)
                                         return;
 

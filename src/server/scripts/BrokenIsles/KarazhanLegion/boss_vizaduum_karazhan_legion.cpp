@@ -774,7 +774,7 @@ class spell_vizaduum_bombardment_aura : public SpellScriptLoader
 
                     Creature* vizaduum = GetUnitOwner()->GetInstanceScript()->GetCreature(DATA_VIZADUUM);
 
-                    SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(SPELL_BOMBARDMENT_MISSILE);
+                    SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(SPELL_BOMBARDMENT_MISSILE, vizaduum->GetMap()->GetDifficultyID());
                     Position pos = vizaduum->GetRandomNearPosition(_radius->Radius);
 
                     _target.SetDst(pos);

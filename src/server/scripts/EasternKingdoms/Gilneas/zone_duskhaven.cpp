@@ -582,7 +582,7 @@ public:
         {
             me->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_NOT_SELECTABLE));
             me->SetReactState(REACT_PASSIVE);
-            me->setFaction(1735);
+            me->SetFaction(1735);
         }
 
         void PassengerBoarded(Unit* passenger, int8 seatId, bool apply) override
@@ -601,7 +601,7 @@ public:
                     npc->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_NOT_SELECTABLE));
                     m_events.ScheduleEvent(EVENT_CAST_BOULDER, urand(100, 5000));
                     m_events.ScheduleEvent(EVENT_CHECK_PLAYER, 1000);
-                    me->setFaction(1735);
+                    me->SetFaction(1735);
                     me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                 }
             }
@@ -619,7 +619,7 @@ public:
                     m_events.CancelEvent(EVENT_CAST_BOULDER);
                     m_events.CancelEvent(EVENT_CHECK_PLAYER);
                     m_events.ScheduleEvent(EVENT_MASTER_RESET, 180000);
-                    me->setFaction(35);
+                    me->SetFaction(35);
                     me->RemoveAllAuras();
                     me->HandleEmoteCommand(EMOTE_ONESHOT_NONE);
                     me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
@@ -1399,7 +1399,7 @@ public:
                 me->CastSpell(player, SPELL_ROPE_CHANNEL, true);
                 m_dist = frand(3.0f, 5.0f);
                 m_angle = frand(2.59f, 3.53f);
-                m_size = me->GetObjectSize();
+                m_size = me->GetCombatReach();
                 m_oldPosition = player->GetPosition();
                 m_events.ScheduleEvent(EVENT_START_FOLLOWING, 100);
             }
@@ -1645,7 +1645,7 @@ public:
                 {
                     cList.clear();
                     std::list<Creature*> c1;
-                    go->GetCreatureListWithEntryInGrid(c1, NPC_SWIFT_MOUNTAIN_HORSE, 20.0f);
+                    me->GetCreatureListWithEntryInGrid(c1, NPC_SWIFT_MOUNTAIN_HORSE, 20.0f);
                     for (auto horse : c1)
                         if (Unit* p1 = horse->GetOwner())
                             if (Player* player = p1->ToPlayer())
@@ -1659,7 +1659,7 @@ public:
                 {
                     m_isUsed = false;
                     cList.clear();
-                    go->ResetDoorOrButton();
+                    me->ResetDoorOrButton();
                     break;
                 }
                 }
@@ -1667,10 +1667,10 @@ public:
 
             if (!m_isUsed)
                 for (auto guid : cList)
-                    if (Creature* horse = ObjectAccessor::GetCreature(*go, guid))
-                        if (horse->GetDistance(go) < 10.0f)
+                    if (Creature* horse = ObjectAccessor::GetCreature(*me, guid))
+                        if (horse->GetDistance(me) < 10.0f)
                         {
-                            go->UseDoorOrButton(5000);
+                            me->UseDoorOrButton(5000);
                             m_isUsed = true;
                             m_events.ScheduleEvent(EVENT_COOLDOWN_00, 5000);
                         }
@@ -1728,7 +1728,7 @@ public:
                     case EVENT_COOLDOWN_00:
                     {
                         m_isUsed = false;
-                        go->ResetDoorOrButton();
+                        me->ResetDoorOrButton();
                         break;
                     }
                 }
@@ -1736,10 +1736,10 @@ public:
 
             if (!m_isUsed)
                 for (auto guid : cList)
-                    if (Creature* horse = ObjectAccessor::GetCreature(*go, guid))
-                        if (horse->GetDistance(go) < 14.0f)
+                    if (Creature* horse = ObjectAccessor::GetCreature(*me, guid))
+                        if (horse->GetDistance(me) < 14.0f)
                         {
-                            go->UseDoorOrButton(5000);
+                            me->UseDoorOrButton(5000);
                             m_isUsed = true;
                             m_events.ScheduleEvent(EVENT_COOLDOWN_00, 6000);
                         }
@@ -1748,8 +1748,8 @@ public:
         std::list<Creature*> FindHorseNear()
         {
             std::list<Creature*> cList;
-            GetCreatureListWithEntryInGrid(cList, go, NPC_SWIFT_MOUNTAIN_HORSE, 20.0f);
-            GetCreatureListWithEntryInGrid(cList, go, NPC_HARNESS_43336, 20.0f);
+            GetCreatureListWithEntryInGrid(cList, me, NPC_SWIFT_MOUNTAIN_HORSE, 20.0f);
+            GetCreatureListWithEntryInGrid(cList, me, NPC_HARNESS_43336, 20.0f);
             return cList;
         }
 
@@ -1758,7 +1758,7 @@ public:
             if (Unit* unit = mount->GetCharmerOrOwner())
                 if (Player* player = unit->ToPlayer())
                 return player;
-            if (Player* player = ObjectAccessor::GetPlayer(*go, mount->GetAI()->GetGUID(PLAYER_GUID)))
+            if (Player* player = ObjectAccessor::GetPlayer(*me, mount->GetAI()->GetGUID(PLAYER_GUID)))
                 return player;
 
             return nullptr;
@@ -2257,7 +2257,7 @@ public:
                     case EVENT_COOLDOWN_00:
                     {
                         m_isUsed = false;
-                        go->ResetDoorOrButton();
+                        me->ResetDoorOrButton();
                         break;
                     }
                 }
@@ -2265,10 +2265,10 @@ public:
 
             if (!m_isUsed)
                 for (auto guid : cList)
-                    if (Creature* horse = ObjectAccessor::GetCreature(*go, guid))
-                        if (horse->GetDistance(go) < 14.0f)
+                    if (Creature* horse = ObjectAccessor::GetCreature(*me, guid))
+                        if (horse->GetDistance(me) < 14.0f)
                         {
-                            go->UseDoorOrButton(5000);
+                            me->UseDoorOrButton(5000);
                             m_isUsed = true;
                             m_events.ScheduleEvent(EVENT_COOLDOWN_00, 6000);
                         }
@@ -2277,7 +2277,7 @@ public:
         std::list<Creature*> FindHorseNear()
         {
             std::list<Creature*> cList;
-            GetCreatureListWithEntryInGrid(cList, go, NPC_HARNESS_43336, 20.0f);
+            GetCreatureListWithEntryInGrid(cList, me, NPC_HARNESS_43336, 20.0f);
             return cList;
         }
 
@@ -2286,7 +2286,7 @@ public:
             if (Unit* unit = mount->GetCharmerOrOwner())
                 if (Player* player = unit->ToPlayer())
                     return player;
-            if (Player* player = ObjectAccessor::GetPlayer(*go, mount->GetAI()->GetGUID(PLAYER_GUID)))
+            if (Player* player = ObjectAccessor::GetPlayer(*me, mount->GetAI()->GetGUID(PLAYER_GUID)))
                 return player;
 
             return nullptr;
@@ -2321,7 +2321,7 @@ public:
         void MoveInLineOfSight(Unit* who) override
         {
             if (!m_cast_cooldown)
-                if (who->ToPlayer() || who->getFaction() == 2203 || who->getFaction() == 2163)
+                if (who->ToPlayer() || who->GetFaction() == 2203 || who->GetFaction() == 2163)
                     if (me->GetDistance(who) < 60.0f)
                     {
                         me->SetFacingToObject(who);
@@ -2662,10 +2662,10 @@ public:
             m_korothGUID = ObjectGuid::Empty;
         }
 
-        void OnStateChanged(uint32 /*state*/, Unit* unit) override
+        void OnLootStateChanged(uint32 /*state*/, Unit* unit) override
         {
             if (unit)
-                if (Creature* koroth = go->FindNearestCreature(36294, 50.0f))
+                if (Creature* koroth = me->FindNearestCreature(36294, 50.0f))
                     if (Player* player = unit->ToPlayer())
                     {
                         m_playerGUID = player->GetGUID();
@@ -2684,16 +2684,16 @@ public:
                 {
                 case EVENT_TALK_PART_00:
                 {
-                    if (Creature* koroth = ObjectAccessor::GetCreature(*go, m_korothGUID))
-                        if (Player* player = ObjectAccessor::GetPlayer(*go, m_playerGUID))
+                    if (Creature* koroth = ObjectAccessor::GetCreature(*me, m_korothGUID))
+                        if (Player* player = ObjectAccessor::GetPlayer(*me, m_playerGUID))
                             koroth->AI()->Talk(0, player);
                     m_events.ScheduleEvent(EVENT_TALK_PART_01, 6000);
                     break;
                 }
                 case EVENT_TALK_PART_01:
                 {
-                    if (Creature* koroth = ObjectAccessor::GetCreature(*go, m_korothGUID))
-                        if (Player* player = ObjectAccessor::GetPlayer(*go, m_playerGUID))
+                    if (Creature* koroth = ObjectAccessor::GetCreature(*me, m_korothGUID))
+                        if (Player* player = ObjectAccessor::GetPlayer(*me, m_playerGUID))
                             koroth->AI()->Talk(1, player);
                     break;
                 }

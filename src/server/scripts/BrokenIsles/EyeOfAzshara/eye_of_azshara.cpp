@@ -79,7 +79,7 @@ class spell_animated_storm_water_spout : public SpellScript
             target->GetNearPoint(target, x, y, z, 1, 3.0f, frand(0.f, 2.f * float(M_PI)));
             if (Creature* waterSpout = caster->SummonCreature(NPC_WATER_SPOUT, x, y, z, 1.0f, TEMPSUMMON_MANUAL_DESPAWN))
             {
-                waterSpout->setFaction(caster->getFaction());
+                waterSpout->SetFaction(caster->GetFaction());
                 waterSpout->CastSpell(waterSpout, SPELL_WATER_SPOUT_AT, false);
                 waterSpout->GetMotionMaster()->MoveRandom(25.0f);
             }

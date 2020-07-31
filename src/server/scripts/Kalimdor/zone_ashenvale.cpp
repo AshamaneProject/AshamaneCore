@@ -79,11 +79,11 @@ public:
             summoned->AI()->AttackStart(me);
         }
 
-        void sQuestAccept(Player* player, Quest const* quest) override
+        void QuestAccept(Player* player, Quest const* quest) override
         {
             if (quest->GetQuestId() == QUEST_FREEDOM_TO_RUUL)
             {
-                me->setFaction(FACTION_QUEST);
+                me->SetFaction(FACTION_QUEST);
                 npc_escortAI::Start(true, false, player->GetGUID());
             }
         }
@@ -221,12 +221,12 @@ public:
             summoned->AI()->AttackStart(me);
         }
 
-        void sQuestAccept(Player* player, Quest const* quest) override
+        void QuestAccept(Player* player, Quest const* quest) override
         {
             if (quest->GetQuestId() == QUEST_VORSHA)
             {
                 Talk(SAY_MUG_START1);
-                me->setFaction(FACTION_QUEST);
+                me->SetFaction(FACTION_QUEST);
                 npc_escortAI::Start(true, false, player->GetGUID());
             }
         }

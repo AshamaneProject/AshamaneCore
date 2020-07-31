@@ -438,7 +438,7 @@ public:
             if (SpellInfo const* spellInfo = GetSpellInfo())
                 spellId = spellInfo->GetEffect(EFFECT_0)->BasePoints;
 
-            if (!sSpellMgr->GetSpellInfo(spellId))
+            if (!sSpellMgr->GetSpellInfo(spellId, GetCaster()->GetMap()->GetDifficultyID()))
                 return;
 
             GetCaster()->CastSpell(GetHitUnit(), spellId);

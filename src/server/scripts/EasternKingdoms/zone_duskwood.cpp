@@ -507,7 +507,7 @@ struct npc_ebenlocke : public ScriptedAI
 
     npc_ebenlocke(Creature* creature) : ScriptedAI(creature) { }
 
-    void sQuestAccept(Player* /*player*/, Quest const* quest) override
+    void QuestAccept(Player* /*player*/, Quest const* quest) override
     {
         if (quest->GetQuestId() == QUEST_EMBALMERS_REVENGE)
         {

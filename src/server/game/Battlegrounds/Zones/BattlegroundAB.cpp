@@ -30,7 +30,7 @@
 #include "WorldSession.h"
 #include "WorldStatePackets.h"
 
-BattlegroundAB::BattlegroundAB()
+BattlegroundAB::BattlegroundAB(BattlegroundTemplate const* battlegroundTemplate) : Battleground(battlegroundTemplate)
 {
     m_IsInformedNearVictory = false;
     m_BuffChange = true;
@@ -401,7 +401,7 @@ void BattlegroundAB::_NodeOccupied(uint8 node, Team team)
     //aura should only apply to players who have accupied the node, set correct faction for trigger
     if (trigger)
     {
-        trigger->setFaction(team == ALLIANCE ? 84 : 83);
+        trigger->SetFaction(team == ALLIANCE ? FACTION_ALLIANCE_GENERIC : FACTION_HORDE_GENERIC);
         trigger->CastSpell(trigger, SPELL_HONORABLE_DEFENDER_25Y, false);
     }
 }

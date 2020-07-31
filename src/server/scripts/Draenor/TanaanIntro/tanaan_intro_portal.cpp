@@ -288,7 +288,7 @@ public:
 
         void Reset() override
         {
-            go->setShouldIntersectWithAllPhases(true);
+            me->setShouldIntersectWithAllPhases(true);
         }
     };
 

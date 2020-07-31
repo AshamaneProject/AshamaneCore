@@ -1746,7 +1746,7 @@ class spell_warlock_seed_of_corruption : public SpellScriptLoader
                     if (Player* playerCaster = caster->ToPlayer())
                     {
                         uint32 spellPowerForSchool = playerCaster->m_activePlayerData->ModDamageDonePos[SPELL_SCHOOL_SHADOW] - playerCaster->m_activePlayerData->ModDamageDoneNeg[SPELL_SCHOOL_SHADOW];
-                        amount += CalculatePct(spellPowerForSchool, sSpellMgr->GetSpellInfo(SPELL_WARLOCK_SEED_OF_CORRUPTION)->GetEffect(EFFECT_0)->BasePoints);
+                        amount += CalculatePct(spellPowerForSchool, sSpellMgr->GetSpellInfo(SPELL_WARLOCK_SEED_OF_CORRUPTION, GetCastDifficulty())->GetEffect(EFFECT_0)->BasePoints);
                     }
                 }
             }
@@ -2500,12 +2500,9 @@ class gameobject_warlock_soulwell : public GameObjectScript
             {
             }
 
-            bool GossipHello(Player* player, bool isUse) override
+            bool GossipHello(Player* player) override
             {
-                if (!isUse)
-                    return true;
-
-                Unit * owner = go->GetOwner();
+                Unit * owner = me->GetOwner();
                 if (!owner || owner->GetTypeId() != TYPEID_PLAYER || !player->IsInSameRaidWith(owner->ToPlayer()))
                     return true;
 
@@ -3165,7 +3162,7 @@ public:
         void Register() override
         {
             OnEffectHitTarget += SpellEffectFn(spell_warlock_artifact_thalkiels_consumption_SpellScript::HandleHit, EFFECT_0, SPELL_EFFECT_DUMMY);
-            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_warlock_artifact_thalkiels_consumption_SpellScript::SaveDamage, EFFECT_1, TARGET_UNIT_CASTER_PET);
+            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_warlock_artifact_thalkiels_consumption_SpellScript::SaveDamage, EFFECT_1, TARGET_UNIT_CASTER_AND_SUMMONS);
         }
     };
 
@@ -4044,9 +4041,9 @@ class spell_warlock_demonic_empowerment : public SpellScriptLoader
                 AfterCast += SpellCastFn(spell_warlock_demonic_empowerment_SpellScript::HandleCast);
                 SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(m_scriptSpellId);
                 // automatically hook SPELL_EFFECT_SCHOOL_DAMAGE
-                for (SpellEffectInfo const* effect : spellInfo->GetEffectsForDifficulty(DIFFICULTY_NONE))
-                    if (effect && effect->TargetA.GetTarget() == TARGET_UNIT_CASTER_PET)
-                        OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_warlock_demonic_empowerment_SpellScript::FilterTargets, effect->EffectIndex, TARGET_UNIT_CASTER_PET);
+                for (SpellEffectInfo const* effect : spellInfo->GetEffects())
+                    if (effect && effect->TargetA.GetTarget() == TARGET_UNIT_CASTER_AND_SUMMONS)
+                        OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_warlock_demonic_empowerment_SpellScript::FilterTargets, effect->EffectIndex, TARGET_UNIT_CASTER_AND_SUMMONS);
             }
         };
 
@@ -4090,7 +4087,7 @@ class spell_warlock_demonwrath : public SpellScriptLoader
 
             void Register() override
             {
-                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_warlock_demonwrath_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_CASTER_PET);
+                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_warlock_demonwrath_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_CASTER_AND_SUMMONS);
             }
         };
 

@@ -39,7 +39,7 @@ public:
 
     bool OnGossipHello(Player* player, GameObject* go) override
     {
-        SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(181981);
+        SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(181981, DIFFICULTY_NONE);
 
         player->SetPower(POWER_ALTERNATE_POWER, player->GetPower(POWER_ALTERNATE_POWER) + spellInfo->GetEffect(EFFECT_0)->BasePoints);
 

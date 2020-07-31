@@ -392,7 +392,7 @@ public:
             if (me->HealthBelowPct(10) && inPhase2 && inPhase3 && !endEncounter)
             {
                 JustDied(me);
-                me->setFaction(35);
+                me->SetFaction(35);
                 me->AddUnitFlag(UnitFlags(UNIT_NPC_FLAG_GOSSIP));
                 endEncounter = true;
             }
@@ -459,7 +459,7 @@ public:
 
                     case OdynEvents::EventStartPhase2:
                         Talk(SAY_COMBAT);
-                        me->setFaction(14);
+                        me->SetFaction(14);
                         me->SetReactState(REACT_AGGRESSIVE);
                         //me->CastSpell(me, SPELL_LEAP_INTO_BATTLE)
                         me->GetMotionMaster()->MoveJump(2399.73f, 528.816f, 748.997f, 0.0f, 25.0f, 10.0f);

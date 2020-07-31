@@ -144,7 +144,7 @@ struct npc_zapnozzle : public ScriptedAI
             });
     }
 
-    void sQuestReward(Player* /*player*/, Quest const* quest, uint32 /*opt*/) override
+    void QuestReward(Player* /*player*/, Quest const* quest, uint32 /*opt*/) override
     {
         if (quest->GetQuestId() == 14239)
             InitSecondEventSchedulers();
@@ -192,7 +192,7 @@ class gob_goblin_escape_pod : public GameObjectAI
 public:
     gob_goblin_escape_pod(GameObject* go) : GameObjectAI(go) { }
 
-    void OnStateChanged(uint32 state, Unit* unit) override
+    void OnLootStateChanged(uint32 state, Unit* unit) override
     {
         if (unit && state == GO_ACTIVATED)
         {
@@ -209,7 +209,7 @@ public:
                 }
 
                 player->KilledMonsterCredit(34748);
-                go->DestroyForPlayer(player);
+                me->DestroyForPlayer(player);
             }
         }
     }
@@ -321,7 +321,7 @@ struct npc_foreman_dampwick : public ScriptedAI
 {
     npc_foreman_dampwick(Creature* creature) : ScriptedAI(creature) {}
 
-    void sQuestAccept(Player* player, Quest const* quest) override
+    void QuestAccept(Player* player, Quest const* quest) override
     {
         if (quest->GetQuestId() == QUEST_MINER_TROUBLES)
         {
@@ -543,7 +543,7 @@ struct npc_killag_sangrecroc : public ScriptedAI
 {
     npc_killag_sangrecroc(Creature* creature) : ScriptedAI(creature) {}
 
-    void sQuestAccept(Player* player, const Quest* quest) override
+    void QuestAccept(Player* player, const Quest* quest) override
     {
         if (quest->GetQuestId() == QUEST_INFRARED_INFRADEAD)
         {
@@ -563,7 +563,7 @@ struct npc_killag_sangrecroc : public ScriptedAI
         }
     }
 
-    void sQuestReward(Player* player, const Quest* quest, uint32 ) override
+    void QuestReward(Player* player, const Quest* quest, uint32 ) override
     {
         if (quest->GetQuestId() == QUEST_INFRARED_INFRADEAD)
             player->RemoveAurasDueToSpell(SPELL_INFRARED_ORC_SCOUT_AURA);
@@ -627,7 +627,7 @@ struct npc_gyrocopterequest_giver : public ScriptedAI
 {
     npc_gyrocopterequest_giver(Creature* creature) : ScriptedAI(creature) {}
 
-    void sQuestAccept(Player* player, const Quest* quest) override
+    void QuestAccept(Player* player, const Quest* quest) override
     {
         if (quest->GetQuestId() == QUEST_PRECIOUS_CARO)
         {
@@ -680,7 +680,7 @@ struct npc_lost_isles_thrall_prisonner : public ScriptedAI
                     player->KilledMonsterCredit(me->GetEntry());
     }
 
-    void sQuestAccept(Player* player, const Quest* /*quest*/) override
+    void QuestAccept(Player* player, const Quest* /*quest*/) override
     {
         Talk(0, player);
     }
@@ -700,7 +700,7 @@ struct npc_lost_isles_thrall_top_boat : public ScriptedAI
 {
     npc_lost_isles_thrall_top_boat(Creature* creature) : ScriptedAI(creature) {}
 
-    void sQuestAccept(Player* player, const Quest* quest) override
+    void QuestAccept(Player* player, const Quest* quest) override
     {
         if (quest->GetQuestId() == QUEST_WARCHIEF_REVENGE)
         {
@@ -798,7 +798,7 @@ struct npc_sassy_rocket_sling : public ScriptedAI
 {
     npc_sassy_rocket_sling(Creature* creature) : ScriptedAI(creature) {}
 
-    void sQuestAccept(Player* player, Quest const* quest) override
+    void QuestAccept(Player* player, Quest const* quest) override
     {
         if (quest->GetQuestId() == QUEST_UP_UP_AND_AWAY)
             player->CastSpell(player, SPELL_SUMMON_GALLYWIX, true);
@@ -1324,7 +1324,7 @@ public:
                             me->Say(CRACK_PROVOC, LANG_UNIVERSAL, player);
                             naga = player->SummonCreature(38448, zone->GetPositionX(), zone->GetPositionY(), zone->GetPositionZ() + 2, zone->GetOrientation(), TEMPSUMMON_CORPSE_TIMED_DESPAWN, 60 * IN_MILLISECONDS);
                             if (naga)
-                                naga->setFaction(35);
+                                naga->SetFaction(35);
                         }
                         zone->DespawnOrUnsummon();
                         start = true;
@@ -1375,7 +1375,7 @@ public:
                 if (mui_event <= diff)
                 {
                     combats = false;
-                    naga->setFaction(14);
+                    naga->SetFaction(14);
                     mui_event  = 4000;
                     me->GetMotionMaster()->MovePoint(1, me->GetHomePosition());
 
@@ -2082,7 +2082,7 @@ public:
             if (who->GetEntry() == 39592)
             {
                 isEventInProgress = true;
-                me->setFaction(14);
+                me->SetFaction(14);
                 //Talk(-1039585, me);
             }
         }
@@ -2097,7 +2097,7 @@ public:
             if (damage >= me->GetHealth())
             {
                 damage = 0;
-                me->setFaction(35);
+                me->SetFaction(35);
                 //Talk(-1039588, me);
                 end = true;
                 if (Creature *c = me->FindNearestCreature(39592, 30))

@@ -73,6 +73,13 @@ WorldPacket const* WorldPackets::Pet::PetStableList::Write()
     return &_worldPacket;
 }
 
+WorldPacket const* WorldPackets::Pet::PetStableResult::Write()
+{
+    _worldPacket << uint8(Result);
+
+    return &_worldPacket;
+}
+
 WorldPacket const* WorldPackets::Pet::PetLearnedSpells::Write()
 {
     _worldPacket << uint32(Spells.size());
@@ -207,6 +214,22 @@ WorldPacket const* WorldPackets::Pet::PetAdded::Write()
 
     _worldPacket.WriteBits(NewPet.PetName.length(), 8);
     _worldPacket.WriteString(NewPet.PetName);
+
+    return &_worldPacket;
+}
+
+WorldPacket const* WorldPackets::Pet::PetActionFeedback::Write()
+{
+    _worldPacket << int32(SpellID);
+    _worldPacket << uint8(Response);
+
+    return &_worldPacket;
+}
+
+WorldPacket const* WorldPackets::Pet::PetActionSound::Write()
+{
+    _worldPacket << UnitGUID;
+    _worldPacket << int32(Action);
 
     return &_worldPacket;
 }

@@ -470,7 +470,7 @@ public:
                 if (Creature* trigger = me->SummonCreature(NPC_WORLD_TRIGGER_TINY, me->GetPositionWithOffset({ 8.0f, 8.0f, frand(25.0f, 35.0f), 0.0f }), TEMPSUMMON_TIMED_DESPAWN, 1000))
                 {
                     trigger->SetVisible(false);
-                    trigger->setFaction(me->getFaction());
+                    trigger->SetFaction(me->GetFaction());
                     trigger->SetDisableGravity(true);
                     trigger->CastSpell(me, SPELL_METEOR, true);
                 }
@@ -1175,7 +1175,7 @@ public:
             me->GetPosition(x, y, z);
             me->UpdateGroundPositionZ(x, y, z);
             me->GetMotionMaster()->MovePoint(0, x, y, z);
-            me->SetPosition(x, y, z, 0);
+            me->UpdatePosition(x, y, z, 0);
         }
 
         void EnterCombat(Unit* /*who*/) override { }
@@ -1293,7 +1293,7 @@ public:
             me->GetPosition(x, y, z);
             me->UpdateGroundPositionZ(x, y, z);
             me->GetMotionMaster()->MovePoint(0, x, y, z);
-            me->SetPosition(x, y, z, 0);
+            me->UpdatePosition(x, y, z, 0);
             hyjal_trashAI::JustDied(killer);
         }
 

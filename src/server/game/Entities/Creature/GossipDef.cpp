@@ -437,7 +437,7 @@ void PlayerMenu::SendQuestGiverQuestDetails(Quest const* quest, ObjectGuid npcGU
         Quest::AddQuestLevelToTitle(packet.QuestTitle, quest->GetQuestLevel());
 
     packet.QuestGiverGUID = npcGUID;
-    packet.InformUnit = _session->GetPlayer()->GetDivider();
+    packet.InformUnit = _session->GetPlayer()->GetPlayerSharingQuest();
     packet.QuestID = quest->GetQuestId();
     packet.PortraitGiver = quest->GetQuestGiverPortrait();
     packet.PortraitGiverMount = quest->GetQuestGiverPortraitMount();
@@ -450,19 +450,10 @@ void PlayerMenu::SendQuestGiverQuestDetails(Quest const* quest, ObjectGuid npcGU
     packet.SuggestedPartyMembers = quest->GetSuggestedPlayers();
 
     // RewardSpell can teach multiple spells in trigger spell effects. But not all effects must be SPELL_EFFECT_LEARN_SPELL. See example spell 33950
-    if (quest->GetRewSpell())
-    {
-        SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(quest->GetRewSpell());
-        if (spellInfo->HasEffect(SPELL_EFFECT_LEARN_SPELL))
-        {
-            SpellEffectInfoVector effects = spellInfo->GetEffectsForDifficulty(DIFFICULTY_NONE);
-            for (SpellEffectInfoVector::const_iterator itr = effects.begin(); itr != effects.end(); ++itr)
-            {
-                if ((*itr)->IsEffect(SPELL_EFFECT_LEARN_SPELL))
-                    packet.LearnSpells.push_back((*itr)->TriggerSpell);
-            }
-        }
-    }
+    if (SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(quest->GetRewSpell(), DIFFICULTY_NONE))
+        for (SpellEffectInfo const* effect : spellInfo->GetEffects())
+            if (effect->IsEffect(SPELL_EFFECT_LEARN_SPELL))
+                packet.LearnSpells.push_back(effect->TriggerSpell);
 
     quest->BuildQuestRewards(packet.Rewards, _session->GetPlayer());
 
@@ -598,13 +589,13 @@ void PlayerMenu::SendQuestGiverRequestItems(Quest const* quest, ObjectGuid npcGU
 
     if (canComplete)
     {
-        packet.CompEmoteDelay = quest->EmoteOnCompleteDelay;
-        packet.CompEmoteType = quest->EmoteOnComplete;
+        packet.CompEmoteDelay = quest->GetCompleteEmoteDelay();
+        packet.CompEmoteType = quest->GetCompleteEmote();
     }
     else
     {
-        packet.CompEmoteDelay = quest->EmoteOnIncompleteDelay;
-        packet.CompEmoteType = quest->EmoteOnIncomplete;
+        packet.CompEmoteDelay = quest->GetIncompleteEmoteDelay();
+        packet.CompEmoteType = quest->GetIncompleteEmote();
     }
 
     packet.QuestFlags[0] = quest->GetFlags();

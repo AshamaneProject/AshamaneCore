@@ -826,7 +826,7 @@ public:
                     me->HandleEmoteCommand(EMOTE_STATE_NONE);
                     me->SetWalk(true);
                     float x, y, z;
-                    me->GetClosePoint(x, y, z, me->GetObjectSize() / 3, 15.0f);
+                    me->GetClosePoint(x, y, z, me->GetCombatReach() / 3, 15.0f);
                     me->GetMotionMaster()->MovePoint(0, x, y, z);
                     break;
                 case EVENT_CREEPING_DOOM:
@@ -1365,7 +1365,7 @@ public:
                     if (TempSummon* soulwrath = me->SummonCreature(105000, me->GetPosition(), TEMPSUMMON_DEAD_DESPAWN, 20000, 0, true))
                     {
                         float x, y, z;
-                        soulwrath->GetClosePoint(x, y, z, soulwrath->GetObjectSize() / 3, 25.0f);
+                        soulwrath->GetClosePoint(x, y, z, soulwrath->GetCombatReach() / 3, 25.0f);
                         soulwrath->GetMotionMaster()->MovePoint(0, x, y, z);
                         soulwrath->SetReactState(REACT_AGGRESSIVE);
                     }

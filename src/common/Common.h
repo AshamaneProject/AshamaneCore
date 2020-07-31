@@ -129,10 +129,20 @@ TC_COMMON_API extern char const* localeNames[TOTAL_LOCALES];
 
 TC_COMMON_API LocaleConstant GetLocaleByName(std::string const& name);
 
+constexpr inline bool IsValidLocale(LocaleConstant locale)
+{
+    return locale < TOTAL_LOCALES && locale != LOCALE_none;
+}
+
 #pragma pack(push, 1)
 
-struct TC_COMMON_API LocalizedString
+struct LocalizedString
 {
+    constexpr char const* operator[](LocaleConstant locale) const
+    {
+        return Str[locale];
+    }
+
     char const* Str[TOTAL_LOCALES];
 };
 
@@ -152,11 +162,6 @@ struct TC_COMMON_API LocalizedString
 #endif
 
 #define MAX_QUERY_LEN 32*1024
-
-namespace Trinity
-{
-    using std::make_unique;
-}
 
 namespace Ashamane
 {

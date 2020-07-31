@@ -104,7 +104,7 @@ struct npc_huldar : public ScriptedAI
 {
     npc_huldar(Creature* creature) : ScriptedAI(creature) {}
 
-    void sQuestAccept(Player* player, Quest const* quest) override
+    void QuestAccept(Player* player, Quest const* quest) override
     {
         switch (quest->GetQuestId())
         {
@@ -218,7 +218,7 @@ struct npc_ando_blastenheimer : public ScriptedAI
 {
     npc_ando_blastenheimer(Creature* creature) : ScriptedAI(creature) {}
 
-    void sQuestAccept(Player* player, Quest const* quest) override
+    void QuestAccept(Player* player, Quest const* quest) override
     {
         switch (quest->GetQuestId())
         {

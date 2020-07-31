@@ -250,7 +250,7 @@ struct boss_kingaroth : public BossAI
         case NPC_GAROTHI_DECIMATOR:
         case NPC_GAROTHI_DEMOLISHER:
         {
-            summon->setFaction(me->getFaction());
+            summon->SetFaction(me->GetFaction());
             break;
         }
         }

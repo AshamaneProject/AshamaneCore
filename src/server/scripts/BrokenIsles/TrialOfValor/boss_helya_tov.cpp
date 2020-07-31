@@ -746,7 +746,7 @@ public:
 
         void Reset() override
         {
-            me->setFaction(14);
+            me->SetFaction(14);
             me->AttackStop();
             me->CastSpell(me, 227990, true);
         }

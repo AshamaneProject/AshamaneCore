@@ -353,8 +353,6 @@ WorldSocket::ReadDataHandlerResult WorldSocket::ReadDataHandler()
     }
 
     WorldPacket packet(std::move(_packetBuffer), GetConnectionType());
-    WorldPacket* packetToQueue = nullptr;
-
     OpcodeClient opcode = packet.read<OpcodeClient>();
     if (uint32(opcode) >= uint32(NUM_OPCODE_HANDLERS))
     {
@@ -425,13 +423,12 @@ WorldSocket::ReadDataHandlerResult WorldSocket::ReadDataHandler()
             HandleAuthContinuedSession(authSession);
             return ReadDataHandlerResult::WaitingForQuery;
         }
-        case CMSG_KEEP_ALIVE: // todo: handle this packet in the same way of CMSG_TIME_SYNC_RESP
+        case CMSG_KEEP_ALIVE:
             sessionGuard.lock();
             LogOpcodeText(opcode, sessionGuard);
             if (_worldSession)
-                _worldSession->ResetTimeOutTime();
-
-            return ReadDataHandlerResult::Ok;
+                _worldSession->ResetTimeOutTime(true);
+            break;
         case CMSG_LOG_DISCONNECT:
             LogOpcodeText(opcode, sessionGuard);
             packet.rfinish();   // contains uint32 disconnectReason;
@@ -458,42 +455,33 @@ WorldSocket::ReadDataHandlerResult WorldSocket::ReadDataHandler()
             LogOpcodeText(opcode, sessionGuard);
             HandleEnableEncryptionAck();
             break;
-        case CMSG_TIME_SYNC_RESPONSE:
-            packetToQueue = new WorldPacket(std::move(packet), std::chrono::steady_clock::now());
-            break;
-
         default:
-            packetToQueue = new WorldPacket(std::move(packet));
+        {
+            sessionGuard.lock();
+
+            LogOpcodeText(opcode, sessionGuard);
+
+            if (!_worldSession)
+            {
+                TC_LOG_ERROR("network.opcode", "ProcessIncoming: Client not authed opcode = %u", uint32(opcode));
+                return ReadDataHandlerResult::Error;
+            }
+
+            OpcodeHandler const* handler = opcodeTable[opcode];
+            if (!handler)
+            {
+                TC_LOG_ERROR("network.opcode", "No defined handler for opcode %s sent by %s", GetOpcodeNameForLogging(static_cast<OpcodeClient>(packet.GetOpcode())).c_str(), _worldSession->GetPlayerInfo().c_str());
+                break;
+            }
+
+            // Our Idle timer will reset on any non PING opcodes on login screen, allowing us to catch people idling.
+            _worldSession->ResetTimeOutTime(false);
+
+            // Copy the packet to the heap before enqueuing
+            _worldSession->QueuePacket(new WorldPacket(std::move(packet)));
             break;
+        }
     }
-
-    if (!packetToQueue)
-        return ReadDataHandlerResult::Ok;
-
-    sessionGuard.lock();
-
-    LogOpcodeText(opcode, sessionGuard);
-
-    if (!_worldSession)
-    {
-        TC_LOG_ERROR("network.opcode", "ProcessIncoming: Client not authed opcode = %u", uint32(opcode));
-        delete packetToQueue;
-        return ReadDataHandlerResult::Error;
-    }
-
-    OpcodeHandler const* handler = opcodeTable[opcode];
-    if (!handler)
-    {
-        TC_LOG_ERROR("network.opcode", "No defined handler for opcode %s sent by %s", GetOpcodeNameForLogging(static_cast<OpcodeClient>(packet.GetOpcode())).c_str(), _worldSession->GetPlayerInfo().c_str());
-        delete packetToQueue;
-        return ReadDataHandlerResult::Error;
-    }
-
-    // Our Idle timer will reset on any non PING opcodes on login screen, allowing us to catch people idling.
-    _worldSession->ResetTimeOutTime();
-
-    // Copy the packet to the heap before enqueuing
-    _worldSession->QueuePacket(packetToQueue);
 
     return ReadDataHandlerResult::Ok;
 }
@@ -634,10 +622,10 @@ struct AccountInfo
     explicit AccountInfo(Field* fields)
     {
         //           0             1           2          3                4            5           6          7            8     9     10  11        12
-        // SELECT a.id, a.sessionkey, ba.last_ip, ba.locked, ba.lock_country, a.expansion, a.mutetime, ba.locale, a.recruiter, a.os, ba.id, ba.email, aa.gmLevel,
-        //                                                              12                                                            13    14
+        // SELECT a.id, a.sessionkey, ba.last_ip, ba.locked, ba.lock_country, a.expansion, a.mutetime, ba.locale, a.recruiter, a.os, ba.id, ba.email, aa.SecurityLevel,
+        //                                                              13                                                            14    15
         // bab.unbandate > UNIX_TIMESTAMP() OR bab.unbandate = bab.bandate, ab.unbandate > UNIX_TIMESTAMP() OR ab.unbandate = ab.bandate, r.id
-        // FROM account a LEFT JOIN battlenet_accounts ba ON a.battlenet_account = ba.id LEFT JOIN account_access aa ON a.id = aa.id AND aa.RealmID IN (-1, ?)
+        // FROM account a LEFT JOIN battlenet_accounts ba ON a.battlenet_account = ba.id LEFT JOIN account_access aa ON a.id = aa.AccountID AND aa.RealmID IN (-1, ?)
         // LEFT JOIN battlenet_account_bans bab ON ba.id = bab.id LEFT JOIN account_banned ab ON a.id = ab.id LEFT JOIN account r ON a.id = r.recruiter
         // WHERE a.username = ? ORDER BY aa.RealmID DESC LIMIT 1
         Game.Id = fields[0].GetUInt32();
@@ -864,8 +852,6 @@ void WorldSocket::HandleAuthSessionCallback(std::shared_ptr<WorldPackets::Auth::
     _worldSession = new WorldSession(account.Game.Id, std::move(authSession->RealmJoinTicket), account.BattleNet.Id, shared_from_this(), account.Game.Security,
         account.Game.Expansion, mutetime, account.Game.OS, account.BattleNet.Locale, account.Game.Recruiter, account.Game.IsRectuiter, std::move(account.BattleNet.Name));
 
-    _worldSession->LoadRecoveries();
-
     // Initialize Warden system only if it is enabled by config
     if (wardenActive)
         _worldSession->InitWarden(&_sessionKey);
@@ -1043,7 +1029,10 @@ bool WorldSocket::HandlePing(WorldPackets::Auth::Ping& ping)
         std::lock_guard<std::mutex> sessionGuard(_worldSessionLock);
 
         if (_worldSession)
+        {
             _worldSession->SetLatency(ping.Latency);
+            _worldSession->ResetClientTimeDelay();
+        }
         else
         {
             TC_LOG_ERROR("network", "WorldSocket::HandlePing: peer sent CMSG_PING, but is not authenticated or got recently kicked, address = %s", GetRemoteIpAddress().to_string().c_str());

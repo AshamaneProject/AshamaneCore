@@ -1045,7 +1045,7 @@ class npc_warmaster_blackhorn_twilight_elite_dreadblade_slayer: public CreatureS
                 if ((dist * dist) >= startPos.GetExactDist2dSq(endPos.GetPositionX(), endPos.GetPositionY()))
                     return false;
 
-                float size = pTarget->GetObjectSize() / 2;
+                float size = pTarget->GetCombatReach() / 2;
                 float angle = startPos.GetAngle(&endPos);
                 return (size * size) >= pTarget->GetExactDist2dSq(startPos.GetPositionX() + std::cos(angle) * dist, startPos.GetPositionY() + std::sin(angle) * dist);
             }

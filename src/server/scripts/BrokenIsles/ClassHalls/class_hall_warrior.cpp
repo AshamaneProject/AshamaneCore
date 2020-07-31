@@ -137,7 +137,7 @@ struct npc_eitrigg_93775 : public ScriptedAI
         }
     }
 
-    void sQuestAccept(Player* player, Quest const* quest) override
+    void QuestAccept(Player* player, Quest const* quest) override
     {
         if (quest->GetQuestId() == QUEST_H_A_DESPERATE_PLEA)
         {
@@ -183,7 +183,7 @@ struct npc_sergeant_dalton_108961 : public ScriptedAI
         }
     }
 
-    void sQuestAccept(Player* player, Quest const* quest) override
+    void QuestAccept(Player* player, Quest const* quest) override
     {
         if (quest->GetQuestId() == QUEST_A_AN_IMPORTANT_MISSION)
         {
@@ -259,7 +259,7 @@ struct npc_class_hall_warrior_aerylia : public ScriptedAI
 {
     npc_class_hall_warrior_aerylia(Creature* creature) : ScriptedAI(creature) { }
 
-    void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId) override
+    bool GossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId) override
     {
         uint32 spellId = 0;
 
@@ -297,6 +297,7 @@ struct npc_class_hall_warrior_aerylia : public ScriptedAI
         }
 
         CloseGossipMenuFor(player);
+        return false;
     }
 };
 
@@ -393,7 +394,7 @@ struct npc_danica_the_reclaimer : public ScriptedAI
     }
 
     // Should be some other way to do this...
-    void sQuestAccept(Player* player, Quest const* /*quest*/) override
+    void QuestAccept(Player* player, Quest const* /*quest*/) override
     {
         TempSummon* summon = player->SummonCreature(NPC_DANICA_THE_RECLAIMER, 1059.613f, 7224.605f, 100.4608f, 0.03462749f, TEMPSUMMON_MANUAL_DESPAWN, 0, true);
 
@@ -1245,7 +1246,7 @@ struct npc_high_overlord_saurfang_93773 : public ScriptedAI
         }
     }
 
-    void sQuestAccept(Player* player, Quest const* quest) override
+    void QuestAccept(Player* player, Quest const* quest) override
     {
         if (quest->GetQuestId() == QUEST_H_RETURN_TO_THE_BROKEN_SHORE)
         {
@@ -1253,7 +1254,7 @@ struct npc_high_overlord_saurfang_93773 : public ScriptedAI
         }
     }
 
-    void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId)
+    bool GossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId)
     {
         if (player->HasQuest(QUEST_H_A_DESPERATE_PLEA))
         {
@@ -1266,6 +1267,8 @@ struct npc_high_overlord_saurfang_93773 : public ScriptedAI
         {
 
         }
+
+        return false;
     }
 };
 

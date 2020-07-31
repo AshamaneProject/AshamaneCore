@@ -101,7 +101,7 @@ struct  npc_nathanos_team_meeting : public ScriptedAI
 {
     npc_nathanos_team_meeting(Creature* creature) : ScriptedAI(creature) { }
 
-    void sQuestAccept(Player* player, Quest const* /*quest*/) override
+    void QuestAccept(Player* player, Quest const* /*quest*/) override
     {
         Talk(0);
         player->SummonGameObject(GOB_BLIGHTCALLER_EASY_DEATH, 1577.965f, -4455.622f, 16.55939f, 0.f, QuaternionData(0.f, 0.f, 0.f, 1.f), 0, true);

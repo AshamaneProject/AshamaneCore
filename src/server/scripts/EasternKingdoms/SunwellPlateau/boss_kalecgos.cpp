@@ -159,7 +159,7 @@ public:
             if (Creature* Sath = ObjectAccessor::GetCreature(*me, SathGUID))
                 Sath->AI()->EnterEvadeMode();
 
-            me->setFaction(14);
+            me->SetFaction(14);
             if (!bJustReset) //first reset at create
             {
                 me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
@@ -386,7 +386,7 @@ public:
             switch (TalkSequence)
             {
                 case 1:
-                    me->setFaction(35);
+                    me->SetFaction(35);
                     TalkTimer = 1000;
                     break;
                 case 2:
@@ -547,7 +547,7 @@ public:
     {
 #if MAX_PLAYERS_IN_SPECTRAL_REALM > 0
         uint8 SpectralPlayers = 0;
-        Map::PlayerList const &PlayerList = go->GetMap()->GetPlayers();
+        Map::PlayerList const &PlayerList = me->GetMap()->GetPlayers();
         for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
         {
             if (i->GetSource() && i->GetSource()->GetPositionZ() < DEMON_REALM_Z + 5)
@@ -666,7 +666,7 @@ public:
         void JustDied(Unit* /*killer*/) override
         {
             Talk(SAY_SATH_DEATH);
-            me->SetPosition(me->GetPositionX(), me->GetPositionY(), DRAGON_REALM_Z, me->GetOrientation());
+            me->UpdatePosition(me->GetPositionX(), me->GetPositionY(), DRAGON_REALM_Z, me->GetOrientation());
             TeleportAllPlayersBack();
             if (Creature* Kalecgos = ObjectAccessor::GetCreature(*me, KalecgosGUID))
             {

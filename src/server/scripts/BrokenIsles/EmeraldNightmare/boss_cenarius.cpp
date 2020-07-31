@@ -298,7 +298,7 @@ struct boss_cenarius_1 : public BossAI
         case NPC_TWISTED_SISTER:
         case NPC_NIGHTMARE_ANCIENT:
         {
-            summon->setFaction(me->getFaction());
+            summon->SetFaction(me->GetFaction());
             break;
         }
         }

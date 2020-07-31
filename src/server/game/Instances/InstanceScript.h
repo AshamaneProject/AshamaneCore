@@ -141,7 +141,7 @@ struct ObjectData
     uint32 type;
 };
 
-typedef std::set<AreaBoundary const*> CreatureBoundary;
+typedef std::vector<AreaBoundary const*> CreatureBoundary;
 
 struct BossInfo
 {

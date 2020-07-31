@@ -1763,7 +1763,7 @@ public:
             Item* item = caster->ToPlayer()->GetItemByPos(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_OFFHAND);
             if (item && item->GetTemplate()->GetInventoryType() == INVTYPE_SHIELD)
                 caster->CastSpell(caster, 146120, true);
-            else if (caster->getFaction() == 1732) // Alliance
+            else if (caster->GetFaction() == 1732) // Alliance
                 caster->CastSpell(caster, 147923, true);
             else // Horde
                 caster->CastSpell(caster, 146122, true);
@@ -2081,11 +2081,14 @@ class aura_warr_ignore_pain : public AuraScript
     {
         if (Unit* caster = GetCaster())
         {
-            SpellNonMeleeDamage spell(caster, caster, SPELL_WARRIOR_IGNORE_PAIN, 0, SPELL_SCHOOL_MASK_NORMAL);
-            spell.damage = dmgInfo.GetDamage() - dmgInfo.GetDamage() * 0.9f;
-            spell.cleanDamage = spell.damage;
-            caster->DealSpellDamage(&spell, false);
-            caster->SendSpellNonMeleeDamageLog(&spell);
+            if (SpellInfo const* warriorIgnorePain = sSpellMgr->GetSpellInfo(SPELL_WARRIOR_IGNORE_PAIN))
+            {
+                SpellNonMeleeDamage spell(caster, caster, warriorIgnorePain, 0, SPELL_SCHOOL_MASK_NORMAL);
+                spell.damage = dmgInfo.GetDamage() - dmgInfo.GetDamage() * 0.9f;
+                spell.cleanDamage = spell.damage;
+                caster->DealSpellDamage(&spell, false);
+                caster->SendSpellNonMeleeDamageLog(&spell);
+            }
         }
     }
 

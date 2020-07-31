@@ -28,6 +28,19 @@
 #include "World.h"
 #include "WorldStatePackets.h"
 
+uint32 const SI_MAX_RESOURCES = 200;
+
+uint32 const SI_AREATRIGGER_H = 4168;
+uint32 const SI_AREATRIGGER_A = 4162;
+
+uint32 const SI_TURNIN_QUEST_CM_A = 17090;
+uint32 const SI_TURNIN_QUEST_CM_H = 18199;
+
+uint32 const SI_SILITHYST_MOUND = 181597;
+
+uint8 const OutdoorPvPSIBuffZonesNum = 3;
+uint32 const OutdoorPvPSIBuffZones[OutdoorPvPSIBuffZonesNum] = { 1377, 3428, 3429 };
+
 OutdoorPvPSI::OutdoorPvPSI()
 {
     m_TypeId = OUTDOOR_PVP_SI;
@@ -157,7 +170,7 @@ bool OutdoorPvPSI::HandleDropFlag(Player* player, uint32 spellId)
             {
                 // he dropped it further, summon mound
                 Map* map = player->GetMap();
-                if (GameObject* go = GameObject::CreateGameObject(SI_SILITHYST_MOUND, map, *player, QuaternionData(), 255, GO_STATE_READY))
+                if (GameObject* go = GameObject::CreateGameObject(SI_SILITHYST_MOUND, map, *player, QuaternionData::fromEulerAnglesZYX(player->GetOrientation(), 0.0f, 0.0f), 255, GO_STATE_READY))
                 {
                     PhasingHandler::InheritPhaseShift(go, player);
                     go->SetRespawnTime(0);

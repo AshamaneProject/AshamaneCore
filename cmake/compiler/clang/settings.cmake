@@ -13,6 +13,12 @@ if(WITH_WARNINGS)
       -Wfatal-errors
       -Wno-mismatched-tags
       -Woverloaded-virtual)
+ 
+  if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 10)
+    target_compile_options(trinity-warning-interface
+      INTERFACE
+        -Wno-deprecated-copy) # warning in g3d
+  endif()
 
   message(STATUS "Clang: All warnings enabled")
 endif()
@@ -27,6 +33,7 @@ endif()
 
 # -Wno-narrowing needed to suppress a warning in g3d
 # -Wno-deprecated-register is needed to suppress 185 gsoap warnings on Unix systems.
+# -Wno-deprecated-copy needed to suppress a warning in g3d
 target_compile_options(trinity-compile-option-interface
   INTERFACE
     -Wno-narrowing

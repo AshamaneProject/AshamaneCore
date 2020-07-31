@@ -1252,9 +1252,9 @@ void GameEventMgr::GameEventSpawn(int16 event_id)
             sObjectMgr->AddCreatureToGrid(*itr, data);
 
             // Spawn if necessary (loaded grids only)
-            Map* map = sMapMgr->CreateBaseMap(data->mapid);
+            Map* map = sMapMgr->FindMap(data->mapid, 0);
             // We use spawn coords to spawn
-            if (!map->Instanceable() && map->IsGridLoaded(data->posX, data->posY))
+            if (map && !map->Instanceable() && map->IsGridLoaded(data->posX, data->posY))
                 Creature::CreateCreatureFromDB(*itr, map);
         }
     }
@@ -1274,9 +1274,9 @@ void GameEventMgr::GameEventSpawn(int16 event_id)
             sObjectMgr->AddGameobjectToGrid(*itr, data);
             // Spawn if necessary (loaded grids only)
             // this base map checked as non-instanced and then only existed
-            Map* map = sMapMgr->CreateBaseMap(data->mapid);
+            Map* map = sMapMgr->FindMap(data->mapid, 0);
             // We use current coords to unspawn, not spawn coords since creature can have changed grid
-            if (!map->Instanceable() && map->IsGridLoaded(data->posX, data->posY))
+            if (map && !map->Instanceable() && map->IsGridLoaded(data->posX, data->posY))
             {
                 if (GameObject* go = GameObject::CreateGameObjectFromDB(*itr, map, false))
                 {
@@ -1689,7 +1689,7 @@ public:
     {
         for (auto const& p : creatureMap)
             if (p.second->IsInWorld() && p.second->IsAIEnabled)
-                p.second->AI()->sOnGameEvent(_activate, _eventId);
+                p.second->AI()->OnGameEvent(_activate, _eventId);
     }
 
     void Visit(std::unordered_map<ObjectGuid, GameObject*>& gameObjectMap)

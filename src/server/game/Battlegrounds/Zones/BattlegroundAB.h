@@ -305,7 +305,7 @@ struct BattlegroundABScore final : public BattlegroundScore
 class BattlegroundAB : public Battleground
 {
     public:
-        BattlegroundAB();
+        BattlegroundAB(BattlegroundTemplate const* battlegroundTemplate);
         ~BattlegroundAB();
 
         void AddPlayer(Player* player) override;

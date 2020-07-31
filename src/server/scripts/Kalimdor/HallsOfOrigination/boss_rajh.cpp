@@ -154,7 +154,7 @@ public:
             switch (summon->GetEntry())
             {
             case NPC_INFERNO_TRIGGER:
-                summon->setFaction(16);
+                summon->SetFaction(16);
                 summon->SetDisplayFromModel(0);
                 summon->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_NPC));
                 summon->AI()->DoCastAOE(SPELL_INFERNO_JUMP_VISUAL);
@@ -349,7 +349,7 @@ public:
             DoCast(me, SPELL_SUN);
             me->SetCanFly(true);
             me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
-            me->setFaction(16);
+            me->SetFaction(16);
             events.ScheduleEvent(EVENT_MOVE_UP, 100);
             me->SetReactState(REACT_PASSIVE);
         }

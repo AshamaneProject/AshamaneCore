@@ -55,9 +55,6 @@ enum EternalBoard
 {
     QUEST_A_PAWN_ON_THE_ETERNAL_BOARD = 8519,
 
-    FACTION_HOSTILE                   = 14,
-    FACTION_FRIENDLY                  = 35,
-
     EVENT_AREA_RADIUS                 = 65,     // 65yds
     EVENT_COOLDOWN                    = 500000, // in ms. appears after event completed or failed (should be = Adds despawn time)
 
@@ -982,7 +979,7 @@ public:
                     Merithra->SetNpcFlags(UNIT_NPC_FLAG_NONE);
                     Merithra->SetStandState(UNIT_STAND_STATE_STAND);
                     Merithra->SetDisplayId(MERITHRA_NIGHT_ELF_FORM);
-                    Merithra->setFaction(35);
+                    Merithra->SetFaction(35);
                 }
 
                 if (Caelestrasz)
@@ -990,7 +987,7 @@ public:
                     Caelestrasz->SetNpcFlags(UNIT_NPC_FLAG_NONE);
                     Caelestrasz->SetStandState(UNIT_STAND_STATE_STAND);
                     Caelestrasz->SetDisplayId(CAELESTRASZ_NIGHT_ELF_FORM);
-                    Caelestrasz->setFaction(35);
+                    Caelestrasz->SetFaction(35);
                 }
 
                 if (Arygos)
@@ -998,7 +995,7 @@ public:
                     Arygos->SetNpcFlags(UNIT_NPC_FLAG_NONE);
                     Arygos->SetStandState(UNIT_STAND_STATE_STAND);
                     Arygos->SetDisplayId(ARYGOS_GNOME_FORM);
-                    Arygos->setFaction(35);
+                    Arygos->SetFaction(35);
                 }
 
                 if (Anachronos)
@@ -1389,17 +1386,18 @@ struct npc_magni_bronzebeard_heart_chamber : public ScriptedAI
 {
     npc_magni_bronzebeard_heart_chamber(Creature* creature) : ScriptedAI(creature) { }
 
-    void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 /*gossipListId*/) override
+    bool GossipSelect(Player* player, uint32 /*menuId*/, uint32 /*gossipListId*/) override
     {
         player->CastSpell(player, 268798, true); // Heart of Azeroth Scene
+        return false;
     }
 
-    void sQuestAccept(Player* player, Quest const* quest) override
+    void QuestAccept(Player* player, Quest const* quest) override
     {
-        if (quest->ID == 52428)
+        if (quest->GetQuestId() == 52428)
             player->PlayConversation(9001);
 
-        if (quest->ID == 51403 || quest->ID == 53031)
+        if (quest->GetQuestId() == 51403 || quest->GetQuestId() == 53031)
             player->PlayConversation(8689);
     }
 };
@@ -1513,17 +1511,17 @@ struct go_azeroth_heart_chamber_teleport_pad : public GameObjectAI
         if (!player)
             return false;
 
-        if (player->HasQuest(QUEST_SPEAKER_IMPERATIVE_ALLIANCE) && go->GetEntry() != GO_TELEPORT_PAD_ALLIANCE)
+        if (player->HasQuest(QUEST_SPEAKER_IMPERATIVE_ALLIANCE) && me->GetEntry() != GO_TELEPORT_PAD_ALLIANCE)
             return true;
-        else if (player->HasQuest(QUEST_SPEAKER_IMPERATIVE_HORDE) && go->GetEntry() != GO_TELEPORT_PAD_HORDE)
+        else if (player->HasQuest(QUEST_SPEAKER_IMPERATIVE_HORDE) && me->GetEntry() != GO_TELEPORT_PAD_HORDE)
             return true;
-        else if (!player->HasQuest(QUEST_SPEAKER_IMPERATIVE_ALLIANCE) && !player->HasQuest(QUEST_SPEAKER_IMPERATIVE_HORDE) && go->GetEntry() != GO_TELEPORT_PAD_SILITHUS)
+        else if (!player->HasQuest(QUEST_SPEAKER_IMPERATIVE_ALLIANCE) && !player->HasQuest(QUEST_SPEAKER_IMPERATIVE_HORDE) && me->GetEntry() != GO_TELEPORT_PAD_SILITHUS)
             return true;
 
         return false;
     }
 
-    bool GossipHello(Player* player, bool /*isUse*/) override
+    bool GossipHello(Player* player) override
     {
         player->KilledMonsterCredit(140176);
         player->KilledMonsterCredit(142930);

@@ -1037,7 +1037,7 @@ public:
         void UpdateAI(uint32 diff)
         {
             std::list<Player*> playerList;
-            go->GetPlayerListInGrid(playerList, 10.0f);
+            me->GetPlayerListInGrid(playerList, 10.0f);
             for (Player* player : playerList)
             {
                 if (player->GetQuestStatus(39686) == QUEST_STATUS_INCOMPLETE)

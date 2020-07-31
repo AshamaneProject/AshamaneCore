@@ -29,11 +29,6 @@ If this is a crash, post the crashlog (upload to https://gist.github.com/). Do n
 
 CHANGEME Tell us what should happen instead.
 
-**Project(s): <-- Mandatory**
-
-- [ ] Issue found playing in Live Ashamane Private Server.
-- [ ] Issue found in a compiled master repo from Git.
-
 **TC rev. hash/commit:** 
 
 CHANGEME Mandatory if Project == compiled master repo from Git, found it in first line of Server.log

@@ -311,7 +311,7 @@ public:
 
         void EnfeebleHealthEffect()
         {
-            SpellInfo const* info = sSpellMgr->GetSpellInfo(SPELL_ENFEEBLE_EFFECT);
+            SpellInfo const* info = sSpellMgr->GetSpellInfo(SPELL_ENFEEBLE_EFFECT, me->GetMap()->GetDifficultyID());
             if (!info)
                 return;
 
@@ -374,7 +374,7 @@ public:
             if (infernal)
             {
                 infernal->SetDisplayId(INFERNAL_MODEL_INVISIBLE);
-                infernal->setFaction(me->getFaction());
+                infernal->SetFaction(me->GetFaction());
                 if (point)
                     ENSURE_AI(netherspite_infernal::netherspite_infernalAI, infernal->AI())->point = point;
                 ENSURE_AI(netherspite_infernal::netherspite_infernalAI, infernal->AI())->malchezaar = me->GetGUID();
@@ -449,7 +449,7 @@ public:
                         if (axe)
                         {
                             axe->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
-                            axe->setFaction(me->getFaction());
+                            axe->SetFaction(me->GetFaction());
                             axes[i] = axe->GetGUID();
                             if (target)
                             {

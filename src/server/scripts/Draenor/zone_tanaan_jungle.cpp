@@ -263,7 +263,7 @@ public:
 
         void Reset() override
         {
-            me->setFaction(14);
+            me->SetFaction(14);
 
             me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
             me->GetMotionMaster()->MovePoint(1, 4092.80f, -760.21f, 2.89f, false);

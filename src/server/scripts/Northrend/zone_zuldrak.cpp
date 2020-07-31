@@ -58,7 +58,7 @@ public:
             me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
 
             float x, y, z;
-            me->GetClosePoint(x, y, z, me->GetObjectSize() / 3, 0.1f);
+            me->GetClosePoint(x, y, z, me->GetCombatReach() / 3, 0.1f);
 
             if (Creature* summon = me->SummonCreature(NPC_RAGECLAW, x, y, z, 0, TEMPSUMMON_DEAD_DESPAWN, 1000))
             {
@@ -138,7 +138,7 @@ public:
 
         void Reset() override
         {
-            me->setFaction(35);
+            me->SetFaction(35);
             DoCast(me, SPELL_KNEEL, true); // Little Hack for kneel - Thanks Illy :P
         }
 
@@ -151,7 +151,7 @@ public:
                 me->RemoveAurasDueToSpell(SPELL_LEFT_CHAIN);
                 me->RemoveAurasDueToSpell(SPELL_RIGHT_CHAIN);
                 me->RemoveAurasDueToSpell(SPELL_KNEEL);
-                me->setFaction(me->GetCreatureTemplate()->faction);
+                me->SetFaction(me->GetCreatureTemplate()->faction);
                 DoCast(me, SPELL_UNSHACKLED, true);
                 Talk(SAY_RAGECLAW);
                 me->GetMotionMaster()->MoveRandom(10);
@@ -183,7 +183,7 @@ public:
         void Reset() override
         {
             float x, y, z;
-            me->GetClosePoint(x, y, z, me->GetObjectSize() / 3, 25.0f);
+            me->GetClosePoint(x, y, z, me->GetCombatReach() / 3, 25.0f);
             me->GetMotionMaster()->MovePoint(0, x, y, z);
         }
 
@@ -270,12 +270,13 @@ public:
                 return;
         }
 
-        void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 /*gossipListId*/) override
+        bool GossipSelect(Player* player, uint32 /*menuId*/, uint32 /*gossipListId*/) override
         {
             _events.ScheduleEvent(EVENT_RECRUIT_1, 100);
             CloseGossipMenuFor(player);
             me->CastSpell(player, SPELL_QUEST_CREDIT, true);
             me->SetFacingToObject(player);
+            return false;
         }
 
         private:
@@ -555,13 +556,14 @@ public:
                 }
             }
 
-            void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 /*gossipListId*/) override
+            bool GossipSelect(Player* player, uint32 /*menuId*/, uint32 /*gossipListId*/) override
             {
                 CloseGossipMenuFor(player);
                 DoCast(player, SPELL_ALCHEMIST_APPRENTICE_INVISBUFF);
                 _playerGUID = player->GetGUID();
                 _getingredienttry = 1;
                 _events.ScheduleEvent(EVENT_EASY_123, 100);
+                return false;
             }
 
         private:

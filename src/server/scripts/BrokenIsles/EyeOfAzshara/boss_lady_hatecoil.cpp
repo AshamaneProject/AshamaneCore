@@ -319,7 +319,7 @@ class go_sand_dune : public GameObjectScript
 
             void Reset()
             {
-                go->AddFlag(GameObjectFlags(GO_FLAG_LOCKED | GO_FLAG_NOT_SELECTABLE));
+                me->AddFlag(GameObjectFlags(GO_FLAG_LOCKED | GO_FLAG_NOT_SELECTABLE));
             }
         };
 

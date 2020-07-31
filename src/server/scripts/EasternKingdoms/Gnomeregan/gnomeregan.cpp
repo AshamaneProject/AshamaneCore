@@ -124,17 +124,19 @@ public:
             }
         }
 
-        void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId) override
+        bool GossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId) override
         {
             if (gossipListId == 0)
             {
                 Start(true, false, player->GetGUID());
 
-                me->setFaction(player->getFaction());
+                me->SetFaction(player->GetFaction());
                 SetData(1, 0);
 
                 player->PlayerTalkClass->SendCloseGossip();
             }
+
+            return false;
         }
 
         void NextStep(uint32 uiTimerStep, bool bNextStep = true, uint8 uiPhaseStep = 0)
@@ -155,14 +157,14 @@ public:
             {
                 if (GameObject* go = ObjectAccessor::GetGameObject(*me, *itr))
                 {
-                    if (Creature* trigger = go->SummonTrigger(go->GetPositionX(), go->GetPositionY(), go->GetPositionZ(), 0, 1))
+                    if (Creature* trigger = me->SummonTrigger(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), 0, 1))
                     {
                         //visual effects are not working!
                         trigger->CastSpell(trigger, 11542, true);
                         trigger->CastSpell(trigger, 35470, true);
                     }
-                    go->RemoveFromWorld();
-                    //go->CastSpell(me, 12158); makes all die?!
+                    me->RemoveFromWorld();
+                    //me->CastSpell(me, 12158); makes all die?!
                 }
             }
 
@@ -188,7 +190,7 @@ public:
                 for (GuidList::const_iterator itr = GoSummonList.begin(); itr != GoSummonList.end(); ++itr)
                 {
                     if (GameObject* go = ObjectAccessor::GetGameObject(*me, *itr))
-                        go->RemoveFromWorld();
+                        me->RemoveFromWorld();
                 }
 
             if (!SummonList.empty())
@@ -225,8 +227,8 @@ public:
         {
             //just in case
             if (GetPlayerForEscort())
-                if (me->getFaction() != GetPlayerForEscort()->getFaction())
-                    me->setFaction(GetPlayerForEscort()->getFaction());
+                if (me->GetFaction() != GetPlayerForEscort()->GetFaction())
+                    me->SetFaction(GetPlayerForEscort()->GetFaction());
 
             switch (waypointId)
             {
@@ -308,7 +310,7 @@ public:
                 case 2:
                     if (GameObject* go = me->SummonGameObject(183410, -533.140f, -105.322f, -156.016f, 0.f, QuaternionData(), 1))
                     {
-                        GoSummonList.push_back(go->GetGUID());
+                        GoSummonList.push_back(me->GetGUID());
                         go->AddFlag(GO_FLAG_NOT_SELECTABLE); //We can't use it!
                     }
                     Summon(3);
@@ -323,7 +325,7 @@ public:
                 case 4:
                     if (GameObject* go = me->SummonGameObject(183410, -542.199f, -96.854f, -155.790f, 0.f, QuaternionData(), 1))
                     {
-                        GoSummonList.push_back(go->GetGUID());
+                        GoSummonList.push_back(me->GetGUID());
                         go->AddFlag(GO_FLAG_NOT_SELECTABLE);
                     }
                     break;
@@ -337,7 +339,7 @@ public:
                 case 6:
                     if (GameObject* go = me->SummonGameObject(183410, -507.820f, -103.333f, -151.353f, 0.f, QuaternionData(), 1))
                     {
-                        GoSummonList.push_back(go->GetGUID());
+                        GoSummonList.push_back(me->GetGUID());
                         go->AddFlag(GO_FLAG_NOT_SELECTABLE); //We can't use it!
                         Summon(5);
                     }
@@ -345,7 +347,7 @@ public:
                 case 7:
                     if (GameObject* go = me->SummonGameObject(183410, -511.829f, -86.249f, -151.431f, 0.f, QuaternionData(), 1))
                     {
-                        GoSummonList.push_back(go->GetGUID());
+                        GoSummonList.push_back(me->GetGUID());
                         go->AddFlag(GO_FLAG_NOT_SELECTABLE); //We can't use it!
                     }
                     break;

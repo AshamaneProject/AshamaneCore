@@ -52,13 +52,13 @@ public:
     {
         npc_willixAI(Creature* creature) : npc_escortAI(creature) { }
 
-        void sQuestAccept(Player* player, Quest const* quest) override
+        void QuestAccept(Player* player, Quest const* quest) override
         {
             if (quest->GetQuestId() == QUEST_WILLIX_THE_IMPORTER)
             {
                 Start(true, false, player->GetGUID());
                 Talk(SAY_READY, player);
-                me->setFaction(113);
+                me->SetFaction(113);
             }
         }
 

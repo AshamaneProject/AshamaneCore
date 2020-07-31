@@ -194,13 +194,13 @@ public:
                 if (Unit * mindbender = me->GetVehicleKit()->GetPassenger(0))
                 {
                     mindbender->ExitVehicle();
-                    mindbender->setFaction(14);
+                    mindbender->SetFaction(14);
                 }
 
                 me->CombatStop(true);
                 me->SetReactState(REACT_PASSIVE);
                 me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
-                me->setFaction(35);
+                me->SetFaction(35);
                 Talk(SAY_PHASE_1_END_ERUNAK);
                 isEnslaved = false;
                 me->SetStandState(UNIT_STAND_STATE_KNEEL);
@@ -286,7 +286,7 @@ public:
                 {
                     pErunak->SetReactState(REACT_AGGRESSIVE);
                     pErunak->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
-                    pErunak->setFaction(16);
+                    pErunak->SetFaction(16);
                     pErunak->Respawn(true);
                     me->DespawnOrUnsummon();
                 }

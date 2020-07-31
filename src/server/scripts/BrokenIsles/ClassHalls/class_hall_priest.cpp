@@ -53,7 +53,7 @@ struct npc_hooded_priestess : public ScriptedAI
         }
     }
 
-    void sQuestAccept(Player* player, Quest const* quest) override
+    void QuestAccept(Player* player, Quest const* quest) override
     {
         if (quest->GetQuestId() == QUEST_PRIESTLY_MATTERS)
         {
@@ -69,7 +69,7 @@ struct npc_calia_102343 : public ScriptedAI
 {
     npc_calia_102343(Creature* creature) : ScriptedAI(creature) {  }
 
-    void sGossipSelect(Player* player, uint32 menuId, uint32 gossipListId)
+    bool GossipSelect(Player* player, uint32 menuId, uint32 gossipListId)
     {
         if (player->HasQuest(QUEST_PRIESTLY_MATTERS))
         {
@@ -81,6 +81,7 @@ struct npc_calia_102343 : public ScriptedAI
             }
         }
 
+        return false;
     }
 };
 

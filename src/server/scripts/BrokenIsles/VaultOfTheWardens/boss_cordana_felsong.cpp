@@ -187,13 +187,15 @@ struct npc_drelanim_whisperwind_103860 : public ScriptedAI
         }
     }
 
-    void sGossipHello(Player* player)
+    bool GossipHello(Player* player) override
     {
         if (IsComplete)
         {
             ClearGossipMenuFor(player);
             player->TeleportTo(1220, Position(-1809.0f, 6670.0f, 148.0f));
         }
+
+        return false;
     }
 
     void Initialize()

@@ -416,7 +416,7 @@ public:
 
         void HandleEffect(SpellEffIndex /*effIndex*/)
         {
-            SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(SPELL_GROWTH_2);
+            SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(SPELL_GROWTH_2, GetCaster()->GetMap()->GetDifficultyID());
             if (!spellInfo)
                 return;
 

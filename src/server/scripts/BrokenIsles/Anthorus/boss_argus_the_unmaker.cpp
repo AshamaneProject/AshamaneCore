@@ -571,12 +571,12 @@ struct boss_argus_the_unmaker : public BossAI
         case NPC_CONSTELLAR_DESIGNATE:
         case NPC_REORIGINATION_MODULE:
         {
-            summon->setFaction(me->getFaction());
+            summon->SetFaction(me->GetFaction());
             break;
         }
         case NPC_SOULBLIGHT_ORB:
         {
-            summon->setFaction(me->getFaction());
+            summon->SetFaction(me->GetFaction());
             summon->CastSpell(summon, SPELL_BLIGHT_ORB, true);
             summon->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NOT_SELECTABLE));
             summon->DespawnOrUnsummon(9000);
