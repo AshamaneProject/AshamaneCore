@@ -706,7 +706,6 @@ struct GossipMenuItems
     uint32               BoxMoney;
     std::string          BoxText;
     uint32               BoxBroadcastTextId;
-    uint32               TrainerId;
     ConditionContainer   Conditions;
 };
 
@@ -1363,7 +1362,7 @@ class TC_GAME_API ObjectMgr
         void AddSpellToTrainer(uint32 entry, uint32 spell, uint32 spellCost, uint32 reqSkill, uint32 reqSkillValue, uint32 reqLevel, uint32 Index);
 
         void LoadTrainers();
-        void LoadCreatureDefaultTrainers();
+        void LoadCreatureTrainers();
 
         void LoadCreatureSummonerEntry();
 
@@ -1614,7 +1613,11 @@ class TC_GAME_API ObjectMgr
         }
 
         Trainer::Trainer const* GetTrainer(uint32 trainerId) const;
-        uint32 GetCreatureDefaultTrainer(uint32 creatureId) const;
+        uint32 GetCreatureDefaultTrainer(uint32 creatureId) const
+        {
+            return GetCreatureTrainerForGossipOption(creatureId, 0, 0);
+        }
+        uint32 GetCreatureTrainerForGossipOption(uint32 creatureId, uint32 gossipMenuId, uint32 gossipOptionIndex) const;
 
         uint32 GetCreatureSummonerSpecificEntry(uint32 creatureId) const;
         uint32 GetAdventureMapUIByCreature(uint32 creatureId) const;
@@ -1895,9 +1898,9 @@ class TC_GAME_API ObjectMgr
         CacheVendorItemContainer _cacheVendorItemStore;
         CacheTrainerSpellContainer _cacheTrainerSpellStore;
         std::unordered_map<uint32, Trainer::Trainer> _trainers;
-        std::unordered_map<uint32, uint32> _creatureDefaultTrainers;
         std::unordered_map<uint32, uint32> _creatureSummonerEntry;
         std::unordered_map<uint32, uint32> _adventureMapUIByCreature;
+        std::map<std::tuple<uint32, uint32, uint32>, uint32> _creatureDefaultTrainers;
 
         std::set<uint32> _difficultyEntries[MAX_CREATURE_DIFFICULTIES]; // already loaded difficulty 1 value in creatures, used in CheckCreatureTemplate
         std::set<uint32> _hasDifficultyEntries[MAX_CREATURE_DIFFICULTIES]; // already loaded creatures with difficulty 1 values, used in CheckCreatureTemplate
