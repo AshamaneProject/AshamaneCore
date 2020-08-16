@@ -2188,6 +2188,17 @@ CREATE TABLE `updates` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `updates`
+--
+
+LOCK TABLES `updates` WRITE;
+/*!40000 ALTER TABLE `updates` DISABLE KEYS */;
+INSERT INTO `updates` VALUES (`name`, `hash`, `state`, `timestamp`)
+('2020_06_20_00_auth.sql','85345FAF20B91DA7B157AE1E17DF5B6446C2E109','RELEASED','2020-08-16 22:10:36');
+/*!40000 ALTER TABLE `updates` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `updates_include`
 --
 
