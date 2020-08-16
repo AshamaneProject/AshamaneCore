@@ -2945,6 +2945,9 @@ void Map::GetFullTerrainStatusForPosition(PhaseShift const& phaseShift, float x,
         data.areaInfo = boost::in_place(vmapData.areaInfo->adtId, vmapData.areaInfo->rootId, vmapData.areaInfo->groupId, vmapData.areaInfo->mogpFlags);
 
     GridMap* gmap = GetGrid(terrainMapId, x, y);
+    if (!gmap)
+        return;
+
     float mapHeight = gmap->getHeight(x, y);
 
     // area lookup

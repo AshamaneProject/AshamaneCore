@@ -7458,7 +7458,7 @@ void Player::UpdateArea(uint32 newAreaId)
     else
         _restMgr->RemoveRestFlag(REST_FLAG_IN_FACTION_AREA);
 
-    if (oldArea != m_area)
+    if (m_area && oldArea != m_area)
     {
         sScriptMgr->OnPlayerUpdateArea(this, m_area, oldArea);
 
