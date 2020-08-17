@@ -8,10 +8,13 @@
 -  
 -  
 
-**Issues addressed:** Closes #  (insert issue tracker number)
+**Issues addressed:**
 
+Closes #  (insert issue tracker number)
 
-**Tests performed:** (Does it build, tested in-game, etc.)
+**Tests performed:**
+
+(Does it build, tested in-game, etc.)
 
 
 **Known issues and TODO list:** (add/remove lines as needed)

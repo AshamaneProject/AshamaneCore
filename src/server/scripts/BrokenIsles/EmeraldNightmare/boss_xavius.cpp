@@ -377,7 +377,7 @@ public:
         {
             if (spell->Id == SPELL_NIGHTMARE_BLADES_MARK)
             {
-                if (Unit* pTarget = SelectTarget(SELECT_TARGET_RANDOM, checkPlayers(), 150.0f, true, -SPELL_NIGHTMARE_BLADES_MARK))
+                if (Unit* pTarget = SelectTarget(SELECT_TARGET_RANDOM, checkPlayers(), 150.0f, true, true, -SPELL_NIGHTMARE_BLADES_MARK))
                     DoCast(pTarget, SPELL_NIGHTMARE_BLADES_MARK_2, true);
                 Talk(SAY_NIGHTMARE_BLADES);
             }
@@ -412,7 +412,7 @@ public:
 
         bool checkPlayers()
         {
-            std::list<HostileReference*> threatList = me->getThreatManager().getThreatList();
+            std::list<HostileReference*> threatList = me->GetThreatManager().getThreatList();
             if (threatList.size() > 1)
                 return true;
 
@@ -450,7 +450,7 @@ public:
                             Talk(SAY_DARKENING_SOUL);
                         break;
                     case EVENT_NIGHTMARE_BLADES:
-                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, checkPlayers(), 150.0f, true, -SPELL_NIGHTMARE_BLADES_MARK_2))
+                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, checkPlayers(), 150.0f, true, true, -SPELL_NIGHTMARE_BLADES_MARK_2))
                         {
                             DoCast(target, SPELL_NIGHTMARE_BLADES_MARK, true);
                             DoCast(target, SPELL_NIGHTMARE_BLADES_MARK_2, true);
@@ -484,7 +484,7 @@ public:
                     case EVENT_BONDS_OF_TERROR:
                     {
                         uint8 freePlayerCount = 0;
-                        std::list<HostileReference*> threatlist = me->getThreatManager().getThreatList();
+                        std::list<HostileReference*> threatlist = me->GetThreatManager().getThreatList();
 
                         if (!threatlist.empty())
                         {
@@ -592,7 +592,7 @@ public:
         {
             if (Unit* owner = me->GetOwner())
             {
-                std::list<HostileReference*> threatlist = owner->getThreatManager().getThreatList();
+                std::list<HostileReference*> threatlist = owner->GetThreatManager().getThreatList();
                 if (!threatlist.empty())
                 {
                     for (std::list<HostileReference*>::const_iterator itr = threatlist.begin(); itr != threatlist.end(); ++itr)
@@ -834,7 +834,7 @@ public:
                     case 1:
                     {
                         if (Unit* owner = me->GetOwner())
-                            if (Unit* target = owner->GetAI()->SelectTarget(SELECT_TARGET_RANDOM, 0, 150.0f, true, SPELL_NIGHTMARE_BLADES_MARK))
+                            if (Unit* target = owner->GetAI()->SelectTarget(SELECT_TARGET_RANDOM, 0, 150.0f, true, true, SPELL_NIGHTMARE_BLADES_MARK))
                             {
                                 Position pos;
                                 float angle = target->GetRelativeAngle(me);

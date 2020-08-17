@@ -103,7 +103,7 @@ public:
             {
                 Unit* target = ObjectAccessor::GetUnit(*me, instance->GetGuidData(DATA_THRALL));
                 if (target && target->IsAlive())
-                    me->AddThreat(target, 0.0f);
+                    AddThreat(target, 0.0f);
             }
         }
 
@@ -216,7 +216,7 @@ class spell_mark_of_kazrogal : public SpellScriptLoader
 
                 if (target->GetPower(POWER_MANA) == 0)
                 {
-                    target->CastSpell(target, SPELL_MARK_DAMAGE, true, NULL, aurEff);
+                    target->CastSpell(target, SPELL_MARK_DAMAGE, true, nullptr, aurEff);
                     // Remove aura
                     SetDuration(0);
                 }

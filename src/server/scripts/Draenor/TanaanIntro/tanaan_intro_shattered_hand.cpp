@@ -335,7 +335,7 @@ public:
 
             if (m_Events.ExecuteEvent() == EventChomp)
             {
-                if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                     me->CastSpell(target, SpellChomp, false);
                 m_Events.ScheduleEvent(EventChomp, 20000);
             }
@@ -591,7 +591,7 @@ public:
                 if (Creature* npcToAttack = GetNpcToAttack())
                 {
                     AttackStart(npcToAttack);
-                    me->getThreatManager().addThreat(npcToAttack, 20000.0f);
+                    me->GetThreatManager().addThreat(npcToAttack, 20000.0f);
                 }
                 else
                 {
@@ -676,7 +676,7 @@ public:
 
             if (m_Events.ExecuteEvent() == eDatas::EventWhipSplash)
             {
-                if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                     me->CastSpell(target, eDatas::SpellWhipSplash, false);
 
                 m_Events.Repeat(Seconds(12));

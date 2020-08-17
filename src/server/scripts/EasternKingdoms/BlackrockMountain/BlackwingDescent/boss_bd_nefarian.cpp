@@ -401,7 +401,7 @@ public:
             //{
             //    summon->SetSpeed(MOVE_WALK, 0.8f);
             //    summon->SetSpeed(MOVE_RUN, 0.8f);
-            //    if(Unit* target = SelectTarget(SELECT_TARGET_NEAREST, 0, 50.0f, true))
+            //    if(Unit* target = SelectTarget(SELECT_TARGET_MINDISTANCE, 0, 50.0f, true))
             //    summon->CastSpell(summon, SPELL_SONAR_PULSE_H, true); // add aura
             //    summon->GetMotionMaster()->MoveChase(target);
             //}

@@ -532,7 +532,7 @@ class boss_kargath_bladefist : public CreatureScript
 
                         AddTimedDelayedOperation(1 * TimeConstants::IN_MILLISECONDS, [this]() -> void
                         {
-                            if (Unit* l_NewTarget = me->getThreatManager().getHostilTarget())
+                            if (Unit* l_NewTarget = me->GetThreatManager().getHostilTarget())
                                 AttackStart(l_NewTarget);
                             me->ClearUnitState(UNIT_STATE_STUNNED);
                             me->ClearUnitState(UNIT_STATE_CONFUSED);
@@ -555,7 +555,7 @@ class boss_kargath_bladefist : public CreatureScript
                         if (me->HasUnitState(UnitState::UNIT_STATE_ROOT))
                             me->SetControlled(false, UnitState::UNIT_STATE_ROOT);
 
-                        if (Unit* l_NewTarget = me->getThreatManager().getHostilTarget())
+                        if (Unit* l_NewTarget = me->GetThreatManager().getHostilTarget())
                             AttackStart(l_NewTarget);
 
                         m_ChainHurl = false;
@@ -690,7 +690,7 @@ class boss_kargath_bladefist : public CreatureScript
                     {
                         m_BerserkerRushTarget = target->GetGUID();
 
-                        me->getThreatManager().addThreat(target, std::numeric_limits<float>::max());
+                        me->GetThreatManager().addThreat(target, std::numeric_limits<float>::max());
                         me->TauntApply(target);
                         me->SetReactState(ReactStates::REACT_PASSIVE);
 
@@ -706,7 +706,7 @@ class boss_kargath_bladefist : public CreatureScript
                     }
                     case eSpells::ChainHurlStunAura:
                     {
-                        DoModifyThreatPercent(target, -99);
+                        ModifyThreatByPercent(target, -99);
                         break;
                     }
                     case eSpells::BerserkerRushDamage:
@@ -786,7 +786,7 @@ class boss_kargath_bladefist : public CreatureScript
                     {
                         Talk(eTalks::Impale);
 
-                        if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_TOPAGGRO))
+                        if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_MAXTHREAT))
                             me->CastSpell(target, eSpells::SpellImpale, false);
 
                         me->CastSpell(me, eSpells::SpellImpaleMorph, true);
@@ -1037,14 +1037,13 @@ class boss_kargath_bladefist : public CreatureScript
 
                 me->SetReactState(ReactStates::REACT_AGGRESSIVE);
 
-                me->getThreatManager().modifyThreatPercent(target, -100);
-                me->getThreatManager().setDirty(true);
+                ModifyThreatByPercent(target, -100);
 
                 me->GetMotionMaster()->Clear();
 
                 if (p_NewTarget)
                 {
-                    if (Unit* l_NewTarget = me->getThreatManager().getHostilTarget())
+                    if (Unit* l_NewTarget = me->GetThreatManager().getHostilTarget())
                         AttackStart(l_NewTarget);
                 }
             }
@@ -1312,7 +1311,7 @@ class npc_highmaul_vulgor : public CreatureScript
                 switch (m_Events.ExecuteEvent())
                 {
                     case eEvents::EventCleave:
-                        if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_TOPAGGRO))
+                        if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_MAXTHREAT))
                             me->CastSpell(target, eSpells::SpellCleave, true);
                         m_Events.ScheduleEvent(eEvents::EventCleave, 19000);
                         break;
@@ -1524,7 +1523,7 @@ class npc_highmaul_somldering_stoneguard : public CreatureScript
                 switch (m_Events.ExecuteEvent())
                 {
                     case eEvent::EventCleave:
-                        if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_TOPAGGRO))
+                        if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_MAXTHREAT))
                             me->CastSpell(target, eSpell::SpellCleave, false);
                         m_Events.ScheduleEvent(eEvent::EventCleave, 10000);
                         break;
@@ -1757,8 +1756,8 @@ class npc_highmaul_ravenous_bloodmaw : public CreatureScript
 
                         me->SetInCombatWithZone();
 
-                        me->getThreatManager().clearReferences();
-                        me->getThreatManager().addThreat(target, std::numeric_limits<float>::max());
+                        me->GetThreatManager().clearReferences();
+                        me->GetThreatManager().addThreat(target, std::numeric_limits<float>::max());
 
                         me->SetReactState(ReactStates::REACT_AGGRESSIVE);
                         me->TauntApply(target);
@@ -2331,7 +2330,7 @@ class npc_highmaul_iron_grunt_second : public CreatureScript
 
                 if (m_Events.ExecuteEvent() == eEvent::EventGrapple)
                 {
-                    if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_TOPAGGRO))
+                    if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_MAXTHREAT))
                         me->CastSpell(target, eSpells::Grapple, true);
                     m_Events.ScheduleEvent(eEvent::EventGrapple, 6000);
                 }

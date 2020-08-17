@@ -186,7 +186,7 @@ class boss_echo_of_tyrande : public CreatureScript
                         break;
                     case EVENT_STARDUST:
                     {
-                        ThreatContainer::StorageType threatlist = me->getThreatManager().getThreatList();
+                        ThreatContainer::StorageType threatlist = me->GetThreatManager().getThreatList();
                         for (ThreatContainer::StorageType::const_iterator itr = threatlist.begin(); itr != threatlist.end(); ++itr)
                         {
                             if (Unit* unit = ObjectAccessor::GetUnit(*me, (*itr)->getUnitGuid()))
@@ -197,7 +197,7 @@ class boss_echo_of_tyrande : public CreatureScript
                         break;
                     }
                     case EVENT_MOONLANCE:
-                        if (SelectTarget(SELECT_TARGET_FARTHEST, 0, 100.0f, true))
+                        if (SelectTarget(SELECT_TARGET_MAXDISTANCE, 0, 100.0f, true))
                         {
                             DoCastAOE(SPELL_MOONLANCE);
                             events.ScheduleEvent(EVENT_MOONLANCE, urand(4000, 8000));
@@ -255,7 +255,7 @@ class npc_moonlance_single : public CreatureScript
                 me->CastSpell(me, SPELL_MOONLANCE_AOE, true);
                 if (Creature* tyrande = GetClosestCreatureWithEntry(me, NPC_TYRANDE_ENTRY, 75.0f))
                 {
-                    if (Unit* target = tyrande->AI()->SelectTarget(SELECT_TARGET_FARTHEST, 0, 100.0f, true))
+                    if (Unit* target = tyrande->AI()->SelectTarget(SELECT_TARGET_MAXDISTANCE, 0, 100.0f, true))
                     {
                         float targetPosX = tyrande->GetPositionX();
                         float targetPosY = tyrande->GetPositionY();

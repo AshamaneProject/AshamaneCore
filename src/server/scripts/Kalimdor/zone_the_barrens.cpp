@@ -235,7 +235,7 @@ public:
         void DoFriend()
         {
             me->RemoveAllAuras();
-            me->DeleteThreatList();
+            me->GetThreatManager().ClearAllThreat();
             me->CombatStop(true);
 
             me->StopMoving();
@@ -387,7 +387,7 @@ public:
         {
             if (EventInProgress)
             {
-                Player* warrior = NULL;
+                Player* warrior = nullptr;
 
                 if (!PlayerGUID.IsEmpty())
                     warrior = ObjectAccessor::GetPlayer(*me, PlayerGUID);

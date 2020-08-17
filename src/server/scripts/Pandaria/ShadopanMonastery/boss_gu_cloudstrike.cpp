@@ -327,7 +327,7 @@ class npc_azure_serpent : public CreatureScript
                         events.ScheduleEvent(EVENT_MAGNETIC_SHROUD, urand(10000, 15000), PHASE_TWO);
                         break;
                     case EVENT_LIGHTNING_BREATH:
-                        if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO, 0, 0, true))
+                        if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT, 0, 0, true))
                             me->CastSpell(target, SPELL_LIGHTNING_BREATH, false);
                         events.ScheduleEvent(EVENT_LIGHTNING_BREATH, urand(7500, 12500), PHASE_TWO);
                         break;

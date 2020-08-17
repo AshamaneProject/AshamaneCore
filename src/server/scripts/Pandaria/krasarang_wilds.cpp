@@ -63,7 +63,7 @@ class mob_arness_the_scale : public CreatureScript
                     switch (eventId)
                     {
                         case EVENT_GRAPPLING_HOOK:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_GRAPPLING_HOOK, false);
                             events.ScheduleEvent(EVENT_GRAPPLING_HOOK, 40000);
                             break;
@@ -72,7 +72,7 @@ class mob_arness_the_scale : public CreatureScript
                             events.ScheduleEvent(EVENT_VANISH, 40000);
                             break;
                         case EVENT_VICIOUS_REND:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_VICIOUS_REND, false);
                             events.ScheduleEvent(EVENT_VICIOUS_REND, 40000);
                             break;
@@ -126,12 +126,12 @@ class mob_gaarn_the_toxic : public CreatureScript
                     switch (eventId)
                     {
                         case EVENT_SHADOWBOLT:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_SHADOWBOLT, false);
                             events.ScheduleEvent(EVENT_SHADOWBOLT, 15000);
                             break;
                         case EVENT_VOIDCLOUD:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_VOIDCLOUD, false);
                             events.ScheduleEvent(EVENT_VOIDCLOUD, 70000);
                             break;
@@ -186,17 +186,17 @@ class mob_qu_nas : public CreatureScript
                     switch (eventId)
                     {
                         case EVENT_DEVASTATING_ARC:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_DEVASTATING_ARC, false);
                             events.ScheduleEvent(EVENT_DEVASTATING_ARC, 30000);
                             break;
                         case EVENT_SUMMON_QUILEN:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_SUMMON_QUILEN, false);
                             events.ScheduleEvent(EVENT_SUMMON_QUILEN, 80000);
                             break;
                         case EVENT_TITANIC_STRENGTH:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_TITANIC_STRENGTH, false);
                             events.ScheduleEvent(EVENT_TITANIC_STRENGTH, 55000);
                             break;
@@ -261,17 +261,17 @@ class mob_torik_ethis : public CreatureScript
                     switch (eventId)
                     {
                         case EVENT_BLADE_FURY:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_BLADE_FURY, false);
                             events.ScheduleEvent(EVENT_BLADE_FURY, 8000);
                             break;
                         case EVENT_TORNADO:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_TORNADO, false);
                             events.ScheduleEvent(EVENT_TORNADO, 40000);
                             break;
                         case EVENT_WINDSONG:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_WINDSONG, false);
                             events.ScheduleEvent(EVENT_WINDSONG, 32000);
                             break;
@@ -331,17 +331,17 @@ class mob_go_kan : public CreatureScript
                     switch (eventId)
                     {
                         case EVENT_BELLOWING_RAGE:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_BELLOWING_RAGE, false);
                             events.ScheduleEvent(EVENT_BELLOWING_RAGE, 35000);
                             break;
                         case EVENT_RUSHING_CHARGE:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_RUSHING_CHARGE, false);
                             events.ScheduleEvent(EVENT_RUSHING_CHARGE, 35000);
                             break;
                         case EVENT_YAUNGOL_STOMP:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_YAUNGOL_STOMP, false);
                             events.ScheduleEvent(EVENT_YAUNGOL_STOMP, 35000);
                             break;
@@ -427,22 +427,22 @@ class mob_champion_of_chi_ji : public CreatureScript
                     switch (eventId)
                     {
                         case EVENT_CHI_TORPEDO:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_CHI_TORPEDO, false);
                             events.ScheduleEvent(EVENT_CHI_TORPEDO, 40000);
                             break;
                         case EVENT_HUNDRED_HAND_SLAP:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_HUNDRED_HAND_SLAP, false);
                             events.ScheduleEvent(EVENT_HUNDRED_HAND_SLAP, 40000);
                             break;
                         case EVENT_SPINNING_CRANE_KICK:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_SPINNING_CRANE_KICK, false);
                             events.ScheduleEvent(EVENT_SPINNING_CRANE_KICK, 40000);
                             break;
                         case EVENT_UPPERCUT:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_UPPERCUT, false);
                             events.ScheduleEvent(EVENT_UPPERCUT, 40000);
                             break;
@@ -913,7 +913,7 @@ class mob_ellia_ravenmane : public CreatureScript
                     {
                         // Entry 60530
                         case EVENT_JAB:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_JAB, false);
                             events.ScheduleEvent(EVENT_JAB, 7000);
                             break;
@@ -1153,7 +1153,7 @@ class mob_fat_long_fat : public CreatureScript
                     {
                         // Entry 60534
                         case EVENT_BREATH_OF_FIRE:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_BREATH_OF_FIRE, false);
                             events.ScheduleEvent(EVENT_BREATH_OF_FIRE, 7000);
                             break;
@@ -1323,7 +1323,7 @@ class mob_huck_wheelbarrow : public CreatureScript
                     switch (eventId)
                     {
                         case EVENT_WHEELBARROW_ROLL_2:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_WHEELBARROW_ROLL_2, false);
                             events.ScheduleEvent(EVENT_WHEELBARROW_ROLL_2, 18000);
                             break;
@@ -1482,7 +1482,7 @@ class mob_dextrous_izissha : public CreatureScript
                     switch (eventId)
                     {
                         case EVENT_EVASION:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_EVASION, false);
                             events.ScheduleEvent(EVENT_EVASION, 18000);
                             break;
@@ -1640,7 +1640,7 @@ class mob_julia_bates : public CreatureScript
                     switch (eventId)
                     {
                         case EVENT_HUNDRED_HAND_SLAP:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_HUNDRED_HAND_SLAP, false);
                             events.ScheduleEvent(EVENT_HUNDRED_HAND_SLAP, 7000);
                             break;
@@ -1793,7 +1793,7 @@ class mob_kuo_na : public CreatureScript
                     switch (eventId)
                     {
                         case EVENT_FLYING_SERPENT_KICK_2:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_FLYING_SERPENT_KICK, false);
                             events.ScheduleEvent(EVENT_FLYING_SERPENT_KICK_2, 21000);
                             break;
@@ -1951,7 +1951,7 @@ class mob_mindel_sunspeaker : public CreatureScript
                     switch (eventId)
                     {
                         case EVENT_SUNFLARE_KICK:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_SUNFLARE_KICK, false);
                             events.ScheduleEvent(EVENT_SUNFLARE_KICK, 12000);
                             break;
@@ -2104,7 +2104,7 @@ class mob_minh_do_tan : public CreatureScript
                     switch (eventId)
                     {
                         case EVENT_SPINNING_CRANE_KICK:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_SPINNING_CRANE_KICK, false);
                             events.ScheduleEvent(EVENT_SPINNING_CRANE_KICK, 12000);
                             break;
@@ -2259,7 +2259,7 @@ class mob_thelonius : public CreatureScript
                     switch (eventId)
                     {
                         case EVENT_UPPERCUT:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_UPPERCUT, false);
                             events.ScheduleEvent(EVENT_UPPERCUT, 25000);
                             break;
@@ -2269,7 +2269,7 @@ class mob_thelonius : public CreatureScript
                             events.ScheduleEvent(EVENT_SPINNING_CRANE_KICK, 25000);
                             break;
                         case EVENT_HUNDRED_HAND_SLAP:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_HUNDRED_HAND_SLAP, false);
                             events.ScheduleEvent(EVENT_HUNDRED_HAND_SLAP, 25000);
                             break;
@@ -2423,7 +2423,7 @@ class mob_tukka_tuk : public CreatureScript
                     switch (eventId)
                     {
                         case EVENT_POUND_YOU:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_POUND_YOU, false);
                             events.ScheduleEvent(EVENT_POUND_YOU, 20000);
                             break;
@@ -2433,7 +2433,7 @@ class mob_tukka_tuk : public CreatureScript
                             events.ScheduleEvent(EVENT_KICK_YOU, 20000);
                             break;
                         case EVENT_PUNCH_YOU:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_PUNCH_YOU, false);
                             events.ScheduleEvent(EVENT_PUNCH_YOU, 20000);
                             break;
@@ -2582,7 +2582,7 @@ class mob_yan_quillpaw : public CreatureScript
                     switch (eventId)
                     {
                         case EVENT_UPPERCUT:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_UPPERCUT, false);
                             events.ScheduleEvent(EVENT_UPPERCUT, 20000);
                             break;
@@ -2592,7 +2592,7 @@ class mob_yan_quillpaw : public CreatureScript
                             events.ScheduleEvent(EVENT_FLYING_SERPENT_KICK, 20000);
                             break;
                         case EVENT_PAW_PUNCH:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_PAW_PUNCH, false);
                             events.ScheduleEvent(EVENT_PAW_PUNCH, 20000);
                             break;

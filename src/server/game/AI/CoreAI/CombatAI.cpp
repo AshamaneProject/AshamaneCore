@@ -137,7 +137,7 @@ bool CombatAI::UpdateVictim()
 
         return me->GetVictim() != nullptr;
     }
-    else if (me->getThreatManager().isThreatListEmpty())
+    else if (me->GetThreatManager().isThreatListEmpty())
     {
         EnterEvadeMode(EVADE_REASON_NO_HOSTILES);
         return false;

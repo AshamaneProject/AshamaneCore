@@ -249,7 +249,7 @@ class boss_echo_of_sylvanas : public CreatureScript
                         case EVENT_BLIGHTED_ARROW:
                             events.CancelEvent(EVENT_UNHOLY_SHOT);
                             events.CancelEvent(EVENT_BLACK_ARROW);
-                            if (Unit* target = SelectTarget(SELECT_TARGET_FARTHEST, 0, 100, true))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXDISTANCE, 0, 100, true))
                             {
                                 // Spell save in the following float variable
                                 // the position of a random player

@@ -95,7 +95,7 @@ public:
             me->SetFaction(FACTION_FRIENDLY);
             me->SetStandState(UNIT_STAND_STATE_SIT);
             me->RemoveAllAuras();
-            me->DeleteThreatList();
+            me->GetThreatManager().ClearAllThreat();
             me->CombatStop(true);
             UnkorUnfriendly_Timer = 60000;
         }
@@ -108,7 +108,7 @@ public:
             {
                 if (Group* group = player->GetGroup())
                 {
-                    for (GroupReference* itr = group->GetFirstMember(); itr != NULL; itr = itr->next())
+                    for (GroupReference* itr = group->GetFirstMember(); itr != nullptr; itr = itr->next())
                     {
                         Player* groupie = itr->GetSource();
                         if (groupie && groupie->IsInMap(player) &&

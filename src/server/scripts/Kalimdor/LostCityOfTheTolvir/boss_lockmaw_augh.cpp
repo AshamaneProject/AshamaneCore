@@ -317,9 +317,9 @@ public:
                 if(Player* player = itr->GetSource())
                 {
                     if (player->HasAura(DUNGEON_MODE(SPELL_SCENT_OF_BLOOD_NORMAL, SPELL_SCENT_OF_BLOOD_HEROIC)))
-                        me->AddThreat(player, 100500.0f);
+                        AddThreat(player, 100500.0f);
                     else
-                        me->getThreatManager().modifyThreatPercent(player, -10);
+                        ModifyThreatByPercent(player, -10);
                 }
         }
 
@@ -422,7 +422,7 @@ public:
             uiPhase = AUGH_PHASE_ACTIVE;
             instance = creature->GetInstanceScript();
 
-            if (Unit* target = SelectTarget(SELECT_TARGET_NEAREST, 0, 100.0f, true))
+            if (Unit* target = SelectTarget(SELECT_TARGET_MINDISTANCE, 0, 100.0f, true))
                 AttackStart(target);
 
             if (instance)
@@ -486,7 +486,7 @@ public:
             uiPhase = AUGH_PHASE_NONE;
             instance = creature->GetInstanceScript();
 
-            if (Unit* target = SelectTarget(SELECT_TARGET_NEAREST, 0, 100.0f, true))
+            if (Unit* target = SelectTarget(SELECT_TARGET_MINDISTANCE, 0, 100.0f, true))
             {
                 AttackStart(target);
                 me->CastSpell(target, 50231, false);
@@ -592,7 +592,7 @@ public:
                             uiPhase = AUGH_PHASE_ACTIVE;
 
                             if (Creature* crock = me->GetVehicleCreatureBase())
-                                if (Unit* target = SelectTarget(SELECT_TARGET_NEAREST, 0, 100.0f, true))
+                                if (Unit* target = SelectTarget(SELECT_TARGET_MINDISTANCE, 0, 100.0f, true))
                                 {
                                     AttackStart(target);
                                     crock->GetMotionMaster()->MoveFollow(target, 0.0f, 0.0f);

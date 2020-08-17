@@ -575,13 +575,13 @@ class boss_brackenspore : public CreatureScript
                         m_Events.ScheduleEvent(eEvents::EventSpecialAbility, 20 * TimeConstants::IN_MILLISECONDS);
                         break;
                     case eEvents::EventScheduleEnergy:
-                        if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_TOPAGGRO))
+                        if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_MAXTHREAT))
                             AttackStart(target);
                         me->CastSpell(me, eSpells::EnergyRegen, true);
                         me->GetMotionMaster()->Clear();
                         break;
                     case eEvents::EventRot:
-                        if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_TOPAGGRO))
+                        if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_MAXTHREAT))
                             me->CastSpell(target, eSpells::RotDot, true);
                         m_Events.ScheduleEvent(eEvents::EventRot, 10 * TimeConstants::IN_MILLISECONDS);
                         break;

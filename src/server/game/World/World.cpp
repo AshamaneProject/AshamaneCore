@@ -163,7 +163,7 @@ World::~World()
         m_sessions.erase(m_sessions.begin());
     }
 
-    CliCommandHolder* command = NULL;
+    CliCommandHolder* command = nullptr;
     while (cliCmdQueue.next(command))
         delete command;
 
@@ -196,7 +196,7 @@ Player* World::FindPlayerInZone(uint32 zone)
         if (player->IsInWorld() && player->GetZoneId() == zone)
             return player;
     }
-    return NULL;
+    return nullptr;
 }
 
 bool World::IsClosed() const
@@ -234,7 +234,7 @@ WorldSession* World::FindSession(uint32 id) const
     if (itr != m_sessions.end())
         return itr->second;                                 // also can return NULL for kicked session
     else
-        return NULL;
+        return nullptr;
 }
 
 /// Remove a given session
@@ -363,7 +363,7 @@ bool World::HasRecentlyDisconnected(WorldSession* session)
     {
         for (DisconnectMap::iterator i = m_disconnects.begin(); i != m_disconnects.end();)
         {
-            if (difftime(i->second, time(NULL)) < tolerance)
+            if (difftime(i->second, time(nullptr)) < tolerance)
             {
                 if (i->first == session->GetAccountId())
                     return true;
@@ -1216,16 +1216,6 @@ void World::LoadConfigSettings(bool reload)
     }
     TC_LOG_INFO("server.loading", "Client cache version set to: %u", m_int_configs[CONFIG_CLIENTCACHE_VERSION]);
 
-    if (int32 hotfixCacheId = sConfigMgr->GetIntDefault("HotfixCacheVersion", 0))
-    {
-        // overwrite DB/old value
-        if (hotfixCacheId > 0)
-            m_int_configs[CONFIG_HOTFIX_CACHE_VERSION] = hotfixCacheId;
-        else
-            TC_LOG_ERROR("server.loading", "HotfixCacheVersion can't be negative %d, ignored.", hotfixCacheId);
-    }
-    TC_LOG_INFO("server.loading", "Hotfix cache version set to: %u", m_int_configs[CONFIG_HOTFIX_CACHE_VERSION]);
-
     m_int_configs[CONFIG_GUILD_NEWS_LOG_COUNT] = sConfigMgr->GetIntDefault("Guild.NewsLogRecordsCount", GUILD_NEWSLOG_MAX_RECORDS);
     if (m_int_configs[CONFIG_GUILD_NEWS_LOG_COUNT] > GUILD_NEWSLOG_MAX_RECORDS)
         m_int_configs[CONFIG_GUILD_NEWS_LOG_COUNT] = GUILD_NEWSLOG_MAX_RECORDS;
@@ -1333,7 +1323,7 @@ void World::LoadConfigSettings(bool reload)
     m_bool_configs[CONFIG_ENABLE_MMAPS] = sConfigMgr->GetBoolDefault("mmap.enablePathFinding", false);
     TC_LOG_INFO("server.loading", "WORLD: MMap data directory is: %smmaps", m_dataPath.c_str());
 
-    m_bool_configs[CONFIG_VMAP_INDOOR_CHECK] = sConfigMgr->GetBoolDefault("vmap.enableIndoorCheck", 0);
+    m_bool_configs[CONFIG_VMAP_INDOOR_CHECK] = sConfigMgr->GetBoolDefault("vmap.enableIndoorCheck", false);
     bool enableIndoor = sConfigMgr->GetBoolDefault("vmap.enableIndoorCheck", true);
     bool enableLOS = sConfigMgr->GetBoolDefault("vmap.enableLOS", true);
     bool enableHeight = sConfigMgr->GetBoolDefault("vmap.enableHeight", true);
@@ -1514,7 +1504,7 @@ void World::SetInitialWorldSettings()
     uint32 startupBegin = getMSTime();
 
     ///- Initialize the random number generator
-    srand((unsigned int)time(NULL));
+    srand((unsigned int)time(nullptr));
 
     ///- Initialize detour memory management
     dtAllocSetCustom(dtCustomAlloc, dtCustomFree);
@@ -2479,7 +2469,7 @@ void World::Update(uint32 diff)
             LoginDatabasePreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_DEL_OLD_LOGS);
 
             stmt->setUInt32(0, sWorld->getIntConfig(CONFIG_LOGDB_CLEARTIME));
-            stmt->setUInt32(1, uint32(time(0)));
+            stmt->setUInt32(1, uint32(time(nullptr)));
             stmt->setUInt32(2, realm.Id.Realm);
 
             LoginDatabase.Execute(stmt);
@@ -2629,7 +2619,7 @@ namespace Trinity
             typedef std::vector<WorldPackets::Packet*> WorldPacketList;
             static size_t const BufferSize = 2048;
 
-            explicit WorldWorldTextBuilder(uint32 textId, va_list* args = NULL) : i_textId(textId), i_args(args) { }
+            explicit WorldWorldTextBuilder(uint32 textId, va_list* args = nullptr) : i_textId(textId), i_args(args) { }
 
             void operator()(WorldPacketList& dataList, LocaleConstant locale)
             {
@@ -2792,7 +2782,7 @@ BanReturn World::BanAccount(BanMode mode, std::string const& nameOrIP, std::stri
 /// Ban an account or ban an IP address, duration is in seconds if positive, otherwise permban
 BanReturn World::BanAccount(BanMode mode, std::string const& nameOrIP, uint32 duration_secs, std::string const& reason, std::string const& author)
 {
-    PreparedQueryResult resultAccounts = PreparedQueryResult(NULL); //used for kicking
+    PreparedQueryResult resultAccounts = PreparedQueryResult(nullptr); //used for kicking
 
     // Prevent banning an already banned account
     if (mode == BAN_ACCOUNT && AccountMgr::IsBannedAccount(nameOrIP))
@@ -2878,7 +2868,7 @@ BanReturn World::BanAccount(BanMode mode, std::string const& nameOrIP, uint32 du
 /// Remove a ban from an account or IP address
 bool World::RemoveBanAccount(BanMode mode, std::string const& nameOrIP)
 {
-    LoginDatabasePreparedStatement* stmt = NULL;
+    LoginDatabasePreparedStatement* stmt = nullptr;
     if (mode == BAN_IP)
     {
         stmt = LoginDatabase.GetPreparedStatement(LOGIN_DEL_IP_NOT_BANNED);
@@ -3071,7 +3061,7 @@ uint32 World::ShutdownCancel()
 }
 
 /// Send a server message to the user(s)
-void World::SendServerMessage(ServerMessageType messageID, std::string stringParam /*= ""*/, Player* player /*= NULL*/)
+void World::SendServerMessage(ServerMessageType messageID, std::string stringParam /*= ""*/, Player* player /*= nullptr*/)
 {
     WorldPackets::Chat::ChatServerMessage chatServerMessage;
     chatServerMessage.MessageID = int32(messageID);
@@ -3091,7 +3081,7 @@ void World::UpdateSessions(uint32 diff)
         ProcessLinkInstanceSocket(std::move(linkInfo));
 
     ///- Add new sessions
-    WorldSession* sess = NULL;
+    WorldSession* sess = nullptr;
     while (addSessQueue.next(sess))
         AddSession_ (sess);
 
@@ -3108,7 +3098,7 @@ void World::UpdateSessions(uint32 diff)
         if (!pSession->Update(diff, updater))    // As interval = 0
         {
             if (!RemoveQueuedPlayer(itr->second) && itr->second && getIntConfig(CONFIG_INTERVAL_DISCONNECT_TOLERANCE))
-                m_disconnects[itr->second->GetAccountId()] = time(NULL);
+                m_disconnects[itr->second->GetAccountId()] = time(nullptr);
             RemoveQueuedPlayer(pSession);
             m_sessions.erase(itr);
             delete pSession;
@@ -3196,7 +3186,7 @@ void World::_UpdateRealmCharCount(PreparedQueryResult resultCharCount)
 void World::InitWeeklyQuestResetTime()
 {
     time_t wstime = sWorld->getWorldState(WS_WEEKLY_QUEST_RESET_TIME);
-    time_t curtime = time(NULL);
+    time_t curtime = time(nullptr);
     m_NextWeeklyQuestReset = wstime < curtime ? curtime : wstime;
 }
 
@@ -3215,7 +3205,7 @@ void World::InitDailyQuestResetTime(bool loading)
     }
 
     // FIX ME: client not show day start time
-    time_t curTime = time(NULL);
+    time_t curTime = time(nullptr);
     tm localTm;
     localtime_r(&curTime, &localTm);
     localTm.tm_hour = getIntConfig(CONFIG_DAILY_QUEST_RESET_TIME_HOUR);
@@ -3238,7 +3228,7 @@ void World::InitDailyQuestResetTime(bool loading)
 void World::InitMonthlyQuestResetTime()
 {
     time_t wstime = sWorld->getWorldState(WS_MONTHLY_QUEST_RESET_TIME);
-    time_t curtime = time(NULL);
+    time_t curtime = time(nullptr);
     m_NextMonthlyQuestReset = wstime < curtime ? curtime : wstime;
 }
 
@@ -3246,10 +3236,10 @@ void World::InitRandomBGResetTime()
 {
     time_t bgtime = sWorld->getWorldState(WS_BG_DAILY_RESET_TIME);
     if (!bgtime)
-        m_NextRandomBGReset = time(NULL);         // game time not yet init
+        m_NextRandomBGReset = time(nullptr);         // game time not yet init
 
     // generate time by config
-    time_t curTime = time(NULL);
+    time_t curTime = time(nullptr);
     tm localTm;
     localtime_r(&curTime, &localTm);
     localTm.tm_hour = getIntConfig(CONFIG_RANDOM_BG_RESET_HOUR);
@@ -3274,10 +3264,10 @@ void World::InitGuildResetTime()
 {
     time_t gtime = getWorldState(WS_GUILD_DAILY_RESET_TIME);
     if (!gtime)
-        m_NextGuildReset = time(NULL);         // game time not yet init
+        m_NextGuildReset = time(nullptr);         // game time not yet init
 
     // generate time by config
-    time_t curTime = time(NULL);
+    time_t curTime = time(nullptr);
     tm localTm;
     localtime_r(&curTime, &localTm);
     localTm.tm_hour = getIntConfig(CONFIG_GUILD_RESET_HOUR);
@@ -3302,10 +3292,10 @@ void World::InitCurrencyResetTime()
 {
     time_t currencytime = sWorld->getWorldState(WS_CURRENCY_RESET_TIME);
     if (!currencytime)
-        m_NextCurrencyReset = time(NULL);         // game time not yet init
+        m_NextCurrencyReset = time(nullptr);         // game time not yet init
 
     // generate time by config
-    time_t curTime = time(NULL);
+    time_t curTime = time(nullptr);
     tm localTm;
     localtime_r(&curTime, &localTm);
 
@@ -3409,7 +3399,7 @@ void World::ResetMonthlyQuests()
             itr->second->GetPlayer()->ResetMonthlyQuestStatus();
 
     // generate time
-    time_t curTime = time(NULL);
+    time_t curTime = time(nullptr);
     tm localTm;
     localtime_r(&curTime, &localTm);
 
@@ -3489,14 +3479,13 @@ void World::UpdateMaxSessionCounters()
 
 void World::LoadDBVersion()
 {
-    if (QueryResult result = WorldDatabase.Query("SELECT db_version, cache_id, hotfix_cache_id FROM version LIMIT 1"))
+    if (QueryResult result = WorldDatabase.Query("SELECT db_version, cache_id FROM version LIMIT 1"))
     {
         Field* fields = result->Fetch();
 
         m_DBVersion = fields[0].GetString();
         // will be overwrite by config values if different and non-0
         m_int_configs[CONFIG_CLIENTCACHE_VERSION] = fields[1].GetUInt32();
-        m_int_configs[CONFIG_HOTFIX_CACHE_VERSION] = fields[2].GetUInt32();
     }
 
     if (m_DBVersion.empty())

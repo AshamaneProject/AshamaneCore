@@ -351,7 +351,7 @@ public:
                     summon->SetSpeed(MOVE_RUN, 0.87f);
                 }
 
-                if(Unit* target = SelectTarget(SELECT_TARGET_NEAREST, 0, 50.0f, true))
+                if(Unit* target = SelectTarget(SELECT_TARGET_MINDISTANCE, 0, 50.0f, true))
                     summon->GetMotionMaster()->MoveChase(target);
             }
 
@@ -408,7 +408,7 @@ public:
 
             if (phase == PHASE_GROUND) // Ground phase
             {
-                ThreatContainer::StorageType m_threatlist = me->getThreatManager().getThreatList();
+                ThreatContainer::StorageType m_threatlist = me->GetThreatManager().getThreatList();
 
                 while (uint32 eventId = events.ExecuteEvent())
                 {
@@ -490,7 +490,7 @@ public:
             else if (phase == PHASE_FLIGHT) // Air phase
             {
                 std::list<Unit*> targets;
-                ThreatContainer::StorageType m_threatlist = me->getThreatManager().getThreatList();
+                ThreatContainer::StorageType m_threatlist = me->GetThreatManager().getThreatList();
 
                 // if has vertigo, remove all roaring flame npc's wait 8 sec then get player who rang gong.
                 if (me->HasAura(SPELL_VERTIGO))
@@ -523,7 +523,7 @@ public:
                             return;
 
                         case EVENT_SONAR_BOMB:
-                            SelectTargetList(targets, RAID_MODE(3, 6), SELECT_TARGET_RANDOM, 100.0f, true);
+                            SelectTargetList(targets, RAID_MODE(3, 6), SELECT_TARGET_RANDOM, 0, 100.0f, true);
                             if (!targets.empty())
                                 for (std::list<Unit*>::iterator itr = targets.begin(); itr != targets.end(); ++itr)
                                     DoCast(*itr, SPELL_SONAR_BOMB);

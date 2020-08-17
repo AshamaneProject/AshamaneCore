@@ -1969,7 +1969,7 @@ public:
                     {
                         pet->ToCreature()->AI()->AttackStart(target);
                         pet->CastSpell(target, SPELL_HUNTER_FLANKING_STRIKE_PROC_UP, true);
-                        pet->AddThreat(target, 400.0f);
+                        pet->GetThreatManager().AddThreat(target, 400.0f);
                     }
 
                     dmg = player->SpellDamageBonusDone(target, GetSpellInfo(), dmg, SPELL_DIRECT_DAMAGE, GetEffectInfo(EFFECT_0));

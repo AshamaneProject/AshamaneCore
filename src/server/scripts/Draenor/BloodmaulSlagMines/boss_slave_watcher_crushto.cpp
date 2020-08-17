@@ -168,7 +168,7 @@ namespace Instances
                             else
                             {
                                 if (Unit* target = me->GetVictim())
-                                    target->AddThreat(target, 10000.0f);
+                                    AddThreat(target, 10000.0f);
                             }
                         }
                     }

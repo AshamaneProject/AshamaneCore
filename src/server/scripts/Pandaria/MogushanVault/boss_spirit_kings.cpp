@@ -459,7 +459,7 @@ class boss_spirit_kings_controler : public CreatureScript
                                         spirit->RemoveAura(SPELL_INACTIVE);
 
 
-                                        if (Unit* killer = spirit->AI()->SelectTarget(SELECT_TARGET_TOPAGGRO))
+                                        if (Unit* killer = spirit->AI()->SelectTarget(SELECT_TARGET_MAXTHREAT))
                                             killer->Kill(spirit);
                                         else
                                             me->Kill(spirit);
@@ -936,7 +936,7 @@ class boss_spirit_kings : public CreatureScript
                     me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_NOT_SELECTABLE));
                     me->AddAura(SPELL_INACTIVE, me);
                     me->SetReactState(REACT_PASSIVE);
-                    me->getThreatManager().resetAllAggro();
+                    me->GetThreatManager().resetAllAggro();
                     me->SetSpeed(MOVE_RUN, 0.0f);
                     me->SetSpeed(MOVE_WALK, 0.0f);
                     me->AddUnitState(UNIT_STATE_NOT_MOVE);
@@ -1082,7 +1082,7 @@ class boss_spirit_kings : public CreatureScript
                         }
                         case EVENT_MASSIVE_ATTACK:
                         {
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_MASSIVE_ATTACKS, false);
 
                             events.ScheduleEvent(EVENT_MASSIVE_ATTACK, 3500);
@@ -1348,7 +1348,7 @@ class mob_undying_shadow : public CreatureScript
 
                 targetGuid = ObjectGuid::Empty;
 
-                if (Unit* target = SelectTarget(SELECT_TARGET_NEAREST))
+                if (Unit* target = SelectTarget(SELECT_TARGET_MINDISTANCE))
                 {
                     me->CastSpell(target, SPELL_FIXATE, true);
                     me->GetMotionMaster()->MoveChase(target);
@@ -1681,7 +1681,7 @@ class spell_crazed_cowardice : public SpellScriptLoader
                         caster->SetSpeed(MOVE_RUN, runSpeed);
                         caster->SetSpeed(MOVE_WALK, walkSpeed);
 
-                        if (Unit* target = caster->GetAI()->SelectTarget(SELECT_TARGET_TOPAGGRO))
+                        if (Unit* target = caster->GetAI()->SelectTarget(SELECT_TARGET_MAXTHREAT))
                         {
                             caster->SetTarget(target->GetGUID());
                             caster->GetAI()->AttackStart(target);

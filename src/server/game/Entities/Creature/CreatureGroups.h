@@ -77,7 +77,7 @@ class TC_GAME_API CreatureGroup
 
     public:
         //Group cannot be created empty
-        explicit CreatureGroup(ObjectGuid::LowType leaderSpawnID, uint32 groupID = 0) : m_leader(NULL), m_groupId(groupID), m_leaderSpawnId(leaderSpawnID), m_Formed(false) { }
+        explicit CreatureGroup(ObjectGuid::LowType leaderSpawnID, uint32 groupID = 0) : m_leader(nullptr), m_groupId(groupID), m_leaderSpawnId(leaderSpawnID), m_Formed(false) { }
         ~CreatureGroup() { }
 
         Creature* getLeader() const { return m_leader; }
@@ -94,7 +94,7 @@ class TC_GAME_API CreatureGroup
         void MoveGroupTo(Position destination, bool fightMove = false);
 
         void LeaderMoveTo(Position destination, uint32 id = 0, uint32 moveType = 0, bool orientation = false);
-        void MemberAttackStart(Creature* member, Unit* target);
+        void MemberEngagingTarget(Creature* member, Unit* target);
 
         void CheckWipe(Creature* killed);
 };

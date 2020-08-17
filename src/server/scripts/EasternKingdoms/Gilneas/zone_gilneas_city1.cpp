@@ -1530,15 +1530,15 @@ public:
         {
             if (who->GetTypeId() == TYPEID_PLAYER)
             {
-                me->getThreatManager().resetAllAggro();
-                who->AddThreat(me, 1.0f);
-                me->AddThreat(who, 1.0f);
+                me->GetThreatManager().resetAllAggro();
+                AddThreat(me, 1.0f);
+                AddThreat(who, 1.0f);
                 me->AI()->AttackStart(who);
             }
             else if (who->IsPet())
             {
-                me->getThreatManager().resetAllAggro();
-                me->AddThreat(who, 1.0f);
+                me->GetThreatManager().resetAllAggro();
+                AddThreat(who, 1.0f);
                 me->AI()->AttackStart(who);
             }
             else if (me->HealthBelowPct(AI_MIN_HP) && who->GetEntry() == NPC_BLOODFANG_WORGEN_35118)
@@ -2647,7 +2647,7 @@ public:
                             badAvery->SetOrientation(badAvery->GetAngle(player)); // Face Player
                             badAvery->CastSpell(player, SPELL_COSMETIC_COMBAT_ATTACK, true); // Do Cosmetic Attack
                             //player->GetMotionMaster()->MoveKnockTo(-1791.94f, 1427.29f, 12.4584f, 22.0f, 8.0f, m_playerGUID.GetCounter());
-                            badAvery->getThreatManager().resetAllAggro();
+                            badAvery->GetThreatManager().resetAllAggro();
                         }
                     m_events.ScheduleEvent(EVENTS_ANIM_2, 1200);
                     break;

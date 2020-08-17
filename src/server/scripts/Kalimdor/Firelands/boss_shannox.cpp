@@ -674,9 +674,9 @@ class npc_shannox_rageface : public CreatureScript
                     if (int32(damage) >= aurEff->GetAmount())
                     {
                         me->InterruptSpell(CURRENT_CHANNELED_SPELL, false);
-                        DoResetThreat();
+                        ResetThreatList();
                         DoCast(who, SPELL_RAGE, true);
-                        me->AddThreat(who, 10000000.0f);
+                        AddThreat(who, 10000000.0f);
                         AttackStart(who);
                         events.ScheduleEvent(EVENT_FACE_RAGE, 27000);
                         me->RemoveAurasDueToSpell(RAID_MODE(100129, 101212, 101213, 101214));
@@ -736,12 +736,12 @@ class npc_shannox_rageface : public CreatureScript
                         case EVENT_CHANGE_TARGET:
                             if (pInstance && !(me->GetVictim() && me->GetVictim()->HasAura(SPELL_RAGE)) && !me->HasAura(SPELL_FACE_RAGE_DUMMY))
                             {
-                                DoResetThreat();
+                                ResetThreatList();
                                 if (Creature* pShannox = ObjectAccessor::GetCreature(*me, pInstance->GetGuidData(DATA_SHANNOX)))
                                 {
                                     if (Unit* pTarget = pShannox->AI()->SelectTarget(SELECT_TARGET_RANDOM, 1, 0.0f, true))
                                     {
-                                        me->AddThreat(pTarget, 10000000.0f);
+                                        AddThreat(pTarget, 10000000.0f);
                                         AttackStart(pTarget);
                                     }
                                 }
@@ -750,7 +750,7 @@ class npc_shannox_rageface : public CreatureScript
                                     if (Unit* pTarget = SelectTarget(SELECT_TARGET_RANDOM, 1, 0.0f, true))
                                     {
 
-                                        me->AddThreat(pTarget, 10000000.0f);
+                                        AddThreat(pTarget, 10000000.0f);
                                         AttackStart(pTarget);
                                     }
                                 }

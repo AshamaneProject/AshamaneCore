@@ -256,7 +256,7 @@ void BattlegroundMgr::BuildBattlegroundStatusFailed(WorldPackets::Battleground::
 Battleground* BattlegroundMgr::GetBattleground(uint32 instanceId, BattlegroundTypeId bgTypeId)
 {
     if (!instanceId)
-        return NULL;
+        return nullptr;
 
     BattlegroundDataContainer::const_iterator begin, end;
 
@@ -269,7 +269,7 @@ Battleground* BattlegroundMgr::GetBattleground(uint32 instanceId, BattlegroundTy
     {
         end = bgDataStore.find(bgTypeId);
         if (end == bgDataStore.end())
-            return NULL;
+            return nullptr;
         begin = end++;
     }
 
@@ -281,18 +281,18 @@ Battleground* BattlegroundMgr::GetBattleground(uint32 instanceId, BattlegroundTy
            return itr->second;
     }
 
-    return NULL;
+    return nullptr;
 }
 
 Battleground* BattlegroundMgr::GetBattlegroundTemplate(BattlegroundTypeId bgTypeId)
 {
     BattlegroundDataContainer::const_iterator itr = bgDataStore.find(bgTypeId);
     if (itr == bgDataStore.end())
-        return NULL;
+        return nullptr;
 
     BattlegroundContainer const& bgs = itr->second.m_Battlegrounds;
     // map is sorted and we can be sure that lowest instance id has only BG template
-    return bgs.empty() ? NULL : bgs.begin()->second;
+    return bgs.empty() ? nullptr : bgs.begin()->second;
 }
 
 uint32 BattlegroundMgr::CreateClientVisibleInstanceId(BattlegroundTypeId bgTypeId, BattlegroundBracketId bracket_id)
@@ -331,10 +331,10 @@ Battleground* BattlegroundMgr::CreateNewBattleground(BattlegroundQueueTypeId que
     if (!bg_template)
     {
         TC_LOG_ERROR("bg.battleground", "Battleground: CreateNewBattleground - bg template not found for %u", bgTypeId);
-        return NULL;
+        return nullptr;
     }
 
-    Battleground* bg = NULL;
+    Battleground* bg = nullptr;
     // create a copy of the BG template
     switch (bgTypeId)
     {
@@ -387,7 +387,7 @@ Battleground* BattlegroundMgr::CreateNewBattleground(BattlegroundQueueTypeId que
         case BATTLEGROUND_AA:
         case BATTLEGROUND_RANDOM_EPIC:
         default:
-            return NULL;
+            return nullptr;
     }
 
     bool isRandom = bgTypeId != BattlegroundTypeId(queueId.BattlemasterListId) && !bg->isArena();
@@ -502,7 +502,7 @@ void BattlegroundMgr::LoadBattlegroundTemplates()
 
         BattlegroundTypeId bgTypeId = BattlegroundTypeId(fields[0].GetUInt32());
 
-        if (DisableMgr::IsDisabledFor(DISABLE_TYPE_BATTLEGROUND, bgTypeId, NULL))
+        if (DisableMgr::IsDisabledFor(DISABLE_TYPE_BATTLEGROUND, bgTypeId, nullptr))
             continue;
 
         // can be overwrite by values from DB

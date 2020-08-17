@@ -442,7 +442,7 @@ class boss_twin_ogron_pol : public CreatureScript
                     }
                     case eEvents::EventShieldBash:
                     {
-                        if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_TOPAGGRO))
+                        if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_MAXTHREAT))
                             me->CastSpell(target, eSpells::ShieldBash, false);
                         m_Events.ScheduleEvent(eEvents::EventShieldBash, 22 * TimeConstants::IN_MILLISECONDS);
                         break;
@@ -958,7 +958,7 @@ class boss_twin_ogron_phemos : public CreatureScript
                     }
                     case eEvents::EventDoubleSlash:
                     {
-                        if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_TOPAGGRO))
+                        if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_MAXTHREAT))
                         {
                             me->CastSpell(target, eSpells::DoubleSlashMainHand, false);
 

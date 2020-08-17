@@ -203,7 +203,7 @@ public:
 
         bool playersInThreat()
         {
-            const std::list<HostileReference*>& threatList = me->getThreatManager().getThreatList();
+            const std::list<HostileReference*>& threatList = me->GetThreatManager().getThreatList();
             if (threatList.empty())
                 return false;
 

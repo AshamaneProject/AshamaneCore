@@ -417,7 +417,7 @@ public:
                         TeleportPlayer();
 
                     bool closestPlayers = false;
-                    std::list<HostileReference*> threatlist = me->getThreatManager().getThreatList();
+                    std::list<HostileReference*> threatlist = me->GetThreatManager().getThreatList();
                     if (!threatlist.empty())
                     {
                         for (std::list<HostileReference*>::iterator itr = threatlist.begin(); itr != threatlist.end(); ++itr)
@@ -540,8 +540,8 @@ public:
                 case 1:
                     if (Unit* pTarget = SelectTarget(SELECT_TARGET_RANDOM, 0, 120.0f, true))
                     {
-                        DoResetThreat();
-                        me->AddThreat(pTarget, 100000.0f);
+                        ResetThreatList();
+                        AddThreat(pTarget, 100000.0f);
                         DoCast(pTarget, SPELL_NIGHTMARE_GAZE);
                     }
                     events.ScheduleEvent(1, 2000);
@@ -696,7 +696,7 @@ public:
                     events.ScheduleEvent(2, 22000);
                     break;
                 case 3:
-                    if (Unit* target = SelectTarget(SELECT_TARGET_NEAREST, 0, 100.0f, true))
+                    if (Unit* target = SelectTarget(SELECT_TARGET_MINDISTANCE, 0, 100.0f, true))
                         if (!me->IsWithinMeleeRange(target))
                             DoCast(SPELL_RUPTURING_ROAR);
                     events.ScheduleEvent(3, 3000);
@@ -853,8 +853,8 @@ public:
             if (spell->Id == SPELL_FIXATE)
             {
                 me->AttackStop();
-                DoResetThreat();
-                me->AddThreat(target, 100000.0f);
+                ResetThreatList();
+                AddThreat(target, 100000.0f);
                 AttackStart(target);
             }
         }

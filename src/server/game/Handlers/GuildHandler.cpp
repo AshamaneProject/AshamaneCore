@@ -472,7 +472,7 @@ void WorldSession::HandleRequestGuildRewardsList(WorldPackets::Guild::RequestGui
         std::vector<GuildReward> const& rewards = sGuildMgr->GetGuildRewards();
 
         WorldPackets::Guild::GuildRewardList rewardList;
-        rewardList.Version = uint32(time(NULL));
+        rewardList.Version = uint32(time(nullptr));
         rewardList.RewardItems.reserve(rewards.size());
 
         for (uint32 i = 0; i < rewards.size(); i++)

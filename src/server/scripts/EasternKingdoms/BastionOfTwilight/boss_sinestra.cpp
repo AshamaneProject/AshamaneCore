@@ -297,7 +297,7 @@ class boss_sinestra : public CreatureScript
                         case EVENT_TWILIGHT_SLICER:
                             for (uint8 i = 0; i < 2; i++)
                             {
-                                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0.0f, 100.0f, true, -SPELL_PURPLE_BEAM))
+                                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0.0f, 100.0f, true, true, -SPELL_PURPLE_BEAM))
                                 {
                                     Position pos = target->GetPosition();
                                     float width = frand(5, 20);
@@ -321,7 +321,7 @@ class boss_sinestra : public CreatureScript
 
                                         orb->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                                         orb->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
-                                        orb->AddThreat(target, 1000000.0f);
+                                        AddThreat(target, 1000000.0f);
                                         orb->Attack(target, true);
 
                                         // Twilight pulse!

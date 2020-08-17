@@ -493,7 +493,7 @@ class boss_imperator_margok : public CreatureScript
                                 }
                             }
 
-                            if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_MAXTHREAT))
                                 AttackStart(target);
                         });
 
@@ -1114,7 +1114,7 @@ class boss_imperator_margok : public CreatureScript
                     }
                     case eCosmeticEvents::EventCheckPlayerZ:
                     {
-                        std::list<HostileReference*> l_ThreatList = me->getThreatManager().getThreatList();
+                        std::list<HostileReference*> l_ThreatList = me->GetThreatManager().getThreatList();
                         for (HostileReference* l_Ref : l_ThreatList)
                         {
                             if (Player* player = ObjectAccessor::GetPlayer(*me, l_Ref->getUnitGuid()))
@@ -1176,7 +1176,7 @@ class boss_imperator_margok : public CreatureScript
                     /// ALL DIFFICULTIES
                     case eEvents::EventMarkOfChaos:
                     {
-                        if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_TOPAGGRO))
+                        if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_MAXTHREAT))
                         {
                             switch (m_Phase)
                             {
@@ -1352,7 +1352,7 @@ class boss_imperator_margok : public CreatureScript
                     if (l_Trigger != nullptr)
                         l_TriggerGuid = l_Trigger->GetGUID();
 
-                    std::list<HostileReference*> l_ThreatList = me->getThreatManager().getThreatList();
+                    std::list<HostileReference*> l_ThreatList = me->GetThreatManager().getThreatList();
                     for (HostileReference* l_Ref : l_ThreatList)
                     {
                         if (Player* player = ObjectAccessor::GetPlayer(*me, l_Ref->getUnitGuid()))
@@ -1405,7 +1405,7 @@ class boss_imperator_margok : public CreatureScript
 
                             l_MinRadius += (l_YardsPerMs * m_NovaTimePhase3[l_I]);
 
-                            std::list<HostileReference*> l_ThreatList = me->getThreatManager().getThreatList();
+                            std::list<HostileReference*> l_ThreatList = me->GetThreatManager().getThreatList();
                             for (HostileReference* l_Ref : l_ThreatList)
                             {
                                 if (Player* player = ObjectAccessor::GetPlayer(*me, l_Ref->getUnitGuid()))
@@ -1418,7 +1418,7 @@ class boss_imperator_margok : public CreatureScript
                         }
                     }
 
-                    std::list<HostileReference*> l_ThreatList = me->getThreatManager().getThreatList();
+                    std::list<HostileReference*> l_ThreatList = me->GetThreatManager().getThreatList();
                     for (HostileReference* l_Ref : l_ThreatList)
                     {
                         if (Player* player = ObjectAccessor::GetPlayer(*me, l_Ref->getUnitGuid()))
@@ -3073,7 +3073,7 @@ class npc_highmaul_gorian_warmage : public CreatureScript
                 {
                     case eEvents::EventFixate:
                     {
-                        if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_RANDOM, 0, 0.0f, true, -eSpells::Fixate))
+                        if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_RANDOM, 0, 0.0f, true, true, -eSpells::Fixate))
                         {
                             m_FixateTarget = target->GetGUID();
                             me->CastSpell(target, eSpells::Fixate, true);
@@ -3232,7 +3232,7 @@ class npc_highmaul_gorian_reaver : public CreatureScript
                 {
                     case eEvents::EventCrushArmor:
                     {
-                        if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_TOPAGGRO))
+                        if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_MAXTHREAT))
                             me->CastSpell(target, eSpells::CrushArmor, true);
 
                         m_Events.ScheduleEvent(eEvents::EventCrushArmor, 11 * TimeConstants::IN_MILLISECONDS);
@@ -3240,10 +3240,10 @@ class npc_highmaul_gorian_reaver : public CreatureScript
                     }
                     case eEvents::EventKickToTheFace:
                     {
-                        if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_TOPAGGRO))
+                        if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_MAXTHREAT))
                         {
                             me->CastSpell(target, eSpells::KickToTheFace, true);
-                            me->getThreatManager().modifyThreatPercent(target, -100);
+                            ModifyThreatByPercent(target, -100);
                         }
 
                         m_Events.ScheduleEvent(eEvents::EventKickToTheFace, 25 * TimeConstants::IN_MILLISECONDS);

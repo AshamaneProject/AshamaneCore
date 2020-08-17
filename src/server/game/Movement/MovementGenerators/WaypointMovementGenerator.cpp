@@ -77,7 +77,7 @@ void WaypointMovementGenerator<Creature>::OnArrived(Creature* creature)
     {
         TC_LOG_DEBUG("maps.script", "Creature movement start script %u at point %u for %s.", i_path->at(i_currentNode)->event_id, i_currentNode, creature->GetGUID().ToString().c_str());
         creature->ClearUnitState(UNIT_STATE_ROAMING_MOVE);
-        creature->GetMap()->ScriptsStart(sWaypointScripts, i_path->at(i_currentNode)->event_id, creature, NULL);
+        creature->GetMap()->ScriptsStart(sWaypointScripts, i_path->at(i_currentNode)->event_id, creature, nullptr);
     }
 
     // Inform script
@@ -102,7 +102,7 @@ bool WaypointMovementGenerator<Creature>::StartMove(Creature* creature)
     if (Stopped())
         return true;
 
-    bool transportPath = creature->GetTransport() != NULL;
+    bool transportPath = creature->GetTransport() != nullptr;
 
     if (m_isArrivalDone)
     {

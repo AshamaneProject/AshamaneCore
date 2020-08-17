@@ -386,7 +386,7 @@ class boss_the_butcher : public CreatureScript
                 {
                     AddTimedDelayedOperation(2 * TimeConstants::IN_MILLISECONDS, [this]() -> void
                     {
-                        if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_TOPAGGRO))
+                        if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_MAXTHREAT))
                             AttackStart(target);
 
                         if (Creature* maggot = me->FindNearestCreature(eCreatures::Maggot, 10.0f))
@@ -445,7 +445,7 @@ class boss_the_butcher : public CreatureScript
                 {
                     case eEvents::EventTenderizer:
                     {
-                        if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_TOPAGGRO))
+                        if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_MAXTHREAT))
                             me->CastSpell(target, eSpells::TheTenderizer, true);
                         m_Events.ScheduleEvent(eEvents::EventTenderizer, 16 * TimeConstants::IN_MILLISECONDS);
                         break;
@@ -485,7 +485,7 @@ class boss_the_butcher : public CreatureScript
                     }
                     case eEvents::EventCleaver:
                     {
-                        if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_TOPAGGRO))
+                        if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_MAXTHREAT))
                             me->CastSpell(target, eSpells::TheCleaverDmg, true);
                         m_Events.ScheduleEvent(eEvents::EventCleaver, 8 * TimeConstants::IN_MILLISECONDS);
                         break;
@@ -507,7 +507,7 @@ class boss_the_butcher : public CreatureScript
                     }
                     case eEvents::EventMeatHook:
                     {
-                        if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_TOPAGGRO))
+                        if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_MAXTHREAT))
                             if (!target->IsWithinMeleeRange(me))
                                 me->CastSpell(target, eSpells::MeatHook, true);
 

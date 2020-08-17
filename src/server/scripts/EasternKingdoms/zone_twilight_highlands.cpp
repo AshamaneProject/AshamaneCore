@@ -336,7 +336,7 @@ public:
                     events.ScheduleEvent(EVENT_OVERHEAD_SMASH, urand(20*IN_MILLISECONDS, 30*IN_MILLISECONDS));
                     break;
                 case EVENT_WHIRLWIND:
-                     if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO, 0))
+                     if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT, 0))
                      {
                          DoCast(target, SPELL_WHIRLWIND, true);
                      }

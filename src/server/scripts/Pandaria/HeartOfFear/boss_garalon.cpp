@@ -350,7 +350,7 @@ public:
 
             DespawnCreatures(NPC_PHEROMONE_TRAIL);
             me->RemoveAllAuras();
-            me->DeleteThreatList();
+            ResetThreatList();
             me->CombatStop(true);
             me->AttackStop();
             me->GetMotionMaster()->MoveTargetedHome();

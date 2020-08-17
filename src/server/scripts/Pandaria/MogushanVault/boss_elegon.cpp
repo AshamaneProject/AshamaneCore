@@ -709,7 +709,7 @@ class boss_elegon : public CreatureScript
                     case EVENT_CELESTIAL_BREATH:
                     {
                         if (phase == PHASE_1)
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_CELESTIAL_BREATH, false);
 
                         events.ScheduleEvent(EVENT_CELESTIAL_BREATH, 10000);
@@ -1187,7 +1187,7 @@ class mob_cosmic_spark : public CreatureScript
             {
                 events.Reset();
 
-                if (Unit* player = SelectTarget(SELECT_TARGET_NEAREST))
+                if (Unit* player = SelectTarget(SELECT_TARGET_MINDISTANCE))
                     AttackStart(player);
 
                 events.ScheduleEvent(EVENT_CHECK_UNIT_ON_PLATFORM, 1000);

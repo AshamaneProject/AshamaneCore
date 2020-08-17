@@ -756,7 +756,7 @@ class npc_yorsahj_the_unsleeping_forgotten_one: public CreatureScript
                             me->SetReactState(REACT_AGGRESSIVE);
                             if (Unit* pTarget = SelectTarget(SELECT_TARGET_RANDOM, 0, 0.0f, true))
                             {
-                                me->AddThreat(pTarget, 1000000.0f);
+                                AddThreat(pTarget, 1000000.0f);
                                 AttackStart(pTarget);
                                 events.ScheduleEvent(EVENT_PSYCHIC_SLICE, urand(6000, 20000));
                             }

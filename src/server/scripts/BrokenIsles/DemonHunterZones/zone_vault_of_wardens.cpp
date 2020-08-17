@@ -547,7 +547,7 @@ public:
             if (damage >= me->GetHealth())
             {
                 std::list<HostileReference*> threatList;
-                threatList = me->getThreatManager().getThreatList();
+                threatList = me->GetThreatManager().getThreatList();
                 for (std::list<HostileReference*>::const_iterator itr = threatList.begin(); itr != threatList.end(); ++itr)
                     if (Player* target = (*itr)->getTarget()->ToPlayer())
                         if (target->GetQuestStatus(QUEST_STOP_GULDAN_H) == QUEST_STATUS_INCOMPLETE ||
@@ -875,7 +875,7 @@ public:
             if (damage >= me->GetHealth())
             {
                 std::list<HostileReference*> threatList;
-                threatList = me->getThreatManager().getThreatList();
+                threatList = me->GetThreatManager().getThreatList();
                 for (std::list<HostileReference*>::const_iterator itr = threatList.begin(); itr != threatList.end(); ++itr)
                     if (Player* target = (*itr)->getTarget()->ToPlayer())
                         if (target->GetQuestStatus(QUEST_STOP_GULDAN_H) == QUEST_STATUS_INCOMPLETE ||
@@ -1321,7 +1321,7 @@ public:
             if (damage >= me->GetHealth())
             {
                 std::list<HostileReference*> threatList;
-                threatList = me->getThreatManager().getThreatList();
+                threatList = me->GetThreatManager().getThreatList();
                 for (std::list<HostileReference*>::const_iterator itr = threatList.begin(); itr != threatList.end(); ++itr)
                     if (Player* target = (*itr)->getTarget()->ToPlayer())
                         if (target->GetQuestStatus(QUEST_FORGED_IN_FIRE_H) == QUEST_STATUS_INCOMPLETE ||

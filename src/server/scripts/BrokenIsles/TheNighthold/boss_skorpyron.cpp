@@ -555,7 +555,7 @@ public:
         void HandlePeriodic(AuraEffect const* /*aurEff*/)
         {
             if (Creature* caster = GetCaster()->ToCreature())
-                if (Unit* target = caster->AI()->SelectTarget(SELECT_TARGET_TOPAGGRO))
+                if (Unit* target = caster->AI()->SelectTarget(SELECT_TARGET_MAXTHREAT))
                     caster->CastSpell(target, SPELL_ARCANOSLASH_DAMAGE);
         }
 

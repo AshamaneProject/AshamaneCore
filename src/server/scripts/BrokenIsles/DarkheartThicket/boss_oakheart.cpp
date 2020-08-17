@@ -144,7 +144,7 @@ struct boss_oakheart : public BossAI
                 }
                 case EVENT_CRUSHING_GRIP:
                 {
-                    if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                    if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                         me->CastSpell(target, SPELL_CRUSHING_GRIP_CAST, false);
                     events.Repeat(29000, 32000);
                     break;
@@ -158,7 +158,7 @@ struct boss_oakheart : public BossAI
                 }
                 case EVENT_NIGHTMARE_BREATH:
                 {
-                    if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                    if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                     {
                         me->CastSpell(target, SPELL_NIGHTMARE_BREATH_DAMAGE, false);
                         Talk(SAY_BREATH);

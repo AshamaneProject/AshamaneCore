@@ -296,7 +296,7 @@ class boss_garajal : public CreatureScript
                     {
                         case EVENT_SECONDARY_ATTACK:
                         {
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                             {
                                 uint32 spellId = RAND(SPELL_RIGHT_CROSS, SPELL_LEFT_HOOK, SPELL_HAMMER_FIST, SPELL_SWEEPING_KICK);
                                 me->CastSpell(target, spellId, true);
@@ -331,7 +331,7 @@ class boss_garajal : public CreatureScript
 
                             for (int32 i = 0; i < mobCount; ++i)
                             {
-                                if (Unit* target = SelectTarget(i == 0 ? SELECT_TARGET_TOPAGGRO : SELECT_TARGET_RANDOM, 0, 0, true, -SPELL_VOODOO_DOLL_VISUAL))
+                                if (Unit* target = SelectTarget(i == 0 ? SELECT_TARGET_MAXTHREAT : SELECT_TARGET_RANDOM, 0, 0, true, true, -SPELL_VOODOO_DOLL_VISUAL))
                                 {
                                     voodooTargets[i] = target->GetGUID();
                                     me->TextEmote("You are a |cffba2200|Hspell:116000|h[Voodoo Doll]|h|r ! Damage you take is copied to the other Voodoo Dolls in your raid !", target, true);
@@ -346,7 +346,7 @@ class boss_garajal : public CreatureScript
                         }
                         case EVENT_BANISHMENT:
                         {
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                             {
                                 me->AddAura(SPELL_BANISHMENT,       target);
                                 me->AddAura(SPELL_SOUL_CUT_SUICIDE, target);
@@ -360,10 +360,10 @@ class boss_garajal : public CreatureScript
                                         soulCutter->GetPhaseShift().AddPhase(170, PhaseFlags::None, nullptr);
                                         soulCutter->AI()->AttackStart(target);
                                         soulCutter->SetInCombatWith(target);
-                                        soulCutter->getThreatManager().addThreat(target, 10000.0f);
+                                        soulCutter->GetThreatManager().addThreat(target, 10000.0f);
                                     }
 
-                                me->getThreatManager().resetAllAggro();
+                                me->GetThreatManager().resetAllAggro();
                             }
 
                             m_Instance->DoRemoveAurasDueToSpellOnPlayers(SPELL_VOODOO_DOLL_VISUAL);
@@ -628,9 +628,9 @@ class mob_shadowy_minion : public CreatureScript
                         // Spirit World
                         case EVENT_SHADOW_BOLT:
                         {
-                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0, false, SPELL_CROSSED_OVER))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0, false, true, SPELL_CROSSED_OVER))
                                 me->CastSpell(target, SPELL_SHADOW_BOLT, false);
-                            else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0, false, SPELL_SOUL_CUT_SUICIDE))
+                            else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0, false, true, SPELL_SOUL_CUT_SUICIDE))
                                 me->CastSpell(target, SPELL_SHADOW_BOLT, false);
 
                             events.ScheduleEvent(EVENT_SHADOW_BOLT, urand(2000, 3000));
@@ -639,9 +639,9 @@ class mob_shadowy_minion : public CreatureScript
                         // Real World
                         case EVENT_SPIRITUAL_GRASP:
                         {
-                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0, false, -SPELL_SOUL_CUT_SUICIDE))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0, false, true, -SPELL_SOUL_CUT_SUICIDE))
                                 me->CastSpell(target, SPELL_SPIRITUAL_GRASP, false);
-                            else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0, false, -SPELL_CROSSED_OVER))
+                            else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0, false, true, -SPELL_CROSSED_OVER))
                                 me->CastSpell(target, SPELL_SPIRITUAL_GRASP, false);
 
                             events.ScheduleEvent(EVENT_SPIRITUAL_GRASP, urand(5000, 8000));

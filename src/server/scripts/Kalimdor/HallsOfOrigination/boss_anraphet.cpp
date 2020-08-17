@@ -323,7 +323,7 @@ class npc_whirling_winds_hoo : public CreatureScript
         {
             me->RemoveUnitMovementFlag(MOVEMENTFLAG_WALKING);
 
-            ThreatContainer::StorageType const& m_threatList = summoner->getThreatManager().getThreatList();
+            ThreatContainer::StorageType const& m_threatList = summoner->GetThreatManager().getThreatList();
             if (m_threatList.empty())
                 return;
 

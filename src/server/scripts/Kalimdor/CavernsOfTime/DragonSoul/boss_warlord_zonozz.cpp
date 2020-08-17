@@ -280,7 +280,7 @@ class boss_warlord_zonozz: public CreatureScript
                 {
                     case NPC_VOID_OF_THE_UNMAKING_1:
                         summon->SetOrientation(me->GetOrientation());
-                        if (Unit* target = SelectTarget(SELECT_TARGET_FARTHEST, 0, 120.0f, true)) //Agrega estos
+                        if (Unit* target = SelectTarget(SELECT_TARGET_MAXDISTANCE, 0, 120.0f, true)) //Agrega estos
                             posPlayer = target->GetPosition(); //Agrega esto
                         DoCast(summon, SPELL_VOID_OF_THE_UNMAKING_DUMMY_1);
                         break;
@@ -860,7 +860,7 @@ class npc_warlord_zonozz_tentacle : public CreatureScript
                             events.ScheduleEvent(EVENT_OOZE_SPIT, 6000);
                             break;
                         case EVENT_SHADOW_GAZE:
-                            if (Unit* pTarget = SelectTarget(SELECT_TARGET_RANDOM, 0, 0.0f, true, -int32((SPELL_SHADOW_GAZE))))
+                            if (Unit* pTarget = SelectTarget(SELECT_TARGET_RANDOM, 0, 0.0f, true, true, -int32((SPELL_SHADOW_GAZE))))
                                 DoCast(pTarget, SPELL_SHADOW_GAZE);
                             events.ScheduleEvent(EVENT_SHADOW_GAZE, urand(8000, 15000));
                             break;

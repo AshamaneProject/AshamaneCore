@@ -280,7 +280,7 @@ public:
                     case EVENT_CAUSTIC_SLIME:
                     {
                         std::list<Unit*> targets;
-                        SelectTargetList(targets, RAID_MODE(2, 5), SELECT_TARGET_RANDOM, 100.0f, true);
+                        SelectTargetList(targets, RAID_MODE(2, 5), SELECT_TARGET_RANDOM, 0, 100.0f, true);
                             if (!targets.empty())
                                 for (std::list<Unit*>::iterator itr = targets.begin(); itr != targets.end(); ++itr)
                                     DoCast(*itr, SPELL_CAUSTIC_SLIME);

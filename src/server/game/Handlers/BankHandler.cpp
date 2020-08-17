@@ -46,7 +46,7 @@ void WorldSession::HandleAutoBankItemOpcode(WorldPackets::Bank::AutoBankItem& pa
         InventoryResult msg = _player->CanStoreItem(NULL_BAG, NULL_SLOT, dest, item, false, true);
         if (msg != EQUIP_ERR_OK)
         {
-            _player->SendEquipError(msg, item, NULL);
+            _player->SendEquipError(msg, item, nullptr);
             return;
         }
 
@@ -61,7 +61,7 @@ void WorldSession::HandleAutoBankItemOpcode(WorldPackets::Bank::AutoBankItem& pa
         InventoryResult msg = _player->CanBankItem(NULL_BAG, NULL_SLOT, dest, item, false);
         if (msg != EQUIP_ERR_OK)
         {
-            _player->SendEquipError(msg, item, NULL);
+            _player->SendEquipError(msg, item, nullptr);
             return;
         }
 
@@ -158,7 +158,7 @@ void WorldSession::HandleAutoStoreBankItemOpcode(WorldPackets::Bank::AutoStoreBa
         InventoryResult msg = _player->CanStoreItem(NULL_BAG, NULL_SLOT, dest, item, false);
         if (msg != EQUIP_ERR_OK)
         {
-            _player->SendEquipError(msg, item, NULL);
+            _player->SendEquipError(msg, item, nullptr);
             return;
         }
 
@@ -173,7 +173,7 @@ void WorldSession::HandleAutoStoreBankItemOpcode(WorldPackets::Bank::AutoStoreBa
         InventoryResult msg = _player->CanBankItem(NULL_BAG, NULL_SLOT, dest, item, false);
         if (msg != EQUIP_ERR_OK)
         {
-            _player->SendEquipError(msg, item, NULL);
+            _player->SendEquipError(msg, item, nullptr);
             return;
         }
 

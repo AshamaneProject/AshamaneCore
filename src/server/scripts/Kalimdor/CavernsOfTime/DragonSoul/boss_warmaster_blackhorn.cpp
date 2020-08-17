@@ -278,8 +278,8 @@ class boss_warmaster_blackhorn: public CreatureScript
                     if (Creature* pShip = me->FindNearestCreature(NPC_SKYFIRE, 300.0f))
                     {
                         pShip->SetInCombatWith(me);
-                        pShip->AddThreat(me, 0.0f);
-                        me->AddThreat(pShip, 0.0f);
+                        AddThreat(me, 0.0f);
+                        AddThreat(pShip, 0.0f);
                     }
 
                     events.ScheduleEvent(EVENT_SUMMON_DRAKE, 10000);
@@ -1066,7 +1066,7 @@ class npc_warmaster_blackhorn_twilight_elite_dreadblade_slayer: public CreatureS
                     {
                         case EVENT_BLADE_RUSH:
                             startPos = me->GetPosition();
-                            if (Unit* pTarget = SelectTarget(SELECT_TARGET_FARTHEST, 0, 30.0f, true))
+                            if (Unit* pTarget = SelectTarget(SELECT_TARGET_MAXDISTANCE, 0, 30.0f, true))
                             {
                                 endPos = pTarget->GetPosition();
                                 DoCast(pTarget, SPELL_BLADE_RUSH);

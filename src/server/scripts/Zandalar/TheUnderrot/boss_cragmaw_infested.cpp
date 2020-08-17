@@ -81,7 +81,7 @@ struct boss_cragmaw_infested : public BossAI
         switch (eventId)
         {
             case SPELL_INDIGESTION:
-                if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO, 0))
+                if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT, 0))
                     me->CastSpell(target, SPELL_INDIGESTION, false);
 
                 events.Repeat(30s);

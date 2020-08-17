@@ -465,7 +465,7 @@ class npc_eoa_moonson : public CreatureScript
 
             void FindTargetToFollow()
             {
-                _target = SelectTarget(SELECT_TARGET_NEAREST, 0, 0, true);
+                _target = SelectTarget(SELECT_TARGET_MINDISTANCE, 0, 0, true);
 
                 if (_target)
                 {

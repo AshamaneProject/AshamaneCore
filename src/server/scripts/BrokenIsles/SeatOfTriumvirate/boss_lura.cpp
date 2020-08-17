@@ -85,7 +85,7 @@ struct boss_lura : public BossAI
         }
         case SPELL_CRUSHING_GRIP_CAST:
         {
-            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                 DoCast(target, SPELL_CRUSHING_GRIP_CAST);
             events.Repeat(30s);
             break;
@@ -99,7 +99,7 @@ struct boss_lura : public BossAI
         }
         case SPELL_NIGHTMARE_BREATH_DAMAGE:
         {
-            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
             {
                 DoCast(target, SPELL_NIGHTMARE_BREATH_DAMAGE);
                 Talk(SAY_BREATH);

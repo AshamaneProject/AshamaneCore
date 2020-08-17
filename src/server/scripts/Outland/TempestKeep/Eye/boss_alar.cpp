@@ -210,7 +210,7 @@ class boss_alar : public CreatureScript
 
             void UpdateAI(uint32 diff) override
             {
-                if (!me->IsInCombat()) // sometimes IsInCombat but !incombat, faction bug?
+                if (!me->IsEngaged())
                     return;
 
                 if (Berserk_Timer <= diff)
@@ -327,7 +327,7 @@ class boss_alar : public CreatureScript
 
                 if (Phase1)
                 {
-                    if (me->getThreatManager().getThreatList().empty())
+                    if (!me->IsThreatened())
                     {
                         EnterEvadeMode();
                         return;
@@ -435,9 +435,8 @@ class boss_alar : public CreatureScript
                     }
                     else
                     {
-                        std::vector<Unit*> targets = me->SelectNearestTargetsInAttackDistance(5);
-                        if (targets.size() > 0)
-                            AttackStart(targets[0]);
+                        if (Unit* target = me->SelectNearestTargetInAttackDistance(5))
+                            AttackStart(target);
                         else
                         {
                             DoCast(me, SPELL_FLAME_BUFFET, true);
@@ -522,7 +521,7 @@ class npc_ember_of_alar : public CreatureScript
 
                 if (toDie)
                 {
-                    me->DealDamage(me, me->GetHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
+                    me->DealDamage(me, me->GetHealth(), nullptr, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, nullptr, false);
                     //me->SetVisibility(VISIBILITY_OFF);
                 }
 

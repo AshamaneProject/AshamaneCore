@@ -118,7 +118,7 @@ class boss_taran_zhu : public CreatureScript
                         if (!me->HasAura(SPELL_RING_OF_MALICE))
                             break;
 
-                        if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO, 0, 0, true))
+                        if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT, 0, 0, true))
                             me->CastSpell(target, SPELL_SHA_BLAST, false);
 
                         events.ScheduleEvent(EVENT_SHA_BLAST,  urand(2500, 5000));

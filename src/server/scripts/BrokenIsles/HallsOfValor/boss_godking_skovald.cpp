@@ -135,7 +135,7 @@ struct boss_god_king_kovald : public BossAI
         if (spellInfo->Id == SPELL_CLAIM_THE_AEGIS)
         {
             me->SetReactState(REACT_AGGRESSIVE);
-            if (Unit* topAggro = SelectTarget(SELECT_TARGET_TOPAGGRO))
+            if (Unit* topAggro = SelectTarget(SELECT_TARGET_MAXTHREAT))
                 me->SetFacingToObject(topAggro);
 
             AddTimedDelayedOperation(10, [this]() -> void

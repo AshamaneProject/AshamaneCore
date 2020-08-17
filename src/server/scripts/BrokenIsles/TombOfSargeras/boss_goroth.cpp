@@ -117,7 +117,7 @@ struct boss_goroth : public BossAI
         {
             case SPELL_BURNING_ARMOR:
             {
-                if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                     DoCast(target, SPELL_BURNING_ARMOR);
 
                 events.Repeat(16s);
@@ -126,7 +126,7 @@ struct boss_goroth : public BossAI
             case SPELL_CRASHING_COMET:
             {
                 UnitList targetList;
-                SelectTargetList(targetList, 3, SELECT_TARGET_RANDOM, 200.0f, true);
+                SelectTargetList(targetList, 3, SELECT_TARGET_RANDOM, 0, 200.0f, true);
 
                 for (Unit* target : targetList)
                     DoCast(target, SPELL_CRASHING_COMET, true);
@@ -138,7 +138,7 @@ struct boss_goroth : public BossAI
             {
                 Talk(SAY_INFERNAL_SPIKE);
                 UnitList targetList;
-                SelectTargetList(targetList, 3, SELECT_TARGET_RANDOM, 200.0f, true);
+                SelectTargetList(targetList, 3, SELECT_TARGET_RANDOM, 0, 200.0f, true);
 
                 for (Unit* target : targetList)
                     DoCast(target, SPELL_INFERNAL_SPIKE_SUMMON);
@@ -307,7 +307,7 @@ class spell_infernal_burning : public SpellScript
         CreatureList infernalSpikes;
         caster->GetCreatureListWithEntryInGrid(infernalSpikes, NPC_INFERNAL_SPIKE, 200.0f);
 
-        for (auto reference : caster->getThreatManager().getThreatList())
+        for (auto reference : caster->GetThreatManager().getThreatList())
             for (Creature* spike : infernalSpikes)
                 if (spike->IsInBetween(GetCaster(), reference->getTarget(), 2.0f))
                     reference->getTarget()->AddAura(SPELL_INFERNAL_SPIKE_PROTECTION);
@@ -316,7 +316,7 @@ class spell_infernal_burning : public SpellScript
     void AfterCastHandler()
     {
         if (Creature* caster = GetCaster()->ToCreature())
-            for (auto reference : caster->getThreatManager().getThreatList())
+            for (auto reference : caster->GetThreatManager().getThreatList())
                 reference->getTarget()->RemoveAurasDueToSpell(SPELL_INFERNAL_SPIKE_PROTECTION);
     }
 

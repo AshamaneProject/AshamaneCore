@@ -336,7 +336,7 @@ public:
                 }
                 case EVENT_FEL_SPIKES:
                 {
-                    Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO, 0.0, 0.0, true);
+                    Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT, 0.0, 0.0, true);
                     if (!target)
                         break;
                     DoCast(target, SPELL_FEL_SPIKES, false);

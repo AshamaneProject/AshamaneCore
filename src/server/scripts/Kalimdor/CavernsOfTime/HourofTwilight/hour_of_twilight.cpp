@@ -1376,7 +1376,7 @@ public:
                 {
                     case EVENT_CLEANSE_SPIRIT:
                         events.CancelEvent(EVENT_LAVA_BURST_BENEDICTUS);
-                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100.0f, true, 103151))
+                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100.0f, true, true, 103151))
                         {
                             me->CastSpell(target, 103550, false);
                         }

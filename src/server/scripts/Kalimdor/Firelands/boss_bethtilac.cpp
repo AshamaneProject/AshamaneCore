@@ -269,12 +269,12 @@ class boss_bethtilac : public CreatureScript
                 if (uiPhase == PHASE_HIGH)
                 {
                     if (victim->GetPositionZ() < 100.0f)
-                        DoModifyThreatPercent(victim, -100);
+                        ModifyThreatByPercent(victim, -100);
                 }
                 else
                 {
                     if (victim->GetPositionZ() > 100.0f)
-                        DoModifyThreatPercent(victim, -100);
+                        ModifyThreatByPercent(victim, -100);
                 }
             }
 
@@ -702,16 +702,16 @@ class npc_bethtilac_cinderweb_drone : public CreatureScript
                             {
                                 me->ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_TAUNT, true);
                                 me->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_ATTACK_ME, true);
-                                DoResetThreat();
+                                ResetThreatList();
                                 DoCast(me, SPELL_FIXATE_SELF, true);
                                 DoCast(pTarget, SPELL_FIXATE, true);
-                                me->AddThreat(pTarget, 1000000.0f);
+                                AddThreat(pTarget, 1000000.0f);
                                 AttackStart(pTarget);
                                 events.ScheduleEvent(EVENT_FIXATE_OFF, 10000);
                             }
                             break;
                         case EVENT_FIXATE_OFF:
-                            DoResetThreat();
+                            ResetThreatList();
                             me->ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_TAUNT, false);
                             me->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_ATTACK_ME, false);
                             break;

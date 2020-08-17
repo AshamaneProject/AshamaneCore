@@ -114,7 +114,7 @@ struct boss_sporecaller_zancha : public BossAI
                 break;
             }
             case SPELL_SHOCKWAVE:
-                if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                     me->CastSpell(target, SPELL_SHOCKWAVE, false);
 
                 events.Repeat(15s);
@@ -123,7 +123,7 @@ struct boss_sporecaller_zancha : public BossAI
             {
                 for (uint8 i = 0; i < 2; ++i)
                 {
-                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 1, 0.f, true, -SPELL_UPHEAVAL_TARGET))
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 1, 0.f, true, false, -SPELL_UPHEAVAL_TARGET))
                     {
                         me->CastSpell(target, SPELL_UPHEAVAL_TARGET, true);
                         Talk(4, target);
@@ -137,7 +137,7 @@ struct boss_sporecaller_zancha : public BossAI
             case SPELL_UPHEAVAL:
             {
                 for (uint8 i = 0; i < 2; ++i)
-                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0.f, true, SPELL_UPHEAVAL_TARGET))
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0.f, true, true, SPELL_UPHEAVAL_TARGET))
                         me->CastSpell(target, SPELL_UPHEAVAL, true);
 
                 break;

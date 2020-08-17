@@ -708,7 +708,7 @@ class boss_hagara_the_stormbinder: public CreatureScript
                         case EVENT_ICE_LANCE:
                         {
                             UnitList targets;
-                            SelectTargetList(targets, 3, SELECT_TARGET_NEAREST, 0.0f, true);
+                            SelectTargetList(targets, 3, SELECT_TARGET_MINDISTANCE, 0, 0.0f, true);
                             if (targets.empty())
                                 break;
 
@@ -810,7 +810,7 @@ class boss_hagara_the_stormbinder: public CreatureScript
                         case EVENT_ICICLE:
                         {
                             UnitList targets;
-                            SelectTargetList(targets, RAID_MODE(3, 7), SELECT_TARGET_RANDOM, 0.0f, true);
+                            SelectTargetList(targets, RAID_MODE(3, 7), SELECT_TARGET_RANDOM, 0, 0.0f, true);
                             if (!targets.empty())
                                 for (UnitList::const_iterator itr = targets.begin(); itr != targets.end(); ++itr)
                                     DoCast((*itr), SPELL_ICICLE, true);
@@ -1369,7 +1369,7 @@ class npc_hagara_the_stormbinder_lieutenant_shara : public CreatureScript
                             events.ScheduleEvent(EVENT_FROST_CORRUPTION, urand(10000, 15000));
                             break;
                         case EVENT_FROZEN_GRASP:
-                            if (Unit* pTarget = SelectTarget(SELECT_TARGET_FARTHEST, 0, 0.0f, true))
+                            if (Unit* pTarget = SelectTarget(SELECT_TARGET_MAXDISTANCE, 0, 0.0f, true))
                                 DoCast(pTarget, SPELL_FROZEN_GRASP);
                             events.ScheduleEvent(EVENT_FROZEN_GRASP, 31000);
                             break;

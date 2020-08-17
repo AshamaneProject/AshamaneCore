@@ -1342,7 +1342,7 @@ class npc_madness_of_deathwing_mutated_corruption : public CreatureScript
 
                             if (!me->IsWithinMeleeRange(pTarget))
                             {
-                                Unit* pNearest = SelectTarget(SELECT_TARGET_NEAREST, 0, 0.0f, true);
+                                Unit* pNearest = SelectTarget(SELECT_TARGET_MINDISTANCE, 0, 0.0f, true);
                                 if (pNearest)
                                     pTarget = pNearest;
                             }
@@ -1356,7 +1356,7 @@ class npc_madness_of_deathwing_mutated_corruption : public CreatureScript
                             Unit* pNearest = NULL;
                             if (!me->GetVictim() || !me->IsWithinMeleeRange(me->GetVictim()))
                             {
-                                pNearest = SelectTarget(SELECT_TARGET_NEAREST, 0, 0.0f, true);
+                                pNearest = SelectTarget(SELECT_TARGET_MINDISTANCE, 0, 0.0f, true);
 
                                 // Cast Impale Aspect
                                 if (!pNearest || !me->IsWithinMeleeRange(pNearest))

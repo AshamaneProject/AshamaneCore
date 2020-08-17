@@ -506,7 +506,7 @@ class TC_GAME_API WorldObject : public Object, public WorldLocation
 
         float GetGridActivationRange() const;
         float GetVisibilityRange() const;
-        float GetSightRange(WorldObject const* target = NULL) const;
+        float GetSightRange(WorldObject const* target = nullptr) const;
         bool CanSeeOrDetect(WorldObject const* obj, bool ignoreStealth = false, bool distanceCheck = false, bool checkAlert = false) const;
 
         FlaggedValuesArray32<int32, uint32, StealthType, TOTAL_STEALTH_TYPES> m_stealth;
@@ -537,8 +537,8 @@ class TC_GAME_API WorldObject : public Object, public WorldLocation
         TempSummon* SummonCreature(uint32 id, float x, float y, float z, float ang = 0, TempSummonType spwtype = TEMPSUMMON_MANUAL_DESPAWN, uint32 despwtime = 0, bool visibleBySummonerOnly = false);
         GameObject* SummonGameObject(uint32 entry, Position const& pos, QuaternionData const& rot, uint32 respawnTime /* s */, bool visibleBySummonerOnly = false);
         GameObject* SummonGameObject(uint32 entry, float x, float y, float z, float ang, QuaternionData const& rot, uint32 respawnTime /* s */, bool visibleBySummonerOnly = false);
-        Creature*   SummonTrigger(float x, float y, float z, float ang, uint32 dur, CreatureAI* (*GetAI)(Creature*) = NULL);
-        void SummonCreatureGroup(uint8 group, std::list<TempSummon*>* list = NULL);
+        Creature*   SummonTrigger(float x, float y, float z, float ang, uint32 dur, CreatureAI* (*GetAI)(Creature*) = nullptr);
+        void SummonCreatureGroup(uint8 group, std::list<TempSummon*>* list = nullptr);
 
         Creature*               FindNearestCreature(uint32 entry, float range, bool alive = true) const;
         Creature*               FindNearestCreature(std::list<uint32> entrys, float range, bool alive = true) const;
@@ -592,9 +592,7 @@ class TC_GAME_API WorldObject : public Object, public WorldLocation
         void AddToNotify(uint16 f) { m_notifyflags |= f;}
         bool isNeedNotify(uint16 f) const { return (m_notifyflags & f) != 0; }
         uint16 GetNotifyFlags() const { return m_notifyflags; }
-        bool NotifyExecuted(uint16 f) const { return (m_executed_notifies & f) != 0; }
-        void SetNotified(uint16 f) { m_executed_notifies |= f;}
-        void ResetAllNotifies() { m_notifyflags = 0; m_executed_notifies = 0; }
+        void ResetAllNotifies() { m_notifyflags = 0; }
 
         bool isActiveObject() const { return m_isActive; }
         void setActive(bool isActiveObject);
@@ -670,7 +668,6 @@ class TC_GAME_API WorldObject : public Object, public WorldLocation
         bool m_visibleBySummonerOnly;
 
         uint16 m_notifyflags;
-        uint16 m_executed_notifies;
         virtual bool _IsWithinDist(WorldObject const* obj, float dist2compare, bool is3D, bool incOwnRadius = true, bool incTargetRadius = true) const;
 
         bool CanNeverSee(WorldObject const* obj) const;

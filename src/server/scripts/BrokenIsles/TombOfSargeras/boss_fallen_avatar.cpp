@@ -166,7 +166,7 @@ struct boss_fallen_avatar : public BossAI
     void ExecuteEvent(uint32 eventId) override
     {
         /*
-        for (auto threat : me->getThreatManager().getThreatList())
+        for (auto threat : me->GetThreatManager().getThreatList())
             if (me->IsWithinCombatRange(threat->getTarget(), me->GetCombatReach()))
                 me->RemoveAurasDueToSpell(SPELL_RIPPLE_OF_DARKNESS);
          */

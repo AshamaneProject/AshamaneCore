@@ -862,7 +862,7 @@ struct InstancePlayerBind
     EXTENDED - won't be promoted to EXPIRED at next reset period, will instead be promoted to NORMAL */
     BindExtensionState extendState;
 
-    InstancePlayerBind() : save(NULL), perm(false), extendState(EXTEND_STATE_NORMAL) { }
+    InstancePlayerBind() : save(nullptr), perm(false), extendState(EXTEND_STATE_NORMAL) { }
 };
 
 enum CharDeleteMethod
@@ -1772,6 +1772,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
 
         void UpdateAfkReport(time_t currTime);
         void UpdatePvPFlag(time_t currTime);
+        void SetContestedPvP(Player* attackedPlayer = nullptr);
         void UpdateContestedPvP(uint32 currTime);
         void SetContestedPvPTimer(uint32 newTime) {m_contestedPvPTimer = newTime;}
         void ResetContestedPvP();
@@ -2428,7 +2429,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         bool HasAchieved(uint32 achievementId) const;
         void ResetAchievements();
         void ResetCriteria(CriteriaCondition condition, int32 failAsset, bool evenIfCriteriaComplete = false);
-        void UpdateCriteria(CriteriaTypes type, uint64 miscValue1 = 0, uint64 miscValue2 = 0, uint64 miscValue3 = 0, Unit* unit = NULL);
+        void UpdateCriteria(CriteriaTypes type, uint64 miscValue1 = 0, uint64 miscValue2 = 0, uint64 miscValue3 = 0, Unit* unit = nullptr);
         void StartCriteriaTimer(CriteriaTimedTypes type, uint32 entry, uint32 timeLost = 0);
         void RemoveCriteriaTimer(CriteriaTimedTypes type, uint32 entry);
         void CompletedAchievement(uint32 achievementId);

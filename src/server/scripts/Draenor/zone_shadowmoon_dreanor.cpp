@@ -981,7 +981,7 @@ public:
                 {
                     case EVENT_CONSUMING_VOID:
                     {
-                        if (Unit* victim = SelectTarget(SELECT_TARGET_TOPAGGRO, 0, 100.0f, true))
+                        if (Unit* victim = SelectTarget(SELECT_TARGET_MAXTHREAT, 0, 100.0f, true))
                             me->CastSpell(victim, SPELL_CONSUMING_VOID);
 
                         events.ScheduleEvent(EVENT_CONSUMING_VOID, urand(40, 60) * IN_MILLISECONDS);
@@ -989,7 +989,7 @@ public:
                     }
                     case EVENT_GRIP_OF_THE_VOID:
                     {
-                        if (Unit* victim = SelectTarget(SELECT_TARGET_TOPAGGRO, 0, 50.0f, true))
+                        if (Unit* victim = SelectTarget(SELECT_TARGET_MAXTHREAT, 0, 50.0f, true))
                             me->CastSpell(victim, SPELL_GRIP_OF_THE_VOID);
 
                         events.ScheduleEvent(EVENT_GRIP_OF_THE_VOID, urand(20, 30) * IN_MILLISECONDS);
@@ -997,7 +997,7 @@ public:
                     }
                     case EVENT_NEGATE:
                     {
-                        if (Unit* victim = SelectTarget(SELECT_TARGET_TOPAGGRO, 0, 10.0f, true))
+                        if (Unit* victim = SelectTarget(SELECT_TARGET_MAXTHREAT, 0, 10.0f, true))
                             me->CastSpell(victim, SPELL_NEGATE);
 
                         events.ScheduleEvent(EVENT_NEGATE, urand(10, 25) * IN_MILLISECONDS);
@@ -1023,7 +1023,7 @@ public:
                     }
                     case EVENT_VOID_BOLT:
                     {
-                        if (Unit* victim = SelectTarget(SELECT_TARGET_TOPAGGRO, 0, 40.0f))
+                        if (Unit* victim = SelectTarget(SELECT_TARGET_MAXTHREAT, 0, 40.0f))
                             me->CastSpell(victim, SPELL_VOID_BOLT);
 
                         events.ScheduleEvent(EVENT_VOID_BOLT, urand(2, 6) * IN_MILLISECONDS);
@@ -1086,7 +1086,7 @@ public:
                 {
                     case EVENT_CONSUMING_VOID:
                     {
-                        if (Unit* victim = SelectTarget(SELECT_TARGET_TOPAGGRO, 0, 100.0f, true))
+                        if (Unit* victim = SelectTarget(SELECT_TARGET_MAXTHREAT, 0, 100.0f, true))
                             me->CastSpell(victim, SPELL_CONSUMING_VOID);
 
                         events.ScheduleEvent(EVENT_CONSUMING_VOID, urand(40, 60) * IN_MILLISECONDS);
@@ -1094,7 +1094,7 @@ public:
                     }
                     case EVENT_GRIP_OF_THE_VOID:
                     {
-                        if (Unit* victim = SelectTarget(SELECT_TARGET_TOPAGGRO, 0, 50.0f, true))
+                        if (Unit* victim = SelectTarget(SELECT_TARGET_MAXTHREAT, 0, 50.0f, true))
                             me->CastSpell(victim, SPELL_GRIP_OF_THE_VOID);
 
                         events.ScheduleEvent(EVENT_GRIP_OF_THE_VOID, urand(30, 35) * IN_MILLISECONDS);
@@ -1102,7 +1102,7 @@ public:
                     }
                     case EVENT_NEGATE:
                     {
-                        if (Unit* victim = SelectTarget(SELECT_TARGET_TOPAGGRO, 0, 10.0f, true))
+                        if (Unit* victim = SelectTarget(SELECT_TARGET_MAXTHREAT, 0, 10.0f, true))
                             me->CastSpell(victim, SPELL_NEGATE);
 
                         events.ScheduleEvent(EVENT_NEGATE, urand(20, 25) * IN_MILLISECONDS);
@@ -1128,7 +1128,7 @@ public:
                     }
                     case EVENT_VOID_BOLT:
                     {
-                        if (Unit* victim = SelectTarget(SELECT_TARGET_TOPAGGRO, 0, 40.0f))
+                        if (Unit* victim = SelectTarget(SELECT_TARGET_MAXTHREAT, 0, 40.0f))
                             me->CastSpell(victim, SPELL_VOID_BOLT);
 
                         events.ScheduleEvent(EVENT_VOID_BOLT, urand(2, 5) * IN_MILLISECONDS);

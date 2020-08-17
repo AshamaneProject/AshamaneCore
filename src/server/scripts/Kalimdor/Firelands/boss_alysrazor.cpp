@@ -732,7 +732,7 @@ class boss_alysrazor : public CreatureScript
                             me->NearTeleportTo(centerPos.GetPositionX(), centerPos.GetPositionY(), centerPos.GetPositionZ(), centerPos.GetOrientation(), true);
                             me->UpdateObjectVisibility();
                             // AEGIR ==> Reset aggro
-                            me->getThreatManager().resetAllAggro();
+                            me->GetThreatManager().resetAllAggro();
                             summons.DespawnEntry(NPC_FIERY_VORTEX);
                             summons.DespawnEntry(NPC_FIERY_TORNADO);
                             DoCast(me, SPELL_BURNOUT, true);

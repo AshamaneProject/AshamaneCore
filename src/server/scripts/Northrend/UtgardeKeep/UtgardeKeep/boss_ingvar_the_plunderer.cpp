@@ -230,7 +230,7 @@ class boss_ingvar_the_plunderer : public CreatureScript
                         case EVENT_JUST_TRANSFORMED:
                             ScheduleSecondPhase();
                             me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NOT_SELECTABLE));
-                            if (Unit* target = me->getThreatManager().getHostilTarget())
+                            if (Unit* target = me->GetThreatManager().SelectVictim())
                                 AttackStart(target);
                             else
                             {
@@ -469,7 +469,7 @@ class spell_ingvar_woe_strike : public SpellScriptLoader
             void HandleProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
             {
                 PreventDefaultAction();
-                GetTarget()->CastSpell(eventInfo.GetActor(), SPELL_WOE_STRIKE_EFFECT, true, NULL, aurEff);
+                GetTarget()->CastSpell(eventInfo.GetActor(), SPELL_WOE_STRIKE_EFFECT, true, nullptr, aurEff);
             }
 
             void Register() override

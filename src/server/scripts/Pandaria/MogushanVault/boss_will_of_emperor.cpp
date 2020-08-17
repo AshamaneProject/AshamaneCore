@@ -998,7 +998,7 @@ class mob_woe_add_generic : public CreatureScript
 
                         // Add players in the list
                         for (auto player: playerList)
-                            me->getThreatManager().addThreat(player, 300.0f);
+                            me->GetThreatManager().addThreat(player, 300.0f);
 
                         // Pick a player to attack
                         if (!targetGuid)
@@ -1006,8 +1006,8 @@ class mob_woe_add_generic : public CreatureScript
                             if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM))
                             {
                                 targetGuid = target->GetGUID();
-                                me->getThreatManager().resetAllAggro();
-                                me->getThreatManager().addThreat(target, 300.0f);
+                                me->GetThreatManager().resetAllAggro();
+                                me->GetThreatManager().addThreat(target, 300.0f);
                                 AttackStart(target);
                                 me->SetInCombatWith(target);
                                 if (me->GetEntry() == NPC_EMPEROR_RAGE)
@@ -1200,9 +1200,9 @@ class mob_woe_add_generic : public CreatureScript
                                         GetPlayerListInGrid(playerList, me, 150.0f);
 
                                         for (auto ply : playerList)
-                                            me->getThreatManager().addThreat(ply, 150.0f);
+                                            me->GetThreatManager().addThreat(ply, 150.0f);
 
-                                        target = SelectTarget(SELECT_TARGET_TOPAGGRO);
+                                        target = SelectTarget(SELECT_TARGET_MAXTHREAT);
                                         if (target)
                                         {
                                             targetGuid = target->GetGUID();

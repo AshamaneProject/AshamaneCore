@@ -3935,7 +3935,7 @@ public:
                 if (dreadstalker->GetOwner() == caster)
                 {
                     dreadstalker->AI()->AttackStart(target);
-                    dreadstalker->AddThreat(target, 9999999.f);
+                    dreadstalker->GetThreatManager().AddThreat(target, 9999999.f);
                 }
             }
 

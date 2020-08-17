@@ -155,7 +155,7 @@ struct boss_nythendra : public BossAI
             }
             case SPELL_VOLATILE_ROT:
             {
-                if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                     me->CastSpell(target, SPELL_VOLATILE_ROT, true);
 
                 events.Repeat(25s);

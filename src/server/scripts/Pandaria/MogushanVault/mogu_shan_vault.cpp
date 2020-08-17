@@ -611,7 +611,7 @@ class mob_zandalari_skullcharger : public CreatureScript
                     {
                         case EVENT_ZANDALARI_TROLL_RUSH:
                         {
-                            if (Unit* target = SelectTarget(SELECT_TARGET_FARTHEST))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXDISTANCE))
                             {
                                 me->CastSpell(target, SPELL_TROLL_RUSH, true);
                                 me->GetMotionMaster()->MoveChase(target);
@@ -1479,7 +1479,7 @@ class mob_sorcerer_mogu : public CreatureScript
                     switch (eventId)
                     {
                         case EVENT_SORCERER_SHADOW_BLAST:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_SHADOW_BLAST, false);
                             events.ScheduleEvent(EVENT_SORCERER_SHADOW_BLAST, urand(8000, 17000));
                             break;
@@ -1671,7 +1671,7 @@ class mob_mounted_mogu : public CreatureScript
                     switch (eventId)
                     {
                         case EVENT_MOUNTED_MOGU_CRUSHING_ATTACKS:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_CRUSHING_ATTACKS, false);
                             events.ScheduleEvent(EVENT_MOUNTED_MOGU_CRUSHING_ATTACKS, 25000);
                             break;
@@ -1859,7 +1859,7 @@ class mob_mogu_archer : public CreatureScript
                     switch (eventId)
                     {
                         case EVENT_MOGU_ARCHER_SHOOT:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_SHOOT, false);
                             events.ScheduleEvent(EVENT_MOGU_ARCHER_SHOOT,       25000);
                             break;
@@ -1989,7 +1989,7 @@ class mob_meng : public CreatureScript
                         }
                         case EVENT_MENG_COWARDICE:
                         {
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_COWARDICE, false);
                             events.ScheduleEvent(EVENT_MENG_COWARDICE, 25000);
                             break;
@@ -2092,7 +2092,7 @@ class mob_kingsguard : public CreatureScript
                             events.ScheduleEvent(EVENT_KINGS_GUARD_ENRAGE, 25000);
                             break;
                         case EVENT_KINGS_GUARD_REFLECTIVE_SHIELDS:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_REFLECTIVE_SHIELDS, false);
                             events.ScheduleEvent(EVENT_KINGS_GUARD_REFLECTIVE_SHIELDS, 40000);
                             break;
@@ -2164,12 +2164,12 @@ class mob_mogu_secret_keeper : public CreatureScript
                     switch (eventId)
                     {
                         case EVENT_SECRET_FLESH_TO_STONE:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_FLESH_TO_STONE, false);
                             events.ScheduleEvent(EVENT_SECRET_FLESH_TO_STONE,       25000);
                             break;
                         case EVENT_SECRET_STONE_BLOCK:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_STONE_BLOCK, false);
                             events.ScheduleEvent(EVENT_SECRET_STONE_BLOCK,       40000);
                             break;
@@ -2255,17 +2255,17 @@ class mob_mogu_warden : public CreatureScript
                     switch (eventId)
                     {
                         case EVENT_WARDEN_FORCEFUL_SWING:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_FORCEFUL_SWING, false);
                             events.ScheduleEvent(EVENT_WARDEN_FORCEFUL_SWING,       30000);
                             break;
                         case EVENT_WARDEN_TOUCH_OF_NALAK_SHA:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_TOUCH_OF_NALAK_SHA, false);
                             events.ScheduleEvent(EVENT_WARDEN_TOUCH_OF_NALAK_SHA,       30000);
                             break;
                         case EVENT_WARDEN_WARDEN_S_FURY:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_WARDEN_S_FURY, false);
                             events.ScheduleEvent(EVENT_WARDEN_WARDEN_S_FURY,       30000);
                             break;
@@ -2332,12 +2332,12 @@ class mob_mogu_engine_keeper : public CreatureScript
                     switch (eventId)
                     {
                         case EVENT_KEEPER_ENHANCED_RECONSTRUCTION:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_ENHANCED_RECONSTRUCTION, false);
                             events.ScheduleEvent(EVENT_KEEPER_ENHANCED_RECONSTRUCTION,       30000);
                             break;
                         case EVENT_KEEPER_RECONSTRUCTING:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_RECONSTRUCTING, false);
                             events.ScheduleEvent(EVENT_KEEPER_RECONSTRUCTING,       30000);
                             break;

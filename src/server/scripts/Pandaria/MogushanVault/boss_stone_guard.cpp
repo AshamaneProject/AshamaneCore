@@ -843,7 +843,7 @@ class boss_generic_guardian : public CreatureScript
                     }
                     case EVENT_REND_FLESH:
                     {
-                        if (Unit* victim = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                        if (Unit* victim = SelectTarget(SELECT_TARGET_MAXTHREAT))
                             me->CastSpell(victim, SPELL_REND_FLESH, false);
 
                         events.ScheduleEvent(EVENT_REND_FLESH, urand(20000, 25000));

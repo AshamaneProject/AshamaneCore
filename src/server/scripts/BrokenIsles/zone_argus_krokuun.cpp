@@ -1054,7 +1054,7 @@ struct npc_imp_mother_laglath : public ScriptedAI
         })
         .Schedule(1s, [this](TaskContext context)
         {
-            if (Unit* target = SelectTarget(SELECT_TARGET_NEAREST, 0))
+            if (Unit* target = SelectTarget(SELECT_TARGET_MINDISTANCE, 0))
                 if (me->IsWithinCombatRange(target, 5.f))
                     GetContextUnit()->CastSpell(target, SPELL_ELDER_WRATH, false);
 

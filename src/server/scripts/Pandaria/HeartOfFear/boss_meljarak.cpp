@@ -443,7 +443,7 @@ public:
                     if ((*itr)->HasFlag(GO_FLAG_NOT_SELECTABLE))
                         (*itr)->RemoveFlag(GO_FLAG_NOT_SELECTABLE);
 
-            me->DeleteThreatList();
+            ResetThreatList();
             me->CombatStop(true);
             me->SetFullHealth();
             me->RemoveAllAuras();
@@ -714,7 +714,7 @@ public:
                     }
                     case EVENT_WIND_BOMB:
                     {
-                        if (Unit* target = SelectTarget(SELECT_TARGET_FARTHEST, 0, 150.0f, true))
+                        if (Unit* target = SelectTarget(SELECT_TARGET_MAXDISTANCE, 0, 150.0f, true))
                             DoCast(target, SPELL_WIND_BOMB);
                         events.ScheduleEvent(EVENT_WIND_BOMB, urand(18000, 24000));
                         break;

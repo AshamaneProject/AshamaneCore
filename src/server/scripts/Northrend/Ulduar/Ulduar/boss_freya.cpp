@@ -348,8 +348,7 @@ class boss_freya : public CreatureScript
                         Elder[n]->CastSpell(me, SPELL_IRONBRANCH_ESSENCE, true);
                         Elder[n]->RemoveLootMode(LOOT_MODE_DEFAULT); //! Why?
                         Elder[n]->AI()->AttackStart(who);
-                        Elder[n]->AddThreat(who, 250.0f);
-                        Elder[n]->SetInCombatWith(who);
+                        AddThreat(who, 250.0f, Elder[n]);
                         ++elderCount;
                     }
                 }
@@ -444,7 +443,7 @@ class boss_freya : public CreatureScript
                             break;
                         case EVENT_STRENGTHENED_IRON_ROOTS:
                             Talk(EMOTE_IRON_ROOTS);
-                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100.0f, true, -SPELL_ROOTS_FREYA))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100.0f, true, true, -SPELL_ROOTS_FREYA))
                                 target->CastSpell(target, SPELL_ROOTS_FREYA, true); // This must be cast by Target self
                             events.ScheduleEvent(EVENT_STRENGTHENED_IRON_ROOTS, urand(12000, 20000));
                             break;
@@ -603,7 +602,7 @@ class boss_freya : public CreatureScript
                     /* 25N */    {62955, 62956, 62957, 62958}
                 };
 
-                me->CastSpell((Unit*)NULL, summonSpell[me->GetMap()->GetDifficultyID() - DIFFICULTY_10_N][elderCount], true);
+                me->CastSpell(nullptr, summonSpell[me->GetMap()->GetDifficultyID() - DIFFICULTY_10_N][elderCount], true);
 
                 Talk(SAY_DEATH);
                 me->SetReactState(REACT_PASSIVE);
@@ -611,7 +610,7 @@ class boss_freya : public CreatureScript
                 me->RemoveAllAuras();
                 me->AttackStop();
                 me->SetFaction(35);
-                me->DeleteThreatList();
+                ResetThreatList();
                 me->CombatStop(true);
                 me->DespawnOrUnsummon(7500);
                 me->CastSpell(me, SPELL_KNOCK_ON_WOOD_CREDIT, true);
@@ -624,7 +623,7 @@ class boss_freya : public CreatureScript
                         Elder->RemoveAllAuras();
                         Elder->AttackStop();
                         Elder->CombatStop(true);
-                        Elder->DeleteThreatList();
+                        Elder->GetThreatManager().ClearAllThreat();
                         Elder->AI()->DoAction(ACTION_ELDER_FREYA_KILLED);
                     }
                 }
@@ -654,7 +653,7 @@ class boss_freya : public CreatureScript
                 if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 250.0f, true))
                 {
                     summoned->AI()->AttackStart(target);
-                    summoned->AddThreat(target, 250.0f);
+                    AddThreat(target, 250.0f, summoned);
                     DoZoneInCombat(summoned);
                 }
             }
@@ -833,7 +832,7 @@ class boss_elder_stonebark : public CreatureScript
                 if (me->HasAura(SPELL_PETRIFIED_BARK))
                 {
                     int32 reflect = damage;
-                    who->CastCustomSpell(who, SPELL_PETRIFIED_BARK_DMG, &reflect, NULL, NULL, true);
+                    who->CastCustomSpell(who, SPELL_PETRIFIED_BARK_DMG, &reflect, nullptr, nullptr, true);
                     damage = 0;
                 }
             }
@@ -951,7 +950,7 @@ class boss_elder_ironbranch : public CreatureScript
                             events.ScheduleEvent(EVENT_IMPALE, urand(15000, 25000));
                             break;
                         case EVENT_IRON_ROOTS:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100.0f, true, -SPELL_ROOTS_IRONBRANCH))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100.0f, true, true, -SPELL_ROOTS_IRONBRANCH))
                                 target->CastSpell(target, SPELL_ROOTS_IRONBRANCH, true);
                             events.ScheduleEvent(EVENT_IRON_ROOTS, urand(10000, 20000));
                             break;
@@ -1028,7 +1027,7 @@ class npc_detonating_lasher : public CreatureScript
                     if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100.0f, true))
                     {
                         // Switching to other target - modify aggro of new target by 20% from current target's aggro
-                        me->AddThreat(target, me->getThreatManager().getThreat(me->GetVictim(), false) * 1.2f);
+                        AddThreat(target, me->GetThreatManager().GetThreat(me->GetVictim()) * 1.2f);
                         AttackStart(target);
                     }
                     changeTargetTimer = urand(5000, 10000);
@@ -1295,7 +1294,7 @@ class npc_ancient_conservator : public CreatureScript
 
                 if (natureFuryTimer <= diff)
                 {
-                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100.0f, true, -SPELL_NATURE_FURY))
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100.0f, true, true, -SPELL_NATURE_FURY))
                         DoCast(target, SPELL_NATURE_FURY);
                     me->AddAura(SPELL_CONSERVATOR_GRIP, me);
                     natureFuryTimer = 5000;

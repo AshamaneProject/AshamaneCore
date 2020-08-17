@@ -434,7 +434,7 @@ public:
                             break;
                         case EVENT_HEALING_SURGE:
                         {
-                            Unit* target = NULL;
+                            Unit* target = nullptr;
                             if (me->GetHealthPct() < 85)
                                 target = me;
                             else if (Player* player = GetPlayerForEscort())
@@ -666,7 +666,7 @@ public:
                                 if (!target)
                                     target = me;
 
-                                target->AddThreat(sironas, 0.001f);
+                                AddThreat(sironas, 0.001f, target);
                                 sironas->Attack(target, true);
                                 sironas->GetMotionMaster()->MoveChase(target);
                             }
@@ -744,7 +744,7 @@ public:
                     SetEscortPaused(true);
 
                     //Find Sironas and make it respawn if needed
-                    Creature* sironas = NULL;
+                    Creature* sironas = nullptr;
                     Trinity::AllCreaturesOfEntryInRange check(me, NPC_SIRONAS, SIZE_OF_GRIDS);
                     Trinity::CreatureSearcher<Trinity::AllCreaturesOfEntryInRange> searcher(me, sironas, check);
                     Cell::VisitAllObjects(me, searcher, SIZE_OF_GRIDS);

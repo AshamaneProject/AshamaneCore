@@ -45,7 +45,7 @@ public:
         };
         static std::vector<ChatCommand> commandTable =
         {
-            { "arena",          rbac::RBAC_PERM_COMMAND_ARENA,      false, NULL,         "", arenaCommandTable },
+            { "arena",          rbac::RBAC_PERM_COMMAND_ARENA,      false, nullptr,         "", arenaCommandTable },
         };
         return commandTable;
     }

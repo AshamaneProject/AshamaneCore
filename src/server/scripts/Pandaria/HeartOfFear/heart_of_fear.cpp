@@ -75,22 +75,22 @@ class mob_kor_thik_slicer : public CreatureScript
                     switch (id)
                     {
                         case EVENT_ARTERIAL_SPIRIT:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_FARTHEST))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXDISTANCE))
                                 me->CastSpell(target, SPELL_ARTERIAL_SPIRIT, true);
                             events.ScheduleEvent(EVENT_ARTERIAL_SPIRIT, 20000);
                             break;
                         case EVENT_GOUGE_THROAT:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_FARTHEST))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXDISTANCE))
                                 me->CastSpell(target, SPELL_GOUGE_THROAT, true);
                             events.ScheduleEvent(EVENT_GOUGE_THROAT, 32000);
                             break;
                         case EVENT_VITAL_STRIKES:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_FARTHEST))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXDISTANCE))
                                 me->CastSpell(target, SPELL_VITAL_STRIKES, true);
                             events.ScheduleEvent(EVENT_VITAL_STRIKES, 20000);
                             break;
                         case EVENT_SLOW:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_FARTHEST))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXDISTANCE))
                                 me->CastSpell(target, SPELL_SLOW, true);
                             events.ScheduleEvent(EVENT_SLOW, 40000);
                             break;
@@ -145,12 +145,12 @@ class mob_kor_thik_extremist : public CreatureScript
                     switch (id)
                     {
                         case EVENT_UNDYING_DEVOTION:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_FARTHEST))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXDISTANCE))
                                 me->CastSpell(target, SPELL_UNDYING_DEVOTION, true);
                             events.ScheduleEvent(EVENT_UNDYING_DEVOTION, 20000);
                             break;
                         case EVENT_SLOW:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_FARTHEST))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXDISTANCE))
                                 me->CastSpell(target, SPELL_SLOW, true);
                             events.ScheduleEvent(EVENT_SLOW, 40000);
                             break;
@@ -209,12 +209,12 @@ class mob_sra_thik_shield_master : public CreatureScript
                     switch (id)
                     {
                         case EVENT_BRAIN_FREEZE:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_BRAIN_FREEZE, true);
                             events.ScheduleEvent(EVENT_BRAIN_FREEZE, 60000);
                             break;
                         case EVENT_DISMANTLED_ARMOR:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_DISMANTLED_ARMOR, true);
                             events.ScheduleEvent(EVENT_DISMANTLED_ARMOR, 40000);
                             break;
@@ -223,17 +223,17 @@ class mob_sra_thik_shield_master : public CreatureScript
                             events.ScheduleEvent(EVENT_MASS_SPELL_REFLEXION, 40000);
                             break;
                         case EVENT_SHIELD_SLAM:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_SHIELD_SLAM, true);
                             events.ScheduleEvent(EVENT_SHIELD_SLAM, 40000);
                             break;
                         case EVENT_STUNNING_STRIKE:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_STUNNING_STRIKE, true);
                             events.ScheduleEvent(EVENT_STUNNING_STRIKE, 40000);
                             break;
                         case EVENT_SLOW:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_SLOW, true);
                             events.ScheduleEvent(EVENT_SLOW, 40000);
                             break;
@@ -291,17 +291,17 @@ class mob_set_thik_swiftblade : public CreatureScript
                     switch (id)
                     {
                         case EVENT_BLURRING_SLASH:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_BLURRING_SLASH, true);
                             events.ScheduleEvent(EVENT_BLURRING_SLASH, 22000);
                             break;
                         case EVENT_RIPOSTE:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_RIPOSTE, true);
                             events.ScheduleEvent(EVENT_RIPOSTE, 22000);
                             break;
                         case EVENT_SLOW:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_SLOW, true);
                             events.ScheduleEvent(EVENT_SLOW, 40000);
                             break;
@@ -357,17 +357,17 @@ class mob_zar_thik_supplicant : public CreatureScript
                     switch (id)
                     {
                         case EVENT_ICE_TRAP:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_ICE_TRAP, true);
                             events.ScheduleEvent(EVENT_ICE_TRAP, 22000);
                             break;
                         case EVENT_MASH_AND_GNASH:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_MASH_AND_GNASH, true);
                             events.ScheduleEvent(EVENT_MASH_AND_GNASH, 22000);
                             break;
                         case EVENT_SLOW:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_SLOW, true);
                             events.ScheduleEvent(EVENT_SLOW, 40000);
                             break;
@@ -423,12 +423,12 @@ class mob_enslaved_bonesmasher : public CreatureScript
                     switch (id)
                     {
                         case EVENT_JAWBONE_SLAM:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_JAWBONE_SLAM, true);
                             events.ScheduleEvent(EVENT_JAWBONE_SLAM, 22000);
                             break;
                         case EVENT_SLOW:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_SLOW, true);
                             events.ScheduleEvent(EVENT_SLOW, 40000);
                             break;
@@ -490,7 +490,7 @@ class mob_set_thik_tempest : public CreatureScript
                 {
                     if (id == EVENT_WIND_SLASH)
                     {
-                        if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                        if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                             me->CastSpell(target, SPELL_WIND_SLASH, true);
                         events.ScheduleEvent(EVENT_WIND_SLASH, 40000);
                     }
@@ -542,17 +542,17 @@ class mob_set_thik_fanatic : public CreatureScript
                     switch (id)
                     {
                         case EVENT_GALE_FORCE_WINDS:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_GALE_FORCE_WINDS, true);
                             events.ScheduleEvent(EVENT_GALE_FORCE_WINDS, 22000);
                             break;
                         case EVENT_WINDBURST:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_WINDBURST, true);
                             events.ScheduleEvent(EVENT_WINDBURST, 22000);
                             break;
                         case EVENT_SLOW:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_SLOW, true);
                             events.ScheduleEvent(EVENT_SLOW, 40000);
                             break;
@@ -620,7 +620,7 @@ class mob_set_thik_zephyrian : public CreatureScript
                 {
                     if (id == EVENT_SUMMON_ZEPHYR)
                     {
-                        if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                        if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                             me->CastSpell(target, SPELL_SUMMON_ZEPHYR, true);
                         events.ScheduleEvent(EVENT_SUMMON_ZEPHYR, 22000);
                         break;
@@ -680,7 +680,7 @@ class mob_set_thik_gale_slicer : public CreatureScript
                 {
                     if (id == EVENT_SWIFT_STEP)
                     {
-                        if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                        if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                             me->CastSpell(target, SPELL_SWIFT_STEP, true);
                         events.ScheduleEvent(EVENT_SWIFT_STEP, 22000);
                         break;
@@ -742,7 +742,7 @@ class mob_instructor_kli_thak : public CreatureScript
                     {
                         case EVENT_WIND_STEP:
                         {
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_WIND_STEP_TP, true);
                             events.ScheduleEvent(EVENT_WIND_STEP, 22000);
                             break;
@@ -806,7 +806,7 @@ class mob_instructor_tak_thok : public CreatureScript
                 {
                     if (id == EVENT_OVERWHELMING_ASSAULT)
                     {
-                        if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                        if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                             me->CastSpell(target, SPELL_OVERWHELMING_ASS, true);
                         events.ScheduleEvent(EVENT_OVERWHELMING_ASSAULT, 22000);
                         break;
@@ -993,7 +993,7 @@ class mob_zar_thik_zealot : public CreatureScript
                             events.ScheduleEvent(EVENT_ZEALOUS_RUSH, 22000);
                             break;
                         case EVENT_SLOW:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_FARTHEST))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXDISTANCE))
                                 me->CastSpell(target, SPELL_SLOW, true);
                             events.ScheduleEvent(EVENT_SLOW, 40000);
                             break;
@@ -1056,7 +1056,7 @@ class mob_kor_thik_swarmer : public CreatureScript
                 {
                     if (id == EVENT_UNDERWHELMING_ASSAULT)
                     {
-                        if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                        if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                             me->CastSpell(target, SPELL_UNDERWHELMING_ASSAULT, true);
                         events.ScheduleEvent(EVENT_UNDERWHELMING_ASSAULT, 22000);
                         break;
@@ -1130,7 +1130,7 @@ class mob_set_thik_gustwing : public CreatureScript
                             events.ScheduleEvent(EVENT_GUST, 22000);
                             break;
                         case EVENT_ICE_TRAP:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_FARTHEST))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXDISTANCE))
                                 me->CastSpell(target, SPELL_ICE_TRAP, true);
                             events.ScheduleEvent(EVENT_ICE_TRAP, 40000);
                             break;
@@ -1303,7 +1303,7 @@ class mob_kor_thik_silentwing : public CreatureScript
                     {
                         case EVENT_ALMOST_UNSEEN_STRIKE:
                         {
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_ALMOST_UNSEEN_STRIKE, true);
                             events.ScheduleEvent(EVENT_ALMOST_UNSEEN_STRIKE, 22000);
                             break;
@@ -1675,14 +1675,14 @@ public:
                 {
                     case EVENT_GREVIOUS_WHIRL:
                     {
-                        if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                        if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                             me->CastSpell(target, SPELL_GREVIOUS_WHIRL, true);
                         events.ScheduleEvent(EVENT_GREVIOUS_WHIRL, 20000);
                         break;
                     }
                     case EVENT_MORTAL_REND:
                     {
-                        if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                        if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                             me->CastSpell(target, SPELL_MORTAL_REND, true);
                         events.ScheduleEvent(EVENT_MORTAL_REND, 20000);
                         break;
@@ -1737,7 +1737,7 @@ public:
                 {
                     case EVENT_BURNING_STING:
                     {
-                        if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                        if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                             me->CastSpell(target, SPELL_BURNING_STING, true);
                         events.ScheduleEvent(EVENT_BURNING_STING, 15000);
                         break;
@@ -2148,7 +2148,7 @@ public:
                     }
                     case EVENT_FRENZIED_ASSAULT:
                     {
-                        if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                        if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                             me->CastSpell(target, SPELL_FRENZIED_ASSAULT, true);
                         events.ScheduleEvent(EVENT_FRENZIED_ASSAULT, 30000);
                         break;

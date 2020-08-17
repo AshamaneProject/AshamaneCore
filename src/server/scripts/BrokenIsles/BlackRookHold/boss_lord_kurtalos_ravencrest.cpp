@@ -152,7 +152,7 @@ struct boss_kurtalos_ravencrest : public BossAI
         {
             case SPELL_WHIRLING_BLADE:
             {
-                if (Unit* target = SelectTarget(SELECT_TARGET_FARTHEST, 0, 0.f, true))
+                if (Unit* target = SelectTarget(SELECT_TARGET_MAXDISTANCE, 0, 0.f, true))
                     if (Creature* whirlingBlade = me->SummonCreature(NPC_WHIRLING_BLADE, me->GetPosition()))
                         whirlingBlade->AI()->SetGUID(target->GetGUID());
 
@@ -357,7 +357,7 @@ struct npc_latosius : public ScriptedAI
                 events.DelayEvents(25s); // 5s spell cast + 17s event + 2s security
                 break;
             case SPELL_STINGING_SWARM:
-                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0.f, true, -SPELL_STINGING_SWARM))
+                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0.f, true, true, -SPELL_STINGING_SWARM))
                     me->SummonCreature(NPC_STINGING_SWARM, *target, TEMPSUMMON_CORPSE_DESPAWN);
                 events.Repeat(15s);
                 break;

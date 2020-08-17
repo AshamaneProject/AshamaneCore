@@ -302,7 +302,7 @@ public:
 
                 if (uiCheckAgroo <= diff)
                 {
-                    if (!SelectTarget(SELECT_TARGET_NEAREST, 0, 90, true))
+                    if (!SelectTarget(SELECT_TARGET_MINDISTANCE, 0, 90, true))
                     {
                         if (!me->HasAura(SPELL_WITHERING_WIND))
                             DoCast(me, SPELL_WITHERING_WIND, true);
@@ -317,8 +317,8 @@ public:
                         if (me->GetDistance2d(me->GetVictim()) > 90)
                             if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 90.0f, true))
                             {
-                                me->getThreatManager().resetAllAggro();
-                                me->AddThreat(target, 10);
+                                me->GetThreatManager().resetAllAggro();
+                                AddThreat(target, 10);
                             }
                     uiCheckAgroo = 5000;
                 }
@@ -453,8 +453,8 @@ public:
                 {
                     if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM))
                     {
-                        me->getThreatManager().resetAllAggro();
-                        me->AddThreat(target, 10);
+                        me->GetThreatManager().resetAllAggro();
+                        AddThreat(target, 10);
                     }
                 }
                 uiCheckAgroo = 5000;
@@ -646,7 +646,7 @@ public:
 
                 if (uiCheckAgroo <= diff)
                 {
-                    if (!SelectTarget(SELECT_TARGET_NEAREST, 0, 90, true))
+                    if (!SelectTarget(SELECT_TARGET_MINDISTANCE, 0, 90, true))
                     {
                         if (!me->HasAura(SPELL_CHILLING_WINDS))
                             DoCast(me, SPELL_CHILLING_WINDS, true);
@@ -661,8 +661,8 @@ public:
                         if (me->GetDistance2d(me->GetVictim()) > 90)
                             if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 90.0f, true))
                             {
-                                me->getThreatManager().resetAllAggro();
-                                me->AddThreat(target, 10);
+                                me->GetThreatManager().resetAllAggro();
+                                AddThreat(target, 10);
                             }
 
                     uiCheckAgroo = 5000;
@@ -979,7 +979,7 @@ public:
                 Trigger->SetReactState(REACT_AGGRESSIVE);
                 Trigger->SetFaction(18);
                 Trigger->Attack(me, true);
-                me->AddThreat(Trigger, 200000.0f);
+                AddThreat(Trigger, 200000.0f);
                 me->_addAttacker(Trigger);
                 me->SetInCombatWith(Trigger);
                 events.ScheduleEvent(EVENT_DESPAWN_TRIGGER, 20000);
@@ -1061,7 +1061,7 @@ public:
 
                 if (uiCheckAgroo <= diff)
                 {
-                    if (!SelectTarget(SELECT_TARGET_NEAREST, 0, 90, true))
+                    if (!SelectTarget(SELECT_TARGET_MINDISTANCE, 0, 90, true))
                     {
                         if (!me->HasAura(SPELL_DEAFING_WINDS))
                             DoCast(me, SPELL_DEAFING_WINDS, true);
@@ -1073,8 +1073,8 @@ public:
                         if (me->GetDistance2d(me->GetVictim()) > 90)
                             if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 90, true))
                             {
-                                me->getThreatManager().resetAllAggro();
-                                me->AddThreat(target, 10);
+                                me->GetThreatManager().resetAllAggro();
+                                AddThreat(target, 10);
                             }
                         uiCheckAgroo = 5000;
                 }

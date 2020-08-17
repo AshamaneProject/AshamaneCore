@@ -86,7 +86,7 @@ struct boss_zuraal_the_ascended : public BossAI
             }
             case SPELL_DECIMATE:
             {
-                if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                     me->CastSpell(target, SPELL_DECIMATE, false);
 
                 events.Repeat(10s);
@@ -97,7 +97,7 @@ struct boss_zuraal_the_ascended : public BossAI
                 if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 1))
                     me->CastSpell(target, SPELL_UMBRA_SHIFT, false);
 
-                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 1, 0.f, true, -SPELL_UMBRA_SHIFT))
+                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0.f, true, false, -SPELL_UMBRA_SHIFT))
                     me->CastSpell(target, SPELL_FIXATE, false);
 
                 break;

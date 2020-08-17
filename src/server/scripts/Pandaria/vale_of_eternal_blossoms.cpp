@@ -55,12 +55,12 @@ class mob_zhao_jin : public CreatureScript
                     switch (eventId)
                     {
                         case EVENT_LAVA_BURST:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_LAVA_BURST, false);
                             events.ScheduleEvent(EVENT_LAVA_BURST, 10000);
                             break;
                         case EVENT_LIGHTNING_SPEAR:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_LIGHTNING_SPEAR, false);
                             events.ScheduleEvent(EVENT_LIGHTNING_SPEAR, 15000);
                             break;
@@ -250,7 +250,7 @@ class mob_shao_tien_behemoth : public CreatureScript
                     switch (eventId)
                     {
                         case EVENT_CRUSHING_STOMP:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_CRUSHING_STOMP, false);
                             events.ScheduleEvent(EVENT_CRUSHING_STOMP, 320000);
                             break;
@@ -259,12 +259,12 @@ class mob_shao_tien_behemoth : public CreatureScript
                             events.ScheduleEvent(EVENT_GROUND_STOMP, 17000);
                             break;
                         case EVENT_PARALYZED:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_PARALYZED, false);
                             events.ScheduleEvent(EVENT_PARALYZED, 21000);
                             break;
                         case EVENT_THUNDERING_SLAM:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_THUNDERING_SLAM, false);
                             events.ScheduleEvent(EVENT_THUNDERING_SLAM, 25000);
                             break;
@@ -319,7 +319,7 @@ class mob_shao_tien_surveyor : public CreatureScript
                     switch (eventId)
                     {
                         case EVENT_CRUSHING_STOMP:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_CRUSHING_STOMP, false);
                             events.ScheduleEvent(EVENT_CRUSHING_STOMP, 320000);
                             break;
@@ -328,12 +328,12 @@ class mob_shao_tien_surveyor : public CreatureScript
                             events.ScheduleEvent(EVENT_GROUND_STOMP, 17000);
                             break;
                         case EVENT_PARALYZED:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_PARALYZED, false);
                             events.ScheduleEvent(EVENT_PARALYZED, 21000);
                             break;
                         case EVENT_THUNDERING_SLAM:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                                 me->CastSpell(target, SPELL_THUNDERING_SLAM, false);
                             events.ScheduleEvent(EVENT_THUNDERING_SLAM, 25000);
                             break;

@@ -216,7 +216,7 @@ class boss_galion : public CreatureScript
             {
                 if (damage >= me->GetHealth())
                 {
-                    for (auto hostileReference : me->getThreatManager().getThreatList())
+                    for (auto hostileReference : me->GetThreatManager().getThreatList())
                         if (Player* l_Player = ObjectAccessor::GetPlayer(*me, hostileReference->getUnitGuid()))
                             m_LootersGuids.push_back(l_Player->GetGUID());
                 }

@@ -563,7 +563,7 @@ public:
                         //return;
                         //break;
                     case EVENT_INFERNO_LEAP:
-                        if (Unit *pTarget = SelectTarget(SELECT_TARGET_FARTHEST, 0)){
+                        if (Unit *pTarget = SelectTarget(SELECT_TARGET_MAXDISTANCE, 0)){
                             if (ascendant[0] != NULL && !ascendant[0]->HasUnitState(UNIT_STATE_CASTING))
                             {
                                 ascendant[0]->CastSpell(pTarget, SPELL_INFERNO_LEAP, true);
@@ -636,7 +636,7 @@ public:
                             if (ascendant[2] != NULL)
                             {
                                 std::list<Unit*> chaintargetList;
-                                SelectTargetList(chaintargetList, 3, SELECT_TARGET_RANDOM, 100, true);
+                                SelectTargetList(chaintargetList, 3, SELECT_TARGET_RANDOM, 0, 100.f, true);
                                 int i=0;
                                 for (std::list<Unit*>::const_iterator iter = chaintargetList.begin(); iter != chaintargetList.end(); ++iter)
                                 {
@@ -844,7 +844,7 @@ public:
                             if (ascendant[2] != NULL)
                             {
                                 std::list<Unit*> chaintargetList;
-                                SelectTargetList(chaintargetList, 3, SELECT_TARGET_RANDOM, 100, true);
+                                SelectTargetList(chaintargetList, 3, SELECT_TARGET_RANDOM, 0, 100.f, true);
                                 for (std::list<Unit*>::const_iterator iter = chaintargetList.begin(); iter != chaintargetList.end(); ++iter)
                                 {
                                                 ascendant[2]->AddAura(SPELL_GRAVITY_CRUSH, (*iter));
@@ -895,7 +895,7 @@ public:
                         if (Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM, 0, 100.0f, true))
                         {
                             me->AddAura(SPELL_STATIC_OVERLOAD, pTarget);
-                            if (Unit *rTarget = SelectTarget(SELECT_TARGET_RANDOM, 0, 100.0f, true, -SPELL_STATIC_OVERLOAD))
+                            if (Unit *rTarget = SelectTarget(SELECT_TARGET_RANDOM, 0, 100.0f, true, true, -SPELL_STATIC_OVERLOAD))
                             {
                                 me->AddAura(SPELL_GRAVITY_CORE, rTarget);
                             }
@@ -907,7 +907,7 @@ public:
                         if (Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM, 0, 100.0f, true))
                         {
                             me->SummonCreature(NPC_FLAMESTRIKE_COUNCIL, pTarget->GetPositionX(),pTarget->GetPositionY(), pTarget->GetPositionZ(),pTarget->GetOrientation());
-                            if (Unit *rTarget = SelectTarget(SELECT_TARGET_NEAREST, 0))
+                            if (Unit *rTarget = SelectTarget(SELECT_TARGET_MINDISTANCE, 0))
                             {
                                 //if the same target get chosen it is the only one left
                                 me->SummonCreature(NPC_FROZEN_ORB_COUNCIL, rTarget->GetPositionX(),rTarget->GetPositionY(), rTarget->GetPositionZ(),rTarget->GetOrientation());
@@ -969,12 +969,12 @@ public:
                     if (ascendant[1]->GetVictim()) //this is to prevent reset if the players are distant from the spawnpoint
                     {
                         ascendant[2]->CombatStart(ascendant[1]->GetVictim());
-                        ascendant[2]->AddThreat(ascendant[1]->GetVictim(), 1);
+                        AddThreat(ascendant[1]->GetVictim(), 1);
                     }
                     if (ascendant[0]->GetVictim())                               //read this ^
                     {
                         ascendant[3]->CombatStart(ascendant[0]->GetVictim());
-                        ascendant[3]->AddThreat(ascendant[0]->GetVictim(), 1);
+                        AddThreat(ascendant[0]->GetVictim(), 1);
                     }
                     ascendant[2]->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                     ascendant[3]->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
@@ -1418,7 +1418,7 @@ public: npc_council_frozen_orb() : CreatureScript("npc_council_frozen_orb") { }
             me->SetSpeed(MOVE_WALK,   speed);
             me->SetSpeed(MOVE_RUN,    speed);
             me->SetSpeed(MOVE_FLIGHT, speed);
-            chase = SelectTarget(SELECT_TARGET_FARTHEST, 0);
+            chase = SelectTarget(SELECT_TARGET_MAXDISTANCE, 0);
             if (chase != nullptr)
             {
                 me->AddAura(SPELL_FROST_BEACON, chase);
@@ -1444,7 +1444,7 @@ public: npc_council_frozen_orb() : CreatureScript("npc_council_frozen_orb") { }
             if (checkTimer <= diff)
             {
                 if (chase == NULL)
-                    chase = SelectTarget(SELECT_TARGET_FARTHEST, 0);
+                    chase = SelectTarget(SELECT_TARGET_MAXDISTANCE, 0);
                 if (flamestrike == NULL && me->GetInstanceScript())
                     flamestrike = me->FindNearestCreature(NPC_FLAMESTRIKE_COUNCIL, 100, true);
                 if (dying || chase == NULL || flamestrike == NULL)

@@ -269,10 +269,10 @@ public:
         if (failNum == 0 && *result != '0')
             return false;
 
-        char* fail1 = strtok(NULL, " ");
+        char* fail1 = strtok(nullptr, " ");
         uint8 failArg1 = fail1 ? (uint8)atoi(fail1) : 0;
 
-        char* fail2 = strtok(NULL, " ");
+        char* fail2 = strtok(nullptr, " ");
         uint8 failArg2 = fail2 ? (uint8)atoi(fail2) : 0;
 
         WorldPackets::Spells::CastFailed castFailed;
@@ -304,7 +304,7 @@ public:
             return false;
 
         InventoryResult msg = InventoryResult(atoi(args));
-        handler->GetSession()->GetPlayer()->SendEquipError(msg, NULL, NULL);
+        handler->GetSession()->GetPlayer()->SendEquipError(msg, nullptr, nullptr);
         return true;
     }
 
@@ -331,7 +331,7 @@ public:
     static bool HandleDebugSendOpcodeCommand(ChatHandler* handler, char const* /*args*/)
     {
         Unit* unit = handler->getSelectedUnit();
-        Player* player = NULL;
+        Player* player = nullptr;
         if (!unit || (unit->GetTypeId() != TYPEID_PLAYER))
             player = handler->GetSession()->GetPlayer();
         else
@@ -482,7 +482,7 @@ public:
     static bool HandleDebugUpdateWorldStateCommand(ChatHandler* handler, char const* args)
     {
         char* w = strtok((char*)args, " ");
-        char* s = strtok(NULL, " ");
+        char* s = strtok(nullptr, " ");
 
         if (!w || !s)
             return false;
@@ -709,7 +709,7 @@ public:
                         continue;
                     }
 
-                    if (updateQueue[qp] == NULL)
+                    if (updateQueue[qp] == nullptr)
                     {
                         handler->PSendSysMessage("The item with slot %d and %s has its queuepos (%d) pointing to NULL in the queue!", item->GetSlot(), item->GetGUID().ToString().c_str(), qp);
                         error = true;
@@ -777,7 +777,7 @@ public:
                                 continue;
                             }
 
-                            if (updateQueue[qp] == NULL)
+                            if (updateQueue[qp] == nullptr)
                             {
                                 handler->PSendSysMessage("The item in bag %d at slot %d having %s has a queuepos (%d) that points to NULL in the queue!", bag->GetSlot(), item2->GetSlot(), item2->GetGUID().ToString().c_str(), qp);
                                 error = true;
@@ -826,7 +826,7 @@ public:
 
                 Item* test = player->GetItemByPos(item->GetBagSlot(), item->GetSlot());
 
-                if (test == NULL)
+                if (test == nullptr)
                 {
                     handler->PSendSysMessage("queue(%zu): The bag(%d) and slot(%d) values for %s are incorrect, the player doesn't have any item at that position!", i, item->GetBagSlot(), item->GetSlot(), item->GetGUID().ToString().c_str());
                     error = true;
@@ -865,7 +865,7 @@ public:
         if (!target || target->IsTotem() || target->IsPet())
             return false;
 
-        ThreatContainer::StorageType const &threatList = target->getThreatManager().getThreatList();
+        ThreatContainer::StorageType const& threatList = target->GetThreatManager().getThreatList();
         ThreatContainer::StorageType::const_iterator itr;
         uint32 count = 0;
         handler->PSendSysMessage("Threat list of %s (%s)", target->GetName().c_str(), target->GetGUID().ToString().c_str());
@@ -941,7 +941,7 @@ public:
         if (!i)
             return false;
 
-        char* j = strtok(NULL, " ");
+        char* j = strtok(nullptr, " ");
 
         uint32 entry = atoul(i);
         int8 seatId = j ? (int8)atoi(j) : -1;
@@ -950,7 +950,7 @@ public:
             unit->EnterVehicle(vehicle, seatId);
         else
         {
-            Creature* passenger = NULL;
+            Creature* passenger = nullptr;
             Trinity::AllCreaturesOfEntryInRange check(handler->GetSession()->GetPlayer(), entry, 20.0f);
             Trinity::CreatureSearcher<Trinity::AllCreaturesOfEntryInRange> searcher(handler->GetSession()->GetPlayer(), passenger, check);
             Cell::VisitAllObjects(handler->GetSession()->GetPlayer(), searcher, 30.0f);
@@ -969,7 +969,7 @@ public:
             return false;
 
         char* e = strtok((char*)args, " ");
-        char* i = strtok(NULL, " ");
+        char* i = strtok(nullptr, " ");
 
         if (!e)
             return false;
@@ -1024,8 +1024,8 @@ public:
             return false;
 
         char* t = strtok((char*)args, " ");
-        char* p = strtok(NULL, " ");
-        char* m = strtok(NULL, " ");
+        char* p = strtok(nullptr, " ");
+        char* m = strtok(nullptr, " ");
 
         if (!t)
             return false;
@@ -1142,7 +1142,7 @@ public:
             if (!mask1)
                 return false;
 
-            char* mask2 = strtok(NULL, " \n");
+            char* mask2 = strtok(nullptr, " \n");
 
             uint32 moveFlags = (uint32)atoi(mask1);
             target->SetUnitMovementFlags(moveFlags);

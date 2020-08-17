@@ -304,7 +304,7 @@ public:
         {
             if (Boo <= diff)
             {
-                if (Unit* target = SelectTarget(SELECT_TARGET_NEAREST, 0, 40.0f, true))
+                if (Unit* target = SelectTarget(SELECT_TARGET_MINDISTANCE, 0, 40.0f, true))
                 {
                     if (target->isInFrontInMap(me, 40.0f))
                         DoCastAOE(SPELL_LURK);

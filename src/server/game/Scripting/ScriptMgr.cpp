@@ -1590,7 +1590,7 @@ InstanceScript* ScriptMgr::CreateInstanceData(InstanceMap* map)
 {
     ASSERT(map);
 
-    GET_SCRIPT_RET(InstanceMapScript, map->GetScriptId(), tmpscript, NULL);
+    GET_SCRIPT_RET(InstanceMapScript, map->GetScriptId(), tmpscript, nullptr);
     return tmpscript->GetInstanceScript(map);
 }
 
@@ -1908,12 +1908,12 @@ Battleground* ScriptMgr::CreateBattleground(BattlegroundTypeId /*typeId*/)
 {
     /// @todo Implement script-side battlegrounds.
     ABORT();
-    return NULL;
+    return nullptr;
 }
 
 OutdoorPvP* ScriptMgr::CreateOutdoorPvP(uint32 scriptId)
 {
-    GET_SCRIPT_RET(OutdoorPvPScript, scriptId, tmpscript, NULL);
+    GET_SCRIPT_RET(OutdoorPvPScript, scriptId, tmpscript, nullptr);
     return tmpscript->GetOutdoorPvP();
 }
 

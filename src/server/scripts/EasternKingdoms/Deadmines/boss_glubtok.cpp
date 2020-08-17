@@ -211,7 +211,7 @@ public:
                 Phase2Pos.GetPosition(x, y, z, o);
                 me->NearTeleportTo(x, y, z, o);
                 DoCast(SPELL_TELEPORT_VISUAL);
-                DoResetThreat();
+                ResetThreatList();
                 events.ScheduleEvent(EVENT_TRANSITION_SAY_1, 4000);
                 events.ScheduleEvent(EVENT_TRANSITION_SAY_2, 6000);
                 events.ScheduleEvent(EVENT_TRANSITION_CAST, 8000);
@@ -361,7 +361,7 @@ public:
                             me->SetFacingToObject(random);
                             if (IsHeroic())
                             {
-                                DoResetThreat();
+                                ResetThreatList();
                             }
                         }
                         events.ScheduleEvent(EVENT_ELEMENTAL_FISTS, 1000);

@@ -399,7 +399,7 @@ public:
 
             if (ShadowboltTimer <= diff)
             {
-                DoCast(SelectTarget(SELECT_TARGET_TOPAGGRO, 0), SPELL_SHADOW_BOLT);
+                DoCast(SelectTarget(SELECT_TARGET_MAXTHREAT, 0), SPELL_SHADOW_BOLT);
                 ShadowboltTimer = 10000;
             } else ShadowboltTimer -= diff;
 

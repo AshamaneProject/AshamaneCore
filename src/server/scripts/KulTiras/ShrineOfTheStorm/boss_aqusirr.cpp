@@ -62,7 +62,7 @@ struct boss_aquasirr : public StaticBossAI
             case SPELL_SURGING_RUSH:
                 break;
             case SPELL_UNDERTOW:
-                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 1, 0.0f, true, -SPELL_UNDERTOW))
+                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 1, 0.0f, true, true, -SPELL_UNDERTOW))
                     me->CastSpell(target, SPELL_UNDERTOW, false);
                 break;
             case SPELL_ERUPTING_WATER:

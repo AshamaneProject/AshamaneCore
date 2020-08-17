@@ -62,7 +62,7 @@ struct boss_smashspite_the_hateful : public BossAI
             }
             case SPELL_HATEFUL_GAZE:
             {
-                if (Unit* target = SelectTarget(SELECT_TARGET_FARTHEST, 0, 0.0f, true))
+                if (Unit* target = SelectTarget(SELECT_TARGET_MAXDISTANCE, 0, 0.0f, true))
                 {
                     me->AddAura(SPELL_HATEFUL_GAZE, target);
                     hatefulGazeTargetGUID = target->GetGUID();

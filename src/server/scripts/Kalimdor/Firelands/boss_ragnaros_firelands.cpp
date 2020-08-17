@@ -737,7 +737,7 @@ class boss_ragnaros_firelands: public CreatureScript
                             case EVENT_RAGE_OF_RAGNAROS:
                                 if (!IsHeroic()) // Only on normal.
                                 {
-                                    std::list<HostileReference*> m_threatlist = me->getThreatManager().getThreatList();
+                                    std::list<HostileReference*> m_threatlist = me->GetThreatManager().getThreatList();
                                     for (std::list<HostileReference*>::const_iterator i = m_threatlist.begin();
                                             i != m_threatlist.end(); ++i)
                                     {
@@ -788,7 +788,7 @@ class boss_ragnaros_firelands: public CreatureScript
                             }
                             case EVENT_SUL_SMASH_END:
                             {
-                                if (Unit* target = SelectTarget(SELECT_TARGET_NEAREST, 0, 80.0f, true))
+                                if (Unit* target = SelectTarget(SELECT_TARGET_MINDISTANCE, 0, 80.0f, true))
                                     me->AI()->AttackStart(target);
                                 break;
                             }
@@ -802,7 +802,7 @@ class boss_ragnaros_firelands: public CreatureScript
                             case EVENT_WRATH_OF_RAGNAROS: // Not on tank!
                             {
                                 std::list<Unit*> targets;
-                                SelectTargetList(targets, RAID_MODE<int32>(1, 3, 1, 3), SELECT_TARGET_RANDOM, 200.0f, true);
+                                SelectTargetList(targets, RAID_MODE<int32>(1, 3, 1, 3), SELECT_TARGET_RANDOM, 0, 200.0f, true);
                                 if (!targets.empty())
                                     for (std::list<Unit*>::iterator itr = targets.begin(); itr != targets.end(); ++itr)
                                         DoCast(*itr, SPELL_WRATH_OF_RAGNAROS);
@@ -867,7 +867,7 @@ class boss_ragnaros_firelands: public CreatureScript
                                 me->AddAura(SPELL_BASE_VISUAL, me);
                                 me->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                                 Talk(SAY_NEW_PHASE);
-                                if (Unit* target = SelectTarget(SELECT_TARGET_NEAREST, 0, 80.0f, true))
+                                if (Unit* target = SelectTarget(SELECT_TARGET_MINDISTANCE, 0, 80.0f, true))
                                     me->AI()->AttackStart(target);
 
                                 intermission1InProgress = false;
@@ -891,7 +891,7 @@ class boss_ragnaros_firelands: public CreatureScript
                             {
                                 std::list<Unit*> targets;
                                 SelectTargetList(targets, RAID_MODE<int32>(10, 20, 10, 20), SELECT_TARGET_RANDOM,
-                                        200.0f, true);
+                                        0, 200.0f, true);
                                 if (!targets.empty())
                                     for (std::list<Unit*>::iterator itr = targets.begin(); itr != targets.end(); ++itr)
                                     {
@@ -997,7 +997,7 @@ class boss_ragnaros_firelands: public CreatureScript
                                 me->AddAura(SPELL_BASE_VISUAL, me);
                                 me->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                                 Talk(SAY_NEW_PHASE);
-                                if (Unit* target = SelectTarget(SELECT_TARGET_NEAREST, 0, 80.0f, true))
+                                if (Unit* target = SelectTarget(SELECT_TARGET_MINDISTANCE, 0, 80.0f, true))
                                     me->AI()->AttackStart(target);
 
                                 intermission2InProgress = false;
@@ -1531,7 +1531,7 @@ class npc_molten_elemental: public CreatureScript
                 {
                     me->Attack(target, true);
                     me->GetMotionMaster()->MoveFollow(target, 0.0f, 0.0f);
-                    me->AddThreat(target, 1000000.0f);
+                    AddThreat(target, 1000000.0f);
                     //me->CastSpell(target, SPELL_ELEMENTAL_FIXATE, true);
                     // Not tauntable.
                     me->ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_TAUNT, true);
@@ -1722,7 +1722,7 @@ class npc_living_meteor: public CreatureScript
             void SelectNextFollowTarget(ObjectGuid newTargetGuid = ObjectGuid::Empty)
             {
                 me->GetMotionMaster()->Clear();
-                me->getThreatManager().resetAllAggro();
+                me->GetThreatManager().resetAllAggro();
                 me->CastStop();
 
                 DoZoneInCombat();
@@ -1746,7 +1746,7 @@ class npc_living_meteor: public CreatureScript
                     return;
                 }
 
-                me->AddThreat(target, 1000000.0f);
+                AddThreat(target, 1000000.0f);
                 me->CastSpell(target, SPELL_FLAMING_FIXATE, false);
                 me->GetMotionMaster()->MoveFollow(target, 0.0f, 0.0f);
                 // Not tauntable.

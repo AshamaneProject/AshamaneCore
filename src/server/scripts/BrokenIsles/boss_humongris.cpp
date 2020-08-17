@@ -165,7 +165,7 @@ public:
                 }
                 case EVENT_YOU_GO_BANG:
                 {
-                    Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO, 0.0, 0.0, true);
+                    Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT, 0.0, 0.0, true);
                     if (!target)
                         break;
                     DoCast(target, SPELL_YOU_GO_BANG_TARGET, false);

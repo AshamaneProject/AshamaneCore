@@ -539,12 +539,12 @@ public:
             switch (m_Events.ExecuteEvent())
             {
                 case eEvents::EventCannonBarrage:
-                    if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                    if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                         me->CastSpell(target, TanaanSpells::SpellCannonBarrage, false);
                     m_Events.ScheduleEvent(eEvents::EventCannonBarrage, 80000);
                     break;
                 case eEvents::EventMachineGun:
-                    if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                    if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                         me->CastSpell(target, TanaanSpells::SpellMachineGun, true);
                     m_Events.ScheduleEvent(eEvents::EventMachineGun, 8000);
                     break;

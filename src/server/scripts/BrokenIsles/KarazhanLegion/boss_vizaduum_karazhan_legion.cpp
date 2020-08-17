@@ -390,7 +390,7 @@ class boss_new_vizaduum : public CreatureScript
 
                         for (uint8 i = 0; i < _times; ++i)
                         {
-                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0, true, -SPELL_CHAOTIC_SHADOWS))
+                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0, true, true, -SPELL_CHAOTIC_SHADOWS))
                                 DoCast(target, SPELL_CHAOTIC_SHADOWS);
                         }
 

@@ -533,10 +533,10 @@ class npc_lava_parasite : public CreatureScript
         {
             if(spell->Id == SPELL_PARASITIC_INFECTION)
             {
-                if(Unit * victim = SelectTarget(SELECT_TARGET_RANDOM, 0, 0.0f, true, -SPELL_PARASITIC_INFECTION))
+                if(Unit * victim = SelectTarget(SELECT_TARGET_RANDOM, 0, 0.0f, true, true, -SPELL_PARASITIC_INFECTION))
                 {
-                    me->getThreatManager().modifyThreatPercent(target, -100);
-                    me->AddThreat(victim, 5000.0f);
+                    ModifyThreatByPercent(target, -100);
+                    AddThreat(victim, 5000.0f);
                     AttackStart(victim);
                 }
             }
@@ -597,11 +597,11 @@ class npc_drakonid_drudge : public CreatureScript
 
             if(chargeTimer <= diff)
             {
-                if(Unit * target = SelectTarget(SELECT_TARGET_FARTHEST, 0, 80.0f, true))
+                if(Unit * target = SelectTarget(SELECT_TARGET_MAXDISTANCE, 0, 80.0f, true))
                 {
-                    me->getThreatManager().resetAllAggro();
+                    me->GetThreatManager().resetAllAggro();
                     me->TauntApply(target);
-                    me->AddThreat(target, 20000.0f);
+                    AddThreat(target, 20000.0f);
                     DoCast(target, SPELL_DRAKONID_RUSH, true);
                     whirlwindTimer = 6000;
                     whirlwind = true;

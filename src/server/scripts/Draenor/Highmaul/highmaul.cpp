@@ -495,7 +495,7 @@ class npc_highmaul_gorian_guardsman : public CreatureScript
                 switch (m_Events.ExecuteEvent())
                 {
                     case eEvents::EventBloodyCleave:
-                        if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_TOPAGGRO))
+                        if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_MAXTHREAT))
                             me->CastSpell(target, eSpells::SpellBloodyCleave, true);
                         m_Events.ScheduleEvent(eEvents::EventBloodyCleave, urand(10000, 15000));
                         break;
@@ -504,7 +504,7 @@ class npc_highmaul_gorian_guardsman : public CreatureScript
                         m_Events.ScheduleEvent(eEvents::EventChainGrip, urand(8000, 12000));
                         break;
                     case eEvents::EventStaggeringBlow:
-                        if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_TOPAGGRO))
+                        if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_MAXTHREAT))
                             me->CastSpell(target, eSpells::SpellStaggeringBlow, true);
                         m_Events.ScheduleEvent(eEvents::EventStaggeringBlow, urand(15000, 20000));
                         break;
@@ -593,7 +593,7 @@ class npc_highmaul_night_twisted_devout : public CreatureScript
                 {
                     case eEvents::EventTaintedClaws:
                     {
-                        if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_TOPAGGRO))
+                        if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_MAXTHREAT))
                             me->CastSpell(target, eSpells::SpellTaintedClaws, true);
                         m_Events.ScheduleEvent(eEvents::EventTaintedClaws, urand(8000, 11000));
                         break;
@@ -693,7 +693,7 @@ class npc_highmaul_gorian_runemaster : public CreatureScript
                         m_Events.ScheduleEvent(eEvents::EventRuneOfDisintegration, urand(12000, 15000));
                         break;
                     case eEvents::EventRuneOfUnmaking:
-                        if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_TOPAGGRO))
+                        if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_MAXTHREAT))
                             me->CastSpell(target, eSpells::SpellRuneOfUnmaking, false);
                         m_Events.ScheduleEvent(eEvents::EventRuneOfUnmaking, urand(6000, 9000));
                         break;
@@ -902,7 +902,7 @@ class npc_highmaul_gorian_sorcerer : public CreatureScript
                         m_Events.ScheduleEvent(eEvents::EventArcaneForce, urand(20000, 25000));
                         break;
                     case eEvents::EventArcaneBolt:
-                        if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_TOPAGGRO))
+                        if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_MAXTHREAT))
                             me->CastSpell(target, eSpells::SpellArcaneBolt, false);
                         m_Events.ScheduleEvent(eEvents::EventArcaneBolt, urand(7000, 10000));
                         break;
@@ -1059,7 +1059,7 @@ class npc_highmaul_night_twisted_soothsayer : public CreatureScript
                         m_Events.ScheduleEvent(eEvents::EventVoidStorm, urand(9000, 12000));
                         break;
                     case eEvents::EventVoidBolt:
-                        if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_TOPAGGRO))
+                        if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_MAXTHREAT))
                             me->CastSpell(target, eSpells::SpellVoidBolt, false);
                         m_Events.ScheduleEvent(eEvents::EventVoidBolt, urand(8000, 11000));
                         break;
@@ -2778,7 +2778,7 @@ class npc_highmaul_gorian_royal_guardsman : public CreatureScript
                     me->SetSpeed(UnitMoveType::MOVE_WALK, 1.0f);
                     me->SetSpeed(UnitMoveType::MOVE_RUN, 1.0f);
 
-                    if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_TOPAGGRO))
+                    if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_MAXTHREAT))
                         me->GetMotionMaster()->MoveChase(target);
                 }
             }
@@ -3069,7 +3069,7 @@ class npc_highmaul_guard_captain_thag : public CreatureScript
                 switch (m_Events.ExecuteEvent())
                 {
                     case eEvents::EventBrutalCleave:
-                        if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_TOPAGGRO))
+                        if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_MAXTHREAT))
                             me->CastSpell(target, eSpells::BrutalCleave, false);
                         m_Events.ScheduleEvent(eEvents::EventBrutalCleave, 7 * TimeConstants::IN_MILLISECONDS);
                         break;

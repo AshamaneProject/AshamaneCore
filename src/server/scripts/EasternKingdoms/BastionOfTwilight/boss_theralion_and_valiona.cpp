@@ -771,8 +771,8 @@ class boss_valiona : public CreatureScript
                                     spTarget->SetFaction(target->GetFaction());
                                     spTarget->SetReactState(REACT_AGGRESSIVE);
                                     spTarget->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
-                                    me->AddThreat(spTarget, 100000000.0f, SPELL_SCHOOL_MASK_NORMAL);
-                                    spTarget->AddThreat(me, 100000000.0f, SPELL_SCHOOL_MASK_NORMAL);
+                                    AddThreat(spTarget, 100000000.0f);
+                                    AddThreat(me, 100000000.0f);
                                     me->Attack(spTarget, true);
                                     spTarget->Attack(me, true);
                                     me->SetFacingToObject(spTarget);

@@ -158,7 +158,7 @@ struct boss_fenryr : public BossAI
             {
                 case EVENT_CLAW_FRENZY:
                 {
-                    if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO, 0, 50.0f, true, 0))
+                    if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT, 0, 50.0f, true, 0))
                         me->CastSpell(target, SPELL_CLAW_FRENZY, true);
                     break;
                 }
