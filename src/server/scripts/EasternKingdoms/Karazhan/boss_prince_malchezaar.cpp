@@ -23,8 +23,8 @@ SDCategory: Karazhan
 EndScriptData */
 
 #include "ScriptMgr.h"
-#include "InstanceScript.h"
 #include "karazhan.h"
+#include "InstanceScript.h"
 #include "ObjectAccessor.h"
 #include "ScriptedCreature.h"
 #include "SpellInfo.h"
@@ -154,7 +154,7 @@ public:
                     creature->AI()->KilledUnit(who);
         }
 
-        void SpellHit(Unit* /*who*/, const SpellInfo* spell) override
+        void SpellHit(Unit* /*who*/, SpellInfo const* spell) override
         {
             if (spell->Id == SPELL_INFERNAL_RELAY)
             {
@@ -318,7 +318,7 @@ public:
             Unit* tank = me->GetThreatManager().GetCurrentVictim();
             std::vector<Unit*> targets;
 
-            for (ThreatReference* ref : me->GetThreatManager().GetUnsortedThreatList())
+            for (ThreatReference const* ref : me->GetThreatManager().GetUnsortedThreatList())
             {
                 Unit* target = ref->GetVictim();
                 if (target != tank && target->IsAlive() && target->GetTypeId() == TYPEID_PLAYER)

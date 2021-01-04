@@ -379,11 +379,12 @@ class boss_algalon_the_observer : public CreatureScript
                         events.ScheduleEvent(EVENT_DESPAWN_ALGALON_2, 17000);
                         events.ScheduleEvent(EVENT_DESPAWN_ALGALON_3, 26000);
                         me->DespawnOrUnsummon(34000);
-                        me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_NPC));
+                        me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
+                        me->SetImmuneToNPC(true);
                         break;
                     case ACTION_INIT_ALGALON:
                         _firstPull = false;
-                        me->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
+                        me->SetImmuneToPC(false);
                         break;
                 }
             }
@@ -396,7 +397,8 @@ class boss_algalon_the_observer : public CreatureScript
             void EnterCombat(Unit* /*target*/) override
             {
                 uint32 introDelay = 0;
-                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_NPC));
+                me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
+                me->SetImmuneToNPC(true);
                 events.Reset();
                 events.SetPhase(PHASE_ROLE_PLAY);
 
@@ -410,7 +412,7 @@ class boss_algalon_the_observer : public CreatureScript
                 {
                     _firstPull = false;
                     Talk(SAY_ALGALON_START_TIMER);
-                    if (Creature* brann = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_BRANN_BRONZEBEARD_ALG)))
+                    if (Creature* brann = instance->GetCreature(DATA_BRANN_BRONZEBEARD_ALG))
                         brann->AI()->DoAction(ACTION_FINISH_INTRO);
 
                     me->setActive(true);
@@ -444,7 +446,7 @@ class boss_algalon_the_observer : public CreatureScript
                     me->SetDisableGravity(false);
                 else if (pointId == POINT_ALGALON_OUTRO)
                 {
-                    me->SetFacingTo(1.605703f, true);
+                    me->SetFacingTo(1.605703f);
                     events.ScheduleEvent(EVENT_OUTRO_3, 1200);
                     events.ScheduleEvent(EVENT_OUTRO_4, 2400);
                     events.ScheduleEvent(EVENT_OUTRO_5, 8500);
@@ -503,7 +505,7 @@ class boss_algalon_the_observer : public CreatureScript
             {
                 instance->SetBossState(BOSS_ALGALON, FAIL);
                 BossAI::EnterEvadeMode(why);
-                me->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
+                me->SetImmuneToPC(false);
                 me->SetSheath(SHEATH_STATE_UNARMED);
             }
 
@@ -538,7 +540,7 @@ class boss_algalon_the_observer : public CreatureScript
                     damage = 0;
                     me->SetReactState(REACT_PASSIVE);
                     me->AttackStop();
-                    me->SetFaction(35);
+                    me->SetFaction(FACTION_FRIENDLY);
                     me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                     DoCast(me, SPELL_SELF_STUN);
                     events.Reset();
@@ -578,7 +580,7 @@ class boss_algalon_the_observer : public CreatureScript
                             break;
                         case EVENT_INTRO_FINISH:
                             events.Reset();
-                            me->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
+                            me->SetImmuneToPC(false);
                             break;
                         case EVENT_START_COMBAT:
                             instance->SetBossState(BOSS_ALGALON, IN_PROGRESS);
@@ -587,7 +589,8 @@ class boss_algalon_the_observer : public CreatureScript
                         {
                             events.SetPhase(PHASE_NORMAL);
                             me->SetSheath(SHEATH_STATE_MELEE);
-                            me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_NPC));
+                            me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
+                            me->SetImmuneToNPC(false);
                             me->SetReactState(REACT_DEFENSIVE);
                             DoCastAOE(SPELL_SUPERMASSIVE_FAIL, true);
                             //! Workaround for Creature::_IsTargetAcceptable returning false
@@ -983,9 +986,9 @@ class go_celestial_planetarium_access : public GameObjectScript
 
         struct go_celestial_planetarium_accessAI : public GameObjectAI
         {
-            go_celestial_planetarium_accessAI(GameObject* go) : GameObjectAI(go)
-            {
-            }
+            go_celestial_planetarium_accessAI(GameObject* go) : GameObjectAI(go), instance(go->GetInstanceScript()) { }
+
+            InstanceScript* instance;
 
             bool GossipHello(Player* player) override
             {
@@ -1018,15 +1021,12 @@ class go_celestial_planetarium_access : public GameObjectScript
                 if (Creature* brann = me->SummonCreature(NPC_BRANN_BRONZBEARD_ALG, BrannIntroSpawnPos))
                     brann->AI()->DoAction(ACTION_START_INTRO);
 
-                if (InstanceScript* instance = me->GetInstanceScript())
-                {
-                    instance->SetData(DATA_ALGALON_SUMMON_STATE, 1);
-                    if (GameObject* sigil = ObjectAccessor::GetGameObject(*me, instance->GetGuidData(DATA_SIGILDOOR_01)))
-                        sigil->SetGoState(GO_STATE_ACTIVE);
+                instance->SetData(DATA_ALGALON_SUMMON_STATE, 1);
+                if (GameObject* sigil = ObjectAccessor::GetGameObject(*me, instance->GetGuidData(DATA_SIGILDOOR_01)))
+                    sigil->SetGoState(GO_STATE_ACTIVE);
 
-                    if (GameObject* sigil = ObjectAccessor::GetGameObject(*me, instance->GetGuidData(DATA_SIGILDOOR_02)))
-                        sigil->SetGoState(GO_STATE_ACTIVE);
-                }
+                if (GameObject* sigil = ObjectAccessor::GetGameObject(*me, instance->GetGuidData(DATA_SIGILDOOR_02)))
+                    sigil->SetGoState(GO_STATE_ACTIVE);
 
                 return false;
             }

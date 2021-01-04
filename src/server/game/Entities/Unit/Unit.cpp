@@ -46,6 +46,7 @@
 #include "LootPackets.h"
 #include "MiscPackets.h"
 #include "MotionMaster.h"
+#include "MovementGenerator.h"
 #include "MovementPackets.h"
 #include "MoveSpline.h"
 #include "MoveSplineInit.h"
@@ -79,6 +80,7 @@
 #include "World.h"
 #include "WorldPacket.h"
 #include "WorldSession.h"
+#include <sstream>
 #include <cmath>
 
 float baseMoveSpeed[MAX_MOVE_TYPE] =
@@ -106,6 +108,13 @@ float playerBaseMoveSpeed[MAX_MOVE_TYPE] =
     4.5f,                  // MOVE_FLIGHT_BACK
     3.14f                  // MOVE_PITCH_RATE
 };
+
+DispelableAura::DispelableAura(Aura* aura, int32 dispelChance, uint8 dispelCharges) :
+    _aura(aura), _chance(dispelChance), _charges(dispelCharges)
+{
+}
+
+DispelableAura::~DispelableAura() = default;
 
 bool DispelableAura::RollDispel() const
 {
@@ -280,8 +289,8 @@ SpellSchoolMask ProcEventInfo::GetSchoolMask() const
     return SPELL_SCHOOL_MASK_NONE;
 }
 
-SpellNonMeleeDamage::SpellNonMeleeDamage(Unit* _attacker, Unit* _target, SpellInfo const* _spellInfo, uint32 _SpellXSpellVisualID, uint32 _schoolMask, ObjectGuid _castId)
-    : target(_target), attacker(_attacker), castId(_castId), Spell(_spellInfo), SpellXSpellVisualID(_SpellXSpellVisualID), damage(0), originalDamage(0),
+SpellNonMeleeDamage::SpellNonMeleeDamage(Unit* _attacker, Unit* _target, SpellInfo const* _spellInfo, SpellCastVisual spellVisual, uint32 _schoolMask, ObjectGuid _castId)
+    : target(_target), attacker(_attacker), castId(_castId), Spell(_spellInfo), SpellVisual(spellVisual), damage(0), originalDamage(0),
     schoolMask(_schoolMask), absorb(0), resist(0), periodicLog(false), blocked(0), HitInfo(0), cleanDamage(0), fullBlock(false), preHitHealth(_target->GetHealth())
 {
 }
@@ -292,7 +301,7 @@ Unit::Unit(bool isWorldObject) :
     m_ControlledByPlayer(false), movespline(new Movement::MoveSpline()),
     i_AI(nullptr), i_disabledAI(nullptr), m_AutoRepeatFirstCast(false), m_procDeep(0),
     m_removedAurasCount(0), i_motionMaster(new MotionMaster(this)), m_regenTimer(0), m_ThreatManager(this),
-    m_vehicle(nullptr), m_vehicleKit(nullptr), m_unitTypeMask(UNIT_MASK_NONE),
+    m_vehicle(nullptr), m_vehicleKit(nullptr), m_unitTypeMask(UNIT_MASK_NONE), m_Diminishing(),
     m_HostileRefManager(this), _aiAnimKitId(0), _movementAnimKitId(0), _meleeAnimKitId(0),
     _spellHistory(new SpellHistory(this)), _scheduler(this)
 {
@@ -597,7 +606,7 @@ void Unit::resetAttackTimer(WeaponAttackType type)
     m_attackTimer[type] = uint32(GetBaseAttackTime(type) * m_modAttackSpeedPct[type]);
 }
 
-bool Unit::IsWithinCombatRange(const Unit* obj, float dist2compare) const
+bool Unit::IsWithinCombatRange(Unit const* obj, float dist2compare) const
 {
     if (!obj || !IsInMap(obj) || !IsInPhase(obj))
         return false;
@@ -644,7 +653,7 @@ bool Unit::IsWithinBoundaryRadius(const Unit* obj) const
     return IsInDist(obj, objBoundaryRadius);
 }
 
-void Unit::GetRandomContactPoint(const Unit* obj, float &x, float &y, float &z, float distance2dMin, float distance2dMax) const
+void Unit::GetRandomContactPoint(Unit const* obj, float &x, float &y, float &z, float distance2dMin, float distance2dMax) const
 {
     float combat_reach = GetCombatReach();
     if (combat_reach < 0.1f) // sometimes bugged for players
@@ -1003,7 +1012,7 @@ uint32 Unit::DealDamage(Unit* victim, uint32 damage, CleanDamage const* cleanDam
 
             ASSERT(he && he->duel);
 
-            if (duel_wasMounted) // In this case victim==mount
+            if (duel_wasMounted) // In this case victim == mount
                 victim->SetHealth(1);
             else
                 he->SetHealth(1);
@@ -1651,6 +1660,7 @@ bool Unit::IsDamageReducedByArmor(SpellSchoolMask schoolMask, SpellInfo const* s
         if (spellInfo->HasAttribute(SPELL_ATTR0_CU_IGNORE_ARMOR))
             return false;
 
+        // bleeding effects are not reduced by armor
         if (effIndex != -1)
         {
             // bleeding effects are not reduced by armor
@@ -2016,7 +2026,7 @@ void Unit::CalcAbsorbResist(DamageInfo& damageInfo)
             uint32 split_absorb = 0;
             DealDamageMods(caster, splitDamage, &split_absorb, DIRECT_DAMAGE);
 
-            SpellNonMeleeDamage log(this, caster, (*itr)->GetSpellInfo(), (*itr)->GetBase()->GetSpellXSpellVisualId(), damageInfo.GetSchoolMask(), (*itr)->GetBase()->GetCastGUID());
+            SpellNonMeleeDamage log(this, caster, (*itr)->GetSpellInfo(), (*itr)->GetBase()->GetSpellVisual(), damageInfo.GetSchoolMask(), (*itr)->GetBase()->GetCastGUID());
             CleanDamage cleanDamage = CleanDamage(splitDamage, 0, BASE_ATTACK, MELEE_HIT_NORMAL);
             DealDamage(caster, splitDamage, &cleanDamage, DIRECT_DAMAGE, damageInfo.GetSchoolMask(), (*itr)->GetSpellInfo(), false);
             log.damage = splitDamage;
@@ -2620,7 +2630,7 @@ SpellMissInfo Unit::MagicSpellHitResult(Unit* victim, SpellInfo const* spellInfo
         return SPELL_MISS_DEFLECT;
 
     // Can`t miss on dead target (on skinning for example)
-    if ((!victim->IsAlive() && victim->GetTypeId() != TYPEID_PLAYER))
+    if (!victim->IsAlive() && victim->GetTypeId() != TYPEID_PLAYER)
         return SPELL_MISS_NONE;
 
     SpellSchoolMask schoolMask = spellInfo->GetSchoolMask();
@@ -3009,7 +3019,7 @@ void Unit::_UpdateSpells(uint32 time)
 
 void Unit::_UpdateAutoRepeatSpell()
 {
-    const SpellInfo* autoRepeatSpellInfo = m_currentSpells[CURRENT_AUTOREPEAT_SPELL]->m_spellInfo;
+    SpellInfo const* autoRepeatSpellInfo = m_currentSpells[CURRENT_AUTOREPEAT_SPELL]->m_spellInfo;
 
     // check "realtime" interrupts
     // don't cancel spells which are affected by a SPELL_AURA_CAST_WHILE_WALKING effect
@@ -3327,7 +3337,8 @@ void Unit::ProcessTerrainStatusUpdate(ZLiquidStatus status, Optional<LiquidData>
     {
         if (_lastLiquid && _lastLiquid->SpellID)
             RemoveAurasDueToSpell(_lastLiquid->SpellID);
-        if (curLiquid && curLiquid->SpellID)
+        Player* player = GetCharmerOrOwnerPlayerOrPlayerItself();
+        if (curLiquid && curLiquid->SpellID && (!player || !player->IsGameMaster()))
             CastSpell(this, curLiquid->SpellID, true);
         _lastLiquid = curLiquid;
     }
@@ -3676,7 +3687,7 @@ void Unit::_RemoveNoStackAurasDueToAura(Aura* aura)
         {
             Unit* caster = aura->GetCaster();
             if (caster && caster->GetTypeId() == TYPEID_PLAYER)
-                Spell::SendCastResult(caster->ToPlayer(), aura->GetSpellInfo(), aura->GetSpellXSpellVisualId(), aura->GetCastGUID(), SPELL_FAILED_AURA_BOUNCED);
+                Spell::SendCastResult(caster->ToPlayer(), aura->GetSpellInfo(), aura->GetSpellVisual(), aura->GetCastGUID(), SPELL_FAILED_AURA_BOUNCED);
         }
 
         aura->Remove();
@@ -5552,6 +5563,7 @@ void Unit::SendSpellNonMeleeDamageLog(SpellNonMeleeDamage const* log)
     packet.CasterGUID = log->attacker->GetGUID();
     packet.CastID = log->castId;
     packet.SpellID = log->Spell ? log->Spell->Id : 0;
+    packet.Visual = log->SpellVisual;
     packet.Damage = log->damage;
     packet.OriginalDamage = log->originalDamage;
     if (log->damage > log->preHitHealth)
@@ -7043,8 +7055,17 @@ uint32 Unit::SpellDamageBonusDone(Unit* victim, SpellInfo const* spellProto, uin
             ApCoeffMod /= 100.0f;
         }
 
-        WeaponAttackType const attType = (spellProto->IsRangedWeaponSpell() && spellProto->DmgClass != SPELL_DAMAGE_CLASS_MELEE) ? RANGED_ATTACK : BASE_ATTACK;
-        float APbonus = float(victim->GetTotalAuraModifier(attType == BASE_ATTACK ? SPELL_AURA_MELEE_ATTACK_POWER_ATTACKER_BONUS : SPELL_AURA_RANGED_ATTACK_POWER_ATTACKER_BONUS));
+        WeaponAttackType const attType = [&]()
+        {
+            if ((spellProto->IsRangedWeaponSpell() && spellProto->DmgClass != SPELL_DAMAGE_CLASS_MELEE))
+                return RANGED_ATTACK;
+
+            if (spellProto->HasAttribute(SPELL_ATTR3_REQ_OFFHAND) && !spellProto->HasAttribute(SPELL_ATTR3_MAIN_HAND))
+                return OFF_ATTACK;
+
+            return BASE_ATTACK;
+        }();
+        float APbonus = float(victim->GetTotalAuraModifier(attType != RANGED_ATTACK ? SPELL_AURA_MELEE_ATTACK_POWER_ATTACKER_BONUS : SPELL_AURA_RANGED_ATTACK_POWER_ATTACKER_BONUS));
         APbonus += GetTotalAttackPowerValue(attType);
         DoneTotal += int32(stack * ApCoeffMod * APbonus);
     }
@@ -7443,28 +7464,21 @@ float Unit::GetUnitSpellCriticalChance(Unit* victim, Spell* spell, AuraEffect co
     return std::max(crit_chance, 0.0f);
 }
 
-uint32 Unit::SpellCriticalDamageBonus(SpellInfo const* spellProto, uint32 damage, Unit* /*victim*/)
+uint32 Unit::SpellCriticalDamageBonus(SpellInfo const* spellProto, uint32 damage, Unit* victim)
 {
     // Calculate critical bonus
-    int32 crit_bonus = damage;
+    int32 crit_bonus = damage * 2;
     float crit_mod = 0.0f;
-
-    switch (spellProto->DmgClass)
-    {
-        case SPELL_DAMAGE_CLASS_MELEE:                      // for melee based spells is 100%
-        case SPELL_DAMAGE_CLASS_RANGED:
-            /// @todo write here full calculation for melee/ranged spells
-            crit_bonus += damage;
-            break;
-        default:
-            crit_bonus += damage / 2;                       // for spells is 50%
-            break;
-    }
 
     crit_mod += (GetTotalAuraMultiplierByMiscMask(SPELL_AURA_MOD_CRIT_DAMAGE_BONUS, spellProto->GetSchoolMask()) - 1.0f) * 100;
 
     if (crit_bonus != 0)
         AddPct(crit_bonus, crit_mod);
+
+    AddPct(crit_bonus, victim->GetTotalAuraModifier(SPELL_AURA_MOD_CRITICAL_DAMAGE_TAKEN_FROM_CASTER, [&](AuraEffect const* aurEff)
+    {
+        return aurEff->GetCasterGUID() == GetGUID();
+    }));
 
     crit_bonus -= damage;
 
@@ -7598,7 +7612,14 @@ float Unit::SpellHealingPctDone(Unit* victim, SpellInfo const* spellProto) const
         return 1.0f;
 
     if (Player const* thisPlayer = ToPlayer())
-        return thisPlayer->m_activePlayerData->ModHealingDonePercent;
+    {
+        float maxModDamagePercentSchool = 0.0f;
+        for (uint32 i = 0; i < MAX_SPELL_SCHOOL; ++i)
+            if (spellProto->GetSchoolMask() & (1 << i))
+                maxModDamagePercentSchool = std::max(maxModDamagePercentSchool, thisPlayer->m_activePlayerData->ModHealingDonePercent[i]);
+
+        return maxModDamagePercentSchool;
+    }
 
     float DoneTotalMod = 1.0f;
 
@@ -8252,10 +8273,6 @@ void Unit::Dismount()
     if (Player* thisPlayer = ToPlayer())
         thisPlayer->SendMovementSetCollisionHeight(thisPlayer->GetCollisionHeight(false));
 
-    WorldPackets::Misc::Dismount data;
-    data.Guid = GetGUID();
-    SendMessageToSet(data.Write(), true);
-
     // dismount as a vehicle
     if (IsPlayer() && GetVehicleKit())
     {
@@ -8411,6 +8428,24 @@ void Unit::SetInCombatWith(Unit* enemy)
         }
     }
     SetInCombatState(false, enemy);
+}
+
+void Unit::SetImmuneToPC(bool apply, bool keepCombat)
+{
+    (void)keepCombat;
+    if (apply)
+        AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
+    else
+        RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
+}
+
+void Unit::SetImmuneToNPC(bool apply, bool keepCombat)
+{
+    (void)keepCombat;
+    if (apply)
+        AddUnitFlag(UNIT_FLAG_IMMUNE_TO_NPC);
+    else
+        RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_NPC);
 }
 
 void Unit::CombatStart(Unit* target, bool initialAggro)
@@ -8604,12 +8639,12 @@ bool Unit::_IsValidAttackTarget(Unit const* target, SpellInfo const* bySpell, Wo
 
     // check flags
     if (target->HasUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_TAXI_FLIGHT | UNIT_FLAG_NOT_ATTACKABLE_1 | UNIT_FLAG_UNK_16))
-        || (!HasUnitFlag(UNIT_FLAG_PVP_ATTACKABLE) && target->HasUnitFlag(UNIT_FLAG_IMMUNE_TO_NPC))
-        || (!target->HasUnitFlag(UNIT_FLAG_PVP_ATTACKABLE) && HasUnitFlag(UNIT_FLAG_IMMUNE_TO_NPC)))
+        || (!HasUnitFlag(UNIT_FLAG_PVP_ATTACKABLE) && target->IsImmuneToNPC())
+        || (!target->HasUnitFlag(UNIT_FLAG_PVP_ATTACKABLE) && IsImmuneToNPC()))
         return false;
 
     if ((!bySpell || !bySpell->HasAttribute(SPELL_ATTR8_ATTACK_IGNORE_IMMUNE_TO_PC_FLAG))
-        && (HasUnitFlag(UNIT_FLAG_PVP_ATTACKABLE) && target->HasUnitFlag(UNIT_FLAG_IMMUNE_TO_PC))
+        && (HasUnitFlag(UNIT_FLAG_PVP_ATTACKABLE) && target->IsImmuneToPC())
         // check if this is a world trigger cast - GOs are using world triggers to cast their spells, so we need to ignore their immunity flag here, this is a temp workaround, needs removal when go cast is implemented properly
         && GetEntry() != WORLD_TRIGGER)
         return false;
@@ -8715,12 +8750,12 @@ bool Unit::_IsValidAssistTarget(Unit const* target, SpellInfo const* bySpell) co
     {
         if (HasUnitFlag(UNIT_FLAG_PVP_ATTACKABLE))
         {
-            if (target->HasUnitFlag(UNIT_FLAG_IMMUNE_TO_PC))
+            if (target->IsImmuneToPC())
                 return false;
         }
         else
         {
-            if (target->HasUnitFlag(UNIT_FLAG_IMMUNE_TO_NPC))
+            if (target->IsImmuneToNPC())
                 return false;
         }
     }
@@ -9414,11 +9449,10 @@ Unit* Creature::SelectVictim(bool evadeIfNoVictim /*= true*/)
 
     // last case when creature must not go to evade mode:
     // it in combat but attacker not make any damage and not enter to aggro radius to have record in threat list
-    // for example at owner command to pet attack some far away creature
     // Note: creature does not have targeted movement generator but has attacker in this case
     for (AttackerSet::const_iterator itr = m_attackers.begin(); itr != m_attackers.end(); ++itr)
     {
-        if ((*itr) && !CanCreatureAttack(*itr) && (*itr)->GetTypeId() != TYPEID_PLAYER
+        if ((*itr) && CanCreatureAttack(*itr) && (*itr)->GetTypeId() != TYPEID_PLAYER
         && !(*itr)->ToCreature()->HasUnitTypeMask(UNIT_MASK_CONTROLABLE_GUARDIAN))
             return nullptr;
     }
@@ -9767,8 +9801,8 @@ void Unit::ApplyDiminishingAura(DiminishingGroup group, bool apply)
 
 void Unit::ClearDiminishings()
 {
-    for (uint32 i = 0; i < DIMINISHING_MAX; ++i)
-        m_Diminishing[i].Clear();
+    for (DiminishingReturn& dim : m_Diminishing)
+        dim.Clear();
 }
 
 float Unit::GetSpellMaxRangeForTarget(Unit const* target, SpellInfo const* spellInfo) const
@@ -10177,18 +10211,30 @@ void Unit::UpdateResistances(uint32 school)
         UpdateArmor();
 }
 
-float Unit::GetTotalAttackPowerValue(WeaponAttackType attType) const
+float Unit::GetTotalAttackPowerValue(WeaponAttackType attType, bool includeWeapon /*= true*/) const
 {
     if (attType == RANGED_ATTACK)
     {
-        int32 ap = m_unitData->RangedAttackPower;
+        float ap = m_unitData->RangedAttackPower + m_unitData->RangedAttackPowerModPos + m_unitData->RangedAttackPowerModNeg;
+        if (includeWeapon)
+            ap += std::max<float>(m_unitData->MainHandWeaponAttackPower, m_unitData->RangedWeaponAttackPower);
         if (ap < 0)
             return 0.0f;
         return ap * (1.0f + m_unitData->RangedAttackPowerMultiplier);
     }
     else
     {
-        int32 ap = m_unitData->AttackPower;
+        float ap = m_unitData->AttackPower + m_unitData->AttackPowerModPos + m_unitData->AttackPowerModNeg;
+        if (includeWeapon)
+        {
+            if (attType == BASE_ATTACK)
+                ap += std::max<float>(m_unitData->MainHandWeaponAttackPower, m_unitData->RangedWeaponAttackPower);
+            else
+            {
+                ap += m_unitData->OffHandWeaponAttackPower;
+                ap /= 2;
+            }
+        }
         if (ap < 0)
             return 0.0f;
         return ap * (1.0f + m_unitData->AttackPowerMultiplier);
@@ -11186,12 +11232,12 @@ void Unit::SendPetAIReaction(ObjectGuid guid)
     owner->ToPlayer()->SendDirectMessage(packet.Write());
 }
 
+///----------End of Pet responses methods----------
+
 void Unit::PropagateSpeedChange()
 {
     GetMotionMaster()->PropagateSpeedChange();
 }
-
-///----------End of Pet responses methods----------
 
 void Unit::StopMoving()
 {
@@ -11205,6 +11251,26 @@ void Unit::StopMoving()
     UpdateSplinePosition();
     Movement::MoveSplineInit init(this);
     init.Stop();
+}
+
+void Unit::PauseMovement(uint32 timer/* = 0*/, uint8 slot/* = 0*/)
+{
+    if (slot >= MAX_MOTION_SLOT)
+        return;
+
+    if (MovementGenerator* movementGenerator = GetMotionMaster()->GetMotionSlot(slot))
+        movementGenerator->Pause(timer);
+
+    StopMoving();
+}
+
+void Unit::ResumeMovement(uint32 timer/* = 0*/, uint8 slot/* = 0*/)
+{
+    if (slot >= MAX_MOTION_SLOT)
+        return;
+
+    if (MovementGenerator* movementGenerator = GetMotionMaster()->GetMotionSlot(slot))
+        movementGenerator->Resume(timer);
 }
 
 bool Unit::IsSitState() const
@@ -11232,7 +11298,7 @@ void Unit::SetStandState(UnitStandStateType state, uint32 animKitID /* = 0*/)
     if (GetTypeId() == TYPEID_PLAYER)
     {
         WorldPackets::Misc::StandStateUpdate packet(state, animKitID);
-        ToPlayer()->GetSession()->SendPacket(packet.Write());
+        ToPlayer()->SendDirectMessage(packet.Write());
     }
 }
 
@@ -11546,7 +11612,7 @@ uint32 Unit::GetCastingTimeForBonus(SpellInfo const* spellProto, DamageEffectTyp
     if (overTime > 0 && CastingTime > 0 && DirectDamage)
     {
         // mainly for DoTs which are 3500 here otherwise
-        uint32 OriginalCastTime = spellProto->CalcCastTime(getLevel());
+        uint32 OriginalCastTime = spellProto->CalcCastTime();
         if (OriginalCastTime > 7000) OriginalCastTime = 7000;
         if (OriginalCastTime < 1500) OriginalCastTime = 1500;
         // Portion to Over Time
@@ -11625,7 +11691,7 @@ float Unit::CalculateDefaultCoefficient(SpellInfo const* spellInfo, DamageEffect
             DotFactor /= DotTicks;
     }
 
-    int32 CastingTime = spellInfo->IsChanneled() ? spellInfo->GetDuration() : spellInfo->CalcCastTime(getLevel());
+    int32 CastingTime = spellInfo->IsChanneled() ? spellInfo->GetDuration() : spellInfo->CalcCastTime();
     // Distribute Damage over multiple effects, reduce by AoE
     CastingTime = GetCastingTimeForBonus(spellInfo, damagetype, CastingTime);
 
@@ -11894,7 +11960,7 @@ void Unit::Kill(Unit* victim, bool durabilityLoss)
                         Trinity::Containers::RandomResize(potentialItems, 1);
 
                         for (JournalEncounterItemEntry const* item : potentialItems)
-                            loot->AddItem(LootStoreItem(item->ItemID, LOOT_ITEM_TYPE_ITEM, 0, 10, 0, LOOT_MODE_DEFAULT, 0, 1, 1), looter);
+                            loot->AddItem(LootStoreItem(item->ItemID, uint8(LootItemType::Item), 0, 10, 0, LOOT_MODE_DEFAULT, 0, 1, 1), looter);
                     }
                 }
             }
@@ -12385,8 +12451,14 @@ bool Unit::SetCharmedBy(Unit* charmer, CharmType type, AuraApplication const* au
 
     if (GetTypeId() == TYPEID_UNIT)
     {
+        if (MovementGenerator* movementGenerator = GetMotionMaster()->GetMotionSlot(MOTION_SLOT_IDLE))
+            movementGenerator->Pause(0);
+
+        GetMotionMaster()->Clear(MOTION_SLOT_ACTIVE);
+
+        StopMoving();
+
         ToCreature()->AI()->OnCharmed(true);
-        GetMotionMaster()->MoveIdle();
     }
     else if (Player* player = ToPlayer())
     {
@@ -12500,6 +12572,7 @@ void Unit::RemoveCharmedBy(Unit* charmer)
     else
         RestoreFaction();
 
+    ///@todo Handle SLOT_IDLE motion resume
     GetMotionMaster()->InitDefault();
 
     if (Creature* creature = ToCreature())
@@ -12635,7 +12708,7 @@ void Unit::RemoveVehicleKit(bool onRemoveFromWorld /*= false*/)
     RemoveNpcFlag(NPCFlags(UNIT_NPC_FLAG_SPELLCLICK | UNIT_NPC_FLAG_PLAYER_VEHICLE));
 }
 
-bool Unit::IsOnVehicle(const Unit* vehicle) const
+bool Unit::IsOnVehicle(Unit const* vehicle) const
 {
     return m_vehicle && m_vehicle == vehicle->GetVehicleKit();
 }
@@ -13103,454 +13176,56 @@ uint32 Unit::GetModelForForm(ShapeshiftForm form, uint32 spellId) const
                     if (ShapeshiftForm(artifactAppearance->OverrideShapeshiftFormID) == form)
                         return artifactAppearance->OverrideShapeshiftDisplayID;
 
+        if (ShapeshiftFormModelData const* formModelData = sDB2Manager.GetShapeshiftFormModelData(getRace(), thisPlayer->GetNativeSex(), form))
+        {
+            bool useRandom = false;
+            switch (form)
+            {
+                case FORM_CAT_FORM:     useRandom = HasAura(210333); break; // Glyph of the Feral Chameleon
+                case FORM_TRAVEL_FORM:  useRandom = HasAura(344336); break; // Glyph of the Swift Chameleon
+                case FORM_AQUATIC_FORM: useRandom = HasAura(344338); break; // Glyph of the Aquatic Chameleon
+                case FORM_BEAR_FORM:    useRandom = HasAura(107059); break; // Glyph of the Ursol Chameleon
+                case FORM_FLIGHT_FORM:  useRandom = HasAura(344342); break; // Glyph of the Aerial Chameleon
+                default:
+                    break;
+            }
+
+            if (useRandom)
+            {
+                std::vector<uint32> displayIds;
+                displayIds.reserve(formModelData->Choices->size());
+
+                for (std::size_t i = 0; i < formModelData->Choices->size(); ++i)
+                {
+                    if (ChrCustomizationDisplayInfoEntry const* displayInfo = formModelData->Displays[i])
+                    {
+                        ChrCustomizationReqEntry const* choiceReq = sChrCustomizationReqStore.LookupEntry((*formModelData->Choices)[i]->ChrCustomizationReqID);
+                        if (!choiceReq || thisPlayer->GetSession()->MeetsChrCustomizationReq(choiceReq, Classes(getClass()), false,
+                            MakeChrCustomizationChoiceRange(thisPlayer->m_playerData->Customizations)))
+                            displayIds.push_back(displayInfo->DisplayID);
+                    }
+                }
+
+                if (!displayIds.empty())
+                    return Trinity::Containers::SelectRandomContainerElement(displayIds);
+            }
+            else
+            {
+                if (uint32 formChoice = thisPlayer->GetCustomizationChoice(formModelData->OptionID))
+                {
+                    auto choiceItr = std::find_if(formModelData->Choices->begin(), formModelData->Choices->end(), [formChoice](ChrCustomizationChoiceEntry const* choice)
+                    {
+                        return choice->ID == formChoice;
+                    });
+
+                    if (choiceItr != formModelData->Choices->end())
+                        if (ChrCustomizationDisplayInfoEntry const* displayInfo = formModelData->Displays[std::distance(formModelData->Choices->begin(), choiceItr)])
+                            return displayInfo->DisplayID;
+                }
+            }
+        }
         switch (form)
         {
-            case FORM_CAT_FORM:
-                // Based on Hair color
-                if (getRace() == RACE_NIGHTELF)
-                {
-                    uint8 hairColor = thisPlayer->m_playerData->HairColorID;
-                    if (HasAura(210333)) // Glyph of the Feral Chameleon
-                        hairColor = urand(0, 10);
-
-                    switch (hairColor)
-                    {
-                        case 7: // Violet
-                        case 8:
-                            return 29405;
-                        case 3: // Light Blue
-                            return 29406;
-                        case 0: // Green
-                        case 1: // Light Green
-                        case 2: // Dark Green
-                            return 29407;
-                        case 4: // White
-                            return 29408;
-                        default: // Original - Dark Blue
-                            return 892;
-                    }
-                }
-                else if (getRace() == RACE_TROLL)
-                {
-                    uint8 hairColor = thisPlayer->m_playerData->HairColorID;
-                    if (HasAura(210333)) // Glyph of the Feral Chameleon
-                        hairColor = urand(0, 12);
-
-                    switch (hairColor)
-                    {
-                        case 0: // Red
-                        case 1:
-                            return 33668;
-                        case 2: // Yellow
-                        case 3:
-                            return 33667;
-                        case 4: // Blue
-                        case 5:
-                        case 6:
-                            return 33666;
-                        case 7: // Purple
-                        case 10:
-                            return 33665;
-                        default: // Original - White
-                            return 33669;
-                    }
-                }
-                else if (getRace() == RACE_WORGEN)
-                {
-                    // Based on Skin color
-                    uint8 skinColor = thisPlayer->m_playerData->SkinID;
-                    if (HasAura(210333)) // Glyph of the Feral Chameleon
-                        skinColor = urand(0, 9);
-
-                    // Male
-                    if (getGender() == GENDER_MALE)
-                    {
-                        switch (skinColor)
-                        {
-                            case 1: // Brown
-                                return 33662;
-                            case 2: // Black
-                            case 7:
-                                return 33661;
-                            case 4: // Yellow
-                                return 33664;
-                            case 3: // White
-                            case 5:
-                                return 33663;
-                            default: // Original - Gray
-                                return 33660;
-                        }
-                    }
-                    // Female
-                    else
-                    {
-                        switch (skinColor)
-                        {
-                            case 5: // Brown
-                            case 6:
-                                return 33662;
-                            case 7: // Black
-                            case 8:
-                                return 33661;
-                            case 3: // yellow
-                            case 4:
-                                return 33664;
-                            case 2: // White
-                                return 33663;
-                            default: // Original - Gray
-                                return 33660;
-                        }
-                    }
-                }
-                // Based on Skin color
-                else if (getRace() == RACE_TAUREN)
-                {
-                    uint8 skinColor = thisPlayer->m_playerData->SkinID;
-                    if (HasAura(210333)) // Glyph of the Feral Chameleon
-                        skinColor = urand(0, 20);
-
-                    // Male
-                    if (getGender() == GENDER_MALE)
-                    {
-                        switch (skinColor)
-                        {
-                            case 12: // White
-                            case 13:
-                            case 14:
-                            case 18: // Completly White
-                                return 29409;
-                            case 9: // Light Brown
-                            case 10:
-                            case 11:
-                                return 29410;
-                            case 6: // Brown
-                            case 7:
-                            case 8:
-                                return 29411;
-                            case 0: // Dark
-                            case 1:
-                            case 2:
-                            case 3: // Dark Grey
-                            case 4:
-                            case 5:
-                                return 29412;
-                            default: // Original - Grey
-                                return 8571;
-                        }
-                    }
-                    // Female
-                    else
-                    {
-                        switch (skinColor)
-                        {
-                            case 10: // White
-                                return 29409;
-                            case 6: // Light Brown
-                            case 7:
-                                return 29410;
-                            case 4: // Brown
-                            case 5:
-                                return 29411;
-                            case 0: // Dark
-                            case 1:
-                            case 2:
-                            case 3:
-                                return 29412;
-                            default: // Original - Grey
-                                return 8571;
-                        }
-                    }
-                }
-                else if (getRace() == RACE_HIGHMOUNTAIN_TAUREN)
-                {
-                    uint8 skinColor = thisPlayer->m_playerData->SkinID;
-                    if (HasAura(210333)) // Glyph of the Feral Chameleon
-                        skinColor = urand(0, 4);
-
-                    // Highmountain Tauren have only 4 fur colors option :c
-                    switch (skinColor)
-                    {
-                        case 0:
-                            return 80598; // dark brown
-                        case 1:
-                            return 80597; // brown
-                        case 2:
-                            return 80599; // light brown with white horns
-                        case 3:
-                            return 80596; // dark
-                        case 4:
-                        default:
-                            return 80600; // light brown with brown horns (this one possibly bugged)
-
-                    }
-                }
-                else if (Player::TeamForRace(getRace()) == ALLIANCE)
-                    return 892;
-                else
-                    return 8571;
-            case FORM_BEAR_FORM:
-                // Based on Hair color
-                if (getRace() == RACE_NIGHTELF)
-                {
-                    uint8 hairColor = thisPlayer->m_playerData->HairColorID;
-                    if (HasAura(107059)) // Glyph of the Ursol Chameleon
-                        hairColor = urand(0, 8);
-
-                    switch (hairColor)
-                    {
-                        case 0: // Green
-                        case 1: // Light Green
-                        case 2: // Dark Green
-                            return 29413; // 29415?
-                        case 6: // Dark Blue
-                            return 29414;
-                        case 4: // White
-                            return 29416;
-                        case 3: // Light Blue
-                            return 29417;
-                        default: // Original - Violet
-                            return 29415;
-                    }
-                }
-                else if (getRace() == RACE_TROLL)
-                {
-                    uint8 hairColor = thisPlayer->m_playerData->HairColorID;
-                    if (HasAura(107059)) // Glyph of the Ursol Chameleon
-                        hairColor = urand(0, 14);
-
-                    switch (hairColor)
-                    {
-                        case 0: // Red
-                        case 1:
-                            return 33657;
-                        case 2: // Yellow
-                        case 3:
-                            return 33659;
-                        case 7: // Purple
-                        case 10:
-                            return 33656;
-                        case 8: // White
-                        case 9:
-                        case 11:
-                        case 12:
-                            return 33658;
-                        default: // Original - Blue
-                            return 33655;
-                    }
-                }
-                else if (getRace() == RACE_WORGEN)
-                {
-                    // Based on Skin color
-                    uint8 skinColor = thisPlayer->m_playerData->SkinID;
-                    if (HasAura(107059)) // Glyph of the Ursol Chameleon
-                        skinColor = urand(0, 8);
-
-                    // Male
-                    if (getGender() == GENDER_MALE)
-                    {
-                        switch (skinColor)
-                        {
-                            case 1: // Brown
-                                return 33652;
-                            case 2: // Black
-                            case 7:
-                                return 33651;
-                            case 4: // Yellow
-                                return 33653;
-                            case 3: // White
-                            case 5:
-                                return 33654;
-                            default: // Original - Gray
-                                return 33650;
-                        }
-                    }
-                    // Female
-                    else
-                    {
-                        switch (skinColor)
-                        {
-                            case 5: // Brown
-                            case 6:
-                                return 33652;
-                            case 7: // Black
-                            case 8:
-                                return 33651;
-                            case 3: // yellow
-                            case 4:
-                                return 33654;
-                            case 2: // White
-                                return 33653;
-                            default: // Original - Gray
-                                return 33650;
-                        }
-                    }
-                }
-                // Based on Skin color
-                else if (getRace() == RACE_TAUREN)
-                {
-                    uint8 skinColor = thisPlayer->m_playerData->SkinID;
-                    if (HasAura(107059)) // Glyph of the Ursol Chameleon
-                        skinColor = urand(0, 20);
-
-                    // Male
-                    if (getGender() == GENDER_MALE)
-                    {
-                        switch (skinColor)
-                        {
-                            case 0: // Dark (Black)
-                            case 1:
-                            case 2:
-                                return 29418;
-                            case 3: // White
-                            case 4:
-                            case 5:
-                            case 12:
-                            case 13:
-                            case 14:
-                                return 29419;
-                            case 9: // Light Brown/Grey
-                            case 10:
-                            case 11:
-                            case 15:
-                            case 16:
-                            case 17:
-                                return 29420;
-                            case 18: // Completly White
-                                return 29421;
-                            default: // Original - Brown
-                                return 2289;
-                        }
-                    }
-                    // Female
-                    else
-                    {
-                        switch (skinColor)
-                        {
-                            case 0: // Dark (Black)
-                            case 1:
-                                return 29418;
-                            case 2: // White
-                            case 3:
-                                return 29419;
-                            case 6: // Light Brown/Grey
-                            case 7:
-                            case 8:
-                            case 9:
-                                return 29420;
-                            case 10: // Completly White
-                                return 29421;
-                            default: // Original - Brown
-                                return 2289;
-                        }
-                    }
-                }
-                else if (getRace() == RACE_HIGHMOUNTAIN_TAUREN)
-                {
-                    uint8 skinColor = thisPlayer->m_playerData->SkinID;
-                    if (HasAura(107059)) // Glyph of the Ursol Chameleon
-                        skinColor = urand(0, 4);
-
-                    // Highmountain Tauren have only 4 fur colors option :c
-                    switch (skinColor)
-                    {
-                        case 0:
-                            return 80592; // red
-                        case 1:
-                            return 80595; // brown
-                        case 2:
-                            return 80593; // grey
-                        case 3:
-                            return 80591; // dark
-                        case 4:
-                        default:
-                            return 80594; // white
-                    }
-                }
-                else if (Player::TeamForRace(getRace()) == ALLIANCE)
-                    return 29415;
-                else
-                    return 2289;
-            case FORM_FLIGHT_FORM:
-                if (Player::TeamForRace(getRace()) == ALLIANCE)
-                    return 20857;
-                return 20872;
-            case FORM_FLIGHT_FORM_EPIC:
-                if (HasAura(219062)) // Glyph of the Sentinel
-                {
-                    switch (getRace())
-                    {
-                        case RACE_NIGHTELF: // Blue
-                            return 64328;
-                        case RACE_HIGHMOUNTAIN_TAUREN: // Eagle
-                            return 81439;
-                        case RACE_TAUREN: // Brown
-                            return 64329;
-                        case RACE_WORGEN: // Purple
-                            return 64330;
-                        case RACE_TROLL: // White
-                            return 64331;
-                        default:
-                            break;
-                    }
-                }
-                if (Player::TeamForRace(getRace()) == ALLIANCE)
-                    return (getRace() == RACE_WORGEN ? 37729 : 21243);
-                if (getRace() == RACE_TROLL)
-                    return 37730;
-                return 21244;
-            case FORM_MOONKIN_FORM:
-            {
-                // Glyph of Stars
-                if (HasAura(114301))
-                    return GetNativeDisplayId();
-
-                switch (getRace())
-                {
-                    case RACE_NIGHTELF:
-                        return 15374;
-                    case RACE_HIGHMOUNTAIN_TAUREN:
-                    case RACE_TAUREN:
-                        return 15375;
-                    case RACE_WORGEN:
-                    case RACE_KUL_TIRAN:
-                        return 37173;
-                    case RACE_ZANDALARI_TROLL:
-                    case RACE_TROLL:
-                        return 37174;
-                    default:
-                        break;
-                }
-                break;
-            }
-            case FORM_AQUATIC_FORM:
-                if (HasAura(114333)) // Glyph of the Orca
-                    return 4591;
-                return 2428;
-            case FORM_TRAVEL_FORM:
-            {
-                if (HasAura(131113)) // Glyph of the Cheetah
-                    return 1043;
-
-                if (HasAura(224122)) // Glyph of the Doe
-                    return 70450;
-
-                switch (getRace())
-                {
-                    case RACE_NIGHTELF:
-                    case RACE_WORGEN:
-                    case RACE_KUL_TIRAN:
-                        return 40816;
-                    case RACE_TROLL:
-                    case RACE_ZANDALARI_TROLL:
-                    case RACE_TAUREN:
-                        return 45339;
-                    case RACE_HIGHMOUNTAIN_TAUREN:
-                        return 81440;
-                    default:
-                        break;
-                }
-                break;
-            }
             case FORM_GHOST_WOLF:
             {
                 if (HasAura(58135)) // Glyph of Spectral Wolf
@@ -13964,7 +13639,7 @@ bool Unit::UpdatePosition(float x, float y, float z, float orientation, bool tel
     return (relocated || turn);
 }
 
-bool Unit::UpdatePosition(const Position &pos, bool teleport)
+bool Unit::UpdatePosition(Position const& pos, bool teleport)
 {
     return UpdatePosition(pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ(), pos.GetOrientation(), teleport);
 }
@@ -15318,14 +14993,6 @@ void Unit::SendCombatLogMessage(WorldPackets::CombatLog::CombatLogServerPacket* 
 bool Unit::VisibleAuraSlotCompare::operator()(AuraApplication* left, AuraApplication* right) const
 {
     return left->GetSlot() < right->GetSlot();
-}
-
-void Unit::SetChannelSpellId(uint32 channelSpellId)
-{
-    SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(channelSpellId, GetMap()->GetDifficultyID());
-
-    SetUpdateFieldValue(m_values.ModifyValue(&Unit::m_unitData).ModifyValue(&UF::UnitData::ChannelData).ModifyValue(&UF::UnitChannel::SpellID), spellInfo ? spellInfo->Id: 0);
-    SetUpdateFieldValue(m_values.ModifyValue(&Unit::m_unitData).ModifyValue(&UF::UnitData::ChannelData).ModifyValue(&UF::UnitChannel::SpellXSpellVisualID), spellInfo ? spellInfo->GetSpellXSpellVisualId(this): 0);
 }
 
 void Unit::GetAttackableUnitListInRange(std::list<Unit*> &list, float fMaxSearchRange) const

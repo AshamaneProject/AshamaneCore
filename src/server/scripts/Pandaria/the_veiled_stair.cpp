@@ -74,9 +74,9 @@ class npc_wrathion_mason : public CreatureScript
             return true;
         }
 
-        struct npc_wrathion_masonAI : public npc_escortAI
+        struct npc_wrathion_masonAI : public EscortAI
         {
-            npc_wrathion_masonAI(Creature* creature) : npc_escortAI(creature)
+            npc_wrathion_masonAI(Creature* creature) : EscortAI(creature)
             {
                 playerGUID = ObjectGuid::Empty;
             }
@@ -104,7 +104,7 @@ class npc_wrathion_mason : public CreatureScript
                 }
             }
 
-            void WaypointReached(uint32 waypointId) override
+            void WaypointReached(uint32 waypointId, uint32 /*pathId*/) override
             {
                 switch (waypointId)
                 {
@@ -130,7 +130,7 @@ class npc_wrathion_mason : public CreatureScript
 
             void UpdateAI(uint32 diff) override
             {
-                npc_escortAI::UpdateAI(diff);
+                EscortAI::UpdateAI(diff);
                 events.Update(diff);
 
                 if (Player* player = ObjectAccessor::GetPlayer(*me, playerGUID))

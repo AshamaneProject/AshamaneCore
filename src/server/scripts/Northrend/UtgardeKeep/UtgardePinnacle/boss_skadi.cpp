@@ -20,7 +20,6 @@
 #include "InstanceScript.h"
 #include "MotionMaster.h"
 #include "MoveSplineInit.h"
-#include "ObjectAccessor.h"
 #include "Player.h"
 #include "ScriptedCreature.h"
 #include "SpellAuras.h"
@@ -267,7 +266,8 @@ public:
                     Talk(SAY_DRAKE_DEATH);
                     DoCast(me, SPELL_SKADI_TELEPORT, true);
                     summons.DespawnEntry(NPC_WORLD_TRIGGER);
-                    me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_PC));
+                    me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
+                    me->SetImmuneToPC(false);
                     me->SetReactState(REACT_AGGRESSIVE);
                     _phase = PHASE_GROUND;
 
@@ -305,8 +305,10 @@ public:
             return 0;
         }
 
-        void UpdateAI(uint32 /*diff*/) override
+        void UpdateAI(uint32 diff) override
         {
+            me->GetScheduler().Update(diff);
+
             if (_phase == PHASE_GROUND)
             {
                 if (!UpdateVictim())
@@ -341,7 +343,7 @@ public:
         void Reset() override
         {
             me->SetReactState(REACT_PASSIVE);
-            me->setRegeneratingHealth(false);
+            me->SetRegenerateHealth(false);
             me->SetSpeedRate(MOVE_RUN, 2.5f);
         }
 
@@ -366,9 +368,9 @@ public:
             me->setActive(true);
             me->SetCanFly(true);
             me->SetDisableGravity(true);
-            me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
+            me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), false);
 
-            _scheduler.Schedule(Seconds(2), [this](TaskContext /*context*/)
+            me->GetScheduler().Schedule(Seconds(2), [this](TaskContext /*context*/)
             {
                 me->GetMotionMaster()->MoveAlongSplineChain(POINT_BREACH, SPLINE_CHAIN_INITIAL, false);
             });
@@ -382,7 +384,7 @@ public:
             switch (pointId)
             {
                 case POINT_BREACH:
-                    _scheduler
+                    me->GetScheduler()
                         .Schedule(Milliseconds(1), [this](TaskContext /*context*/)
                         {
                             me->SetFacingTo(BreachPoint);
@@ -397,7 +399,7 @@ public:
                         });
                     break;
                 case POINT_LEFT:
-                    _scheduler
+                    me->GetScheduler()
                         .Schedule(Milliseconds(1), [this](TaskContext /*context*/)
                         {
                             me->SetFacingTo(BreathPointLeft);
@@ -416,7 +418,7 @@ public:
                         });
                     break;
                 case POINT_RIGHT:
-                    _scheduler
+                    me->GetScheduler()
                         .Schedule(Milliseconds(1), [this](TaskContext /*context*/)
                         {
                             me->SetFacingTo(BreathPointRight);
@@ -439,7 +441,7 @@ public:
             }
         }
 
-        void SpellHit(Unit* /*caster*/, const SpellInfo* spell) override
+        void SpellHit(Unit* /*caster*/, SpellInfo const* spell) override
         {
             if (spell->Id == SPELL_LAUNCH_HARPOON)
                 if (Creature* skadi = _instance->GetCreature(DATA_SKADI_THE_RUTHLESS))
@@ -448,11 +450,10 @@ public:
 
         void UpdateAI(uint32 diff) override
         {
-            _scheduler.Update(diff);
+            me->GetScheduler().Update(diff);
         }
 
     private:
-        TaskScheduler _scheduler;
         InstanceScript* _instance;
     };
 
@@ -468,7 +469,7 @@ struct npc_skadi_trashAI : public ScriptedAI
     {
         _instance = me->GetInstanceScript();
 
-        _scheduler.SetValidator([this]
+        me->GetScheduler().SetValidator([this]
         {
             return !me->HasUnitState(UNIT_STATE_CASTING);
         });
@@ -497,7 +498,7 @@ struct npc_skadi_trashAI : public ScriptedAI
                 me->SetEmoteState(me->GetEntry() == NPC_YMIRJAR_WARRIOR ? EMOTE_STATE_READY1H : EMOTE_STATE_READY2HL);
                 break;
             case POINT_1:
-                _scheduler.Schedule(Seconds(1), [this](TaskContext /*context*/)
+                me->GetScheduler().Schedule(Seconds(1), [this](TaskContext /*context*/)
                 {
                     me->GetMotionMaster()->MovePoint(POINT_2, SecondaryWavesFinalPoint);
                 });
@@ -514,7 +515,7 @@ struct npc_skadi_trashAI : public ScriptedAI
     {
         UpdateVictim();
 
-        _scheduler.Update(diff, [this]
+        me->GetScheduler().Update(diff, [this]
         {
             DoMeleeAttackIfReady();
         });
@@ -524,7 +525,6 @@ struct npc_skadi_trashAI : public ScriptedAI
 
 protected:
     InstanceScript* _instance;
-    TaskScheduler _scheduler;
 };
 
 class npc_ymirjar_warrior : public CreatureScript
@@ -538,7 +538,7 @@ public:
 
         void ScheduleTasks() override
         {
-            _scheduler
+            me->GetScheduler()
                 .Schedule(Seconds(2), [this](TaskContext context)
                 {
                     DoCastVictim(SPELL_HAMSTRING);
@@ -569,7 +569,7 @@ public:
 
         void ScheduleTasks() override
         {
-            _scheduler
+            me->GetScheduler()
                 .Schedule(Seconds(2), [this](TaskContext shadowBolt)
                 {
                     DoCastVictim(SPELL_SHADOW_BOLT);
@@ -600,7 +600,7 @@ public:
 
         void ScheduleTasks() override
         {
-            _scheduler
+            me->GetScheduler()
                 .Schedule(Seconds(13), [this](TaskContext net)
                 {
                     if (Unit* target = SelectTarget(SELECT_TARGET_MAXDISTANCE, 0, 30, true))

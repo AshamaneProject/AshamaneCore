@@ -17,7 +17,6 @@
 
 #include "icecrown_citadel.h"
 #include "DB2Stores.h"
-#include "GameObject.h"
 #include "GridNotifiers.h"
 #include "Group.h"
 #include "InstanceScript.h"
@@ -27,8 +26,6 @@
 #include "ScriptedCreature.h"
 #include "Spell.h"
 #include "SpellAuraEffects.h"
-#include "SpellAuras.h"
-#include "SpellInfo.h"
 #include "SpellMgr.h"
 #include "SpellScript.h"
 #include "TemporarySummon.h"
@@ -250,7 +247,11 @@ class boss_professor_putricide : public CreatureScript
                 if (me->GetMotionMaster()->GetCurrentMovementGeneratorType() == POINT_MOTION_TYPE)
                     me->GetMotionMaster()->MovementExpired();
 
-                DoAction(ACTION_CHECK_BOSS);
+                if (instance->GetBossState(DATA_ROTFACE) == DONE && instance->GetBossState(DATA_FESTERGUT) == DONE)
+                {
+                    me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
+                    me->SetImmuneToPC(false);
+                }
             }
 
             void EnterCombat(Unit* who) override
@@ -277,7 +278,7 @@ class boss_professor_putricide : public CreatureScript
                 Talk(SAY_AGGRO);
                 DoCast(me, SPELL_OOZE_TANK_PROTECTION, true);
                 DoZoneInCombat(me);
-
+                me->SetCombatPulseDelay(5);
                 instance->SetBossState(DATA_PROFESSOR_PUTRICIDE, IN_PROGRESS);
             }
 
@@ -400,14 +401,14 @@ class boss_professor_putricide : public CreatureScript
                         {
                             case PHASE_COMBAT_2:
                             {
-                                SpellInfo const* spell = sSpellMgr->GetSpellInfo(SPELL_CREATE_CONCOCTION, me->GetMap()->GetDifficultyID());
+                                SpellInfo const* spell = sSpellMgr->GetSpellInfo(SPELL_CREATE_CONCOCTION, GetDifficulty());
                                 DoCast(me, SPELL_CREATE_CONCOCTION);
                                 events.ScheduleEvent(EVENT_PHASE_TRANSITION, spell->CalcCastTime() + 100);
                                 break;
                             }
                             case PHASE_COMBAT_3:
                             {
-                                SpellInfo const* spell = sSpellMgr->GetSpellInfo(SPELL_GUZZLE_POTIONS, me->GetMap()->GetDifficultyID());
+                                SpellInfo const* spell = sSpellMgr->GetSpellInfo(SPELL_GUZZLE_POTIONS, GetDifficulty());
                                 DoCast(me, SPELL_GUZZLE_POTIONS);
                                 events.ScheduleEvent(EVENT_PHASE_TRANSITION, spell->CalcCastTime() + 100);
                                 break;
@@ -425,10 +426,6 @@ class boss_professor_putricide : public CreatureScript
             {
                 switch (action)
                 {
-                    case ACTION_CHECK_BOSS:
-                        if (instance->GetBossState(DATA_ROTFACE) == DONE && instance->GetBossState(DATA_FESTERGUT) == DONE)
-                            me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NOT_SELECTABLE));
-                        break;
                     case ACTION_FESTERGUT_COMBAT:
                         SetPhase(PHASE_FESTERGUT);
                         me->SetSpeedRate(MOVE_RUN, _baseSpeed*2.0f);
@@ -508,7 +505,7 @@ class boss_professor_putricide : public CreatureScript
                             {
                                 std::list<Unit*> targetList;
                                 {
-                                    for (ThreatReference* ref : me->GetThreatManager().GetUnsortedThreatList())
+                                    for (ThreatReference const* ref : me->GetThreatManager().GetUnsortedThreatList())
                                         if (Player* target = ref->GetVictim()->ToPlayer())
                                             targetList.push_back(target);
                                 }
@@ -732,7 +729,7 @@ class npc_putricide_oozeAI : public ScriptedAI
 {
     public:
         npc_putricide_oozeAI(Creature* creature, uint32 auraSpellId, uint32 hitTargetSpellId) : ScriptedAI(creature),
-            _auraSpellId(auraSpellId), _hitTargetSpellId(hitTargetSpellId), _newTargetSelectTimer(0) { }
+            _auraSpellId(auraSpellId), _hitTargetSpellId(hitTargetSpellId), _newTargetSelectTimer(0), _instance(creature->GetInstanceScript()) { }
 
         void SpellHitTarget(Unit* /*target*/, SpellInfo const* spell) override
         {
@@ -742,6 +739,10 @@ class npc_putricide_oozeAI : public ScriptedAI
 
         void Reset() override
         {
+            if (_instance->GetBossState(DATA_PROFESSOR_PUTRICIDE) != IN_PROGRESS)
+                me->DespawnOrUnsummon();
+
+            me->SetInCombatWithZone();
             DoCastAOE(_auraSpellId, true);
         }
 
@@ -782,6 +783,7 @@ class npc_putricide_oozeAI : public ScriptedAI
         uint32 _auraSpellId;
         uint32 _hitTargetSpellId;
         uint32 _newTargetSelectTimer;
+        InstanceScript* _instance;
 };
 
 class npc_volatile_ooze : public CreatureScript
@@ -887,16 +889,9 @@ class spell_putricide_ooze_channel : public SpellScriptLoader
         {
             PrepareSpellScript(spell_putricide_ooze_channel_SpellScript);
 
-        public:
-            spell_putricide_ooze_channel_SpellScript()
-            {
-                _target = nullptr;
-            }
-
-        private:
             bool Validate(SpellInfo const* spell) override
             {
-                return spell->ExcludeTargetAuraSpell && ValidateSpellInfo({ spell->ExcludeTargetAuraSpell });
+                return ValidateSpellInfo({ spell->ExcludeTargetAuraSpell });
             }
 
             // set up initial variables and check if caster is creature
@@ -944,7 +939,7 @@ class spell_putricide_ooze_channel : public SpellScriptLoader
                 AfterHit += SpellHitFn(spell_putricide_ooze_channel_SpellScript::StartAttack);
             }
 
-            WorldObject* _target;
+            WorldObject* _target = nullptr;
         };
 
         SpellScript* GetSpellScript() const override

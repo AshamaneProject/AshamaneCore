@@ -148,6 +148,7 @@ public:
             return false;
         }
 
+
         // Dump camera locations
         if (std::vector<FlyByCamera> const* flyByCameras = GetFlyByCameras(cineSeq->Camera[0]))
         {
@@ -156,7 +157,7 @@ public:
             for (FlyByCamera const& cam : *flyByCameras)
             {
                 handler->PSendSysMessage("%02u - %7ums [%s (%f degrees)]", count, cam.timeStamp, cam.locations.ToString().c_str(), cam.locations.GetOrientation() * (180 / M_PI));
-                count++;
+                ++count;
             }
             handler->PSendSysMessage(SZFMTD " waypoints dumped", flyByCameras->size());
         }
@@ -285,7 +286,6 @@ public:
 
         return true;
     }
-
     static bool HandleDebugSendPlayerChoiceCommand(ChatHandler* handler, char const* args)
     {
         if (!*args)
@@ -1010,7 +1010,7 @@ public:
 
     static bool HandleDebugSendLargePacketCommand(ChatHandler* handler, char const* /*args*/)
     {
-        const char* stuffingString = "This is a dummy string to push the packet's size beyond 128000 bytes. ";
+        char const* stuffingString = "This is a dummy string to push the packet's size beyond 128000 bytes. ";
         std::ostringstream ss;
         while (ss.str().size() < 128000)
             ss << stuffingString;
@@ -1341,13 +1341,13 @@ public:
         if (stricmp(args, "linked"))
         {
             if (Battleground* bg = player->GetBattleground())
-                nearestLoc = bg->GetClosestGraveYard(player);
+                nearestLoc = bg->GetClosestGraveyard(player);
             else
             {
                 if (Battlefield* bf = sBattlefieldMgr->GetBattlefieldToZoneId(player->GetZoneId()))
-                    nearestLoc = bf->GetClosestGraveYard(player);
+                    nearestLoc = bf->GetClosestGraveyard(player);
                 else
-                    nearestLoc = sObjectMgr->GetClosestGraveYard(*player, player->GetTeam(), player);
+                    nearestLoc = sObjectMgr->GetClosestGraveyard(*player, player->GetTeam(), player);
             }
         }
         else

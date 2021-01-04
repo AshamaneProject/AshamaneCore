@@ -118,7 +118,8 @@ class boss_jaraxxus : public CreatureScript
                 _JustReachedHome();
                 instance->SetBossState(BOSS_JARAXXUS, FAIL);
                 DoCast(me, SPELL_JARAXXUS_CHAINS);
-                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC));
+                me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
+                me->SetImmuneToPC(true);
             }
 
             void KilledUnit(Unit* who) override
@@ -297,7 +298,7 @@ class npc_infernal_volcano : public CreatureScript
 
         CreatureAI* GetAI(Creature* creature) const override
         {
-            return new npc_infernal_volcanoAI(creature);
+            return GetTrialOfTheCrusaderAI<npc_infernal_volcanoAI>(creature);
         }
 };
 

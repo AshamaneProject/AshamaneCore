@@ -76,7 +76,7 @@ public:
             me->RestoreFaction();
         }
 
-        void SpellHit(Unit* caster, const SpellInfo* spell) override
+        void SpellHit(Unit* caster, SpellInfo const* spell) override
         {
             if (spell->Id == SPELL_PERSUASIVE_STRIKE && caster->GetTypeId() == TYPEID_PLAYER && me->IsAlive() && !speechCounter)
             {
@@ -201,21 +201,9 @@ class npc_koltira_deathweaver : public CreatureScript
 public:
     npc_koltira_deathweaver() : CreatureScript("npc_koltira_deathweaver") { }
 
-    bool OnQuestAccept(Player* player, Creature* creature, const Quest* quest) override
+    struct npc_koltira_deathweaverAI : public EscortAI
     {
-        if (quest->GetQuestId() == QUEST_BREAKOUT)
-        {
-            creature->SetStandState(UNIT_STAND_STATE_STAND);
-
-            if (npc_escortAI* escortAI = CAST_AI(npc_koltira_deathweaver::npc_koltira_deathweaverAI, creature->AI()))
-                escortAI->Start(false, false, player->GetGUID());
-        }
-        return true;
-    }
-
-    struct npc_koltira_deathweaverAI : public npc_escortAI
-    {
-        npc_koltira_deathweaverAI(Creature* creature) : npc_escortAI(creature)
+        npc_koltira_deathweaverAI(Creature* creature) : EscortAI(creature)
         {
             Initialize();
             me->SetReactState(REACT_DEFENSIVE);
@@ -240,7 +228,7 @@ public:
             }
         }
 
-        void WaypointReached(uint32 waypointId) override
+        void WaypointReached(uint32 waypointId, uint32 /*pathId*/) override
         {
             switch (waypointId)
             {
@@ -282,7 +270,7 @@ public:
             if (summoned->GetEntry() == NPC_HIGH_INQUISITOR_VALROTH)
                 valrothGUID = summoned->GetGUID();
 
-            summoned->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
+            summoned->SetImmuneToPC(false);
         }
 
         void SummonAcolyte(uint32 uiAmount)
@@ -293,7 +281,7 @@ public:
 
         void UpdateAI(uint32 uiDiff) override
         {
-            npc_escortAI::UpdateAI(uiDiff);
+            EscortAI::UpdateAI(uiDiff);
 
             if (HasEscortState(STATE_ESCORT_PAUSED))
             {
@@ -353,6 +341,15 @@ public:
                 }
                 else
                     waveTimer -= uiDiff;
+            }
+        }
+
+        void QuestAccept(Player* player, const Quest* quest) override
+        {
+            if (quest->GetQuestId() == QUEST_BREAKOUT)
+            {
+                me->SetStandState(UNIT_STAND_STATE_STAND);
+                Start(false, false, player->GetGUID());
             }
         }
 
@@ -655,7 +652,7 @@ public:
         {
             Initialize();
 
-            me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
+            me->SetImmuneToPC(true);
         }
 
         bool MeetQuestCondition(Player* player)

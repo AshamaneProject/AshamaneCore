@@ -85,12 +85,6 @@ enum PermissionTypes
     NONE_PERMISSION             = 6
 };
 
-enum LootItemType
-{
-    LOOT_ITEM_TYPE_CURRENCY = 0,
-    LOOT_ITEM_TYPE_ITEM     = 2,
-};
-
 enum LootType : uint8
 {
     LOOT_NONE                   = 0,

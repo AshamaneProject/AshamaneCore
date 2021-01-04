@@ -17,6 +17,7 @@
 
 #include "ScriptMgr.h"
 #include "GameObject.h"
+#include "GameObjectAI.h"
 #include "InstanceScript.h"
 #include "Map.h"
 #include "MiscPackets.h"

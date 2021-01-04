@@ -548,7 +548,7 @@ void BossAI::_Reset()
     summons.DespawnAll();
     me->RemoveAllAreaTriggers();
     me->GetScheduler().CancelAll();
-    if (instance)
+    if (instance && instance->GetBossState(_bossId) != DONE)
         instance->SetBossState(_bossId, NOT_STARTED);
 }
 
@@ -637,12 +637,12 @@ bool BossAI::CanAIAttack(Unit const* target) const
     return CheckBoundary(target);
 }
 
-void BossAI::_DespawnAtEvade(uint32 delayToRespawn /*= 30*/, Creature* who /*= nullptr*/)
+void BossAI::_DespawnAtEvade(Seconds delayToRespawn /*= 30s*/, Creature* who /*= nullptr*/)
 {
-    if (delayToRespawn < 2)
+    if (delayToRespawn < Seconds(2))
     {
-        TC_LOG_ERROR("scripts", "_DespawnAtEvade called with delay of %u seconds, defaulting to 2.", delayToRespawn);
-        delayToRespawn = 2;
+        TC_LOG_ERROR("scripts", "_DespawnAtEvade called with delay of " SI64FMTD " seconds, defaulting to 2.", delayToRespawn.count());
+        delayToRespawn = Seconds(2);
     }
 
     if (!who)
@@ -655,7 +655,7 @@ void BossAI::_DespawnAtEvade(uint32 delayToRespawn /*= 30*/, Creature* who /*= n
         return;
     }
 
-    who->DespawnOrUnsummon(0, Seconds(delayToRespawn));
+    who->DespawnOrUnsummon(0, delayToRespawn);
 
     if (instance && who == me)
         instance->SetBossState(_bossId, FAIL);

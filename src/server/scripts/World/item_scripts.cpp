@@ -69,8 +69,8 @@ public:
                     disabled = true;
                 break;
             case 34475:
-                if (SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(SPELL_ARCANE_CHARGES, DIFFICULTY_NONE))
-                    Spell::SendCastResult(player, spellInfo, 0, castId, SPELL_FAILED_NOT_ON_GROUND);
+                if (SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(SPELL_ARCANE_CHARGES, player->GetMap()->GetDifficultyID()))
+                    Spell::SendCastResult(player, spellInfo, {}, castId, SPELL_FAILED_NOT_ON_GROUND);
                 break;
         }
 
@@ -249,7 +249,7 @@ public:
         {
             summon->SetVisible(false);
             summon->SetReactState(REACT_PASSIVE);
-            summon->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
+            summon->SetImmuneToPC(true);
         }
         return false;
     }
@@ -277,7 +277,7 @@ public:
         if (!player->GetTransport() || player->GetAreaId() != AREA_HOWLING_FJORD_SHATTERED_STRAITS)
         {
             if (SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(SPELL_PETROV_BOMB, DIFFICULTY_NONE))
-                Spell::SendCastResult(player, spellInfo, 0, castId, SPELL_FAILED_NOT_HERE);
+                Spell::SendCastResult(player, spellInfo, {}, castId, SPELL_FAILED_NOT_HERE);
 
             return true;
         }

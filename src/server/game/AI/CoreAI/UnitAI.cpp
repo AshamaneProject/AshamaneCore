@@ -18,6 +18,7 @@
 #include "UnitAI.h"
 #include "Creature.h"
 #include "CreatureAIImpl.h"
+#include "LootMgr.h"
 #include "Map.h"
 #include "MotionMaster.h"
 #include "Player.h"
@@ -321,9 +322,14 @@ void UnitAI::FillAISpellInfo()
     });
 }
 
-uint32 UnitAI::GetDialogStatus(Player* /*player*/)
+void UnitAI::QuestReward(Player* player, Quest const* quest, uint32 opt)
 {
-    return DIALOG_STATUS_SCRIPTED_NO_STATUS;
+    QuestReward(player, quest, LootItemType::Item, opt);
+}
+
+QuestGiverStatus UnitAI::GetDialogStatus(Player* /*player*/)
+{
+    return QuestGiverStatus::ScriptedDefault;
 }
 
 ThreatManager& UnitAI::GetThreatManager()
@@ -336,8 +342,8 @@ void UnitAI::SortByDistance(std::list<Unit*> list, bool ascending)
     list.sort(Trinity::ObjectDistanceOrderPred(me, ascending));
 }
 
-DefaultTargetSelector::DefaultTargetSelector(Unit const* unit, float dist, bool playerOnly, bool withMainTank, int32 aura)
-    : me(unit), m_dist(dist), m_playerOnly(playerOnly), except(withMainTank ? me->GetThreatManager().GetCurrentVictim() : nullptr), m_aura(aura)
+DefaultTargetSelector::DefaultTargetSelector(Unit const* unit, float dist, bool playerOnly, bool withTank, int32 aura)
+    : me(unit), m_dist(dist), m_playerOnly(playerOnly), except(!withTank ? me->GetThreatManager().GetCurrentVictim() : nullptr), m_aura(aura)
 {
 }
 
@@ -349,7 +355,7 @@ bool DefaultTargetSelector::operator()(Unit const* target) const
     if (!target)
         return false;
 
-    if (target == except)
+    if (except && target == except)
         return false;
 
     if (m_playerOnly && !target->IsPlayer())

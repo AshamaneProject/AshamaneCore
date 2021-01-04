@@ -21,13 +21,12 @@
 #include "MotionMaster.h"
 #include "Formulas.h"
 #include "ObjectAccessor.h"
+#include "Player.h"
 #include "ScriptedCreature.h"
 #include "Spell.h"
-#include "SpellInfo.h"
-#include "TemporarySummon.h"
-#include "SpellScript.h"
 #include "SpellAuraEffects.h"
-#include "Player.h"
+#include "SpellScript.h"
+#include "TemporarySummon.h"
 
 enum Says
 {

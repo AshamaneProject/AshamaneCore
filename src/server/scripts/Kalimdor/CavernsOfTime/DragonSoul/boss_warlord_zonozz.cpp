@@ -954,7 +954,7 @@ public:
                     if (SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(SPELL_VOID_DIFFUSION_DMG, creature->GetMap()->GetDifficultyID()))
                     {
                         uint32 damage = (uint32(GetEffectValue()/_targetCount));
-                        SpellNonMeleeDamage damageInfo(creature, target, spellInfo, spellInfo->GetSpellXSpellVisualId(), spellInfo->SchoolMask);
+                        SpellNonMeleeDamage damageInfo(creature, target, spellInfo, { spellInfo->GetSpellXSpellVisualId(), 0 }, spellInfo->SchoolMask);
                         damageInfo.damage = damage;
                         creature->SendSpellNonMeleeDamageLog(&damageInfo);
                         creature->DealSpellDamage(&damageInfo, false);
@@ -1002,7 +1002,7 @@ public:
                     if (SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(SPELL_DISRUPTING_SHADOWS_DMG, player->GetMap()->GetDifficultyID()))
                     {
                         uint32 damage = (uint32(GetEffectValue()));
-                        SpellNonMeleeDamage damageInfo(player, target, spellInfo, spellInfo->GetSpellXSpellVisualId(), spellInfo->SchoolMask);
+                        SpellNonMeleeDamage damageInfo(player, target, spellInfo, { spellInfo->GetSpellXSpellVisualId(), 0 }, spellInfo->SchoolMask);
                         damageInfo.damage = damage;
                         player->SendSpellNonMeleeDamageLog(&damageInfo);
                         player->DealSpellDamage(&damageInfo, false);

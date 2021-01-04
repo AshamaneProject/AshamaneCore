@@ -36,6 +36,7 @@
 #include "ObjectMgr.h"
 #include "Opcodes.h"
 #include "Player.h"
+#include "World.h"
 
 void WorldSession::HandleBattlemasterHelloOpcode(WorldPackets::NPC::Hello& hello)
 {
@@ -44,7 +45,8 @@ void WorldSession::HandleBattlemasterHelloOpcode(WorldPackets::NPC::Hello& hello
         return;
 
     // Stop the npc if moving
-    unit->StopMoving();
+    unit->PauseMovement(sWorld->getIntConfig(CONFIG_CREATURE_STOP_FOR_PLAYER));
+    unit->SetHomePosition(unit->GetPosition());
 
     BattlegroundTypeId bgTypeId = sBattlegroundMgr->GetBattleMasterBG(unit->GetEntry());
 
@@ -164,7 +166,6 @@ void WorldSession::HandleBattlemasterJoinOpcode(WorldPackets::Battleground::Batt
 
         BattlegroundQueue& bgQueue = sBattlegroundMgr->GetBattlegroundQueue(bgQueueTypeId);
         GroupQueueInfo* ginfo = bgQueue.AddGroup(_player, nullptr, bgTypeId, bracketEntry, 0, false, isPremade, 0, 0);
-
         uint32 avgTime = bgQueue.GetAverageQueueWaitTime(ginfo, bracketEntry->GetBracketId());
         uint32 queueSlot = _player->AddBattlegroundQueueId(bgQueueTypeId);
 
@@ -236,9 +237,9 @@ void WorldSession::HandlePVPLogDataOpcode(WorldPackets::Battleground::PVPLogData
     if (bg->isArena())
         return;
 
-    WorldPackets::Battleground::PVPLogDataMessage pvpLogData;
-    bg->BuildPvPLogDataPacket(pvpLogData.Data);
-    SendPacket(pvpLogData.Write());
+    WorldPackets::Battleground::PVPMatchStatisticsMessage pvpMatchStatistics;
+    bg->BuildPvPLogDataPacket(pvpMatchStatistics.Data);
+    SendPacket(pvpMatchStatistics.Write());
 }
 
 void WorldSession::HandleBattlefieldListOpcode(WorldPackets::Battleground::BattlefieldListRequest& battlefieldList)
@@ -730,10 +731,10 @@ void WorldSession::HandleReportPvPAFK(WorldPackets::Battleground::ReportPvPPlaye
     reportedPlayer->ReportedAfkBy(_player);
 }
 
-void WorldSession::HandleRequestRatedBattlefieldInfo(WorldPackets::Battleground::RequestRatedBattlefieldInfo& /*packet*/)
+void WorldSession::HandleRequestRatedPvpInfo(WorldPackets::Battleground::RequestRatedPvpInfo& /*packet*/)
 {
-    /*WorldPackets::Battleground::RatedBattleFieldInfo ratedBattleFieldInfo;
-    ratedBattleFieldInfo.Infos = _player->GetRatedInfos();
+    /*WorldPackets::Battleground::RatedPvpInfo ratedBattleFieldInfo;
+    ratedBattleFieldInfo.Bracket = _player->GetRatedInfos();
     SendPacket(ratedBattleFieldInfo.Write());*/
 }
 

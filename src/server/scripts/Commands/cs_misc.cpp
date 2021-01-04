@@ -15,6 +15,7 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "ScriptMgr.h"
 #include "AccountMgr.h"
 #include "CellImpl.h"
 #include "CharacterCache.h"
@@ -44,7 +45,6 @@
 #include "PhasingHandler.h"
 #include "Player.h"
 #include "Realm.h"
-#include "ScriptMgr.h"
 #include "SpellAuras.h"
 #include "SpellHistory.h"
 #include "SpellMgr.h"
@@ -55,7 +55,7 @@
 #include "World.h"
 #include "WorldSession.h"
 
- // temporary hack until database includes are sorted out (don't want to pull in Windows.h everywhere from mysql.h)
+// temporary hack until includes are sorted out (don't want to pull in Windows.h)
 #ifdef GetClassName
 #undef GetClassName
 #endif
@@ -567,9 +567,10 @@ public:
             }
             else if (map->Instanceable())
             {
-                Group* targetGroup = target->GetGroup();
                 Map* targetMap = target->GetMap();
-                Player* targetGroupLeader = ObjectAccessor::GetPlayer(map, targetGroup->GetLeaderGUID());
+                Player* targetGroupLeader = nullptr;
+                if (Group* targetGroup = target->GetGroup())
+                    targetGroupLeader = ObjectAccessor::GetPlayer(map, targetGroup->GetLeaderGUID());
 
                 // check if far teleport is allowed
                 if (!targetGroupLeader || (targetGroupLeader->GetMapId() != map->GetId()) || (targetGroupLeader->GetInstanceId() != map->GetInstanceId()))
@@ -1038,7 +1039,7 @@ public:
             if (Player* caster = handler->GetSession()->GetPlayer())
             {
                 ObjectGuid castId = ObjectGuid::Create<HighGuid::Cast>(SPELL_CAST_SOURCE_NORMAL, player->GetMapId(), SPELL_UNSTUCK_ID, player->GetMap()->GenerateLowGuid<HighGuid::Cast>());
-                Spell::SendCastResult(caster, spellInfo, SPELL_UNSTUCK_VISUAL, castId, SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW);
+                Spell::SendCastResult(caster, spellInfo, { SPELL_UNSTUCK_VISUAL, 0 }, castId, SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW);
             }
 
             return false;
@@ -1112,7 +1113,7 @@ public:
             return false;
         }
 
-        if (sObjectMgr->AddGraveYardLink(graveyardId, zoneId, team))
+        if (sObjectMgr->AddGraveyardLink(graveyardId, zoneId, team))
             handler->PSendSysMessage(LANG_COMMAND_GRAVEYARDLINKED, graveyardId, zoneId);
         else
             handler->PSendSysMessage(LANG_COMMAND_GRAVEYARDALRLINKED, graveyardId, zoneId);
@@ -1138,12 +1139,12 @@ public:
         Player* player = handler->GetSession()->GetPlayer();
         uint32 zone_id = player->GetZoneId();
 
-        WorldSafeLocsEntry const* graveyard = sObjectMgr->GetClosestGraveYard(*player, team, nullptr);
+        WorldSafeLocsEntry const* graveyard = sObjectMgr->GetClosestGraveyard(*player, team, nullptr);
         if (graveyard)
         {
             uint32 graveyardId = graveyard->ID;
 
-            GraveYardData const* data = sObjectMgr->FindGraveYardData(graveyardId, zone_id);
+            GraveyardData const* data = sObjectMgr->FindGraveyardData(graveyardId, zone_id);
             if (!data)
             {
                 handler->PSendSysMessage(LANG_COMMAND_GRAVEYARDERROR, graveyardId);
@@ -1728,7 +1729,7 @@ public:
             mapId             = target->GetMapId();
             areaId            = target->GetAreaId();
             alive             = target->IsAlive() ? handler->GetTrinityString(LANG_YES) : handler->GetTrinityString(LANG_NO);
-            gender            = target->m_playerData->NativeSex;
+            gender            = target->GetNativeSex();
         }
         // get additional information from DB
         else
@@ -1986,9 +1987,21 @@ public:
             return true;
         }
 
+        // First handle any creatures that still have a corpse around
         Trinity::RespawnDo u_do;
         Trinity::WorldObjectWorker<Trinity::RespawnDo> worker(player, u_do);
         Cell::VisitGridObjects(player, worker, player->GetGridActivationRange());
+
+        // Now handle any that had despawned, but had respawn time logged.
+        RespawnVector data;
+        player->GetMap()->GetRespawnInfo(data, SPAWN_TYPEMASK_ALL, 0);
+        if (!data.empty())
+        {
+            uint32 const gridId = Trinity::ComputeGridCoord(player->GetPositionX(), player->GetPositionY()).GetId();
+            for (RespawnInfo* info : data)
+                if (info->gridId == gridId)
+                    player->GetMap()->RemoveRespawnTime(info, true);
+        }
 
         return true;
     }
@@ -2450,7 +2463,7 @@ public:
         if (!spellInfo)
             return false;
 
-        SpellNonMeleeDamage damageInfo(attacker, target, spellInfo, spellInfo->GetSpellXSpellVisualId(handler->GetSession()->GetPlayer()), spellInfo->SchoolMask);
+        SpellNonMeleeDamage damageInfo(attacker, target, spellInfo, { spellInfo->GetSpellXSpellVisualId(handler->GetSession()->GetPlayer()),0 }, spellInfo->SchoolMask);
         damageInfo.damage = damage;
         attacker->DealDamageMods(damageInfo.target, damageInfo.damage, &damageInfo.absorb, SPELL_DIRECT_DAMAGE);
         target->DealSpellDamage(&damageInfo, true);
@@ -2705,7 +2718,9 @@ public:
         if (!*args)
             return false;
 
-        uint32 soundId = atoul(args);
+        char const* soundIdToken = strtok((char*)args, " ");
+
+        uint32 soundId = atoul(soundIdToken);
 
         if (!sSoundKitStore.LookupEntry(soundId))
         {
@@ -2714,7 +2729,12 @@ public:
             return false;
         }
 
-        sWorld->SendGlobalMessage(WorldPackets::Misc::PlaySound(handler->GetSession()->GetPlayer()->GetGUID(), soundId).Write());
+        uint32 broadcastTextId = 0;
+        char const* broadcastTextIdToken = strtok(nullptr, " ");
+        if (broadcastTextIdToken)
+            broadcastTextId = atoul(broadcastTextIdToken);
+
+        sWorld->SendGlobalMessage(WorldPackets::Misc::PlaySound(handler->GetSession()->GetPlayer()->GetGUID(), soundId, broadcastTextId).Write());
 
         handler->PSendSysMessage(LANG_COMMAND_PLAYED_TO_ALL, soundId);
         return true;

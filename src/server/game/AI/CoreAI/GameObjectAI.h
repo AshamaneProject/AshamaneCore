@@ -26,6 +26,8 @@ class Player;
 class Quest;
 class SpellInfo;
 class Unit;
+enum class LootItemType : uint8;
+enum class QuestGiverStatus : uint32;
 
 class TC_GAME_API GameObjectAI
 {
@@ -46,7 +48,7 @@ class TC_GAME_API GameObjectAI
         virtual void SetGUID(ObjectGuid /*guid*/, int32 /*id = 0 */) { }
         virtual ObjectGuid GetGUID(int32 /*id = 0 */) const { return ObjectGuid::Empty; }
 
-        static int32 Permissible(GameObject const* /*go*/);
+        static int32 Permissible(GameObject const* go);
 
         // Called when a player opens a gossip dialog with the gameobject.
         virtual bool GossipHello(Player* /*player*/) { return false; }
@@ -61,10 +63,11 @@ class TC_GAME_API GameObjectAI
         virtual void QuestAccept(Player* /*player*/, Quest const* /*quest*/) { }
 
         // Called when a player completes a quest and is rewarded, opt is the selected item's index or 0
-        virtual void QuestReward(Player* /*player*/, Quest const* /*quest*/, uint32 /*opt*/) { }
+        virtual void QuestReward(Player* player, Quest const* quest, uint32 opt);
+        virtual void QuestReward(Player* /*player*/, Quest const* /*quest*/, LootItemType /*type*/, uint32 /*opt*/) { }
 
         // Called when the dialog status between a player and the gameobject is requested.
-        virtual uint32 GetDialogStatus(Player* player);
+        virtual QuestGiverStatus GetDialogStatus(Player* player);
 
         // Called when a Player clicks a GameObject, before GossipHello
         // prevents achievement tracking if returning true
@@ -82,7 +85,7 @@ class TC_GAME_API GameObjectAI
         virtual void OnLootStateChanged(uint32 /*state*/, Unit* /*unit*/) { }
         virtual void OnStateChanged(uint32 /*state*/) { }
         virtual void EventInform(uint32 /*eventId*/) { }
-        virtual void SpellHit(Unit* /*unit*/, const SpellInfo* /*spellInfo*/) { }
+        virtual void SpellHit(Unit* /*unit*/, SpellInfo const* /*spellInfo*/) { }
 
         virtual bool IsNeverVisibleFor(WorldObject const* /*seer*/) { return false; }
 };
@@ -94,6 +97,6 @@ class TC_GAME_API NullGameObjectAI : public GameObjectAI
 
         void UpdateAI(uint32 /*diff*/) override { }
 
-        static int32 Permissible(GameObject const* /*go*/);
+        static int32 Permissible(GameObject const* go);
 };
 #endif

@@ -17,12 +17,15 @@
 
 #include "BattlegroundPackets.h"
 
-WorldPacket const* WorldPackets::Battleground::PVPSeason::Write()
+WorldPacket const* WorldPackets::Battleground::SeasonInfo::Write()
 {
     _worldPacket << int32(MythicPlusSeasonID);
     _worldPacket << int32(CurrentSeason);
     _worldPacket << int32(PreviousSeason);
+    _worldPacket << int32(ConquestWeeklyProgressCurrencyID);
     _worldPacket << int32(PvpSeasonID);
+    _worldPacket.WriteBit(WeeklyRewardChestsEnabled);
+    _worldPacket.FlushBits();
 
     return &_worldPacket;
 }
@@ -45,7 +48,7 @@ WorldPacket const* WorldPackets::Battleground::AreaSpiritHealerTime::Write()
     return &_worldPacket;
 }
 
-ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battleground::PVPLogData::RatingData const& ratingData)
+ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battleground::PVPMatchStatistics::RatingData const& ratingData)
 {
     for (std::size_t i = 0; i < 2; ++i)
     {
@@ -56,7 +59,7 @@ ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battleground::PVPLogData:
     return data;
 }
 
-ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battleground::PVPLogData::HonorData const& honorData)
+ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battleground::PVPMatchStatistics::HonorData const& honorData)
 {
     data << uint32(honorData.HonorKills);
     data << uint32(honorData.Deaths);
@@ -64,14 +67,14 @@ ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battleground::PVPLogData:
     return data;
 }
 
-ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battleground::PVPLogData::PVPMatchPlayerPVPStat const& pvpStat)
+ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battleground::PVPMatchStatistics::PVPMatchPlayerPVPStat const& pvpStat)
 {
     data << int32(pvpStat.PvpStatID);
     data << int32(pvpStat.PvpStatValue);
     return data;
 }
 
-ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battleground::PVPLogData::PVPMatchPlayerStatistics const& playerData)
+ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battleground::PVPMatchStatistics::PVPMatchPlayerStatistics const& playerData)
 {
     data << playerData.PlayerGUID;
     data << uint32(playerData.Kills);
@@ -84,7 +87,7 @@ ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battleground::PVPLogData:
     data << int32(playerData.Class);
     data << int32(playerData.CreatureID);
     data << int32(playerData.HonorLevel);
-    for (WorldPackets::Battleground::PVPLogData::PVPMatchPlayerPVPStat const& pvpStat : playerData.Stats)
+    for (WorldPackets::Battleground::PVPMatchStatistics::PVPMatchPlayerPVPStat const& pvpStat : playerData.Stats)
         data << pvpStat;
 
     data.WriteBit(playerData.Faction != 0);
@@ -114,7 +117,7 @@ ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battleground::PVPLogData:
     return data;
 }
 
-ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battleground::PVPLogData const& pvpLogData)
+ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battleground::PVPMatchStatistics const& pvpLogData)
 {
     data.WriteBit(pvpLogData.Ratings.is_initialized());
     data << uint32(pvpLogData.Statistics.size());
@@ -123,15 +126,15 @@ ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battleground::PVPLogData 
     if (pvpLogData.Ratings.is_initialized())
         data << *pvpLogData.Ratings;
 
-    for (WorldPackets::Battleground::PVPLogData::PVPMatchPlayerStatistics const& player : pvpLogData.Statistics)
+    for (WorldPackets::Battleground::PVPMatchStatistics::PVPMatchPlayerStatistics const& player : pvpLogData.Statistics)
         data << player;
 
     return data;
 }
 
-WorldPacket const* WorldPackets::Battleground::PVPLogDataMessage::Write()
+WorldPacket const* WorldPackets::Battleground::PVPMatchStatisticsMessage::Write()
 {
-    _worldPacket.reserve(Data.Statistics.size() * sizeof(PVPLogData::PVPMatchPlayerStatistics) + sizeof(PVPLogData));
+    _worldPacket.reserve(Data.Statistics.size() * sizeof(PVPMatchStatistics::PVPMatchPlayerStatistics) + sizeof(PVPMatchStatistics));
 
     _worldPacket << Data;
 
@@ -312,7 +315,7 @@ WorldPacket const* WorldPackets::Battleground::DestroyArenaUnit::Write()
     return &_worldPacket;
 }
 
-ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battleground::RatedBattlefieldInfo::BracketInfo const& bracketInfo)
+ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battleground::RatedPvpInfo::BracketInfo const& bracketInfo)
 {
     data << int32(bracketInfo.PersonalRating);
     data << int32(bracketInfo.Ranking);
@@ -333,7 +336,7 @@ ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battleground::RatedBattle
     return data;
 }
 
-WorldPacket const* WorldPackets::Battleground::RatedBattlefieldInfo::Write()
+WorldPacket const* WorldPackets::Battleground::RatedPvpInfo::Write()
 {
     for (BracketInfo const& bracket : Bracket)
         _worldPacket << bracket;
@@ -341,7 +344,7 @@ WorldPacket const* WorldPackets::Battleground::RatedBattlefieldInfo::Write()
     return &_worldPacket;
 }
 
-WorldPacket const* WorldPackets::Battleground::PVPMatchInit::Write()
+WorldPacket const* WorldPackets::Battleground::PVPMatchInitialize::Write()
 {
     _worldPacket << uint32(MapID);
     _worldPacket << uint8(State);
@@ -356,7 +359,7 @@ WorldPacket const* WorldPackets::Battleground::PVPMatchInit::Write()
     return &_worldPacket;
 }
 
-WorldPacket const* WorldPackets::Battleground::PVPMatchEnd::Write()
+WorldPacket const* WorldPackets::Battleground::PVPMatchComplete::Write()
 {
     _worldPacket << uint8(Winner);
     _worldPacket << int32(Duration);

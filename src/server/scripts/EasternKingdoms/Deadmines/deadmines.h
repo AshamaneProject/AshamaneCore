@@ -142,4 +142,10 @@ const Position CookieSpawn =
     -88.1319f, -819.33f, 39.23453f, 0.0f
 };
 
+template <class AI, class T>
+inline AI* GetDeadminesAI(T* obj)
+{
+    return GetInstanceAI<AI, T>(obj, DMScriptName);
+}
+
 #endif

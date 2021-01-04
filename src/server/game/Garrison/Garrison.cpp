@@ -218,12 +218,12 @@ bool Garrison::LoadFromDB()
                     continue;
 
                 WorldPackets::Garrison::GarrisonMissionReward reward;
-                reward.ItemID           = fields[2].GetInt32();
-                reward.ItemQuantity     = fields[3].GetUInt32();
-                reward.CurrencyID       = fields[4].GetInt32();
-                reward.CurrencyQuantity = fields[5].GetUInt32();
-                reward.FollowerXP       = fields[6].GetUInt32();
-                reward.BonusAbilityID   = fields[7].GetUInt32();
+                reward.ItemID                   = fields[2].GetInt32();
+                reward.ItemQuantity             = fields[3].GetUInt32();
+                reward.CurrencyID               = fields[4].GetInt32();
+                reward.CurrencyQuantity         = fields[5].GetUInt32();
+                reward.FollowerXP               = fields[6].GetUInt32();
+                reward.GarrMssnBonusAbilityID   = fields[7].GetUInt32();
 
                 if (type == GarrisonMission::RewardType::Normal)
                     itr->second.Rewards.push_back(reward);
@@ -305,7 +305,7 @@ void Garrison::SaveToDB(CharacterDatabaseTransaction& trans)
                 stmt->setInt32(4, reward.CurrencyID);
                 stmt->setUInt32(5, reward.CurrencyQuantity);
                 stmt->setUInt32(6, reward.FollowerXP);
-                stmt->setUInt32(7, reward.BonusAbilityID);
+                stmt->setUInt32(7, reward.GarrMssnBonusAbilityID);
                 trans->Append(stmt);
             }
         }
@@ -479,7 +479,8 @@ void Garrison::AddMission(uint32 garrMissionId)
     mission.PacketInfo.OfferTime = time(nullptr);
     mission.PacketInfo.OfferDuration = missionEntry->OfferDuration;
     mission.PacketInfo.MissionState = GarrisonMission::State::Offered;
-    mission.PacketInfo.Unknown2 = 1;
+    mission.PacketInfo.SuccessChance = 1;
+    mission.PacketInfo.Flags = 0;
 
     // TODO : Generate rewards for mission
     WorldPackets::Garrison::GarrisonMissionReward reward;
@@ -488,8 +489,8 @@ void Garrison::AddMission(uint32 garrMissionId)
     reward.CurrencyID = 0;
     reward.CurrencyQuantity = 0;
     reward.FollowerXP = 0;
-    reward.BonusAbilityID = 0;
-    reward.Unknown = 1118739;
+    reward.GarrMssnBonusAbilityID = 0;
+    reward.ItemFileDataID = 1118739;
     mission.Rewards.push_back(reward);
 
     WorldPackets::Garrison::GarrisonAddMissionResult garrisonAddMissionResult;
@@ -574,7 +575,7 @@ std::pair<std::vector<GarrMissionEntry const*>, std::vector<double>> Garrison::G
         if (missionEntry->GarrTypeID != GetType())
             continue;
 
-        if (missionEntry->TargetLevel > maxFollowerlevel)
+        if (missionEntry->TargetLevel > int8(maxFollowerlevel))
             continue;
 
         if (missionEntry->MaxFollowers > activeFolowerCount)

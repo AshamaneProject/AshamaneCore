@@ -138,7 +138,7 @@ enum Events
     { TALK_3,                    EVENT_TYPE_SPELL,           SPELL_PANTHEON_INTRO_MOVIE },
 };*/
 
-struct SpawnData
+struct CustomSpawnData
 {
     uint32 event, npcId;
     float X;
@@ -148,7 +148,7 @@ struct SpawnData
     uint32 spellId;
 };
 
-SpawnData const spawnData[] =
+CustomSpawnData const spawnData[] =
 {
     { EVENT_2, NPC_HUNGERING_SOUL, 2896.31f, -4556.56f, 292.006f, 3.22141f, 0 },
     { EVENT_2, NPC_HUNGERING_SOUL, 2903.4f, -4585.5f, 292.017f, 1.79704f, 0 },
@@ -217,7 +217,7 @@ struct boss_argus_the_unmaker : public BossAI
         //LoadTalkData(&talkData);
     }
 
-    void LoadNPC(uint32 event, const SpawnData* data)
+    void LoadNPC(uint32 event, const CustomSpawnData* data)
     {
         while (data->event)
         {

@@ -103,7 +103,7 @@ class TC_GAME_API TempSummon : public Creature
         uint32 GetSummonerSpecificEntry() const { return m_summonerSpecificEntry; }
         uint32 GetSummonerSpecificDisplayID() const { return m_summonerSpecificDisplayID; }
 
-        const SummonPropertiesEntry* const m_Properties;
+        SummonPropertiesEntry const* const m_Properties;
     private:
         TempSummonType m_type;
         uint32 m_timer;

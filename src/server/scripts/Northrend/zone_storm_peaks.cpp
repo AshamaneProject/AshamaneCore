@@ -48,11 +48,11 @@ class npc_injured_goblin : public CreatureScript
 public:
     npc_injured_goblin() : CreatureScript("npc_injured_goblin") { }
 
-    struct npc_injured_goblinAI : public npc_escortAI
+    struct npc_injured_goblinAI : public EscortAI
     {
-        npc_injured_goblinAI(Creature* creature) : npc_escortAI(creature) { }
+        npc_injured_goblinAI(Creature* creature) : EscortAI(creature) { }
 
-        void WaypointReached(uint32 waypointId) override
+        void WaypointReached(uint32 waypointId, uint32 /*pathId*/) override
         {
             Player* player = GetPlayerForEscort();
             if (!player)
@@ -82,7 +82,7 @@ public:
 
        void UpdateAI(uint32 uiDiff) override
         {
-            npc_escortAI::UpdateAI(uiDiff);
+            EscortAI::UpdateAI(uiDiff);
             if (!UpdateVictim())
                 return;
             DoMeleeAttackIfReady();
@@ -204,7 +204,7 @@ public:
             me->CastSpell(me, SPELL_ICE_PRISON, true);
         }
 
-        void JustRespawned() override
+        void JustAppeared() override
         {
             Reset();
         }
@@ -218,7 +218,7 @@ public:
                 me->DespawnOrUnsummon();
         }
 
-        void SpellHit(Unit* caster, const SpellInfo* spell) override
+        void SpellHit(Unit* caster, SpellInfo const* spell) override
         {
             if (spell->Id != SPELL_ICE_LANCE)
                 return;
@@ -337,9 +337,9 @@ class npc_icefang : public CreatureScript
 public:
     npc_icefang() : CreatureScript("npc_icefang") { }
 
-    struct npc_icefangAI : public npc_escortAI
+    struct npc_icefangAI : public EscortAI
     {
-        npc_icefangAI(Creature* creature) : npc_escortAI(creature) { }
+        npc_icefangAI(Creature* creature) : EscortAI(creature) { }
 
         void AttackStart(Unit* /*who*/) override { }
         void EnterCombat(Unit* /*who*/) override { }
@@ -354,13 +354,12 @@ public:
             }
         }
 
-        void WaypointReached(uint32 /*waypointId*/) override { }
         void JustDied(Unit* /*killer*/) override { }
         void OnCharmed(bool /*apply*/) override { }
 
         void UpdateAI(uint32 diff) override
         {
-            npc_escortAI::UpdateAI(diff);
+            EscortAI::UpdateAI(diff);
 
             if (!UpdateVictim())
                 return;
@@ -710,7 +709,7 @@ public:
 
             InitSpellsForPhase();
 
-            me->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
+            me->SetImmuneToPC(false);
         }
 
         void DoAction(int32 action) override
@@ -749,7 +748,7 @@ public:
 
             _playerGuid = caster->GetGUID();
             DoCastAOE(SPELL_FULL_HEAL_MANA, true);
-            me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
+            me->SetImmuneToPC(true);
 
             me->GetMotionMaster()->MovePoint(POINT_START_FIGHT, *caster);
         }
@@ -1119,13 +1118,6 @@ class spell_close_rift : public SpellScriptLoader
         {
             PrepareAuraScript(spell_close_rift_AuraScript);
 
-        public:
-            spell_close_rift_AuraScript()
-            {
-                _counter = 0;
-            }
-
-        private:
             bool Validate(SpellInfo const* /*spell*/) override
             {
                 return ValidateSpellInfo({ SPELL_DESPAWN_RIFT });
@@ -1143,7 +1135,7 @@ class spell_close_rift : public SpellScriptLoader
             }
 
         private:
-            uint8 _counter;
+            uint8 _counter = 0;
 
         };
 

@@ -29,7 +29,7 @@ EndContentData */
 #include "MotionMaster.h"
 #include "Player.h"
 #include "QuestDef.h"
-#include "ScriptedEscortAI.h"
+#include "ScriptedCreature.h"
 #include "ScriptedGossip.h"
 #include "SpellInfo.h"
 #include "SpellScript.h"
@@ -202,7 +202,7 @@ public:
                 return;
 
             me->SetHomePosition(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation());
-            me->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
+            me->SetImmuneToPC(false);
             SetCombatMovement(true);
 
             if (me->IsInCombat())

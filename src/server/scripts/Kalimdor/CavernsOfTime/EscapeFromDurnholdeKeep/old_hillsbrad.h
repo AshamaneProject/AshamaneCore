@@ -50,5 +50,4 @@ inline AI* GetOldHillsbradAI(Creature* creature)
     return GetInstanceAI<AI>(creature, OHScriptName);
 }
 
-
 #endif

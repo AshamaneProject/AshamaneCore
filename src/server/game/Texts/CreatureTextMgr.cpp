@@ -259,7 +259,7 @@ uint32 CreatureTextMgr::SendChat(Creature* source, uint8 textGroup, WorldObject 
         range = iter->TextRange;
 
     if (finalSound)
-        SendSound(source, finalSound, finalType, whisperTarget, range, team, gmOnly);
+        SendSound(source, finalSound, finalType, whisperTarget, range, team, gmOnly, iter->BroadcastTextId);
 
     Unit* finalSource = source;
     if (srcPlr)
@@ -302,12 +302,13 @@ float CreatureTextMgr::GetRangeForChatType(ChatMsg msgType)
     return dist;
 }
 
-void CreatureTextMgr::SendSound(Creature* source, uint32 sound, ChatMsg msgType, WorldObject const* whisperTarget /*= nullptr*/, CreatureTextRange range /*= TEXT_RANGE_NORMAL*/, Team team /*= TEAM_OTHER*/, bool gmOnly /*= false*/)
+void CreatureTextMgr::SendSound(Creature* source, uint32 sound, ChatMsg msgType, WorldObject const* whisperTarget /*= nullptr*/, CreatureTextRange range /*= TEXT_RANGE_NORMAL*/,
+    Team team /*= TEAM_OTHER*/, bool gmOnly /*= false*/, uint32 keyBroadcastTextId /*= 0*/)
 {
     if (!sound || !source)
         return;
 
-    SendNonChatPacket(source, WorldPackets::Misc::PlaySound(source->GetGUID(), sound).Write(), msgType, whisperTarget, range, team, gmOnly);
+    SendNonChatPacket(source, WorldPackets::Misc::PlaySound(source->GetGUID(), sound, keyBroadcastTextId).Write(), msgType, whisperTarget, range, team, gmOnly);
 }
 
 void CreatureTextMgr::SendNonChatPacket(WorldObject* source, WorldPacket const* data, ChatMsg msgType, WorldObject const* whisperTarget, CreatureTextRange range, Team team, bool gmOnly)
@@ -334,7 +335,7 @@ void CreatureTextMgr::SendNonChatPacket(WorldObject* source, WorldPacket const* 
                 if (!whisperTarget || whisperTarget->GetTypeId() != TYPEID_PLAYER)
                     return;
 
-                whisperTarget->ToPlayer()->GetSession()->SendPacket(data);
+                whisperTarget->ToPlayer()->SendDirectMessage(data);
                 return;
             }
             break;

@@ -99,19 +99,26 @@ namespace VMAP
         return fname.str();
     }
 
-    int VMapManager2::loadMap(const char* basePath, unsigned int mapId, int x, int y)
+    int VMapManager2::loadMap(char const* basePath, unsigned int mapId, int x, int y)
     {
         int result = VMAP_LOAD_RESULT_IGNORED;
         if (isMapLoadingEnabled())
         {
-            if (loadSingleMap(mapId, basePath, x, y))
+            LoadResult parentLoadResult = loadSingleMap(mapId, basePath, x, y);
+            if (parentLoadResult == LoadResult::Success || parentLoadResult == LoadResult::FileNotFound)
             {
-                result = VMAP_LOAD_RESULT_OK;
+                if (parentLoadResult == LoadResult::Success)
+                    result = VMAP_LOAD_RESULT_OK;
+                // else VMAP_LOAD_RESULT_IGNORED
+
                 auto childMaps = iChildMapData.find(mapId);
                 if (childMaps != iChildMapData.end())
                     for (uint32 childMapId : childMaps->second)
-                        if (!loadSingleMap(childMapId, basePath, x, y))
+                    {
+                        LoadResult childLoadResult = loadSingleMap(childMapId, basePath, x, y);
+                        if (childLoadResult != LoadResult::Success && childLoadResult != LoadResult::FileNotFound)
                             result = VMAP_LOAD_RESULT_ERROR;
+                    }
             }
             else
                 result = VMAP_LOAD_RESULT_ERROR;
@@ -121,7 +128,7 @@ namespace VMAP
     }
 
     // load one tile (internal use only)
-    bool VMapManager2::loadSingleMap(uint32 mapId, const std::string& basePath, uint32 tileX, uint32 tileY)
+    LoadResult VMapManager2::loadSingleMap(uint32 mapId, const std::string& basePath, uint32 tileX, uint32 tileY)
     {
         auto instanceTree = iInstanceMapTrees.find(mapId);
         if (instanceTree == iInstanceMapTrees.end())
@@ -137,10 +144,11 @@ namespace VMAP
         {
             std::string mapFileName = getMapFileName(mapId);
             StaticMapTree* newTree = new StaticMapTree(mapId, basePath);
-            if (!newTree->InitMap(mapFileName))
+            LoadResult treeInitResult = newTree->InitMap(mapFileName);
+            if (treeInitResult != LoadResult::Success)
             {
                 delete newTree;
-                return false;
+                return treeInitResult;
             }
             instanceTree->second = newTree;
         }
@@ -387,7 +395,7 @@ namespace VMAP
         }
     }
 
-    LoadResult VMapManager2::existsMap(const char* basePath, unsigned int mapId, int x, int y)
+    LoadResult VMapManager2::existsMap(char const* basePath, unsigned int mapId, int x, int y)
     {
         return StaticMapTree::CanLoadMap(std::string(basePath), mapId, x, y, this);
     }

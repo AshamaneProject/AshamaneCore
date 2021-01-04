@@ -20,7 +20,6 @@
 #include "MotionMaster.h"
 #include "ruby_sanctum.h"
 #include "ScriptedCreature.h"
-#include "SpellMgr.h"
 #include "SpellScript.h"
 
 enum Texts
@@ -120,7 +119,7 @@ class boss_saviana_ragefire : public CreatureScript
                     case POINT_LAND_GROUND:
                         me->SetCanFly(false);
                         me->SetDisableGravity(false);
-                        me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), false);
+                        me->SetAnimTier(UNIT_BYTE1_FLAG_NONE, false);
                         me->SetReactState(REACT_AGGRESSIVE);
                         events.ScheduleEvent(EVENT_ENRAGE, Seconds(1), EVENT_GROUP_LAND_PHASE);
                         events.ScheduleEvent(EVENT_FLAME_BREATH, Seconds(2), Seconds(4), EVENT_GROUP_LAND_PHASE);
@@ -163,7 +162,7 @@ class boss_saviana_ragefire : public CreatureScript
                         {
                             me->SetCanFly(true);
                             me->SetDisableGravity(true);
-                            me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), true);
+                            me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER), false);
                             me->SetReactState(REACT_PASSIVE);
                             me->AttackStop();
                             Position pos;

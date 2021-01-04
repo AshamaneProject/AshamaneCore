@@ -120,7 +120,9 @@ enum ICDataTypes
     DATA_TERENAS_MENETHIL              = 39,
     DATA_ENEMY_GUNSHIP                 = 40,
     DATA_UPPERSPIRE_TELE_ACT           = 41, /// also used by conditions
-    DATA_BLOOD_QUEEN_LANA_THEL_COUNCIL = 42
+    DATA_BLOOD_QUEEN_LANA_THEL_COUNCIL = 42,
+    DATA_BLOOD_PRINCE_COUNCIL_INTRO    = 43,
+    DATA_SINDRAGOSA_INTRO              = 44
 };
 
 enum ICCreaturesIds
@@ -321,6 +323,7 @@ enum ICCreaturesIds
     NPC_WORLD_TRIGGER_INFINITE_AOI              = 36171,
     NPC_SPIRIT_BOMB                             = 39189,
     NPC_FROSTMOURNE_TRIGGER                     = 38584,
+    NPC_SHADOW_TRAP                             = 39137,
 
     // Generic
     NPC_INVISIBLE_STALKER                       = 30298
@@ -484,9 +487,6 @@ enum ICSharedActions
     ACTION_ROTFACE_DEATH        = -366272,
     ACTION_CHANGE_PHASE         = -366780,
 
-    // Putricide
-    ACTION_CHECK_BOSS           = -366781,
-
     // Blood-Queen Lana'thel
     ACTION_KILL_MINCHAR         = -379550,
 
@@ -527,15 +527,14 @@ enum ICWorldStatesICC
 
 enum ICAreaIds
 {
-    AREA_ICECROWN_CITADEL   = 4812,
-    AREA_THE_FROZEN_THRONE  = 4859
+    AREA_ICECROWN_CITADEL = 4812
 };
 
 class spell_trigger_spell_from_caster : public SpellScriptLoader
 {
     public:
-        spell_trigger_spell_from_caster(char const* scriptName, uint32 triggerId);
         spell_trigger_spell_from_caster(char const* scriptName, uint32 triggerId, TriggerCastFlags triggerFlags);
+        spell_trigger_spell_from_caster(char const* scriptName, uint32 triggerId);
         SpellScript* GetSpellScript() const override;
 
     private:
@@ -543,7 +542,7 @@ class spell_trigger_spell_from_caster : public SpellScriptLoader
         TriggerCastFlags _triggerFlags;
 };
 
-template<typename AI, typename T>
+template <class AI, class T>
 inline AI* GetIcecrownCitadelAI(T* obj)
 {
     return GetInstanceAI<AI>(obj, ICCScriptName);

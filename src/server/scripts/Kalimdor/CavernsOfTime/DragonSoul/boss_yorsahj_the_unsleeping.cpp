@@ -933,7 +933,7 @@ public:
                     if (SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(SPELL_DIGESTIVE_ACID_DMG, creature->GetMap()->GetDifficultyID()))
                     {
                         uint32 damage = (uint32(GetEffectValue()));
-                        SpellNonMeleeDamage damageInfo(creature, target, spellInfo, spellInfo->GetSpellXSpellVisualId(), spellInfo->SchoolMask);
+                        SpellNonMeleeDamage damageInfo(creature, target, spellInfo, { spellInfo->GetSpellXSpellVisualId(), 0 }, spellInfo->SchoolMask);
                         damageInfo.damage = damage;
                         creature->SendSpellNonMeleeDamageLog(&damageInfo);
                         creature->DealSpellDamage(&damageInfo, false);

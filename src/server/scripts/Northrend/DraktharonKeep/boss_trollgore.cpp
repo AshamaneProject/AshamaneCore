@@ -213,7 +213,7 @@ class npc_drakkari_invader : public CreatureScript
                 if (type == POINT_MOTION_TYPE && pointId == POINT_LANDING)
                 {
                     me->Dismount();
-                    me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC));
+                    me->SetImmuneToAll(false);
                     DoCastAOE(SPELL_INVADER_TAUNT);
                 }
             }
@@ -311,7 +311,7 @@ class spell_trollgore_invader_taunt : public SpellScriptLoader
 
             bool Validate(SpellInfo const* spellInfo) override
             {
-                return spellInfo->GetEffect(EFFECT_0) && ValidateSpellInfo({ uint32(spellInfo->GetEffect(EFFECT_0)->CalcValue()) });
+                return spellInfo->GetEffect(EFFECT_0) && ValidateSpellInfo({ static_cast<uint32>(spellInfo->GetEffect(EFFECT_0)->CalcValue()) });
             }
 
             void HandleTaunt(SpellEffIndex /*effIndex*/)

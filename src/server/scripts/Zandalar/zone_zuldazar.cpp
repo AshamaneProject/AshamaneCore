@@ -67,9 +67,9 @@ struct npc_talanji_arrival : public ScriptedAI
 };
 
 // 132661
-struct npc_talanji_arrival_escort : public npc_escortAI
+struct npc_talanji_arrival_escort : public EscortAI
 {
-    npc_talanji_arrival_escort(Creature* creature) : npc_escortAI(creature) { }
+    npc_talanji_arrival_escort(Creature* creature) : EscortAI(creature) { }
 
     void IsSummonedBy(Unit* summoner) override
     {
@@ -90,9 +90,9 @@ struct npc_talanji_arrival_escort : public npc_escortAI
 };
 
 // 138912
-struct npc_enforcer_pterrordax : public npc_escortAI
+struct npc_enforcer_pterrordax : public EscortAI
 {
-    npc_enforcer_pterrordax(Creature* creature) : npc_escortAI(creature) { }
+    npc_enforcer_pterrordax(Creature* creature) : EscortAI(creature) { }
 
     void IsSummonedBy(Unit* summoner) override
     {
@@ -129,9 +129,9 @@ struct npc_rastakhan_zuldazar_arrival : public ScriptedAI
 };
 
 // 135441
-struct npc_soth_zolani : public npc_escortAI
+struct npc_soth_zolani : public EscortAI
 {
-    npc_soth_zolani(Creature* creature) : npc_escortAI(creature) { }
+    npc_soth_zolani(Creature* creature) : EscortAI(creature) { }
 
     bool GossipHello(Player* player) override
     {
@@ -232,10 +232,10 @@ class spell_generic_rastari_skull_whistle : public SpellScript
 };
 
 //
-class npc_ata_the_winglord_offensively_defence : public npc_escortAI
+class npc_ata_the_winglord_offensively_defence : public EscortAI
 {
 public:
-    npc_ata_the_winglord_offensively_defence(Creature* creature) : npc_escortAI(creature)
+    npc_ata_the_winglord_offensively_defence(Creature* creature) : EscortAI(creature)
     {
         me->SetCanFly(true);
         me->SetSpeed(MOVE_FLIGHT, 26);
@@ -268,10 +268,10 @@ public:
     }
 };
 
-class npc_ata_the_winglord_paku_master_of_winds : public npc_escortAI
+class npc_ata_the_winglord_paku_master_of_winds : public EscortAI
 {
 public:
-    npc_ata_the_winglord_paku_master_of_winds(Creature* creature) : npc_escortAI(creature)
+    npc_ata_the_winglord_paku_master_of_winds(Creature* creature) : EscortAI(creature)
     {
         me->SetCanFly(true);
         me->SetSpeed(MOVE_FLIGHT, 26);
@@ -304,10 +304,10 @@ public:
     }
 };
 
-class npc_pterrordax_paku_master_of_winds : public npc_escortAI
+class npc_pterrordax_paku_master_of_winds : public EscortAI
 {
 public:
-    npc_pterrordax_paku_master_of_winds(Creature* creature) : npc_escortAI(creature)
+    npc_pterrordax_paku_master_of_winds(Creature* creature) : EscortAI(creature)
     {
         me->SetCanFly(true);
         me->SetReactState(REACT_PASSIVE);
@@ -321,7 +321,7 @@ public:
             me->NeedChangeAI = false;
     }
 
-   /* void WaypointReached(uint32 waypointId) override
+   /* void WaypointReached(uint32 waypointId, uint32 /*pathId*//*) override
     {
         if (waypointId == 11)
             me->ForcedDespawn();

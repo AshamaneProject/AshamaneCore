@@ -3112,9 +3112,9 @@ public:
         EVENT_SAY_KRENNAN_THANKS,
     };
 
-    struct npc_king_greymanes_horse_35905AI : public npc_escortAI
+    struct npc_king_greymanes_horse_35905AI : public EscortAI
     {
-        npc_king_greymanes_horse_35905AI(Creature* creature) : npc_escortAI(creature) {}
+        npc_king_greymanes_horse_35905AI(Creature* creature) : EscortAI(creature) {}
 
         EventMap m_events;
         ObjectGuid m_playerGUID;
@@ -3163,7 +3163,7 @@ public:
             }
         }
 
-        void WaypointReached(uint32 point) override
+        void WaypointReached(uint32 point, uint32 /*pathId*/) override
         {
             switch (point)
             {
@@ -3207,7 +3207,7 @@ public:
 
         void UpdateAI(uint32 diff) override
         {
-            npc_escortAI::UpdateAI(diff);
+            EscortAI::UpdateAI(diff);
 
             m_events.Update(diff);
 

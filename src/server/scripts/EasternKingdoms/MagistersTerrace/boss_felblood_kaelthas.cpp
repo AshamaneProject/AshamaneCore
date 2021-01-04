@@ -42,6 +42,7 @@ enum Says
     SAY_DEATH                   = 6
 };
 
+
 enum Spells
 {
     // Phase 1 spells
@@ -69,8 +70,6 @@ enum Spells
     SPELL_ARCANE_SPHERE_PASSIVE   = 44263,                 // Passive auras on Arcane Spheres
     SPELL_POWER_FEEDBACK          = 44233                 // Stuns him, making him take 50% more damage for 10 seconds. Cast after Gravity Lapse
 };
-
-
 
 enum Creatures
 {
@@ -183,8 +182,9 @@ public:
         }
 
         void MoveInLineOfSight(Unit* who) override
+
         {
-            if (who->IsPlayer() && !HasTaunted && me->IsWithinDistInMap(who, 40.0f))
+            if (!HasTaunted && me->IsWithinDistInMap(who, 40.0f))
             {
                 Talk(SAY_AGGRO);
                 HasTaunted = true;
@@ -452,7 +452,7 @@ public:
             Initialize();
 
             me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
-            me->SetFaction(14);
+            me->SetFaction(FACTION_MONSTER);
 
             DoCast(me, SPELL_FLAMESTRIKE2, true);
         }
@@ -536,7 +536,6 @@ public:
                 me->StopMoving();
                 me->RemoveAllAurasOnDeath();
                 me->ModifyAuraState(AURA_STATE_HEALTHLESS_20_PERCENT, false);
-                me->ModifyAuraState(AURA_STATE_HEALTHLESS_25_PERCENT, false);
                 me->ModifyAuraState(AURA_STATE_HEALTHLESS_35_PERCENT, false);
                 me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                 me->ClearAllReactives();
@@ -658,7 +657,7 @@ public:
 
             me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
             me->SetDisableGravity(true);
-            me->SetFaction(14);
+            me->SetFaction(FACTION_MONSTER);
             DoCast(me, SPELL_ARCANE_SPHERE_PASSIVE, true);
         }
 

@@ -19,7 +19,9 @@
 #define GarrisonPackets_h__
 
 #include "Packet.h"
+#include "ItemPacketsCommon.h"
 #include "ObjectGuid.h"
+#include "Optional.h"
 #include "Position.h"
 #include "PacketUtilities.h"
 #include <list>
@@ -94,6 +96,9 @@ namespace WorldPackets
             std::list<GarrAbilityEntry const*> AbilityID;
             uint32 ZoneSupportSpellID = 0;
             uint32 FollowerStatus = 0;
+            int32 Health = 0;
+            int32 HealingTimestamp = 0;
+            int8 BoardIndex = 0;
             std::string CustomName;
         };
 
@@ -108,7 +113,8 @@ namespace WorldPackets
             uint32 MissionDuration = 0;
             uint32 MissionState = 0;
             uint32 SuccessChance = 0;
-            uint32 Unknown2 = 0;
+            uint32 Flags = 0;
+            float MissionScalar = 1.0f;
         };
 
         struct GarrisonMissionReward
@@ -118,8 +124,9 @@ namespace WorldPackets
             int32 CurrencyID = 0;
             uint32 CurrencyQuantity = 0;
             uint32 FollowerXP = 0;
-            uint32 BonusAbilityID = 0;
-            int32 Unknown = 0;
+            uint32 GarrMssnBonusAbilityID = 0;
+            int32 ItemFileDataID = 0;
+            Optional<Item::ItemInstance> ItemInstance;
         };
 
         struct GarrisonMissionBonusAbility
@@ -128,12 +135,43 @@ namespace WorldPackets
             time_t StartTime = time_t(0);
         };
 
+        struct GarrisonTalentSocketData
+        {
+            int32 SoulbindConduitID = 0;
+            int32 SoulbindConduitRank = 0;
+        };
+
         struct GarrisonTalent
         {
             int32 GarrTalentID = 0;
             int32 Rank = 0;
             time_t ResearchStartTime = time_t(0);
             int32 Flags = 0;
+            Optional<GarrisonTalentSocketData> Socket;
+        };
+
+        struct GarrisonCollectionEntry
+        {
+            int32 EntryID = 0;
+            int32 Rank = 0;
+        };
+
+        struct GarrisonCollection
+        {
+            int32 Type = 0;
+            std::vector<GarrisonCollectionEntry> Entries;
+        };
+
+        struct GarrisonEventEntry
+        {
+            int32 EntryID = 0;
+            int32 EventValue = 0;
+        };
+
+        struct GarrisonEventList
+        {
+            int32 Type = 0;
+            std::vector<GarrisonEventEntry> Events;
         };
 
         struct GarrisonInfo
@@ -146,11 +184,14 @@ namespace WorldPackets
             std::vector<GarrisonPlotInfo*> Plots;
             std::vector<GarrisonBuildingInfo const*> Buildings;
             std::vector<GarrisonFollower const*> Followers;
+            std::vector<GarrisonFollower const*> AutoTroops;
             std::vector<GarrisonMission const*> Missions;
             std::vector<std::vector<GarrisonMissionReward>> MissionRewards;
             std::vector<std::vector<GarrisonMissionReward>> MissionOvermaxRewards;
             std::vector<GarrisonMissionBonusAbility const*> MissionAreaBonuses;
             std::vector<GarrisonTalent> Talents;
+            std::vector<GarrisonCollection> Collections;
+            std::vector<GarrisonEventList> EventLists;
             std::vector<bool> CanStartMission;
             std::vector<int32> ArchivedMissions;
         };
@@ -290,7 +331,7 @@ namespace WorldPackets
         class GarrisonCheckUpgradeableResult final : public ServerPacket
         {
         public:
-            GarrisonCheckUpgradeableResult(bool upgradeable = false) : ServerPacket(SMSG_GARRISON_IS_UPGRADEABLE_RESULT, 4), IsUpgradeable(upgradeable) { }
+            GarrisonCheckUpgradeableResult(bool upgradeable = false) : ServerPacket(SMSG_GARRISON_IS_UPGRADEABLE_RESPONSE, 4), IsUpgradeable(upgradeable) { }
 
             WorldPacket const* Write() override;
 
@@ -327,10 +368,10 @@ namespace WorldPackets
             std::unordered_set<uint32> const* BlueprintsKnown = nullptr;
         };
 
-        class GarrisonGetBuildingLandmarks final : public ClientPacket
+        class GarrisonGetMapData final : public ClientPacket
         {
         public:
-            GarrisonGetBuildingLandmarks(WorldPacket&& packet) : ClientPacket(CMSG_GARRISON_GET_BUILDING_LANDMARKS, std::move(packet)) { }
+            GarrisonGetMapData(WorldPacket&& packet) : ClientPacket(CMSG_GARRISON_GET_MAP_DATA, std::move(packet)) { }
 
             void Read() override { }
         };
@@ -349,7 +390,7 @@ namespace WorldPackets
         class TC_GAME_API ShowAdventureMap final : public ServerPacket
         {
         public:
-            ShowAdventureMap(ObjectGuid guid, uint32 uiMapID) : ServerPacket(SMSG_SHOW_ADVENTURE_MAP, 20), UnitGUID(guid), UiMapID(uiMapID) { }
+            ShowAdventureMap(ObjectGuid guid, uint32 uiMapID) : ServerPacket(SMSG_ADVENTURE_MAP_OPEN_NPC, 20), UnitGUID(guid), UiMapID(uiMapID) { }
 
             WorldPacket const* Write() override;
 
@@ -360,7 +401,7 @@ namespace WorldPackets
         class GarrisonRequestScoutingMap final : public ClientPacket
         {
         public:
-            GarrisonRequestScoutingMap(WorldPacket&& packet) : ClientPacket(CMSG_ADVENTURE_MAP_POI_QUERY, std::move(packet)) { }
+            GarrisonRequestScoutingMap(WorldPacket&& packet) : ClientPacket(CMSG_ADVENTURE_JOURNAL_UPDATE_SUGGESTIONS, std::move(packet)) { }
 
             void Read() override;
 
@@ -370,7 +411,7 @@ namespace WorldPackets
         class GarrisonScoutingMapResult final : public ServerPacket
         {
         public:
-            GarrisonScoutingMapResult() : ServerPacket(SMSG_ADVENTURE_MAP_POI_QUERY_RESPONSE, 5) { }
+            GarrisonScoutingMapResult() : ServerPacket(SMSG_ADVENTURE_MAP_OPEN_NPC, 5) { }
 
             WorldPacket const* Write() override;
 
@@ -378,23 +419,23 @@ namespace WorldPackets
             bool Active = true;
         };
 
-        struct GarrisonBuildingLandmark
+        struct GarrisonBuildingMapData
         {
-            GarrisonBuildingLandmark() : GarrBuildingPlotInstID(0) { }
-            GarrisonBuildingLandmark(uint32 buildingPlotInstId, Position const& pos) : GarrBuildingPlotInstID(buildingPlotInstId), Pos(pos) { }
+            GarrisonBuildingMapData() : GarrBuildingPlotInstID(0), Pos() { }
+            GarrisonBuildingMapData(uint32 buildingPlotInstId, Position const& pos) : GarrBuildingPlotInstID(buildingPlotInstId), Pos(pos) { }
 
             uint32 GarrBuildingPlotInstID;
             TaggedPosition<Position::XYZ> Pos;
         };
 
-        class GarrisonBuildingLandmarks final : public ServerPacket
+        class GarrisonMapDataResponse final : public ServerPacket
         {
         public:
-            GarrisonBuildingLandmarks() : ServerPacket(SMSG_GARRISON_BUILDING_LANDMARKS) { }
+            GarrisonMapDataResponse() : ServerPacket(SMSG_GARRISON_MAP_DATA_RESPONSE) { }
 
             WorldPacket const* Write() override;
 
-            std::vector<GarrisonBuildingLandmark> Landmarks;
+            std::vector<GarrisonBuildingMapData> Buildings;
         };
 
         class GarrisonPlotPlaced final : public ServerPacket

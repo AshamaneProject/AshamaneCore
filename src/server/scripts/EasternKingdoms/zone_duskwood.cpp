@@ -139,18 +139,18 @@ Position const TwillightCorrupter = { -10328.16f, -489.57f, 49.95f, 0.0f };
 
 class at_twilight_grove : public AreaTriggerScript
 {
-public:
-    at_twilight_grove() : AreaTriggerScript("at_twilight_grove") { }
+    public:
+        at_twilight_grove() : AreaTriggerScript("at_twilight_grove") { }
 
-    bool OnTrigger(Player* player, const AreaTriggerEntry* /*areaTrigger*/, bool /*entered*/) override
-    {
-        if (player->GetQuestStatus(QUEST_NIGHTMARES_CORRUPTION) == QUEST_STATUS_INCOMPLETE)
-            if (!player->FindNearestCreature(NPC_TWILIGHT_CORRUPTER, 500.0f, true))
-                if (Creature* corrupter = player->SummonCreature(NPC_TWILIGHT_CORRUPTER, TwillightCorrupter, TEMPSUMMON_MANUAL_DESPAWN, 60000))
-                    corrupter->AI()->Talk(YELL_TWILIGHT_CORRUPTOR_RESPAWN, player);
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/, bool /*entered*/) override
+        {
+            if (player->GetQuestStatus(QUEST_NIGHTMARES_CORRUPTION) == QUEST_STATUS_INCOMPLETE)
+                if (!player->FindNearestCreature(NPC_TWILIGHT_CORRUPTER, 500.0f, true))
+                    if (Creature* corrupter = player->SummonCreature(NPC_TWILIGHT_CORRUPTER, TwillightCorrupter, TEMPSUMMON_MANUAL_DESPAWN, 60000))
+                        corrupter->AI()->Talk(YELL_TWILIGHT_CORRUPTOR_RESPAWN, player);
 
-        return false;
-    };
+            return false;
+        };
 };
 
 enum SpellSummonStalvanData

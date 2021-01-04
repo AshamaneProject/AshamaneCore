@@ -646,9 +646,9 @@ public:
         GO_CRYSTALLIZED_SOUL = 248521,
     };
 
-    struct npc_archmage_khadgar_90417_AI : public npc_escortAI
+    struct npc_archmage_khadgar_90417_AI : public EscortAI
     {
-        npc_archmage_khadgar_90417_AI(Creature* creature) : npc_escortAI(creature)
+        npc_archmage_khadgar_90417_AI(Creature* creature) : EscortAI(creature)
         {
             Initialize();
         }
@@ -712,7 +712,7 @@ public:
             if (HasEscortState(STATE_ESCORT_NONE))
                 return;
 
-            npc_escortAI::UpdateAI(diff);
+            EscortAI::UpdateAI(diff);
 
             if (_phase)
             {
@@ -788,7 +788,7 @@ public:
             }
         }
 
-        void WaypointReached(uint32 waypointId) override
+        void WaypointReached(uint32 waypointId, uint32 /*pathId*/) override
         {
             Player* player = GetPlayerForEscort();
             if (!player)

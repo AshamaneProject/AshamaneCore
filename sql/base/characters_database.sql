@@ -705,6 +705,29 @@ LOCK TABLES `character_currency` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `character_customizations`
+--
+DROP TABLE IF EXISTS `character_customizations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `character_customizations` (
+  `guid` bigint(20) unsigned NOT NULL,
+  `chrCustomizationOptionID` int(10) unsigned NOT NULL,
+  `chrCustomizationChoiceID` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`guid`,`chrCustomizationOptionID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `character_customizations`
+--
+
+LOCK TABLES `character_customizations` WRITE;
+/*!40000 ALTER TABLE `character_customizations` DISABLE KEYS */;
+/*!40000 ALTER TABLE `character_customizations` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `character_declinedname`
 --
 
@@ -1709,14 +1732,7 @@ CREATE TABLE `characters` (
   `level` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `xp` int(10) unsigned NOT NULL DEFAULT '0',
   `money` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `skin` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `face` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `hairStyle` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `hairColor` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `facialStyle` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `customDisplay1` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `customDisplay2` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `customDisplay3` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `inventorySlots` tinyint(3) unsigned NOT NULL DEFAULT '16',
   `bankSlots` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `restState` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `playerFlags` int(10) unsigned NOT NULL DEFAULT '0',
@@ -1813,8 +1829,9 @@ CREATE TABLE `corpse` (
   `mapId` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT 'Map Identifier',
   `displayId` int(10) unsigned NOT NULL DEFAULT '0',
   `itemCache` text NOT NULL,
-  `bytes1` int(10) unsigned NOT NULL DEFAULT '0',
-  `bytes2` int(10) unsigned NOT NULL DEFAULT '0',
+  `race` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `class` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `gender` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `flags` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `dynFlags` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `time` int(10) unsigned NOT NULL DEFAULT '0',
@@ -1834,6 +1851,30 @@ CREATE TABLE `corpse` (
 LOCK TABLES `corpse` WRITE;
 /*!40000 ALTER TABLE `corpse` DISABLE KEYS */;
 /*!40000 ALTER TABLE `corpse` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `corpse_customizations`
+--
+
+DROP TABLE IF EXISTS `corpse_customizations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `corpse_customizations` (
+  `ownerGuid` bigint(20) unsigned NOT NULL,
+  `chrCustomizationOptionID` int(10) unsigned NOT NULL,
+  `chrCustomizationChoiceID` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`ownerGuid`,`chrCustomizationOptionID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `corpse_customizations`
+--
+
+LOCK TABLES `corpse_customizations` WRITE;
+/*!40000 ALTER TABLE `corpse_customizations` DISABLE KEYS */;
+/*!40000 ALTER TABLE `corpse_customizations` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -3647,6 +3688,7 @@ CREATE TABLE `updates` (
 LOCK TABLES `updates` WRITE;
 /*!40000 ALTER TABLE `updates` DISABLE KEYS */;
 INSERT INTO `updates` VALUES
+('2018_02_18_01_characters.sql','B7EC9FD75FE2E565BD0335D78069D3C62CA98F5A','RELEASED','2018-02-18 17:21:42',0),
 ('2020_04_20_00_characters.sql','977B5E0C894E0A7E80B2A9626F17CA636A69BD22','RELEASED','2020-04-20 19:08:18',0),
 ('2020_06_12_00_characters.sql','DF16C99EFACA4DFADDDF35644AAC63F9B4AA2BD6','RELEASED','2020-08-16 22:13:22',0);
 /*!40000 ALTER TABLE `updates` ENABLE KEYS */;
@@ -3727,6 +3769,10 @@ INSERT INTO `worldstates` VALUES
 (20004,0,'cleaning_flags');
 /*!40000 ALTER TABLE `worldstates` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Dumping routines for database 'characters'
+--
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -3737,4 +3783,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-08-14 21:41:26
+-- Dump completed on 2020-10-20 21:36:52

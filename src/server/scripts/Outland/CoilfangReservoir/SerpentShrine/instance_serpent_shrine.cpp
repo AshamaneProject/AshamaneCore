@@ -24,12 +24,14 @@ EndScriptData */
 
 #include "ScriptMgr.h"
 #include "GameObject.h"
+#include "GameObjectAI.h"
 #include "InstanceScript.h"
 #include "Log.h"
 #include "Map.h"
 #include "Player.h"
 #include "serpent_shrine.h"
 #include "TemporarySummon.h"
+#include <sstream>
 
 #define MAX_ENCOUNTER 6
 
@@ -131,12 +133,12 @@ class instance_serpent_shrine : public InstanceMapScript
                         {
                             if (Water == WATERSTATE_SCALDING)
                             {
-
                                 if (!player->HasAura(SPELL_SCALDINGWATER))
                                 {
                                     player->CastSpell(player, SPELL_SCALDINGWATER, true);
                                 }
-                            } else if (Water == WATERSTATE_FRENZY)
+                            }
+                            else if (Water == WATERSTATE_FRENZY)
                             {
                                 //spawn frenzy
                                 if (DoSpawnFrenzy)
@@ -380,7 +382,7 @@ class instance_serpent_shrine : public InstanceMapScript
                 return stream.str();
             }
 
-            void Load(const char* in) override
+            void Load(char const* in) override
             {
                 if (!in)
                 {

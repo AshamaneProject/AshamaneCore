@@ -468,6 +468,7 @@ class TC_GAME_API SpellInfo
         uint32 AttributesEx11;
         uint32 AttributesEx12;
         uint32 AttributesEx13;
+        uint32 AttributesEx14;
         uint32 AttributesCu;
         std::bitset<MAX_SPELL_EFFECTS> NegativeEffects;
         uint64 Stances;
@@ -570,6 +571,7 @@ class TC_GAME_API SpellInfo
         bool HasAttribute(SpellAttr11 attribute) const { return !!(AttributesEx11 & attribute); }
         bool HasAttribute(SpellAttr12 attribute) const { return !!(AttributesEx12 & attribute); }
         bool HasAttribute(SpellAttr13 attribute) const { return !!(AttributesEx13 & attribute); }
+        bool HasAttribute(SpellAttr14 attribute) const { return !!(AttributesEx14 & attribute); }
         bool HasAttribute(SpellCustomAttributes customAttribute) const { return !!(AttributesCu & customAttribute); }
 
         bool HasAnyAuraInterruptFlag() const;
@@ -660,7 +662,7 @@ class TC_GAME_API SpellInfo
 
         uint32 GetMaxTicks() const;
 
-        uint32 CalcCastTime(uint8 level = 0, Spell* spell = nullptr) const;
+        uint32 CalcCastTime(Spell* spell = nullptr) const;
         uint32 GetRecoveryTime() const;
 
         std::vector<SpellPowerCost> CalcPowerCost(Unit const* caster, SpellSchoolMask schoolMask, Spell* spell = nullptr) const;

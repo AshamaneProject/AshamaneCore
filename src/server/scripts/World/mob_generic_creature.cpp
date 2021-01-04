@@ -35,7 +35,7 @@ public:
         }
 
         uint32 timer, interval;
-        const SpellInfo* spell;
+        SpellInfo const* spell;
 
         void UpdateAI(uint32 diff) override
         {

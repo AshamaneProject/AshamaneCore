@@ -91,9 +91,9 @@ public:
         return new npc_velen_shadowmoon_beginAI(creature);
     }
 
-    struct npc_velen_shadowmoon_beginAI : public npc_escortAI
+    struct npc_velen_shadowmoon_beginAI : public EscortAI
     {
-        npc_velen_shadowmoon_beginAI(Creature* creature) : npc_escortAI(creature) { }
+        npc_velen_shadowmoon_beginAI(Creature* creature) : EscortAI(creature) { }
 
         ObjectGuid playerGuid;
 
@@ -131,16 +131,16 @@ public:
         return new npc_velen_shadowmoon_followerAI(creature);
     }
 
-    struct npc_velen_shadowmoon_followerAI : public npc_escortAI
+    struct npc_velen_shadowmoon_followerAI : public EscortAI
     {
-        npc_velen_shadowmoon_followerAI(Creature* creature) : npc_escortAI(creature) { }
+        npc_velen_shadowmoon_followerAI(Creature* creature) : EscortAI(creature) { }
 
         void SetGUID(ObjectGuid guid, int32 /*id*/) override
         {
             Start(true, true, guid);
         }
 
-        void WaypointReached(uint32 pointId) override
+        void WaypointReached(uint32 pointId, uint32 /*pathId*/) override
         {
             switch (pointId)
             {

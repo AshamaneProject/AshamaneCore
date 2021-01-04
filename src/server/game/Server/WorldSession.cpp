@@ -275,11 +275,11 @@ void WorldSession::SendPacket(WorldPacket const* packet, bool forced /*= false*/
 
     if ((cur_time - lastTime) < 60)
     {
-        sendPacketCount+=1;
-        sendPacketBytes+=packet->size();
+        sendPacketCount += 1;
+        sendPacketBytes += packet->size();
 
-        sendLastPacketCount+=1;
-        sendLastPacketBytes+=packet->size();
+        sendLastPacketCount += 1;
+        sendLastPacketBytes += packet->size();
     }
     else
     {
@@ -307,7 +307,7 @@ void WorldSession::QueuePacket(WorldPacket* new_packet)
 }
 
 /// Logging helper for unexpected opcodes
-void WorldSession::LogUnexpectedOpcode(WorldPacket* packet, const char* status, const char *reason)
+void WorldSession::LogUnexpectedOpcode(WorldPacket* packet, char const* status, const char *reason)
 {
     TC_LOG_ERROR("network.opcode", "Received unexpected opcode %s Status: %s Reason: %s from %s",
         GetOpcodeNameForLogging(static_cast<OpcodeClient>(packet->GetOpcode())).c_str(), status, reason, GetPlayerInfo().c_str());
@@ -556,7 +556,7 @@ void WorldSession::LogoutPlayer(bool save)
             }
         }
 
-        // Repop at GraveYard or other player far teleport will prevent saving player because of not present map
+        // Repop at Graveyard or other player far teleport will prevent saving player because of not present map
         // Teleport player immediately for correct player save
         while (_player->IsBeingTeleportedFar())
             HandleMoveWorldportAck();
@@ -904,6 +904,9 @@ void WorldSession::ProcessQueryCallbacks()
     //! HandlePlayerLoginOpcode
     if (_charLoginCallback.valid() && _charLoginCallback.wait_for(std::chrono::seconds(0)) == std::future_status::ready)
         HandlePlayerLogin(reinterpret_cast<LoginQueryHolder*>(_charLoginCallback.get()));
+
+    if (_charEnumCallback.valid() && _charEnumCallback.wait_for(std::chrono::seconds(0)) == std::future_status::ready)
+        HandleCharEnum(static_cast<CharacterDatabaseQueryHolder*>(_charEnumCallback.get()));
 }
 
 TransactionCallback& WorldSession::AddTransactionCallback(TransactionCallback&& callback)
@@ -1096,7 +1099,7 @@ void WorldSession::InitializeSessionCallback(LoginDatabaseQueryHolder* realmHold
         } while (characterCountsResult->NextRow());
     }
 
-    WorldPackets::Battlenet::SetSessionState bnetConnected;
+    WorldPackets::Battlenet::ConnectionStatus bnetConnected;
     bnetConnected.State = 1;
     SendPacket(bnetConnected.Write());
 
@@ -1356,16 +1359,15 @@ uint32 WorldSession::DosProtection::GetMaxPacketCounterAllowed(uint16 opcode) co
         case CMSG_CREATE_CHARACTER:                     //   7               5         3 async db queries
         case CMSG_ENUM_CHARACTERS:                      //  22               3         2 async db queries
         case CMSG_ENUM_CHARACTERS_DELETED_BY_CLIENT:    //  22               3         2 async db queries
-        case CMSG_SUPPORT_TICKET_SUBMIT_BUG:            // not profiled                1 async db query
-        case CMSG_SUPPORT_TICKET_SUBMIT_SUGGESTION:     // not profiled                1 async db query
+        case CMSG_SUBMIT_USER_FEEDBACK:                 // not profiled                1 async db query
         case CMSG_SUPPORT_TICKET_SUBMIT_COMPLAINT:      // not profiled                1 async db query
         case CMSG_CALENDAR_UPDATE_EVENT:                // not profiled
         case CMSG_CALENDAR_REMOVE_EVENT:                // not profiled
         case CMSG_CALENDAR_COPY_EVENT:                  // not profiled
-        case CMSG_CALENDAR_EVENT_INVITE:                // not profiled
+        case CMSG_CALENDAR_INVITE:                      // not profiled
         case CMSG_CALENDAR_EVENT_SIGN_UP:               // not profiled
-        case CMSG_CALENDAR_EVENT_RSVP:                  // not profiled
-        case CMSG_CALENDAR_EVENT_MODERATOR_STATUS:      // not profiled
+        case CMSG_CALENDAR_RSVP:                        // not profiled
+        case CMSG_CALENDAR_MODERATOR_STATUS:            // not profiled
         case CMSG_CALENDAR_REMOVE_INVITE:               // not profiled
         case CMSG_SET_LOOT_METHOD:                      // not profiled
         case CMSG_GUILD_INVITE_BY_NAME:                 // not profiled
@@ -1469,15 +1471,22 @@ void WorldSession::LoadRecoveries()
             skinColor       = 7;
         }
 
-        WorldPackets::Character::CharacterCreateInfo* createInfo = new WorldPackets::Character::CharacterCreateInfo("Recovery", race, cclass, 0, skinColor, faceID, hairID, hairColor, facialHairID, 0);
-        createInfo->withStartOutfit = false;
+        WorldPackets::Character::CharacterCreateInfo* createInfo = new WorldPackets::Character::CharacterCreateInfo();
+        createInfo->CharCount = 1;
+        createInfo->Class = cclass;
+        createInfo->Name = "Recovery";
+        createInfo->Race = race;
+
+        // "Recovery", race, cclass, 0, skinColor, faceID, hairID, hairColor, facialHairID, 0)
+
+        /*createInfo->withStartOutfit = false;
 
         if (cclass == CLASS_DEMON_HUNTER)
         {
             createInfo->CustomDisplay[0] = 18;
             createInfo->CustomDisplay[1] = 1;
             createInfo->CustomDisplay[2] = 4;
-        }
+        }*/
 
         Player newChar(this);
         if (!newChar.Create(sObjectMgr->GetGenerator<HighGuid::Player>().Generate(), createInfo))

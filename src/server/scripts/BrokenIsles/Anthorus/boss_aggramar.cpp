@@ -96,7 +96,7 @@ enum Phases
     PHASE_4,
 };
 
-struct SpawnData
+struct CustomSpawnData
 {
     uint32 event, npcId;
     float X;
@@ -105,7 +105,7 @@ struct SpawnData
     float orientation;
 };
 
-SpawnData const spawnData[] =
+CustomSpawnData const spawnData[] =
 {
     { EVNET_PHASE_2, NPC_EMBER_OF_TAESHALACH, -12679.456f, -2254.8264f, 2514.2646f },
     { EVNET_PHASE_2, NPC_EMBER_OF_TAESHALACH, -12588.12f,  -2254.8215f, 2514.6276f, 3.101369f },
@@ -125,7 +125,7 @@ struct boss_aggramar : public BossAI
         PhaseStatus = Phases::PHASE_INTRO;
     }
 
-    void LoadNPC(uint32 event, const SpawnData* data)
+    void LoadNPC(uint32 event, const CustomSpawnData* data)
     {
         while (data->event)
         {

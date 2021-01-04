@@ -165,7 +165,7 @@ class boss_wrath_of_azshara : public CreatureScript
             void Reset() override
             {
                 me->SetObjectScale(0.6f);
-                me->setRegeneratingHealth(false);
+                me->SetRegenerateHealth(false);
                 me->AddUnitState(UNIT_STATE_ROOT);
                 _Reset();
                 CheckIntro();

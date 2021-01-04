@@ -762,7 +762,8 @@ void BattlegroundIC::HandleCapturedNodes(ICNodePoint* node, bool recapture)
 
                         if (Creature* siegeEngine = GetBGCreature(siegeType))
                         {
-                            siegeEngine->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_CANNOT_SWIM | UNIT_FLAG_IMMUNE_TO_PC));
+                            siegeEngine->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_CANNOT_SWIM));
+                            siegeEngine->SetImmuneToPC(true);
                             siegeEngine->SetFaction(BG_IC_Factions[(node->faction == TEAM_ALLIANCE ? 0 : 1)]);
                         }
                     }
@@ -855,7 +856,7 @@ void BattlegroundIC::DestroyGate(Player* player, GameObject* go)
     SendBroadcastText(textId, msgType);
 }
 
-WorldSafeLocsEntry const* BattlegroundIC::GetClosestGraveYard(Player* player)
+WorldSafeLocsEntry const* BattlegroundIC::GetClosestGraveyard(Player* player)
 {
     TeamId teamIndex = GetTeamIndexByTeamId(player->GetTeam());
 

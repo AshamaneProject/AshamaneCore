@@ -20,28 +20,13 @@
 
 #include "Define.h"
 #include "ObjectGuid.h"
+#include "WaypointDefines.h"
 #include <map>
 #include <string>
 #include <unordered_map>
 
 class WorldObject;
 enum SpellEffIndex : uint8;
-
-struct WayPoint
-{
-    WayPoint(uint32 _id, float _x, float _y, float _z)
-    {
-        id = _id;
-        x = _x;
-        y = _y;
-        z = _z;
-    }
-
-    uint32 id;
-    float x;
-    float y;
-    float z;
-};
 
 enum eSmartAI
 {
@@ -603,7 +588,9 @@ enum SMART_ACTION
     SMART_ACTION_PLAY_ANIMKIT                       = 128,    // id, type (0 = oneShot, 1 = aiAnim, 2 = meleeAnim, 3 = movementAnim)
     SMART_ACTION_SCENE_PLAY                         = 129,    // sceneId
     SMART_ACTION_SCENE_CANCEL                       = 130,    // sceneId
-    // 131 - 134 : 3.3.5 reserved
+    SMART_ACTION_SPAWN_SPAWNGROUP                   = 131,    // Group ID, min secs, max secs, spawnflags
+    SMART_ACTION_DESPAWN_SPAWNGROUP                 = 132,    // Group ID, min secs, max secs, spawnflags
+    // 134 : 3.3.5 reserved
     SMART_ACTION_PLAY_CINEMATIC                     = 135,    // reserved for future uses
     SMART_ACTION_SET_MOVEMENT_SPEED                 = 136,    // movementType, speedInteger, speedFraction
     SMART_ACTION_PLAY_SPELL_VISUAL_KIT              = 137,    // spellVisualKitId, kitType (unknown values, copypaste from packet dumps), duration
@@ -656,6 +643,8 @@ struct SmartAction
         {
             uint32 sound;
             uint32 onlySelf;
+            uint32 distance; // NYI: awaiting cherry-pick
+            uint32 keyBroadcastTextId;
         } sound;
 
         struct
@@ -1141,6 +1130,13 @@ struct SmartAction
         {
             uint32 disable;
         } disableEvade;
+        struct
+        {
+            uint32 groupId;
+            uint32 minDelay;
+            uint32 maxDelay;
+            uint32 spawnflags;
+        } groupSpawn;
 
         struct
         {
@@ -1282,6 +1278,14 @@ struct SmartAction
             uint32 param6;
         } raw;
     };
+};
+
+enum SMARTAI_SPAWN_FLAGS
+{
+    SMARTAI_SPAWN_FLAG_NONE                 = 0x00,
+    SMARTAI_SPAWN_FLAG_IGNORE_RESPAWN       = 0x01,
+    SMARTAI_SPAWN_FLAG_FORCE_SPAWN          = 0x02,
+    SMARTAI_SPAWN_FLAG_NOSAVE_RESPAWN       = 0x04,
 };
 
 enum SMARTAI_TEMPLATE
@@ -1658,8 +1662,6 @@ struct SmartScriptHolder
     operator bool() const { return entryOrGuid != 0; }
 };
 
-typedef std::unordered_map<uint32, WayPoint*> WPPath;
-
 typedef std::vector<WorldObject*> ObjectVector;
 
 class ObjectGuidVector
@@ -1686,25 +1688,21 @@ typedef std::unordered_map<uint32, ObjectGuidVector> ObjectVectorMap;
 
 class TC_GAME_API SmartWaypointMgr
 {
-    private:
-        SmartWaypointMgr() { }
-        ~SmartWaypointMgr();
-
     public:
         static SmartWaypointMgr* instance();
 
         void LoadFromDB();
 
-        WPPath* GetPath(uint32 id)
-        {
-            if (waypoint_map.find(id) != waypoint_map.end())
-                return waypoint_map[id];
-            else return nullptr;
-        }
+        WaypointPath const* GetPath(uint32 id);
 
     private:
-        std::unordered_map<uint32, WPPath*> waypoint_map;
+        SmartWaypointMgr() { }
+        ~SmartWaypointMgr() { }
+
+        std::unordered_map<uint32, WaypointPath> _waypointStore;
 };
+
+#define sSmartWaypointMgr SmartWaypointMgr::instance()
 
 // all events for a single entry
 typedef std::vector<SmartScriptHolder> SmartAIEventList;
@@ -1740,31 +1738,22 @@ class TC_GAME_API SmartAIMgr
 
         bool IsEventValid(SmartScriptHolder& e);
         bool IsTargetValid(SmartScriptHolder const& e);
+
         bool IsMinMaxValid(SmartScriptHolder const& e, uint32 min, uint32 max);
 
-        /*inline bool IsPercentValid(SmartScriptHolder e, int32 pct)
-        {
-            if (pct < -100 || pct > 100)
-            {
-                TC_LOG_ERROR("sql.sql", "SmartAIMgr: Entry %d SourceType %u Event %u Action %u has invalid Percent set (%d), skipped.", e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType(), pct);
-                return false;
-            }
-            return true;
-        }*/
-
-        bool NotNULL(SmartScriptHolder const& e, uint32 data);
-        bool IsCreatureValid(SmartScriptHolder const& e, uint32 entry);
-        bool IsQuestValid(SmartScriptHolder const& e, uint32 entry);
-        bool IsGameObjectValid(SmartScriptHolder const& e, uint32 entry);
-        bool IsSpellValid(SmartScriptHolder const& e, uint32 entry);
-        bool IsItemValid(SmartScriptHolder const& e, uint32 entry);
-        bool IsTextEmoteValid(SmartScriptHolder const& e, uint32 entry);
-        bool IsEmoteValid(SmartScriptHolder const& e, uint32 entry);
-        bool IsAreaTriggerValid(SmartScriptHolder const& e, uint32 entry);
-        bool IsSoundValid(SmartScriptHolder const& e, uint32 entry);
-        bool IsAnimKitValid(SmartScriptHolder const& e, uint32 entry);
-        bool IsSpellVisualKitValid(SmartScriptHolder const& e, uint32 entry);
-        bool IsTextValid(SmartScriptHolder const& e, uint32 id);
+        static bool NotNULL(SmartScriptHolder const& e, uint32 data);
+        static bool IsCreatureValid(SmartScriptHolder const& e, uint32 entry);
+        static bool IsQuestValid(SmartScriptHolder const& e, uint32 entry);
+        static bool IsGameObjectValid(SmartScriptHolder const& e, uint32 entry);
+        static bool IsSpellValid(SmartScriptHolder const& e, uint32 entry);
+        static bool IsItemValid(SmartScriptHolder const& e, uint32 entry);
+        static bool IsTextEmoteValid(SmartScriptHolder const& e, uint32 entry);
+        static bool IsEmoteValid(SmartScriptHolder const& e, uint32 entry);
+        static bool IsAreaTriggerValid(SmartScriptHolder const& e, uint32 entry);
+        static bool IsSoundValid(SmartScriptHolder const& e, uint32 entry);
+        static bool IsAnimKitValid(SmartScriptHolder const& e, uint32 entry);
+        static bool IsSpellVisualKitValid(SmartScriptHolder const& e, uint32 entry);
+        static bool IsTextValid(SmartScriptHolder const& e, uint32 id);
 
         // Helpers
         void LoadHelperStores();
@@ -1782,5 +1771,5 @@ class TC_GAME_API SmartAIMgr
 };
 
 #define sSmartScriptMgr SmartAIMgr::instance()
-#define sSmartWaypointMgr SmartWaypointMgr::instance()
+
 #endif

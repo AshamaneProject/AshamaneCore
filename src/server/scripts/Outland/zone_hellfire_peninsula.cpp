@@ -34,7 +34,6 @@ EndContentData */
 #include "MotionMaster.h"
 #include "ObjectAccessor.h"
 #include "Player.h"
-#include "QuestDef.h"
 #include "ScriptedEscortAI.h"
 #include "ScriptedGossip.h"
 
@@ -149,9 +148,9 @@ class npc_ancestral_wolf : public CreatureScript
 public:
     npc_ancestral_wolf() : CreatureScript("npc_ancestral_wolf") { }
 
-    struct npc_ancestral_wolfAI : public npc_escortAI
+    struct npc_ancestral_wolfAI : public EscortAI
     {
-        npc_ancestral_wolfAI(Creature* creature) : npc_escortAI(creature)
+        npc_ancestral_wolfAI(Creature* creature) : EscortAI(creature)
         {
             if (creature->GetOwner() && creature->GetOwner()->GetTypeId() == TYPEID_PLAYER)
                 Start(false, false, creature->GetOwner()->GetGUID());
@@ -169,11 +168,11 @@ public:
         // Override Evade Mode event, recast buff that was removed by standard handler
         void EnterEvadeMode(EvadeReason why) override
         {
-            npc_escortAI::EnterEvadeMode(why);
+            EscortAI::EnterEvadeMode(why);
             DoCast(me, SPELL_ANCESTRAL_WOLF_BUFF, true);
         }
 
-        void WaypointReached(uint32 waypointId) override
+        void WaypointReached(uint32 waypointId, uint32 /*pathId*/) override
         {
             switch (waypointId)
             {
@@ -258,9 +257,9 @@ class npc_wounded_blood_elf : public CreatureScript
 public:
     npc_wounded_blood_elf() : CreatureScript("npc_wounded_blood_elf") { }
 
-    struct npc_wounded_blood_elfAI : public npc_escortAI
+    struct npc_wounded_blood_elfAI : public EscortAI
     {
-        npc_wounded_blood_elfAI(Creature* creature) : npc_escortAI(creature) { }
+        npc_wounded_blood_elfAI(Creature* creature) : EscortAI(creature) { }
 
         void Reset() override { }
 
@@ -279,12 +278,12 @@ public:
         {
             if (quest->GetQuestId() == QUEST_ROAD_TO_FALCON_WATCH)
             {
-                me->SetFaction(FACTION_FALCON_WATCH_QUEST);
-                npc_escortAI::Start(true, false, player->GetGUID());
+                me->SetFaction(FACTION_ESCORTEE_H_PASSIVE);
+                EscortAI::Start(true, false, player->GetGUID());
             }
         }
 
-        void WaypointReached(uint32 waypointId) override
+        void WaypointReached(uint32 waypointId, uint32 /*pathId*/) override
         {
             Player* player = GetPlayerForEscort();
             if (!player)
@@ -968,7 +967,7 @@ public:
             me->RestoreFaction();
             me->RemoveNpcFlag(UNIT_NPC_FLAG_QUESTGIVER);
             me->AddNpcFlag(UNIT_NPC_FLAG_GOSSIP);
-            me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
+            me->SetImmuneToPC(true);
         }
 
         void DamageTaken(Unit* /*attacker*/, uint32 &damage) override
@@ -983,7 +982,7 @@ public:
                 me->GetThreatManager().ClearAllThreat();
                 me->CombatStop(true);
                 me->AddNpcFlag(UNIT_NPC_FLAG_QUESTGIVER);
-                me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
+                me->SetImmuneToPC(true);
                 Talk(SAY_DEFEATED);
 
                 _events.ScheduleEvent(EVENT_EVADE, Minutes(1));
@@ -1003,8 +1002,8 @@ public:
                     _events.ScheduleEvent(EVENT_ATTACK, Seconds(2));
                     break;
                 case EVENT_ATTACK:
-                    me->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
-                    me->SetFaction(FACTION_MONSTER);
+                    me->SetImmuneToPC(false);
+                    me->SetFaction(FACTION_MONSTER_2);
                     if (Player* player = ObjectAccessor::GetPlayer(*me, _playerGUID))
                         me->EngageWithTarget(player);
                     _events.ScheduleEvent(EVENT_FIREBALL, 1);

@@ -18,6 +18,7 @@
 #include "icecrown_citadel.h"
 #include "CellImpl.h"
 #include "CreatureTextMgr.h"
+#include "GossipDef.h"
 #include "GridNotifiersImpl.h"
 #include "InstanceScript.h"
 #include "Map.h"
@@ -26,12 +27,10 @@
 #include "MoveSplineInit.h"
 #include "ObjectAccessor.h"
 #include "PassiveAI.h"
-#include "Player.h"
 #include "ScriptedCreature.h"
 #include "ScriptedGossip.h"
 #include "SpellAuraEffects.h"
 #include "SpellHistory.h"
-#include "SpellInfo.h"
 #include "SpellMgr.h"
 #include "SpellScript.h"
 #include "TemporarySummon.h"
@@ -551,7 +550,7 @@ struct gunship_npc_AI : public ScriptedAI
         Instance(creature->GetInstanceScript()), Slot(nullptr), Index(uint32(-1))
     {
         BurningPitchId = Instance->GetData(DATA_TEAM_IN_INSTANCE) == HORDE ? SPELL_BURNING_PITCH_A : SPELL_BURNING_PITCH_H;
-        me->setRegeneratingHealth(false);
+        me->SetRegenerateHealth(false);
     }
 
     void SetData(uint32 type, uint32 data) override
@@ -635,7 +634,8 @@ protected:
         if (!me->HasReactState(REACT_PASSIVE))
         {
             if (Unit* victim = me->SelectVictim())
-                AttackStart(victim);
+                if (!me->IsFocusing(nullptr, true) && victim != me->GetVictim())
+                    AttackStart(victim);
 
             return me->GetVictim() != nullptr;
         }
@@ -676,7 +676,7 @@ class npc_gunship : public CreatureScript
                 _teamInInstance(creature->GetInstanceScript()->GetData(DATA_TEAM_IN_INSTANCE)),
                 _summonedFirstMage(false), _died(false)
             {
-                me->setRegeneratingHealth(false);
+                me->SetRegenerateHealth(false);
             }
 
             void DamageTaken(Unit* /*source*/, uint32& damage) override
@@ -851,7 +851,7 @@ class npc_high_overlord_saurfang_igb : public CreatureScript
             {
                 _controller.ResetSlots(HORDE);
                 _controller.SetTransport(creature->GetTransport());
-                me->setRegeneratingHealth(false);
+                me->SetRegenerateHealth(false);
                 me->m_CombatDistance = 70.0f;
                 _firstMageCooldown = time(nullptr) + 60;
                 _axethrowersYellCooldown = time_t(0);
@@ -1120,7 +1120,7 @@ class npc_muradin_bronzebeard_igb : public CreatureScript
             {
                 _controller.ResetSlots(ALLIANCE);
                 _controller.SetTransport(creature->GetTransport());
-                me->setRegeneratingHealth(false);
+                me->SetRegenerateHealth(false);
                 me->m_CombatDistance = 70.0f;
                 _firstMageCooldown = time(nullptr) + 60;
                 _riflemanYellCooldown = time_t(0);
@@ -1814,7 +1814,7 @@ class npc_gunship_cannon : public CreatureScript
 
         CreatureAI* GetAI(Creature* creature) const override
         {
-            return new npc_gunship_cannonAI(creature);
+            return GetIcecrownCitadelAI<npc_gunship_cannonAI>(creature);
         }
 };
 
@@ -1829,11 +1829,7 @@ class spell_igb_rocket_pack : public SpellScriptLoader
 
             bool Validate(SpellInfo const* /*spellInfo*/) override
             {
-                return ValidateSpellInfo(
-                {
-                    SPELL_ROCKET_PACK_DAMAGE,
-                    SPELL_ROCKET_BURST
-                });
+                return ValidateSpellInfo({ SPELL_ROCKET_PACK_DAMAGE, SPELL_ROCKET_BURST });
             }
 
             void HandlePeriodic(AuraEffect const* /*aurEff*/)

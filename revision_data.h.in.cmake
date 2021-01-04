@@ -12,7 +12,7 @@
  #define _FULL_DATABASE             "ADB_world_820.00.sql"
  #define _HOTFIXES_DATABASE         "ADB_hotfixes_820.00.sql"
  #define VER_COMPANYNAME_STR        "Ashamane Developers"
- #define VER_LEGALCOPYRIGHT_STR     "(c)2008-2020 AshamaneCore"
+ #define VER_LEGALCOPYRIGHT_STR     "(c)2008-2021 AshamaneCore"
  #define VER_FILEVERSION            0,0,0
  #define VER_FILEVERSION_STR        "@rev_hash@ @rev_date@ (@rev_branch@ branch)"
  #define VER_PRODUCTVERSION         VER_FILEVERSION

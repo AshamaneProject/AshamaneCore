@@ -35,6 +35,7 @@ EndScriptData */
 #include "Player.h"
 #include "RBAC.h"
 #include "WorldSession.h"
+#include <sstream>
 
 class instance_commandscript : public CommandScript
 {
@@ -267,8 +268,7 @@ public:
         }
 
         map->GetInstanceScript()->SetBossState(encounterId, EncounterState(state));
-        std::string stateName = InstanceScript::GetBossStateName(state);
-        handler->PSendSysMessage(LANG_COMMAND_INST_SET_BOSS_STATE, encounterId, state, stateName.c_str());
+        handler->PSendSysMessage(LANG_COMMAND_INST_SET_BOSS_STATE, encounterId, state, InstanceScript::GetBossStateName(state));
         return true;
     }
 
@@ -332,8 +332,7 @@ public:
         }
 
         int32 state = map->GetInstanceScript()->GetBossState(encounterId);
-        std::string stateName = InstanceScript::GetBossStateName(state);
-        handler->PSendSysMessage(LANG_COMMAND_INST_GET_BOSS_STATE, encounterId, state, stateName.c_str());
+        handler->PSendSysMessage(LANG_COMMAND_INST_GET_BOSS_STATE, encounterId, state, InstanceScript::GetBossStateName(state));
         return true;
     }
 

@@ -15,7 +15,7 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "shadowfang_keep.h"
+#include "ScriptMgr.h"
 #include "GridNotifiersImpl.h"
 #include "Group.h"
 #include "InstanceScript.h"
@@ -25,8 +25,7 @@
 #include "Player.h"
 #include "ScriptedCreature.h"
 #include "ScriptedGossip.h"
-#include "ScriptMgr.h"
-#include "SpellAuraEffects.h"
+#include "shadowfang_keep.h"
 #include "SpellScript.h"
 
 enum ApothecarySpells
@@ -77,8 +76,6 @@ enum ApothecaryMisc
 {
     ACTION_START_EVENT          = 1,
     ACTION_START_FIGHT          = 2,
-    FACTION_APOTHECARY_HOSTILE  = 14,
-    FACTION_APOTHECARY_FRIENDLY = 35,
     GOSSIP_OPTION_START         = 0,
     GOSSIP_MENU_HUMMEL          = 10847,
     QUEST_YOUVE_BEEN_SERVED     = 14488,
@@ -120,7 +117,7 @@ class boss_apothecary_hummel : public CreatureScript
                 _deadCount = 0;
                 _isDead = false;
                 events.SetPhase(PHASE_ALL);
-                me->SetFaction(FACTION_APOTHECARY_FRIENDLY);
+                me->SetFaction(FACTION_FRIENDLY);
                 me->SummonCreatureGroup(1);
             }
 
@@ -138,8 +135,8 @@ class boss_apothecary_hummel : public CreatureScript
                     events.SetPhase(PHASE_INTRO);
                     events.ScheduleEvent(EVENT_HUMMEL_SAY_0, Milliseconds(1));
 
-                    me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
-                    me->SetFaction(FACTION_APOTHECARY_HOSTILE);
+                    me->SetImmuneToPC(true);
+                    me->SetFaction(FACTION_MONSTER);
                     DummyEntryCheckPredicate pred;
                     summons.DoAction(ACTION_START_EVENT, pred);
                 }
@@ -219,8 +216,7 @@ class boss_apothecary_hummel : public CreatureScript
                             break;
                         case EVENT_START_FIGHT:
                         {
-                            me->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
-                            me->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_NPC);
+                            me->SetImmuneToAll(false);
                             me->SetInCombatWithZone();
                             events.ScheduleEvent(EVENT_CALL_BAXTER, Seconds(6));
                             events.ScheduleEvent(EVENT_CALL_FRYE, Seconds(14));
@@ -291,14 +287,13 @@ struct npc_apothecary_genericAI : public ScriptedAI
     {
         if (action == ACTION_START_EVENT)
         {
-            me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
-            me->SetFaction(FACTION_APOTHECARY_HOSTILE);
+            me->SetImmuneToPC(true);
+            me->SetFaction(FACTION_MONSTER);
             me->GetMotionMaster()->MovePoint(1, _movePos);
         }
         else if (action == ACTION_START_FIGHT)
         {
-            me->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
-            me->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_NPC);
+            me->SetImmuneToAll(false);
             me->SetInCombatWithZone();
         }
     }

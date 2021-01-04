@@ -454,7 +454,7 @@ public:
         {
             Status = true;
             me->SetHealth(15);
-            me->setRegeneratingHealth(false);
+            me->SetRegenerateHealth(false);
             me->SetFaction(35);
             me->AddAura(SPELL_ON_FIRE, me);
             me->CastSpell(me, SPELL_ON_FIRE);

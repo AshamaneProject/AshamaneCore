@@ -29,9 +29,8 @@ EndContentData */
 
 #include "ScriptMgr.h"
 #include "MotionMaster.h"
-#include "ScriptedCreature.h"
-#include "ScriptedEscortAI.h"
 #include "Player.h"
+#include "ScriptedEscortAI.h"
 
 /*######
 ## npc_oox09hl
@@ -56,9 +55,9 @@ class npc_oox09hl : public CreatureScript
 public:
     npc_oox09hl() : CreatureScript("npc_oox09hl") { }
 
-    struct npc_oox09hlAI : public npc_escortAI
+    struct npc_oox09hlAI : public EscortAI
     {
-        npc_oox09hlAI(Creature* creature) : npc_escortAI(creature) { }
+        npc_oox09hlAI(Creature* creature) : EscortAI(creature) { }
 
         void Reset() override { }
 
@@ -82,11 +81,11 @@ public:
                 me->SetStandState(UNIT_STAND_STATE_STAND);
                 me->SetFaction(player->GetTeam() == ALLIANCE ? FACTION_ESCORTEE_A : FACTION_ESCORTEE_H);
                 Talk(SAY_OOX_START, player);
-                npc_escortAI::Start(false, false, player->GetGUID(), quest);
+                EscortAI::Start(false, false, player->GetGUID(), quest);
             }
         }
 
-        void WaypointReached(uint32 waypointId) override
+        void WaypointReached(uint32 waypointId, uint32 /*pathId*/) override
         {
             switch (waypointId)
             {
@@ -104,7 +103,7 @@ public:
             }
         }
 
-        void WaypointStart(uint32 pointId) override
+        void WaypointStarted(uint32 pointId, uint32 /*pathId*/) override
         {
             switch (pointId)
             {

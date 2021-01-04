@@ -91,7 +91,7 @@ public:
             Initialize();
         }
 
-        void SpellHit(Unit* caster, const SpellInfo* spell) override
+        void SpellHit(Unit* caster, SpellInfo const* spell) override
         {
             if (phase || spell->Id != SPELL_SET_CART)
                 return;
@@ -551,9 +551,9 @@ class npc_lurgglbr : public CreatureScript
 public:
     npc_lurgglbr() : CreatureScript("npc_lurgglbr") { }
 
-    struct npc_lurgglbrAI : public npc_escortAI
+    struct npc_lurgglbrAI : public EscortAI
     {
-        npc_lurgglbrAI(Creature* creature) : npc_escortAI(creature)
+        npc_lurgglbrAI(Creature* creature) : EscortAI(creature)
         {
             Initialize();
         }
@@ -573,7 +573,7 @@ public:
                 Initialize();
         }
 
-        void WaypointReached(uint32 waypointId) override
+        void WaypointReached(uint32 waypointId, uint32 /*pathId*/) override
         {
             switch (waypointId)
             {
@@ -639,7 +639,7 @@ public:
                     }
                 } else IntroTimer -= diff;
             }
-            npc_escortAI::UpdateAI(diff);
+            EscortAI::UpdateAI(diff);
 
             if (!UpdateVictim())
                 return;
@@ -662,7 +662,7 @@ public:
                 go->UseDoorOrButton(20);
             }
 
-            if (npc_escortAI* pEscortAI = CAST_AI(npc_lurgglbr::npc_lurgglbrAI, creature->AI()))
+            if (EscortAI* pEscortAI = CAST_AI(npc_lurgglbr::npc_lurgglbrAI, creature->AI()))
                 pEscortAI->Start(true, false, player->GetGUID());
 
             switch (player->GetTeam())
@@ -711,7 +711,7 @@ public:
             owner->CastSpell(owner, SPELL_SUBDUED, true);
             GetCaster()->CastSpell(GetCaster(), SPELL_DRAKE_HATCHLING_SUBDUED, true);
             owner->SetFaction(35);
-            owner->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC));
+            owner->SetImmuneToAll(true);
             owner->DespawnOrUnsummon(3 * MINUTE*IN_MILLISECONDS);
         }
 
@@ -778,9 +778,9 @@ class npc_thassarian : public CreatureScript
 public:
     npc_thassarian() : CreatureScript("npc_thassarian") { }
 
-    struct npc_thassarianAI : public npc_escortAI
+    struct npc_thassarianAI : public EscortAI
     {
-        npc_thassarianAI(Creature* creature) : npc_escortAI(creature)
+        npc_thassarianAI(Creature* creature) : EscortAI(creature)
         {
             Initialize();
         }
@@ -822,7 +822,7 @@ public:
             Initialize();
         }
 
-        void WaypointReached(uint32 waypointId) override
+        void WaypointReached(uint32 waypointId, uint32 /*pathId*/) override
         {
             Player* player = GetPlayerForEscort();
             if (!player)
@@ -857,7 +857,7 @@ public:
 
         void UpdateAI(uint32 diff) override
         {
-            npc_escortAI::UpdateAI(diff);
+            EscortAI::UpdateAI(diff);
 
             if (arthasInPosition && talbotInPosition)
             {
@@ -1068,8 +1068,8 @@ public:
         switch (action)
         {
             case GOSSIP_ACTION_INFO_DEF+1:
-                ENSURE_AI(npc_escortAI, (creature->AI()))->Start(true, false, player->GetGUID());
-                ENSURE_AI(npc_escortAI, (creature->AI()))->SetMaxPlayerDistance(200.0f);
+                ENSURE_AI(EscortAI, (creature->AI()))->Start(true, false, player->GetGUID());
+                ENSURE_AI(EscortAI, (creature->AI()))->SetMaxPlayerDistance(200.0f);
                 break;
         }
         return true;
@@ -1445,7 +1445,7 @@ public:
                 AttackStart(who);
         }
 
-        void SpellHit(Unit* pCaster, const SpellInfo* pSpell) override
+        void SpellHit(Unit* pCaster, SpellInfo const* pSpell) override
         {
             if (pSpell->Id == SPELL_ARCANE_CHAINS && pCaster->GetTypeId() == TYPEID_PLAYER && !HealthAbovePct(50) && !bEnslaved)
             {
@@ -1555,7 +1555,7 @@ public:
         {
         }
 
-        void SpellHit(Unit* unit, const SpellInfo* spell) override
+        void SpellHit(Unit* unit, SpellInfo const* spell) override
         {
             if (spell->Id == SPELL_NEURAL_NEEDLE && unit->GetTypeId() == TYPEID_PLAYER)
                 if (Player* player = unit->ToPlayer())
@@ -1637,14 +1637,14 @@ public:
             }
             creature->SetStandState(UNIT_STAND_STATE_STAND);
             creature->AI()->Talk(SAY_1, player);
-            ENSURE_AI(npc_escortAI, (creature->AI()))->Start(true, false, player->GetGUID());
+            ENSURE_AI(EscortAI, (creature->AI()))->Start(true, false, player->GetGUID());
         }
         return true;
     }
 
-    struct npc_mootoo_the_youngerAI : public npc_escortAI
+    struct npc_mootoo_the_youngerAI : public EscortAI
     {
-        npc_mootoo_the_youngerAI(Creature* creature) : npc_escortAI(creature) { }
+        npc_mootoo_the_youngerAI(Creature* creature) : EscortAI(creature) { }
 
         void Reset() override
         {
@@ -1653,11 +1653,11 @@ public:
 
         void JustDied(Unit* /*killer*/) override
         {
-            if (Player* player=GetPlayerForEscort())
+            if (Player* player = GetPlayerForEscort())
                 player->FailQuest(QUEST_ESCAPING_THE_MIST);
         }
 
-        void WaypointReached(uint32 waypointId) override
+        void WaypointReached(uint32 waypointId, uint32 /*pathId*/) override
         {
             Player* player = GetPlayerForEscort();
             if (!player)
@@ -1718,14 +1718,14 @@ public:
         {
             creature->SetStandState(UNIT_STAND_STATE_STAND);
             creature->AI()->Talk(SAY_BONKER_2, player);
-            ENSURE_AI(npc_escortAI, (creature->AI()))->Start(true, true, player->GetGUID());
+            ENSURE_AI(EscortAI, (creature->AI()))->Start(true, true, player->GetGUID());
         }
         return true;
     }
 
-    struct npc_bonker_togglevoltAI : public npc_escortAI
+    struct npc_bonker_togglevoltAI : public EscortAI
     {
-        npc_bonker_togglevoltAI(Creature* creature) : npc_escortAI(creature)
+        npc_bonker_togglevoltAI(Creature* creature) : EscortAI(creature)
         {
             Initialize();
         }
@@ -1763,7 +1763,7 @@ public:
             else Bonker_agro=0;
         }
 
-        void WaypointReached(uint32 waypointId) override
+        void WaypointReached(uint32 waypointId, uint32 /*pathId*/) override
         {
             Player* player = GetPlayerForEscort();
             if (!player)
@@ -2150,9 +2150,9 @@ enum HiddenCultist
     SAY_HIDDEN_CULTIST_4                        = 3
 };
 
-const char* GOSSIP_ITEM_TOM_HEGGER = "What do you know about the Cult of the Damned?";
-const char* GOSSIP_ITEM_GUARD_MITCHELLS = "How long have you worked for the Cult of the Damned?";
-const char* GOSSIP_ITEM_SALTY_JOHN_THORPE = "I have a reason to believe you're involved in the cultist activity";
+char const* GOSSIP_ITEM_TOM_HEGGER = "What do you know about the Cult of the Damned?";
+char const* GOSSIP_ITEM_GUARD_MITCHELLS = "How long have you worked for the Cult of the Damned?";
+char const* GOSSIP_ITEM_SALTY_JOHN_THORPE = "I have a reason to believe you're involved in the cultist activity";
 
 class npc_hidden_cultist : public CreatureScript
 {

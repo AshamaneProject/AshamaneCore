@@ -54,6 +54,7 @@ WorldPacket const* WorldPackets::Misc::SetCurrency::Write()
     _worldPacket.WriteBit(WeeklyQuantity.is_initialized());
     _worldPacket.WriteBit(TrackedQuantity.is_initialized());
     _worldPacket.WriteBit(MaxQuantity.is_initialized());
+    _worldPacket.WriteBit(Unused901.is_initialized());
     _worldPacket.WriteBit(SuppressChatLog);
     _worldPacket.WriteBit(QuantityChange.is_initialized());
     _worldPacket.WriteBit(QuantityGainSource.is_initialized());
@@ -68,6 +69,9 @@ WorldPacket const* WorldPackets::Misc::SetCurrency::Write()
 
     if (MaxQuantity)
         _worldPacket << int32(*MaxQuantity);
+
+    if (Unused901)
+        _worldPacket << int32(*Unused901);
 
     if (QuantityChange)
         _worldPacket << int32(*QuantityChange);
@@ -99,6 +103,7 @@ WorldPacket const* WorldPackets::Misc::SetupCurrency::Write()
         _worldPacket.WriteBit(data.MaxWeeklyQuantity.is_initialized());
         _worldPacket.WriteBit(data.TrackedQuantity.is_initialized());
         _worldPacket.WriteBit(data.MaxQuantity.is_initialized());
+        _worldPacket.WriteBit(data.Unused901.is_initialized());
         _worldPacket.WriteBits(data.Flags, 5);
         _worldPacket.FlushBits();
 
@@ -110,6 +115,8 @@ WorldPacket const* WorldPackets::Misc::SetupCurrency::Write()
             _worldPacket << uint32(*data.TrackedQuantity);
         if (data.MaxQuantity)
             _worldPacket << int32(*data.MaxQuantity);
+        if (data.Unused901)
+            _worldPacket << int32(*data.Unused901);
     }
 
     return &_worldPacket;
@@ -138,7 +145,7 @@ void WorldPackets::Misc::TimeSyncResponse::Read()
     _worldPacket >> ClientTime;
 }
 
-WorldPacket const* WorldPackets::Misc::UITime::Write()
+WorldPacket const* WorldPackets::Misc::ServerTimeOffset::Write()
 {
     _worldPacket << Time;
 
@@ -187,7 +194,7 @@ WorldPacket const* WorldPackets::Misc::WorldServerInfo::Write()
         _worldPacket << uint32(*RestrictedAccountMaxLevel);
 
     if (RestrictedAccountMaxMoney)
-        _worldPacket << uint32(*RestrictedAccountMaxMoney);
+        _worldPacket << uint64(*RestrictedAccountMaxMoney);
 
     if (InstanceGroupSize)
         _worldPacket << uint32(*InstanceGroupSize);
@@ -472,6 +479,7 @@ WorldPacket const* WorldPackets::Misc::PlayObjectSound::Write()
     _worldPacket << SourceObjectGUID;
     _worldPacket << TargetObjectGUID;
     _worldPacket << Position;
+    _worldPacket << int32(BroadcastTextID);
 
     return &_worldPacket;
 }
@@ -480,6 +488,7 @@ WorldPacket const* WorldPackets::Misc::PlaySound::Write()
 {
     _worldPacket << int32(SoundKitID);
     _worldPacket << SourceObjectGuid;
+    _worldPacket << int32(BroadcastTextID);
 
     return &_worldPacket;
 }
@@ -495,13 +504,6 @@ WorldPacket const* WorldPackets::Misc::PlaySpeakerbotSound::Write()
 void WorldPackets::Misc::FarSight::Read()
 {
     Enable = _worldPacket.ReadBit();
-}
-
-WorldPacket const* WorldPackets::Misc::Dismount::Write()
-{
-    _worldPacket << Guid;
-
-    return &_worldPacket;
 }
 
 void WorldPackets::Misc::SaveCUFProfiles::Read()

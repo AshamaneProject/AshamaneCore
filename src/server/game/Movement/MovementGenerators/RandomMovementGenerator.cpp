@@ -15,14 +15,13 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "RandomMovementGenerator.h"
 #include "Creature.h"
-#include "CreatureGroups.h"
 #include "Map.h"
 #include "MoveSplineInit.h"
 #include "MoveSpline.h"
 #include "PathGenerator.h"
 #include "Random.h"
-#include "RandomMovementGenerator.h"
 
 template<class T>
 RandomMovementGenerator<T>::~RandomMovementGenerator() { }
@@ -43,7 +42,7 @@ void RandomMovementGenerator<Creature>::DoInitialize(Creature* owner)
         return;
 
     owner->AddUnitState(UNIT_STATE_ROAMING);
-    owner->GetPosition(_reference.m_positionX, _reference.m_positionY, _reference.m_positionZ);
+    _reference = owner->GetPosition();
     owner->StopMoving();
 
     if (!_wanderDistance)
@@ -115,8 +114,7 @@ void RandomMovementGenerator<Creature>::SetRandomLocation(Creature* owner)
     _timer.Reset(traveltime + resetTimer);
 
     // Call for creature group update
-    if (owner->GetFormation() && owner->GetFormation()->getLeader() == owner)
-        owner->GetFormation()->LeaderMoveTo(position);
+    owner->SignalFormationMovement(position);
 }
 
 template<class T>

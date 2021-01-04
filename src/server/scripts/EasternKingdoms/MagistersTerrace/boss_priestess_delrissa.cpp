@@ -23,8 +23,8 @@ SDCategory: Magister's Terrace
 EndScriptData */
 
 #include "ScriptMgr.h"
-#include "InstanceScript.h"
 #include "magisters_terrace.h"
+#include "InstanceScript.h"
 #include "ObjectAccessor.h"
 #include "ScriptedCreature.h"
 #include "TemporarySummon.h"
@@ -152,8 +152,6 @@ public:
 
         void Reset() override
         {
-            instance->SetBossState(DATA_DELRISSA, NOT_STARTED);
-
             Initialize();
 
             InitializeLackeys();
@@ -202,7 +200,7 @@ public:
                 //summon all the remaining in vector
                 for (std::vector<uint32>::const_iterator itr = LackeyEntryList.begin(); itr != LackeyEntryList.end(); ++itr)
                 {
-                    if (Creature* pAdd = me->SummonCreature((*itr), LackeyLocations[j][0], LackeyLocations[j][1], fZLocation, fOrientation, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 5000))
+                    if (Creature* pAdd = me->SummonCreature((*itr), LackeyLocations[j][0], LackeyLocations[j][1], fZLocation, fOrientation, TEMPSUMMON_CORPSE_DESPAWN, 0))
                         m_auiLackeyGUID[j] = pAdd->GetGUID();
 
                     ++j;
@@ -217,7 +215,7 @@ public:
                     //object already removed, not exist
                     if (!pAdd)
                     {
-                        pAdd = me->SummonCreature((*itr), LackeyLocations[j][0], LackeyLocations[j][1], fZLocation, fOrientation, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 5000);
+                        pAdd = me->SummonCreature((*itr), LackeyLocations[j][0], LackeyLocations[j][1], fZLocation, fOrientation, TEMPSUMMON_CORPSE_DESPAWN, 0);
                         if (pAdd)
                             m_auiLackeyGUID[j] = pAdd->GetGUID();
                     }
@@ -244,10 +242,7 @@ public:
             if (instance->GetData(DATA_DELRISSA_DEATH_COUNT) == MAX_ACTIVE_LACKEY)
                 instance->SetBossState(DATA_DELRISSA, DONE);
             else
-            {
-                if (me->HasDynamicFlag(UNIT_DYNFLAG_LOOTABLE))
-                    me->RemoveDynamicFlag(UNIT_DYNFLAG_LOOTABLE);
-            }
+                me->RemoveDynamicFlag(UNIT_DYNFLAG_LOOTABLE);
         }
 
         void UpdateAI(uint32 diff) override
@@ -426,8 +421,7 @@ struct boss_priestess_lackey_commonAI : public ScriptedAI
             //time to make her lootable and complete event if she died before lackeys
             if (!pDelrissa->IsAlive())
             {
-                if (!pDelrissa->HasDynamicFlag(UNIT_DYNFLAG_LOOTABLE))
-                    pDelrissa->AddDynamicFlag(UNIT_DYNFLAG_LOOTABLE);
+                pDelrissa->AddDynamicFlag(UNIT_DYNFLAG_LOOTABLE);
 
                 instance->SetBossState(DATA_DELRISSA, DONE);
             }
@@ -1334,7 +1328,7 @@ public:
 
     //CreatureAI* GetAI(Creature* creature) const override
     //{
-    //    return new npc_high_explosive_sheepAI(creature);
+    //    return GetMagistersTerraceAI<npc_high_explosive_sheepAI>(creature);
     //};
 };
 */

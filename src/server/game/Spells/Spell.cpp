@@ -632,7 +632,7 @@ m_spellValue(new SpellValue(m_spellInfo, caster)), _spellEvent(nullptr)
     focusObject = nullptr;
     m_castId = ObjectGuid::Create<HighGuid::Cast>(SPELL_CAST_SOURCE_NORMAL, m_caster->GetMapId(), m_spellInfo->Id, m_caster->GetMap()->GenerateLowGuid<HighGuid::Cast>());
     memset(m_misc.Raw.Data, 0, sizeof(m_misc.Raw.Data));
-    m_SpellVisual = caster->GetCastSpellXSpellVisualId(m_spellInfo);
+    m_SpellVisual.SpellXSpellVisualID = caster->GetCastSpellXSpellVisualId(m_spellInfo);
     m_triggeredByAuraSpell  = nullptr;
     m_spellAura = nullptr;
 
@@ -2719,7 +2719,8 @@ SpellMissInfo Spell::DoSpellHitOnUnit(Unit* unit, uint32 effectMask)
             // for delayed spells ignore negative spells (after duel end) for friendly targets
             /// @todo this cause soul transfer bugged
             // 63881 - Malady of the Mind jump spell (Yogg-Saron)
-            if (m_spellInfo->HasHitDelay() && unit->GetTypeId() == TYPEID_PLAYER && !m_spellInfo->IsPositive() && m_spellInfo->Id != 63881)
+            // 45034 - Curse of Boundless Agony jump spell (Kalecgos)
+            if (m_spellInfo->HasHitDelay() && unit->GetTypeId() == TYPEID_PLAYER && !m_spellInfo->IsPositive() && m_spellInfo->Id != 63881 && m_spellInfo->Id != 45034)
                 return SPELL_MISS_EVADE;
 
             // assisting case, healing and resurrection
@@ -3122,13 +3123,13 @@ bool Spell::prepare(SpellCastTargets const* targets, AuraEffect const* triggered
         if (!player->GetCommandStatus(CHEAT_CASTTIME))
         {
             // calculate cast time (calculated after first CheckCast check to prevent charge counting for first CheckCast fail)
-            m_casttime = m_spellInfo->CalcCastTime(player->getLevel(), this);
+            m_casttime = m_spellInfo->CalcCastTime(this);
         }
         else
             m_casttime = 0; // Set cast time to 0 if .cheat casttime is enabled.
     }
     else
-        m_casttime = m_spellInfo->CalcCastTime(m_caster->getLevel(), this);
+        m_casttime = m_spellInfo->CalcCastTime(this);
 
     CallScriptOnCalcCastTimeHandlers();
 
@@ -3298,7 +3299,7 @@ void Spell::_cast(bool skipCheck)
         // As of 3.0.2 pets begin attacking their owner's target immediately
         // Let any pets know we've attacked something. Check DmgClass for harmful spells only
         // This prevents spells such as Hunter's Mark from triggering pet attack
-        if (this->GetSpellInfo()->DmgClass != SPELL_DAMAGE_CLASS_NONE)
+        if (GetSpellInfo()->DmgClass != SPELL_DAMAGE_CLASS_NONE)
             if (Unit* unitTarget = m_targets.GetUnitTarget())
                 for (Unit* controlled : playerCaster->m_Controlled)
                     if (Creature* cControlled = controlled->ToCreature())
@@ -3440,6 +3441,10 @@ void Spell::_cast(bool skipCheck)
 
     // we must send smsg_spell_go packet before m_castItem delete in TakeCastItem()...
     SendSpellGo();
+
+    if (!m_spellInfo->IsChanneled())
+        if (Creature* creatureCaster = m_caster->ToCreature())
+            creatureCaster->ReleaseFocus(this);
 
     // Okay, everything is prepared. Now we need to distinguish between immediate and evented delayed spells
     if ((m_spellInfo->HasHitDelay() && !m_spellInfo->IsChanneled()) || m_spellInfo->HasAttribute(SPELL_ATTR4_UNK4))
@@ -4126,7 +4131,7 @@ void Spell::SendCastResult(SpellCastResult result, uint32* param1 /*= nullptr*/,
         result = SPELL_FAILED_DONT_REPORT;
 
     WorldPackets::Spells::CastFailed castFailed;
-    castFailed.SpellXSpellVisualID = m_SpellVisual;
+    castFailed.Visual = m_SpellVisual;
     FillSpellCastFailedArgs(castFailed, m_castId, m_spellInfo, result, m_customError, param1, param2, m_caster->ToPlayer());
     m_caster->ToPlayer()->SendDirectMessage(castFailed.Write());
 }
@@ -4148,15 +4153,15 @@ void Spell::SendPetCastResult(SpellCastResult result, uint32* param1 /*= nullptr
     owner->ToPlayer()->SendDirectMessage(petCastFailed.Write());
 }
 
-void Spell::SendCastResult(Player* caster, SpellInfo const* spellInfo, uint32 spellVisual, ObjectGuid cast_count, SpellCastResult result, SpellCustomErrors customError /*= SPELL_CUSTOM_ERROR_NONE*/, uint32* param1 /*= nullptr*/, uint32* param2 /*= nullptr*/)
+void Spell::SendCastResult(Player* caster, SpellInfo const* spellInfo, SpellCastVisual spellVisual, ObjectGuid cast_count, SpellCastResult result, SpellCustomErrors customError /*= SPELL_CUSTOM_ERROR_NONE*/, uint32* param1 /*= nullptr*/, uint32* param2 /*= nullptr*/)
 {
     if (result == SPELL_CAST_OK)
         return;
 
     WorldPackets::Spells::CastFailed packet;
-    packet.SpellXSpellVisualID = spellVisual;
+    packet.Visual = spellVisual;
     FillSpellCastFailedArgs(packet, cast_count, spellInfo, result, customError, param1, param2, caster);
-    caster->GetSession()->SendPacket(packet.Write());
+    caster->SendDirectMessage(packet.Write());
 }
 
 void Spell::SendMountResult(MountResult result)
@@ -4215,7 +4220,7 @@ void Spell::SendSpellStart()
     castData.CastID = m_castId;
     castData.OriginalCastID = m_originalCastId;
     castData.SpellID = m_spellInfo->Id;
-    castData.SpellXSpellVisualID = m_SpellVisual;
+    castData.Visual = m_SpellVisual;
     castData.CastFlags = castFlags;
     castData.CastFlagsEx = m_castFlagsEx;
     castData.CastTime = m_casttime;
@@ -4331,7 +4336,7 @@ void Spell::SendSpellGo()
     castData.CastID = m_castId;
     castData.OriginalCastID = m_originalCastId;
     castData.SpellID = m_spellInfo->Id;
-    castData.SpellXSpellVisualID = m_SpellVisual;
+    castData.Visual = m_SpellVisual;
     castData.CastFlags = castFlags;
     castData.CastFlagsEx = m_castFlagsEx;
     castData.CastTime = getMSTime();
@@ -4608,7 +4613,7 @@ void Spell::SendInterrupted(uint8 result)
     failurePacket.CasterUnit = m_caster->GetGUID();
     failurePacket.CastID = m_castId;
     failurePacket.SpellID = m_spellInfo->Id;
-    failurePacket.SpellXSpellVisualID = m_SpellVisual;
+    failurePacket.Visual = m_SpellVisual;
     failurePacket.Reason = result;
     m_caster->SendMessageToSet(failurePacket.Write(), true);
 
@@ -4616,6 +4621,7 @@ void Spell::SendInterrupted(uint8 result)
     failedPacket.CasterUnit = m_caster->GetGUID();
     failedPacket.CastID = m_castId;
     failedPacket.SpellID = m_spellInfo->Id;
+    failedPacket.Visual = m_SpellVisual;
     failedPacket.Reason = result;
     m_caster->SendMessageToSet(failedPacket.Write(), true);
 }
@@ -4626,7 +4632,7 @@ void Spell::SendChannelUpdate(uint32 time)
     {
         m_caster->ClearChannelObjects();
         m_caster->SetChannelSpellId(0);
-        m_caster->SetChannelSpellXSpellVisualId(0);
+        m_caster->SetChannelVisual({});
     }
 
     WorldPackets::Spells::SpellChannelUpdate spellChannelUpdate;
@@ -4640,7 +4646,7 @@ void Spell::SendChannelStart(uint32 duration)
     WorldPackets::Spells::SpellChannelStart spellChannelStart;
     spellChannelStart.CasterGUID = m_caster->GetGUID();
     spellChannelStart.SpellID = m_spellInfo->Id;
-    spellChannelStart.SpellXSpellVisualID = m_SpellVisual;
+    spellChannelStart.Visual = m_SpellVisual;
     spellChannelStart.ChannelDuration = duration;
     m_caster->SendMessageToSet(spellChannelStart.Write(), true);
 
@@ -4670,7 +4676,7 @@ void Spell::SendChannelStart(uint32 duration)
         m_caster->AddChannelObject(target.targetGUID);
 
     m_caster->SetChannelSpellId(m_spellInfo->Id);
-    m_caster->SetChannelSpellXSpellVisualId(m_SpellVisual);
+    m_caster->SetChannelVisual(m_SpellVisual);
 }
 
 void Spell::SendResurrectRequest(Player* target)
@@ -4683,21 +4689,15 @@ void Spell::SendResurrectRequest(Player* target)
     WorldPackets::Spells::ResurrectRequest resurrectRequest;
     resurrectRequest.ResurrectOffererGUID =  m_caster->GetGUID();
     resurrectRequest.ResurrectOffererVirtualRealmAddress = GetVirtualRealmAddress();
-
+    resurrectRequest.Name = sentName;
+    resurrectRequest.Sickness = m_caster->GetTypeId() != TYPEID_PLAYER && m_caster->IsSpiritHealer(); // "you'll be afflicted with resurrection sickness"
+    resurrectRequest.UseTimer = !m_spellInfo->HasAttribute(SPELL_ATTR3_IGNORE_RESURRECTION_TIMER);
     if (Pet* pet = target->GetPet())
-    {
         if (CharmInfo* charmInfo = pet->GetCharmInfo())
             resurrectRequest.PetNumber = charmInfo->GetPetNumber();
-    }
 
     resurrectRequest.SpellID = m_spellInfo->Id;
-
-    //packet.ReadBit("UseTimer"); /// @todo: 6.x Has to be implemented
-    resurrectRequest.Sickness = m_caster->GetTypeId() != TYPEID_PLAYER; // "you'll be afflicted with resurrection sickness"
-
-    resurrectRequest.Name = sentName;
-
-    target->GetSession()->SendPacket(resurrectRequest.Write());
+    target->SendDirectMessage(resurrectRequest.Write());
 }
 
 void Spell::TakeCastItem()
@@ -5125,7 +5125,7 @@ SpellCastResult Spell::CheckCast(bool strict, uint32* param1 /*= nullptr*/, uint
             m_needComboPoints = false;
             if ((*j)->GetMiscValue() == 1)
             {
-                reqCombat=false;
+                reqCombat = false;
                 break;
             }
         }
@@ -7344,7 +7344,7 @@ bool Spell::IsAutoActionResetSpell() const
 
 bool Spell::IsNeedSendToClient() const
 {
-    return m_SpellVisual || m_spellInfo->IsChanneled() ||
+    return m_SpellVisual.SpellXSpellVisualID || m_SpellVisual.ScriptVisualID || m_spellInfo->IsChanneled() ||
         (m_spellInfo->HasAttribute(SPELL_ATTR8_AURA_SEND_AMOUNT)) || m_spellInfo->HasHitDelay() || (!m_triggeredByAuraSpell && !IsTriggered());
 }
 
@@ -8303,3 +8303,16 @@ bool WorldObjectSpellTrajTargetCheck::operator()(WorldObject* target)
 }
 
 } //namespace Trinity
+
+SpellCastVisual::operator UF::SpellCastVisual() const
+{
+    UF::SpellCastVisual visual;
+    visual.SpellXSpellVisualID = SpellXSpellVisualID;
+    visual.ScriptVisualID = ScriptVisualID;
+    return visual;
+}
+
+SpellCastVisual::operator WorldPackets::Spells::SpellCastVisual() const
+{
+    return { int32(SpellXSpellVisualID), int32(ScriptVisualID) };
+}

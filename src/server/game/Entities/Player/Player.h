@@ -25,7 +25,7 @@
 #include "CUFProfile.h"
 #include "DatabaseEnvFwd.h"
 #include "DBCEnums.h"
-#include "EquipementSet.h"
+#include "EquipmentSet.h"
 #include "GroupReference.h"
 #include "ItemDefines.h"
 #include "ItemEnchantmentMgr.h"
@@ -99,6 +99,7 @@ enum GroupCategory : uint8;
 enum InventoryType : uint8;
 enum ItemClass : uint8;
 enum LootError : uint8;
+enum class LootItemType : uint8;
 enum LootType : uint8;
 enum ToastDisplayMethod : uint8;
 enum PlayerRestState : uint8;
@@ -113,7 +114,7 @@ namespace WorldPackets
 
     namespace Battleground
     {
-        struct RatedBattlefieldInfo::BracketInfo;
+        struct RatedPvpInfo::BracketInfo;
     }
 }
 
@@ -459,7 +460,11 @@ enum PlayerFlagsEx
 {
     PLAYER_FLAGS_EX_REAGENT_BANK_UNLOCKED   = 0x0001,
     PLAYER_FLAGS_EX_MERCENARY_MODE          = 0x0002,
-    PLAYER_FLAGS_EX_ARTIFACT_FORGE_CHEAT    = 0x0004
+    PLAYER_FLAGS_EX_ARTIFACT_FORGE_CHEAT    = 0x0004,
+    PLAYER_FLAGS_EX_IN_PVP_COMBAT           = 0x0040,       // Forbids /follow
+    PLAYER_FLAGS_EX_MENTOR                  = 0x0080,
+    PLAYER_FLAGS_EX_NEWCOMER                = 0x0100,
+    PLAYER_FLAGS_EX_UNLOCKED_AOE_LOOT       = 0x0200
 };
 
 enum PlayerLocalFlags
@@ -476,6 +481,9 @@ enum PlayerLocalFlags
     PLAYER_LOCAL_FLAG_CAN_VISIT_PARTY_GARRISON      = 0x00000400,
     PLAYER_LOCAL_FLAG_WAR_MODE                      = 0x00000800,
     PLAYER_LOCAL_FLAG_ACCOUNT_SECURED               = 0x00001000,   // Script_IsAccountSecured
+    PLAYER_LOCAL_FLAG_OVERRIDE_TRANSPORT_SERVER_TIME= 0x00008000,
+    PLAYER_LOCAL_FLAG_MENTOR_RESTRICTED             = 0x00020000,
+    PLAYER_LOCAL_FLAG_WEEKLY_REWARD_AVAILABLE       = 0x00040000,
 };
 
 // used in PLAYER_FIELD_BYTES2 values
@@ -771,6 +779,7 @@ enum PlayedTimeIndex
 enum PlayerLoginQueryIndex
 {
     PLAYER_LOGIN_QUERY_LOAD_FROM,
+    PLAYER_LOGIN_QUERY_LOAD_CUSTOMIZATIONS,
     PLAYER_LOGIN_QUERY_LOAD_GROUP,
     PLAYER_LOGIN_QUERY_LOAD_BOUND_INSTANCES,
     PLAYER_LOGIN_QUERY_LOAD_AURAS,
@@ -1034,6 +1043,15 @@ uint32 constexpr PLAYER_MAX_HONOR_LEVEL = 500;
 uint8 constexpr PLAYER_LEVEL_MIN_HONOR = 110;
 uint32 constexpr SPELL_PVP_RULES_ENABLED = 134735;
 
+enum class ZonePVPTypeOverride : uint32
+{
+    None        = 0,
+    Friendly    = 1,
+    Hostile     = 2,
+    Contested   = 3,
+    Combat      = 4
+};
+
 class TC_GAME_API Player : public Unit, public GridObject<Player>
 {
     friend class WorldSession;
@@ -1075,7 +1093,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
 
         bool IsInWater() const override { return m_isInWater; }
         bool IsUnderWater() const override;
-        bool IsInAreaTriggerRadius(const AreaTriggerEntry* trigger) const;
+        bool IsInAreaTriggerRadius(AreaTriggerEntry const* trigger) const;
 
         void SendInitialPacketsBeforeAddToMap();
         void SendInitialPacketsAfterAddToMap();
@@ -1095,7 +1113,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         uint8 GetChatFlags() const;
         std::string autoReplyMsg;
 
-        uint32 GetBarberShopCost(BarberShopStyleEntry const* newHairStyle, uint8 newHairColor, BarberShopStyleEntry const* newFacialHair, BarberShopStyleEntry const* newSkin, BarberShopStyleEntry const* newFace, std::array<BarberShopStyleEntry const*, PLAYER_CUSTOM_DISPLAY_SIZE> const& newCustomDisplay) const;
+        int64 GetBarberShopCost(Trinity::IteratorPair<UF::ChrCustomizationChoice const*> newCustomizations) const;
 
         PlayerSocial* GetSocial() const { return m_social; }
         void RemoveSocial();
@@ -1388,7 +1406,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         bool CanCompleteQuest(uint32 quest_id);
         bool CanCompleteRepeatableQuest(Quest const* quest);
         bool CanRewardQuest(Quest const* quest, bool msg) const;
-        bool CanRewardQuest(Quest const* quest, uint32 reward, bool msg) const;
+        bool CanRewardQuest(Quest const* quest, LootItemType rewardType, uint32 rewardId, bool msg) const;
         void AddQuestAndCheckCompletion(Quest const* quest, Object* questGiver);
         void AddQuest(Quest const* quest, Object* questGiver);
         void AbandonQuest(uint32 quest_id);
@@ -1399,7 +1417,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         uint32 GetQuestXPReward(Quest const* quest);
         bool CanSelectQuestPackageItem(QuestPackageItemEntry const* questPackageItem) const;
         void RewardQuestPackage(uint32 questPackageId, uint32 onlyItemId = 0);
-        void RewardQuest(Quest const* quest, uint32 reward, Object* questGiver, bool announce = true);
+        void RewardQuest(Quest const* quest, LootItemType rewardType, uint32 rewardId, Object* questGiver, bool announce = true);
         void SetRewardedQuest(uint32 quest_id);
         void FailQuest(uint32 quest_id);
         bool SatisfyQuestSkill(Quest const* qInfo, bool msg) const;
@@ -1533,7 +1551,6 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         static bool IsValidGender(uint8 Gender) { return Gender <= GENDER_FEMALE; }
         static bool IsValidClass(uint8 Class) { return ((1 << (Class - 1)) & CLASSMASK_ALL_PLAYABLE) != 0; }
         static bool IsValidRace(uint8 Race) { return Trinity::RaceMask<uint64>{ RACEMASK_ALL_PLAYABLE }.HasRace(Race); }
-        static bool ValidateAppearance(uint8 race, uint8 class_, uint8 gender, uint8 hairID, uint8 hairColor, uint8 faceID, uint8 facialHair, uint8 skinColor, std::array<uint8, PLAYER_CUSTOM_DISPLAY_SIZE> const& customDisplay, bool create = false);
 
         /*********************************************************/
         /***                   SAVE SYSTEM                     ***/
@@ -1544,6 +1561,8 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         void SaveInventoryAndGoldToDB(CharacterDatabaseTransaction& trans);                    // fast save function for item/money cheating preventing
         void SaveGoldToDB(CharacterDatabaseTransaction& trans) const;
 
+        static void SaveCustomizations(CharacterDatabaseTransaction trans, ObjectGuid::LowType guid,
+            Trinity::IteratorPair<UF::ChrCustomizationChoice const*> customizations);
         static void SetUInt32ValueInArray(Tokenizer& data, uint16 index, uint32 value);
         static void SavePositionInDB(WorldLocation const& loc, uint16 zoneId, ObjectGuid guid, CharacterDatabaseTransaction& trans);
 
@@ -1661,6 +1680,9 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         void SetLootSpecId(uint32 id) { SetUpdateFieldValue(m_values.ModifyValue(&Player::m_activePlayerData).ModifyValue(&UF::ActivePlayerData::LootSpecID), id); }
         uint32 GetLootSpecId() const { return m_activePlayerData->LootSpecID; }
 
+        ZonePVPTypeOverride GetOverrideZonePVPType() const { return ZonePVPTypeOverride(*m_activePlayerData->OverrideZonePVPType); }
+        void SetOverrideZonePVPType(ZonePVPTypeOverride type) { SetUpdateFieldValue(m_values.ModifyValue(&Player::m_activePlayerData).ModifyValue(&UF::ActivePlayerData::OverrideZonePVPType), uint32(type)); }
+
         // Talents
         uint32 GetTalentResetCost() const { return _specializationInfo.ResetTalentsCost; }
         void SetTalentResetCost(uint32 cost)  { _specializationInfo.ResetTalentsCost = cost; }
@@ -1765,9 +1787,10 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         PvPInfo pvpInfo;
         void UpdatePvPState(bool onlyFFA = false);
         void SetPvP(bool state) override;
-        void UpdatePvP(bool state, bool override=false);
+        void UpdatePvP(bool state, bool override = false);
         void UpdateArea(uint32 newAreaId);
         void UpdateZone(Area* oldArea);
+        void UpdateHostileAreaState(AreaTableEntry const* area);
         void UpdateAreaDependentAuras();
 
         void UpdateAfkReport(time_t currTime);
@@ -1789,7 +1812,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         bool IsInSameGroupWith(Player const* p) const;
         bool IsInSameRaidWith(Player const* p) const;
         void UninviteFromGroup();
-        static void RemoveFromGroup(Group* group, ObjectGuid guid, RemoveMethod method = GROUP_REMOVEMETHOD_DEFAULT, ObjectGuid kicker = ObjectGuid::Empty, const char* reason = nullptr);
+        static void RemoveFromGroup(Group* group, ObjectGuid guid, RemoveMethod method = GROUP_REMOVEMETHOD_DEFAULT, ObjectGuid kicker = ObjectGuid::Empty, char const* reason = nullptr);
         void RemoveFromGroup(RemoveMethod method = GROUP_REMOVEMETHOD_DEFAULT) { RemoveFromGroup(GetGroup(), GetGUID(), method); }
         void SendUpdateToOutOfRangeGroupMembers();
 
@@ -1806,8 +1829,8 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         static void RemovePetitionsAndSigns(ObjectGuid guid);
 
         // Arena
-        std::array<WorldPackets::Battleground::RatedBattlefieldInfo::BracketInfo, MAX_PVP_SLOT> GetRatedInfos() { return m_ratedInfos; }
-        WorldPackets::Battleground::RatedBattlefieldInfo::BracketInfo GetRatedInfo(uint8 slot) const { ASSERT(slot < MAX_PVP_SLOT); return m_ratedInfos[slot]; }
+        std::array<WorldPackets::Battleground::RatedPvpInfo::BracketInfo, MAX_PVP_SLOT> GetRatedInfos() { return m_ratedInfos; }
+        WorldPackets::Battleground::RatedPvpInfo::BracketInfo GetRatedInfo(uint8 slot) const { ASSERT(slot < MAX_PVP_SLOT); return m_ratedInfos[slot]; }
         uint32 GetArenaPersonalRating(uint8 slot) const { return GetRatedInfo(slot).PersonalRating; }
         uint32 GetBestRatingOfWeek(uint8 slot) const { return GetRatedInfo(slot).BestWeeklyRating; }
         uint32 GetBestRatingOfSeason(uint8 slot) const { return GetRatedInfo(slot).BestSeasonRating; }
@@ -1946,7 +1969,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         void SendResetFailedNotify(uint32 mapid) const;
 
         bool UpdatePosition(float x, float y, float z, float orientation, bool teleport = false) override;
-        bool UpdatePosition(const Position &pos, bool teleport = false) override { return UpdatePosition(pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ(), pos.GetOrientation(), teleport); }
+        bool UpdatePosition(Position const& pos, bool teleport = false) override { return UpdatePosition(pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ(), pos.GetOrientation(), teleport); }
         void ProcessTerrainStatusUpdate(ZLiquidStatus status, Optional<LiquidData> const& liquidData) override;
 
         bool HasWorldQuestEnabled(uint8 expansion) const;
@@ -2291,6 +2314,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         float m_homebindZ;
 
         WorldLocation GetStartPosition() const;
+        uint8 GetStartLevel(uint8 race, uint8 playerClass, Optional<int32> characterTemplateId) const;
 
         // currently visible objects at player client
         GuidUnorderedSet m_clientGUIDs;
@@ -2413,7 +2437,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         void SetMap(Map* map) override;
         void ResetMap() override;
 
-        bool isAllowedToLoot(const Creature* creature) const;
+        bool isAllowedToLoot(Creature const* creature) const;
 
         DeclinedName const* GetDeclinedNames() const { return m_declinedname; }
         uint8 GetRunesState() const;
@@ -2515,7 +2539,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         // End Garrisons
 
         // Arena
-        std::array<WorldPackets::Battleground::RatedBattlefieldInfo::BracketInfo, MAX_PVP_SLOT> m_ratedInfos;
+        std::array<WorldPackets::Battleground::RatedPvpInfo::BracketInfo, MAX_PVP_SLOT> m_ratedInfos;
 
         bool IsAdvancedCombatLoggingEnabled() const { return _advancedCombatLoggingEnabled; }
         void SetAdvancedCombatLogging(bool enabled) { _advancedCombatLoggingEnabled = enabled; }
@@ -2561,17 +2585,39 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         void RemovePlayerFlagEx(PlayerFlagsEx flags) { RemoveUpdateFieldFlagValue(m_values.ModifyValue(&Player::m_playerData).ModifyValue(&UF::PlayerData::PlayerFlagsEx), flags); }
         void SetPlayerFlagsEx(PlayerFlagsEx flags) { SetUpdateFieldValue(m_values.ModifyValue(&Player::m_playerData).ModifyValue(&UF::PlayerData::PlayerFlagsEx), flags); }
 
-        void SetSkinId(uint8 skinId) { SetUpdateFieldValue(m_values.ModifyValue(&Player::m_playerData).ModifyValue(&UF::PlayerData::SkinID), skinId); }
-        void SetFaceId(uint8 faceId) { SetUpdateFieldValue(m_values.ModifyValue(&Player::m_playerData).ModifyValue(&UF::PlayerData::FaceID), faceId); }
-        void SetHairStyleId(uint8 hairStyleId) { SetUpdateFieldValue(m_values.ModifyValue(&Player::m_playerData).ModifyValue(&UF::PlayerData::HairStyleID), hairStyleId); }
-        void SetHairColorId(uint8 hairColorId) { SetUpdateFieldValue(m_values.ModifyValue(&Player::m_playerData).ModifyValue(&UF::PlayerData::HairColorID), hairColorId); }
-        void SetFacialHairStyleId(uint8 facialHairStyleId) { SetUpdateFieldValue(m_values.ModifyValue(&Player::m_playerData).ModifyValue(&UF::PlayerData::FacialHairStyleID), facialHairStyleId); }
+        uint32 GetCustomizationChoice(uint32 chrCustomizationOptionId) const
+        {
+            int32 choiceIndex = m_playerData->Customizations.FindIndexIf([chrCustomizationOptionId](UF::ChrCustomizationChoice choice)
+            {
+                return choice.ChrCustomizationOptionID == chrCustomizationOptionId;
+            });
+
+            if (choiceIndex >= 0)
+                return m_playerData->Customizations[choiceIndex].ChrCustomizationChoiceID;
+
+            return 0;
+        }
+
+        template<typename Iter>
+        void SetCustomizations(Trinity::IteratorPair<Iter> customizations, bool markChanged = true)
+        {
+            if (markChanged)
+                m_customizationsChanged = true;
+
+            ClearDynamicUpdateFieldValues(m_values.ModifyValue(&Player::m_playerData).ModifyValue(&UF::PlayerData::Customizations));
+            for (auto&& customization : customizations)
+            {
+                UF::ChrCustomizationChoice& newChoice = AddDynamicUpdateFieldValue(m_values.ModifyValue(&Player::m_playerData).ModifyValue(&UF::PlayerData::Customizations));
+                newChoice.ChrCustomizationOptionID = customization.ChrCustomizationOptionID;
+                newChoice.ChrCustomizationChoiceID = customization.ChrCustomizationChoiceID;
+            }
+        }
+        Gender GetNativeSex() const { return Gender(*m_playerData->NativeSex); }
         void SetNativeSex(uint8 sex) { SetUpdateFieldValue(m_values.ModifyValue(&Player::m_playerData).ModifyValue(&UF::PlayerData::NativeSex), sex); }
         void SetPvpTitle(uint8 pvpTitle) { SetUpdateFieldValue(m_values.ModifyValue(&Player::m_playerData).ModifyValue(&UF::PlayerData::PvpTitle), pvpTitle); }
         void SetArenaFaction(uint8 arenaFaction) { SetUpdateFieldValue(m_values.ModifyValue(&Player::m_playerData).ModifyValue(&UF::PlayerData::ArenaFaction), arenaFaction); }
         void ApplyModFakeInebriation(int32 mod, bool apply) { ApplyModUpdateFieldValue(m_values.ModifyValue(&Player::m_playerData).ModifyValue(&UF::PlayerData::FakeInebriation), mod, apply); }
         void SetVirtualPlayerRealm(uint32 virtualRealmAddress) { SetUpdateFieldValue(m_values.ModifyValue(&Player::m_playerData).ModifyValue(&UF::PlayerData::VirtualPlayerRealm), virtualRealmAddress); }
-        void SetCustomDisplayOption(uint32 slot, uint8 customDisplayOption) { SetUpdateFieldValue(m_values.ModifyValue(&Player::m_playerData).ModifyValue(&UF::PlayerData::CustomDisplayOption, slot), customDisplayOption); }
 
         void AddHeirloom(int32 itemId, uint32 flags)
         {
@@ -2738,6 +2784,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         /***                   SAVE SYSTEM                     ***/
         /*********************************************************/
 
+        void _SaveCustomizations(CharacterDatabaseTransaction trans);
         void _SaveActions(CharacterDatabaseTransaction& trans);
         void _SaveAuras(CharacterDatabaseTransaction& trans);
         void _SaveInventory(CharacterDatabaseTransaction& trans);
@@ -2778,6 +2825,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
 
         uint32 m_team;
         uint32 m_nextSave;
+        bool m_customizationsChanged;
         time_t m_speakTime;
         uint32 m_speakCount;
         Difficulty m_dungeonDifficulty;
@@ -3018,5 +3066,16 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
 
 TC_GAME_API void AddItemsSetItem(Player* player, Item* item);
 TC_GAME_API void RemoveItemsSetItem(Player* player, ItemTemplate const* proto);
+
+// Transforms a container of customization choices with continuous storage into iterator pair that does not depend on container
+// and doesn't force implementations in header files
+template<typename Container>
+Trinity::IteratorPair<UF::ChrCustomizationChoice const*> MakeChrCustomizationChoiceRange(Container const& container)
+{
+    static_assert(std::is_same<typename Container::value_type, UF::ChrCustomizationChoice>::value,
+        "MakeChrCustomizationChoiceRange must be used with containers of UF::ChrCustomizationChoice");
+
+    return { container.data(), container.data() + container.size() };
+}
 
 #endif

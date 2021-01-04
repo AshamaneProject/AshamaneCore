@@ -156,7 +156,8 @@ void Vehicle::Reset(bool evading /*= false*/)
     TC_LOG_DEBUG("entities.vehicle", "Vehicle::Reset (Entry: %u, %s, DBGuid: " UI64FMTD ")", GetCreatureEntry(), _me->GetGUID().ToString().c_str(), _me->ToCreature()->GetSpawnId());
 
     ApplyAllImmunities();
-    InstallAllAccessories(evading);
+    if (GetBase()->IsAlive())
+        InstallAllAccessories(evading);
 
     sScriptMgr->OnReset(this);
 }
@@ -412,7 +413,7 @@ bool Vehicle::AddPassenger(uint32 passengerEntry, int8 seatId /*= -1*/)
  * @author Machiavelli
  * @date 17-2-2013
  *
- * @param [in, out] The prospective passenger.
+ * @param unit          The prospective passenger.
  * @param seatId        Identifier for the seat. Value of -1 indicates the next available seat.
  *
  * @return true if it succeeds, false if it fails.
@@ -786,6 +787,13 @@ bool VehicleJoinEvent::Execute(uint64, uint32)
 
     Target->RemovePendingEventsForSeat(Seat->first);
     Target->RemovePendingEventsForPassenger(Passenger);
+
+    // Passenger might've died in the meantime - abort if this is the case
+    if (!Passenger->IsAlive())
+    {
+        Abort(0);
+        return true;
+    }
 
     Passenger->SetVehicle(Target);
     Seat->second.Passenger.Guid = Passenger->GetGUID();

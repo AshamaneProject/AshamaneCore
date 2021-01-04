@@ -26,6 +26,7 @@ EndScriptData */
 #include "Chat.h"
 #include "DatabaseEnv.h"
 #include "DB2Stores.h"
+#include "LootMgr.h"
 #include "ObjectMgr.h"
 #include "Player.h"
 #include "RBAC.h"
@@ -53,7 +54,7 @@ public:
         return commandTable;
     }
 
-    static bool HandleQuestAdd(ChatHandler* handler, const char* args)
+    static bool HandleQuestAdd(ChatHandler* handler, char const* args)
     {
         Player* player = handler->getSelectedPlayerOrSelf();
         if (!player)
@@ -101,7 +102,7 @@ public:
         return true;
     }
 
-    static bool HandleQuestRemove(ChatHandler* handler, const char* args)
+    static bool HandleQuestRemove(ChatHandler* handler, char const* args)
     {
         Player* player = handler->getSelectedPlayer();
         if (!player)
@@ -159,7 +160,7 @@ public:
         return true;
     }
 
-    static bool HandleQuestComplete(ChatHandler* handler, const char* args)
+    static bool HandleQuestComplete(ChatHandler* handler, char const* args)
     {
         Player* player = handler->getSelectedPlayerOrSelf();
         if (!player)
@@ -230,7 +231,7 @@ public:
             return false;
         }
 
-        player->RewardQuest(quest, 0, player);
+        player->RewardQuest(quest, LootItemType::Item, 0, player);
         return true;
     }
 };

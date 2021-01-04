@@ -485,7 +485,8 @@ void Object::BuildMovementUpdate(ByteBuffer* data, CreateObjectBits flags) const
         bool hasAreaTriggerPolygon  = areaTriggerTemplate->IsPolygon();
         bool hasAreaTriggerCylinder = areaTriggerTemplate->IsCylinder();
         bool hasAreaTriggerSpline   = areaTrigger->HasSplines();
-        bool hasCircularMovement    = areaTrigger->HasCircularMovement();
+        bool hasOrbit               = areaTrigger->HasOrbit();
+        bool hasMovementScript      = false;
 
         data->WriteBit(hasAbsoluteOrientation);
         data->WriteBit(hasDynamicShape);
@@ -507,7 +508,8 @@ void Object::BuildMovementUpdate(ByteBuffer* data, CreateObjectBits flags) const
         data->WriteBit(hasAreaTriggerPolygon);
         data->WriteBit(hasAreaTriggerCylinder);
         data->WriteBit(hasAreaTriggerSpline);
-        data->WriteBit(hasCircularMovement);
+        data->WriteBit(hasOrbit);
+        data->WriteBit(hasMovementScript);
 
         if (hasUnk3)
             data->WriteBit(false);
@@ -586,7 +588,10 @@ void Object::BuildMovementUpdate(ByteBuffer* data, CreateObjectBits flags) const
             *data << float(areaTriggerTemplate->CylinderDatas.LocationZOffsetTarget);
         }
 
-        if (hasCircularMovement)
+        //if (hasMovementScript)
+        //    *data << *areaTrigger->GetMovementScript(); // AreaTriggerMovementScriptInfo
+
+        if (hasOrbit)
             *data << *areaTrigger->GetCircularMovementInfo();
     }
 
@@ -897,14 +902,14 @@ void WorldObject::setActive(bool on)
     if (on)
     {
         if (GetTypeId() == TYPEID_UNIT)
-            map->AddToActive(this->ToCreature());
+            map->AddToActive(ToCreature());
         else if (GetTypeId() == TYPEID_DYNAMICOBJECT)
             map->AddToActive((DynamicObject*)this);
     }
     else
     {
         if (GetTypeId() == TYPEID_UNIT)
-            map->RemoveFromActive(this->ToCreature());
+            map->RemoveFromActive(ToCreature());
         else if (GetTypeId() == TYPEID_DYNAMICOBJECT)
             map->RemoveFromActive((DynamicObject*)this);
     }
@@ -955,8 +960,8 @@ void WorldObject::ProcessPositionDataChanged(PositionFullTerrainStatus const& da
 {
     m_zoneId = m_areaId = data.areaId;
     if (AreaTableEntry const* area = sAreaTableStore.LookupEntry(m_areaId))
-        if (area->ID)
-            m_zoneId = area->ID;
+        if (area->ParentAreaID)
+            m_zoneId = area->ParentAreaID;
     m_staticFloorZ = data.floorZ;
 }
 
@@ -1013,7 +1018,7 @@ InstanceScript* WorldObject::GetInstanceScript() const
     return map->IsDungeon() ? ((InstanceMap*)map)->GetInstanceScript() : nullptr;
 }
 
-float WorldObject::GetDistanceZ(const WorldObject* obj) const
+float WorldObject::GetDistanceZ(WorldObject const* obj) const
 {
     float dz = std::fabs(GetPositionZ() - obj->GetPositionZ());
     float sizefactor = GetCombatReach() + obj->GetCombatReach();
@@ -1043,13 +1048,13 @@ bool WorldObject::_IsWithinDist(WorldObject const* obj, float dist2compare, bool
         return thisOrTransport->IsInDist2d(objOrObjTransport, maxdist);
 }
 
-float WorldObject::GetDistance(const WorldObject* obj) const
+float WorldObject::GetDistance(WorldObject const* obj) const
 {
     float d = GetExactDist(obj) - GetCombatReach() - obj->GetCombatReach();
     return d > 0.0f ? d : 0.0f;
 }
 
-float WorldObject::GetDistance(const Position &pos) const
+float WorldObject::GetDistance(Position const& pos) const
 {
     float d = GetExactDist(&pos) - GetCombatReach();
     return d > 0.0f ? d : 0.0f;
@@ -1061,7 +1066,7 @@ float WorldObject::GetDistance(float x, float y, float z) const
     return d > 0.0f ? d : 0.0f;
 }
 
-float WorldObject::GetDistance2d(const WorldObject* obj) const
+float WorldObject::GetDistance2d(WorldObject const* obj) const
 {
     float d = GetExactDist2d(obj) - GetCombatReach() - obj->GetCombatReach();
     return d > 0.0f ? d : 0.0f;
@@ -1073,14 +1078,14 @@ float WorldObject::GetDistance2d(float x, float y) const
     return d > 0.0f ? d : 0.0f;
 }
 
-bool WorldObject::IsSelfOrInSameMap(const WorldObject* obj) const
+bool WorldObject::IsSelfOrInSameMap(WorldObject const* obj) const
 {
     if (this == obj)
         return true;
     return IsInMap(obj);
 }
 
-bool WorldObject::IsInMap(const WorldObject* obj) const
+bool WorldObject::IsInMap(WorldObject const* obj) const
 {
     if (obj)
         return IsInWorld() && obj->IsInWorld() && (GetMap() == obj->GetMap());
@@ -1092,7 +1097,7 @@ bool WorldObject::IsWithinDist3d(float x, float y, float z, float dist) const
     return IsInDist(x, y, z, dist + GetCombatReach());
 }
 
-bool WorldObject::IsWithinDist3d(const Position* pos, float dist) const
+bool WorldObject::IsWithinDist3d(Position const* pos, float dist) const
 {
     return IsInDist(pos, dist + GetCombatReach());
 }
@@ -1102,7 +1107,7 @@ bool WorldObject::IsWithinDist2d(float x, float y, float dist) const
     return IsInDist2d(x, y, dist + GetCombatReach());
 }
 
-bool WorldObject::IsWithinDist2d(const Position* pos, float dist) const
+bool WorldObject::IsWithinDist2d(Position const* pos, float dist) const
 {
     return IsInDist2d(pos, dist + GetCombatReach());
 }
@@ -1142,7 +1147,7 @@ bool WorldObject::IsWithinLOS(float ox, float oy, float oz, LineOfSightChecks ch
     return true;
 }
 
-bool WorldObject::IsWithinLOSInMap(const WorldObject* obj, LineOfSightChecks checks, VMAP::ModelIgnoreFlags ignoreFlags) const
+bool WorldObject::IsWithinLOSInMap(WorldObject const* obj, LineOfSightChecks checks, VMAP::ModelIgnoreFlags ignoreFlags) const
 {
     if (!IsInMap(obj))
         return false;
@@ -1345,7 +1350,7 @@ bool WorldObject::isInBack(WorldObject const* target, float arc) const
     return !HasInArc(2 * float(M_PI) - arc, target);
 }
 
-void WorldObject::GetRandomPoint(const Position &pos, float distance, float &rand_x, float &rand_y, float &rand_z) const
+void WorldObject::GetRandomPoint(Position const& pos, float distance, float& rand_x, float& rand_y, float& rand_z) const
 {
     if (!distance)
     {
@@ -1367,7 +1372,7 @@ void WorldObject::GetRandomPoint(const Position &pos, float distance, float &ran
     UpdateGroundPositionZ(rand_x, rand_y, rand_z);            // update to LOS height if available
 }
 
-Position WorldObject::GetRandomPoint(const Position &srcPos, float distance) const
+Position WorldObject::GetRandomPoint(Position const& srcPos, float distance) const
 {
     float x, y, z;
     GetRandomPoint(srcPos, distance, x, y, z);
@@ -1475,7 +1480,7 @@ float WorldObject::GetVisibilityRange() const
         return GetMap()->GetVisibilityRange();
 }
 
-float WorldObject::GetSightRange(const WorldObject* target) const
+float WorldObject::GetSightRange(WorldObject const* target) const
 {
     if (IsUnit())
     {
@@ -1554,8 +1559,15 @@ bool WorldObject::CanSeeOrDetect(WorldObject const* obj, bool ignoreStealth, boo
         }
 
         WorldObject const* viewpoint = this;
-        if (Player const* player = this->ToPlayer())
+        if (Player const* player = ToPlayer())
+        {
             viewpoint = player->GetViewpoint();
+
+            if (Creature const* creature = obj->ToCreature())
+                if (TempSummon const* tempSummon = creature->ToTempSummon())
+                    if (tempSummon->IsVisibleBySummonerOnly() && GetGUID() != tempSummon->GetSummonerGUID())
+                        return false;
+        }
 
         if (!viewpoint)
             viewpoint = this;
@@ -1608,7 +1620,7 @@ bool WorldObject::CanNeverSee(WorldObject const* obj) const
 
 bool WorldObject::CanDetect(WorldObject const* obj, bool ignoreStealth, bool checkAlert) const
 {
-    const WorldObject* seer = this;
+    WorldObject const* seer = this;
 
     // Pets don't have detection, they use the detection of their masters
     if (Unit const* thisUnit = ToUnit())
@@ -1851,7 +1863,7 @@ TempSummon* Map::SummonCreature(uint32 entry, Position const& pos, SummonPropert
             break;
     }
 
-    if (!summon->Create(GenerateLowGuid<HighGuid::Creature>(), this, entry, pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ(), pos.GetOrientation(), nullptr, vehId))
+    if (!summon->Create(GenerateLowGuid<HighGuid::Creature>(), this, entry, pos, nullptr, vehId, true))
     {
         delete summon;
         return nullptr;
@@ -2388,7 +2400,7 @@ Position WorldObject::GetRandomNearPosition(float radius)
     return pos;
 }
 
-void WorldObject::GetContactPoint(const WorldObject* obj, float &x, float &y, float &z, float distance2d /*= CONTACT_DISTANCE*/) const
+void WorldObject::GetContactPoint(WorldObject const* obj, float& x, float& y, float& z, float distance2d /*= CONTACT_DISTANCE*/) const
 {
     // angle to face `obj` to `this` using distance includes size of `obj`
     GetNearPoint(obj, x, y, z, obj->GetCombatReach(), distance2d, GetAngle(obj));
@@ -2537,12 +2549,12 @@ void WorldObject::PlayDistanceSound(uint32 soundId, Player* target /*= nullptr*/
         SendMessageToSet(WorldPackets::Misc::PlaySpeakerbotSound(GetGUID(), soundId).Write(), true);
 }
 
-void WorldObject::PlayDirectSound(uint32 soundId, Player* target /*= nullptr*/)
+void WorldObject::PlayDirectSound(uint32 soundId, Player* target /*= nullptr*/, uint32 broadcastTextId /*= 0*/)
 {
     if (target)
-        target->SendDirectMessage(WorldPackets::Misc::PlaySound(GetGUID(), soundId).Write());
+        target->SendDirectMessage(WorldPackets::Misc::PlaySound(GetGUID(), soundId, broadcastTextId).Write());
     else
-        SendMessageToSet(WorldPackets::Misc::PlaySound(GetGUID(), soundId).Write(), true);
+        SendMessageToSet(WorldPackets::Misc::PlaySound(GetGUID(), soundId, broadcastTextId).Write(), true);
 }
 
 void WorldObject::PlayDirectMusic(uint32 musicId, Player* target /*= nullptr*/)
@@ -2636,7 +2648,7 @@ struct WorldObjectChangeAccumulator
 
             if (guid.IsPlayer())
             {
-                //Caster may be NULL if DynObj is in removelist
+                //Caster may be nullptr if DynObj is in removelist
                 if (Player* caster = ObjectAccessor::FindPlayer(guid))
                     if (*caster->m_activePlayerData->FarsightObject == source->GetGUID())
                         BuildPacket(caster);

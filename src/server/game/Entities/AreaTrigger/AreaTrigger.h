@@ -64,12 +64,12 @@ class TC_GAME_API AreaTrigger : public WorldObject, public GridObject<AreaTrigge
         AreaTriggerAI* AI() { return _ai.get(); }
 
     private:
-        bool Create(uint32 spellMiscId, Unit* caster, Unit* target, SpellInfo const* spell, Position const& pos, int32 duration, uint32 spellXSpellVisualId, ObjectGuid const& castId, AuraEffect const* aurEff, AreaTriggerCircularMovementInfo* customCmi = nullptr);
+        bool Create(uint32 spellMiscId, Unit* caster, Unit* target, SpellInfo const* spell, Position const& pos, int32 duration, SpellCastVisual spellVisual, ObjectGuid const& castId, AuraEffect const* aurEff, AreaTriggerOrbitInfo* customOrbitInfo = nullptr);
         bool CreateStaticAreaTrigger(uint32 entry, ObjectGuid::LowType guidLow, Position const& p_Pos, Map* p_Map, uint32 scriptId = 0);
     public:
-        static AreaTrigger* CreateAreaTrigger(uint32 spellMiscId, Unit* caster, Unit* target, SpellInfo const* spell, Position const& pos, int32 duration, uint32 spellXSpellVisualId, ObjectGuid const& castId = ObjectGuid::Empty, AuraEffect const* aurEff = nullptr);
+        static AreaTrigger* CreateAreaTrigger(uint32 spellMiscId, Unit* caster, Unit* target, SpellInfo const* spell, Position const& pos, int32 duration, SpellCastVisual spellVisual, ObjectGuid const& castId = ObjectGuid::Empty, AuraEffect const* aurEff = nullptr);
         static AreaTrigger* CreateAreaTrigger(uint32 spellMiscId, Unit* caster, uint32 spellId, Position const& pos, int32 duration, float radius, float angle, uint32 timeToTarget, bool canLoop = true, bool counterClockwise = false);
-        bool LoadFromDB(ObjectGuid::LowType guid, Map* map);
+        bool LoadFromDB(ObjectGuid::LowType guid, Map* map, bool addToMap, bool allowDuplicate);
 
         void Update(uint32 diff) override;
         void Remove();
@@ -111,12 +111,12 @@ class TC_GAME_API AreaTrigger : public WorldObject, public GridObject<AreaTrigge
         ::Movement::Spline<int32> const& GetSpline() const { return *_spline; }
         uint32 GetElapsedTimeForMovement() const { return GetTimeSinceCreated(); } /// @todo: research the right value, in sniffs both timers are nearly identical
 
-        void InitCircularMovement(AreaTriggerCircularMovementInfo const& cmi, uint32 timeToTarget);
-        bool HasCircularMovement() const;
-        Optional<AreaTriggerCircularMovementInfo> const& GetCircularMovementInfo() const { return _circularMovementInfo; }
+        void InitOrbit(AreaTriggerOrbitInfo const& cmi, uint32 timeToTarget);
+        bool HasOrbit() const;
+        Optional<AreaTriggerOrbitInfo> const& GetCircularMovementInfo() const { return _orbitInfo; }
 
-        void SetDecalPropertiesID(uint32 decalPropertiesID) { SetUpdateFieldValue(m_values.ModifyValue(&AreaTrigger::m_areaTriggerData).ModifyValue(&UF::AreaTriggerData::DecalPropertiesID), decalPropertiesID); }
-        void SetSpellXSpellVisualId(uint32 spellXSpellVisualId) { SetUpdateFieldValue(m_values.ModifyValue(&AreaTrigger::m_areaTriggerData).ModifyValue(&UF::AreaTriggerData::SpellXSpellVisualID), spellXSpellVisualId); }
+        void SetDecalPropertiesID(uint32 decalPropertiesID);
+        void SetSpellXSpellVisualId(uint32 spellXSpellVisualId);
 
         void UpdateShape();
 
@@ -140,11 +140,11 @@ class TC_GAME_API AreaTrigger : public WorldObject, public GridObject<AreaTrigge
         void UndoActions(Unit* unit);
 
         void UpdatePolygonOrientation();
-        void UpdateCircularMovementPosition(uint32 diff);
+        void UpdateOrbitPosition(uint32 diff);
         void UpdateSplinePosition(uint32 diff);
 
-        Position const* GetCircularMovementCenterPosition() const;
-        Position CalculateCircularMovementPosition() const;
+        Position const* GetOrbitCenterPosition() const;
+        Position CalculateOrbitPosition() const;
 
         void DebugVisualizePosition(); // Debug purpose only
 
@@ -169,7 +169,8 @@ class TC_GAME_API AreaTrigger : public WorldObject, public GridObject<AreaTrigge
         uint32 _movementTime;
 
         AreaTriggerTemplate const* _areaTriggerTemplate;
-        Optional<AreaTriggerCircularMovementInfo> _circularMovementInfo;
+        Optional<AreaTriggerOrbitInfo> _orbitInfo;
+
         AreaTriggerMiscTemplate const* _areaTriggerMiscTemplate;
         GuidUnorderedSet _insideUnits;
 

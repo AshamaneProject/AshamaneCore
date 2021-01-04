@@ -20,6 +20,7 @@
 #include "InstanceScenario.h"
 #include "InstanceScript.h"
 #include "Log.h"
+#include "LootMgr.h"
 #include "ObjectAccessor.h"
 #include "ObjectMgr.h"
 #include "Player.h"
@@ -61,7 +62,7 @@ void Scenario::CompleteStep(ScenarioStepEntry const* step)
     if (Quest const* quest = sObjectMgr->GetQuestTemplate(step->RewardQuestID))
         for (ObjectGuid guid : _players)
             if (Player* player = ObjectAccessor::FindPlayer(guid))
-                player->RewardQuest(quest, 0, nullptr, false);
+                player->RewardQuest(quest, LootItemType::Item, 0, nullptr, false);
 
     if (step->IsBonusObjective())
         return;
@@ -333,7 +334,7 @@ CriteriaList const& Scenario::GetCriteriaByType(CriteriaTypes type, uint32 /*ass
 
 void Scenario::SendBootPlayer(Player* player)
 {
-    WorldPackets::Scenario::ScenarioBoot scenarioBoot;
+    WorldPackets::Scenario::ScenarioVacate scenarioBoot;
     scenarioBoot.ScenarioID = _data->Entry->ID;
     player->SendDirectMessage(scenarioBoot.Write());
 }

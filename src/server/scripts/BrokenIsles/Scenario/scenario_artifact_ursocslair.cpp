@@ -80,7 +80,7 @@ enum DataTypes
     TEST_EVENT = 9999,
 };
 
-struct SpawnData
+struct CustomSpawnData
 {
     uint32 event, npcId;
     float X;
@@ -89,7 +89,7 @@ struct SpawnData
     float orientation;
 };
 
-SpawnData const spawnData[] =
+CustomSpawnData const spawnData[] =
 {
     { EVENT_STEP_1, NPC_ROTHOOF_SHADOWSTALKER_101388, -12224.7998f, -13092.7f,      326.7f,     5.703f },
     { EVENT_STEP_1, NPC_ROTHOOF_SHADOWSTALKER_101388, -12214.0f,    -13129.0f,      326.56f,    0.872626f },
@@ -189,7 +189,7 @@ struct scenario_artifact_ursocslair : public InstanceScript
         }
     }
 
-    void LoadNPC(uint32 event, const SpawnData* data)
+    void LoadNPC(uint32 event, const CustomSpawnData* data)
     {
         while (data->event)
         {

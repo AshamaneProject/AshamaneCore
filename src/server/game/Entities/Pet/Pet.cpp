@@ -202,7 +202,7 @@ bool Pet::LoadPetFromDB(Player* owner, uint32 petEntry, uint32 petnumber, bool c
             return false;
         }
 
-        map->AddToMap(this->ToCreature());
+        map->AddToMap(ToCreature());
         return true;
     }
 
@@ -315,7 +315,7 @@ bool Pet::LoadPetFromDB(Player* owner, uint32 petEntry, uint32 petnumber, bool c
     }
 
     owner->SetMinion(this, true);
-    map->AddToMap(this->ToCreature());
+    map->AddToMap(ToCreature());
 
     uint32 timediff = uint32(time(nullptr) - fields[13].GetUInt32());
     _LoadAuras(timediff);
@@ -1324,24 +1324,22 @@ bool Pet::addSpell(uint32 spellId, ActiveStates active /*= ACT_DECIDE*/, PetSpel
     if (itr != m_spells.end())
     {
         if (itr->second.state == PETSPELL_REMOVED)
-        {
-            m_spells.erase(itr);
             state = PETSPELL_CHANGED;
-        }
-        else if (state == PETSPELL_UNCHANGED && itr->second.state != PETSPELL_UNCHANGED)
-        {
-            // can be in case spell loading but learned at some previous spell loading
-            itr->second.state = PETSPELL_UNCHANGED;
-
-            if (active == ACT_ENABLED)
-                ToggleAutocast(spellInfo, true);
-            else if (active == ACT_DISABLED)
-                ToggleAutocast(spellInfo, false);
-
-            return false;
-        }
         else
+        {
+            if (state == PETSPELL_UNCHANGED && itr->second.state != PETSPELL_UNCHANGED)
+            {
+                // can be in case spell loading but learned at some previous spell loading
+                itr->second.state = PETSPELL_UNCHANGED;
+
+                if (active == ACT_ENABLED)
+                    ToggleAutocast(spellInfo, true);
+                else if (active == ACT_DISABLED)
+                    ToggleAutocast(spellInfo, false);
+            }
+
             return false;
+        }
     }
 
     PetSpell newspell;
@@ -1414,7 +1412,7 @@ bool Pet::learnSpell(uint32 spell_id)
     {
         WorldPackets::Pet::PetLearnedSpells packet;
         packet.Spells.push_back(spell_id);
-        GetOwner()->GetSession()->SendPacket(packet.Write());
+        GetOwner()->SendDirectMessage(packet.Write());
         GetOwner()->PetSpellInitialize();
     }
     return true;
@@ -1481,7 +1479,7 @@ bool Pet::unlearnSpell(uint32 spell_id, bool learn_prev, bool clear_ab)
         {
             WorldPackets::Pet::PetUnlearnedSpells packet;
             packet.Spells.push_back(spell_id);
-            GetOwner()->GetSession()->SendPacket(packet.Write());
+            GetOwner()->SendDirectMessage(packet.Write());
         }
         return true;
     }
@@ -1529,7 +1527,7 @@ bool Pet::removeSpell(uint32 spell_id, bool learn_prev, bool clear_ab)
     }
 
     // if remove last rank or non-ranked then update action bar at server and client if need
-    if (m_charmInfo->RemoveSpellFromActionBar(spell_id) && !learn_prev && clear_ab)
+    if (clear_ab && !learn_prev && m_charmInfo->RemoveSpellFromActionBar(spell_id))
     {
         if (!m_loading)
             GetOwner()->PetSpellInitialize(); // need update action bar for last removed rank

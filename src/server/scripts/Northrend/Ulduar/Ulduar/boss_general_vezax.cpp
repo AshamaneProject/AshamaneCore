@@ -19,11 +19,9 @@
 #include "InstanceScript.h"
 #include "Map.h"
 #include "MotionMaster.h"
-#include "ObjectAccessor.h"
 #include "Player.h"
 #include "ScriptedCreature.h"
 #include "SpellAuraEffects.h"
-#include "SpellInfo.h"
 #include "SpellScript.h"
 #include "ulduar.h"
 
@@ -280,7 +278,7 @@ class boss_general_vezax : public CreatureScript
 
             /*  Player Range Check
                 Purpose: If there are playersMin people within rangeMin, rangeMax: return a random players in that range.
-                If not, return NULL and allow other target selection
+                If not, return nullptr and allow other target selection
             */
             Unit* CheckPlayersInRange(uint8 playersMin, float rangeMin, float rangeMax)
             {
@@ -336,8 +334,8 @@ class boss_saronite_animus : public CreatureScript
 
             void JustDied(Unit* /*killer*/) override
             {
-                if (Creature* Vezax = ObjectAccessor::GetCreature(*me, instance->GetGuidData(BOSS_VEZAX)))
-                    Vezax->AI()->DoAction(ACTION_ANIMUS_DIE);
+                if (Creature* vezax = instance->GetCreature(BOSS_VEZAX))
+                    vezax->AI()->DoAction(ACTION_ANIMUS_DIE);
             }
 
             void UpdateAI(uint32 diff) override
@@ -434,8 +432,8 @@ class npc_saronite_vapors : public CreatureScript
                     DoCast(me, SPELL_SARONITE_VAPORS);
                     me->DespawnOrUnsummon(30000);
 
-                    if (Creature* Vezax = ObjectAccessor::GetCreature(*me, instance->GetGuidData(BOSS_VEZAX)))
-                        Vezax->AI()->DoAction(ACTION_VAPORS_DIE);
+                    if (Creature* vezax = instance->GetCreature(BOSS_VEZAX))
+                        vezax->AI()->DoAction(ACTION_VAPORS_DIE);
                 }
             }
 

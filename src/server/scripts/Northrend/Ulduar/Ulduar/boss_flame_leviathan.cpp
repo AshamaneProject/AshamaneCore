@@ -23,6 +23,7 @@
  */
 
 #include "ScriptMgr.h"
+#include "GameObjectAI.h"
 #include "CellImpl.h"
 #include "CombatAI.h"
 #include "GameObject.h"
@@ -608,7 +609,7 @@ class boss_flame_leviathan_seat : public CreatureScript
                         if (Creature* turret = turretPassenger->ToCreature())
                         {
                             turret->SetFaction(me->GetVehicleBase()->GetFaction());
-                            turret->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE); // unselectable
+                            turret->SetUnitFlags(UnitFlags(0)); // unselectable
                             turret->AI()->AttackStart(who);
                         }
                     if (Unit* devicePassenger = me->GetVehicleKit()->GetPassenger(SEAT_DEVICE))
@@ -628,7 +629,7 @@ class boss_flame_leviathan_seat : public CreatureScript
                     if (Unit* device = ASSERT_NOTNULL(me->GetVehicleKit())->GetPassenger(SEAT_DEVICE))
                     {
                         device->AddNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
-                        device->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE); // unselectable
+                        device->SetUnitFlags(UnitFlags(0)); // unselectable
                     }
                 }
             }
@@ -974,14 +975,9 @@ class npc_mimirons_inferno : public CreatureScript
 public:
     npc_mimirons_inferno() : CreatureScript("npc_mimirons_inferno") { }
 
-    CreatureAI* GetAI(Creature* creature) const override
+    struct npc_mimirons_infernoAI : public EscortAI
     {
-        return GetUlduarAI<npc_mimirons_infernoAI>(creature);
-    }
-
-    struct npc_mimirons_infernoAI : public npc_escortAI
-    {
-        npc_mimirons_infernoAI(Creature* creature) : npc_escortAI(creature)
+        npc_mimirons_infernoAI(Creature* creature) : EscortAI(creature)
         {
             Initialize();
             me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
@@ -994,11 +990,6 @@ public:
             infernoTimer = 2000;
         }
 
-        void WaypointReached(uint32 /*waypointId*/) override
-        {
-
-        }
-
         void Reset() override
         {
             Initialize();
@@ -1008,7 +999,7 @@ public:
 
         void UpdateAI(uint32 diff) override
         {
-            npc_escortAI::UpdateAI(diff);
+            EscortAI::UpdateAI(diff);
 
             if (!HasEscortState(STATE_ESCORT_ESCORTING))
                 Start(false, true, ObjectGuid::Empty, nullptr, false, true);
@@ -1031,6 +1022,10 @@ public:
         }
     };
 
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return GetUlduarAI<npc_mimirons_infernoAI>(creature);
+    }
 };
 
 class npc_hodirs_fury : public CreatureScript
@@ -1195,7 +1190,6 @@ class npc_brann_bronzebeard_ulduar_intro : public CreatureScript
                     if (Creature* loreKeeper = _instance->GetCreature(DATA_LORE_KEEPER_OF_NORGANNON))
                         loreKeeper->RemoveNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                 }
-
                 return false;
             }
 
@@ -1249,7 +1243,7 @@ class npc_lorekeeper : public CreatureScript
                     CloseGossipMenuFor(player);
                     me->GetMap()->LoadGrid(364, -16); // make sure leviathan is loaded
 
-                    if (Creature* leviathan = ObjectAccessor::GetCreature(*me, _instance->GetGuidData(BOSS_LEVIATHAN)))
+                    if (Creature* leviathan = _instance->GetCreature(BOSS_LEVIATHAN))
                     {
                         leviathan->AI()->DoAction(ACTION_START_HARD_MODE);
                         me->SetVisible(false);
@@ -1260,12 +1254,11 @@ class npc_lorekeeper : public CreatureScript
                             {
                                 brann->RemoveNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                                 delorah->GetMotionMaster()->MovePoint(0, brann->GetPositionX() - 4, brann->GetPositionY(), brann->GetPositionZ());
-                                /// @todo delorah->AI()->Talk(xxxx, brann); when reached at branz
+                                /// @todo delorah->AI()->Talk(xxxx, brann->GetGUID()); when reached at branz
                             }
                         }
                     }
                 }
-
                 return false;
             }
 
@@ -1284,30 +1277,38 @@ class go_ulduar_tower : public GameObjectScript
     public:
         go_ulduar_tower() : GameObjectScript("go_ulduar_tower") { }
 
-        void OnDestroyed(GameObject* go, Player* /*player*/) override
+        struct go_ulduar_towerAI : public GameObjectAI
         {
-            InstanceScript* instance = go->GetInstanceScript();
-            if (!instance)
-                return;
+            go_ulduar_towerAI(GameObject* go) : GameObjectAI(go), instance(go->GetInstanceScript()) { }
 
-            switch (go->GetEntry())
+            InstanceScript* instance;
+
+            void Destroyed(Player* /*player*/, uint32 /*eventId*/) override
             {
-                case GO_TOWER_OF_STORMS:
-                    instance->ProcessEvent(go, EVENT_TOWER_OF_STORM_DESTROYED);
-                    break;
-                case GO_TOWER_OF_FLAMES:
-                    instance->ProcessEvent(go, EVENT_TOWER_OF_FLAMES_DESTROYED);
-                    break;
-                case GO_TOWER_OF_FROST:
-                    instance->ProcessEvent(go, EVENT_TOWER_OF_FROST_DESTROYED);
-                    break;
-                case GO_TOWER_OF_LIFE:
-                    instance->ProcessEvent(go, EVENT_TOWER_OF_LIFE_DESTROYED);
-                    break;
-            }
+                switch (me->GetEntry())
+                {
+                    case GO_TOWER_OF_STORMS:
+                        instance->ProcessEvent(me, EVENT_TOWER_OF_STORM_DESTROYED);
+                        break;
+                    case GO_TOWER_OF_FLAMES:
+                        instance->ProcessEvent(me, EVENT_TOWER_OF_FLAMES_DESTROYED);
+                        break;
+                    case GO_TOWER_OF_FROST:
+                        instance->ProcessEvent(me, EVENT_TOWER_OF_FROST_DESTROYED);
+                        break;
+                    case GO_TOWER_OF_LIFE:
+                        instance->ProcessEvent(me, EVENT_TOWER_OF_LIFE_DESTROYED);
+                        break;
+                }
 
-            if (Creature* trigger = go->FindNearestCreature(NPC_ULDUAR_GAUNTLET_GENERATOR, 15.0f, true))
-                trigger->DisappearAndDie();
+                if (Creature* trigger = me->FindNearestCreature(NPC_ULDUAR_GAUNTLET_GENERATOR, 15.0f, true))
+                    trigger->DisappearAndDie();
+            }
+        };
+
+        GameObjectAI* GetAI(GameObject* go) const override
+        {
+            return GetUlduarAI<go_ulduar_towerAI>(go);
         }
 };
 
@@ -1624,6 +1625,11 @@ class spell_systems_shutdown : public SpellScriptLoader
 
 class FlameLeviathanPursuedTargetSelector
 {
+    enum Area
+    {
+        AREA_FORMATION_GROUNDS = 4652,
+    };
+
     public:
         bool operator()(WorldObject* target) const
         {
@@ -1642,7 +1648,7 @@ class FlameLeviathanPursuedTargetSelector
                 return true;
 
             //! Entity needs to be in appropriate area
-            if (target->GetAreaId() != AREA_ULDUAR_FORMATION_GROUNDS)
+            if (target->GetAreaId() != AREA_FORMATION_GROUNDS)
                 return true;
 
             //! Vehicle must be in use by player

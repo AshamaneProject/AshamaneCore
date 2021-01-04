@@ -107,7 +107,7 @@ public:
     void ActivateBuilding(uint32 garrPlotInstanceId);
     std::unordered_set<uint32 /*garrBuildingId*/> const& GetKnownBuildings() const;
 
-    void SendBuildingLandmarks(Player* receiver) const;
+    void SendMapData(Player* receiver) const;
 
 private:
     void InitializePlots();

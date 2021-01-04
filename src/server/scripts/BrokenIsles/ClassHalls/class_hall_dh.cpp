@@ -391,9 +391,9 @@ public:
          return true;
     }
 
-     struct npc_mardum_battlelord_gaardoun_AI : public npc_escortAI
+     struct npc_mardum_battlelord_gaardoun_AI : public EscortAI
     {
-        npc_mardum_battlelord_gaardoun_AI(Creature* creature) : npc_escortAI(creature)
+        npc_mardum_battlelord_gaardoun_AI(Creature* creature) : EscortAI(creature)
         {
             Initialize();
         }
@@ -448,7 +448,7 @@ public:
              if (HasEscortState(STATE_ESCORT_NONE))
                 return;
 
-             npc_escortAI::UpdateAI(diff);
+             EscortAI::UpdateAI(diff);
 
              if (_phase)
             {
@@ -470,7 +470,7 @@ public:
             }
         }
 
-         void WaypointReached(uint32 waypointId) override
+         void WaypointReached(uint32 waypointId, uint32 /*pathId*/) override
         {
             Player* player = GetPlayerForEscort();
             if (!player)

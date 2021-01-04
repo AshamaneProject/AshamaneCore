@@ -15,14 +15,14 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __PLAYERTAXI_H__
-#define __PLAYERTAXI_H__
+#ifndef PlayerTaxi_h__
+#define PlayerTaxi_h__
 
 #include "DBCEnums.h"
 #include "Define.h"
 #include <deque>
 #include <iosfwd>
-#include <vector>
+#include <string>
 
 struct FactionTemplateEntry;
 namespace WorldPackets
@@ -93,4 +93,4 @@ class TC_GAME_API PlayerTaxi
 
 std::ostringstream& operator <<(std::ostringstream& ss, PlayerTaxi const& taxi);
 
-#endif
+#endif // PlayerTaxi_h__

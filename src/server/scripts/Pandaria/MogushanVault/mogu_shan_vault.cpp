@@ -759,9 +759,9 @@ class npc_lorewalker_cho : public CreatureScript
             return true;
         }
 
-        struct npc_lorewalker_choAI : public npc_escortAI
+        struct npc_lorewalker_choAI : public EscortAI
         {
-            npc_lorewalker_choAI(Creature* creature) : npc_escortAI(creature)
+            npc_lorewalker_choAI(Creature* creature) : EscortAI(creature)
             {
                 pInstance = creature->GetInstanceScript();
                 SetMaxPlayerDistance(200.0f);
@@ -840,7 +840,7 @@ class npc_lorewalker_cho : public CreatureScript
                 }
             }
 
-            void WaypointReached(uint32 waypointId) override
+            void WaypointReached(uint32 waypointId, uint32 /*pathId*/) override
             {
                 Player* player = GetPlayerForEscort();
                 if (!player)
@@ -1238,7 +1238,7 @@ class npc_lorewalker_cho : public CreatureScript
 
             void UpdateAI(const uint32 diff) override
             {
-                npc_escortAI::UpdateAI(diff);
+                EscortAI::UpdateAI(diff);
 
                 // Wipe on event: reset all trashs of the events
                 if (pInstance)

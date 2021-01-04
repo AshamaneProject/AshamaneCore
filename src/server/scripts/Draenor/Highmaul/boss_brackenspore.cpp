@@ -981,7 +981,7 @@ class npc_highmaul_living_mushroom : public CreatureScript
 
             void Reset() override
             {
-                me->DisableHealthRegen();
+                me->SetRegenerateHealth(false);
                 me->SetHealth(me->GetMaxHealth() / 2);
                 me->AddUnitState(UnitState::UNIT_STATE_STUNNED);
 
@@ -1061,7 +1061,7 @@ class npc_highmaul_rejuvenating_mushroom : public CreatureScript
 
             void Reset() override
             {
-                me->DisableHealthRegen();
+                me->SetRegenerateHealth(false);
                 me->SetHealth(me->GetMaxHealth() / 2);
                 me->AddUnitState(UnitState::UNIT_STATE_STUNNED);
 

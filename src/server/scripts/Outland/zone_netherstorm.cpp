@@ -31,10 +31,10 @@ EndContentData */
 
 #include "ScriptMgr.h"
 #include "GameObject.h"
+#include "GameObjectAI.h"
 #include "Log.h"
 #include "ObjectAccessor.h"
 #include "Player.h"
-#include "QuestDef.h"
 #include "ScriptedEscortAI.h"
 #include "ScriptedGossip.h"
 
@@ -317,7 +317,7 @@ class at_commander_dawnforge : public AreaTriggerScript
 public:
     at_commander_dawnforge() : AreaTriggerScript("at_commander_dawnforge") { }
 
-    bool OnTrigger(Player* player, const AreaTriggerEntry* /*areaTrigger*/, bool /*entered*/) override
+    bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/, bool /*entered*/) override
     {
         //if player lost aura or not have at all, we should not try start event.
         if (!player->HasAura(SPELL_SUNFURY_DISGUISE))
@@ -408,7 +408,7 @@ public:
                 PlayerGUID = who->GetGUID();
         }
 
-        //void SpellHit(Unit* /*caster*/, const SpellInfo* /*spell*/) override
+        //void SpellHit(Unit* /*caster*/, SpellInfo const* /*spell*/) override
         //{
         //    DoCast(me, SPELL_DE_MATERIALIZE);
         //}
@@ -493,7 +493,7 @@ public:
         {
             creature->SetFaction(113);
             creature->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
-            ENSURE_AI(npc_escortAI, (creature->AI()))->Start(true, false, player->GetGUID());
+            ENSURE_AI(EscortAI, (creature->AI()))->Start(true, false, player->GetGUID());
         }
         return true;
     }
@@ -503,9 +503,9 @@ public:
         return new npc_bessyAI(creature);
     }
 
-    struct npc_bessyAI : public npc_escortAI
+    struct npc_bessyAI : public EscortAI
     {
-        npc_bessyAI(Creature* creature) : npc_escortAI(creature) { }
+        npc_bessyAI(Creature* creature) : EscortAI(creature) { }
 
         void JustDied(Unit* /*killer*/) override
         {
@@ -513,7 +513,7 @@ public:
                 player->FailQuest(Q_ALMABTRIEB);
         }
 
-        void WaypointReached(uint32 waypointId) override
+        void WaypointReached(uint32 waypointId, uint32 /*pathId*/) override
         {
             Player* player = GetPlayerForEscort();
             if (!player)
@@ -574,9 +574,9 @@ public:
         return new npc_maxx_a_million_escortAI(creature);
     }
 
-    struct npc_maxx_a_million_escortAI : public npc_escortAI
+    struct npc_maxx_a_million_escortAI : public EscortAI
     {
-        npc_maxx_a_million_escortAI(Creature* creature) : npc_escortAI(creature)
+        npc_maxx_a_million_escortAI(Creature* creature) : EscortAI(creature)
         {
             Initialize();
         }
@@ -595,7 +595,7 @@ public:
             Initialize();
         }
 
-        void WaypointReached(uint32 waypointId) override
+        void WaypointReached(uint32 waypointId, uint32 /*pathId*/) override
         {
             Player* player = GetPlayerForEscort();
             if (!player)
@@ -612,7 +612,7 @@ public:
                         // take the GO -> animation
                         me->HandleEmoteCommand(EMOTE_STATE_LOOT);
                         SetEscortPaused(true);
-                        bTake=true;
+                        bTake = true;
                     }
                     break;
                 case 36: //return and quest_complete
@@ -629,7 +629,7 @@ public:
 
         void UpdateAI(uint32 uiDiff) override
         {
-            npc_escortAI::UpdateAI(uiDiff);
+            EscortAI::UpdateAI(uiDiff);
 
             if (bTake)
             {
@@ -639,7 +639,7 @@ public:
                     if (GameObject* go = GetClosestGameObjectWithEntry(me, GO_DRAENEI_MACHINE, INTERACTION_DISTANCE))
                     {
                         SetEscortPaused(false);
-                        bTake=false;
+                        bTake = false;
                         uiTakeTimer = 3000;
                         go->Delete();
                     }

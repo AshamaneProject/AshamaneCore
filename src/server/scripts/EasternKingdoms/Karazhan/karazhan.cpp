@@ -130,9 +130,9 @@ class npc_barnes : public CreatureScript
 public:
     npc_barnes() : CreatureScript("npc_barnes") { }
 
-    struct npc_barnesAI : public npc_escortAI
+    struct npc_barnesAI : public EscortAI
     {
-        npc_barnesAI(Creature* creature) : npc_escortAI(creature)
+        npc_barnesAI(Creature* creature) : EscortAI(creature)
         {
             Initialize();
             RaidWiped = false;
@@ -183,7 +183,7 @@ public:
 
         void EnterCombat(Unit* /*who*/) override { }
 
-        void WaypointReached(uint32 waypointId) override
+        void WaypointReached(uint32 waypointId, uint32 /*pathId*/) override
         {
             switch (waypointId)
             {
@@ -287,7 +287,7 @@ public:
 
         void UpdateAI(uint32 diff) override
         {
-            npc_escortAI::UpdateAI(diff);
+            EscortAI::UpdateAI(diff);
 
             if (HasEscortState(STATE_ESCORT_PAUSED))
             {
@@ -313,7 +313,7 @@ public:
                 {
                     if (WipeTimer <= diff)
                     {
-                        Map::PlayerList const &PlayerList = me->GetMap()->GetPlayers();
+                        Map::PlayerList const& PlayerList = me->GetMap()->GetPlayers();
                         if (PlayerList.isEmpty())
                             return;
 
@@ -576,7 +576,7 @@ public:
                 me->SetVisible(false);
                 me->ClearInCombat();
 
-                InstanceMap::PlayerList const &PlayerList = me->GetMap()->GetPlayers();
+                InstanceMap::PlayerList const& PlayerList = me->GetMap()->GetPlayers();
                 for (InstanceMap::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
                 {
                     if (i->GetSource()->IsAlive())

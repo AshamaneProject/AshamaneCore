@@ -122,7 +122,7 @@ class VoidSpawnSummon : public BasicEvent
         {
         }
 
-        bool Execute(uint64 /*time*/, uint32 /*diff*/) override
+        bool Execute(uint64 /*time*/, uint32 /*diff*/)
         {
             _owner->CastSpell(nullptr, SPELL_SUMMON_VOID_SENTINEL, true);
             return true;
@@ -182,7 +182,7 @@ public:
 
         void EnterEvadeMode(EvadeReason /*why*/) override
         {
-            if (Creature* muru = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_MURU)))
+            if (Creature* muru = instance->GetCreature(DATA_MURU))
                 muru->AI()->EnterEvadeMode();
 
             DoResetPortals();
@@ -194,8 +194,19 @@ public:
         {
             _JustDied();
 
-            if (Creature* muru = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_MURU)))
+            if (Creature* muru = instance->GetCreature(DATA_MURU))
                 muru->DisappearAndDie();
+        }
+
+        void UpdateAI(uint32 diff) override
+        {
+            if (!UpdateVictim())
+                return;
+
+            me->GetScheduler().Update(diff, [this]
+            {
+                DoMeleeAttackIfReady();
+            });
         }
 
         void DoResetPortals()
@@ -306,7 +317,13 @@ public:
             BossAI::JustSummoned(summon);
         }
 
-        void UpdateAI(uint32 /*diff*/) override { }
+        void UpdateAI(uint32 diff) override
+        {
+            if (!UpdateVictim())
+                return;
+
+            me->GetScheduler().Update(diff);
+        }
 
     private:
         ObjectGuid _entropiusGUID;
@@ -356,7 +373,10 @@ public:
             }
         }
 
-        void UpdateAI(uint32 /*diff*/) override { }
+        void UpdateAI(uint32 diff) override
+        {
+            me->GetScheduler().Update(diff);
+        }
     };
 
     CreatureAI* GetAI(Creature* creature) const override
@@ -415,7 +435,10 @@ public:
             return me->HasAura(SPELL_DARKFIEND_SKIN);
         }
 
-        void UpdateAI(uint32 /*diff*/) override { }
+        void UpdateAI(uint32 diff) override
+        {
+            me->GetScheduler().Update(diff);
+        }
 
     private:
         ObjectGuid _summonerGUID;
@@ -441,7 +464,7 @@ public:
 
         void IsSummonedBy(Unit* /*summoner*/) override
         {
-            if (Creature* muru = ObjectAccessor::GetCreature(*me, _instance->GetGuidData(DATA_MURU)))
+            if (Creature* muru = _instance->GetCreature(DATA_MURU))
                 muru->AI()->JustSummoned(me);
         }
 
@@ -461,6 +484,14 @@ public:
         {
             for (uint8 i = 0; i < MAX_VOID_SPAWNS; ++i)
                 DoCastAOE(SPELL_SUMMON_VOID_SPAWN, true);
+        }
+
+        void UpdateAI(uint32 diff) override
+        {
+            me->GetScheduler().Update(diff, [this]
+            {
+                DoMeleeAttackIfReady();
+            });
         }
 
     private:
@@ -520,7 +551,10 @@ public:
             });
         }
 
-        void UpdateAI(uint32 /*diff*/) override { }
+        void UpdateAI(uint32 diff) override
+        {
+            me->GetScheduler().Update(diff);
+        }
 
     private:
         InstanceScript* _instance;

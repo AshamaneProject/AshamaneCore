@@ -357,6 +357,18 @@ NonDefaultConstructible<pEffect> SpellEffects[TOTAL_SPELL_EFFECTS] =
     &Spell::EffectNULL,                                     //269 SPELL_EFFECT_UPGRADE_ITEM
     &Spell::EffectNULL,                                     //270 SPELL_EFFECT_270
     &Spell::EffectApplyAreaAura,                            //271 SPELL_EFFECT_APPLY_AREA_AURA_PARTY_NONRANDOM
+    &Spell::EffectNULL,                                     //272 SPELL_EFFECT_SET_COVENANT
+    &Spell::EffectNULL,                                     //273 SPELL_EFFECT_CRAFT_RUNEFORGE_LEGENDARY
+    &Spell::EffectNULL,                                     //274 SPELL_EFFECT_274
+    &Spell::EffectNULL,                                     //275 SPELL_EFFECT_275
+    &Spell::EffectNULL,                                     //276 SPELL_EFFECT_LEARN_TRANSMOG_ILLUSION
+    &Spell::EffectNULL,                                     //277 SPELL_EFFECT_SET_CHROMIE_TIME
+    &Spell::EffectNULL,                                     //278 SPELL_EFFECT_270
+    &Spell::EffectNULL,                                     //279 SPELL_EFFECT_LEARN_GARR_TALENT
+    &Spell::EffectNULL,                                     //280 SPELL_EFFECT_270
+    &Spell::EffectNULL,                                     //281 SPELL_EFFECT_LEARN_SOULBIND_CONDUIT
+    &Spell::EffectNULL,                                     //282 SPELL_EFFECT_CONVERT_ITEMS_TO_CURRENCY
+    &Spell::EffectNULL,                                     //283 SPELL_EFFECT_283
 };
 
 void Spell::EffectNULL(SpellEffIndex /*effIndex*/)
@@ -683,27 +695,6 @@ void Spell::EffectTriggerSpell(SpellEffIndex effIndex)
 
                 for (uint32 j = 0; j < spell->StackAmount; ++j)
                     m_caster->CastSpell(unitTarget, spell->Id, true);
-                return;
-            }
-            // Cloak of Shadows
-            case 35729:
-            {
-                uint32 dispelMask = SpellInfo::GetDispelMask(DISPEL_ALL);
-                Unit::AuraApplicationMap& Auras = unitTarget->GetAppliedAuras();
-                for (Unit::AuraApplicationMap::iterator iter = Auras.begin(); iter != Auras.end();)
-                {
-                    // remove all harmful spells on you...
-                    SpellInfo const* spell = iter->second->GetBase()->GetSpellInfo();
-                    if (((spell->DmgClass == SPELL_DAMAGE_CLASS_MAGIC && spell->GetSchoolMask() != SPELL_SCHOOL_MASK_NORMAL) // only affect magic spells
-                        || (spell->GetDispelMask() & dispelMask)) &&
-                        // ignore positive and passive auras
-                        !iter->second->IsPositive() && !iter->second->GetBase()->IsPassive())
-                    {
-                        m_caster->RemoveAura(iter);
-                    }
-                    else
-                        ++iter;
-                }
                 return;
             }
         }
@@ -1706,7 +1697,7 @@ void Spell::SendLoot(ObjectGuid guid, LootType loottype)
                 if (PlayerConditionEntry const* playerCondition = sPlayerConditionStore.LookupEntry(gameObjTarget->GetGOInfo()->chest.conditionID1))
                     if (playerCondition->PrevQuestID[1] != 0)
                         if (Quest const* quest = sObjectMgr->GetQuestTemplate(playerCondition->PrevQuestID[1]))
-                            player->RewardQuest(quest, 0, player);
+                            player->RewardQuest(quest, LootItemType::Item, 0, player);
 
                 // Don't return, let loots been taken
             default:
@@ -2074,8 +2065,7 @@ void Spell::EffectSummonType(SpellEffIndex effIndex)
                     summon->SelectLevel();       // some summoned creaters have different from 1 DB data for level/hp
                     summon->SetNpcFlags(NPCFlags(summon->GetCreatureTemplate()->npcflag & 0xFFFFFFFF));
                     summon->SetNpcFlags2(NPCFlags2(summon->GetCreatureTemplate()->npcflag >> 32));
-
-                    summon->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC));
+                    summon->SetImmuneToAll(true);
 
                     summon->AI()->EnterEvadeMode();
                     break;
@@ -3594,6 +3584,9 @@ void Spell::EffectSanctuary(SpellEffIndex /*effIndex*/)
     if (!unitTarget)
         return;
 
+    if (unitTarget->GetTypeId() == TYPEID_PLAYER)
+        unitTarget->ToPlayer()->SendAttackSwingCancelAttack();     // melee and ranged forced attack cancel
+
     unitTarget->getHostileRefManager().UpdateVisibility();
 
     Unit::AttackerSet const& attackers = unitTarget->getAttackers();
@@ -4470,9 +4463,13 @@ void Spell::EffectChargeDest(SpellEffIndex effIndex)
     if (effectHandleMode == SPELL_EFFECT_HANDLE_LAUNCH)
     {
         Position pos = destTarget->GetPosition();
-        float angle = m_caster->GetRelativeAngle(pos.GetPositionX(), pos.GetPositionY());
-        float dist = m_caster->GetDistance(pos);
-        pos = m_caster->GetFirstCollisionPosition(dist, angle);
+
+        if (!m_caster->IsWithinLOS(pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ()))
+        {
+            float angle = m_caster->GetRelativeAngle(pos.GetPositionX(), pos.GetPositionY());
+            float dist = m_caster->GetDistance(pos);
+            pos = m_caster->GetFirstCollisionPosition(dist, angle);
+        }
 
         m_caster->GetMotionMaster()->MoveCharge(pos.m_positionX, pos.m_positionY, pos.m_positionZ);
     }

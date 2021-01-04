@@ -2096,7 +2096,7 @@ class spell_rog_saber_slash : public SpellScript
         {
             caster->CastSpell(caster, SPELL_ROGUE_OPPORTUNITY, true);
 
-            SpellNonMeleeDamage dmg(caster, target, rogueSaberSlashInfo, GetSpellInfo()->GetSpellXSpellVisualId(), GetSpellInfo()->SchoolMask);
+            SpellNonMeleeDamage dmg(caster, target, rogueSaberSlashInfo, { GetSpellInfo()->GetSpellXSpellVisualId(), 0 }, GetSpellInfo()->SchoolMask);
             dmg.damage = GetHitDamage();
             caster->DealSpellDamage(&dmg, false);
             caster->SendSpellNonMeleeDamageLog(&dmg);
@@ -2590,7 +2590,7 @@ public:
             if (!eventInfo.GetDamageInfo())
                 return false;
 
-            SpellNonMeleeDamage damageLog(caster, target, triggerSpell, triggerSpell->GetSpellXSpellVisualId(), triggerSpell->SchoolMask);
+            SpellNonMeleeDamage damageLog(caster, target, triggerSpell, { triggerSpell->GetSpellXSpellVisualId(), 0 }, triggerSpell->SchoolMask);
             damageLog.damage = eventInfo.GetDamageInfo()->GetDamage();
             damageLog.cleanDamage = damageLog.damage;
             caster->DealSpellDamage(&damageLog, true);

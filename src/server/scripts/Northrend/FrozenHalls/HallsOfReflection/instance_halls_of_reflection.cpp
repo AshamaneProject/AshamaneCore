@@ -16,18 +16,16 @@
  */
 
 #include "ScriptMgr.h"
-#include "Containers.h"
-#include "Creature.h"
-#include "CreatureAI.h"
-#include "GameObject.h"
 #include "halls_of_reflection.h"
 #include "InstanceScript.h"
 #include "Map.h"
 #include "PhasingHandler.h"
 #include "Player.h"
+#include "ScriptedCreature.h"
 #include "TemporarySummon.h"
 #include "Transport.h"
 #include "WorldStatePackets.h"
+#include <sstream>
 
 Position const JainaSpawnPos           = { 5236.659f, 1929.894f, 707.7781f, 0.8726646f }; // Jaina Spawn Position
 Position const SylvanasSpawnPos        = { 5236.667f, 1929.906f, 707.7781f, 0.8377581f }; // Sylvanas Spawn Position (sniffed)
@@ -596,7 +594,8 @@ class instance_halls_of_reflection : public InstanceMapScript
                                 if (Creature* temp = instance->GetCreature(guid))
                                 {
                                     temp->CastSpell(temp, SPELL_SPIRIT_ACTIVATE, false);
-                                    temp->RemoveUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_NOT_SELECTABLE));
+                                    temp->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
+                                    temp->SetImmuneToAll(false);
                                     temp->AI()->DoZoneInCombat(temp, 100.00f);
                                 }
                             }

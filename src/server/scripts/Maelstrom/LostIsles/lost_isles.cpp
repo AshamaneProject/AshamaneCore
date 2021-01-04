@@ -337,16 +337,16 @@ struct npc_foreman_dampwick : public ScriptedAI
                     oreCart->GetMotionMaster()->MoveFollow(miner, 1.f, float(M_PI));
                 }
 
-                CAST_AI(npc_escortAI, (miner->AI()))->Start(false, false, player->GetGUID(), quest);
+                CAST_AI(EscortAI, (miner->AI()))->Start(false, false, player->GetGUID(), quest);
             }
         }
     }
 };
 
 // 35813
-struct npc_frightened_miner_escort : public npc_escortAI
+struct npc_frightened_miner_escort : public EscortAI
 {
-    npc_frightened_miner_escort(Creature* creature) : npc_escortAI(creature) {}
+    npc_frightened_miner_escort(Creature* creature) : EscortAI(creature) {}
 
     void AttackStart(Unit* /*who*/) override {}
     void EnterCombat(Unit* /*who*/) override {}
@@ -354,7 +354,7 @@ struct npc_frightened_miner_escort : public npc_escortAI
     void JustDied(Unit* /*killer*/) override {}
     void OnCharmed(bool /*apply*/) override {}
 
-    void WaypointReached(uint32 pointId) override
+    void WaypointReached(uint32 pointId, uint32 /*pathId*/) override
     {
         switch(pointId)
         {
@@ -381,7 +381,7 @@ struct npc_frightened_miner_escort : public npc_escortAI
         }
     }
 
-    void WaypointStart(uint32 pointId) override
+    void WaypointStarted(uint32 pointId, uint32 /*pathId*/) override
     {
         me->HandleEmoteCommand(0);
         switch(pointId)
@@ -558,7 +558,7 @@ struct npc_killag_sangrecroc : public ScriptedAI
             if (Creature* bastia = player->GetSummonedCreatureByEntry(NPC_CLIFF_BASTIA))
             {
                 Talk(1, player);
-                CAST_AI(npc_escortAI, bastia->AI())->Start(false, true, player->GetGUID(), quest);
+                CAST_AI(EscortAI, bastia->AI())->Start(false, true, player->GetGUID(), quest);
             }
         }
     }
@@ -588,9 +588,9 @@ class aura_infrared_orc_scout : public AuraScript
 };
 
 // 36578
-struct npc_cliff_bastia : public npc_escortAI
+struct npc_cliff_bastia : public EscortAI
 {
-    npc_cliff_bastia(Creature* creature) : npc_escortAI(creature) {}
+    npc_cliff_bastia(Creature* creature) : EscortAI(creature) {}
 
     void AttackStart(Unit* /*who*/) override {}
     void EnterCombat(Unit* /*who*/) override {}
@@ -602,7 +602,7 @@ struct npc_cliff_bastia : public npc_escortAI
         me->SetSpeed(MOVE_RUN, 14.f);
     }
 
-    void WaypointReached(uint32 pointId) override
+    void WaypointReached(uint32 pointId, uint32 /*pathId*/) override
     {
         if (pointId == 20)
             me->DespawnOrUnsummon();
@@ -634,15 +634,15 @@ struct npc_gyrocopterequest_giver : public ScriptedAI
             player->CastSpell(player, SPELL_PRECIOUS_CARGO_QUEST_ACCEPT, true);
 
             if (Creature* gyrocopter = player->GetSummonedCreatureByEntry(NPC_GYROCOPTER))
-                CAST_AI(npc_escortAI, gyrocopter->AI())->Start(false, true, player->GetGUID(), quest);
+                CAST_AI(EscortAI, gyrocopter->AI())->Start(false, true, player->GetGUID(), quest);
         }
     }
 };
 
 // 36143
-struct npc_precious_cargo_gyrocopter : public npc_escortAI
+struct npc_precious_cargo_gyrocopter : public EscortAI
 {
-    npc_precious_cargo_gyrocopter(Creature* creature) : npc_escortAI(creature) {}
+    npc_precious_cargo_gyrocopter(Creature* creature) : EscortAI(creature) {}
 
     void AttackStart(Unit* /*who*/) override {}
     void EnterCombat(Unit* /*who*/) override {}
@@ -655,7 +655,7 @@ struct npc_precious_cargo_gyrocopter : public npc_escortAI
         me->SetSpeed(MOVE_FLIGHT, 21.0f);
     }
 
-    void WaypointReached(uint32 pointId) override
+    void WaypointReached(uint32 pointId, uint32 /*pathId*/) override
     {
         if (pointId == 2)
         {
@@ -713,9 +713,9 @@ struct npc_lost_isles_thrall_top_boat : public ScriptedAI
 };
 
 // 36178
-struct npc_warchief_revenge_cyclone : public npc_escortAI
+struct npc_warchief_revenge_cyclone : public EscortAI
 {
-    npc_warchief_revenge_cyclone(Creature* creature) : npc_escortAI(creature) {}
+    npc_warchief_revenge_cyclone(Creature* creature) : EscortAI(creature) {}
 
     void AttackStart(Unit* /*who*/) override {}
     void EnterCombat(Unit* /*who*/) override {}
@@ -869,9 +869,9 @@ public:
 };
 
 // 36505
-struct npc_sling_rocket : public npc_escortAI
+struct npc_sling_rocket : public EscortAI
 {
-    npc_sling_rocket(Creature* creature) : npc_escortAI(creature) {}
+    npc_sling_rocket(Creature* creature) : EscortAI(creature) {}
 
     void AttackStart(Unit* /*who*/) override {}
     void EnterCombat(Unit* /*who*/) override {}
@@ -890,7 +890,7 @@ struct npc_sling_rocket : public npc_escortAI
         }
     }
 
-    void WaypointReached(uint32 pointId) override
+    void WaypointReached(uint32 pointId, uint32 /*pathId*/) override
     {
         if (pointId == 3)
         {
@@ -1411,9 +1411,9 @@ class npc_canon_gob : public CreatureScript
 public:
     npc_canon_gob() : CreatureScript("npc_canon_gob") { }
 
-    struct npc_canon_gobAI : public npc_escortAI
+    struct npc_canon_gobAI : public EscortAI
     {
-        npc_canon_gobAI(Creature* creature) : npc_escortAI(creature) {}
+        npc_canon_gobAI(Creature* creature) : EscortAI(creature) {}
 
         void Reset() override
         {
@@ -1435,7 +1435,7 @@ public:
 
         /*void UpdateAI(uint32 diff) override
         {
-            npc_escortAI::UpdateAI(diff);
+            EscortAI::UpdateAI(diff);
         }*/
 
         void PassengerBoarded(Unit* /*who*/, int8 /*seatId*/, bool /*apply*/) override{}
@@ -1626,9 +1626,9 @@ class npc_avion_gob : public CreatureScript
 public:
     npc_avion_gob() : CreatureScript("npc_avion_gob") { }
 
-    struct npc_avion_gobAI : public npc_escortAI
+    struct npc_avion_gobAI : public EscortAI
     {
-        npc_avion_gobAI(Creature* creature) : npc_escortAI(creature) {}
+        npc_avion_gobAI(Creature* creature) : EscortAI(creature) {}
 
         void AttackStart(Unit* /*who*/) override {}
         void EnterCombat(Unit* /*who*/) override {}
@@ -1647,7 +1647,7 @@ public:
                     Start(false, true, who->GetGUID());
         }
 
-        void WaypointReached(uint32 i) override
+        void WaypointReached(uint32 i, uint32 /*pathId*/) override
         {
             me->SetCanFly(true);
             me->SetSpeed(MOVE_FLIGHT, 6.0f);
@@ -1707,7 +1707,7 @@ public:
 
         void UpdateAI(uint32 diff) override
         {
-            npc_escortAI::UpdateAI(diff);
+            EscortAI::UpdateAI(diff);
         }
     };
 
@@ -1903,7 +1903,7 @@ public:
                         cnt++;
                         (*itr)->CastCustomSpell(VEHICLE_SPELL_RIDE_HARDCODED, SPELLVALUE_BASE_POINT0, cnt, chariot, false);
                     }
-                CAST_AI(npc_escortAI, (chariot->AI()))->Start(false, true, player->GetGUID(), quest);
+                CAST_AI(EscortAI, (chariot->AI()))->Start(false, true, player->GetGUID(), quest);
             }
         }
         return true;
@@ -1915,9 +1915,9 @@ class npc_Chariot2 : public CreatureScript
 public:
     npc_Chariot2() : CreatureScript("npc_Chariot2") { }
 
-    struct npc_Chariot2AI : public npc_escortAI
+    struct npc_Chariot2AI : public EscortAI
     {
-        npc_Chariot2AI(Creature* creature) : npc_escortAI(creature) {}
+        npc_Chariot2AI(Creature* creature) : EscortAI(creature) {}
 
         uint32 krennansay;
         bool AfterJump;
@@ -1936,7 +1936,7 @@ public:
                     who->ToCreature()->DespawnOrUnsummon();
         }
 
-        void WaypointReached(uint32 i) override
+        void WaypointReached(uint32 i, uint32 /*pathId*/) override
         {
             switch(i)
             {
@@ -1972,7 +1972,7 @@ public:
 
         void UpdateAI(uint32 diff) override
         {
-            npc_escortAI::UpdateAI(diff);
+            EscortAI::UpdateAI(diff);
         }
     };
 
@@ -2274,10 +2274,10 @@ public:
   }
 };
 
-class npc_flying_bomber : public npc_escortAI
+class npc_flying_bomber : public EscortAI
 {
 public:
-    npc_flying_bomber(Creature* creature) : npc_escortAI(creature)
+    npc_flying_bomber(Creature* creature) : EscortAI(creature)
     {
         me->SetCanFly(true);
         me->SetReactState(REACT_PASSIVE);

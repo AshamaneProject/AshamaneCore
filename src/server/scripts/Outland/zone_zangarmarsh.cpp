@@ -310,13 +310,13 @@ class npc_kayra_longmane : public CreatureScript
 public:
     npc_kayra_longmane() : CreatureScript("npc_kayra_longmane") { }
 
-    struct npc_kayra_longmaneAI : public npc_escortAI
+    struct npc_kayra_longmaneAI : public EscortAI
     {
-        npc_kayra_longmaneAI(Creature* creature) : npc_escortAI(creature) { }
+        npc_kayra_longmaneAI(Creature* creature) : EscortAI(creature) { }
 
         void Reset() override { }
 
-        void WaypointReached(uint32 waypointId) override
+        void WaypointReached(uint32 waypointId, uint32 /*pathId*/) override
         {
             Player* player = GetPlayerForEscort();
             if (!player)
@@ -355,7 +355,7 @@ public:
         {
             creature->AI()->Talk(SAY_START, player);
 
-            if (npc_escortAI* pEscortAI = CAST_AI(npc_kayra_longmane::npc_kayra_longmaneAI, creature->AI()))
+            if (EscortAI* pEscortAI = CAST_AI(npc_kayra_longmane::npc_kayra_longmaneAI, creature->AI()))
                 pEscortAI->Start(false, false, player->GetGUID());
         }
         return true;

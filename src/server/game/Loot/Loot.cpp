@@ -41,7 +41,7 @@ LootItem::LootItem(LootStoreItem const& li)
 {
     itemid      = li.itemid;
     conditions  = li.conditions;
-    currency    = li.type == LOOT_ITEM_TYPE_CURRENCY;
+    currency    = li.type == uint8(LootItemType::Currency);
 
     if (currency)
     {
@@ -232,7 +232,7 @@ void Loot::GenerateJournalEncounterLoot(Player* looter, uint32 journalEncounterI
     {
         JournalEncounterItemEntry const* randomStuffLoot = Trinity::Containers::SelectRandomContainerElement(stuffLoots);
 
-        LootStoreItem lootStoreItem(randomStuffLoot->ItemID, LOOT_ITEM_TYPE_ITEM, 0, 100, false, LOOT_MODE_DEFAULT, 0, 1, 1);
+        LootStoreItem lootStoreItem(randomStuffLoot->ItemID, uint8(LootItemType::Item), 0, 100, false, LOOT_MODE_DEFAULT, 0, 1, 1);
         AddItem(lootStoreItem, looter);
     }
 }
@@ -274,7 +274,7 @@ void Loot::AddItem(LootStoreItem const& item, Player const* player /*= nullptr*/
     if (!player)
         return;
 
-    if (item.type == LOOT_ITEM_TYPE_CURRENCY)
+    if (item.type == uint8(LootItemType::Currency))
     {
         LootItem generatedLoot(item);
         generatedLoot.count = urand(item.mincount, item.maxcount);

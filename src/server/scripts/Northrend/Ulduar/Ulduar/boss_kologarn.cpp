@@ -22,8 +22,6 @@
 #include "ObjectAccessor.h"
 #include "ScriptedCreature.h"
 #include "SpellAuraEffects.h"
-#include "SpellAuras.h"
-#include "SpellInfo.h"
 #include "SpellScript.h"
 #include "ulduar.h"
 #include "Vehicle.h"
@@ -230,8 +228,6 @@ class boss_kologarn : public CreatureScript
                 summon->CastSpell(summon, SPELL_FOCUSED_EYEBEAM_PERIODIC, true);
                 summon->CastSpell(summon, SPELL_FOCUSED_EYEBEAM_VISUAL, true);
                 summon->SetReactState(REACT_PASSIVE);
-                // One of the above spells is a channeled spell, we need to clear this unit state for MoveChase to work
-                summon->ClearUnitState(UNIT_STATE_CASTING);
 
                 // Victim gets 67351
                 if (!eyebeamTarget.IsEmpty())

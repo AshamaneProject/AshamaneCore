@@ -153,7 +153,7 @@ void Battleground::Update(uint32 diff)
         // [[   but if you use battleground object again (more battles possible to be played on 1 instance)
         //      then this condition should be removed and code:
         //      if (!GetInvitedCount(HORDE) && !GetInvitedCount(ALLIANCE))
-        //          this->AddToFreeBGObjectsQueue(); // not yet implemented
+        //          AddToFreeBGObjectsQueue(); // not yet implemented
         //      should be used instead of current
         // ]]
         // Battleground Template instance cannot be updated, because it would be deleted
@@ -619,12 +619,12 @@ void Battleground::SendBroadcastText(uint32 id, ChatMsg msgType, WorldObject con
 
 void Battleground::PlaySoundToAll(uint32 soundID)
 {
-    SendPacketToAll(WorldPackets::Misc::PlaySound(ObjectGuid::Empty, soundID).Write());
+    SendPacketToAll(WorldPackets::Misc::PlaySound(ObjectGuid::Empty, soundID, 0).Write());
 }
 
 void Battleground::PlaySoundToTeam(uint32 soundID, uint32 teamID)
 {
-    SendPacketToTeam(teamID, WorldPackets::Misc::PlaySound(ObjectGuid::Empty, soundID).Write());
+    SendPacketToTeam(teamID, WorldPackets::Misc::PlaySound(ObjectGuid::Empty, soundID, 0).Write());
 }
 
 void Battleground::CastSpellOnTeam(uint32 SpellID, uint32 TeamID)
@@ -740,12 +740,12 @@ void Battleground::EndBattleground(uint32 winner)
     //we must set it this way, because end time is sent in packet!
     SetRemainingTime(TIME_AUTOCLOSE_BATTLEGROUND);
 
-    WorldPackets::Battleground::PVPMatchEnd pvpMatchEnd;
-    pvpMatchEnd.Winner = GetWinner();
-    pvpMatchEnd.Duration = std::max<int32>(0, (GetElapsedTime() - BG_START_DELAY_2M) / IN_MILLISECONDS);
-    pvpMatchEnd.LogData.emplace();
-    BuildPvPLogDataPacket(*pvpMatchEnd.LogData);
-    pvpMatchEnd.Write();
+    WorldPackets::Battleground::PVPMatchComplete pvpMatchComplete;
+    pvpMatchComplete.Winner = GetWinner();
+    pvpMatchComplete.Duration = std::max<int32>(0, (GetElapsedTime() - BG_START_DELAY_2M) / IN_MILLISECONDS);
+    pvpMatchComplete.LogData.emplace();
+    BuildPvPLogDataPacket(*pvpMatchComplete.LogData);
+    pvpMatchComplete.Write();
 
     RewardChestToTeam(winner);
 
@@ -842,7 +842,7 @@ void Battleground::EndBattleground(uint32 winner)
 
         BlockMovement(player);
 
-        player->SendDirectMessage(pvpMatchEnd.GetRawPacket());
+        player->SendDirectMessage(pvpMatchComplete.GetRawPacket());
 
         player->UpdateCriteria(CRITERIA_TYPE_COMPLETE_BATTLEGROUND, player->GetMapId());
     }
@@ -1054,20 +1054,20 @@ void Battleground::AddPlayer(Player* player)
     playerJoined.Guid = player->GetGUID();
     SendPacketToTeam(team, playerJoined.Write(), player);
 
-    WorldPackets::Battleground::PVPMatchInit pvpMatchState;
-    pvpMatchState.MapID = GetMapId();
+    WorldPackets::Battleground::PVPMatchInitialize pvpMatchInitialize;
+    pvpMatchInitialize.MapID = GetMapId();
     switch (GetStatus())
     {
         case STATUS_NONE:
         case STATUS_WAIT_QUEUE:
-            pvpMatchState.State = WorldPackets::Battleground::PVPMatchInit::Inactive;
+            pvpMatchInitialize.State = WorldPackets::Battleground::PVPMatchInitialize::Inactive;
             break;
         case STATUS_WAIT_JOIN:
         case STATUS_IN_PROGRESS:
-            pvpMatchState.State = WorldPackets::Battleground::PVPMatchInit::InProgress;
+            pvpMatchInitialize.State = WorldPackets::Battleground::PVPMatchInitialize::InProgress;
             break;
         case STATUS_WAIT_LEAVE:
-            pvpMatchState.State = WorldPackets::Battleground::PVPMatchInit::Complete;
+            pvpMatchInitialize.State = WorldPackets::Battleground::PVPMatchInitialize::Complete;
             break;
         default:
             break;
@@ -1075,15 +1075,15 @@ void Battleground::AddPlayer(Player* player)
 
     if (GetElapsedTime() >= BG_START_DELAY_2M)
     {
-        pvpMatchState.Duration = (GetElapsedTime() - BG_START_DELAY_2M) / IN_MILLISECONDS;
-        pvpMatchState.StartTime = GameTime::GetGameTime() - pvpMatchState.Duration;
+        pvpMatchInitialize.Duration = (GetElapsedTime() - BG_START_DELAY_2M) / IN_MILLISECONDS;
+        pvpMatchInitialize.StartTime = GameTime::GetGameTime() - pvpMatchInitialize.Duration;
     }
-    pvpMatchState.ArenaFaction = player->GetBGTeam() == HORDE ? BG_TEAM_HORDE : BG_TEAM_ALLIANCE;
-    pvpMatchState.BattlemasterListID = GetTypeID();
-    pvpMatchState.Registered = false;
-    pvpMatchState.AffectsRating = isRated();
+    pvpMatchInitialize.ArenaFaction = player->GetBGTeam() == HORDE ? BG_TEAM_HORDE : BG_TEAM_ALLIANCE;
+    pvpMatchInitialize.BattlemasterListID = GetTypeID();
+    pvpMatchInitialize.Registered = false;
+    pvpMatchInitialize.AffectsRating = isRated();
 
-    player->SendDirectMessage(pvpMatchState.Write());
+    player->SendDirectMessage(pvpMatchInitialize.Write());
 
     player->RemoveAurasByType(SPELL_AURA_MOUNTED);
 
@@ -1309,12 +1309,12 @@ bool Battleground::HasFreeSlots() const
     return GetPlayersSize() < GetMaxPlayers();
 }
 
-void Battleground::BuildPvPLogDataPacket(WorldPackets::Battleground::PVPLogData& pvpLogData) const
+void Battleground::BuildPvPLogDataPacket(WorldPackets::Battleground::PVPMatchStatistics& pvpLogData) const
 {
     pvpLogData.Statistics.reserve(GetPlayerScoresSize());
     for (auto const& score : PlayerScores)
     {
-        WorldPackets::Battleground::PVPLogData::PVPMatchPlayerStatistics playerData;
+        WorldPackets::Battleground::PVPMatchStatistics::PVPMatchPlayerStatistics playerData;
         score.second->BuildPvPLogPlayerDataPacket(playerData);
 
         if (Player* player = ObjectAccessor::GetPlayer(GetBgMap(), playerData.PlayerGUID))
@@ -1390,7 +1390,7 @@ void Battleground::RelocateDeadPlayers(ObjectGuid guideGuid)
                 continue;
 
             if (!closestGrave)
-                closestGrave = GetClosestGraveYard(player);
+                closestGrave = GetClosestGraveyard(player);
 
             if (closestGrave)
                 player->TeleportTo(closestGrave->Loc);
@@ -1434,7 +1434,7 @@ bool Battleground::AddObject(uint32 type, uint32 entry, float x, float y, float 
 
     // without this, UseButtonOrDoor caused the crash, since it tried to get go info from godata
     // iirc that was changed, so adding to go data map is no longer required if that was the only function using godata from GameObject without checking if it existed
-    GameObjectData& data = sObjectMgr->NewGOData(guid);
+    GameObjectData& data = sObjectMgr->NewOrExistGameObjectData(guid);
 
     data.id             = entry;
     data.mapid          = GetMapId();
@@ -1654,7 +1654,7 @@ bool Battleground::AddSpiritGuide(uint32 type, float x, float y, float z, float 
         // creature->SetVisibleAura(0, SPELL_SPIRIT_HEAL_CHANNEL);
         // casting visual effect
         creature->SetChannelSpellId(SPELL_SPIRIT_HEAL_CHANNEL);
-        creature->SetChannelSpellXSpellVisualId(VISUAL_SPIRIT_HEAL_CHANNEL);
+        creature->SetChannelVisual({ VISUAL_SPIRIT_HEAL_CHANNEL, 0 });
         //creature->CastSpell(creature, SPELL_SPIRIT_HEAL_CHANNEL, true);
         return true;
     }
@@ -1805,9 +1805,9 @@ void Battleground::PlayerAddedToBGCheckIfBGIsRunning(Player* player)
 
     BlockMovement(player);
 
-    WorldPackets::Battleground::PVPLogDataMessage pvpLogData;
-    BuildPvPLogDataPacket(pvpLogData.Data);
-    player->SendDirectMessage(pvpLogData.Write());
+    WorldPackets::Battleground::PVPMatchStatisticsMessage pvpMatchStatistics;
+    BuildPvPLogDataPacket(pvpMatchStatistics.Data);
+    player->SendDirectMessage(pvpMatchStatistics.Write());
 }
 
 uint32 Battleground::GetAlivePlayersCountByTeam(uint32 Team) const
@@ -1850,9 +1850,9 @@ void Battleground::SetBgRaid(uint32 TeamID, Group* bg_raid)
     old_raid = bg_raid;
 }
 
-WorldSafeLocsEntry const* Battleground::GetClosestGraveYard(Player* player)
+WorldSafeLocsEntry const* Battleground::GetClosestGraveyard(Player* player)
 {
-    return sObjectMgr->GetClosestGraveYard(*player, player->GetTeam(), player);
+    return sObjectMgr->GetClosestGraveyard(*player, player->GetTeam(), player);
 }
 
 void Battleground::StartCriteriaTimer(CriteriaTimedTypes type, uint32 entry)

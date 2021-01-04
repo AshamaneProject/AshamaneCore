@@ -145,7 +145,7 @@ void FollowerAI::JustDied(Unit* /*killer*/)
     }
 }
 
-void FollowerAI::JustRespawned()
+void FollowerAI::JustAppeared()
 {
     m_uiFollowState = STATE_FOLLOW_NONE;
 
@@ -283,7 +283,7 @@ void FollowerAI::MovementInform(uint32 motionType, uint32 pointId)
     }
 }
 
-void FollowerAI::StartFollow(Player* player, uint32 factionForFollower, const Quest* quest)
+void FollowerAI::StartFollow(Player* player, uint32 factionForFollower, Quest const* quest)
 {
     if (me->GetVictim())
     {

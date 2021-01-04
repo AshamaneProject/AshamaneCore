@@ -21,6 +21,8 @@
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 #include "GameObject.h"
+#include "Map.h"
+#include <sstream>
 
 #define ENCOUNTERS 7
 

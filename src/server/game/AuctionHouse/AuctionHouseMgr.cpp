@@ -114,6 +114,7 @@ void AuctionsBucketData::BuildBucketInfo(WorldPackets::AuctionHouse::BucketInfo*
 {
     bucketInfo->Key = Key;
     bucketInfo->MinPrice = MinPrice;
+    bucketInfo->RequiredLevel = RequiredLevel;
     bucketInfo->TotalQuantity = 0;
 
     for (AuctionPosting const* auction : Auctions)
@@ -1339,7 +1340,7 @@ void AuctionHouseObject::BuildListBuckets(WorldPackets::AuctionHouse::AuctionLis
 
 }
 
-void AuctionHouseObject::BuildListBidderItems(WorldPackets::AuctionHouse::AuctionListBidderItemsResult& listBidderItemsResult, Player* player,
+void AuctionHouseObject::BuildListBiddedItems(WorldPackets::AuctionHouse::AuctionListBiddedItemsResult& listBiddedItemsResult, Player* player,
     uint32 /*offset*/, WorldPackets::AuctionHouse::AuctionSortDef const* sorts, std::size_t sortCount) const
 {
     // always full list
@@ -1353,12 +1354,12 @@ void AuctionHouseObject::BuildListBidderItems(WorldPackets::AuctionHouse::Auctio
 
     for (AuctionPosting const* resultAuction : auctions)
     {
-        listBidderItemsResult.Items.emplace_back();
-        WorldPackets::AuctionHouse::AuctionItem& auctionItem = listBidderItemsResult.Items.back();
+        listBiddedItemsResult.Items.emplace_back();
+        WorldPackets::AuctionHouse::AuctionItem& auctionItem = listBiddedItemsResult.Items.back();
         resultAuction->BuildAuctionItem(&auctionItem, true, true, true, false);
     }
 
-    listBidderItemsResult.HasMoreResults = false;
+    listBiddedItemsResult.HasMoreResults = false;
 }
 
 void AuctionHouseObject::BuildListAuctionItems(WorldPackets::AuctionHouse::AuctionListItemsResult& listItemsResult, Player* player, AuctionsBucketKey const& bucketKey,
@@ -1418,7 +1419,7 @@ void AuctionHouseObject::BuildListAuctionItems(WorldPackets::AuctionHouse::Aucti
     listItemsResult.HasMoreResults = builder.HasMoreResults();
 }
 
-void AuctionHouseObject::BuildListOwnerItems(WorldPackets::AuctionHouse::AuctionListOwnerItemsResult& listOwnerItemsResult, Player* player,
+void AuctionHouseObject::BuildListOwnedItems(WorldPackets::AuctionHouse::AuctionListOwnedItemsResult& listOwnedItemsResult, Player* player,
     uint32 /*offset*/, WorldPackets::AuctionHouse::AuctionSortDef const* sorts, std::size_t sortCount)
 {
     // always full list
@@ -1432,12 +1433,12 @@ void AuctionHouseObject::BuildListOwnerItems(WorldPackets::AuctionHouse::Auction
 
     for (AuctionPosting const* resultAuction : auctions)
     {
-        listOwnerItemsResult.Items.emplace_back();
-        WorldPackets::AuctionHouse::AuctionItem& auctionItem = listOwnerItemsResult.Items.back();
+        listOwnedItemsResult.Items.emplace_back();
+        WorldPackets::AuctionHouse::AuctionItem& auctionItem = listOwnedItemsResult.Items.back();
         resultAuction->BuildAuctionItem(&auctionItem, true, true, false, false);
     }
 
-    listOwnerItemsResult.HasMoreResults = false;
+    listOwnedItemsResult.HasMoreResults = false;
 }
 
 /*

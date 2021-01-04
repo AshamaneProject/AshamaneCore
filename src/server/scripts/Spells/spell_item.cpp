@@ -4863,7 +4863,7 @@ class spell_item_heart_of_azeroth : public AuraScript
         {
             target->ApplyAllAzeriteEmpoweredItemMods(equipped);
 
-            WorldPackets::Azerite::AzeriteEmpoweredItemEquippedStatusChanged statusChanged;
+            WorldPackets::Azerite::PlayerAzeriteItemEquippedStatusChanged statusChanged;
             statusChanged.IsHeartEquipped = equipped;
             target->SendDirectMessage(statusChanged.Write());
         }

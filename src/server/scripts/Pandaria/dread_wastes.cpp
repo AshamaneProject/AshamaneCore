@@ -2058,9 +2058,9 @@ class mob_second_kaz_tik_the_manipulator : public CreatureScript
             return true;
         }
 
-        struct mob_second_kaz_tik_the_manipulatorAI : public npc_escortAI
+        struct mob_second_kaz_tik_the_manipulatorAI : public EscortAI
         {
-            mob_second_kaz_tik_the_manipulatorAI(Creature* creature) : npc_escortAI(creature)
+            mob_second_kaz_tik_the_manipulatorAI(Creature* creature) : EscortAI(creature)
             {
                 playerGUID = ObjectGuid::Empty;
             }
@@ -2080,7 +2080,7 @@ class mob_second_kaz_tik_the_manipulator : public CreatureScript
                 playerGUID = guid;
             }
 
-            void WaypointReached(uint32 waypointId) override
+            void WaypointReached(uint32 waypointId, uint32 /*pathId*/) override
             {
                 Player* player = GetPlayerForEscort();
 
@@ -2141,7 +2141,7 @@ class mob_second_kaz_tik_the_manipulator : public CreatureScript
                 {
                     if (player->GetQuestStatus(QUEST_REUNITED) == QUEST_STATUS_INCOMPLETE)
                     {
-                        npc_escortAI::UpdateAI(diff);
+                        EscortAI::UpdateAI(diff);
 
                         events.Update(diff);
 

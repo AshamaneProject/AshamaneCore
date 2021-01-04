@@ -213,15 +213,16 @@ public:
                 _midnightGUID = guid;
         }
 
-        void UpdateAI(uint32 /*diff*/) override
+        void UpdateAI(uint32 diff) override
         {
             if (!UpdateVictim() && _phase != PHASE_NONE)
                 return;
 
-            DoMeleeAttackIfReady();
+            me->GetScheduler().Update(diff,
+                std::bind(&BossAI::DoMeleeAttackIfReady, this));
         }
 
-        void SpellHit(Unit* /*source*/, const SpellInfo* spell) override
+        void SpellHit(Unit* /*source*/, SpellInfo const* spell) override
         {
             if (spell->Mechanic == MECHANIC_DISARM)
                 Talk(SAY_DISARMED);
@@ -236,30 +237,31 @@ public:
                     midnight->AttackStop();
                     midnight->RemoveAllAttackers();
                     midnight->SetReactState(REACT_PASSIVE);
-                    midnight->GetMotionMaster()->MoveChase(me);
+                    midnight->GetMotionMaster()->MoveFollow(me, 2.0f, 0.0f);
                     midnight->AI()->Talk(EMOTE_MOUNT_UP);
 
                     me->AttackStop();
                     me->RemoveAllAttackers();
                     me->SetReactState(REACT_PASSIVE);
-                    me->GetMotionMaster()->MoveChase(midnight);
+                    me->GetMotionMaster()->MoveFollow(midnight, 2.0f, 0.0f);
                     Talk(SAY_MOUNT);
 
-                    me->GetScheduler().Schedule(Seconds(3), [this](TaskContext task)
+                    me->GetScheduler().Schedule(Seconds(1), [this](TaskContext task)
                     {
                         if (Creature* midnight = ObjectAccessor::GetCreature(*me, _midnightGUID))
                         {
-                            if (me->IsWithinMeleeRange(midnight))
+                            if (me->IsWithinDist2d(midnight, 5.0f))
                             {
                                 DoCastAOE(SPELL_SUMMON_ATTUMEN_MOUNTED);
                                 me->SetVisible(false);
+                                me->GetMotionMaster()->Clear();
                                 midnight->SetVisible(false);
                             }
                             else
                             {
-                                midnight->GetMotionMaster()->MoveChase(me);
-                                me->GetMotionMaster()->MoveChase(midnight);
-                                task.Repeat(Seconds(3));
+                                midnight->GetMotionMaster()->MoveFollow(me, 2.0f, 0.0f);
+                                me->GetMotionMaster()->MoveFollow(midnight, 2.0f, 0.0f);
+                                task.Repeat();
                             }
                         }
                     });
@@ -360,12 +362,13 @@ public:
             }
         }
 
-        void UpdateAI(uint32 /*diff*/) override
+        void UpdateAI(uint32 diff) override
         {
             if (!UpdateVictim() || _phase == PHASE_MOUNTED)
                 return;
 
-            DoMeleeAttackIfReady();
+            me->GetScheduler().Update(diff,
+                std::bind(&BossAI::DoMeleeAttackIfReady, this));
         }
 
         private:

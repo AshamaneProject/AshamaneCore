@@ -676,7 +676,7 @@ std::string LFGQueue::DumpCompatibleInfo(bool full /* = false */) const
             {
                 o << " (";
                 bool first = true;
-                for (const auto& role : itr->second.roles)
+                for (auto const& role : itr->second.roles)
                 {
                     if (!first)
                         o << "|";

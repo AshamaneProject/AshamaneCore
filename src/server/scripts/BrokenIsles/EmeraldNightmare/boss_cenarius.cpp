@@ -84,13 +84,13 @@ Position northwest = { 11391.2f,-12670.0f,487.1889f,4.21162f };
 Position southwest = { 11343.0332f,-12663.058f,487.26428f,5.03789f };
 Position southeast = { 11339.5f,-12719.2f,487.334f,0.842365f };
 
-struct SpawnData
+struct CustomSpawnData
 {
     uint32 event, npcId;
     Position pos;
 };
 
-SpawnData const spawnData[] =
+CustomSpawnData const spawnData[] =
 {
     { EVENT_1, NPC_CORRUPTED_WISP, northeast },
     { EVENT_1, NPC_CORRUPTED_WISP, northeast },
@@ -161,7 +161,7 @@ struct boss_cenarius_1 : public BossAI
         wave = 0;
     }
 
-    void LoadNPC(uint32 event, const SpawnData* data)
+    void LoadNPC(uint32 event, const CustomSpawnData* data)
     {
         while (data->event)
         {

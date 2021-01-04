@@ -187,7 +187,7 @@ void HandleArgs(int argc, char* arg[])
                 break;
             case 'f':
                 if (c + 1 < argc)                            // all ok
-                    CONF_allow_float_to_int = atoi(arg[c++ + 1])!=0;
+                    CONF_allow_float_to_int = atoi(arg[c++ + 1]) != 0;
                 else
                     Usage(arg[0]);
                 break;
@@ -235,7 +235,7 @@ void TryLoadDB2(char const* name, DB2CascFileSource* source, DB2FileLoader* db2,
     }
     catch (std::exception const& e)
     {
-        printf("Fatal error: Invalid %s file format! %s\n%s\n", name, CASC::HumanReadableCASCError(GetLastError()), e.what());
+        printf("Fatal error: Invalid %s file format! %s\n%s\n", name, CASC::HumanReadableCASCError(GetCascError()), e.what());
         exit(1);
     }
 }
@@ -853,12 +853,12 @@ bool ConvertADT(ChunkedFile& adt, std::string const& mapName, std::string const&
             float diff = maxHeight - minHeight;
             if (diff < CONF_float_to_int8_limit)      // As uint8 (max accuracy = CONF_float_to_int8_limit/256)
             {
-                heightHeader.flags|=MAP_HEIGHT_AS_INT8;
+                heightHeader.flags |= MAP_HEIGHT_AS_INT8;
                 step = selectUInt8StepStore(diff);
             }
-            else if (diff<CONF_float_to_int16_limit)  // As uint16 (max accuracy = CONF_float_to_int16_limit/65536)
+            else if (diff < CONF_float_to_int16_limit)  // As uint16 (max accuracy = CONF_float_to_int16_limit/65536)
             {
-                heightHeader.flags|=MAP_HEIGHT_AS_INT16;
+                heightHeader.flags |= MAP_HEIGHT_AS_INT16;
                 step = selectUInt16StepStore(diff);
             }
         }
@@ -996,30 +996,30 @@ bool ConvertADT(ChunkedFile& adt, std::string const& mapName, std::string const&
         return false;
     }
 
-    outFile.write(reinterpret_cast<const char*>(&map), sizeof(map));
+    outFile.write(reinterpret_cast<char const*>(&map), sizeof(map));
     // Store area data
-    outFile.write(reinterpret_cast<const char*>(&areaHeader), sizeof(areaHeader));
+    outFile.write(reinterpret_cast<char const*>(&areaHeader), sizeof(areaHeader));
     if (!(areaHeader.flags & MAP_AREA_NO_AREA))
-        outFile.write(reinterpret_cast<const char*>(area_ids), sizeof(area_ids));
+        outFile.write(reinterpret_cast<char const*>(area_ids), sizeof(area_ids));
 
     // Store height data
-    outFile.write(reinterpret_cast<const char*>(&heightHeader), sizeof(heightHeader));
+    outFile.write(reinterpret_cast<char const*>(&heightHeader), sizeof(heightHeader));
     if (!(heightHeader.flags & MAP_HEIGHT_NO_HEIGHT))
     {
         if (heightHeader.flags & MAP_HEIGHT_AS_INT16)
         {
-            outFile.write(reinterpret_cast<const char*>(uint16_V9), sizeof(uint16_V9));
-            outFile.write(reinterpret_cast<const char*>(uint16_V8), sizeof(uint16_V8));
+            outFile.write(reinterpret_cast<char const*>(uint16_V9), sizeof(uint16_V9));
+            outFile.write(reinterpret_cast<char const*>(uint16_V8), sizeof(uint16_V8));
         }
         else if (heightHeader.flags & MAP_HEIGHT_AS_INT8)
         {
-            outFile.write(reinterpret_cast<const char*>(uint8_V9), sizeof(uint8_V9));
-            outFile.write(reinterpret_cast<const char*>(uint8_V8), sizeof(uint8_V8));
+            outFile.write(reinterpret_cast<char const*>(uint8_V9), sizeof(uint8_V9));
+            outFile.write(reinterpret_cast<char const*>(uint8_V8), sizeof(uint8_V8));
         }
         else
         {
-            outFile.write(reinterpret_cast<const char*>(V9), sizeof(V9));
-            outFile.write(reinterpret_cast<const char*>(V8), sizeof(V8));
+            outFile.write(reinterpret_cast<char const*>(V9), sizeof(V9));
+            outFile.write(reinterpret_cast<char const*>(V8), sizeof(V8));
         }
     }
 
@@ -1032,23 +1032,23 @@ bool ConvertADT(ChunkedFile& adt, std::string const& mapName, std::string const&
     // Store liquid data if need
     if (map.liquidMapOffset)
     {
-        outFile.write(reinterpret_cast<const char*>(&liquidHeader), sizeof(liquidHeader));
+        outFile.write(reinterpret_cast<char const*>(&liquidHeader), sizeof(liquidHeader));
         if (!(liquidHeader.flags & MAP_LIQUID_NO_TYPE))
         {
-            outFile.write(reinterpret_cast<const char*>(liquid_entry), sizeof(liquid_entry));
-            outFile.write(reinterpret_cast<const char*>(liquid_flags), sizeof(liquid_flags));
+            outFile.write(reinterpret_cast<char const*>(liquid_entry), sizeof(liquid_entry));
+            outFile.write(reinterpret_cast<char const*>(liquid_flags), sizeof(liquid_flags));
         }
 
         if (!(liquidHeader.flags & MAP_LIQUID_NO_HEIGHT))
         {
             for (int y = 0; y < liquidHeader.height; y++)
-                outFile.write(reinterpret_cast<const char*>(&liquid_height[y + liquidHeader.offsetY][liquidHeader.offsetX]), sizeof(float) * liquidHeader.width);
+                outFile.write(reinterpret_cast<char const*>(&liquid_height[y + liquidHeader.offsetY][liquidHeader.offsetX]), sizeof(float) * liquidHeader.width);
         }
     }
 
     // store hole data
     if (hasHoles)
-        outFile.write(reinterpret_cast<const char*>(holes), map.holesSize);
+        outFile.write(reinterpret_cast<char const*>(holes), map.holesSize);
 
     outFile.close();
 
@@ -1215,7 +1215,7 @@ bool ExtractDB2File(uint32 fileDataId, char const* cascFileName, int locale, boo
     DB2CascFileSource source(CascStorage, fileDataId, false);
     if (!source.IsOpen())
     {
-        printf("Unable to open file %s in the archive for locale %s: %s\n", cascFileName, localeNames[locale], CASC::HumanReadableCASCError(GetLastError()));
+        printf("Unable to open file %s in the archive for locale %s: %s\n", cascFileName, localeNames[locale], CASC::HumanReadableCASCError(GetCascError()));
         return false;
     }
 
@@ -1351,7 +1351,7 @@ void ExtractCameraFiles()
                     ++count;
         }
         else
-            printf("Unable to open file %u in the archive: %s\n", cameraFileDataId, CASC::HumanReadableCASCError(GetLastError()));
+            printf("Unable to open file %u in the archive: %s\n", cameraFileDataId, CASC::HumanReadableCASCError(GetCascError()));
     }
 
     printf("Extracted %u camera files\n", count);
@@ -1371,9 +1371,6 @@ void ExtractGameTables()
     {
         { 1582086, "ArtifactKnowledgeMultiplier.txt" },
         { 1391662, "ArtifactLevelXP.txt" },
-        { 1892815, "AzeriteBaseExperiencePerLevel.txt" },
-        { 1892816, "AzeriteKnowledgeMultiplier.txt" },
-        { 1859377, "AzeriteLevelToItemLevel.txt" },
         { 1391663, "BarberShopCostBase.txt" },
         { 1391664, "BaseMp.txt" },
         { 1391665, "BattlePetTypeDamageMod.txt" },
@@ -1391,7 +1388,7 @@ void ExtractGameTables()
         { 1391659, "SandboxScaling.txt" },
         { 1391660, "SpellScaling.txt" },
         { 1980632, "StaminaMultByILvl.txt" },
-        { 1391661, "xp.txt" },
+        { 1391661, "xp.txt" }
     };
 
     uint32 count = 0;
@@ -1407,7 +1404,7 @@ void ExtractGameTables()
                     ++count;
         }
         else
-            printf("Unable to open file %s in the archive: %s\n", gt.Name, CASC::HumanReadableCASCError(GetLastError()));
+            printf("Unable to open file %s in the archive: %s\n", gt.Name, CASC::HumanReadableCASCError(GetCascError()));
     }
 
     printf("Extracted %u files\n\n", count);

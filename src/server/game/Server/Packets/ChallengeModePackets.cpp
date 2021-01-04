@@ -90,7 +90,7 @@ WorldPacket const* WorldPackets::ChallengeMode::Complete::Write()
     return &_worldPacket;
 }
 
-WorldPacket const* WorldPackets::ChallengeMode::NewPlayerRecord::Write()
+WorldPacket const* WorldPackets::ChallengeMode::NewWeeklyRecord::Write()
 {
     _worldPacket << (uint32)MapId;
     _worldPacket << (uint32)Duration;

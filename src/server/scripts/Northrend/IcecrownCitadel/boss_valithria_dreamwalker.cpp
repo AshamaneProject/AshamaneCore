@@ -24,7 +24,6 @@
 #include "PhasingHandler.h"
 #include "ScriptedCreature.h"
 #include "SpellAuraEffects.h"
-#include "SpellInfo.h"
 #include "SpellScript.h"
 
 enum Texts
@@ -264,7 +263,7 @@ class ValithriaDespawner : public BasicEvent
             creature->SetRespawnDelay(10);
 
             if (CreatureData const* data = creature->GetCreatureData())
-                creature->UpdatePosition(data->posX, data->posY, data->posZ, data->orientation);
+                creature->UpdatePosition(data->spawnPoint);
             creature->DespawnOrUnsummon();
 
             creature->SetCorpseDelay(corpseDelay);
@@ -345,9 +344,6 @@ class boss_valithria_dreamwalker : public CreatureScript
                     me->AddLootRecipient(healer);
 
                 me->LowerPlayerDamageReq(heal);
-
-                if (healer->IsPlayer() && healer->getLevel() > 80)
-                    heal *= healer->getLevel() - 80;
 
                 // encounter complete
                 if (me->HealthAbovePctHealed(100, heal) && !_done)
@@ -743,12 +739,6 @@ class npc_risen_archmage : public CreatureScript
                     if (Creature* trigger = ObjectAccessor::GetCreature(*me, _instance->GetGuidData(DATA_VALITHRIA_TRIGGER)))
                         trigger->AI()->DoZoneInCombat();
                 }
-            }
-
-            void JustDied(Unit* attacker) override
-            {
-                if (!me->IsInCombat())
-                    EnterCombat(attacker);
             }
 
             void DoAction(int32 action) override

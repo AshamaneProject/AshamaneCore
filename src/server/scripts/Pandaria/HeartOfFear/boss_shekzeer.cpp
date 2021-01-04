@@ -1392,7 +1392,7 @@ class mob_dissonance_field : public CreatureScript
                 me->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_NON_ATTACKABLE));
                 me->SetReactState(REACT_PASSIVE);
                 events.ScheduleEvent(EVENT_CHECK_CAST, 1000);
-                me->DisableHealthRegen();
+                me->SetRegenerateHealth(false);
 
                 std::list<Player*> playerList;
                 GetPlayerListInGrid(playerList, me, 200.0f);

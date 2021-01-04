@@ -145,9 +145,9 @@ public:
         return new npc_thrall_hotAI(creature);
     }
 
-    struct npc_thrall_hotAI : public npc_escortAI
+    struct npc_thrall_hotAI : public EscortAI
     {
-        npc_thrall_hotAI(Creature* creature) : npc_escortAI(creature), summons(me)
+        npc_thrall_hotAI(Creature* creature) : EscortAI(creature), summons(me)
         {
             instance = creature->GetInstanceScript();
         }
@@ -226,7 +226,7 @@ public:
             }
         }
 
-        void WaypointReached(uint32 waypointId) override
+        void WaypointReached(uint32 waypointId, uint32 /*pointId*/) override
         {
             switch (waypointId)
             {
@@ -291,7 +291,7 @@ public:
         void UpdateAI(uint32 diff) override
 
         {
-            npc_escortAI::UpdateAI(diff);
+            EscortAI::UpdateAI(diff);
 
             if (me->HasUnitState(UNIT_STATE_CASTING))
                 return;
@@ -578,9 +578,9 @@ public:
         return new npc_thrall_second_hotAI(creature);
     }
 
-    struct npc_thrall_second_hotAI : public npc_escortAI
+    struct npc_thrall_second_hotAI : public EscortAI
     {
-        npc_thrall_second_hotAI(Creature* creature) : npc_escortAI(creature), summons(me)
+        npc_thrall_second_hotAI(Creature* creature) : EscortAI(creature), summons(me)
         {
             instance = creature->GetInstanceScript();
         }
@@ -650,7 +650,7 @@ public:
             }
         }
 
-        void WaypointReached(uint32 waypointId) override
+        void WaypointReached(uint32 waypointId, uint32 /*pointId*/) override
         {
             switch (waypointId)
             {
@@ -705,7 +705,7 @@ public:
         void UpdateAI(uint32 diff) override
 
         {
-            npc_escortAI::UpdateAI(diff);
+            EscortAI::UpdateAI(diff);
 
             /*if (me->HasUnitState(UNIT_STATE_CASTING))
                 return;*/
@@ -1254,9 +1254,9 @@ public:
         return new npc_thrall_final_hotAI(creature);
     }
 
-    struct npc_thrall_final_hotAI : public npc_escortAI
+    struct npc_thrall_final_hotAI : public EscortAI
     {
-        npc_thrall_final_hotAI(Creature* creature) : npc_escortAI(creature), summons(me)
+        npc_thrall_final_hotAI(Creature* creature) : EscortAI(creature), summons(me)
         {
             instance = creature->GetInstanceScript();
         }
@@ -1323,7 +1323,7 @@ public:
             }
         }
 
-        void WaypointReached(uint32 waypointId) override
+        void WaypointReached(uint32 waypointId, uint32 /*pointId*/) override
         {
             switch (waypointId)
             {
@@ -1363,7 +1363,7 @@ public:
         void UpdateAI(uint32 diff) override
 
         {
-            npc_escortAI::UpdateAI(diff);
+            EscortAI::UpdateAI(diff);
 
             /*if (me->HasUnitState(UNIT_STATE_CASTING))
                 return;*/

@@ -537,9 +537,13 @@ void CollectionMgr::LoadAccountItemAppearances(PreparedQueryResult knownAppearan
         134110, // Hidden Helm
         134111, // Hidden Cloak
         134112, // Hidden Shoulder
+        168659, // Hidden Chestpiece
         142503, // Hidden Shirt
         142504, // Hidden Tabard
-        143539  // Hidden Belt
+        168665, // Hidden Bracers
+        158329, // Hidden Gloves
+        143539, // Hidden Belt
+        168664  // Hidden Boots
     };
 
     for (uint32 hiddenItem : hiddenAppearanceItems)
@@ -888,22 +892,22 @@ void CollectionMgr::SetAppearanceIsFavorite(uint32 itemModifiedAppearanceId, boo
     else
         return;
 
-    WorldPackets::Transmogrification::TransmogCollectionUpdate transmogCollectionUpdate;
-    transmogCollectionUpdate.IsFullUpdate = false;
-    transmogCollectionUpdate.IsSetFavorite = apply;
-    transmogCollectionUpdate.FavoriteAppearances.push_back(itemModifiedAppearanceId);
+    WorldPackets::Transmogrification::AccountTransmogUpdate accountTransmogUpdate;
+    accountTransmogUpdate.IsFullUpdate = false;
+    accountTransmogUpdate.IsSetFavorite = apply;
+    accountTransmogUpdate.FavoriteAppearances.push_back(itemModifiedAppearanceId);
 
-    _owner->SendPacket(transmogCollectionUpdate.Write());
+    _owner->SendPacket(accountTransmogUpdate.Write());
 }
 
 void CollectionMgr::SendFavoriteAppearances() const
 {
-    WorldPackets::Transmogrification::TransmogCollectionUpdate transmogCollectionUpdate;
-    transmogCollectionUpdate.IsFullUpdate = true;
-    transmogCollectionUpdate.FavoriteAppearances.reserve(_favoriteAppearances.size());
+    WorldPackets::Transmogrification::AccountTransmogUpdate accountTransmogUpdate;
+    accountTransmogUpdate.IsFullUpdate = true;
+    accountTransmogUpdate.FavoriteAppearances.reserve(_favoriteAppearances.size());
     for (auto itr = _favoriteAppearances.begin(); itr != _favoriteAppearances.end(); ++itr)
         if (itr->second != FavoriteAppearanceState::Removed)
-            transmogCollectionUpdate.FavoriteAppearances.push_back(itr->first);
+            accountTransmogUpdate.FavoriteAppearances.push_back(itr->first);
 
-    _owner->SendPacket(transmogCollectionUpdate.Write());
+    _owner->SendPacket(accountTransmogUpdate.Write());
 }

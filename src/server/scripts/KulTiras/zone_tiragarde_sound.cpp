@@ -766,10 +766,10 @@ public:
 /// TODO Make Flynn wait for player
 /// TODO Cast the good spells at the right time
 // 126490
-class npc_flynn_lovesick_escort : public npc_escortAI
+class npc_flynn_lovesick_escort : public EscortAI
 {
 public:
-    npc_flynn_lovesick_escort(Creature* creature) : npc_escortAI(creature) { }
+    npc_flynn_lovesick_escort(Creature* creature) : EscortAI(creature) { }
 
     enum
     {
@@ -798,7 +798,7 @@ public:
         });
     }
 
-    void WaypointReached(uint32 pointId) override
+    void WaypointReached(uint32 pointId, uint32 /*pathId*/) override
     {
         switch (pointId)
         {
@@ -915,7 +915,7 @@ private:
 };
 
 //129841 Hilde Firebreaker
-class npc_hilde_firebreaker_protect : public npc_escortAI
+class npc_hilde_firebreaker_protect : public EscortAI
 {
 public:
     enum
@@ -926,7 +926,7 @@ public:
         NPC_FALLEN_KEEPER = 128608
     };
 
-    npc_hilde_firebreaker_protect(Creature* creature) : npc_escortAI(creature)
+    npc_hilde_firebreaker_protect(Creature* creature) : EscortAI(creature)
     {
         pos[0] = Position(1108.739990f, 261.151001f, 17.821600f, 1.603710f); // 128405
         pos[1] = Position(1115.000000f, 261.557007f, 18.138300f, 1.946000f); // 128591
@@ -974,7 +974,7 @@ public:
         }
     }
     /*
-    void WaypointReached(uint32 pointId) override
+    void WaypointReached(uint32 pointId, uint32 /*pathId*//*) override
     {
         if (pointId == 1)
         {
@@ -1031,10 +1031,10 @@ public:
 
 ///TODO Make Penny wait at far
 // 131748
-class npc_penny_hardwick_escort : public npc_escortAI
+class npc_penny_hardwick_escort : public EscortAI
 {
 public:
-    npc_penny_hardwick_escort(Creature* creature) : npc_escortAI(creature) { }
+    npc_penny_hardwick_escort(Creature* creature) : EscortAI(creature) { }
 
     enum
     {
@@ -1067,7 +1067,7 @@ public:
         }
     }
 
-    void JustRespawned() override
+    void JustAppeared() override
     {
         if (Player* player = GetPlayerForEscort())
         {
@@ -1078,7 +1078,7 @@ public:
 };
 
 // 143096
-class npc_riding_macaw_patrol : public npc_escortAI
+class npc_riding_macaw_patrol : public EscortAI
 {
 public:
     enum
@@ -1087,7 +1087,7 @@ public:
         QUEST_RODRIGO_REVENGE = 49403
     };
 
-    npc_riding_macaw_patrol(Creature* creature) : npc_escortAI(creature)
+    npc_riding_macaw_patrol(Creature* creature) : EscortAI(creature)
     {
         me->SetCanFly(true);
     }

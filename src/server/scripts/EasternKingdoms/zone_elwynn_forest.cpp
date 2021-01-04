@@ -152,9 +152,9 @@ public:
         return new npc_stormwind_injured_soldierAI(creature);
     }
 
-    struct npc_stormwind_injured_soldierAI : public npc_escortAI
+    struct npc_stormwind_injured_soldierAI : public EscortAI
     {
-        npc_stormwind_injured_soldierAI(Creature* creature) : npc_escortAI(creature) {}
+        npc_stormwind_injured_soldierAI(Creature* creature) : EscortAI(creature) {}
 
         void Reset() override
         {
@@ -188,7 +188,7 @@ public:
             });
         }
 
-        void WaypointReached(uint32 waypointId) override
+        void WaypointReached(uint32 waypointId, uint32 /*pathId*/) override
         {
             if (waypointId == 5)
             {

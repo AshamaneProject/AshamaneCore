@@ -72,8 +72,7 @@ uint32 AchievementMgr::GetAchievementPoints() const
 
 bool AchievementMgr::CanUpdateCriteriaTree(Criteria const* criteria, CriteriaTree const* tree, Player* referencePlayer) const
 {
-    AchievementEntry const* achievement = tree->Achievement;
-    if (achievement)
+    if (AchievementEntry const* achievement = tree->Achievement)
     {
         if (HasAchieved(achievement->ID))
         {
@@ -93,6 +92,13 @@ bool AchievementMgr::CanUpdateCriteriaTree(Criteria const* criteria, CriteriaTre
             (achievement->Faction == ACHIEVEMENT_FACTION_ALLIANCE && referencePlayer->GetTeam() != ALLIANCE))
         {
             TC_LOG_TRACE("criteria.achievement", "AchievementMgr::CanUpdateCriteriaTree: (Id: %u Type %s Achievement %u) Wrong faction",
+                criteria->ID, CriteriaMgr::GetCriteriaTypeString(criteria->Entry->Type), achievement->ID);
+            return false;
+        }
+
+        if (achievement->CovenantID && referencePlayer->m_playerData->CovenantID != achievement->CovenantID)
+        {
+            TC_LOG_TRACE("criteria.achievement", "AchievementMgr::CanUpdateCriteriaTree: (Id: %u Type %s Achievement %u) Wrong covenant",
                 criteria->ID, CriteriaMgr::GetCriteriaTypeString(criteria->Entry->Type), achievement->ID);
             return false;
         }
@@ -543,7 +549,7 @@ void PlayerAchievementMgr::CompletedAchievement(AchievementEntry const* achievem
     //! Since no common attributes were found, (not even in titleRewardFlags field)
     //! we explicitly check by ID. Maybe in the future we could move the achievement_reward
     //! condition fields to the condition system.
-    if (uint32 titleId = reward->TitleId[achievement->ID == 1793 ? _owner->m_playerData->NativeSex : (_owner->GetTeam() == ALLIANCE ? 0 : 1)])
+    if (uint32 titleId = reward->TitleId[achievement->ID == 1793 ? _owner->GetNativeSex() : (_owner->GetTeam() == ALLIANCE ? 0 : 1)])
         if (CharTitlesEntry const* titleEntry = sCharTitlesStore.LookupEntry(titleId))
             _owner->SetTitle(titleEntry);
 

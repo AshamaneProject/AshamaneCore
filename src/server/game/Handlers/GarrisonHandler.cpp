@@ -74,10 +74,10 @@ void WorldSession::HandleGarrisonRequestBlueprintAndSpecializationData(WorldPack
     _player->SendGarrisonBlueprintAndSpecializationData();
 }
 
-void WorldSession::HandleGarrisonGetBuildingLandmarks(WorldPackets::Garrison::GarrisonGetBuildingLandmarks& /*garrisonGetBuildingLandmarks*/)
+void WorldSession::HandleGarrisonGetMapData(WorldPackets::Garrison::GarrisonGetMapData& /*garrisonGetMapData*/)
 {
     if (Garrison* garrison = _player->GetGarrison(GARRISON_TYPE_GARRISON))
-        garrison->ToWodGarrison()->SendBuildingLandmarks(_player);
+        garrison->ToWodGarrison()->SendMapData(_player);
 }
 
 void WorldSession::HandleGarrisonOpenMissionNpc(WorldPackets::Garrison::GarrisonOpenMissionNpcClient& garrisonOpenMissionNpcClient)

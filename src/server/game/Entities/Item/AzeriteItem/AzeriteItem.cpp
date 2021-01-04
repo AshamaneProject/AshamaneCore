@@ -72,15 +72,24 @@ void AzeriteItem::SaveToDB(CharacterDatabaseTransaction& trans)
         std::size_t specIndex = 0;
         for (; specIndex < m_azeriteItemData->SelectedEssences.size(); ++specIndex)
         {
-            stmt->setUInt32(4 + specIndex * 5, m_azeriteItemData->SelectedEssences[specIndex].SpecializationID);
-            for (std::size_t j = 0; j < MAX_AZERITE_ESSENCE_SLOT; ++j)
-                stmt->setUInt32(5 + specIndex * 5 + j, m_azeriteItemData->SelectedEssences[specIndex].AzeriteEssenceID[j]);
-        }
-        for (; specIndex < MAX_SPECIALIZATIONS; ++specIndex)
-        {
-            stmt->setUInt32(4 + specIndex * 5, 0);
-            for (std::size_t j = 0; j < MAX_AZERITE_ESSENCE_SLOT; ++j)
-                stmt->setUInt32(5 + specIndex * 5 + j, 0);
+            stmt = CharacterDatabase.GetPreparedStatement(CHAR_INS_ITEM_INSTANCE_AZERITE);
+            stmt->setUInt64(0, GetGUID().GetCounter());
+            stmt->setUInt64(1, m_azeriteItemData->Xp);
+            stmt->setUInt32(2, m_azeriteItemData->Level);
+            stmt->setUInt32(3, m_azeriteItemData->KnowledgeLevel);
+            std::size_t specIndex = 0;
+            for (; specIndex < m_azeriteItemData->SelectedEssences.size(); ++specIndex)
+            {
+                stmt->setUInt32(4 + specIndex * 5, m_azeriteItemData->SelectedEssences[specIndex].SpecializationID);
+                for (std::size_t j = 0; j < MAX_AZERITE_ESSENCE_SLOT; ++j)
+                    stmt->setUInt32(5 + specIndex * 5 + j, m_azeriteItemData->SelectedEssences[specIndex].AzeriteEssenceID[j]);
+            }
+            for (; specIndex < 4; ++specIndex)
+            {
+                stmt->setUInt32(4 + specIndex * 5, 0);
+                for (std::size_t j = 0; j < MAX_AZERITE_ESSENCE_SLOT; ++j)
+                    stmt->setUInt32(5 + specIndex * 5 + j, 0);
+            }
         }
 
         trans->Append(stmt);
@@ -277,7 +286,7 @@ void AzeriteItem::GiveXP(uint64 xp)
         SetState(ITEM_CHANGED, owner);
     }
 
-    WorldPackets::Azerite::AzeriteXpGain xpGain;
+    WorldPackets::Azerite::PlayerAzeriteItemGains xpGain;
     xpGain.ItemGUID = GetGUID();
     xpGain.XP = xp;
     owner->SendDirectMessage(xpGain.Write());

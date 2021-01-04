@@ -21,6 +21,7 @@
 #include "Containers.h"
 #include "EventMap.h"
 #include "ObjectGuid.h"
+#include "SpellDefines.h"
 #include "ThreatManager.h"
 #include <unordered_map>
 
@@ -28,7 +29,7 @@
 #define ENSURE_AI(a,b)  (EnsureAI<a>(b))
 
 template<class T, class U>
-inline T* EnsureAI(U* ai)
+T* EnsureAI(U* ai)
 {
     T* cast_ai = dynamic_cast<T*>(ai);
     ASSERT(cast_ai);
@@ -43,6 +44,8 @@ struct AISpellInfoType;
 enum DamageEffectType : uint8;
 enum Difficulty : uint8;
 enum SpellEffIndex : uint8;
+enum class LootItemType : uint8;
+enum class QuestGiverStatus : uint32;
 
 //Selection method used by SelectTarget
 enum SelectAggroTarget
@@ -74,7 +77,7 @@ struct TC_GAME_API DefaultTargetSelector
 
 // Target selector for spell casts checking range, auras and attributes
 /// @todo Add more checks from Spell::CheckCast
-struct TC_GAME_API SpellTargetSelector : public std::unary_function<Unit*, bool>
+struct TC_GAME_API SpellTargetSelector
 {
     public:
         SpellTargetSelector(Unit* caster, uint32 spellId);
@@ -88,7 +91,7 @@ struct TC_GAME_API SpellTargetSelector : public std::unary_function<Unit*, bool>
 // Very simple target selector, will just skip main target
 // NOTE: When passing to UnitAI::SelectTarget remember to use 0 as position for random selection
 //       because tank will not be in the temporary list
-struct TC_GAME_API NonTankTargetSelector : public std::unary_function<Unit*, bool>
+struct TC_GAME_API NonTankTargetSelector
 {
     public:
         NonTankTargetSelector(Unit* source, bool playerOnly = true) : _source(source), _playerOnly(playerOnly) { }
@@ -119,11 +122,11 @@ public:
     FarthestTargetSelector(Unit const* unit, float dist, bool playerOnly, bool inLos) : _me(unit), _dist(dist), _playerOnly(playerOnly), _inLos(inLos) {}
     bool operator()(Unit const* target) const;
 
-private:
-    const Unit* _me;
-    float _dist;
-    bool _playerOnly;
-    bool _inLos;
+    private:
+        Unit const* _me;
+        float _dist;
+        bool _playerOnly;
+        bool _inLos;
 };
 
 class TC_GAME_API UnitAI
@@ -173,54 +176,7 @@ class TC_GAME_API UnitAI
                 return nullptr;
 
             std::list<Unit*> targetList;
-            if (targetType == SELECT_TARGET_MAXDISTANCE || targetType == SELECT_TARGET_MINDISTANCE)
-            {
-                for (ThreatReference* ref : mgr.GetUnsortedThreatList())
-                {
-                    if (ref->IsOffline())
-                        continue;
-
-                    targetList.push_back(ref->GetVictim());
-                }
-            }
-            else
-            {
-                Unit* currentVictim = mgr.GetCurrentVictim();
-                if (currentVictim)
-                    targetList.push_back(currentVictim);
-
-                for (ThreatReference* ref : mgr.GetSortedThreatList())
-                {
-                    if (ref->IsOffline())
-                        continue;
-
-                    Unit* thisTarget = ref->GetVictim();
-                    if (thisTarget != currentVictim)
-                        targetList.push_back(thisTarget);
-                }
-            }
-
-            // filter by predicate
-            targetList.remove_if([&predicate](Unit* target) { return !predicate(target); });
-
-            // shortcut: the list certainly isn't gonna get any larger after this point
-            if (targetList.size() <= offset)
-                return nullptr;
-
-            // right now, list is unsorted for DISTANCE types - re-sort by MAXDISTANCE
-            if (targetType == SELECT_TARGET_MAXDISTANCE || targetType == SELECT_TARGET_MINDISTANCE)
-                SortByDistance(targetList, targetType == SELECT_TARGET_MINDISTANCE);
-
-            // then reverse the sorting for MIN sortings
-            if (targetType == SELECT_TARGET_MINTHREAT)
-                targetList.reverse();
-
-            // now pop the first <offset> elements
-            while (offset)
-            {
-                targetList.pop_front();
-                --offset;
-            }
+            SelectTargetList(targetList, mgr.GetThreatListSize(), targetType, offset, predicate);
 
             // maybe nothing fulfills the predicate
             if (targetList.empty())
@@ -264,7 +220,7 @@ class TC_GAME_API UnitAI
 
             if (targetType == SELECT_TARGET_MAXDISTANCE || targetType == SELECT_TARGET_MINDISTANCE)
             {
-                for (ThreatReference* ref : mgr.GetUnsortedThreatList())
+                for (ThreatReference const* ref : mgr.GetUnsortedThreatList())
                 {
                     if (ref->IsOffline())
                         continue;
@@ -278,7 +234,7 @@ class TC_GAME_API UnitAI
                 if (currentVictim)
                     targetList.push_back(currentVictim);
 
-                for (ThreatReference* ref : mgr.GetSortedThreatList())
+                for (ThreatReference const* ref : mgr.GetSortedThreatList())
                 {
                     if (ref->IsOffline())
                         continue;
@@ -288,9 +244,6 @@ class TC_GAME_API UnitAI
                         targetList.push_back(thisTarget);
                 }
             }
-
-            // filter by predicate
-            targetList.remove_if([&predicate](Unit* target) { return !predicate(target); });
 
             // shortcut: the list isn't gonna get any larger
             if (targetList.size() <= offset)
@@ -313,6 +266,9 @@ class TC_GAME_API UnitAI
                 targetList.pop_front();
                 --offset;
             }
+
+            // then finally filter by predicate
+            targetList.remove_if([&predicate](Unit* target) { return !predicate(target); });
 
             if (targetList.size() <= num)
                 return;
@@ -367,19 +323,25 @@ class TC_GAME_API UnitAI
         virtual bool GossipSelect(Player* /*player*/, uint32 /*menuId*/, uint32 /*gossipListId*/) { return false; }
 
         // Called when a player selects a gossip with a code in the creature's gossip menu.
-        virtual bool GossipSelectCode(Player* /*player*/, uint32 /*menuId*/, uint32 /*gossipListId*/, const char* /*code*/) { return false; }
+        virtual bool GossipSelectCode(Player* /*player*/, uint32 /*menuId*/, uint32 /*gossipListId*/, char const* /*code*/) { return false; }
 
         // Called when a player accepts a quest from the creature.
         virtual void QuestAccept(Player* /*player*/, Quest const* /*quest*/) { }
 
         // Called when a player completes a quest and is rewarded, opt is the selected item's index or 0
-        virtual void QuestReward(Player* /*player*/, Quest const* /*quest*/, uint32 /*opt*/) { }
+        virtual void QuestReward(Player* player, Quest const* quest, uint32 opt);
+        virtual void QuestReward(Player* /*player*/, Quest const* /*quest*/, LootItemType /*type*/, uint32 /*opt*/) { }
 
         // Called when a game event starts or ends
         virtual void OnGameEvent(bool /*start*/, uint16 /*eventId*/) { }
 
         // Called when the dialog status between a player and the creature is requested.
-        virtual uint32 GetDialogStatus(Player* player);
+        virtual QuestGiverStatus GetDialogStatus(Player* player);
+
+        virtual void LastWaypointReached() { }
+
+        virtual void WaypointStarted(uint32 /*nodeId*/, uint32 /*pathId*/) { }
+        virtual void WaypointReached(uint32 /*nodeId*/, uint32 /*pathId*/) { }
 
         /// Add timed delayed operation
         /// @p_Timeout  : Delay time

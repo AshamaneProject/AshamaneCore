@@ -87,7 +87,7 @@ void AreaTrigger::RemoveFromWorld()
     }
 }
 
-bool AreaTrigger::LoadFromDB(ObjectGuid::LowType guidLow, Map* map)
+bool AreaTrigger::LoadFromDB(ObjectGuid::LowType guidLow, Map* map, bool /*addToMap*/, bool /*allowDuplicate*/)
 {
     AreaTriggerDataStore::AreaTriggerDataList const* areaTriggerList = sAreaTriggerDataStore->GetStaticAreaTriggersByMap(map->GetId());
     if (!areaTriggerList)
@@ -105,7 +105,7 @@ bool AreaTrigger::LoadFromDB(ObjectGuid::LowType guidLow, Map* map)
     return false;
 }
 
-bool AreaTrigger::Create(uint32 spellMiscId, Unit* caster, Unit* target, SpellInfo const* spell, Position const& pos, int32 duration, uint32 spellXSpellVisualId, ObjectGuid const& castId, AuraEffect const* aurEff, AreaTriggerCircularMovementInfo* customCmi)
+bool AreaTrigger::Create(uint32 spellMiscId, Unit* caster, Unit* target, SpellInfo const* spell, Position const& pos, int32 duration, SpellCastVisual spellVisual, ObjectGuid const& castId, AuraEffect const* aurEff, AreaTriggerOrbitInfo* customOrbitInfo)
 {
     _targetGuid = target ? target->GetGUID() : ObjectGuid::Empty;
     _aurEff = aurEff;
@@ -140,7 +140,8 @@ bool AreaTrigger::Create(uint32 spellMiscId, Unit* caster, Unit* target, SpellIn
 
     SetUpdateFieldValue(areaTriggerData.ModifyValue(&UF::AreaTriggerData::SpellID), spell->Id);
     SetUpdateFieldValue(areaTriggerData.ModifyValue(&UF::AreaTriggerData::SpellForVisuals), spell->Id);
-    SetUpdateFieldValue(areaTriggerData.ModifyValue(&UF::AreaTriggerData::SpellXSpellVisualID), spellXSpellVisualId);
+    SetUpdateFieldValue(areaTriggerData.ModifyValue(&UF::AreaTriggerData::SpellVisual).ModifyValue(&UF::SpellCastVisual::SpellXSpellVisualID), spellVisual.SpellXSpellVisualID);
+    SetUpdateFieldValue(areaTriggerData.ModifyValue(&UF::AreaTriggerData::SpellVisual).ModifyValue(&UF::SpellCastVisual::ScriptVisualID), spellVisual.ScriptVisualID);
     SetUpdateFieldValue(areaTriggerData.ModifyValue(&UF::AreaTriggerData::TimeToTargetScale), GetMiscTemplate()->TimeToTargetScale != 0 ? GetMiscTemplate()->TimeToTargetScale : *m_areaTriggerData->Duration);
     SetUpdateFieldValue(areaTriggerData.ModifyValue(&UF::AreaTriggerData::BoundsRadius2D), GetTemplate()->MaxSearchRadius);
     SetUpdateFieldValue(areaTriggerData.ModifyValue(&UF::AreaTriggerData::DecalPropertiesID), GetMiscTemplate()->DecalPropertiesId);
@@ -175,13 +176,16 @@ bool AreaTrigger::Create(uint32 spellMiscId, Unit* caster, Unit* target, SpellIn
 
     if (GetTemplate()->HasFlag(AREATRIGGER_FLAG_HAS_CIRCULAR_MOVEMENT))
     {
-        AreaTriggerCircularMovementInfo cmi = customCmi ? *customCmi : GetMiscTemplate()->CircularMovementInfo;
+        AreaTriggerOrbitInfo orbitInfo = customOrbitInfo ? *customOrbitInfo : GetMiscTemplate()->OrbitInfo;
         if (target && GetTemplate()->HasFlag(AREATRIGGER_FLAG_HAS_ATTACHED))
-            cmi.PathTarget = target->GetGUID();
+            orbitInfo.PathTarget = target->GetGUID();
         else
-            cmi.Center = pos;
+            orbitInfo.Center = pos;
 
-        InitCircularMovement(cmi, timeToTarget);
+        InitOrbit(orbitInfo, timeToTarget);
+
+        if (customOrbitInfo)
+            delete customOrbitInfo;
     }
     else if (GetMiscTemplate()->HasSplines())
     {
@@ -208,8 +212,8 @@ bool AreaTrigger::Create(uint32 spellMiscId, Unit* caster, Unit* target, SpellIn
     AI_Initialize();
 
     // Relocate areatriggers with circular movement again
-    if (HasCircularMovement())
-        Relocate(CalculateCircularMovementPosition());
+    if (HasOrbit())
+        Relocate(CalculateOrbitPosition());
 
     if (!GetMap()->AddToMap(this))
     {
@@ -226,10 +230,10 @@ bool AreaTrigger::Create(uint32 spellMiscId, Unit* caster, Unit* target, SpellIn
     return true;
 }
 
-AreaTrigger* AreaTrigger::CreateAreaTrigger(uint32 spellMiscId, Unit* caster, Unit* target, SpellInfo const* spell, Position const& pos, int32 duration, uint32 spellXSpellVisualId, ObjectGuid const& castId /*= ObjectGuid::Empty*/, AuraEffect const* aurEff /*= nullptr*/)
+AreaTrigger* AreaTrigger::CreateAreaTrigger(uint32 spellMiscId, Unit* caster, Unit* target, SpellInfo const* spell, Position const& pos, int32 duration, SpellCastVisual spellVisual, ObjectGuid const& castId /*= ObjectGuid::Empty*/, AuraEffect const* aurEff /*= nullptr*/)
 {
     AreaTrigger* at = new AreaTrigger();
-    if (!at->Create(spellMiscId, caster, target, spell, pos, duration, spellXSpellVisualId, castId, aurEff))
+    if (!at->Create(spellMiscId, caster, target, spell, pos, duration, spellVisual, castId, aurEff))
     {
         delete at;
         return nullptr;
@@ -248,17 +252,22 @@ AreaTrigger* AreaTrigger::CreateAreaTrigger(uint32 spellMiscId, Unit* caster, ui
         return nullptr;
 
     AreaTrigger* at = new AreaTrigger();
-    AreaTriggerCircularMovementInfo* cmi = new AreaTriggerCircularMovementInfo();
-    cmi->CanLoop = canLoop;
-    cmi->Center = pos;
-    cmi->Radius = radius;
-    cmi->CounterClockwise = counterClockwise;
-    cmi->InitialAngle = angle;
-    cmi->TimeToTarget = timeToTarget;
-    if (!at->Create(spellMiscId, caster, caster, spellEntry, pos, duration, spellEntry->GetSpellVisual(), ObjectGuid::Empty, nullptr, cmi))
+    AreaTriggerOrbitInfo* orbitInfo = new AreaTriggerOrbitInfo();
+    orbitInfo->CanLoop = canLoop;
+    orbitInfo->Center = pos;
+    orbitInfo->Radius = radius;
+    orbitInfo->CounterClockwise = counterClockwise;
+    orbitInfo->InitialAngle = angle;
+    orbitInfo->TimeToTarget = timeToTarget;
+
+    SpellCastVisual visual;
+    visual.SpellXSpellVisualID = spellEntry->GetSpellXSpellVisualId();
+    visual.ScriptVisualID = spellEntry->GetSpellVisual();
+
+    if (!at->Create(spellMiscId, caster, caster, spellEntry, pos, duration, visual, ObjectGuid::Empty, nullptr, orbitInfo))
     {
         delete at;
-        delete cmi;
+        delete orbitInfo;
         return nullptr;
     }
 
@@ -316,10 +325,10 @@ void AreaTrigger::Update(uint32 diff)
     WorldObject::Update(diff);
     _timeSinceCreated += diff;
 
-    // "If" order matter here, Circular Movement > Attached > Splines
-    if (HasCircularMovement())
+    // "If" order matter here, Orbit > Attached > Splines
+    if (HasOrbit())
     {
-        UpdateCircularMovementPosition(diff);
+        UpdateOrbitPosition(diff);
     }
     else if (GetTemplate()->HasFlag(AREATRIGGER_FLAG_HAS_ATTACHED))
     {
@@ -845,7 +854,17 @@ bool AreaTrigger::SetDestination(Position const& pos, uint32 timeToTarget)
     return true;
 }
 
-void AreaTrigger::InitCircularMovement(AreaTriggerCircularMovementInfo const& cmi, uint32 timeToTarget)
+void AreaTrigger::SetDecalPropertiesID(uint32 decalPropertiesID)
+{
+    SetUpdateFieldValue(m_values.ModifyValue(&AreaTrigger::m_areaTriggerData).ModifyValue(&UF::AreaTriggerData::DecalPropertiesID), decalPropertiesID);
+}
+
+void AreaTrigger::SetSpellXSpellVisualId(uint32 spellXSpellVisualId)
+{
+    SetUpdateFieldValue(m_values.ModifyValue(&AreaTrigger::m_areaTriggerData).ModifyValue(&UF::AreaTriggerData::SpellVisual).ModifyValue(&UF::SpellCastVisual::SpellXSpellVisualID), spellXSpellVisualId);
+}
+
+void AreaTrigger::InitOrbit(AreaTriggerOrbitInfo const& cmi, uint32 timeToTarget)
 {
     // Circular movement requires either a center position or an attached unit
     ASSERT(cmi.Center.is_initialized() || cmi.PathTarget.is_initialized());
@@ -854,48 +873,48 @@ void AreaTrigger::InitCircularMovement(AreaTriggerCircularMovementInfo const& cm
     SetUpdateFieldValue(m_values.ModifyValue(&AreaTrigger::m_areaTriggerData).ModifyValue(&UF::AreaTriggerData::TimeToTarget), timeToTarget);
     const_cast<UF::AreaTriggerData&>(*m_areaTriggerData).ClearChanged(&UF::AreaTriggerData::TimeToTarget);
 
-    _circularMovementInfo = cmi;
+    _orbitInfo = cmi;
 
-    _circularMovementInfo->TimeToTarget = timeToTarget;
-    _circularMovementInfo->ElapsedTimeForMovement = 0;
+    _orbitInfo->TimeToTarget = timeToTarget;
+    _orbitInfo->ElapsedTimeForMovement = 0;
 
     if (IsInWorld())
     {
         WorldPackets::AreaTrigger::AreaTriggerRePath reshape;
         reshape.TriggerGUID = GetGUID();
-        reshape.AreaTriggerCircularMovement = _circularMovementInfo;
+        reshape.AreaTriggerOrbit = _orbitInfo;
 
         SendMessageToSet(reshape.Write(), true);
     }
 }
 
-bool AreaTrigger::HasCircularMovement() const
+bool AreaTrigger::HasOrbit() const
 {
-    return _circularMovementInfo.is_initialized();
+    return _orbitInfo.is_initialized();
 }
 
-Position const* AreaTrigger::GetCircularMovementCenterPosition() const
+Position const* AreaTrigger::GetOrbitCenterPosition() const
 {
-    if (!_circularMovementInfo.is_initialized())
+    if (!_orbitInfo.is_initialized())
         return nullptr;
 
-    if (_circularMovementInfo->PathTarget.is_initialized())
-        if (WorldObject* center = ObjectAccessor::GetWorldObject(*this, *_circularMovementInfo->PathTarget))
+    if (_orbitInfo->PathTarget.is_initialized())
+        if (WorldObject* center = ObjectAccessor::GetWorldObject(*this, *_orbitInfo->PathTarget))
             return center;
 
-    if (_circularMovementInfo->Center.is_initialized())
-        return &_circularMovementInfo->Center->Pos;
+    if (_orbitInfo->Center.is_initialized())
+        return &_orbitInfo->Center->Pos;
 
     return nullptr;
 }
 
-Position AreaTrigger::CalculateCircularMovementPosition() const
+Position AreaTrigger::CalculateOrbitPosition() const
 {
-    Position const* centerPos = GetCircularMovementCenterPosition();
+    Position const* centerPos = GetOrbitCenterPosition();
     if (!centerPos)
         return GetPosition();
 
-    AreaTriggerCircularMovementInfo const& cmi = *_circularMovementInfo;
+    AreaTriggerOrbitInfo const& cmi = *_orbitInfo;
 
     // AreaTrigger make exactly "Duration / TimeToTarget" loops during his life time
     float pathProgress = float(cmi.ElapsedTimeForMovement) / float(cmi.TimeToTarget);
@@ -926,14 +945,14 @@ Position AreaTrigger::CalculateCircularMovementPosition() const
     return { x, y, z, angle };
 }
 
-void AreaTrigger::UpdateCircularMovementPosition(uint32 /*diff*/)
+void AreaTrigger::UpdateOrbitPosition(uint32 /*diff*/)
 {
-    if (_circularMovementInfo->StartDelay > GetElapsedTimeForMovement())
+    if (_orbitInfo->StartDelay > GetElapsedTimeForMovement())
         return;
 
-    _circularMovementInfo->ElapsedTimeForMovement = GetElapsedTimeForMovement() - _circularMovementInfo->StartDelay;
+    _orbitInfo->ElapsedTimeForMovement = GetElapsedTimeForMovement() - _orbitInfo->StartDelay;
 
-    Position pos = CalculateCircularMovementPosition();
+    Position pos = CalculateOrbitPosition();
 
     GetMap()->AreaTriggerRelocation(this, pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ(), pos.GetOrientation());
 #ifdef TRINITY_DEBUG

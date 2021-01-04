@@ -20,6 +20,7 @@
 #include "ScriptedCreature.h"
 #include "ScriptedGossip.h"
 #include "ScriptedEscortAI.h"
+#include "LootMgr.h"
 #include "GameObject.h"
 #include "Player.h"
 #include "ObjectMgr.h"
@@ -1398,7 +1399,7 @@ class mob_kher_shan : public CreatureScript
                 if (Player* player = killer->ToPlayer())
                     if (player->GetQuestStatus(29924) == QUEST_STATUS_COMPLETE)
                         if (Quest const* quest = sObjectMgr->GetQuestTemplate(29924))
-                            player->RewardQuest(quest, 0, NULL, true);
+                            player->RewardQuest(quest, LootItemType::Item, 0, nullptr, true);
             }
 
         };

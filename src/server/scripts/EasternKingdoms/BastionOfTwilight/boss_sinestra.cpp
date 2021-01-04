@@ -401,7 +401,7 @@ class boss_sinestra : public CreatureScript
                                     calen->CastSpell(target, SPELL_FIERY_RESOLVE, false);
                                     me->CastSpell(target, SPELL_TWILIGHT_POWER, false);
 
-                                    calen->setRegeneratingHealth(false);
+                                    calen->SetRegenerateHealth(false);
                                 }
                             }
 

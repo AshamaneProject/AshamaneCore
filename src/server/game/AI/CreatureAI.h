@@ -108,7 +108,7 @@ public:
     void DespawnAll();
 
     template <typename T>
-    void DespawnIf(T const &predicate)
+    void DespawnIf(T const& predicate)
     {
         storage_.remove_if(predicate);
     }
@@ -120,15 +120,6 @@ public:
         StorageType listCopy = storage_;
         Trinity::Containers::RandomResize<StorageType, Predicate>(listCopy, std::forward<Predicate>(predicate), max);
         DoActionImpl(info, listCopy);
-    }
-
-    template <class Predicate>
-    ObjectGuid GetRandomGUID(Predicate&& predicate)
-    {
-        // We need to use a copy of SummonList here, otherwise original SummonList would be modified
-        StorageType listCopy = storage_;
-        Trinity::Containers::RandomResize<StorageType, Predicate>(listCopy, std::forward<Predicate>(predicate), 1);
-        return listCopy.front();
     }
 
     void DoZoneInCombat(uint32 entry = 0, float maxRangeToNearestTarget = 250.0f);
@@ -247,8 +238,9 @@ class TC_GAME_API CreatureAI : public UnitAI
         virtual bool CanBeTargetedOutOfLOS() { return false; }
         virtual bool CanTargetOutOfLOS() { return false; }
 
-        // Called when creature is spawned or respawned
-        virtual void JustRespawned() { }
+        // Called when creature appears in the world (spawn, respawn, grid load etc...)
+        virtual void JustAppeared() { }
+
 
         // Called at waypoint reached or point movement finished
         virtual void MovementInform(uint32 /*type*/, uint32 /*id*/) { }
@@ -318,6 +310,9 @@ class TC_GAME_API CreatureAI : public UnitAI
         // If a PlayerAI* is returned, that AI is placed on the player instead of the default charm AI
         // Object destruction is handled by Unit::RemoveCharmedBy
         virtual PlayerAI* GetAIForCharmedPlayer(Player* /*who*/) { return nullptr; }
+        // Should return true if the NPC is target of an escort quest
+        // If onlyIfActive is set, should return true only if the escort quest is currently active
+        virtual bool IsEscortNPC(bool /*onlyIfActive*/) const { return false; }
 
         // intended for encounter design/debugging. do not use for other purposes. expensive.
         int32 VisualizeBoundary(uint32 duration, Unit* owner = nullptr, bool fill = false) const;

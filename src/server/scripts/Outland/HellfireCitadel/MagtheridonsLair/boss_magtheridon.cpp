@@ -17,9 +17,10 @@
 
 #include "ScriptMgr.h"
 #include "GameObject.h"
+#include "GameObjectAI.h"
 #include "InstanceScript.h"
 #include "magtheridons_lair.h"
-#include "ObjectAccessor.h"
+#include "PassiveAI.h"
 #include "Player.h"
 #include "ScriptedCreature.h"
 #include "SpellInfo.h"
@@ -249,7 +250,8 @@ class boss_magtheridon : public CreatureScript
                             CombatStart();
                             break;
                         case EVENT_RELEASED:
-                            me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NOT_SELECTABLE));
+                            me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
+                            me->SetImmuneToPC(false);
                             me->SetInCombatWithZone();
                             instance->SetData(DATA_MANTICRON_CUBE, ACTION_ENABLE);
                             events.ScheduleEvent(EVENT_CLEAVE, Seconds(10));
@@ -458,7 +460,7 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return new npc_magtheridon_roomAI(creature);
+        return GetMagtheridonsLairAI<npc_magtheridon_roomAI>(creature);
     }
 };
 
@@ -559,7 +561,11 @@ class spell_magtheridon_shadow_grasp_visual : public SpellScriptLoader
 
             bool Validate(SpellInfo const* /*spellInfo*/) override
             {
-                return ValidateSpellInfo({ SPELL_SHADOW_CAGE, SPELL_SHADOW_GRASP_VISUAL });
+                return ValidateSpellInfo(
+                {
+                    SPELL_SHADOW_CAGE,
+                    SPELL_SHADOW_GRASP_VISUAL
+                });
             }
 
             void OnApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)

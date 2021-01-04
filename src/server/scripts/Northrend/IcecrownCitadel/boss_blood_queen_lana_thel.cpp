@@ -24,8 +24,6 @@
 #include "Player.h"
 #include "ScriptedCreature.h"
 #include "SpellAuraEffects.h"
-#include "SpellAuras.h"
-#include "SpellInfo.h"
 #include "SpellMgr.h"
 #include "SpellScript.h"
 
@@ -213,7 +211,7 @@ class boss_blood_queen_lana_thel : public CreatureScript
                     if (Creature* minchar = me->FindNearestCreature(NPC_INFILTRATOR_MINCHAR_BQ, 200.0f))
                     {
                         minchar->SetEmoteState(EMOTE_ONESHOT_NONE);
-                        minchar->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND), false);
+                        minchar->SetAnimTier(UNIT_BYTE1_FLAG_NONE, true);
                         minchar->SetCanFly(false);
                         minchar->RemoveAllAuras();
                         minchar->GetMotionMaster()->MoveCharge(4629.3711f, 2782.6089f, 401.5301f, SPEED_CHARGE / 3.0f);
@@ -274,7 +272,7 @@ class boss_blood_queen_lana_thel : public CreatureScript
             void JustReachedHome() override
             {
                 me->SetDisableGravity(false);
-                me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND), false);
+                me->SetAnimTier(UNIT_BYTE1_FLAG_NONE, true);
                 me->SetReactState(REACT_AGGRESSIVE);
                 _JustReachedHome();
                 Talk(SAY_WIPE);
@@ -324,7 +322,7 @@ class boss_blood_queen_lana_thel : public CreatureScript
                         break;
                     case POINT_GROUND:
                         me->SetDisableGravity(false);
-                        me->SetAnimTier(UnitBytes1_Flags(UNIT_BYTE1_FLAG_ALWAYS_STAND), false);
+                        me->SetAnimTier(UNIT_BYTE1_FLAG_NONE, true);
                         me->SetReactState(REACT_AGGRESSIVE);
                         if (Unit* victim = me->SelectVictim())
                             AttackStart(victim);
@@ -378,7 +376,7 @@ class boss_blood_queen_lana_thel : public CreatureScript
                         }
                         case EVENT_BLOOD_MIRROR:
                         {
-                            // victim can be NULL when this is processed in the same update tick as EVENT_AIR_PHASE
+                            // victim can be nullptr when this is processed in the same update tick as EVENT_AIR_PHASE
                             if (me->GetVictim())
                             {
                                 Player* newOfftank = SelectRandomTarget(true);
@@ -406,7 +404,7 @@ class boss_blood_queen_lana_thel : public CreatureScript
                             break;
                         }
                         case EVENT_DELIRIOUS_SLASH:
-                            if (!_offtankGUID.IsEmpty() && !(me->m_unitData->AnimTier & (UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER)))
+                            if (!_offtankGUID.IsEmpty() && !(*me->m_unitData->AnimTier & (UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER)))
                                 if (Player* _offtank = ObjectAccessor::GetPlayer(*me, _offtankGUID))
                                     DoCast(_offtank, SPELL_DELIRIOUS_SLASH);
                             events.ScheduleEvent(EVENT_DELIRIOUS_SLASH, urand(20000, 24000), EVENT_GROUP_NORMAL);
@@ -490,7 +488,7 @@ class boss_blood_queen_lana_thel : public CreatureScript
 
                 std::list<Player*> tempTargets;
                 Unit* maintank = me->GetThreatManager().GetCurrentVictim();
-                for (ThreatReference* ref : me->GetThreatManager().GetUnsortedThreatList())
+                for (ThreatReference const* ref : me->GetThreatManager().GetUnsortedThreatList())
                     if (Player* refTarget = ref->GetVictim()->ToPlayer())
                         if (refTarget != maintank && (includeOfftank || (refTarget->GetGUID() != _offtankGUID)))
                             tempTargets.push_back(refTarget->ToPlayer());
@@ -540,12 +538,7 @@ class spell_blood_queen_vampiric_bite : public SpellScriptLoader
 
             bool Validate(SpellInfo const* /*spell*/) override
             {
-                return ValidateSpellInfo(
-                {
-                    SPELL_ESSENCE_OF_THE_BLOOD_QUEEN_PLR,
-                    SPELL_FRENZIED_BLOODTHIRST,
-                    SPELL_PRESENCE_OF_THE_DARKFALLEN
-                });
+                return ValidateSpellInfo({ SPELL_ESSENCE_OF_THE_BLOOD_QUEEN_PLR, SPELL_FRENZIED_BLOODTHIRST, SPELL_PRESENCE_OF_THE_DARKFALLEN });
             }
 
             SpellCastResult CheckTarget()

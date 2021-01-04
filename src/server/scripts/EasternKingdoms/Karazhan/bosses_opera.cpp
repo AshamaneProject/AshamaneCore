@@ -372,7 +372,7 @@ public:
             me->DespawnOrUnsummon();
         }
 
-        void SpellHit(Unit* /*caster*/, const SpellInfo* Spell) override
+        void SpellHit(Unit* /*caster*/, SpellInfo const* Spell) override
         {
             if ((Spell->SchoolMask == SPELL_SCHOOL_MASK_FIRE) && (!(rand32() % 10)))
             {
@@ -683,7 +683,8 @@ public:
             // Anyway, I digress.
             // @todo This line below is obviously a hack. Duh. I'm just coming in here to hackfix the encounter to actually be completable.
             // It needs a rewrite. Badly. Please, take good care of it.
-            me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NON_ATTACKABLE));
+            me->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
+            me->SetImmuneToPC(false);
             CycloneTimer = 30000;
             ChainLightningTimer = 10000;
         }
@@ -1137,7 +1138,7 @@ public:
             me->DespawnOrUnsummon();
         }
 
-        void SpellHit(Unit* /*caster*/, const SpellInfo* Spell) override
+        void SpellHit(Unit* /*caster*/, SpellInfo const* Spell) override
         {
             if (Spell->Id == SPELL_DRINK_POISON)
             {

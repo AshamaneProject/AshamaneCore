@@ -527,7 +527,7 @@ public:
                     ThreatManager const& mgr = me->GetThreatManager();
                     std::list<Unit*> TargetList;
                     Unit* currentVictim = mgr.GetCurrentVictim();
-                    for (ThreatReference* ref : mgr.GetSortedThreatList())
+                    for (ThreatReference const* ref : mgr.GetSortedThreatList())
                     {
                         if (Player* tempTarget = ref->GetVictim()->ToPlayer())
                             if (tempTarget != currentVictim && TargetList.size()<5)
@@ -736,7 +736,7 @@ public:
             instance->SetGuidData(DATA_LEOTHERAS_EVENT_STARTER, who->GetGUID());
         }
 
-        void JustRespawned() override
+        void JustAppeared() override
         {
             AddedBanish = false;
             Reset();
@@ -792,7 +792,7 @@ public:
 
             if (Earthshock_Timer <= diff)
             {
-                Map::PlayerList const &PlayerList = me->GetMap()->GetPlayers();
+                Map::PlayerList const& PlayerList = me->GetMap()->GetPlayers();
                 for (Map::PlayerList::const_iterator itr = PlayerList.begin(); itr != PlayerList.end(); ++itr)
                 {
                     if (Player* i_pl = itr->GetSource())

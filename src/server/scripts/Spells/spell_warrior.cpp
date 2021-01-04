@@ -2083,7 +2083,7 @@ class aura_warr_ignore_pain : public AuraScript
         {
             if (SpellInfo const* warriorIgnorePain = sSpellMgr->GetSpellInfo(SPELL_WARRIOR_IGNORE_PAIN))
             {
-                SpellNonMeleeDamage spell(caster, caster, warriorIgnorePain, 0, SPELL_SCHOOL_MASK_NORMAL);
+                SpellNonMeleeDamage spell(caster, caster, warriorIgnorePain, { 0, 0 }, SPELL_SCHOOL_MASK_NORMAL);
                 spell.damage = dmgInfo.GetDamage() - dmgInfo.GetDamage() * 0.9f;
                 spell.cleanDamage = spell.damage;
                 caster->DealSpellDamage(&spell, false);

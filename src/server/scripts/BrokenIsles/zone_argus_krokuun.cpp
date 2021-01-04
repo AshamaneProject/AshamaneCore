@@ -280,9 +280,9 @@ public:
         return true;
     }
 
-    struct npc_vindicator_boros_121756AI : public npc_escortAI
+    struct npc_vindicator_boros_121756AI : public EscortAI
     {
-        npc_vindicator_boros_121756AI(Creature* creature) : npc_escortAI(creature) { }
+        npc_vindicator_boros_121756AI(Creature* creature) : EscortAI(creature) { }
 
         void Reset() override
         {
@@ -296,7 +296,7 @@ public:
                 events.ScheduleEvent(EVENT_STEP_01, 1s);
         }
 
-        void WaypointReached(uint32 Point) override
+        void WaypointReached(uint32 Point, uint32 /*pathId*/) override
         {
             if (Point == 5)
                 events.ScheduleEvent(EVENT_STEP_04, 1s);

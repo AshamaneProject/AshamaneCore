@@ -103,10 +103,10 @@ namespace WorldPackets
             uint8 unk = 128;
         };
 
-        class NewPlayerRecord final : public ServerPacket
+        class NewWeeklyRecord final : public ServerPacket
         {
         public:
-            NewPlayerRecord() : ServerPacket(SMSG_CHALLENGE_MODE_NEW_PLAYER_RECORD, 4) { }
+            NewWeeklyRecord() : ServerPacket(SMSG_MYTHIC_PLUS_NEW_WEEK_RECORD, 4) { }
 
             WorldPacket const* Write() override;
 

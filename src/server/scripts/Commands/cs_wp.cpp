@@ -33,6 +33,7 @@ EndScriptData */
 #include "PhasingHandler.h"
 #include "Player.h"
 #include "RBAC.h"
+#include "WaypointDefines.h"
 #include "WaypointManager.h"
 #include "WorldSession.h"
 
@@ -85,7 +86,7 @@ public:
     *
     * @return true - command did succeed, false - something went wrong
     */
-    static bool HandleWpAddCommand(ChatHandler* handler, const char* args)
+    static bool HandleWpAddCommand(ChatHandler* handler, char const* args)
     {
         // optional
         char* path_number = nullptr;
@@ -148,7 +149,7 @@ public:
         return true;
     }                                                           // HandleWpAddCommand
 
-    static bool HandleWpLoadCommand(ChatHandler* handler, const char* args)
+    static bool HandleWpLoadCommand(ChatHandler* handler, char const* args)
     {
         if (!*args)
             return false;
@@ -229,7 +230,7 @@ public:
         return true;
     }
 
-    static bool HandleWpReloadCommand(ChatHandler* handler, const char* args)
+    static bool HandleWpReloadCommand(ChatHandler* handler, char const* args)
     {
         if (!*args)
             return false;
@@ -244,7 +245,7 @@ public:
         return true;
     }
 
-    static bool HandleWpUnLoadCommand(ChatHandler* handler, const char* /*args*/)
+    static bool HandleWpUnLoadCommand(ChatHandler* handler, char const* /*args*/)
     {
 
         Creature* target = handler->getSelectedCreature();
@@ -289,7 +290,7 @@ public:
         return true;
     }
 
-    static bool HandleWpEventCommand(ChatHandler* handler, const char* args)
+    static bool HandleWpEventCommand(ChatHandler* handler, char const* args)
     {
         if (!*args)
             return false;
@@ -546,7 +547,7 @@ public:
         return true;
     }
 
-    static bool HandleWpModifyCommand(ChatHandler* handler, const char* args)
+    static bool HandleWpModifyCommand(ChatHandler* handler, char const* args)
     {
         if (!*args)
             return false;
@@ -688,7 +689,7 @@ public:
             delete wpCreature;
 
             // To call _LoadGoods(); _LoadQuests(); CreateTrainerSpells();
-            wpCreature = Creature::CreateCreatureFromDB(dbGuid, map);
+            wpCreature = Creature::CreateCreatureFromDB(dbGuid, map, true, true);
             if (!wpCreature)
             {
                 handler->PSendSysMessage(LANG_WAYPOINT_VP_NOTCREATED, VISUAL_WAYPOINT);
@@ -726,7 +727,7 @@ public:
         return true;
     }
 
-    static bool HandleWpShowCommand(ChatHandler* handler, const char* args)
+    static bool HandleWpShowCommand(ChatHandler* handler, char const* args)
     {
         if (!*args)
             return false;
@@ -906,7 +907,7 @@ public:
                 delete wpCreature;
 
                 // To call _LoadGoods(); _LoadQuests(); CreateTrainerSpells();
-                wpCreature = Creature::CreateCreatureFromDB(dbGuid, map);
+                wpCreature = Creature::CreateCreatureFromDB(dbGuid, map, true, true);
                 if (!wpCreature)
                 {
                     handler->PSendSysMessage(LANG_WAYPOINT_VP_NOTCREATED, id);
@@ -974,7 +975,7 @@ public:
             creature->CleanupsBeforeDelete();
             delete creature;
 
-            creature = Creature::CreateCreatureFromDB(dbGuid, map);
+            creature = Creature::CreateCreatureFromDB(dbGuid, map, true, true);
             if (!creature)
             {
                 handler->PSendSysMessage(LANG_WAYPOINT_VP_NOTCREATED, id);
@@ -1031,7 +1032,7 @@ public:
             creature->CleanupsBeforeDelete();
             delete creature;
 
-            creature = Creature::CreateCreatureFromDB(dbGuid, map);
+            creature = Creature::CreateCreatureFromDB(dbGuid, map, true, true);
             if (!creature)
             {
                 handler->PSendSysMessage(LANG_WAYPOINT_NOTCREATED, id);

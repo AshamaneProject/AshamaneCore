@@ -440,10 +440,9 @@ int WMOGroup::ConvertToVMAPGroupWmo(FILE* output, bool preciseVectorData)
         {
             // Skip no collision triangles
             bool isRenderFace = (MOPY[2 * i] & WMO_MATERIAL_RENDER) && !(MOPY[2 * i] & WMO_MATERIAL_DETAIL);
-            bool isDetail = (MOPY[2 * i] & WMO_MATERIAL_DETAIL) != 0;
-            bool isCollision = (MOPY[2 * i] & WMO_MATERIAL_COLLISION) != 0;
+            bool isCollision = MOPY[2 * i] & WMO_MATERIAL_COLLISION || isRenderFace;
 
-            if (!isRenderFace && !isDetail && !isCollision)
+            if (!isCollision)
                 continue;
 
             // Use this triangle
@@ -585,7 +584,7 @@ void MapObject::Extract(ADT::MODF const& mapObjDef, char const* WmoInstName, boo
 
     fseek(input, 8, SEEK_SET); // get the correct no of vertices
     int nVertices;
-    int count = fread(&nVertices, sizeof (int), 1, input);
+    int count = fread(&nVertices, sizeof(int), 1, input);
     fclose(input);
 
     if (count != 1 || nVertices == 0)

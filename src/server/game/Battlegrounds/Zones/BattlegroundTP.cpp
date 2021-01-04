@@ -813,7 +813,7 @@ bool BattlegroundTP::UpdatePlayerScore(Player* player, uint32 type, uint32 value
 }
 
 
-WorldSafeLocsEntry const* BattlegroundTP::GetClosestGraveYard(Player* player)
+WorldSafeLocsEntry const* BattlegroundTP::GetClosestGraveyard(Player* player)
 {
     // if status in progress, it returns main or start graveyards with spiritguides
     // else it will return the graveyard in the flagroom - this is especially good

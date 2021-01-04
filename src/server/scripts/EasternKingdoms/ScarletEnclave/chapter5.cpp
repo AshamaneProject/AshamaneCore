@@ -274,41 +274,9 @@ class npc_highlord_darion_mograine : public CreatureScript
 public:
     npc_highlord_darion_mograine() : CreatureScript("npc_highlord_darion_mograine") { }
 
-    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
+    struct npc_highlord_darion_mograineAI : public EscortAI
     {
-        ClearGossipMenuFor(player);
-        switch (action)
-        {
-            case GOSSIP_ACTION_INFO_DEF+1:
-                CloseGossipMenuFor(player);
-                ENSURE_AI(npc_highlord_darion_mograine::npc_highlord_darion_mograineAI, creature->AI())->uiStep = 1;
-                ENSURE_AI(npc_highlord_darion_mograine::npc_highlord_darion_mograineAI, creature->AI())->Start(true, false, player->GetGUID());
-                break;
-        }
-        return true;
-    }
-
-    bool OnGossipHello(Player* player, Creature* creature) override
-    {
-        if (creature->IsQuestGiver())
-            player->PrepareQuestMenu(creature->GetGUID());
-
-        if (player->GetQuestStatus(12801) == QUEST_STATUS_INCOMPLETE)
-            AddGossipItemFor(player, 0, "I am ready.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
-
-        SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
-
-        return true;
-    }
-
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new npc_highlord_darion_mograineAI(creature);
-    }
-
-    struct npc_highlord_darion_mograineAI : public npc_escortAI
-    {
-        npc_highlord_darion_mograineAI(Creature* creature) : npc_escortAI(creature)
+        npc_highlord_darion_mograineAI(Creature* creature) : EscortAI(creature)
         {
             Reset();
         }
@@ -485,7 +453,7 @@ public:
             SetEscortPaused(bOnHold);
         }
 
-        void WaypointReached(uint32 waypointId) override
+        void WaypointReached(uint32 waypointId, uint32 /*pathId*/) override
         {
             switch (waypointId)
             {
@@ -603,12 +571,12 @@ public:
         void EnterEvadeMode(EvadeReason why) override
         {
             if (!bIsBattle)//do not reset self if we are in battle
-                npc_escortAI::EnterEvadeMode(why);
+                EscortAI::EnterEvadeMode(why);
         }
 
         void UpdateAI(uint32 diff) override
         {
-            npc_escortAI::UpdateAI(diff);
+            EscortAI::UpdateAI(diff);
 
             if (!bIsBattle)
             {
@@ -653,7 +621,7 @@ public:
                             {
                                 Unit* temp = me->SummonCreature(NPC_ACHERUS_GHOUL, (me->GetPositionX() - 20) + rand32() % 40, (me->GetPositionY() - 20) + rand32() % 40, me->GetPositionZ(), 0, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 300000);
                                 temp->SetWalk(false);
-                                temp->SetFaction(2084);
+                                temp->SetFaction(FACTION_UNDEAD_SCOURGE_3);
                                 uiGhoulGUID[uiSummon_counter] = temp->GetGUID();
                                 ++uiSummon_counter;
                             }
@@ -671,7 +639,7 @@ public:
                             {
                                 Unit* temp = me->SummonCreature(NPC_RAMPAGING_ABOMINATION, (me->GetPositionX() - 20) + rand32() % 40, (me->GetPositionY() - 20) + rand32() % 40, me->GetPositionZ(), 0, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 300000);
                                 temp->SetWalk(false);
-                                temp->SetFaction(2084);
+                                temp->SetFaction(FACTION_UNDEAD_SCOURGE_3);
                                 uiAbominationGUID[uiSummon_counter] = temp->GetGUID();
                                 ++uiSummon_counter;
                             }
@@ -689,7 +657,7 @@ public:
                             {
                                 Unit* temp = me->SummonCreature(NPC_WARRIOR_OF_THE_FROZEN_WASTES, (me->GetPositionX() - 20) + rand32() % 40, (me->GetPositionY() - 20) + rand32() % 40, me->GetPositionZ(), 0, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 300000);
                                 temp->SetWalk(false);
-                                temp->SetFaction(2084);
+                                temp->SetFaction(FACTION_UNDEAD_SCOURGE_3);
                                 uiWarriorGUID[uiSummon_counter] = temp->GetGUID();
                                 ++uiSummon_counter;
                             }
@@ -707,7 +675,7 @@ public:
                             {
                                 Unit* temp = me->SummonCreature(NPC_FLESH_BEHEMOTH, (me->GetPositionX() - 20) + rand32() % 40, (me->GetPositionY() - 20) + rand32() % 40, me->GetPositionZ(), 0, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 300000);
                                 temp->SetWalk(false);
-                                temp->SetFaction(2084);
+                                temp->SetFaction(FACTION_UNDEAD_SCOURGE_3);
                                 uiBehemothGUID[uiSummon_counter] = temp->GetGUID();
                                 ++uiSummon_counter;
                             }
@@ -1119,7 +1087,7 @@ public:
 
                         case 48: // Show the cleansing effect (dawn of light)
                             //if (GameObject* go = me->GetMap()->GetGameObject(uiDawnofLightGUID))
-                            //    me->SetPhaseMask(128, true);
+                            //    go->SetPhaseMask(128, true);
                             me->SummonGameObject(GO_LIGHT_OF_DAWN, 2283.896f, -5287.914f, 83.066f, 0.f, QuaternionData(), 30);
                             if (Creature* temp = ObjectAccessor::GetCreature(*me, uiTirionGUID))
                             {
@@ -1295,10 +1263,10 @@ public:
 
                         case 71:
                             //if (GameObject* go = me->GetMap()->GetGameObject(uiDawnofLightGUID)) // Turn off dawn of light
-                            //    me->SetPhaseMask(0, true);
+                            //    go->SetPhaseMask(0, true);
                             {
                                 // search players with in 50 yards for quest credit
-                                Map::PlayerList const &PlayerList = me->GetMap()->GetPlayers();
+                                Map::PlayerList const& PlayerList = me->GetMap()->GetPlayers();
                                 if (!PlayerList.isEmpty())
                                 {
                                     for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
@@ -1535,7 +1503,7 @@ public:
                 if (!temp)
                 {
                     temp = me->SummonCreature(NPC_ACHERUS_GHOUL, LightofDawnLoc[0].GetPositionWithOffset({ float(rand32() % 30), float(rand32() % 30), 0.0f, 0.0f }), TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 300000);
-                    temp->SetFaction(2084);
+                    temp->SetFaction(FACTION_UNDEAD_SCOURGE_3);
                     uiGhoulGUID[i] = temp->GetGUID();
                 }
             }
@@ -1545,7 +1513,7 @@ public:
                 if (!temp)
                 {
                     temp = me->SummonCreature(NPC_WARRIOR_OF_THE_FROZEN_WASTES, LightofDawnLoc[0].GetPositionWithOffset({ float(rand32() % 30), float(rand32() % 30), 0.0f, 0.0f }), TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 300000);
-                    temp->SetFaction(2084);
+                    temp->SetFaction(FACTION_UNDEAD_SCOURGE_3);
                     uiAbominationGUID[i] = temp->GetGUID();
                 }
             }
@@ -1555,7 +1523,7 @@ public:
                 if (!temp)
                 {
                     temp = me->SummonCreature(NPC_RAMPAGING_ABOMINATION, LightofDawnLoc[0].GetPositionWithOffset({ float(rand32() % 30), float(rand32() % 30), 0.0f, 0.0f }), TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 300000);
-                    temp->SetFaction(2084);
+                    temp->SetFaction(FACTION_UNDEAD_SCOURGE_3);
                     uiWarriorGUID[i] = temp->GetGUID();
                 }
             }
@@ -1565,7 +1533,7 @@ public:
                 if (!temp)
                 {
                     temp = me->SummonCreature(NPC_FLESH_BEHEMOTH, LightofDawnLoc[0].GetPositionWithOffset({ float(rand32() % 30), float(rand32() % 30), 0.0f, 0.0f }), TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 300000);
-                    temp->SetFaction(2084);
+                    temp->SetFaction(FACTION_UNDEAD_SCOURGE_3);
                     uiBehemothGUID[i] = temp->GetGUID();
                 }
             }
@@ -1636,8 +1604,40 @@ public:
                     temp->KillSelf();
                 }
         }
+
+        bool GossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId) override
+        {
+            uint32 const action = player->PlayerTalkClass->GetGossipOptionAction(gossipListId);
+            ClearGossipMenuFor(player);
+            switch (action)
+            {
+                case GOSSIP_ACTION_INFO_DEF + 1:
+                    CloseGossipMenuFor(player);
+                    uiStep = 1;
+                    Start(true, false, player->GetGUID());
+                    break;
+            }
+            return true;
+        }
+
+        bool GossipHello(Player* player) override
+        {
+            if (me->IsQuestGiver())
+                player->PrepareQuestMenu(me->GetGUID());
+
+            if (player->GetQuestStatus(12801) == QUEST_STATUS_INCOMPLETE)
+                AddGossipItemFor(player, 0, "I am ready.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+
+            SendGossipMenuFor(player, player->GetGossipTextId(me), me->GetGUID());
+
+            return true;
+        }
     };
 
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_highlord_darion_mograineAI(creature);
+    }
 };
 
 /*######

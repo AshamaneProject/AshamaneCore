@@ -29,6 +29,7 @@ EndContentData */
 
 #include "ScriptMgr.h"
 #include "GameObject.h"
+#include "GameObjectAI.h"
 #include "InstanceScript.h"
 #include "MotionMaster.h"
 #include "ObjectAccessor.h"
@@ -236,7 +237,7 @@ private:
             crew->SetWalk(true);
             crew->SetHomePosition(x, y, z, 0);
             crew->GetMotionMaster()->MovePoint(1, x, y, z);
-            crew->SetFaction(FACTION_FREED);
+            crew->SetFaction(FACTION_ESCORTEE_N_NEUTRAL_ACTIVE);
         }
     }
 };
@@ -309,7 +310,7 @@ public:
         npc_weegli_blastfuseAI(Creature* creature) : ScriptedAI(creature)
         {
             instance = creature->GetInstanceScript();
-            destroyingDoor=false;
+            destroyingDoor = false;
             Bomb_Timer = 10000;
             LandMine_Timer = 30000;
         }
@@ -389,7 +390,7 @@ public:
                 me->GetMotionMaster()->MovePoint(0, 1858.57f, 1146.35f, 14.745f);
                 me->SetHomePosition(1858.57f, 1146.35f, 14.745f, 3.85f); // in case he gets interrupted
                 Talk(SAY_WEEGLI_OK_I_GO);
-                destroyingDoor=true;
+                destroyingDoor = true;
             }
         }
     };
@@ -425,6 +426,7 @@ public:
                 if ((randomchance - CHANCE_ZOMBIE) < CHANCE_DEAD_HERO)
                     go->SummonCreature(NPC_DEAD_HERO, go->GetPositionX(), go->GetPositionY(), go->GetPositionZ(), 0, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 30000);
         }
+
         go->AddUse();
         return false;
     }
@@ -445,7 +447,7 @@ class at_zumrah : public AreaTriggerScript
 public:
     at_zumrah() : AreaTriggerScript("at_zumrah") { }
 
-    bool OnTrigger(Player* player, const AreaTriggerEntry* /*areaTrigger*/, bool /*entered*/) override
+    bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/, bool /*entered*/) override
     {
         Creature* pZumrah = player->FindNearestCreature(ZUMRAH_ID, 30.0f);
 

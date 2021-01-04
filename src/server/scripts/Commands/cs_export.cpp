@@ -161,17 +161,6 @@ public:
             return "THIS QUEST DONT EXITS ON DB";
     }
     /*#####
-    # GetQuestMinLevel by entry
-    #####*/
-    uint32 GetQuestMinLevel(uint32 quest_Min_level)
-    {
-        /*Check if quest_entry exist*/
-        if ( Quest const* questProtolevel = sObjectMgr->GetQuestTemplate(quest_Min_level) )
-            return questProtolevel->GetMinLevel();
-        else
-            return 0;
-    }
-    /*#####
     # GetQuestRequiredSkill This is for know what profession the quest is
     #####*/
     uint32 GetQuestRequiredSkill(uint32 quest_required_skill)
@@ -1056,7 +1045,7 @@ public:
 
                 //
                 // Solo como comentario
-                this->fCacheStream << " /* " << "Quest(" << quest << "): " << this->GetQuestNameByEntry(quest) << " ,QuestMinLevel: " << this->GetQuestMinLevel(quest) << " ,QuestProfession ID: " << this->GetQuestRequiredSkill(quest) << "["; //<< this->GetSkillNameByEntry(GetQuestRequiredSkill(quest)) << "]" << " */ \n";
+                this->fCacheStream << " /* " << "Quest(" << quest << "): " << this->GetQuestNameByEntry(quest) << " ,QuestProfession ID: " << this->GetQuestRequiredSkill(quest) << "["; //<< this->GetSkillNameByEntry(GetQuestRequiredSkill(quest)) << "]" << " */ \n";
                 _rowCount++;
             } while ( _Result->NextRow() );
 
@@ -1146,7 +1135,7 @@ public:
 
                 //
                 // Solo como comentario
-                this->fCacheStream << " /* " << "Quest(" << quest << "): " << this->GetQuestNameByEntry(quest) << " ,QuestMinLevel: " << this->GetQuestMinLevel(quest) << " ,QuestProfession ID: " << this->GetQuestRequiredSkill(quest) << "[" << "]" << " */ \n";
+                this->fCacheStream << " /* " << "Quest(" << quest << "): " << this->GetQuestNameByEntry(quest) << " ,QuestProfession ID: " << this->GetQuestRequiredSkill(quest) << "[" << "]" << " */ \n";
                 _rowCount++;
             } while ( _Result->NextRow() );
 
@@ -4144,7 +4133,7 @@ public:
 
                 //
                 // Solo como comentario
-                this->fCacheStream << " /* " << "Quest(" << quest << "): " << this->GetQuestNameByEntry(quest) << " ,QuestMinLevel: " << this->GetQuestMinLevel(quest) << " ,QuestProfession ID: " << this->GetQuestRequiredSkill(quest) << "[" << this->GetSkillNameByEntry(GetQuestRequiredSkill(quest)) << "]" << " */ \n";
+                this->fCacheStream << " /* " << "Quest(" << quest << "): " << this->GetQuestNameByEntry(quest) << " ,QuestProfession ID: " << this->GetQuestRequiredSkill(quest) << "[" << this->GetSkillNameByEntry(GetQuestRequiredSkill(quest)) << "]" << " */ \n";
                 _rowCount++;
             } while ( _Result->NextRow() );
 
@@ -4235,7 +4224,7 @@ public:
 
                 //
                 // Solo como comentario
-                this->fCacheStream << " /* " << "Quest(" << quest << "): " << this->GetQuestNameByEntry(quest) << " ,QuestMinLevel: " << this->GetQuestMinLevel(quest) << " ,QuestProfession ID: " << this->GetQuestRequiredSkill(quest) << "[" << this->GetSkillNameByEntry(GetQuestRequiredSkill(quest)) << "]" << " */ \n";
+                this->fCacheStream << " /* " << "Quest(" << quest << "): " << this->GetQuestNameByEntry(quest) << " ,QuestProfession ID: " << this->GetQuestRequiredSkill(quest) << "[" << this->GetSkillNameByEntry(GetQuestRequiredSkill(quest)) << "]" << " */ \n";
                 _rowCount++;
             } while ( _Result->NextRow() );
 

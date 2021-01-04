@@ -364,7 +364,7 @@ class boss_tayak : public CreatureScript
                     me->RemoveAura(SPELL_VISINTRO_TAYAK);
 
                 //me->DisableEvadeMode();
-                me->DisableHealthRegen();
+                me->SetRegenerateHealth(false);
                 _EnterCombat();
             }
 

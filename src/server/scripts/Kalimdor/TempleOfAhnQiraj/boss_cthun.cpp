@@ -590,7 +590,7 @@ public:
                 if (WisperTimer <= diff)
                 {
                     //Play random sound to the zone
-                    Map::PlayerList const &PlayerList = me->GetMap()->GetPlayers();
+                    Map::PlayerList const& PlayerList = me->GetMap()->GetPlayers();
                     for (Map::PlayerList::const_iterator itr = PlayerList.begin(); itr != PlayerList.end(); ++itr)
                         me->PlayDirectSound(RANDOM_SOUND_WHISPER, itr->GetSource());
 
@@ -649,7 +649,7 @@ public:
                         //Place all units in threat list on outside of stomach
                         Stomach_Map.clear();
 
-                        for (ThreatReference* ref : me->GetThreatManager().GetUnsortedThreatList())
+                        for (ThreatReference const* ref : me->GetThreatManager().GetUnsortedThreatList())
                             Stomach_Map[ref->GetVictim()->GetGUID()] = false;   //Outside stomach
 
                         //Spawn 2 flesh tentacles

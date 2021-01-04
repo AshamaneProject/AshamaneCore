@@ -1551,6 +1551,27 @@ namespace Trinity
             bool _reqAlive;
     };
 
+    class AnyPlayerInPositionRangeCheck
+    {
+    public:
+        AnyPlayerInPositionRangeCheck(Position const* pos, float range, bool reqAlive = true) : _pos(pos), _range(range), _reqAlive(reqAlive) { }
+        bool operator()(Player* u)
+        {
+            if (_reqAlive && !u->IsAlive())
+                return false;
+
+            if (!u->IsWithinDist3d(_pos, _range))
+                return false;
+
+            return true;
+        }
+
+    private:
+        Position const* _pos;
+        float _range;
+        bool _reqAlive;
+    };
+
     class NearestPlayerInObjectRangeCheck
     {
         public:
@@ -1593,7 +1614,7 @@ namespace Trinity
     class AllGameObjectsWithEntryInRange
     {
         public:
-            AllGameObjectsWithEntryInRange(const WorldObject* object, uint32 entry, float maxRange) : m_pObject(object), m_uiEntry(entry), m_fRange(maxRange) { }
+            AllGameObjectsWithEntryInRange(WorldObject const* object, uint32 entry, float maxRange) : m_pObject(object), m_uiEntry(entry), m_fRange(maxRange) { }
 
             bool operator()(GameObject* go) const
             {
@@ -1612,7 +1633,7 @@ namespace Trinity
     class AllCreaturesOfEntryInRange
     {
         public:
-            AllCreaturesOfEntryInRange(const WorldObject* object, uint32 entry, float maxRange) : m_pObject(object), m_uiEntry(entry), m_fRange(maxRange) { }
+            AllCreaturesOfEntryInRange(WorldObject const* object, uint32 entry, float maxRange) : m_pObject(object), m_uiEntry(entry), m_fRange(maxRange) { }
 
             bool operator()(Unit* unit) const
             {
@@ -1685,7 +1706,7 @@ namespace Trinity
     class AllWorldObjectsInRange
     {
         public:
-            AllWorldObjectsInRange(const WorldObject* object, float maxRange) : m_pObject(object), m_fRange(maxRange) { }
+            AllWorldObjectsInRange(WorldObject const* object, float maxRange) : m_pObject(object), m_fRange(maxRange) { }
 
             bool operator()(WorldObject* go) const
             {

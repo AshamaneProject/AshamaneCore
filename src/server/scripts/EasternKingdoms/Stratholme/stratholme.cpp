@@ -31,6 +31,7 @@ EndContentData */
 
 #include "ScriptMgr.h"
 #include "GameObject.h"
+#include "GameObjectAI.h"
 #include "Group.h"
 #include "InstanceScript.h"
 #include "MotionMaster.h"
@@ -108,7 +109,7 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return new npc_restless_soulAI(creature);
+        return GetStratholmeAI<npc_restless_soulAI>(creature);
     }
 
     struct npc_restless_soulAI : public ScriptedAI
@@ -136,7 +137,7 @@ public:
 
         void EnterCombat(Unit* /*who*/) override { }
 
-        void SpellHit(Unit* caster, const SpellInfo* spell) override
+        void SpellHit(Unit* caster, SpellInfo const* spell) override
         {
             if (Tagged || spell->Id != SPELL_EGAN_BLASTER)
                 return;
@@ -201,7 +202,7 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return new npc_spectral_ghostly_citizenAI(creature);
+        return GetStratholmeAI<npc_spectral_ghostly_citizenAI>(creature);
     }
 
     struct npc_spectral_ghostly_citizenAI : public ScriptedAI
@@ -227,7 +228,7 @@ public:
 
         void EnterCombat(Unit* /*who*/) override { }
 
-        void SpellHit(Unit* /*caster*/, const SpellInfo* spell) override
+        void SpellHit(Unit* /*caster*/, SpellInfo const* spell) override
         {
             if (!Tagged && spell->Id == SPELL_EGAN_BLASTER)
                 Tagged = true;

@@ -505,7 +505,7 @@ std::vector<WorldQuestReward const*> WorldQuestMgr::GetRewardsForPlayerById(Play
     return rewards;
 }
 
-void WorldQuestMgr::BuildPacket(Player* player, WorldPackets::Quest::WorldQuestUpdate& packet)
+void WorldQuestMgr::BuildPacket(Player* player, WorldPackets::Quest::WorldQuestUpdateResponse& packet)
 {
     WorldPackets::Quest::WorldQuestUpdateInfo quest;
     for (auto expansionWorldQuests : _activeWorldQuests)
@@ -547,7 +547,7 @@ void WorldQuestMgr::BuildRewardPacket(Player* player, uint32 questId, WorldPacke
             {
                 WorldPackets::Quest::QueryQuestRewardResponse::ItemReward itemReward;
                 itemReward.Item.ItemID = worldQuestReward->RewardId;
-                itemReward.Item.ItemBonus = WorldPackets::Item::ItemBonusInstanceData();
+                itemReward.Item.ItemBonus = WorldPackets::Item::ItemBonuses();
                 itemReward.Item.ItemBonus->Context = (ItemContext)worldQuestReward->RewardContext;
                 itemReward.Item.ItemBonus->BonusListIDs = sDB2Manager.GetItemBonusTreeVector(worldQuestReward->RewardId, ItemContext(worldQuestReward->RewardContext));
                 itemReward.Quantity = worldQuestReward->RewardCount;

@@ -105,14 +105,14 @@ class LootTemplate::LootGroup                               // A set of loot def
         LootStoreItem const* Roll(Loot& loot, uint16 lootMode) const;   // Rolls an item from the group, returns NULL if all miss their chances
 
         // This class must never be copied - storing pointers
-        LootGroup(LootGroup const&);
-        LootGroup& operator=(LootGroup const&);
+        LootGroup(LootGroup const&) = delete;
+        LootGroup& operator=(LootGroup const&) = delete;
 };
 
 //Remove all data and free all memory
 void LootStore::Clear()
 {
-    for (LootTemplateMap::const_iterator itr=m_LootTemplates.begin(); itr != m_LootTemplates.end(); ++itr)
+    for (LootTemplateMap::const_iterator itr = m_LootTemplates.begin(); itr != m_LootTemplates.end(); ++itr)
         delete itr->second;
     m_LootTemplates.clear();
 }
@@ -148,7 +148,7 @@ uint32 LootStore::LoadLootTable()
 
         uint32 entry               = fields[0].GetUInt32();
         int32  item                = fields[1].GetInt32();
-        uint8  type                = item >= 0 ? LOOT_ITEM_TYPE_ITEM : LOOT_ITEM_TYPE_CURRENCY;
+        uint8  type                = item >= 0 ? uint8(LootItemType::Item) : uint8(LootItemType::Currency);
         uint32 reference           = fields[2].GetUInt32();
         float  chance              = fields[3].GetFloat();
         bool   needsquest          = fields[4].GetBool();
@@ -274,7 +274,7 @@ void LootStore::ReportNonExistingId(uint32 lootId) const
     TC_LOG_ERROR("sql.sql", "Table '%s' Entry %d does not exist", GetName(), lootId);
 }
 
-void LootStore::ReportNonExistingId(uint32 lootId, const char* ownerType, uint32 ownerId) const
+void LootStore::ReportNonExistingId(uint32 lootId, char const* ownerType, uint32 ownerId) const
 {
     TC_LOG_ERROR("sql.sql", "Table '%s' Entry %d does not exist but it is used by %s %d", GetName(), lootId, ownerType, ownerId);
 }
@@ -311,7 +311,7 @@ bool LootStoreItem::IsValid(LootStore const& store, uint32 entry) const
 
     if (reference == 0)                                      // item (quest or non-quest) entry, maybe grouped
     {
-        if (type == LOOT_ITEM_TYPE_ITEM)
+        if (type == uint8(LootItemType::Item))
         {
             ItemTemplate const* proto = sObjectMgr->GetItemTemplate(itemid);
             if (!proto)
@@ -320,7 +320,7 @@ bool LootStoreItem::IsValid(LootStore const& store, uint32 entry) const
                 return false;
             }
         }
-        else if (type == LOOT_ITEM_TYPE_CURRENCY)
+        else if (type == uint8(LootItemType::Currency))
         {
             CurrencyTypesEntry const* currency = sCurrencyTypesStore.LookupEntry(itemid);
             if (!currency)
@@ -558,7 +558,7 @@ void LootTemplate::AddEntry(LootStoreItem* item)
         Entries.push_back(item);
 }
 
-void LootTemplate::CopyConditions(const ConditionContainer& conditions)
+void LootTemplate::CopyConditions(ConditionContainer const& conditions)
 {
     for (LootStoreItemList::iterator i = Entries.begin(); i != Entries.end(); ++i)
         (*i)->conditions.clear();
@@ -1158,7 +1158,7 @@ void LoadLootTemplates_Spell()
         {
             // not report about not trainable spells (optionally supported by DB)
             // ignore 61756 (Northrend Inscription Research (FAST QA VERSION) for example
-            if (!spellInfo->HasAttribute(SPELL_ATTR0_NOT_SHAPESHIFT) || (spellInfo->HasAttribute(SPELL_ATTR0_TRADESPELL)))
+            if (!spellInfo->HasAttribute(SPELL_ATTR0_NOT_SHAPESHIFT) || spellInfo->HasAttribute(SPELL_ATTR0_TRADESPELL))
                 LootTemplates_Spell.ReportNonExistingId(spellInfo->Id, "Spell", spellInfo->Id);
         }
         else

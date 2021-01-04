@@ -64,11 +64,11 @@ enum ProfessorPhizzlethorpe
     FACTION_SUNKEN_TREASURE = 113
 };
 
-struct npc_professor_phizzlethorpe : public npc_escortAI
+struct npc_professor_phizzlethorpe : public EscortAI
 {
-    npc_professor_phizzlethorpe(Creature* creature) : npc_escortAI(creature) { }
+    npc_professor_phizzlethorpe(Creature* creature) : EscortAI(creature) { }
 
-    void WaypointReached(uint32 waypointId) override
+    void WaypointReached(uint32 waypointId, uint32 /*pathId*/) override
     {
         Player* player = GetPlayerForEscort();
         if (!player)
@@ -111,8 +111,8 @@ struct npc_professor_phizzlethorpe : public npc_escortAI
         if (quest->GetQuestId() == QUEST_SUNKEN_TREASURE)
         {
             Talk(SAY_PROGRESS_1, player);
-            npc_escortAI::Start(false, false, player->GetGUID(), quest);
-            me->SetFaction(FACTION_SUNKEN_TREASURE);
+            EscortAI::Start(false, false, player->GetGUID(), quest);
+            me->SetFaction(FACTION_ESCORTEE_N_NEUTRAL_PASSIVE);
         }
     }
 
@@ -142,10 +142,8 @@ struct npc_professor_phizzlethorpe : public npc_escortAI
                     break;
             }
         }
-        npc_escortAI::UpdateAI(diff);
+        EscortAI::UpdateAI(diff);
     }
-
-    EventMap events;
 };
 
 enum Myzrael

@@ -19,7 +19,7 @@
 #define SCRIPTEDCREATURE_H_
 
 #include "CreatureAI.h"
-#include "Creature.h" // convenience include for scripts, all uses of ScriptedCreature also need Creature (except ScriptedCreature itself doesn't need Creature)
+#include "Creature.h"  // convenience include for scripts, all uses of ScriptedCreature also need Creature (except ScriptedCreature itself doesn't need Creature)
 #include "DBCEnums.h"
 #include "TaskScheduler.h"
 
@@ -358,10 +358,10 @@ class TC_GAME_API BossAI : public ScriptedAI
         void _EnterCombat(bool showFrameEngage = true);
         void _JustDied();
         void _JustReachedHome();
-        void _KilledUnit(Unit* victim);
+        void _KilledUnit(Unit * victim);
         void _DamageTaken(Unit* attacker, uint32& damage);
-        void _DespawnAtEvade(uint32 delayToRespawn = 30, Creature* who = nullptr);
-        void _DespawnAtEvade(Seconds const& time, Creature* who = nullptr) { _DespawnAtEvade(uint32(time.count()), who); }
+        void _DespawnAtEvade(Seconds delayToRespawn, Creature* who = nullptr);
+        void _DespawnAtEvade(uint32 delayToRespawn = 30, Creature* who = nullptr) { _DespawnAtEvade(Seconds(delayToRespawn), who); }
 
         void TeleportCheaters();
 

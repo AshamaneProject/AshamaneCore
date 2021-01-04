@@ -124,39 +124,40 @@ public:
 
                         ThreatManager const& mgr = me->GetThreatManager();
                         Unit* currentVictim = mgr.GetCurrentVictim();
-                        auto const& pair = mgr.GetSortedThreatList();
-                        auto it = pair.begin(), end = pair.end();
+                        auto list = mgr.GetModifiableThreatList();
+                        auto it = list.begin(), end = list.end();
                         if (it == end)
+                        {
                             EnterEvadeMode(EVADE_REASON_NO_HOSTILES);
+                            return;
+                        }
 
                         if ((*it)->GetVictim() != currentVictim)
                             secondThreat = *it;
-                        if ((!secondThreat || Is25ManRaid()) && (++it != end))
+                        if ((!secondThreat || Is25ManRaid()) && (++it != end && (*it)->IsAvailable()))
                         {
                             if ((*it)->GetVictim() != currentVictim)
                                 (secondThreat ? thirdThreat : secondThreat) = *it;
-                            if (!thirdThreat && Is25ManRaid() && (++it != end))
+                            if (!thirdThreat && Is25ManRaid() && (++it != end && (*it)->IsAvailable()))
                                 thirdThreat = *it;
                         }
 
                         Unit* pHatefulTarget = nullptr;
-                        if (!thirdThreat)
+                        if (!secondThreat)
+                            pHatefulTarget = currentVictim;
+                        else if (!thirdThreat)
                             pHatefulTarget = secondThreat->GetVictim();
-                        else if (secondThreat)
+                        else
                             pHatefulTarget = (secondThreat->GetVictim()->GetHealth() < thirdThreat->GetVictim()->GetHealth()) ? thirdThreat->GetVictim() : secondThreat->GetVictim();
 
-                        if (!pHatefulTarget)
-                            pHatefulTarget = me->GetVictim();
-
-                        DoCast(pHatefulTarget, SPELL_HATEFUL_STRIKE, true);
-
                         // add threat to highest threat targets
-                        if (me->GetVictim() && me->IsWithinMeleeRange(me->GetVictim()))
-                            AddThreat(me->GetVictim(), HATEFUL_THREAT_AMT);
+                        AddThreat(currentVictim, HATEFUL_THREAT_AMT);
                         if (secondThreat)
                             AddThreat(me->GetVictim(), HATEFUL_THREAT_AMT);
                         if (thirdThreat)
                             AddThreat(me->GetVictim(), HATEFUL_THREAT_AMT);
+
+                        DoCast(pHatefulTarget, SPELL_HATEFUL_STRIKE, true);
 
                         events.Repeat(Seconds(1));
                         break;

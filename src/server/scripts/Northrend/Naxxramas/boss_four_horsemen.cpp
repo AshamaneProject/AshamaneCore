@@ -15,8 +15,8 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "GameTime.h"
 #include "ScriptMgr.h"
+#include "GameTime.h"
 #include "InstanceScript.h"
 #include "Log.h"
 #include "Map.h"
@@ -222,7 +222,7 @@ struct boss_four_horsemen_baseAI : public BossAI
                 return;
             }
             instance->SetBossState(BOSS_HORSEMEN, IN_PROGRESS);
-            Map::PlayerList const &players = me->GetMap()->GetPlayers();
+            Map::PlayerList const& players = me->GetMap()->GetPlayers();
             if (players.isEmpty()) // sanity check
                 ResetEncounter();
 
@@ -272,14 +272,9 @@ struct boss_four_horsemen_baseAI : public BossAI
             for (Horseman boss : horsemen)
             {
                 if (Creature* cBoss = getHorsemanHandle(boss))
-                {
-                    cBoss->DespawnOrUnsummon();
-                    cBoss->SetRespawnTime(15);
-                }
+                    cBoss->DespawnOrUnsummon(0, Seconds(15));
                 else
-                {
                     TC_LOG_WARN("scripts", "FourHorsemenAI: Encounter resetting but horseman with id %u is not present", uint32(boss));
-                }
             }
         }
 
@@ -386,7 +381,7 @@ struct boss_four_horsemen_baseAI : public BossAI
 
     private:
         const Horseman _which;
-        const Position* _initialPath;
+        Position const* _initialPath;
         bool _myMovementFinished;
         uint8 _nextMovement;
         uint32 _timeDied;

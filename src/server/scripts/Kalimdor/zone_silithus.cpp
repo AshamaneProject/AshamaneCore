@@ -40,9 +40,9 @@ EndContentData */
 #include "GameObjectAI.h"
 #include "Group.h"
 #include "MotionMaster.h"
-#include "Player.h"
 #include "ObjectAccessor.h"
 #include "ObjectMgr.h"
+#include "Player.h"
 #include "ScriptedCreature.h"
 #include "ScriptedGossip.h"
 #include "TemporarySummon.h"
@@ -620,7 +620,7 @@ public:
                         {
                             Talk(ARYGOS_YELL_1);
                             AnachronosQuestTrigger->AI()->EnterEvadeMode();
-                            eventEnd=true;
+                            eventEnd = true;
                         }
                         break;
                 }

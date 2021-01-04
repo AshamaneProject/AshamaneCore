@@ -18,6 +18,7 @@
 #include "ScriptMgr.h"
 #include "CreatureTextMgr.h"
 #include "GameObject.h"
+#include "GameObjectAI.h"
 #include "Group.h"
 #include "InstanceScript.h"
 #include "LFGMgr.h"
@@ -25,8 +26,8 @@
 #include "MotionMaster.h"
 #include "ObjectAccessor.h"
 #include "Player.h"
-#include "ScriptedGossip.h"
 #include "ScriptedCreature.h"
+#include "ScriptedGossip.h"
 #include "SpellAuraEffects.h"
 #include "SpellInfo.h"
 #include "SpellScript.h"
@@ -292,7 +293,7 @@ struct npc_frozen_core : public ScriptedAI
     void Initialize()
     {
         me->SetReactState(REACT_PASSIVE);
-        me->setRegeneratingHealth(false);
+        me->SetRegenerateHealth(false);
         DoCast(me, SPELL_FROZEN_CORE_GETS_HIT);
         DoCast(me, SPELL_ICE_SPEAR_AURA);
     }
@@ -316,7 +317,9 @@ struct npc_frozen_core : public ScriptedAI
         }
         else if (action == ACTION_AHUNE_RESURFACE)
         {
-            _events.Reset();
+            me->SetReactState(REACT_PASSIVE);
+            me->SetRegenerateHealth(false);
+            DoCast(me, SPELL_FROZEN_CORE_GETS_HIT);
             DoCast(me, SPELL_ICE_SPEAR_AURA);
             me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_PC));
         }
@@ -328,17 +331,19 @@ struct npc_frozen_core : public ScriptedAI
 
         while (uint32 eventId = _events.ExecuteEvent())
         {
-            switch (eventId)
+            if (eventId == ACTION_AHUNE_RETREAT)
             {
-                case EVENT_SYNCH_HEALTH:
-                    if (Creature* ahune = ObjectAccessor::GetCreature(*me, _instance->GetGuidData(DATA_AHUNE)))
-                        DoCast(ahune, SPELL_SYNCH_HEALTH, true);
-                    else
-                        DoCast(me, SPELL_SUICIDE);
-                    _events.Repeat(Seconds(3));
-                    break;
-                default:
-                    break;
+                me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
+                me->SetImmuneToPC(false);
+                me->RemoveAurasDueToSpell(SPELL_ICE_SPEAR_AURA);
+                _events.ScheduleEvent(EVENT_SYNCH_HEALTH, Seconds(3), 0, PHASE_TWO);
+            }
+            else if (eventId == ACTION_AHUNE_RESURFACE)
+            {
+                _events.Reset();
+                DoCast(me, SPELL_ICE_SPEAR_AURA);
+                me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
+                me->SetImmuneToPC(true);
             }
         }
     }
