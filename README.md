@@ -22,6 +22,8 @@
 
 ## Introduction
 
+NOTE!!! Its very Important that your Database names beginn with the "ashamane_" prefix, otherwise your server will never load up
+
 AshamaneCore is a *MMORPG* Framework based mostly in C++.
 
 It is fully based on *TrinityCore*, with upgrades like :
