@@ -3,6 +3,7 @@
       (**********************************)
       (you can delete all rows before description and after operating system when creating issue)
       For SQL fixes:
+      search for existing issues, if a bug report exist for the issue you are trying to fix and it's opened post there.
       don't modify WDB fields without supply one sniff of those fields (censure guids, character names, anything blizzard can use to identify source)
       don't use pull requests for sql only fixes, unless it's to fix one existing unable to apply file.
       don't hardcode guids.
@@ -37,7 +38,9 @@ CHANGEME Mandatory if Project == compiled master repo from Git, found it in firs
 
 CHANGEME What DB do you use, TDB, ADB, other.
 
-**Operating system:** CHANGEME OS
+**Operating system:** 
+
+CHANGEME OS
 
 
 <!--- Notes
