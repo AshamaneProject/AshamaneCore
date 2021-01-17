@@ -11560,7 +11560,7 @@ uint32 ObjectMgr::GetItemBonusLevel(uint32 ItemID, uint32 ownerLevel, uint8& qua
     //auto scalingStatContentTuning = itemTemplate->GetScalingStatContentTuning(); not in use
     auto ItemLevelBonus = 0;
 
-    auto ScalingStatDistributionPriority = std::numeric_limits<int32>::max();
+    //auto ScalingStatDistributionPriority = std::numeric_limits<int32>::max(); not in use 
     auto HasQualityBonus = false;
 
     for (auto bonusListID : copyBonusSetIDs)
