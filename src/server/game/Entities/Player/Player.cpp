@@ -7414,6 +7414,9 @@ void Player::UpdateArea(uint32 newAreaId)
 
 void Player::UpdateZone(Area* oldArea)
 {
+    if (!IsInWorld())
+        return;
+
     Area* oldZone = oldArea ? oldArea->GetZone() : nullptr;
     Area* newZone = GetZone();
 
