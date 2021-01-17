@@ -4412,7 +4412,7 @@ void Unit::RemoveAurasOnEvade()
     // don't remove vehicle auras, passengers aren't supposed to drop off the vehicle
     // don't remove clone caster on evade (to be verified)
     // don't remove positive auras with SPELL_ATTR3_DEATH_PERSISTENT
-    RemoveAppliedAuras([this](AuraApplication const* aurApp)
+    RemoveAppliedAuras([](AuraApplication const* aurApp)
     {
         Aura const* aura = aurApp->GetBase();
         return !aura->GetSpellInfo()->HasAura(SPELL_AURA_CONTROL_VEHICLE)

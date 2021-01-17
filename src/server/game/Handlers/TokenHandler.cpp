@@ -41,7 +41,3 @@ void WorldSession::HandleCommerceTokenGetMarketPrice(WorldPackets::Token::Commer
 
     SendPacket(response.Write());
 }
-
-/*void WorldSession::HandleBuyWowTokenStart(WorldPackets::Token::WowTokenBuyStart& /*wowTokenBuyStart*//*)
-{
-}*/

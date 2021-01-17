@@ -1082,7 +1082,7 @@ void Guardian::UpdateArmor()
 
     float armor = GetArmor();
     float value = 0.0f;
-    float pctFromOwnerArmor = 0.0f;
+    //float pctFromOwnerArmor = 0.0f; not in use
 
     value  = GetFlatModifierValue(unitMod, BASE_VALUE);
     baseValue = value;

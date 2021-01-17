@@ -53,8 +53,8 @@ CreatureAI::CreatureAI(Creature* creature) : UnitAI(creature), me(creature),
     summons(creature),
     damageEvents(creature),
     instance(creature->GetInstanceScript()),
-    m_canSeeEvenInPassiveMode(false),
     _negateBoundary(false),
+    m_canSeeEvenInPassiveMode(false),
     m_MoveInLineOfSight_locked(false)
 {
 }

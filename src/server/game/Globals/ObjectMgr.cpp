@@ -11557,7 +11557,7 @@ uint32 ObjectMgr::GetItemBonusLevel(uint32 ItemID, uint32 ownerLevel, uint8& qua
 
     quality = itemTemplate->GetQuality();
     auto itemLevel = itemTemplate->GetBaseItemLevel();
-    auto scalingStatContentTuning = itemTemplate->GetScalingStatContentTuning();
+    //auto scalingStatContentTuning = itemTemplate->GetScalingStatContentTuning(); not in use
     auto ItemLevelBonus = 0;
 
     auto ScalingStatDistributionPriority = std::numeric_limits<int32>::max();

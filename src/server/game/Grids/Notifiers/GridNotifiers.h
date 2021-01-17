@@ -1108,7 +1108,7 @@ namespace Trinity
             Unit const* i_funit;
             float i_range;
             bool i_playerOnly;
-            bool i_exceptSelf;
+            // bool i_exceptSelf; not in use
             bool i_incOwnRadius;
             bool i_incTargetRadius;
     };
