@@ -50,9 +50,9 @@ AISpellInfoType* GetAISpellInfo(uint32 spellId, Difficulty difficulty)
 
 CreatureAI::CreatureAI(Creature* creature) : UnitAI(creature), me(creature),
     _boundary(nullptr),
+    _negateBoundary(false),
     summons(creature),
     damageEvents(creature),
-    _negateBoundary(false),
     m_MoveInLineOfSight_locked(false),
     m_canSeeEvenInPassiveMode(false),
     instance(creature->GetInstanceScript())

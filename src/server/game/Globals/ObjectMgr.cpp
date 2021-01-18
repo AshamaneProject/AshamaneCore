@@ -11583,7 +11583,7 @@ std::set<uint32> ObjectMgr::GetItemBonusForLevel(uint32 itemID, ItemContext item
     return bonusListIDs;
 }
 
-uint32 ObjectMgr::GetItemBonusLevel(uint32 ItemID, uint32 ownerLevel, uint8& quality, std::set<uint32>& bonusListIDs)
+uint32 ObjectMgr::GetItemBonusLevel(uint32 ItemID, uint32 /*ownerLevel*/, uint8& quality, std::set<uint32>& bonusListIDs)
 {
     auto itemTemplate = GetItemTemplate(ItemID);
     if (!itemTemplate)
