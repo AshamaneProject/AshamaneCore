@@ -164,6 +164,7 @@ public:
             { "warden_action",                 rbac::RBAC_PERM_COMMAND_RELOAD_WARDEN_ACTION,                    true,  &HandleReloadWardenactionCommand,               "" },
             { "waypoint_scripts",              rbac::RBAC_PERM_COMMAND_RELOAD_WAYPOINT_SCRIPTS,                 true,  &HandleReloadWpScriptsCommand,                  "" },
             { "waypoint_data",                 rbac::RBAC_PERM_COMMAND_RELOAD_WAYPOINT_DATA,                    true,  &HandleReloadWpCommand,                         "" },
+            { "vehicle_template",              rbac::RBAC_PERM_COMMAND_RELOAD_VEHICLE_TEMPLATE,                 true,  &HandleReloadVehicleTemplateCommand,            "" },
             { "vehicle_accessory",             rbac::RBAC_PERM_COMMAND_RELOAD_VEHICLE_ACCESORY,                 true,  &HandleReloadVehicleAccessoryCommand,           "" },
             { "vehicle_template_accessory",    rbac::RBAC_PERM_COMMAND_RELOAD_VEHICLE_TEMPLATE_ACCESSORY,       true,  &HandleReloadVehicleTemplateAccessoryCommand,   "" },
             { "script_params",                 rbac::RBAC_PERM_COMMAND_RELOAD,                                  true,  &HandleReloadScriptParamsCommand,               "" },
@@ -1152,6 +1153,14 @@ public:
         }
 
         handler->SendGlobalGMSysMessage("Smart Scripts reloaded.");
+        return true;
+    }
+
+    static bool HandleReloadVehicleTemplateCommand(ChatHandler* handler, char const* /*args*/)
+    {
+        TC_LOG_INFO("misc", "Reloading vehicle_template table...");
+        sObjectMgr->LoadVehicleTemplate();
+        handler->SendGlobalGMSysMessage("Vehicle templates reloaded.");
         return true;
     }
 
