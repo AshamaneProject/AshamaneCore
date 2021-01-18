@@ -85,7 +85,7 @@ enum BFActionIds
 template <class AI, class T>
 inline AI* GetBloodFurnaceAI(T* obj)
 {
-    return GetInstanceAI<AI, T>(obj, BFScriptName);
+    return GetInstanceAI<AI>(obj, BFScriptName);
 }
 
 #endif // BLOOD_FURNACE_H_

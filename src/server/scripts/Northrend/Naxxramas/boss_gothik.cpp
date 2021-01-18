@@ -289,7 +289,7 @@ const GothikWaveData waves25 =
 
 // GUID of first trigger NPC (used as offset for guid checks)
 // 0-1 are living side soul triggers, 2-3 are spectral side soul triggers, 4 is living rider spawn trigger, 5-7 are living other spawn trigger, 8-12 are skull pile triggers
-const uint32 CGUID_TRIGGER = 122817;
+const uint32 CGUID_TRIGGER = 127618;
 /* Creature AI */
 class boss_gothik : public CreatureScript
 {
@@ -589,7 +589,7 @@ struct npc_gothik_minion_baseAI : public ScriptedAI
             {
                 case ACTION_GATE_OPENED:
                     _gateIsOpen = true;
-                    // intentional missing break
+                    /* fallthrough */
                 case ACTION_ACQUIRE_TARGET:
                     if (Player* target = FindEligibleTarget(me, _gateIsOpen))
                     {

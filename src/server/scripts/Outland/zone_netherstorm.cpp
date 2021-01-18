@@ -487,22 +487,6 @@ class npc_bessy : public CreatureScript
 public:
     npc_bessy() : CreatureScript("npc_bessy") { }
 
-    bool OnQuestAccept(Player* player, Creature* creature, Quest const* quest) override
-    {
-        if (quest->GetQuestId() == Q_ALMABTRIEB)
-        {
-            creature->SetFaction(113);
-            creature->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
-            ENSURE_AI(EscortAI, (creature->AI()))->Start(true, false, player->GetGUID());
-        }
-        return true;
-    }
-
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new npc_bessyAI(creature);
-    }
-
     struct npc_bessyAI : public EscortAI
     {
         npc_bessyAI(Creature* creature) : EscortAI(creature) { }
@@ -551,7 +535,22 @@ public:
         {
             me->RestoreFaction();
         }
+
+        void QuestAccept(Player* player, Quest const* quest) override
+        {
+            if (quest->GetQuestId() == Q_ALMABTRIEB)
+            {
+                me->SetFaction(FACTION_ESCORTEE_N_NEUTRAL_PASSIVE);
+                me->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
+                Start(true, false, player->GetGUID());
+            }
+        }
     };
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_bessyAI(creature);
+    }
 };
 
 /*######
@@ -568,11 +567,6 @@ class npc_maxx_a_million_escort : public CreatureScript
 {
 public:
     npc_maxx_a_million_escort() : CreatureScript("npc_maxx_a_million_escort") { }
-
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new npc_maxx_a_million_escortAI(creature);
-    }
 
     struct npc_maxx_a_million_escortAI : public EscortAI
     {
@@ -649,19 +643,20 @@ public:
             }
             DoMeleeAttackIfReady();
         }
-    };
 
-    bool OnQuestAccept(Player* player, Creature* creature, const Quest* quest) override
-    {
-        if (quest->GetQuestId() == QUEST_MARK_V_IS_ALIVE)
+        void QuestAccept(Player* player, Quest const* quest) override
         {
-            if (npc_maxx_a_million_escortAI* pEscortAI = CAST_AI(npc_maxx_a_million_escort::npc_maxx_a_million_escortAI, creature->AI()))
+            if (quest->GetQuestId() == QUEST_MARK_V_IS_ALIVE)
             {
-                creature->SetFaction(113);
-                pEscortAI->Start(false, false, player->GetGUID());
+                me->SetFaction(FACTION_ESCORTEE_N_NEUTRAL_PASSIVE);
+                Start(false, false, player->GetGUID());
             }
         }
-        return true;
+    };
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_maxx_a_million_escortAI(creature);
     }
 };
 
@@ -672,7 +667,11 @@ public:
 enum CaptainTyralius
 {
     NPC_CAPTAIN_TYRALIUS    = 20787,
+    NPC_ETHEREUM_PRISONER   = 20825,
+    SPELL_TELEPORT_VISUAL   = 51347,
     SAY_FREE                = 0,
+    ACTION_FREED            = 0,
+    EVENT_TELEPORT          = 1
 };
 
 class go_captain_tyralius_prison : public GameObjectScript
@@ -680,17 +679,79 @@ class go_captain_tyralius_prison : public GameObjectScript
     public:
         go_captain_tyralius_prison() : GameObjectScript("go_captain_tyralius_prison") { }
 
-        bool OnGossipHello(Player* player, GameObject* go) override
+        struct go_captain_tyralius_prisonAI : public GameObjectAI
         {
-            go->UseDoorOrButton();
-            if (Creature* tyralius = go->FindNearestCreature(NPC_CAPTAIN_TYRALIUS, 1.0f))
+            go_captain_tyralius_prisonAI(GameObject* go) : GameObjectAI(go) { }
+
+            void Reset() override
             {
-                player->KilledMonsterCredit(NPC_CAPTAIN_TYRALIUS);
-                tyralius->AI()->Talk(SAY_FREE);
-                tyralius->DespawnOrUnsummon(8000);
+                me->SummonCreature(NPC_CAPTAIN_TYRALIUS, me->GetPosition(), TEMPSUMMON_MANUAL_DESPAWN);
+                me->SummonCreature(NPC_ETHEREUM_PRISONER, me->GetPosition(), TEMPSUMMON_MANUAL_DESPAWN);
             }
-            return true;
+
+            bool GossipHello(Player* player) override
+            {
+                me->SetRespawnTime(60);
+                me->SetLootState(GO_JUST_DEACTIVATED);
+
+                if (Creature* tyralius = me->FindNearestCreature(NPC_CAPTAIN_TYRALIUS, 1.0f))
+                {
+                    player->KilledMonsterCredit(NPC_CAPTAIN_TYRALIUS);
+                    tyralius->AI()->DoAction(ACTION_FREED);
+                }
+
+                if (Creature* prisoner = me->FindNearestCreature(NPC_ETHEREUM_PRISONER, 1.0f))
+                    prisoner->DespawnOrUnsummon(0);
+
+                return true;
+            }
+        };
+
+        GameObjectAI* GetAI(GameObject* go) const override
+        {
+            return new go_captain_tyralius_prisonAI(go);
         }
+};
+
+class npc_captain_tyralius : public CreatureScript
+{
+public:
+    npc_captain_tyralius() : CreatureScript("npc_captain_tyralius") { }
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_captain_tyraliusAI(creature);
+    }
+
+    struct npc_captain_tyraliusAI : public ScriptedAI
+    {
+        npc_captain_tyraliusAI(Creature* creature) : ScriptedAI(creature) { }
+
+        void DoAction(int32 /*action*/) override
+        {
+            Talk(SAY_FREE);
+            _events.ScheduleEvent(EVENT_TELEPORT, Seconds(5));
+        }
+
+        void UpdateAI(uint32 diff) override
+        {
+            _events.Update(diff);
+
+            if (uint32 eventId = _events.ExecuteEvent())
+            {
+                switch (eventId)
+                {
+                    case EVENT_TELEPORT:
+                        DoCastSelf(SPELL_TELEPORT_VISUAL);
+                        me->DespawnOrUnsummon(Seconds(2));
+                        break;
+                }
+            }
+        }
+
+    private:
+        EventMap _events;
+    };
 };
 
 void AddSC_netherstorm()
@@ -701,4 +762,5 @@ void AddSC_netherstorm()
     new npc_bessy();
     new npc_maxx_a_million_escort();
     new go_captain_tyralius_prison();
+    new npc_captain_tyralius();
 }

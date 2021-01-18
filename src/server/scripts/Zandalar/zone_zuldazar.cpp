@@ -321,7 +321,7 @@ public:
             me->NeedChangeAI = false;
     }
 
-   /* void WaypointReached(uint32 waypointId, uint32 /*pathId*//*) override
+   /* void WaypointReached(uint32 waypointId, uint32 pathId) override
     {
         if (waypointId == 11)
             me->ForcedDespawn();

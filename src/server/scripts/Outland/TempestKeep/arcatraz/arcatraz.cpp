@@ -538,8 +538,8 @@ class npc_zerekethvoidzone : public CreatureScript
 
             void Reset() override
             {
-                me->AddNpcFlag(UNIT_NPC_FLAG_NONE);
-                me->SetFaction(16);
+                me->SetNpcFlags(UNIT_NPC_FLAG_NONE);
+                me->SetFaction(FACTION_MONSTER_2);
                 me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
 
                 DoCast(me, SPELL_VOID_ZONE_DAMAGE);

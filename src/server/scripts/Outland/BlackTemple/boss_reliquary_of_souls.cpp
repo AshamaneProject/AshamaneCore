@@ -19,7 +19,6 @@
 #include "black_temple.h"
 #include "InstanceScript.h"
 #include "MotionMaster.h"
-#include "Formulas.h"
 #include "ObjectAccessor.h"
 #include "Player.h"
 #include "ScriptedCreature.h"
@@ -125,6 +124,20 @@ enum Events
 
 Position const DespawnPoint = { 497.4939f, 183.2081f, 94.53341f };
 
+class EnslavedSoulEvent : public BasicEvent
+{
+    public: EnslavedSoulEvent(Creature* owner) : _owner(owner) { }
+
+        bool Execute(uint64 /*time*/, uint32 /*diff*/) override
+        {
+            _owner->CastSpell(_owner, SUMMON_ENSLAVED_SOUL, true);
+            return true;
+        }
+
+    private:
+        Creature* _owner;
+};
+
 class boss_reliquary_of_souls : public CreatureScript
 {
 public:
@@ -202,14 +215,23 @@ public:
             Trinity::Containers::RandomShuffle(_worldTriggerList);
             _worldTriggerList.resize(21);
 
-            for (uint8 i = 0; i < 21; ++i)
+            for (uint8 i = 0; i < 21; i++)
             {
-                uint32 timer = 4000 * (std::floor(i / 3) + 1);
-
-                _worldTriggerList[i]->GetScheduler().Schedule(Milliseconds(timer), [](TaskContext context)
-                {
-                    GetContextUnit()->CastSpell(context.GetUnit(), SUMMON_ENSLAVED_SOUL, true);
-                });
+                Creature* wTrigger = _worldTriggerList[i];
+                if (i < 3)
+                    wTrigger->m_Events.AddEvent(new EnslavedSoulEvent(wTrigger), wTrigger->m_Events.CalculateTime(4000));
+                else if (i < 6)
+                    wTrigger->m_Events.AddEvent(new EnslavedSoulEvent(wTrigger), wTrigger->m_Events.CalculateTime(8000));
+                else if (i < 9)
+                    wTrigger->m_Events.AddEvent(new EnslavedSoulEvent(wTrigger), wTrigger->m_Events.CalculateTime(12000));
+                else if (i < 12)
+                    wTrigger->m_Events.AddEvent(new EnslavedSoulEvent(wTrigger), wTrigger->m_Events.CalculateTime(16000));
+                else if (i < 15)
+                    wTrigger->m_Events.AddEvent(new EnslavedSoulEvent(wTrigger), wTrigger->m_Events.CalculateTime(20000));
+                else if (i < 18)
+                    wTrigger->m_Events.AddEvent(new EnslavedSoulEvent(wTrigger), wTrigger->m_Events.CalculateTime(24000));
+                else
+                    wTrigger->m_Events.AddEvent(new EnslavedSoulEvent(wTrigger), wTrigger->m_Events.CalculateTime(28000));
             }
         }
 
@@ -222,7 +244,7 @@ public:
                 return;
 
             for (Creature* trigger : _worldTriggerList)
-                trigger->GetScheduler().CancelAll();
+                trigger->m_Events.KillAllEvents(true);
         }
 
         void EnterEvadeMode(EvadeReason /*why*/) override
@@ -328,6 +350,8 @@ public:
                     Talk(SUFF_SAY_RECAP);
                     me->AttackStop();
                     me->SetReactState(REACT_PASSIVE);
+                    events.Reset();
+                    me->InterruptNonMeleeSpells(false);
                     me->GetMotionMaster()->MovePoint(RELIQUARY_DESPAWN_WAYPOINT, DespawnPoint);
                 }
             }
@@ -456,6 +480,8 @@ public:
                     Talk(DESI_SAY_RECAP);
                     me->AttackStop();
                     me->SetReactState(REACT_PASSIVE);
+                    events.Reset();
+                    me->InterruptNonMeleeSpells(false);
                     me->GetMotionMaster()->MovePoint(RELIQUARY_DESPAWN_WAYPOINT, DespawnPoint);
                 }
             }
@@ -717,14 +743,10 @@ class spell_reliquary_of_souls_aura_of_desire : public SpellScriptLoader
 
                 Unit* caster = eventInfo.GetActor();
                 int32 bp = damageInfo->GetDamage() / 2;
-
-                // Remove damage multiplier by expansion, avoid killing high level player with massive amount of damage
-                bp /= Trinity::GetDamageMultiplierForExpansion(caster->getLevel(), EXPANSION_THE_BURNING_CRUSADE);
-
                 caster->CastCustomSpell(SPELL_AURA_OF_DESIRE_DAMAGE, SPELLVALUE_BASE_POINT0, bp, caster, true, nullptr, aurEff);
             }
 
-            void UpdateAmount(AuraEffect const* /*effect*/)
+            void UpdateAmount(AuraEffect* /*aurEff*/)
             {
                 if (AuraEffect* effect = GetAura()->GetEffect(EFFECT_1))
                     effect->ChangeAmount(effect->GetAmount() - 5);
@@ -733,7 +755,7 @@ class spell_reliquary_of_souls_aura_of_desire : public SpellScriptLoader
             void Register() override
             {
                 OnEffectProc += AuraEffectProcFn(spell_reliquary_of_souls_aura_of_desire_AuraScript::OnProcSpell, EFFECT_0, SPELL_AURA_MOD_HEALING_PCT);
-                OnEffectPeriodic += AuraEffectPeriodicFn(spell_reliquary_of_souls_aura_of_desire_AuraScript::UpdateAmount, EFFECT_2, SPELL_AURA_PERIODIC_TRIGGER_SPELL);
+                OnEffectUpdatePeriodic += AuraEffectUpdatePeriodicFn(spell_reliquary_of_souls_aura_of_desire_AuraScript::UpdateAmount, EFFECT_2, SPELL_AURA_PERIODIC_TRIGGER_SPELL);
             }
         };
 

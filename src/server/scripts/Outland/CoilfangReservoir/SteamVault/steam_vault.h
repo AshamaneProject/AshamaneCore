@@ -54,7 +54,7 @@ enum SVGameObjectIds
 template <class AI, class T>
 inline AI* GetSteamVaultAI(T* obj)
 {
-    return GetInstanceAI<AI, T>(obj, SteamVaultScriptName);
+    return GetInstanceAI<AI>(obj, SteamVaultScriptName);
 }
 
 #endif

@@ -383,7 +383,7 @@ public:
         void Reset() override
         {
             Initialize();
-            me->SetFaction(ASHTONGUE_FACTION_FRIEND);
+            me->SetFaction(FACTION_ASHTONGUE_DEATHSWORN);
             DoCastSelf(SPELL_STEALTH);
 
             if (_instance->GetBossState(DATA_SHADE_OF_AKAMA) != DONE)
@@ -429,7 +429,7 @@ public:
             {
                 _isInCombat = false;
                 me->CombatStop(true);
-                me->SetFaction(ASHTONGUE_FACTION_FRIEND);
+                me->SetFaction(FACTION_ASHTONGUE_DEATHSWORN);
                 me->SetWalk(true);
                 _events.Reset();
                 me->GetMotionMaster()->MovePoint(AKAMA_INTRO_WAYPOINT, AkamaWP[1]);
@@ -483,7 +483,7 @@ public:
                     case EVENT_SHADE_CHANNEL:
                         me->SetFacingTo(FACE_THE_PLATFORM);
                         DoCastSelf(SPELL_AKAMA_SOUL_CHANNEL);
-                        me->SetFaction(AKAMA_FACTION_COMBAT);
+                        me->SetFaction(FACTION_MONSTER_SPAR_BUDDY);
                         _events.ScheduleEvent(EVENT_FIXATE, Seconds(5));
                         break;
                     case EVENT_FIXATE:
@@ -498,7 +498,7 @@ public:
                         _events.Repeat(Seconds(3), Seconds(7));
                         break;
                     case EVENT_START_SOUL_RETRIEVE:
-                        me->SetFacingTo(FACE_THE_DOOR, true);
+                        me->SetFacingTo(FACE_THE_DOOR);
                         DoCast(SPELL_AKAMA_SOUL_RETRIEVE);
                         _events.ScheduleEvent(EVENT_START_BROKEN_FREE, Seconds(15));
                         break;
@@ -531,7 +531,7 @@ public:
                 }
             }
 
-            if (me->GetFaction() == AKAMA_FACTION_COMBAT)
+            if (me->GetFaction() == FACTION_MONSTER_SPAR_BUDDY)
             {
                 if (!UpdateVictim())
                     return;
@@ -556,7 +556,6 @@ public:
                 CloseGossipMenuFor(player);
                 _events.ScheduleEvent(EVENT_SHADE_START, Milliseconds(500));
             }
-
             return false;
         }
 
@@ -1171,7 +1170,7 @@ public:
                     Talk(SAY_BROKEN_SPECIAL);
                     break;
                 case ACTION_BROKEN_HAIL:
-                    me->SetFaction(ASHTONGUE_FACTION_FRIEND);
+                    me->SetFaction(FACTION_ASHTONGUE_DEATHSWORN);
                     Talk(SAY_BROKEN_HAIL);
                     break;
                 case ACTION_BROKEN_EMOTE:

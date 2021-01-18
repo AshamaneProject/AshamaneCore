@@ -143,7 +143,7 @@ public:
                         DoCast(target, SPELL_IMPALING_SPINE, true);
                         SpineTargetGUID = target->GetGUID();
                         //must let target summon, otherwise you cannot click the spine
-                        target->SummonGameObject(GO_NAJENTUS_SPINE, *target, QuaternionData(), 30);
+                        target->SummonGameObject(GO_NAJENTUS_SPINE, *target, QuaternionData::fromEulerAnglesZYX(target->GetOrientation(), 0.0f, 0.0f), 30);
                         Talk(SAY_NEEDLE);
                     }
                     events.Repeat(Seconds(20), Seconds(25));
@@ -176,16 +176,29 @@ class go_najentus_spine : public GameObjectScript
 public:
     go_najentus_spine() : GameObjectScript("go_najentus_spine") { }
 
-    bool OnGossipHello(Player* player, GameObject* go) override
+    struct go_najentus_spineAI : public GameObjectAI
     {
-        if (InstanceScript* instance = go->GetInstanceScript())
+        go_najentus_spineAI(GameObject* go) : GameObjectAI(go), instance(go->GetInstanceScript()) { }
+
+        InstanceScript* instance;
+
+        bool GossipHello(Player* player) override
+        {
             if (Creature* najentus = instance->GetCreature(DATA_HIGH_WARLORD_NAJENTUS))
+            {
                 if (ENSURE_AI(boss_najentus::boss_najentusAI, najentus->AI())->RemoveImpalingSpine())
                 {
-                    go->CastSpell(player, SPELL_CREATE_NAJENTUS_SPINE, true);
-                    go->Delete();
+                    me->CastSpell(player, SPELL_CREATE_NAJENTUS_SPINE, true);
+                    me->Delete();
                 }
-        return true;
+            }
+            return true;
+        }
+    };
+
+    GameObjectAI* GetAI(GameObject* go) const override
+    {
+        return GetBlackTempleAI<go_najentus_spineAI>(go);
     }
 };
 

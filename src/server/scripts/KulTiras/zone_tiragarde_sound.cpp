@@ -973,8 +973,8 @@ public:
             }
         }
     }
-    /*
-    void WaypointReached(uint32 pointId, uint32 /*pathId*//*) override
+
+    /*void WaypointReached(uint32 pointId, uint32 pathId) override
     {
         if (pointId == 1)
         {

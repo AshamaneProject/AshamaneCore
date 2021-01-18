@@ -688,7 +688,7 @@ class instance_ulduar : public InstanceMapScript
                             {
                                 if (GameObject* cache = instance->GetGameObject(thorim->AI()->GetData(DATA_THORIM_HARDMODE) ? CacheOfStormsHardmodeGUID : CacheOfStormsGUID))
                                 {
-                                    cache->SetLootRecipientGUIDs(thorim->GetLootRecipientGUIDs());
+                                    cache->SetLootRecipient(thorim->GetLootRecipient());
                                     cache->SetRespawnTime(cache->GetRespawnDelay());
                                     cache->RemoveFlag(GO_FLAG_LOCKED);
                                     cache->RemoveFlag(GO_FLAG_NOT_SELECTABLE);

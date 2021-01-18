@@ -1056,7 +1056,7 @@ class boss_twin_ogron_phemos : public CreatureScript
 
                         if (l_Timer)
                         {
-                            AddTimedDelayedOperation(l_Timer, [this, pos, l_Dest]() -> void
+                            AddTimedDelayedOperation(l_Timer, [this, l_Dest]() -> void
                             {
                                 me->CastSpell(me, eSpells::BlazeFirstSpawn, true);
                             });

@@ -18,7 +18,6 @@
 #include "ScriptMgr.h"
 #include "black_temple.h"
 #include "CellImpl.h"
-#include "GridNotifiers.h"
 #include "GridNotifiersImpl.h"
 #include "InstanceScript.h"
 #include "PassiveAI.h"
@@ -129,7 +128,7 @@ static uint32 GetRandomBossExcept(uint32 exception)
         if (data != exception)
             bossData.emplace_back(data);
 
-    return Trinity::Containers::SelectRandomContainerElement(bossData);
+    return bossData[urand(0, 3)];
 }
 
 class boss_illidari_council : public CreatureScript
@@ -197,8 +196,7 @@ public:
                     // Allow loot
                     instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, council);
                     council->LowerPlayerDamageReq(council->GetMaxHealth());
-                    //council->CastSpell(council, SPELL_QUIET_SUICIDE, true);
-                    council->KillSelf();
+                    council->CastSpell(council, SPELL_QUIET_SUICIDE, true);
                 }
             }
         }
@@ -700,20 +698,16 @@ class spell_illidari_council_balance_of_power : public SpellScriptLoader
                 return ValidateSpellInfo({ SPELL_SHARED_RULE });
             }
 
-            void OnProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+            void Absorb(AuraEffect* aurEff, DamageInfo& dmgInfo, uint32& /*absorbAmount*/)
             {
-                DamageInfo* dmgInfo = eventInfo.GetDamageInfo();
-                if (!dmgInfo)
-                    return;
-
                 PreventDefaultAction();
-                int32 bp = dmgInfo->GetDamage();
+                int32 bp = dmgInfo.GetDamage();
                 GetTarget()->CastCustomSpell(SPELL_SHARED_RULE, SPELLVALUE_BASE_POINT0, bp, nullptr, true, nullptr, aurEff);
             }
 
             void Register() override
             {
-                OnEffectProc += AuraEffectProcFn(spell_illidari_council_balance_of_power_AuraScript::OnProc, EFFECT_0, SPELL_AURA_DUMMY);
+                OnEffectAbsorb += AuraEffectAbsorbFn(spell_illidari_council_balance_of_power_AuraScript::Absorb, EFFECT_0);
             }
         };
 

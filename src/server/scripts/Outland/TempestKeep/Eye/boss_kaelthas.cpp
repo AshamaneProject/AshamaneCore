@@ -380,7 +380,6 @@ struct advisorbase_ai : public ScriptedAI
             me->SetHealth(0);
             me->RemoveAllAurasOnDeath();
             me->ModifyAuraState(AURA_STATE_HEALTHLESS_20_PERCENT, false);
-            me->ModifyAuraState(AURA_STATE_HEALTHLESS_25_PERCENT, false);
             me->ModifyAuraState(AURA_STATE_HEALTHLESS_35_PERCENT, false);
             me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_STUNNED));
             me->SetTarget(ObjectGuid::Empty);
@@ -598,7 +597,7 @@ class boss_kaelthas : public CreatureScript
                         events.ScheduleEvent(EVENT_TRANSITION_1, 1000);
                         break;
                     case POINT_TRANSITION_CENTER_ASCENDING:
-                        me->SetFacingTo(float(M_PI), true);
+                        me->SetFacingTo(float(M_PI));
                         Talk(SAY_PHASE5_NUTS);
                         me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                         me->SetDisableGravity(true);
@@ -1277,7 +1276,7 @@ class npc_kael_flamestrike : public CreatureScript
                 Initialize();
 
                 me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
-                me->SetFaction(14);
+                me->SetFaction(FACTION_MONSTER);
             }
 
             void MoveInLineOfSight(Unit* /*who*/) override { }

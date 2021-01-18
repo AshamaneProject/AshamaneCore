@@ -71,7 +71,7 @@ enum SPGameObjectIds
 template <class AI, class T>
 inline AI* GetSlavePensAI(T* obj)
 {
-    return GetInstanceAI<AI, T>(obj, SPScriptName);
+    return GetInstanceAI<AI>(obj, SPScriptName);
 }
 
 #endif // SLAVE_PENS_H

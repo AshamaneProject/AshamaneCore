@@ -133,18 +133,29 @@ class go_broggok_lever : public GameObjectScript
     public:
         go_broggok_lever() : GameObjectScript("go_broggok_lever") { }
 
-        bool OnGossipHello(Player* /*player*/, GameObject* go) override
+        struct go_broggok_leverAI : public GameObjectAI
         {
-            if (InstanceScript* instance = go->GetInstanceScript())
+            go_broggok_leverAI(GameObject* go) : GameObjectAI(go), instance(go->GetInstanceScript()) { }
+
+            InstanceScript* instance;
+
+            bool GossipHello(Player* /*player*/) override
+            {
                 if (instance->GetBossState(DATA_BROGGOK) != DONE && instance->GetBossState(DATA_BROGGOK) != IN_PROGRESS)
                 {
                     instance->SetBossState(DATA_BROGGOK, IN_PROGRESS);
-                    if (Creature* broggok = ObjectAccessor::GetCreature(*go, instance->GetGuidData(DATA_BROGGOK)))
+                    if (Creature* broggok = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_BROGGOK)))
                         broggok->AI()->DoAction(ACTION_PREPARE_BROGGOK);
                 }
 
-            go->UseDoorOrButton();
-            return false;
+                me->UseDoorOrButton();
+                return false;
+            }
+        };
+
+        GameObjectAI* GetAI(GameObject* go) const override
+        {
+            return GetBloodFurnaceAI<go_broggok_leverAI>(go);
         }
 };
 

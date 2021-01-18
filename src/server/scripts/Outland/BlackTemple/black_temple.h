@@ -130,7 +130,6 @@ enum BTGameObjectIds
 
 enum BlackTempleMisc
 {
-    ASHTONGUE_FACTION_FRIEND        = 1820,
     AKAMA_FACTION_COMBAT            = 1868,
     AKAMA_INTRO                     = 1,
     AKAMA_FIGHT                     = 2,
@@ -141,7 +140,7 @@ enum BlackTempleMisc
 template <class AI, class T>
 inline AI* GetBlackTempleAI(T* obj)
 {
-    return GetInstanceAI<AI, T>(obj, BTScriptName);
+    return GetInstanceAI<AI>(obj, BTScriptName);
 }
 
 #endif // BLACK_TEMPLE_H_

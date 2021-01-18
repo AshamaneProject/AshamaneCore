@@ -153,9 +153,9 @@ public:
                         // add threat to highest threat targets
                         AddThreat(currentVictim, HATEFUL_THREAT_AMT);
                         if (secondThreat)
-                            AddThreat(me->GetVictim(), HATEFUL_THREAT_AMT);
+                            secondThreat->AddThreat(HATEFUL_THREAT_AMT);
                         if (thirdThreat)
-                            AddThreat(me->GetVictim(), HATEFUL_THREAT_AMT);
+                            thirdThreat->AddThreat(HATEFUL_THREAT_AMT);
 
                         DoCast(pHatefulTarget, SPELL_HATEFUL_STRIKE, true);
 
