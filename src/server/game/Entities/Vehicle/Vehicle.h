@@ -78,6 +78,8 @@ class TC_GAME_API Vehicle : public TransportBase
         inline bool CanBeCastedByPassengers() const { return _canBeCastedByPassengers; }
         void SetCanBeCastedByPassengers(bool canBeCastedByPassengers) { _canBeCastedByPassengers = canBeCastedByPassengers; }
 
+        Milliseconds GetDespawnDelay();
+
     protected:
         friend class VehicleJoinEvent;
         uint32 UsableSeatNum;                               ///< Number of seats that match VehicleSeatEntry::UsableByPlayer, used for proper display flags
