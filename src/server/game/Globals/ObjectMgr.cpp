@@ -7732,6 +7732,10 @@ void ObjectMgr::LoadGameObjectTemplate()
                     got.barberChair.SitAnimKit = 0;
                 }
                 break;
+            case GAMEOBJECT_TYPE_NEW_FLAG:                  //36
+                if (got.GetLockId())
+                    CheckGOLockId(&got, got.GetLockId(), 0);
+                break;
             case GAMEOBJECT_TYPE_GARRISON_BUILDING:
                 if (uint32 transportMap = got.garrisonBuilding.SpawnMap)
                     _transportMaps.insert(transportMap);

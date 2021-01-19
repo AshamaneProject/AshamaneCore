@@ -2041,6 +2041,32 @@ void GameObject::Use(Unit* user)
             player->SetStandState(UnitStandStateType(UNIT_STAND_STATE_SIT_LOW_CHAIR + info->barberChair.chairheight), info->barberChair.SitAnimKit);
             return;
         }
+        case GAMEOBJECT_TYPE_NEW_FLAG:     //36
+        {
+            GameObjectTemplate const* goInfo = GetGOInfo();
+            if (!goInfo)
+                return;
+
+            Player* player = user->ToPlayer();
+            if (!player)
+                return;
+
+            if (PlayerConditionEntry const* playerCondition = sPlayerConditionStore.LookupEntry(goInfo->newflag.conditionID1))
+                if (!sConditionMgr->IsPlayerMeetingCondition(player, playerCondition))
+                    return;
+
+            if (!player->CanUseBattlegroundObject(this))
+                return;
+
+            if (Battleground* bg = player->GetBattleground())
+            {
+                player->RemoveAurasByType(SPELL_AURA_MOD_STEALTH);
+                player->RemoveAurasByType(SPELL_AURA_MOD_INVISIBILITY);
+
+                bg->EventPlayerClickedOnFlag(player, this);
+            }
+            break;
+        }
         case GAMEOBJECT_TYPE_NEW_FLAG_DROP: //37
         {
             if (!user->IsPlayer())

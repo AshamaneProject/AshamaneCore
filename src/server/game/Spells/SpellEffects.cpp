@@ -1742,13 +1742,13 @@ void Spell::EffectOpenLock(SpellEffIndex effIndex)
                 return;
             }
         }
-        else if (goInfo->type == GAMEOBJECT_TYPE_FLAGSTAND)
+        else if (goInfo->type == GAMEOBJECT_TYPE_FLAGSTAND || goInfo->type == GAMEOBJECT_TYPE_NEW_FLAG)
         {
             //CanUseBattlegroundObject() already called in CheckCast()
             // in battleground check
             if (Battleground* bg = player->GetBattleground())
             {
-                if (bg->GetTypeID(true) == BATTLEGROUND_EY)
+                if (bg->GetTypeID(true) == BATTLEGROUND_EY || bg->GetTypeID(true) == BATTLEGROUND_WS || bg->GetTypeID(true) == BATTLEGROUND_TP)
                     bg->EventPlayerClickedOnFlag(player, gameObjTarget);
                 return;
             }
