@@ -67,10 +67,10 @@ enum BG_TP_Sound
 
 enum BG_TP_SpellId
 {
-    BG_TP_SPELL_WARSONG_FLAG            = 23333,
+    BG_TP_SPELL_WARSONG_FLAG            = 156618,
     BG_TP_SPELL_WARSONG_FLAG_DROPPED    = 23334,
     BG_TP_SPELL_WARSONG_FLAG_PICKED     = 61266,    // fake spell, does not exist but used as timer start event
-    BG_TP_SPELL_SILVERWING_FLAG         = 23335,
+    BG_TP_SPELL_SILVERWING_FLAG         = 156621,
     BG_TP_SPELL_SILVERWING_FLAG_DROPPED = 23336,
     BG_TP_SPELL_SILVERWING_FLAG_PICKED  = 61265,    // fake spell, does not exist but used as timer start event
     BG_TP_SPELL_FOCUSED_ASSAULT         = 46392,
@@ -125,10 +125,10 @@ enum BG_TP_ObjectEntry
     BG_OBJECT_DOOR_H_2_TP_ENTRY        = 208206,
     BG_OBJECT_DOOR_H_3_TP_ENTRY        = 208206,
     BG_OBJECT_DOOR_H_4_TP_ENTRY        = 208207,
-    BG_OBJECT_A_FLAG_TP_ENTRY          = 179830,
-    BG_OBJECT_H_FLAG_TP_ENTRY          = 179831,
-    BG_OBJECT_A_FLAG_GROUND_TP_ENTRY   = 179785,
-    BG_OBJECT_H_FLAG_GROUND_TP_ENTRY   = 179786
+    BG_OBJECT_A_FLAG_TP_ENTRY          = 227741,
+    BG_OBJECT_H_FLAG_TP_ENTRY          = 227740,
+    BG_OBJECT_A_FLAG_GROUND_TP_ENTRY   = 227745,
+    BG_OBJECT_H_FLAG_GROUND_TP_ENTRY   = 227744
 };
 
 

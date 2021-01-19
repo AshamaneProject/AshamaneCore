@@ -5283,7 +5283,6 @@ enum BattlegroundTypeId : uint32
 {
     BATTLEGROUND_TYPE_NONE      = 0,   // None
     BATTLEGROUND_AV             = 1,   // Alterac Valley
-    BATTLEGROUND_WS             = 2,   // Warsong Gulch
     BATTLEGROUND_AB             = 3,   // Arathi Basin
     BATTLEGROUND_NA             = 4,   // Nagrand Arena
     BATTLEGROUND_BE             = 5,   // Blade's Edge Arena
@@ -5313,10 +5312,11 @@ enum BattlegroundTypeId : uint32
     // 809 = "New Nagrand Arena (Legion)"
     BATTLEGROUND_AF             = 816, // Ashamane's Fall
     // 844 = "New Blade's Edge Arena (Legion)"
-    BATTLEGROUND_RANDOM_EPIC    = 901
+    BATTLEGROUND_RANDOM_EPIC    = 901,
+    BATTLEGROUND_WS             = 1014   // Warsong Gulch
 };
 
-#define MAX_BATTLEGROUND_TYPE_ID 845
+#define MAX_BATTLEGROUND_TYPE_ID 1042
 
 enum MailResponseType
 {
