@@ -9112,6 +9112,9 @@ void Unit::UpdateSpeed(UnitMoveType mtype)
             speed = min_speed;
     }
 
+    if (speed <= 0.0f)
+        speed = 0.01f;
+
     SetSpeedRate(mtype, speed);
 }
 
