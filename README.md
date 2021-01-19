@@ -1,4 +1,6 @@
-# AshamaneCore
+# ![logo](https://community.trinitycore.org/public/style_images/1_trinitycore.png) TrinityCore (master)
+
+[![Average time to resolve an issue](https://isitmaintained.com/badge/resolution/TrinityCore/TrinityCore.svg)](https://isitmaintained.com/project/TrinityCore/TrinityCore "Average time to resolve an issue") [![Percentage of issues still open](https://isitmaintained.com/badge/open/TrinityCore/TrinityCore.svg)](https://isitmaintained.com/project/TrinityCore/TrinityCore "Percentage of issues still open")
 
 --------------
 
@@ -17,83 +19,60 @@
 
 ## Build Status
 
-[![master Build Status](https://travis-ci.org/AshamaneProject/AshamaneCore.svg?branch=master)](https://travis-ci.org/AshamaneProject/AshamaneCore)
-[![Build status](https://ci.appveyor.com/api/projects/status/kb0wjxh3va9c3e0k/branch/master?svg=true)](https://ci.appveyor.com/project/Traesh/ashamanecore/branch/master)
+master | 3.3.5
+:------------: | :------------:
+[![master Build Status](https://travis-ci.org/TrinityCore/TrinityCore.svg?branch=master)](https://travis-ci.org/TrinityCore/TrinityCore) | [![3.3.5 Build Status](https://travis-ci.org/TrinityCore/TrinityCore.svg?branch=3.3.5)](https://travis-ci.org/TrinityCore/TrinityCore)
+[![master Build status](https://ci.appveyor.com/api/projects/status/54d0u1fxe50ad80o/branch/master?svg=true)](https://ci.appveyor.com/project/DDuarte/trinitycore/branch/master) | [![Build status](https://ci.appveyor.com/api/projects/status/54d0u1fxe50ad80o/branch/3.3.5?svg=true)](https://ci.appveyor.com/project/DDuarte/trinitycore/branch/3.3.5)
+[![Coverity Scan Build Status](https://scan.coverity.com/projects/435/badge.svg)](https://scan.coverity.com/projects/435) | [![Coverity Scan Build Status](https://scan.coverity.com/projects/4656/badge.svg)](https://scan.coverity.com/projects/4656)
 
 ## Introduction
 
-AshamaneCore is a *MMORPG* Framework based mostly in C++.
+TrinityCore is a *MMORPG* Framework based mostly in C++.
 
-It is fully based on *TrinityCore*, with upgrades like :
-
-- Class Hall/War Campaign Basics (WIP)
-- World Quests
-- Challenge Mode (Mythic+)
-- Mercenary battleground system
-- Rated Arenas
-- TimeWalkers (BC/WotLK/Cataclsym/MoP)
-- Personnal loots
-- BFA Scripts (WIP)
-    - Heart of Azeroth questline
-    - Alliance Intro (escape from prison)
-    - Horde Intro (Stormwind extraction)
-    - The Underrot
-- Legion scripts (WIP)
-    - BlackRookHold
-    - Darkheart Thicket
-    - Eye Of Azshara
-    - Mardum (DH start zone)
-    - Emerald Nightmare (1/7)
-    - Tomb of Sargeras (1/9)
-- Wod Scripts (WIP)
-    - full blizzlike Jungle of Tanaan intro
-    - Garrison pre-quests (for both Horde & Alliance)
-    - Garrison building activation
-    - Bloodmaul Slagmines
-    - Everbloom
-    - Shadowmoon Burial Grounds
-    - Highmaul
-- Pandaria Scripts
-    - all dungeons & world bosses
-
-with Ashamane Database (ADB) :
-
-- All Cataclysm zones spawns
-- All Mist of Pandaria zones spawns
-- All Draenor zones spawns
-- All Legion zones spawns
-- All BFA spawns (up to 8.0.1)
+It is derived from *MaNGOS*, the *Massive Network Game Object Server*, and is
+based on the code of that project with extensive changes over time to optimize,
+improve and cleanup the codebase at the same time as improving the in-game
+mechanics and functionality.
 
 It is completely open source; community involvement is highly encouraged.
 
-If you wish to contribute ideas or code please visit our site linked below or
-make pull requests to our [Github repository](https://github.com/AshamaneProject/AshamaneCore/pulls).
+If you wish to contribute ideas or code, please visit our site linked below or
+make pull requests to our [Github repository](https://github.com/TrinityCore/TrinityCore/pulls).
+
+For further information on the TrinityCore project, please visit our project
+website at [TrinityCore.org](https://www.trinitycore.org).
 
 ## Requirements
 
+
 Software requirements are available in the [wiki](https://www.trinitycore.info/display/tc/Requirements) for
 Windows, Linux and macOS.
+
 
 ## Install
 
 Detailed installation guides are available in the [wiki](https://www.trinitycore.info/display/tc/Installation+Guide) for
 Windows, Linux and macOS.
 
-## Contribute
-
-You can help Ashamane using our [Patreon Page](https://www.patreon.com/ashamane). All the collected money will be used to pay developers for their work using bountysource
 
 ## Reporting issues
 
-Issues can be reported via our [Mantis issue tracker](https://bt.ashamane.com).
+Issues can be reported via the [Github issue tracker](https://github.com/TrinityCore/TrinityCore/labels/Branch-master).
 
 Please take the time to review existing issues before submitting your own to
 prevent duplicates.
 
+In addition, thoroughly read through the [issue tracker guide](https://community.trinitycore.org/topic/37-the-trinitycore-issuetracker-and-you/) to ensure
+your report contains the required information. Incorrect or poorly formed
+reports are wasteful and are subject to deletion.
+
+
 ## Submitting fixes
 
-C++ fixes are submitted as pull requests via Github.
-For SQL only fixes open a ticket or if a bug report exists for the bug post on existing ticket.
+C++ fixes are submitted as pull requests via Github. For more information on how to
+properly submit a pull request, read the [how-to: maintain a remote fork](https://community.trinitycore.org/topic/9002-howto-maintain-a-remote-fork-for-pull-requests-tortoisegit/).
+For SQL only fixes, open a ticket; if a bug report exists for the bug, post on an existing ticket.
+
 
 ## Copyright
 
@@ -101,11 +80,15 @@ License: GPL 2.0
 
 Read file [COPYING](COPYING).
 
+
 ## Authors &amp; Contributors
 
 Read file [AUTHORS](AUTHORS).
 
+
 ## Links
 
-* [Website](https://www.ashamane.com)
+* [Website](https://www.trinitycore.org)
 * [Wiki](https://www.trinitycore.info)
+* [Forums](https://community.trinitycore.org)
+* [Discord](https://discord.trinitycore.org/)
