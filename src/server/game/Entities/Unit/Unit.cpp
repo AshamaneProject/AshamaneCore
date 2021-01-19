@@ -9112,6 +9112,32 @@ void Unit::UpdateSpeed(UnitMoveType mtype)
             speed = min_speed;
     }
 
+    if (float minSpeedMod = (float)GetMaxPositiveAuraModifier(SPELL_AURA_MOD_MINIMUM_SPEED))
+    {
+        float min_speed = minSpeedMod / 100.0f;
+
+        bool bgAuras = HasAura(156621) || HasAura(156618);
+
+        if (bgAuras && HasAuraType(SPELL_AURA_FEATHER_FALL))
+            min_speed = 1.0f;
+
+        if (speed < min_speed && mtype != MOVE_SWIM)
+            speed = min_speed;
+    }
+
+    if (float minSpeedMod = (float)GetMaxPositiveAuraModifier(SPELL_AURA_MOD_SPEED_NO_CONTROL))
+    {
+        float minSpeed = minSpeedMod / 100.0f;
+
+        bool bgAuras = HasAura(156621) || HasAura(156618);
+
+        if (bgAuras && HasAuraType(SPELL_AURA_FEATHER_FALL))
+            minSpeed = 1.0f;
+
+        if (speed < minSpeed)
+            speed = minSpeed;
+    }
+
     if (speed <= 0.0f)
         speed = 0.01f;
 

@@ -4527,6 +4527,10 @@ void Spell::EffectKnockBack(SpellEffIndex /*effIndex*/)
             m_caster->GetPosition(x, y);
     }
 
+    bool bgAuras = unitTarget->HasAura(156621) || unitTarget->HasAura(156618);
+    if (bgAuras)
+        speedz = speedz / 5;
+
     unitTarget->KnockbackFrom(x, y, speedxy, speedz);
 }
 
