@@ -1761,7 +1761,7 @@ void Spell::EffectOpenLock(SpellEffIndex effIndex)
         /// @todo Add script for spell 41920 - Filling, becouse server it freze when use this spell
         // handle outdoor pvp object opening, return true if go was registered for handling
         // these objects must have been spawned by outdoorpvp!
-        else if (gameObjTarget->GetGOInfo()->type == GAMEOBJECT_TYPE_GOOBER && sOutdoorPvPMgr->HandleOpenGo(player, gameObjTarget))
+        else if ((gameObjTarget->GetGOInfo()->type == GAMEOBJECT_TYPE_GOOBER || gameObjTarget->GetGOInfo()->type == GAMEOBJECT_TYPE_NEW_FLAG_DROP) && sOutdoorPvPMgr->HandleOpenGo(player, gameObjTarget))
             return;
         else if (player && gameObjTarget->GetGOInfo()->type == GAMEOBJECT_TYPE_CHEST)
             if (PlayerConditionEntry const* playerCondition = sPlayerConditionStore.LookupEntry(goInfo->chest.conditionID1))
@@ -3150,7 +3150,7 @@ void Spell::EffectSummonObjectWild(SpellEffIndex effIndex)
     // Wild object not have owner and check clickable by players
     map->AddToMap(go);
 
-    if (go->GetGoType() == GAMEOBJECT_TYPE_FLAGDROP)
+    if ((go->GetGoType() == GAMEOBJECT_TYPE_FLAGDROP || go->GetGoType() == GAMEOBJECT_TYPE_NEW_FLAG_DROP) && m_caster->IsPlayer())
         if (Player* player = m_caster->ToPlayer())
             if (Battleground* bg = player->GetBattleground())
                 bg->SetDroppedFlagGUID(go->GetGUID(), player->GetTeam() == ALLIANCE ? TEAM_HORDE: TEAM_ALLIANCE);

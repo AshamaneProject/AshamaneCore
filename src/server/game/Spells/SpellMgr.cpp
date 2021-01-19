@@ -4163,6 +4163,18 @@ void SpellMgr::LoadSpellInfoCorrections()
         spellInfo->RequiredAreasID = 0;
     });
 
+    /// LegacyProject
+    ApplySpellFix({23334}, [](SpellInfo* spellInfo) // New Drop Flag Horde (Silverwing)
+    {
+            const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->MiscValue = 227744;
+    });
+
+    ApplySpellFix({23336}, [](SpellInfo* spellInfo) // New Drop Flag Alliance (Warsong Flags)
+    {
+            const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->MiscValue = 227745;
+    });
+    /// LegacyProject end
+
     for (SpellInfo const& s : mSpellInfoMap)
     {
         SpellInfo* spellInfo = &const_cast<SpellInfo&>(s);

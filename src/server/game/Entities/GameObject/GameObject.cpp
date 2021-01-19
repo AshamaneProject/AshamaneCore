@@ -2041,6 +2041,50 @@ void GameObject::Use(Unit* user)
             player->SetStandState(UnitStandStateType(UNIT_STAND_STATE_SIT_LOW_CHAIR + info->barberChair.chairheight), info->barberChair.SitAnimKit);
             return;
         }
+        case GAMEOBJECT_TYPE_NEW_FLAG_DROP: //37
+        {
+            if (!user->IsPlayer())
+                return;
+
+            Player* player = user->ToPlayer();
+            if (player->CanUseBattlegroundObject(this))
+            {
+                Battleground* bg = player->GetBattleground();
+                if (!bg)
+                    return;
+
+                if (player->GetVehicle())
+                    return;
+
+                if (GameObjectTemplate const* info = GetGOInfo())
+                {
+                    switch (info->entry)
+                    {
+                        case 227745: // Warsong Flags
+                        case 228508: // Netherstorm Flag
+                        {
+                            switch (bg->GetTypeID(true))
+                            {
+                                case BATTLEGROUND_WS:
+                                case BATTLEGROUND_TP:
+                                    bg->EventPlayerClickedOnFlag(player, this);
+                                    break;
+                                default:
+                                    break;
+                            }
+                            break;
+                        }
+                        default:
+                            break;
+                    }
+                }
+                //this cause to call return, all flags must be deleted here!!
+                spellId = 0;
+                Delete();
+            }
+            break;
+        }
+
         case GAMEOBJECT_TYPE_ITEM_FORGE:
         {
             GameObjectTemplate const* info = GetGOInfo();
