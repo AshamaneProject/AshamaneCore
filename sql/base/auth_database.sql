@@ -246,7 +246,7 @@ CREATE TABLE IF NOT EXISTS `build_info` (
   `winChecksumSeed` varchar(40) DEFAULT NULL,
   `macChecksumSeed` varchar(40) DEFAULT NULL,
   PRIMARY KEY (`build`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DELETE FROM `build_info`;
 /*!40000 ALTER TABLE `build_info` DISABLE KEYS */;

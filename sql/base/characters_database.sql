@@ -333,7 +333,7 @@ CREATE TABLE IF NOT EXISTS `character_archaeology_branchs` (
   `guid` bigint unsigned NOT NULL DEFAULT '0',
   `projectId` smallint unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`guid`,`projectId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DELETE FROM `character_archaeology_branchs`;
 /*!40000 ALTER TABLE `character_archaeology_branchs` DISABLE KEYS */;
@@ -346,7 +346,7 @@ CREATE TABLE IF NOT EXISTS `character_archaeology_digsites` (
   `point_y` float DEFAULT '0',
   `count` tinyint unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`guid`,`digsiteId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DELETE FROM `character_archaeology_digsites`;
 /*!40000 ALTER TABLE `character_archaeology_digsites` DISABLE KEYS */;
@@ -358,7 +358,7 @@ CREATE TABLE IF NOT EXISTS `character_archaeology_history` (
   `projectId` int unsigned NOT NULL DEFAULT '0',
   `count` smallint unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`guid`,`projectId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DELETE FROM `character_archaeology_history`;
 /*!40000 ALTER TABLE `character_archaeology_history` DISABLE KEYS */;
@@ -378,7 +378,7 @@ CREATE TABLE IF NOT EXISTS `character_arena_data` (
   `seasonGames` int unsigned NOT NULL DEFAULT '0',
   `seasonWins` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`guid`,`slot`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DELETE FROM `character_arena_data`;
 /*!40000 ALTER TABLE `character_arena_data` DISABLE KEYS */;
@@ -666,7 +666,7 @@ CREATE TABLE IF NOT EXISTS `character_garrison_missions` (
   `startTime` int NOT NULL,
   `status` tinyint unsigned NOT NULL,
   PRIMARY KEY (`dbId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DELETE FROM `character_garrison_missions`;
 /*!40000 ALTER TABLE `character_garrison_missions` DISABLE KEYS */;
@@ -681,7 +681,7 @@ CREATE TABLE IF NOT EXISTS `character_garrison_mission_rewards` (
   `currencyQuantity` int unsigned NOT NULL DEFAULT '0',
   `FollowerXP` int unsigned NOT NULL DEFAULT '0',
   `BonusAbilityId` int unsigned NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DELETE FROM `character_garrison_mission_rewards`;
 /*!40000 ALTER TABLE `character_garrison_mission_rewards` DISABLE KEYS */;
@@ -955,7 +955,7 @@ CREATE TABLE IF NOT EXISTS `character_shop` (
   `itemCount` int NOT NULL DEFAULT '0',
   `delivered` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DELETE FROM `character_shop`;
 /*!40000 ALTER TABLE `character_shop` DISABLE KEYS */;
@@ -1143,7 +1143,7 @@ CREATE TABLE IF NOT EXISTS `character_world_quest` (
   `variableID` int unsigned NOT NULL,
   `value` int NOT NULL,
   PRIMARY KEY (`guid`,`questId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DELETE FROM `character_world_quest`;
 /*!40000 ALTER TABLE `character_world_quest` DISABLE KEYS */;
@@ -2066,7 +2066,7 @@ CREATE TABLE IF NOT EXISTS `log_gm` (
   `target_ip` text,
   `command` blob,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DELETE FROM `log_gm`;
 /*!40000 ALTER TABLE `log_gm` DISABLE KEYS */;
@@ -2329,7 +2329,7 @@ CREATE TABLE IF NOT EXISTS `world_quest` (
   `rewardid` int unsigned NOT NULL,
   `starttime` int unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DELETE FROM `world_quest`;
 /*!40000 ALTER TABLE `world_quest` DISABLE KEYS */;
