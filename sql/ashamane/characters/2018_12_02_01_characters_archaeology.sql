@@ -1,1 +1,0 @@
-ALTER TABLE `character_archaeology_history` CHANGE `time` `time` INT(10) UNSIGNED DEFAULT 0 NOT NULL; 
