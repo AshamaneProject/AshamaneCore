@@ -1107,33 +1107,28 @@ enum MoonfireSpells
 };
 
 // Moonfire - 8921
-// @Version : 7.1.0.22908
-class spell_dru_moonfire : public SpellScriptLoader
+// @Version : 9.0.2.37176
+class spell_dru_moonfire : public SpellScript
 {
-public:
-    spell_dru_moonfire() : SpellScriptLoader("spell_dru_moonfire") { }
+    PrepareSpellScript(spell_dru_moonfire);
 
-    class spell_dru_moonfire_SpellScript : public SpellScript
+    void HandleDamage(SpellEffIndex /*effIndex*/)
     {
-        PrepareSpellScript(spell_dru_moonfire_SpellScript);
+        Unit* caster = GetCaster();
+        Unit* target = GetHitUnit();
 
-        void HandleOnHit(SpellEffIndex /*effIndex*/)
-        {
-            Unit* caster = GetCaster();
-            Unit* target = GetHitUnit();
-            if (caster != target)
-                caster->CastSpell(target, SPELL_DRUID_MOONFIRE_DAMAGE, true);
-        }
+        int32 damage = GetHitDamage();
+	 
+        if (caster != target)
+            if (caster->CastSpell(target, SPELL_DRUID_MOONFIRE_DAMAGE, true))
+                AddPct(damage, sSpellMgr->GetSpellInfo(SPELL_DRUID_MOONFIRE_DAMAGE)->GetEffect(EFFECT_0)->BasePoints);
 
-        void Register() override
-        {
-            OnEffectHitTarget += SpellEffectFn(spell_dru_moonfire_SpellScript::HandleOnHit, EFFECT_0, SPELL_EFFECT_DUMMY);
-        }
-    };
+        SetHitDamage(damage);
+    }
 
-    SpellScript* GetSpellScript() const override
+    void Register() override
     {
-        return new spell_dru_moonfire_SpellScript();
+        OnEffectHitTarget += SpellEffectFn(spell_dru_moonfire::HandleDamage, EFFECT_0, SPELL_EFFECT_DUMMY);
     }
 };
 
@@ -2653,7 +2648,7 @@ void AddSC_druid_spell_scripts()
     new spell_dru_incarnation_king_of_the_jungle();
     new spell_dru_incarnation_guardian_of_ursoc();
     new spell_dru_wild_charge_moonkin();
-    new spell_dru_moonfire();
+    RegisterSpellScript(spell_dru_moonfire);
     new spell_dru_omen_of_clarity();
     new spell_dru_cat_form();
     new spell_dru_bear_form();
