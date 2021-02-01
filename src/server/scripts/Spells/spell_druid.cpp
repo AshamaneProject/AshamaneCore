@@ -2516,9 +2516,9 @@ class spell_dru_shred : public SpellScript
         Targets (1, 0) (TARGET_UNIT_CASTER, NO_TARGET)
         EffectMiscValueA = 4*/
 
-        if (caster->CastSpell(target, SPELL_DRUID_SHRED, true) && m_casterLevel >= 54 && m_awardComboPoint)
+        if ((m_casterLevel >= 54) && (m_stealthed || m_incarnation))
             AddPct(damage, sSpellMgr->GetSpellInfo(SPELL_DRUID_SHRED)->GetEffect(EFFECT_2)->BasePoints);
-            caster->ModifyPower(POWER_COMBO_POINTS, 1);
+            caster->ModifyPower(POWER_COMBO_POINTS, 1); // effect 1
 
         // If caster is level >= 42 and the target is bleeding, deals 20% increased damage (get value from the spell data)
         if ((m_casterLevel >= 42) && target->HasAuraState(AURA_STATE_BLEEDING))
@@ -2541,7 +2541,6 @@ class spell_dru_shred : public SpellScript
 private:
     bool m_stealthed = false;
     bool m_incarnation = false;
-    bool m_awardComboPoint = true;
     int32 m_casterLevel;
 };
 
