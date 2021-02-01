@@ -2472,7 +2472,8 @@ private:
     bool m_awardComboPoint = true;
 };
 
-// Shred - 5221
+
+// Shred - 5221 9.0.2 (37176)
 class spell_dru_shred : public SpellScript
 {
     PrepareSpellScript(spell_dru_shred);
@@ -2494,9 +2495,9 @@ class spell_dru_shred : public SpellScript
 
     void HandleCritChance(Unit* /*victim*/, float& chance)
     {
-        // If caster is level >= 56, While stealthed or have Incarnation: King of the Jungle aura,
+        // If caster is level >= 36, While stealthed or have Incarnation: King of the Jungle aura,
         // Double the chance to critically strike
-        if ((m_casterLevel >= 56) && (m_stealthed || m_incarnation))
+        if ((m_casterLevel >= 36) && (m_stealthed || m_incarnation))
             chance *= 2.0f;
     }
 
@@ -2509,14 +2510,24 @@ class spell_dru_shred : public SpellScript
 
         int32 damage = GetHitDamage();
 
-        // If caster is level >= 56, While stealthed or have Incarnation: King of the Jungle aura,
-        // deals 50% increased damage (get value from the spell data)
-        if ((m_casterLevel >= 56) && (m_stealthed || m_incarnation))
+        /*Effect 1: Id 30 (SPELL_EFFECT_ENERGIZE)
+        Difficulty: Id 0 (DIFFICULTY_NONE)
+        BasePoints = 1.00
+        Targets (1, 0) (TARGET_UNIT_CASTER, NO_TARGET)
+        EffectMiscValueA = 4*/
+
+        if (caster->CastSpell(target, SPELL_DRUID_SHRED, true) && m_casterLevel >= 54 && m_awardComboPoint)
+            AddPct(damage, sSpellMgr->GetSpellInfo(SPELL_DRUID_SHRED)->GetEffect(EFFECT_2)->BasePoints);
+            caster->ModifyPower(POWER_COMBO_POINTS, 1);
+
+        // If caster is level >= 42 and the target is bleeding, deals 20% increased damage (get value from the spell data)
+        if ((m_casterLevel >= 42) && target->HasAuraState(AURA_STATE_BLEEDING))
             AddPct(damage, sSpellMgr->GetSpellInfo(SPELL_DRUID_SHRED)->GetEffect(EFFECT_3)->BasePoints);
 
-        // If caster is level >= 44 and the target is bleeding, deals 20% increased damage (get value from the spell data)
-        if ((m_casterLevel >= 44) && target->HasAuraState(AURA_STATE_BLEEDING))
-            AddPct(damage, sSpellMgr->GetSpellInfo(SPELL_DRUID_SHRED)->GetEffect(EFFECT_4)->BasePoints);
+        // If caster is level >= 36, While stealthed or have Incarnation: King of the Jungle aura,
+        // deals 60% increased damage (get value from the spell data)
+        if ((m_casterLevel >= 36) && (m_stealthed || m_incarnation))
+            AddPct(damage, sSpellMgr->GetSpellInfo(SPELL_DRUID_SHRED)->GetEffect(EFFECT_2)->BasePoints);
 
         SetHitDamage(damage);
     }
@@ -2524,12 +2535,13 @@ class spell_dru_shred : public SpellScript
     void Register() override
     {
         OnCalcCritChance += SpellOnCalcCritChanceFn(spell_dru_shred::HandleCritChance);
-        OnEffectHitTarget += SpellEffectFn(spell_dru_shred::HandleOnEffectHitTarget, EFFECT_4, SPELL_EFFECT_DUMMY);
+        OnEffectHitTarget += SpellEffectFn(spell_dru_shred::HandleOnEffectHitTarget, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
     }
 
 private:
     bool m_stealthed = false;
     bool m_incarnation = false;
+    bool m_awardComboPoint = true;
     int32 m_casterLevel;
 };
 
