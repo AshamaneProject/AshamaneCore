@@ -527,7 +527,7 @@ class TC_GAME_API Quest
         bool   IsDailyOrWeekly() const { return (_flags & (QUEST_FLAGS_DAILY | QUEST_FLAGS_WEEKLY)) != 0; }
         bool   IsRaidQuest(Difficulty difficulty) const;
         bool   IsWorldQuest() const;
-        bool   IsEmissaryQuest() const { return _questInfoID == QUEST_INFO_EMISSARY; }
+        bool   IsEmissaryQuest() const { return _questInfoID == QUEST_INFO_EMISSARY_QUEST; }
         bool   IsAllowedInRaid(Difficulty difficulty) const;
         bool   IsDFQuest() const { return (_specialFlags & QUEST_SPECIAL_FLAGS_DF_QUEST) != 0; }
         uint32 CalculateHonorGain(uint8 level) const;

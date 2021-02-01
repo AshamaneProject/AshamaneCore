@@ -3137,7 +3137,7 @@ void Spell::EffectSummonObjectWild(SpellEffIndex effIndex)
     PhasingHandler::InheritPhaseShift(go, m_caster);
 
     if (SpellEffectInfo const* effect = m_spellInfo->GetEffect(effIndex))
-        if (effect->Effect == SPELL_EFFECT_SUMMON_OBJECT_PERSONNAL)
+        if (effect->Effect == SPELL_EFFECT_SUMMON_PERSONAL_GAMEOBJECT)
             go->SetVisibleBySummonerOnly(true);
 
     int32 duration = m_spellInfo->CalcDuration(m_caster);

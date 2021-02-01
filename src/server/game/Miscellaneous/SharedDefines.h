@@ -4274,7 +4274,7 @@ enum LockType
 // this is important type for npcs!
 enum TrainerType
 {
-    TRAINER_TYPE_CLASS             = 0,
+    TRAINER_TYPE_CLASS             = 0
 };
 
 // CreatureType.dbc (9.0.2.37176)
@@ -5965,7 +5965,7 @@ enum BattlegroundTypeId : uint32
     BATTLEGROUND_RL3            = 911,      // Ruins of Lordaeron
     BATTLEGROUND_TVA3           = 912,      // Tol'Viron Arena
     BATTLEGROUND_BRHA3          = 913,      // Black Rook Hold Arena
-    BATTLEGROUND_WG             = 1014,     // Warsong Gulch Capture the Flag
+    BATTLEGROUND_WS             = 1014,     // Warsong Gulch Capture the Flag
     BATTLEGROUND_EB_BW          = 1017,     // Epic Battleground - Battle for Wintergrasp
     BATTLEGROUND_DOM_AB         = 1018,     // Domination - Arathi Basin
     BATTLEGROUND_AB_CS          = 1019,     // Arathi Basin Comp Stomp

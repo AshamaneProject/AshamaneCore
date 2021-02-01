@@ -20,6 +20,7 @@
 
 #include "Common.h"
 #include "DBCEnums.h"
+#include "SharedDefines.h"
 #include "RaceMask.h"
 #include "Util.h"
 
