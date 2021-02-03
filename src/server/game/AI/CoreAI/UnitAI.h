@@ -340,8 +340,10 @@ class TC_GAME_API UnitAI
 
         virtual void LastWaypointReached() { }
 
+        virtual void WaypointPathStarted(uint32 /*nodeId*/, uint32 /*pathId*/) { }
         virtual void WaypointStarted(uint32 /*nodeId*/, uint32 /*pathId*/) { }
         virtual void WaypointReached(uint32 /*nodeId*/, uint32 /*pathId*/) { }
+        virtual void WaypointPathEnded(uint32 /*nodeId*/, uint32 /*pathId*/) { }
 
         /// Add timed delayed operation
         /// @p_Timeout  : Delay time

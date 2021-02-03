@@ -277,7 +277,7 @@ public:
                     break;
                 }
                 creature->AI()->Talk(talkid);
-                creature->UpdateWaypointID(wayid);
+                creature->UpdateCurrentWaypointInfo(wayid, 0);
             }
             if (active)
             {
