@@ -4368,6 +4368,7 @@ void ObjectMgr::LoadQuests()
     for (auto itr = _questTemplates.begin(); itr != _questTemplates.end(); ++itr)
         delete itr->second;
     _questTemplates.clear();
+    _questTemplatesAutoPush.clear();
     _questObjectives.clear();
     _worldQuestStore.clear();
 
@@ -4423,6 +4424,10 @@ void ObjectMgr::LoadQuests()
 
         if (newQuest->IsWorldQuest() || newQuest->IsEmissaryQuest())
             _worldQuestStore[newQuest->GetQuestInfoID()].push_back(newQuest->GetQuestId());
+
+        if (newQuest->IsAutoPush())
+            _questTemplatesAutoPush.push_back(newQuest);
+
     } while (result->NextRow());
 
     struct QuestLoaderHelper
