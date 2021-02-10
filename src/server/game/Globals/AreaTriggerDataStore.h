@@ -19,9 +19,13 @@
 #define AreaTriggerDataStore_h__
 
 #include "Define.h"
+#include "ObjectGuid.h"
+#include <set>
 
 class AreaTriggerTemplate;
 class AreaTriggerMiscTemplate;
+struct AreaTriggerId;
+struct AreaTriggerSpawn;
 
 struct AreaTriggerData
 {
@@ -43,8 +47,11 @@ public:
 
     void LoadAreaTriggerTemplates();
     void LoadAreaTriggers();
+    void LoadAreaTriggerSpawns();
 
-    AreaTriggerTemplate const* GetAreaTriggerTemplate(uint32 areaTriggerId) const;
+    std::set<ObjectGuid::LowType> const* GetAreaTriggersForMapAndCell(uint32 mapId, uint32 cellId) const;
+    AreaTriggerSpawn const* GetAreaTriggerSpawn(ObjectGuid::LowType spawnId) const;
+    AreaTriggerTemplate const* GetAreaTriggerTemplate(AreaTriggerId const& areaTriggerId) const;
     AreaTriggerMiscTemplate const* GetAreaTriggerMiscTemplate(uint32 spellMiscValue) const;
     AreaTriggerDataList const* GetStaticAreaTriggersByMap(uint32 map_id) const;
 
