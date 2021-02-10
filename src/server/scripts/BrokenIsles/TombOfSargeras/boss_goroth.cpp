@@ -376,11 +376,11 @@ struct at_goroth_shattering_star : AreaTriggerAI
 
     void OnInitialize() override
     {
-        if (Unit* caster = at->GetCaster())
-            if (Creature* creCaster = caster->ToCreature())
-                if (creCaster->IsAIEnabled)
-                    if (Unit* target = ObjectAccessor::GetUnit(*creCaster, creCaster->AI()->GetGUID()))
-                        at->SetDestination(*target, 1000);
+        //if (Unit* caster = at->GetCaster())
+        //    if (Creature* creCaster = caster->ToCreature())
+        //        if (creCaster->IsAIEnabled)
+        //            if (Unit* target = ObjectAccessor::GetUnit(*creCaster, creCaster->AI()->GetGUID()))
+        //                //at->SetDestination(*target, 1000);
     }
 
     void OnUnitEnter(Unit* unit) override

@@ -55,7 +55,6 @@ class TC_GAME_API ObjectGridLoader
         uint32 i_areaTriggers;
         uint32 i_creatures;
         uint32 i_corpses;
-        uint32 i_areaTriggers;
 };
 
 //Stop the creatures before unloading the NGrid

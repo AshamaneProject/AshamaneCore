@@ -1075,7 +1075,7 @@ namespace Instances { namespace Bloodmaul
                 destinationPosition.m_positionZ = at->GetPositionZ();
                 at->GetCaster()->UpdateGroundPositionZ(destinationPosition.m_positionX, destinationPosition.m_positionY, destinationPosition.m_positionZ);
                 destinationPosition.SetOrientation(orientation);
-                at->SetDestination(destinationPosition, 2000);
+                //at->SetDestination(destinationPosition, 2000);
             }
 
             void OnUpdate(uint32 /*diff*/) override
@@ -1148,7 +1148,7 @@ namespace Instances { namespace Bloodmaul
                 destinationPosition.m_positionZ = at->GetPositionZ();
                 at->GetCaster()->UpdateGroundPositionZ(destinationPosition.m_positionX, destinationPosition.m_positionY, destinationPosition.m_positionZ);
                 destinationPosition.SetOrientation(orientation);
-                at->SetDestination(destinationPosition, 2000);
+                //at->SetDestination(destinationPosition, 2000);
             }
 
             void OnUpdate(uint32 /*diff*/) override

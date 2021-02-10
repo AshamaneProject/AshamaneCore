@@ -357,7 +357,7 @@ struct at_archdruid_glaidalis_nightfall : AreaTriggerAI
 
     void OnCreate() override
     {
-        at->SetDecalPropertiesID(34);
+        //at->SetDecalPropertiesID(34);
     }
 
     void OnUnitEnter(Unit* unit) override

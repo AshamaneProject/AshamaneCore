@@ -1994,7 +1994,7 @@ struct at_pal_aura_of_sacrifice : AreaTriggerAI
 {
     at_pal_aura_of_sacrifice(AreaTrigger* areatrigger) : AreaTriggerAI(areatrigger)
     {
-        at->SetPeriodicProcTimer(1000);
+        //at->SetPeriodicProcTimer(1000);
     }
 
     void OnUnitEnter(Unit* unit) override

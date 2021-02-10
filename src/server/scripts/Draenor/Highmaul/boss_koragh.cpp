@@ -2152,7 +2152,7 @@ class areatrigger_highmaul_overflowing_energy : public AreaTriggerAI
             };
 
             at->GetCaster()->CastSpell(dest, eSpells::GroundMarker, true);
-            at->SetDestination(dest, 10000);
+            //at->SetDestination(dest, 10000);
         }
 
         void OnUpdate(uint32 /*diff*/) override
@@ -2179,7 +2179,7 @@ class areatrigger_highmaul_overflowing_energy : public AreaTriggerAI
                 uint32 l_Time = 8 * TimeConstants::IN_MILLISECONDS;
                 uint32 l_OldTime = 8 * TimeConstants::IN_MILLISECONDS;
 
-                at->SetDestination(pos, l_Time + l_OldTime);
+                //at->SetDestination(pos, l_Time + l_OldTime);
 
                 if (Unit* l_Boss = at->GetCaster())
                     l_Boss->SendPlaySpellVisual(pos, 6.5f, eVisual::OverflowingVisual);

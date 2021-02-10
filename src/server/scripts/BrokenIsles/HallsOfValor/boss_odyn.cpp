@@ -261,7 +261,7 @@ struct areatrigger_glowing_fragment : AreaTriggerAI
         Position pos;
         GetPositionWithDistInFront(at, 40.f, pos);
 
-        at->SetDestination(pos, at->GetDuration());
+        //at->SetDestination(pos, at->GetDuration());
     }
 };
 

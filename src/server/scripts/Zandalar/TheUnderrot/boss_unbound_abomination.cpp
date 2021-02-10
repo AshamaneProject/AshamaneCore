@@ -444,7 +444,7 @@ struct at_underrot_vile_expulsion : AreaTriggerAI
 
     void OnInitialize() override
     {
-        at->SetPeriodicProcTimer(urand(20000, 40000));
+        //at->SetPeriodicProcTimer(urand(20000, 40000));
     }
 
     void OnUnitEnter(Unit* unit) override

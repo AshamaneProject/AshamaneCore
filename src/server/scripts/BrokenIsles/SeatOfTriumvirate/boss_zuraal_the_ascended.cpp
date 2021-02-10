@@ -201,7 +201,7 @@ struct at_umbral_ejection : AreaTriggerAI
 
     void OnInitialize() override
     {
-        at->SetPeriodicProcTimer(2000);
+        //at->SetPeriodicProcTimer(2000);
     }
 
     void OnPeriodicProc() override

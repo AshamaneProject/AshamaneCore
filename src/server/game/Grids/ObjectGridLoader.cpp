@@ -188,13 +188,6 @@ void ObjectGridLoader::Visit(GameObjectMapType& m)
     LoadHelper(cell_guids.gameobjects, cellCoord, m, i_gameObjects, i_map);
 }
 
-void ObjectGridLoader::Visit(AreaTriggerMapType &m)
-{
-    CellCoord cellCoord = i_cell.GetCellCoord();
-    CellObjectGuids const& cell_guids = sObjectMgr->GetCellObjectGuids(i_map->GetId(), i_map->GetDifficultyID(), cellCoord.GetId());
-    LoadHelper(cell_guids.areatriggers, cellCoord, m, i_areaTriggers, i_map);
-}
-
 void ObjectGridLoader::Visit(CreatureMapType &m)
 {
     CellCoord cellCoord = i_cell.GetCellCoord();

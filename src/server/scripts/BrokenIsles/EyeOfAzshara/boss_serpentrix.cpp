@@ -344,7 +344,7 @@ class at_toxic_wound : public AreaTriggerEntityScript
             {
                 _serpentrix = nullptr;
                 _timerToxic = 0;
-                at->SetDecalPropertiesID(22);
+                //at->SetDecalPropertiesID(22);
 
                 if (!at->GetCaster())
                     return;

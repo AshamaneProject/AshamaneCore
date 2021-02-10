@@ -233,8 +233,6 @@ public:
             if (!caster)
                 return;
 
-            at->SetDecalPropertiesID(13);
-
             for (auto guid : at->GetInsideUnits())
                 if (Unit* unit = ObjectAccessor::GetUnit(*caster, guid))
                     if (unit->GetTypeId() == TYPEID_PLAYER)
