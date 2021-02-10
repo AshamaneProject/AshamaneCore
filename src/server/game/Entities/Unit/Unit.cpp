@@ -908,8 +908,11 @@ uint32 Unit::DealDamage(Unit* victim, uint32 damage, CleanDamage const* cleanDam
 
     damage /= victim->GetHealthMultiplierForTarget(this);
 
-    if (!victim->IsControlledByPlayer() || victim->IsVehicle())
+    if (victim->GetTypeId() != TYPEID_PLAYER && (!victim->IsControlledByPlayer() || victim->IsVehicle()))
     {
+        if (!victim->ToCreature()->hasLootRecipient())
+            victim->ToCreature()->SetLootRecipient(this);
+
         if (Creature* victimCreature = victim->ToCreature())
         {
             Player* player = GetCharmerOrOwnerPlayerOrPlayerItself();
@@ -2939,9 +2942,7 @@ float Unit::GetUnitCriticalChance(WeaponAttackType attackType, Unit const* victi
 
     chance += victim->GetTotalAuraModifier(SPELL_AURA_MOD_CRIT_CHANCE_FOR_CASTER, [this](AuraEffect const* aurEff) -> bool
     {
-        if (aurEff->GetCasterGUID() == GetGUID())
-            return true;
-        return false;
+        return aurEff->GetCasterGUID() == GetGUID();
     });
 
     chance += victim->GetTotalAuraModifier(SPELL_AURA_MOD_ATTACKER_SPELL_AND_WEAPON_CRIT_CHANCE);
@@ -7446,11 +7447,13 @@ float Unit::GetUnitSpellCriticalChance(Unit* victim, Spell* spell, AuraEffect co
     {
         if (spellProto->DmgClass != SPELL_DAMAGE_CLASS_MELEE && spellProto->DmgClass != SPELL_DAMAGE_CLASS_RANGED)
         {
-            crit_chance += victim->GetTotalAuraModifier(SPELL_AURA_MOD_CRIT_CHANCE_FOR_CASTER, [this, spellProto](AuraEffect const* aurEff) -> bool
-            {
-                if (aurEff->GetCasterGUID() == GetGUID() && aurEff->IsAffectingSpell(spellProto))
-                    return true;
-                return false;
+        crit_chance += victim->GetTotalAuraModifier(SPELL_AURA_MOD_CRIT_CHANCE_FOR_CASTER_WITH_ABILITIES, [this, spellProto](AuraEffect const* aurEff) -> bool
+        {
+            return aurEff->GetCasterGUID() == GetGUID() && aurEff->IsAffectingSpell(spellProto);
+        });
+        crit_chance += victim->GetTotalAuraModifier(SPELL_AURA_MOD_CRIT_CHANCE_FOR_CASTER, [this](AuraEffect const* aurEff) -> bool
+        {
+            return aurEff->GetCasterGUID() != GetGUID();
             });
         }
 
@@ -7619,6 +7622,14 @@ float Unit::SpellHealingPctDone(Unit* victim, SpellInfo const* spellProto) const
     }
 
     float DoneTotalMod = 1.0f;
+
+    // bonus against aurastate
+    DoneTotalMod *= GetTotalAuraMultiplier(SPELL_AURA_MOD_DAMAGE_DONE_VERSUS_AURASTATE, [victim](AuraEffect const* aurEff) -> bool
+    {
+        if (victim->HasAuraState(static_cast<AuraStateType>(aurEff->GetMiscValue())))
+            return true;
+        return false;
+    });
 
     // Healing done percent
     DoneTotalMod *= GetTotalAuraMultiplier(SPELL_AURA_MOD_HEALING_DONE_PERCENT);
@@ -8014,11 +8025,11 @@ uint32 Unit::MeleeDamageBonusDone(Unit* victim, uint32 pdamage, WeaponAttackType
     // Done total percent damage auras
     float DoneTotalMod = 1.0f;
 
-    // Some spells don't benefit from pct done mods
-    if (spellProto && !spellProto->HasAttribute(SPELL_ATTR6_NO_DONE_PCT_DAMAGE_MODS))
+    if (spellProto)
     {
+        // Some spells don't benefit from pct done mods
         // mods for SPELL_SCHOOL_MASK_NORMAL are already factored in base melee damage calculation
-        if (!(spellProto->GetSchoolMask() & SPELL_SCHOOL_MASK_NORMAL))
+        if (!spellProto->HasAttribute(SPELL_ATTR6_NO_DONE_PCT_DAMAGE_MODS) && !(spellProto->GetSchoolMask() & SPELL_SCHOOL_MASK_NORMAL))
         {
             float maxModDamagePercentSchool = 0.0f;
             if (Player const* thisPlayer = ToPlayer())
@@ -8041,6 +8052,12 @@ uint32 Unit::MeleeDamageBonusDone(Unit* victim, uint32 pdamage, WeaponAttackType
         AuraEffectList const& mModAutoAttack = GetAuraEffectsByType(SPELL_AURA_MOD_AUTOATTACK_DAMAGE);
         for (AuraEffectList::const_iterator i = mModAutoAttack.begin(); i != mModAutoAttack.end(); ++i)
             AddPct(DoneTotalMod, (*i)->GetAmount());
+    }
+    else
+    {
+        // melee attack
+        for (AuraEffect const* autoAttackDamage : GetAuraEffectsByType(SPELL_AURA_MOD_AUTOATTACK_DAMAGE))
+            AddPct(DoneTotalMod, autoAttackDamage->GetAmount());
     }
 
     DoneTotalMod *= GetTotalAuraMultiplierByMiscMask(SPELL_AURA_MOD_DAMAGE_DONE_VERSUS, creatureTypeMask);

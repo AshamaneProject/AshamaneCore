@@ -347,6 +347,7 @@ class TC_GAME_API AuraEffect
         void HandleTriggerSpellOnPowerPercent(AuraApplication const* aurApp, uint8 mode, bool apply) const;
         void HandleSwitchTeam(AuraApplication const* aurApp, uint8 mode, bool apply) const;
         void HandleModOverrideZonePVPType(AuraApplication const* aurApp, uint8 mode, bool apply) const;
+        void HandleBattlegroundPlayerPosition(AuraApplication const* aurApp, uint8 mode, bool apply) const;
 
         // aura effect periodic tick handlers
         void HandlePeriodicDummyAuraTick(Unit* target, Unit* caster) const;

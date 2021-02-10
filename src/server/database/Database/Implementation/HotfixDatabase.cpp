@@ -679,6 +679,10 @@ void HotfixDatabaseConnection::DoPrepareStatements()
     PrepareStatement(HOTFIX_SEL_GEM_PROPERTIES, "SELECT ID, EnchantId, Type FROM gem_properties WHERE (`VerifiedBuild` > 0) = ?", CONNECTION_SYNCH);
     PREPARE_MAX_ID_STMT(HOTFIX_SEL_GEM_PROPERTIES, "SELECT MAX(ID) + 1 FROM gem_properties", CONNECTION_SYNCH);
 
+    // GlobalCurve.db2
+    PrepareStatement(HOTFIX_SEL_GLOBAL_CURVE, "SELECT ID, CurveID, Type FROM global_curve WHERE (`VerifiedBuild` > 0) = ?", CONNECTION_SYNCH);
+    PREPARE_MAX_ID_STMT(HOTFIX_SEL_GLOBAL_CURVE, "SELECT MAX(ID) + 1 FROM global_curve", CONNECTION_SYNCH);
+
     // GlobalStrings.db2
     PrepareStatement(HOTFIX_SEL_GLOBAL_STRINGS, "SELECT ID, StringName, StringValue, Unknown FROM global_strings WHERE (`VerifiedBuild` > 0) = ?", CONNECTION_SYNCH);
     PREPARE_MAX_ID_STMT(HOTFIX_SEL_GLOBAL_STRINGS, "SELECT MAX(ID) + 1 FROM global_strings_locale", CONNECTION_SYNCH);
