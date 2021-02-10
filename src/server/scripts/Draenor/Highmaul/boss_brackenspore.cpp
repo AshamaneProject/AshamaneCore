@@ -1753,11 +1753,11 @@ public:
 
     void OnCreate() override
     {
-        Unit* caster = at->GetCaster();
-
-        if (caster->IsAIEnabled)
-            if (Unit* target = caster->ToCreature()->AI()->SelectTarget(SELECT_TARGET_RANDOM, 0, 40.f, true));
-                //at->SetDestination(*target, 5000);
+       // Unit* caster = at->GetCaster();
+       //
+       // if (caster->IsAIEnabled)
+       //     if (Unit* target = caster->ToCreature()->AI()->SelectTarget(SELECT_TARGET_RANDOM, 0, 40.f, true));
+       //         //at->SetDestination(*target, 5000);
     }
 
     void OnUpdate(uint32 /*diff*/) override
