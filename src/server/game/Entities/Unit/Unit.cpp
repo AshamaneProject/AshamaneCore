@@ -910,9 +910,6 @@ uint32 Unit::DealDamage(Unit* victim, uint32 damage, CleanDamage const* cleanDam
 
     if (victim->GetTypeId() != TYPEID_PLAYER && (!victim->IsControlledByPlayer() || victim->IsVehicle()))
     {
-        if (!victim->ToCreature()->hasLootRecipient())
-            victim->ToCreature()->SetLootRecipient(this);
-
         if (Creature* victimCreature = victim->ToCreature())
         {
             Player* player = GetCharmerOrOwnerPlayerOrPlayerItself();
@@ -8046,12 +8043,6 @@ uint32 Unit::MeleeDamageBonusDone(Unit* victim, uint32 pdamage, WeaponAttackType
 
         if (IsPet() && GetOwner())
             AddPct(DoneTotalMod, GetOwner()->GetTotalAuraMultiplierByMiscMask(SPELL_AURA_MOD_DAMAGE_DONE_BY_PETS_PCT, spellProto->GetSchoolMask()));
-    }
-    else // melee attack
-    {
-        AuraEffectList const& mModAutoAttack = GetAuraEffectsByType(SPELL_AURA_MOD_AUTOATTACK_DAMAGE);
-        for (AuraEffectList::const_iterator i = mModAutoAttack.begin(); i != mModAutoAttack.end(); ++i)
-            AddPct(DoneTotalMod, (*i)->GetAmount());
     }
     else
     {

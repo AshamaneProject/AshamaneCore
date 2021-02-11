@@ -593,7 +593,7 @@ class spell_sha_chain_heal : public SpellScriptLoader
                     return;
 
                 std::list<WorldObject*> chainTargets;
-                Trinity::WorldObjectSpellAreaTargetCheck check(range, _primaryTarget, caster, caster, GetSpellInfo(), targetInfo.GetCheckType(), conditions);
+                Trinity::WorldObjectSpellAreaTargetCheck check(range, _primaryTarget, caster, caster, GetSpellInfo(), targetInfo.GetCheckType(), conditions, TARGET_OBJECT_TYPE_CORPSE_ALLY);
                 Trinity::WorldObjectListSearcher<Trinity::WorldObjectSpellAreaTargetCheck> searcher(caster, chainTargets, check, containerTypeMask);
                 Cell::VisitAllObjects(_primaryTarget, searcher, range);
 
