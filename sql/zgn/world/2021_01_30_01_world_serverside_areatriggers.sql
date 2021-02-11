@@ -1,13 +1,4 @@
-ALTER TABLE `areatrigger_template`
-  DROP PRIMARY KEY,
-  ADD COLUMN `IsServerSide` tinyint(1) unsigned NOT NULL AFTER `Id`,
-  ADD PRIMARY KEY (`Id`, `IsServerSide`);
-
-ALTER TABLE `areatrigger_template_actions`
-  DROP PRIMARY KEY,
-  ADD COLUMN `IsServerSide` tinyint(1) unsigned NOT NULL AFTER `AreaTriggerId`,
-  ADD PRIMARY KEY (`AreaTriggerId`, `IsServerSide`);
-
+DROP TABLE IF EXISTS `areatrigger`;
 CREATE TABLE `areatrigger` (
   `SpawnId` bigint(20) unsigned NOT NULL,
   `AreaTriggerId` int(10) unsigned NOT NULL,
