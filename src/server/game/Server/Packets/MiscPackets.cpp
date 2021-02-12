@@ -778,8 +778,3 @@ WorldPacket const* WorldPackets::Misc::OpenAlliedRaceDetailsGiver::Write()
 
     return &_worldPacket;
 }
-
-void WorldPackets::Misc::SetWarMode::Read()
-{
-    Enabled = _worldPacket.ReadBit();
-}

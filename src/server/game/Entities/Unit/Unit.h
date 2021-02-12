@@ -39,6 +39,7 @@
 #define ARTIFACTS_ALL_WEAPONS_GENERAL_WEAPON_EQUIPPED_PASSIVE 197886
 #define SPELL_DH_DOUBLE_JUMP 196055
 #define DISPLAYID_HIDDEN_MOUNT 73200
+#define WARMODE_ENLISTED_SPELL_OUTSIDE 269083
 
 enum SpellModOp : uint8
 {
@@ -151,6 +152,16 @@ public:
     const_iterator end() const
     {
         return storage_.end();
+    }
+
+    void Reserve(uint32 amount)
+    {
+        storage_.reserve(amount);
+    }
+
+    void Clear()
+    {
+        storage_.clear();
     }
 
 private:

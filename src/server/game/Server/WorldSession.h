@@ -258,6 +258,7 @@ namespace WorldPackets
         class RequestPlayedTime;
         class SetTitle;
         class SetFactionAtWar;
+        class SetWarMode;
         class SetFactionNotAtWar;
         class SetFactionInactive;
         class SetWatchedFaction;
@@ -538,7 +539,6 @@ namespace WorldPackets
         class StartTimer;
         class StartElapsedTimer;
         class OpenAlliedRaceDetailsGiver;
-        class SetWarMode;
     }
 
     namespace Movement
@@ -1299,6 +1299,7 @@ class TC_GAME_API WorldSession
         void HandleSetFactionAtWar(WorldPackets::Character::SetFactionAtWar& packet);
         void HandleSetFactionNotAtWar(WorldPackets::Character::SetFactionNotAtWar& packet);
         void HandleSetFactionCheat(WorldPacket& recvData);
+        void HandleSetWarMode(WorldPackets::Character::SetWarMode& packet);
         void HandleSetWatchedFactionOpcode(WorldPackets::Character::SetWatchedFaction& packet);
         void HandleSetFactionInactiveOpcode(WorldPackets::Character::SetFactionInactive& packet);
         void HandleRequestForcedReactionsOpcode(WorldPackets::Reputation::RequestForcedReactions& requestForcedReactions);
@@ -1773,7 +1774,6 @@ class TC_GAME_API WorldSession
         void HandleAdventureJournalOpenQuest(WorldPackets::Misc::AdventureJournalOpenQuest& packet);
         void HandleSelectFactionOpcode(WorldPackets::Misc::FactionSelect& selectFaction);
         void HandleAdventureJournalStartQuest(WorldPackets::Misc::AdventureJournalStartQuest& packet);
-        void HandleSetWarModeOpcode(WorldPackets::Misc::SetWarMode& packet);
 
         // Toys
         void HandleAddToy(WorldPackets::Toy::AddToy& packet);

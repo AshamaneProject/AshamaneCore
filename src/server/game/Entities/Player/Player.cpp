@@ -7541,6 +7541,8 @@ void Player::UpdateZone(Area* oldArea)
     // recent client version not send leave/join channel packets for built-in local channels
     UpdateLocalChannels(newZone->GetId());
 
+    UpdateWarModeAuras();
+
     // call enter script hooks after everyting else has processed
     sScriptMgr->OnPlayerUpdateZone(this, GetArea(), oldArea);
     if (newZone && oldZone != newZone)
@@ -30258,4 +30260,80 @@ void Player::AddDelayedConversation(uint32 delay, uint32 conversationId)
             Conversation::CreateConversation(conversationId, player, player->GetPosition(), { player->GetGUID() });
         }
     });
+}
+
+bool Player::IsAtMaxLevel() const
+{
+    return getLevel() >= sWorld->getIntConfig(CONFIG_MAX_PLAYER_LEVEL);
+}
+
+void Player::SetWarModeDesired(bool enabled)
+{
+    // Only allow to toggle on when in stormwind/orgrimmar, and to toggle off in any rested place.
+    // Also disallow when in combat
+    if ((enabled == IsWarModeDesired()) || IsInCombat() || !IsInRestArea())
+        return;
+
+    if (enabled && (IsInAlliance() ? (GetZoneId() != ZONE_STORMWIND_CITY) : (GetZoneId() != ZONE_ORGRIMMAR)))
+        return;
+
+    if (enabled)
+    {
+        AddPlayerFlag(PLAYER_FLAGS_WAR_MODE_DESIRED);
+        TogglePvpTalents(true);
+        SetPvP(true);
+        RemoveUnitFlag(UNIT_FLAG_PVP_ATTACKABLE);
+    }
+    else
+    {
+        RemovePlayerFlag(PLAYER_FLAGS_WAR_MODE_DESIRED);
+        TogglePvpTalents(false);
+        SetPvP(false);
+        AddUnitFlag(UNIT_FLAG_PVP_ATTACKABLE);
+    }
+
+    UpdateWarModeAuras();
+}
+
+void Player::UpdateWarModeAuras()
+{
+    uint32 auraInside = 282559;
+    uint32 auraOutside = WARMODE_ENLISTED_SPELL_OUTSIDE;
+    uint32 auraOutsideMaxLvl = 289954;
+
+    if (IsWarModeDesired())
+    {
+        bool moveInsideCity = IsInAlliance() ? (m_zoneId == ZONE_STORMWIND_CITY) : (m_zoneId == ZONE_ORGRIMMAR);
+        if (moveInsideCity)
+        {
+            RemoveAurasDueToSpell(auraOutside);
+            RemoveAurasDueToSpell(auraOutsideMaxLvl);
+            CastSpell(this, auraInside, true);
+            RemovePlayerFlag(PLAYER_FLAGS_WAR_MODE_ACTIVE);
+        }
+        else
+        {
+            RemoveAurasDueToSpell(auraInside);
+
+            TeamId team = sWorld->GetCurrentFactionBalanceTeam();
+            if (GetTeamId() != team)
+            {
+                CastSpell(this, IsAtMaxLevel() ? auraOutsideMaxLvl : auraOutside, true);
+            }
+            else
+            {
+                CustomSpellValues const& values = sWorld->GetCurrentFactionBalanceRewardSpellValues();
+                CastCustomSpell(IsAtMaxLevel() ? auraOutsideMaxLvl : auraOutside, values, this, TRIGGERED_FULL_MASK);
+            }
+
+            AddPlayerFlag(PLAYER_FLAGS_WAR_MODE_ACTIVE);
+        }
+    }
+    else
+    {
+        RemoveAurasDueToSpell(auraOutside);
+        RemoveAurasDueToSpell(auraOutsideMaxLvl);
+        RemoveAurasDueToSpell(auraInside);
+        RemovePlayerFlag(PLAYER_FLAGS_WAR_MODE_ACTIVE);
+    }
 }
