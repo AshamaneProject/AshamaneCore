@@ -994,14 +994,9 @@ void WorldSession::AbortLogin(WorldPackets::Character::LoginFailureReason reason
     SendPacket(WorldPackets::Character::CharacterLoginFailed(reason).Write());
 }
 
-void WorldSession::HandleLoadScreenOpcode(WorldPackets::Character::LoadingScreenNotify& loadingScreenNotify)
+void WorldSession::HandleLoadScreenOpcode(WorldPackets::Character::LoadingScreenNotify& /*loadingScreenNotify*/)
 {
-    if (!loadingScreenNotify.Showing)
-    {
-        if (auto player = GetPlayer())
-            player->SendInitialPacketsAfterAddToMap();
-        m_playerLoading.Clear();
-    }
+    //
 }
 
 void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
