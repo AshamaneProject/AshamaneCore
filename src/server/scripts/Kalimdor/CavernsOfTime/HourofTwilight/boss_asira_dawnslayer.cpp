@@ -248,7 +248,7 @@ class spell_mark_of_silence : public SpellScriptLoader
         {
             PrepareAuraScript(spell_mark_of_silence_AuraScript);
 
-            void OnProc(AuraEffect const* aurEff, ProcEventInfo& /*eventInfo*/)
+            void OnProc(AuraEffect* aurEff, ProcEventInfo& /*eventInfo*/)
             {
                 PreventDefaultAction();
 

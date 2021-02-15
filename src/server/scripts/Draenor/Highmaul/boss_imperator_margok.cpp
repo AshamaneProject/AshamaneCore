@@ -3507,7 +3507,7 @@ class spell_highmaul_destructive_resonance : public SpellScriptLoader
         {
             PrepareAuraScript(spell_highmaul_destructive_resonance_AuraScript);
 
-            void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& p_EventInfo)
+            void OnProc(AuraEffect* /*aurEff*/, ProcEventInfo& p_EventInfo)
             {
                 PreventDefaultAction();
 

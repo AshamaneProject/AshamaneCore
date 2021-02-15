@@ -58,7 +58,7 @@ class spell_mastery_icicles_proc : public AuraScript
         return false;
     }
 
-    void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
+    void OnProc(AuraEffect* /*aurEff*/, ProcEventInfo& eventInfo)
     {
         Unit* target = eventInfo.GetDamageInfo()->GetVictim();
         Unit* caster = eventInfo.GetDamageInfo()->GetAttacker();

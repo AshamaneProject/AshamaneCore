@@ -222,7 +222,7 @@ public:
             return false;
         }
 
-        void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
+        void HandleProc(AuraEffect* /*aurEff*/, ProcEventInfo& eventInfo)
         {
             Unit* caster = GetCaster();
             Unit* target = eventInfo.GetActionTarget();
@@ -352,7 +352,7 @@ public:
     {
         PrepareAuraScript(spell_dh_felblade_AuraScript);
 
-        void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
+        void HandleProc(AuraEffect* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
         {
             Unit* caster = GetCaster();
             if (!caster)
@@ -866,7 +866,7 @@ public:
             return true;
         }
 
-        void HandleEffectProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
+        void HandleEffectProc(AuraEffect* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
         {
             PreventDefaultAction();
 
@@ -1198,7 +1198,7 @@ public:
             return std::find(removeSpellIds.begin(), removeSpellIds.end(), eventInfo.GetSpellInfo()->Id) == removeSpellIds.end();
         }
 
-        void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
+        void HandleProc(AuraEffect* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
         {
             PreventDefaultAction();
 
@@ -2022,7 +2022,7 @@ public:
     {
         PrepareAuraScript(spell_dh_awaken_the_demon_AuraScript);
 
-        void HandleProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+        void HandleProc(AuraEffect* aurEff, ProcEventInfo& eventInfo)
         {
             Unit* caster = GetCaster();
             if (!caster || !eventInfo.GetDamageInfo())
@@ -2286,7 +2286,7 @@ public:
     {
         PrepareAuraScript(spell_dh_jagged_spikes_AuraScript);
 
-        void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
+        void HandleProc(AuraEffect* /*aurEff*/, ProcEventInfo& eventInfo)
         {
             Unit* caster = GetCaster();
             Unit* target = eventInfo.GetActor();
@@ -2357,7 +2357,7 @@ class spell_dh_intimidated : public SpellScriptLoader
         {
             PrepareAuraScript(spell_dh_intimidated_AuraScript);
 
-            void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
+            void OnProc(AuraEffect* /*aurEff*/, ProcEventInfo& eventInfo)
             {
                 Unit* attacker = eventInfo.GetActor();
                 WorldObject* auraOwner = GetAura()->GetOwner();
@@ -2468,7 +2468,7 @@ class spell_dh_artifact_deceivers_fury : public SpellScriptLoader
         {
             PrepareAuraScript(spell_dh_artifact_deceivers_fury_AuraScript);
 
-            void OnProc(AuraEffect const* aurEff, ProcEventInfo& /*eventInfo*/)
+            void OnProc(AuraEffect* aurEff, ProcEventInfo& /*eventInfo*/)
             {
                 Unit* caster = GetCaster();
                 if (!caster)
@@ -2594,7 +2594,7 @@ class spell_dh_shattered_souls_havoc : public SpellScriptLoader
         {
             PrepareAuraScript(spell_dh_shattered_souls_havoc_AuraScript);
 
-            void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
+            void OnProc(AuraEffect* /*aurEff*/, ProcEventInfo& eventInfo)
             {
                 PreventDefaultAction();
                 Unit* caster = GetCaster();
@@ -2631,7 +2631,7 @@ class spell_dh_shear_proc : public SpellScriptLoader
         {
             PrepareAuraScript(spell_dh_shear_proc_AuraScript);
 
-            void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
+            void OnProc(AuraEffect* /*aurEff*/, ProcEventInfo& eventInfo)
             {
                 PreventDefaultAction();
                 Unit* caster = GetCaster();
@@ -2927,7 +2927,7 @@ class spell_dh_demonic_appetite : public SpellScriptLoader
         {
             PrepareAuraScript(spell_dh_demonic_appetite_AuraScript);
 
-            void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
+            void OnProc(AuraEffect* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
             {
                 PreventDefaultAction();
                 Unit* caster = GetCaster();
@@ -3002,7 +3002,7 @@ class spell_dh_chaos_cleave : public SpellScriptLoader
         {
             PrepareAuraScript(spell_dh_chaos_cleave_AuraScript);
 
-            void OnProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+            void OnProc(AuraEffect* aurEff, ProcEventInfo& eventInfo)
             {
                 PreventDefaultAction();
                 Unit* caster = GetCaster();
@@ -3035,7 +3035,7 @@ class spell_dh_desperate_instincts : public SpellScriptLoader
         {
             PrepareAuraScript(spell_dh_desperate_instincts_AuraScript);
 
-            void OnProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+            void OnProc(AuraEffect* aurEff, ProcEventInfo& eventInfo)
             {
                 PreventDefaultAction();
                 Unit* caster = GetCaster();
@@ -3336,7 +3336,7 @@ class spell_dh_frailty : public SpellScriptLoader
         {
             PrepareAuraScript(spell_dh_frailty_AuraScript);
 
-            void OnProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+            void OnProc(AuraEffect* aurEff, ProcEventInfo& eventInfo)
             {
                 PreventDefaultAction();
                 Unit* caster = GetCaster();
@@ -3470,7 +3470,7 @@ class spell_dh_artifact_inner_demons : public SpellScriptLoader
         {
             PrepareAuraScript(spell_dh_artifact_inner_demons_AuraScript);
 
-            void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
+            void OnProc(AuraEffect* /*aurEff*/, ProcEventInfo& eventInfo)
             {
                 Unit* caster = GetCaster();
                 Unit* target = eventInfo.GetActionTarget();
@@ -3538,7 +3538,7 @@ class spell_dh_artifact_rage_of_the_illidari : public SpellScriptLoader
         {
             PrepareAuraScript(spell_dh_artifact_rage_of_the_illidari_AuraScript);
 
-            void OnProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+            void OnProc(AuraEffect* aurEff, ProcEventInfo& eventInfo)
             {
                 Unit* caster = GetCaster();
                 if (!caster || !eventInfo.GetDamageInfo())
@@ -3665,7 +3665,7 @@ class spell_dh_artifact_charred_warblades : public SpellScriptLoader
         {
             PrepareAuraScript(spell_dh_artifact_charred_warblades_AuraScript);
 
-            void OnProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+            void OnProc(AuraEffect* aurEff, ProcEventInfo& eventInfo)
             {
                 Unit* caster = GetCaster();
                 if (!caster || !eventInfo.GetDamageInfo())
@@ -3700,7 +3700,7 @@ class spell_dh_artifact_fueled_by_pain : public SpellScriptLoader
         {
             PrepareAuraScript(spell_dh_artifact_fueled_by_pain_AuraScript);
 
-            void OnProc(AuraEffect const* aurEff, ProcEventInfo& /*eventInfo*/)
+            void OnProc(AuraEffect* aurEff, ProcEventInfo& /*eventInfo*/)
             {
                 Unit* caster = GetCaster();
                 if (!caster)
@@ -3742,7 +3742,7 @@ class spell_dh_artifact_fiery_demise : public SpellScriptLoader
         {
             PrepareAuraScript(spell_dh_artifact_fiery_demise_AuraScript);
 
-            void OnProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+            void OnProc(AuraEffect* aurEff, ProcEventInfo& eventInfo)
             {
                 Unit* caster = GetCaster();
                 Unit* target = eventInfo.GetActionTarget();
@@ -3936,7 +3936,7 @@ class spell_demon_hunter_pain : public SpellScriptLoader
         {
             PrepareAuraScript(spell_demon_hunter_pain_AuraScript);
 
-            void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
+            void OnProc(AuraEffect* /*aurEff*/, ProcEventInfo& eventInfo)
             {
                 Unit* caster = GetCaster();
                 if (!caster || !eventInfo.GetDamageInfo())

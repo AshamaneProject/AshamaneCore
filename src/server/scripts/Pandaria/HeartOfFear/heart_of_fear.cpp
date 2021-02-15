@@ -2177,7 +2177,7 @@ class spell_vital_strikes : public SpellScriptLoader
         {
             PrepareAuraScript(spell_vital_strikes_AuraScript);
 
-            void OnProc(AuraEffect const* /*p_AurEff*/, ProcEventInfo& eventInfo)
+            void OnProc(AuraEffect* /*p_AurEff*/, ProcEventInfo& eventInfo)
             {
                 PreventDefaultAction();
 

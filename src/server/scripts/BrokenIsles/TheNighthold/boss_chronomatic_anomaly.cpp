@@ -782,7 +782,7 @@ public:
             return false;
         }
 
-        void HandleEffectProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+        void HandleEffectProc(AuraEffect* aurEff, ProcEventInfo& eventInfo)
         {
             Unit* target = GetTarget();
             if (!target)

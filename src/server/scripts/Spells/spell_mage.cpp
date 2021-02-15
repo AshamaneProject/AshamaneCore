@@ -368,7 +368,7 @@ class spell_mage_clearcasting : public AuraScript
         return false;
     }
 
-    void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
+    void HandleProc(AuraEffect* /*aurEff*/, ProcEventInfo& eventInfo)
     {
         Unit* actor = eventInfo.GetActor();
         actor->CastSpell(actor, SPELL_MAGE_CLEARCASTING_BUFF, true);
@@ -929,7 +929,7 @@ class spell_mage_kindling : public AuraScript
         return eventInfo.GetSpellInfo()->Id == SPELL_MAGE_FIREBALL || eventInfo.GetSpellInfo()->Id == SPELL_MAGE_FIRE_BLAST || eventInfo.GetSpellInfo()->Id == SPELL_MAGE_PYROBLAST;
     }
 
-    void HandleProc(AuraEffect const* aurEff, ProcEventInfo& /*eventInfo*/)
+    void HandleProc(AuraEffect* aurEff, ProcEventInfo& /*eventInfo*/)
     {
         Unit* caster = GetCaster();
         if (!caster)
@@ -961,7 +961,7 @@ class spell_mage_pyroblast_clearcasting_driver : public AuraScript
         return false;
     }
 
-    void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
+    void HandleProc(AuraEffect* /*aurEff*/, ProcEventInfo& eventInfo)
     {
         bool procCheck = false;
 

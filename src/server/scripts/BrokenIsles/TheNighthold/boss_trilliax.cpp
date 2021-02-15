@@ -515,7 +515,7 @@ public:
             return ValidateSpellInfo({ SPELL_ARCANE_SEEPAGE });
         }
 
-        void HandleEffectProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
+        void HandleEffectProc(AuraEffect* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
         {
             if (Unit* caster = GetCaster())
                 caster->CastSpell(caster, SPELL_ARCANE_SEEPAGE, true);

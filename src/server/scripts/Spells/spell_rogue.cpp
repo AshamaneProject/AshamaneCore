@@ -549,7 +549,7 @@ class spell_rog_blade_flurry : public SpellScriptLoader
                 return _procTarget && eventInfo.GetDamageInfo();
             }
 
-            void HandleProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+            void HandleProc(AuraEffect* aurEff, ProcEventInfo& eventInfo)
             {
                 PreventDefaultAction();
 
@@ -1658,7 +1658,7 @@ class aura_rog_venomous_wounds : public AuraScript
 {
     PrepareAuraScript(aura_rog_venomous_wounds);
 
-    void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*procInfo*/)
+    void HandleProc(AuraEffect* /*aurEff*/, ProcEventInfo& /*procInfo*/)
     {
         Unit* caster = GetCaster();
         if (!caster)
@@ -1687,7 +1687,7 @@ public:
     {
         PrepareAuraScript(spell_rog_honor_among_thieves_AuraScript);
 
-        void HandleProc(AuraEffect const* aurEff, ProcEventInfo& /*eventInfo*/)
+        void HandleProc(AuraEffect* aurEff, ProcEventInfo& /*eventInfo*/)
         {
             PreventDefaultAction();
 
@@ -2130,7 +2130,7 @@ public:
             return false;
         }
 
-        void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
+        void HandleProc(AuraEffect* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
         {
             Unit* caster = GetCaster();
             if (!caster)
@@ -2213,7 +2213,7 @@ public:
     {
         PrepareAuraScript(spell_rog_riposte_AuraScript);
 
-        void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& procInfo)
+        void HandleProc(AuraEffect* /*aurEff*/, ProcEventInfo& procInfo)
         {
             PreventDefaultAction();
 
@@ -2426,7 +2426,7 @@ public:
             return false;
         }
 
-        void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
+        void HandleProc(AuraEffect* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
         {
             Unit* caster = GetCaster();
             if (!caster)
@@ -2540,7 +2540,7 @@ public:
             return false;
         }
 
-        void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
+        void HandleProc(AuraEffect* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
         {
             Unit* caster = GetCaster();
             if (!caster)

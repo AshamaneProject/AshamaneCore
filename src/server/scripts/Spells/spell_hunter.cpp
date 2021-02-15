@@ -406,7 +406,7 @@ public:
             return roll_chance_i(GetEffect(EFFECT_0)->GetAmount());
         }
 
-        void HandleProc(AuraEffect const* aurEff, ProcEventInfo& /*eventInfo*/)
+        void HandleProc(AuraEffect* aurEff, ProcEventInfo& /*eventInfo*/)
         {
             PreventDefaultAction();
             GetTarget()->CastSpell(GetTarget(), SPELL_HUNTER_IMPROVED_MEND_PET, true, NULL, aurEff);
@@ -543,7 +543,7 @@ public:
             return GetTarget()->GetRedirectThreatTarget() != nullptr;
         }
 
-        void HandleProc(AuraEffect const* aurEff, ProcEventInfo& /*eventInfo*/)
+        void HandleProc(AuraEffect* aurEff, ProcEventInfo& /*eventInfo*/)
         {
             PreventDefaultAction();
             GetTarget()->CastSpell(GetTarget(), SPELL_HUNTER_MISDIRECTION_PROC, true, NULL, aurEff);
@@ -853,7 +853,7 @@ public:
     {
         PrepareAuraScript(spell_hun_beast_cleave_proc_AuraScript);
 
-        void OnProc(const AuraEffect* aurEff, ProcEventInfo& eventInfo)
+        void OnProc(AuraEffect* aurEff, ProcEventInfo& eventInfo)
         {
             PreventDefaultAction();
 
@@ -1306,7 +1306,7 @@ public:
     {
         PrepareAuraScript(spell_hun_hunting_party_AuraScript);
 
-        void HandleProc(AuraEffect const* aurEff, ProcEventInfo& /*procInfo*/)
+        void HandleProc(AuraEffect* aurEff, ProcEventInfo& /*procInfo*/)
         {
             Unit* caster = GetCaster();
             if (!caster)
@@ -1438,7 +1438,7 @@ public:
     {
         PrepareAuraScript(spell_hun_intimidation_AuraScript);
 
-        void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
+        void HandleProc(AuraEffect* /*aurEff*/, ProcEventInfo& eventInfo)
         {
             Unit* caster = eventInfo.GetDamageInfo()->GetAttacker();
             Unit* target = eventInfo.GetDamageInfo()->GetVictim();
@@ -1478,7 +1478,7 @@ public:
             return false;
         }
 
-        void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
+        void HandleProc(AuraEffect* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
         {
             PreventDefaultAction();
 
@@ -1562,7 +1562,7 @@ public:
             return false;
         }
 
-        void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
+        void HandleProc(AuraEffect* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
         {
             PreventDefaultAction();
 
@@ -1734,7 +1734,7 @@ public:
             return false;
         }
 
-        void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
+        void HandleProc(AuraEffect* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
         {
             if (Player* player = GetCaster()->ToPlayer())
             {
@@ -2128,7 +2128,7 @@ public:
             return false;
         }
 
-        void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
+        void HandleProc(AuraEffect* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
         {
             PreventDefaultAction();
 
@@ -2301,7 +2301,7 @@ class aura_hun_volley : public AuraScript
         return GetTarget()->GetPower(POWER_FOCUS) >= GetSpellInfo()->GetEffect(EFFECT_0)->BasePoints;
     }
 
-    void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
+    void HandleProc(AuraEffect* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
     {
         GetTarget()->ModifyPower(POWER_FOCUS, -GetSpellInfo()->GetEffect(EFFECT_0)->BasePoints);
     }
@@ -2323,7 +2323,7 @@ class aura_trailblazer : public AuraScript
         RescheduleBuff();
     }
 
-    void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
+    void HandleProc(AuraEffect* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
     {
         RescheduleBuff();
     }
