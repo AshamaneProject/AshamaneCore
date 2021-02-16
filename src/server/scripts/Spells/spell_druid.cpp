@@ -1428,37 +1428,29 @@ public:
 
 // Activate Cat Form
 // @Called : Dash - 1850, Prowl - 5215, Displacer Beast - 102280
-// @Version : 7.1.0.22908
-class spell_dru_activate_cat_form : public SpellScriptLoader
+// @Version : 9.0.2
+class spell_dru_activate_cat_form : public SpellScript
 {
-public:
-    spell_dru_activate_cat_form() : SpellScriptLoader("spell_dru_activate_cat_form") { }
+    PrepareSpellScript(spell_dru_activate_cat_form);
 
-    class spell_dru_activate_cat_form_SpellScript : public SpellScript
+    bool Validate(SpellInfo const* /*spellInfo*/) override
     {
-        PrepareSpellScript(spell_dru_activate_cat_form_SpellScript);
+        return ValidateSpellInfo({ SPELL_DRUID_CAT_FORM });
+    }
 
-        void HandleOnHit()
-        {
-            Unit* caster = GetCaster();
-            if (!caster)
-                return;
-
-            if (!caster->HasAura(SPELL_DRUID_CAT_FORM))
-                caster->CastSpell(caster, SPELL_DRUID_CAT_FORM, true);
-        }
-
-        void Register() override
-        {
-            OnHit += SpellHitFn(spell_dru_activate_cat_form_SpellScript::HandleOnHit);
-        }
-    };
-
-    SpellScript* GetSpellScript() const override
+    void HandleOnCast()
     {
-        return new spell_dru_activate_cat_form_SpellScript();
+        // Change into cat form
+        if (GetCaster()->GetShapeshiftForm() != FORM_CAT_FORM)
+            GetCaster()->CastSpell(GetCaster(), SPELL_DRUID_CAT_FORM);
+    }
+
+    void Register() override
+    {
+        BeforeCast += SpellCastFn(spell_dru_activate_cat_form::HandleOnCast);
     }
 };
+
 
 enum KillerInstinctSpells
 {
@@ -2665,7 +2657,7 @@ void AddSC_druid_spell_scripts()
     new spell_dru_bear_form();
     new spell_dru_skull_bash();
     new spell_dru_stampeding_roar();
-    new spell_dru_activate_cat_form();
+    RegisterSpellScript(spell_dru_activate_cat_form);
     new spell_dru_killer_instinct();
     new spell_dru_living_seed();
     new spell_dru_infected_wound();
