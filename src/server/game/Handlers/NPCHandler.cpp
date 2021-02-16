@@ -423,17 +423,22 @@ void WorldSession::HandleGossipSelectOptionOpcode(WorldPackets::NPC::GossipSelec
         return;
     }
 
+    uint32 gossipOptionSender = _player->PlayerTalkClass->GetGossipOptionSender(packet.GossipIndex);
+    uint32 gossipOptionAction = _player->PlayerTalkClass->GetGossipOptionAction(packet.GossipIndex);
+
     if (!packet.PromotionCode.empty())
     {
         if (unit)
         {
             if (!unit->AI()->GossipSelectCode(_player, packet.GossipID, packet.GossipIndex, packet.PromotionCode.c_str()))
-                _player->OnGossipSelect(unit, packet.GossipIndex, packet.GossipID);
+                if (!sScriptMgr->OnGossipSelectCode(_player, unit, gossipOptionSender, gossipOptionAction, packet.PromotionCode.c_str()))
+                    _player->OnGossipSelect(unit, packet.GossipIndex, packet.GossipID);
         }
         else
         {
             if (!go->AI()->GossipSelectCode(_player, packet.GossipID, packet.GossipIndex, packet.PromotionCode.c_str()))
-                _player->OnGossipSelect(go, packet.GossipIndex, packet.GossipID);
+                if (!sScriptMgr->OnGossipSelectCode(_player, go, gossipOptionSender, gossipOptionAction, packet.PromotionCode.c_str()))
+                    _player->OnGossipSelect(go, packet.GossipIndex, packet.GossipID);
         }
     }
     else
@@ -441,12 +446,14 @@ void WorldSession::HandleGossipSelectOptionOpcode(WorldPackets::NPC::GossipSelec
         if (unit)
         {
             if (!unit->AI()->GossipSelect(_player, packet.GossipID, packet.GossipIndex))
-                _player->OnGossipSelect(unit, packet.GossipIndex, packet.GossipID);
+                if (!sScriptMgr->OnGossipSelect(_player, unit, gossipOptionSender, gossipOptionAction))
+                    _player->OnGossipSelect(unit, packet.GossipIndex, packet.GossipID);
         }
         else
         {
             if (!go->AI()->GossipSelect(_player, packet.GossipID, packet.GossipIndex))
-                _player->OnGossipSelect(go, packet.GossipIndex, packet.GossipID);
+                if (!sScriptMgr->OnGossipSelect(_player, go, gossipOptionSender, gossipOptionAction))
+                    _player->OnGossipSelect(go, packet.GossipIndex, packet.GossipID);
         }
     }
 }
