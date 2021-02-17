@@ -7480,6 +7480,7 @@ enum Maps : uint32
     MAP_NELTHARION_LAIR         = 1458,
     MAP_TANAAN_JUNGLE           = 1464,
     MAP_DALARAN_UNDERBELLY      = 1502,
+    MAP_NPE                     = 2175
 };
 
 enum AreaName : uint32

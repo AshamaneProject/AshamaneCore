@@ -1111,20 +1111,20 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
                     switch (pCurrChar->getRace())
                     {
                       case RACE_HIGHMOUNTAIN_TAUREN:
-                            pCurrChar->GetSceneMgr().PlayScene(1901);
+                            pCurrChar->GetSceneMgr().PlaySceneByPackageId(1984);
                             break;
                         case RACE_NIGHTBORNE:
-                            pCurrChar->GetSceneMgr().PlayScene(1900);
+                            pCurrChar->GetSceneMgr().PlaySceneByPackageId(2007);
                             break;
                         case RACE_LIGHTFORGED_DRAENEI:
-                            pCurrChar->GetSceneMgr().PlayScene(1902);
+                            pCurrChar->GetSceneMgr().PlaySceneByPackageId(2005);
                             break;
                         case RACE_VOID_ELF:
-                            pCurrChar->GetSceneMgr().PlayScene(1903);
+                            pCurrChar->GetSceneMgr().PlaySceneByPackageId(2006);
                             break;
-                        /*case RACE_DARK_IRON_DWARF:
+                        case RACE_DARK_IRON_DWARF:
                             pCurrChar->GetSceneMgr().PlaySceneByPackageId(2086, 2);
-                            break;*/
+                            break;
                         case RACE_MAGHAR_ORC:
                             pCurrChar->GetSceneMgr().PlaySceneByPackageId(2085, 2);
                             break;
@@ -1138,6 +1138,30 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
             if (!sWorld->GetNewCharString().empty())
                 chH.PSendSysMessage("%s", sWorld->GetNewCharString().c_str());
         }
+    }
+    else if (!pCurrChar->getCinematic() && pCurrChar->GetMapId() == MAP_NPE) // Exile's Reach
+    {
+        pCurrChar->setCinematic(1);
+
+        switch (pCurrChar->GetTeam())
+        {
+            case ALLIANCE:
+                pCurrChar->GetScheduler().Schedule(1s, [pCurrChar](TaskContext /*context*/)
+                {
+                    pCurrChar->GetSceneMgr().PlaySceneByPackageId(2578);
+                });           
+                break;
+
+            case HORDE:
+                pCurrChar->GetScheduler().Schedule(1s, [pCurrChar](TaskContext /*context*/)
+                {
+                    pCurrChar->GetSceneMgr().PlaySceneByPackageId(2894);
+                });
+                break;
+        }
+
+        if (!sWorld->GetNewCharString().empty())
+            chH.PSendSysMessage("%s", sWorld->GetNewCharString().c_str());
     }
 
     if (!pCurrChar->GetMap()->AddPlayerToMap(pCurrChar))
