@@ -115,6 +115,7 @@ enum GuardianAffinitySpells
 
     SPELL_DRUID_THICK_HIDE              = 16931,
     SPELL_DRUID_MANGLE                  = 33917,
+    SPELL_DRUID_GORE_PROC               = 93622,
     SPELL_DRUID_THRASH_BEAR             = 106832,
     SPELL_DRUID_IRON_FUR                = 192081,
     SPELL_DRUID_FRENZIED_REGENERATION   = 22842
@@ -125,22 +126,34 @@ enum RestorationAffinitySpells
     SPELL_DRUID_RESTORATION_AFFINITY    = 197492
 };
 
-// 210706 - Gore 7.3.5
- class spell_dru_gore : public AuraScript
- {
+// 210706 - Gore
+class spell_dru_gore : public AuraScript
+{
     PrepareAuraScript(spell_dru_gore);
 
-    bool CheckProc(ProcEventInfo& eventInfo)
+    bool Validate(SpellInfo const* /*spellInfo*/) override
     {
-        bool _spellCanProc = (eventInfo.GetSpellInfo()->Id == SPELL_DRUID_THRASH || eventInfo.GetSpellInfo()->Id == SPELL_DRUID_MAUL || eventInfo.GetSpellInfo()->Id == SPELL_DRUID_MOONFIRE || eventInfo.GetSpellInfo()->Id == SPELL_DRUID_SWIPE);
-        return (eventInfo.GetHitMask() & PROC_HIT_NORMAL) && _spellCanProc;
+        return ValidateSpellInfo({ SPELL_DRUID_GORE_PROC, SPELL_DRUID_MANGLE });
+    }
+
+    bool CheckEffectProc(AuraEffect const* aurEff, ProcEventInfo& /*eventInfo*/)
+    {
+        return roll_chance_i(aurEff->GetAmount());
+    }
+
+    void HandleProc(AuraEffect* /*aurEff*/, ProcEventInfo& /*procInfo*/)
+    {
+        Unit* owner = GetTarget();
+        owner->CastSpell(owner, SPELL_DRUID_GORE_PROC);
+        owner->GetSpellHistory()->ResetCooldown(SPELL_DRUID_MANGLE, true);
     }
 
     void Register() override
     {
-        DoCheckProc += AuraCheckProcFn(spell_dru_gore::CheckProc);
+        DoCheckEffectProc += AuraCheckEffectProcFn(spell_dru_gore::CheckEffectProc, EFFECT_0, SPELL_AURA_DUMMY);
+        OnEffectProc += AuraEffectProcFn(spell_dru_gore::HandleProc, EFFECT_0, SPELL_AURA_DUMMY);
     }
- };
+};
 
 // Thrash (Bear Form) - 77758, 106832
 class spell_dru_thrash_bear : public SpellScript
