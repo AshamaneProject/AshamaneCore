@@ -451,7 +451,16 @@ bool Player::Create(ObjectGuid::LowType guidlow, WorldPackets::Character::Charac
     for (uint8 i = 0; i < PLAYER_SLOTS_COUNT; i++)
         m_items[i] = nullptr;
 
-    Relocate(info->positionX, info->positionY, info->positionZ, info->orientation);
+    if (createInfo->UseNPE)
+    {
+        Relocate(-66.986f, -13.536f, 46.000f, 0.182f); // ExilesReachNorthSea Tutorial location
+        SetMap(sMapMgr->CreateMap(2175, this));
+    }
+    else
+    {
+        Relocate(info->positionX, info->positionY, info->positionZ, info->orientation);
+        SetMap(sMapMgr->CreateMap(info->mapId, this));
+    }
 
     ChrClassesEntry const* cEntry = sChrClassesStore.LookupEntry(createInfo->Class);
     if (!cEntry)
@@ -467,8 +476,6 @@ bool Player::Create(ObjectGuid::LowType guidlow, WorldPackets::Character::Charac
             GetSession()->GetAccountId(), m_name.c_str());
         //return false;
     }
-
-    SetMap(sMapMgr->CreateMap(info->mapId, this));
 
     uint8 powertype = cEntry->DisplayPower;
 
@@ -797,6 +804,9 @@ void Player::HandleDrowning(uint32 time_diff)
     // In dark water
     if (m_MirrorTimerFlags & UNDERWATER_INDARKWATER)
     {
+        if (GetAreaId() == 10639)
+            return;
+
         // Fatigue timer not activated - activate it
         if (m_MirrorTimer[FATIGUE_TIMER] == DISABLED_MIRROR_TIMER)
         {
