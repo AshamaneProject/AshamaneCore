@@ -1751,7 +1751,7 @@ public:
 
         void UpdateEscortAI(uint32 /*diff*/) override
         {
-            if (GetAttack() && UpdateVictim())
+            if (IsActiveAttacker() && UpdateVictim())
             {
                 if (Bonker_agro == 0)
                 {

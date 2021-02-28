@@ -594,6 +594,7 @@ enum SMART_ACTION
     SMART_ACTION_PLAY_CINEMATIC                     = 135,    // reserved for future uses
     SMART_ACTION_SET_MOVEMENT_SPEED                 = 136,    // movementType, speedInteger, speedFraction
     SMART_ACTION_PLAY_SPELL_VISUAL_KIT              = 137,    // spellVisualKitId, kitType (unknown values, copypaste from packet dumps), duration
+    SMART_ACTION_CREATE_CONVERSATION                = 143,    // conversation_template.id
 
     // Ashamane' specific actions
     SMART_ACTION_PLAY_SPELL_VISUAL                  = 201,    // id, travelSpeed, target type variation.
@@ -1203,6 +1204,11 @@ struct SmartAction
             uint32 kitType;
             uint32 duration;
         } spellVisualKit;
+
+        struct
+        {
+            uint32 id;
+        } conversation;
 
         struct
         {
