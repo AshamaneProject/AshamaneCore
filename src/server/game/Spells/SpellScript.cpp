@@ -1292,9 +1292,9 @@ void AuraScript::SetStackAmount(uint8 num)
     m_aura->SetStackAmount(num);
 }
 
-bool AuraScript::ModStackAmount(int32 num, AuraRemoveMode removeMode /*= AURA_REMOVE_BY_DEFAULT*/, bool resetPeriodicTimer /*= true*/, bool refresh /*= true*/)
+bool AuraScript::ModStackAmount(int32 num, AuraRemoveMode removeMode /*= AURA_REMOVE_BY_DEFAULT*/, bool resetPeriodicTimer /*= true*/)
 {
-    return m_aura->ModStackAmount(num, removeMode, resetPeriodicTimer, refresh);
+    return m_aura->ModStackAmount(num, removeMode, resetPeriodicTimer);
 }
 
 bool AuraScript::IsPassive() const

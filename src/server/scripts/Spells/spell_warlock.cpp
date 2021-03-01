@@ -5884,7 +5884,7 @@ public:
 
         void HandleDummyTick(AuraEffect const* /*aurEff*/)
         {
-            ModStackAmount(1, AURA_REMOVE_BY_DEFAULT, false, false);
+            ModStackAmount(1, AURA_REMOVE_BY_DEFAULT, false);
 
             if (aura_warlock_soul_shard_driver* driver = getSoulShardDriverOfCaster())
                 driver->SetData(DATA_AGONY_TICK, GetTarget()->GetGUID().GetCounter());

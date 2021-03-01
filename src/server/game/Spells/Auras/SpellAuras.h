@@ -186,7 +186,7 @@ class TC_GAME_API Aura
         uint8 GetStackAmount() const { return m_stackAmount; }
         uint32 GetMaxStackAmount() const;
         void SetStackAmount(uint8 num);
-        bool ModStackAmount(int32 num, AuraRemoveMode removeMode = AURA_REMOVE_BY_DEFAULT, bool resetPeriodicTimer = true, bool refresh = true);
+        bool ModStackAmount(int32 num, AuraRemoveMode removeMode = AURA_REMOVE_BY_DEFAULT, bool resetPeriodicTimer = true);
 
         uint32 CalcMaxStackAmount() const;
         bool IsUsingStacks() const;

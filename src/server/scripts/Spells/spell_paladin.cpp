@@ -1938,7 +1938,7 @@ class spell_pal_crusade : public AuraScript
 
         for (auto powerCost : powerCosts)
             if (powerCost.Power == POWER_HOLY_POWER)
-                GetAura()->ModStackAmount(powerCost.Amount, AURA_REMOVE_BY_DEFAULT, false, false);
+                GetAura()->ModStackAmount(powerCost.Amount, AURA_REMOVE_BY_DEFAULT, false);
     }
 
     void Register() override
