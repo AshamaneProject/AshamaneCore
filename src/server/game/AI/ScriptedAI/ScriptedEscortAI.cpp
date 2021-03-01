@@ -39,11 +39,6 @@ EscortAI::EscortAI(Creature* creature) : ScriptedAI(creature), _pauseTimer(2500)
 {
 }
 
-Player* EscortAI::GetPlayerForEscort()
-{
-    return ObjectAccessor::GetPlayer(*me, _playerGUID);
-}
-
 void EscortAI::TalkToEscortPlayer(uint8 id)
 {
     if (Player* player = GetPlayerForEscort())

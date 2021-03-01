@@ -2221,7 +2221,7 @@ MeleeHitOutcome Unit::RollMeleeOutcomeAgainst(Unit const* victim, WeaponAttackTy
     if (victim->GetTypeId() == TYPEID_UNIT && victim->ToCreature()->IsEvadingAttacks())
         return MELEE_HIT_EVADE;
 
-    if (victim->HasAuraType(SPELL_AURA_DEFLECT_FRONT_SPELLS) && victim->isInFront(this))
+    if (victim->HasAuraType(SPELL_AURA_BLOCK_SPELLS_IN_FRONT) && victim->isInFront(this))
         return MELEE_HIT_MISS;
 
     // Miss chance based on melee
@@ -2472,7 +2472,7 @@ bool Unit::CanUseAttackType(uint8 attacktype) const
 // Melee based spells hit result calculations
 SpellMissInfo Unit::MeleeSpellHitResult(Unit* victim, SpellInfo const* spellInfo) const
 {
-    if (victim->isInFront(this) && victim->HasAuraType(SPELL_AURA_DEFLECT_FRONT_SPELLS))
+    if (victim->isInFront(this) && victim->HasAuraType(SPELL_AURA_BLOCK_SPELLS_IN_FRONT))
         return SPELL_MISS_DEFLECT;
 
     WeaponAttackType attType = BASE_ATTACK;
@@ -2612,7 +2612,7 @@ SpellMissInfo Unit::MeleeSpellHitResult(Unit* victim, SpellInfo const* spellInfo
 
 SpellMissInfo Unit::MagicSpellHitResult(Unit* victim, SpellInfo const* spellInfo) const
 {
-    if (victim->isInFront(this) && victim->HasAuraType(SPELL_AURA_DEFLECT_FRONT_SPELLS))
+    if (victim->isInFront(this) && victim->HasAuraType(SPELL_AURA_BLOCK_SPELLS_IN_FRONT))
         return SPELL_MISS_DEFLECT;
 
     // Can`t miss on dead target (on skinning for example)
@@ -7654,8 +7654,6 @@ float Unit::SpellHealingPctDone(Unit* victim, SpellInfo const* spellProto) const
     for (AuraEffect const* healingDonePctVsTargetHealth : GetAuraEffectsByType(SPELL_AURA_MOD_HEALING_DONE_PCT_VERSUS_TARGET_HEALTH))
         if (healingDonePctVsTargetHealth->IsAffectingSpell(spellProto))
             AddPct(DoneTotalMod, CalculatePct(float(healingDonePctVsTargetHealth->GetAmount()), healthPctDiff));
-
-    }
 
     return DoneTotalMod;
 }
