@@ -35,7 +35,7 @@ enum AreaTriggerFlags
     AREATRIGGER_FLAG_HAS_FACE_MOVEMENT_DIR      = 0x00008,
     AREATRIGGER_FLAG_HAS_FOLLOWS_TERRAIN        = 0x00010, // NYI
     AREATRIGGER_FLAG_UNK1                       = 0x00020,
-    AREATRIGGER_FLAG_HAS_TARGET_ROLL_PITCH_YAW  = 0x00040,
+    AREATRIGGER_FLAG_HAS_TARGET_ROLL_PITCH_YAW  = 0x00040, // NYI
     AREATRIGGER_FLAG_HAS_ANIM_ID                = 0x00080,
     AREATRIGGER_FLAG_UNK3                       = 0x00100,
     AREATRIGGER_FLAG_HAS_ANIM_KIT_ID            = 0x00200,
@@ -55,9 +55,10 @@ enum AreaTriggerTypes
 
 enum AreaTriggerActionTypes
 {
-    AREATRIGGER_ACTION_CAST     = 0,
-    AREATRIGGER_ACTION_ADDAURA  = 1,
-    AREATRIGGER_ACTION_MAX      = 2
+    AREATRIGGER_ACTION_CAST        = 0,
+    AREATRIGGER_ACTION_ADDAURA     = 1,
+    AREATRIGGER_ACTION_TELEPORT    = 2,
+    AREATRIGGER_ACTION_MAX         = 3
 };
 
 enum AreaTriggerActionUserTypes
@@ -69,6 +70,12 @@ enum AreaTriggerActionUserTypes
     AREATRIGGER_ACTION_USER_PARTY  = 4,
     AREATRIGGER_ACTION_USER_CASTER = 5,
     AREATRIGGER_ACTION_USER_MAX    = 6
+};
+
+struct AreaTriggerId
+{
+    uint32 Id = 0;
+    bool IsServerSide = false;
 };
 
 struct AreaTriggerAction
@@ -138,7 +145,7 @@ public:
 
     void InitMaxSearchRadius();
 
-    uint32 Id;
+    AreaTriggerId Id;
     AreaTriggerTypes Type;
     uint32 Flags;
     uint32 ScriptId;
@@ -212,15 +219,22 @@ public:
     uint32 TimeToTarget;
     uint32 TimeToTargetScale;
 
-    Position RollPitchYaw;
-    Position TargetRollPitchYaw;
-
     AreaTriggerScaleInfo OverrideScale;
     AreaTriggerScaleInfo ExtraScale;
     AreaTriggerOrbitInfo OrbitInfo;
 
     AreaTriggerTemplate const* Template;
     std::vector<Position> SplinePoints;
+};
+
+struct AreaTriggerSpawn
+{
+    ObjectGuid::LowType SpawnId = 0;
+    AreaTriggerId Id;
+    WorldLocation Location;
+    uint32 PhaseId = 0;
+    uint32 PhaseGroup = 0;
+    uint8 PhaseUseFlags = 0;
 };
 
 #endif

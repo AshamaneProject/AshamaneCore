@@ -2329,7 +2329,7 @@ struct at_mage_rune_of_power : AreaTriggerAI
 
     void OnCreate() override
     {
-        at->SetSpellXSpellVisualId(25943);
+        //at->SetSpellXSpellVisualId(25943);
     }
 
     void OnUnitEnter(Unit* unit) override
@@ -2367,12 +2367,12 @@ struct at_mage_frozen_orb : AreaTriggerAI
         Position pos = caster->GetPosition();
 
         at->MovePositionToFirstCollision(pos, 40.0f, 0.0f);
-        at->SetDestination(pos, 4000);
+        //at->SetDestination(pos, 4000);
     }
 
     void OnCreate() override
     {
-        at->SetSpellXSpellVisualId(40291);
+       // at->SetSpellXSpellVisualId(40291);
     }
 
     void OnUpdate(uint32 diff) override
@@ -2396,7 +2396,7 @@ struct at_mage_frozen_orb : AreaTriggerAI
 
                             caster->CastSpell(caster, SPELL_MAGE_FINGERS_OF_FROST_AURA, true);
 
-                            at->UpdateTimeToTarget(8000);
+                            //at->UpdateTimeToTarget(8000);
                             procDone = true;
                             break;
                         }

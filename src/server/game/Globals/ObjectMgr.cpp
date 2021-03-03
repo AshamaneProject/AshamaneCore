@@ -6595,34 +6595,6 @@ void ObjectMgr::LoadAreaTriggerScripts()
     TC_LOG_INFO("server.loading", ">> Loaded " SZFMTD " areatrigger scripts in %u ms", _areaTriggerScriptStore.size(), GetMSTimeDiffToNow(oldMSTime));
 }
 
-void ObjectMgr::AddAreaTriggerToGrid(ObjectGuid::LowType guid, AreaTriggerData const* data)
-{
-    uint32 mask = data->spawn_mask;
-    for (uint8 i = 0; mask != 0; i++, mask >>= 1)
-    {
-        if (mask & 1)
-        {
-            CellCoord cellCoord = Trinity::ComputeCellCoord(data->position_x, data->position_y);
-            CellObjectGuids& cell_guid = _mapObjectGuidsStore[MAKE_PAIR32(data->map_id, i)][cellCoord.GetId()];
-            cell_guid.areatriggers.insert(guid);
-        }
-    }
-}
-
-void ObjectMgr::RemoveAreaTriggerFromGrid(ObjectGuid::LowType guid, AreaTriggerData const* data)
-{
-    uint32 mask = data->spawn_mask;
-    for (uint8 i = 0; mask != 0; i++, mask >>= 1)
-    {
-        if (mask & 1)
-        {
-            CellCoord cellCoord = Trinity::ComputeCellCoord(data->position_x, data->position_y);
-            CellObjectGuids& cell_guid = _mapObjectGuidsStore[MAKE_PAIR32(data->map_id, i)][cellCoord.GetId()];
-            cell_guid.areatriggers.erase(guid);
-        }
-    }
-}
-
 uint32 ObjectMgr::GetNearestTaxiNode(float x, float y, float z, uint32 mapid, uint32 team)
 {
     bool found = false;
@@ -8452,7 +8424,7 @@ void ObjectMgr::LoadQuestRelationsHelper(QuestRelations& map, QuestRelationsReve
             if (reverseMap)
                 reverseMap->insert(QuestRelationsReverse::value_type(quest, id));
         }
-        else if (starter)
+        else
             poolRelationMap->insert(PooledQuestRelation::value_type(quest, id));
 
         ++count;

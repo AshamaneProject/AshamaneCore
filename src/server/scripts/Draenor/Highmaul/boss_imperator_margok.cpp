@@ -44,9 +44,9 @@ Position const g_ChogallEventsPos[] =
 /*
 @TODO:
 - Ajouter le MM pour les NPCs (les getdata des ePhases)
-- faire des fonctions pour les déplacements vers les runes (gain de place dans le code), faire des tableaux pour les positions/dialogues/... indexés sur l'id de la rune
-- visuel des runes activées sur le SLG generic :
-    déplacement   : visu : 174026
+- faire des fonctions pour les d?placements vers les runes (gain de place dans le code), faire des tableaux pour les positions/dialogues/... index?s sur l'id de la rune
+- visuel des runes activ?es sur le SLG generic :
+    d?placement   : visu : 174026
     reproduction  : visu du socl : 174044
     fortification : visual du socle : 174043
     nullification : visuel du socle : 178559
@@ -1893,7 +1893,7 @@ public:
         EventSpawnIntroAdds = 1,    // ~25 npc(78641) join the fight during cosmetic intro (30-40sec) with 2 ability
         EventDrainPower,            // cosmetic one
 
-        EventDarkStar,              // bubulle qui pop à l'emplac d'un joueur et explose 5sec après
+        EventDarkStar,              // bubulle qui pop ? l'emplac d'un joueur et explose 5sec apr?s
         EventGlimpseOfMadness,      // Cho'gall uses every 25 seconds. He creates a shadow copy of a random raid member, which persists until the end of the fight. These copies are stationary and they cannot be attacked, but they spam Gaze of the Abyss Icon Gaze of the Abyss on the closest raid member within a certain radius (we are not sure of the size of the radius, but it appears to be around 10 yards).
         EventInfiniteDarkness,      // aura on 1-3 players every 60secs, trigger entropy mechanics
         EventEnvelopingNight,       // explode every shadow copy if they can (the copy had to miss at least one time gaze of the abyss), the explosion deal damage to the whole raid
@@ -4658,7 +4658,7 @@ class areatrigger_highmaul_orb_of_chaos : public AreaTriggerAI
                 }
             }
 
-            at->SetDestination(p_DestinationPosition, 30 * TimeConstants::IN_MILLISECONDS);
+            //at->SetDestination(p_DestinationPosition, 30 * TimeConstants::IN_MILLISECONDS);
         }
 
         void OnUpdate(uint32 diff) override

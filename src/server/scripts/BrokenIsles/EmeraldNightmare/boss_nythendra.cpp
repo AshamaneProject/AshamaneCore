@@ -210,8 +210,8 @@ private:
 
                 std::list<AreaTrigger*> ats;
                 me->GetAreaTriggerListWithSpellIDInRange(ats, SPELL_INFESTED_GROUND, 500.f);
-                for (AreaTrigger* at : ats)
-                    at->SetDestination(me->GetPosition(), 5000);
+                //for (AreaTrigger* at : ats)
+                   // at->SetDestination(me->GetPosition(), 5000);
             })
             .Schedule(31s, [this](TaskContext /*context*/)
             {

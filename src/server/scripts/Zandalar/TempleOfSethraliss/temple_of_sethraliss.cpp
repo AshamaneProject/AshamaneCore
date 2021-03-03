@@ -48,13 +48,13 @@ struct npc_loose_spark : public ScriptedAI
             for (int32 j = 0; j < 3; ++j)
             {
                 float radius = 10.0f - j * 4;
-                AreaTrigger::CreateAreaTrigger(AT_SPELL_MISC_ID, me, SPELL_LOOSE_SPARKS, spawnPosition, -1, radius, angle, 12000, true, false);
+                //AreaTrigger::CreateAreaTrigger(AT_SPELL_MISC_ID, me, SPELL_LOOSE_SPARKS, spawnPosition, -1, radius, angle, 12000, true);
             }
             // Counterclockwise
             for (int32 j = 0; j < 2; ++j)
             {
                 float radius = 8.0f - j * 4;
-                AreaTrigger::CreateAreaTrigger(AT_SPELL_MISC_ID, me, SPELL_LOOSE_SPARKS, spawnPosition, -1, radius, angle, 12000, true, true);
+                //AreaTrigger::CreateAreaTrigger(AT_SPELL_MISC_ID, me, SPELL_LOOSE_SPARKS, spawnPosition, -1, radius, angle, 12000, true, true);
             }
         }
     }

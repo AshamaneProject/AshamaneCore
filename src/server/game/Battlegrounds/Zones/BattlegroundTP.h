@@ -276,7 +276,6 @@ class BattlegroundTP : public Battleground
 
     protected:
         void PostUpdateImpl(uint32 diff) override;
-        void GetPlayerPositionData(std::vector<WorldPackets::Battleground::BattlegroundPlayerPosition>* positions) const override;
 
     private:
         ObjectGuid m_FlagKeepers[2];                       // 0 - alliance, 1 - horde

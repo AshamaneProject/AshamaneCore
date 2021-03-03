@@ -15,7 +15,6 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "AreaTriggerPackets.h"
 #include "AreaTriggerTemplate.h"
 #include <G3D/Vector3.h>
 #include <algorithm>
@@ -29,7 +28,7 @@ AreaTriggerScaleInfo::AreaTriggerScaleInfo()
 
 AreaTriggerTemplate::AreaTriggerTemplate()
 {
-    Id = 0;
+    Id = { 0, false };
     Type = AREATRIGGER_TYPE_MAX;
     Flags = 0;
     ScriptId = 0;
@@ -60,7 +59,7 @@ void AreaTriggerTemplate::InitMaxSearchRadius()
         case AREATRIGGER_TYPE_POLYGON:
         {
             if (PolygonDatas.Height <= 0.0f)
-                PolygonDatas.Height = 10.0f;
+                PolygonDatas.Height = 1.0f;
 
             Position center(0.0f, 0.0f);
             for (TaggedPosition<Position::XY> const& vertice : PolygonVertices)

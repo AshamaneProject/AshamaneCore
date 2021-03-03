@@ -1430,7 +1430,7 @@ public:
                         tempSumm->SetFaction(caster->GetFaction());
                         tempSumm->SetSummonerGUID(caster->GetGUID());
                         int32 bp = 0;
-                        switch (at->GetTemplate()->Id)
+                        /*switch (at->GetTemplate()->Id)
                         {
                             case 6007:
                             case 5997:
@@ -1439,10 +1439,10 @@ public:
                             case 6710:
                                 bp = SPELL_DH_LESSER_SOUL_SHARD_HEAL;
                                 break;
-                        }
+                        }*/
                         caster->CastCustomSpell(SPELL_DH_CONSUME_SOUL_MISSILE, SPELLVALUE_BASE_POINT0, bp, tempSumm, true);
-                        if (at->GetTemplate()->Id == 6007)
-                            caster->CastSpell(caster, SPELL_DH_SOUL_FRAGMENT_DEMON_BONUS, true);
+                        //if (at->GetTemplate()->Id == 6007)
+                        //    caster->CastSpell(caster, SPELL_DH_SOUL_FRAGMENT_DEMON_BONUS, true);
 
                         if (caster->HasAura(SPELL_DH_FEED_THE_DEMON))
                             caster->GetSpellHistory()->ReduceChargeCooldown(sSpellMgr->GetSpellInfo(SPELL_DH_DEMON_SPIKES)->ChargeCategoryId, 1000);
@@ -1760,8 +1760,10 @@ public:
                             tempSumm->SetFaction(caster->GetFaction());
                             tempSumm->SetSummonerGUID(caster->GetGUID());
                             int32 bp = 0;
-                            switch (at->GetTemplate()->Id)
-                            {
+                           /*
+switch (at->GetTemplate()->Id)
+                           /*
+                          {
                                 case 6007:
                                 case 5997:
                                     bp = SPELL_DH_SOUL_FRAGMENT_HEAL_VENGEANCE;
@@ -1769,12 +1771,12 @@ public:
                                 case 6710:
                                     bp = SPELL_DH_LESSER_SOUL_SHARD_HEAL;
                                     break;
-                            }
+                            }*/
 
                             caster->CastCustomSpell(SPELL_DH_CONSUME_SOUL_MISSILE, SPELLVALUE_BASE_POINT0, bp, tempSumm, true);
 
-                            if (at->GetTemplate()->Id == 6007)
-                                caster->CastSpell(caster, SPELL_DH_SOUL_FRAGMENT_DEMON_BONUS, true);
+                            //if (at->GetTemplate()->Id == 6007)
+                            //    caster->CastSpell(caster, SPELL_DH_SOUL_FRAGMENT_DEMON_BONUS, true);
 
                             if (caster->HasAura(SPELL_DH_FEED_THE_DEMON))
                                 caster->GetSpellHistory()->ReduceChargeCooldown(sSpellMgr->GetSpellInfo(SPELL_DH_DEMON_SPIKES)->ChargeCategoryId, 1000);
@@ -2712,8 +2714,8 @@ struct at_dh_soul_fragment_havoc : AreaTriggerAI
                 caster->CastSpell(caster, SPELL_DH_SOUL_FRAGMENT_HEAL_VENGEANCE, true);
 
             // "If the Soul Fragment came from a Demon, you will deal 20% increased damage for 15 seconds."
-            if (at->GetTemplate()->Id == 6007)
-                caster->CastSpell(caster, SPELL_DH_SOUL_FRAGMENT_DEMON_BONUS, true);
+            //if (at->GetTemplate()->Id == 6007)
+            //    caster->CastSpell(caster, SPELL_DH_SOUL_FRAGMENT_DEMON_BONUS, true);
 
             if (caster->HasAura(SPELL_DH_FEED_THE_DEMON))
                 caster->GetSpellHistory()->ReduceChargeCooldown(sSpellMgr->GetSpellInfo(SPELL_DH_DEMON_SPIKES)->ChargeCategoryId, 1000);

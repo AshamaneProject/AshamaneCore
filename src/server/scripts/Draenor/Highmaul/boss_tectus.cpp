@@ -2127,8 +2127,8 @@ public:
 
     void OnCreate() override
     {
-        if (Unit* l_Tectus = at->GetCaster()->FindNearestCreature(eHighmaulCreatures::Tectus, 200.0f))
-            at->SetDestination(*l_Tectus, 5000);
+        //if (Unit* l_Tectus = at->GetCaster()->FindNearestCreature(eHighmaulCreatures::Tectus, 200.0f))
+            //at->SetDestination(*l_Tectus, 5000);
     }
 
     void OnUpdate(uint32 /*diff*/) override
@@ -2150,8 +2150,8 @@ public:
                     l_Accretion->RefreshDuration();
                 }
             }
-            else if (Creature* l_Tectus = at->FindNearestCreature(eHighmaulCreatures::Tectus, 100.0f))
-                at->SetDestination(*l_Tectus, 5000);
+            //else if (Creature* l_Tectus = at->FindNearestCreature(eHighmaulCreatures::Tectus, 100.0f))
+                //at->SetDestination(*l_Tectus, 5000);
         }
     }
 };

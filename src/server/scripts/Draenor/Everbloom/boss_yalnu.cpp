@@ -1203,8 +1203,8 @@ public:
 
     void OnCreate() override
     {
-        if (Creature* yalnu = GetClosestCreatureWithEntry(at, NPC_YALNU, 100.0f))
-            at->SetDestination(yalnu->GetPosition(), 2000);
+        //if (Creature* yalnu = GetClosestCreatureWithEntry(at, NPC_YALNU, 100.0f))
+        //    at->SetDestination(yalnu->GetPosition(), 2000);
     }
 
     void OnUnitEnter(Unit* unit) override

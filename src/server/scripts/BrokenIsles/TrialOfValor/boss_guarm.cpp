@@ -364,7 +364,7 @@ public:
         void OnInitialize() override
         {
             at->SetDuration(10000);
-            at->SetTimeToTargetScale(100000);
+            //at->SetTimeToTargetScale(100000);
             damageTimer = 5000;
             canDoDamage = false;
             canCastBreath = false;
@@ -376,7 +376,7 @@ public:
             {
                 if (!canDoDamage)
                 {
-                    at->SetTimeToTargetScale(10000);
+                    //at->SetTimeToTargetScale(10000);
                     canDoDamage = true;
                 }
             }
@@ -427,7 +427,7 @@ public:
         void OnInitialize() override
         {
             at->SetDuration(10000);
-            at->SetTimeToTargetScale(100000);
+            //at->SetTimeToTargetScale(100000);
             damageTimer = 5000;
             canDoDamage = false;
         }
@@ -438,7 +438,7 @@ public:
             {
                 if (!canDoDamage)
                 {
-                    at->SetTimeToTargetScale(10000);
+                    //at->SetTimeToTargetScale(10000);
                     canDoDamage = true;
                 }
             }
@@ -488,7 +488,7 @@ public:
         void OnInitialize() override
         {
             at->SetDuration(10000);
-            at->SetTimeToTargetScale(100000);
+            //at->SetTimeToTargetScale(100000);
             damageTimer = 5000;
             canDoDamage = false;
         }
@@ -499,7 +499,7 @@ public:
             {
                 if (!canDoDamage)
                 {
-                    at->SetTimeToTargetScale(10000);
+                    //at->SetTimeToTargetScale(10000);
                     canDoDamage = true;
                 }
             }

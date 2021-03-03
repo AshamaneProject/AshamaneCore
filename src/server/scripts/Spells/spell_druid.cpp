@@ -2205,7 +2205,7 @@ struct at_dru_starfall : AreaTriggerAI
     at_dru_starfall(AreaTrigger* areatrigger) : AreaTriggerAI(areatrigger)
     {
         // How often should the action be executed
-        areatrigger->SetPeriodicProcTimer(850);
+       // areatrigger->SetPeriodicProcTimer(850);
     }
 
     void OnPeriodicProc() override
