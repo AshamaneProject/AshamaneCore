@@ -174,6 +174,10 @@ enum MageSpells
     SPELL_MAGE_RULE_OF_THREES_BUFF               = 264774,
     SPELL_MAGE_SPLITTING_ICE                     = 56377,
     SPELL_ARCANE_CHARGE                          = 36032,
+
+// 9.0.2
+    SPELL_MAGE_TOUCH_OF_THE_MAGI_AURA            = 210824,
+    SPELL_MAGE_TOUCH_OF_THE_MAGI_EXPLODE         = 210833,
 };
 
 enum TemporalDisplacementSpells
@@ -364,7 +368,7 @@ class spell_mage_clearcasting : public AuraScript
         return false;
     }
 
-    void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
+    void HandleProc(AuraEffect* /*aurEff*/, ProcEventInfo& eventInfo)
     {
         Unit* actor = eventInfo.GetActor();
         actor->CastSpell(actor, SPELL_MAGE_CLEARCASTING_BUFF, true);
@@ -925,7 +929,7 @@ class spell_mage_kindling : public AuraScript
         return eventInfo.GetSpellInfo()->Id == SPELL_MAGE_FIREBALL || eventInfo.GetSpellInfo()->Id == SPELL_MAGE_FIRE_BLAST || eventInfo.GetSpellInfo()->Id == SPELL_MAGE_PYROBLAST;
     }
 
-    void HandleProc(AuraEffect const* aurEff, ProcEventInfo& /*eventInfo*/)
+    void HandleProc(AuraEffect* aurEff, ProcEventInfo& /*eventInfo*/)
     {
         Unit* caster = GetCaster();
         if (!caster)
@@ -957,7 +961,7 @@ class spell_mage_pyroblast_clearcasting_driver : public AuraScript
         return false;
     }
 
-    void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
+    void HandleProc(AuraEffect* /*aurEff*/, ProcEventInfo& eventInfo)
     {
         bool procCheck = false;
 
@@ -2739,6 +2743,47 @@ class spell_mage_ebonbolt_damage : public SpellScript
     }
 };
 
+// 210824 - Touch of the Magi (Aura)
+class spell_mage_touch_of_the_magi_aura : public AuraScript
+{
+    PrepareAuraScript(spell_mage_touch_of_the_magi_aura);
+
+    bool Validate(SpellInfo const* /*spellInfo*/) override
+    {
+        return ValidateSpellInfo({ SPELL_MAGE_TOUCH_OF_THE_MAGI_EXPLODE });
+    }
+
+    void HandleProc(AuraEffect* aurEff, ProcEventInfo& eventInfo)
+    {
+        DamageInfo* damageInfo = eventInfo.GetDamageInfo();
+        if (damageInfo)
+        {
+            if (damageInfo->GetAttacker() == GetCaster() && damageInfo->GetVictim() == GetTarget())
+            {
+                uint32 extra = CalculatePct(damageInfo->GetDamage(), 25);
+                if (extra > 0)
+                    aurEff->ChangeAmount(aurEff->GetAmount() + extra);
+            }
+        }
+    }
+
+    void AfterRemove(AuraEffect const* aurEff, AuraEffectHandleModes /*mode*/)
+    {
+        int32 amount = aurEff->GetAmount();
+        if (!amount || GetTargetApplication()->GetRemoveMode() != AURA_REMOVE_BY_EXPIRE)
+            return;
+
+        if (Unit* caster = GetCaster())
+            caster->CastCustomSpell(SPELL_MAGE_TOUCH_OF_THE_MAGI_EXPLODE, SPELLVALUE_BASE_POINT0, amount, GetTarget(), TRIGGERED_FULL_MASK);
+    }
+
+    void Register() override
+    {
+        OnEffectProc += AuraEffectProcFn(spell_mage_touch_of_the_magi_aura::HandleProc, EFFECT_0, SPELL_AURA_DUMMY);
+        AfterEffectRemove += AuraEffectRemoveFn(spell_mage_touch_of_the_magi_aura::AfterRemove, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+    }
+};
+
 void AddSC_mage_spell_scripts()
 {
     new playerscript_mage_arcane();
@@ -2822,4 +2867,6 @@ void AddSC_mage_spell_scripts()
 
     // NPC Scripts
     new npc_mirror_image();
+
+    RegisterAuraScript(spell_mage_touch_of_the_magi_aura);
 }

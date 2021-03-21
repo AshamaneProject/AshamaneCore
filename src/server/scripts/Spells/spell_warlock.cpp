@@ -1716,7 +1716,7 @@ class spell_warlock_seed_of_corruption : public SpellScriptLoader
         {
             PrepareAuraScript(spell_warlock_seed_of_corruption_AuraScript);
 
-            void OnProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+            void OnProc(AuraEffect* aurEff, ProcEventInfo& eventInfo)
             {
                 Unit * caster = GetCaster();
                 if (!caster)
@@ -1800,7 +1800,7 @@ class spell_warlock_blood_horror : public SpellScriptLoader
         {
             PrepareAuraScript(spell_warlock_blood_horror_AuraScript);
 
-            void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
+            void OnProc(AuraEffect* /*aurEff*/, ProcEventInfo& eventInfo)
             {
                 Unit * caster = GetCaster();
                 Unit * target = eventInfo.GetDamageInfo()->GetAttacker();
@@ -2208,7 +2208,7 @@ class spell_warlock_howl_of_terror : public SpellScriptLoader
         {
             PrepareAuraScript(spell_warlock_howl_of_terror_AuraScript);
 
-            void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
+            void OnProc(AuraEffect* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
             {
                 Player * target = GetUnitOwner()->ToPlayer();
                 if (!target)
@@ -2532,7 +2532,7 @@ class spell_warlock_t16_demo_2p : public SpellScriptLoader
         {
             PrepareAuraScript(spell_warlock_t16_demo_2p_AuraScript);
 
-            void OnProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+            void OnProc(AuraEffect* aurEff, ProcEventInfo& eventInfo)
             {
                 uint32 procSpellId = 0;
                 if (auto spellInfo = eventInfo.GetDamageInfo()->GetSpellInfo())
@@ -2607,7 +2607,7 @@ class spell_warlock_t16_4p : public SpellScriptLoader
                 aurEff->SetAmount(currentPower);
             }
 
-            void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
+            void OnProc(AuraEffect* /*aurEff*/, ProcEventInfo& eventInfo)
             {
                 if (!eventInfo.GetDamageInfo())
                     return;
@@ -3317,7 +3317,7 @@ class spell_warlock_artifact_soul_flame : public SpellScriptLoader
         {
             PrepareAuraScript(spell_warlock_artifact_soul_flame_AuraScript);
 
-            void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
+            void OnProc(AuraEffect* /*aurEff*/, ProcEventInfo& eventInfo)
             {
                 Unit* target = eventInfo.GetActionTarget();
                 Unit* caster = GetCaster();
@@ -3353,7 +3353,7 @@ class spell_warlock_artifact_wrath_of_consumption : public SpellScriptLoader
         {
             PrepareAuraScript(spell_warlock_artifact_wrath_of_consumption_AuraScript);
 
-            void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
+            void OnProc(AuraEffect* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
             {
                 if (Unit* caster = GetCaster())
                     caster->CastSpell(caster, SPELL_WARLOCK_WRATH_OF_CONSUMPTION_PROC, true);
@@ -3381,7 +3381,7 @@ class spell_warlock_artifact_eternal_struggle : public SpellScriptLoader
         {
             PrepareAuraScript(spell_warlock_artifact_eternal_struggle_AuraScript);
 
-            void OnProc(AuraEffect const* aurEff, ProcEventInfo& /*eventInfo*/)
+            void OnProc(AuraEffect* aurEff, ProcEventInfo& /*eventInfo*/)
             {
                 PreventDefaultAction();
                 Unit* caster = GetCaster();
@@ -3413,7 +3413,7 @@ class spell_warlock_artifact_devourer_of_life : public SpellScriptLoader
         {
             PrepareAuraScript(spell_warlock_artifact_devourer_of_life_AuraScript);
 
-            void OnProc(AuraEffect const* aurEff, ProcEventInfo& /*eventInfo*/)
+            void OnProc(AuraEffect* aurEff, ProcEventInfo& /*eventInfo*/)
             {
                 PreventDefaultAction();
                 Unit* caster = GetCaster();
@@ -3498,7 +3498,7 @@ class spell_warlock_artifact_soul_snatcher : public SpellScriptLoader
         {
             PrepareAuraScript(spell_warlock_artifact_soul_snatcher_AuraScript);
 
-            void OnProc(AuraEffect const* aurEff, ProcEventInfo& /*eventInfo*/)
+            void OnProc(AuraEffect* aurEff, ProcEventInfo& /*eventInfo*/)
             {
                 PreventDefaultAction();
                 Unit* caster = GetCaster();
@@ -3531,7 +3531,7 @@ class spell_warlock_artifact_dimension_ripper : public SpellScriptLoader
         {
             PrepareAuraScript(spell_warlock_artifact_dimension_ripper_AuraScript);
 
-            void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
+            void OnProc(AuraEffect* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
             {
                 PreventDefaultAction();
                 Unit* caster = GetCaster();
@@ -3843,7 +3843,7 @@ class spell_warlock_soul_leech : public SpellScriptLoader
         {
             PrepareAuraScript(spell_warlock_soul_leech_AuraScript);
 
-            void OnProc(AuraEffect const*  aurEff, ProcEventInfo& eventInfo)
+            void OnProc(AuraEffect*  aurEff, ProcEventInfo& eventInfo)
             {
                 PreventDefaultAction();
                 Unit* caster = GetCaster();
@@ -4645,7 +4645,7 @@ class spell_warlock_soul_effigy_aura : public SpellScriptLoader
         {
             PrepareAuraScript(spell_warlock_soul_effigy_aura_AuraScript);
 
-            void OnProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+            void OnProc(AuraEffect* aurEff, ProcEventInfo& eventInfo)
             {
                 Unit* caster = GetCaster();
                 if (!caster)
@@ -4793,7 +4793,7 @@ class spell_warlock_grimoir_of_synergy : public SpellScriptLoader
         {
             PrepareAuraScript(spell_warlock_grimoir_of_synergy_AuraScript);
 
-            void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
+            void OnProc(AuraEffect* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
             {
                 Unit* caster = GetCaster();
                 if (!caster)
@@ -5240,7 +5240,7 @@ class spell_warlock_curse_of_shadows : public SpellScriptLoader
         {
             PrepareAuraScript(spell_warlock_curse_of_shadows_AuraScript);
 
-            void OnProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+            void OnProc(AuraEffect* aurEff, ProcEventInfo& eventInfo)
             {
                 PreventDefaultAction();
                 Unit* caster = GetCaster();
@@ -5423,7 +5423,7 @@ class spell_warlock_eye_of_the_observer : public SpellScriptLoader
         {
             PrepareAuraScript(spell_warlock_eye_of_the_observer_AuraScript);
 
-            void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
+            void OnProc(AuraEffect* /*aurEff*/, ProcEventInfo& eventInfo)
             {
                 PreventDefaultAction();
                 Unit* caster = GetCaster();
@@ -5456,7 +5456,7 @@ class spell_warlock_cremation : public SpellScriptLoader
         {
             PrepareAuraScript(spell_warlock_cremation_AuraScript);
 
-            void OnProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+            void OnProc(AuraEffect* aurEff, ProcEventInfo& eventInfo)
             {
                 PreventDefaultAction();
                 Unit* caster = GetCaster();
@@ -5698,7 +5698,7 @@ class spell_warlock_artifact_thalkiels_discord : public SpellScriptLoader
         {
             PrepareAuraScript(spell_warlock_artifact_thalkiels_discord_AuraScript);
 
-            void OnProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+            void OnProc(AuraEffect* aurEff, ProcEventInfo& eventInfo)
             {
                 PreventDefaultAction();
                 Unit* caster = GetCaster();
@@ -5884,7 +5884,7 @@ public:
 
         void HandleDummyTick(AuraEffect const* /*aurEff*/)
         {
-            ModStackAmount(1, AURA_REMOVE_BY_DEFAULT, false, false);
+            ModStackAmount(1, AURA_REMOVE_BY_DEFAULT, false);
 
             if (aura_warlock_soul_shard_driver* driver = getSoulShardDriverOfCaster())
                 driver->SetData(DATA_AGONY_TICK, GetTarget()->GetGUID().GetCounter());

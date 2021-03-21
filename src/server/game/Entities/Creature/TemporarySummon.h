@@ -102,6 +102,7 @@ class TC_GAME_API TempSummon : public Creature
         void SetSummonerSpecificEntry(uint32 entry);
         uint32 GetSummonerSpecificEntry() const { return m_summonerSpecificEntry; }
         uint32 GetSummonerSpecificDisplayID() const { return m_summonerSpecificDisplayID; }
+        static bool IsPersonalSummonOfAnotherPlayer(Creature const* summon, ObjectGuid playerToCheck);
 
         SummonPropertiesEntry const* const m_Properties;
     private:

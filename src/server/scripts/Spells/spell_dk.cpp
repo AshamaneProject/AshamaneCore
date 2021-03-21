@@ -1686,7 +1686,7 @@ public:
             return _procTarget != nullptr;
         }
 
-        void HandleProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+        void HandleProc(AuraEffect* aurEff, ProcEventInfo& eventInfo)
         {
             int32 heal = int32(CalculatePct(eventInfo.GetDamageInfo()->GetDamage(), 150));
             GetTarget()->CastCustomSpell(SPELL_DK_BLOOD_GORGED_HEAL, SPELLVALUE_BASE_POINT0, heal, _procTarget, true, NULL, aurEff);

@@ -1268,7 +1268,7 @@ void GameEventMgr::GameEventSpawn(int16 event_id)
         }
     }
 
-    if (internal_event_id < 0 || internal_event_id >= int32(mGameEventGameobjectGuids.size()))
+    if (internal_event_id >= int32(mGameEventGameobjectGuids.size()))
     {
         TC_LOG_ERROR("gameevent", "GameEventMgr::GameEventSpawn attempted access to out of range mGameEventGameobjectGuids element %i (size: %zu).",
             internal_event_id, mGameEventGameobjectGuids.size());
@@ -1300,7 +1300,7 @@ void GameEventMgr::GameEventSpawn(int16 event_id)
         }
     }
 
-    if (internal_event_id < 0 || internal_event_id >= int32(mGameEventPoolIds.size()))
+    if (internal_event_id >= int32(mGameEventPoolIds.size()))
     {
         TC_LOG_ERROR("gameevent", "GameEventMgr::GameEventSpawn attempted access to out of range mGameEventPoolIds element %u (size: %zu).",
             internal_event_id, mGameEventPoolIds.size());
@@ -1798,6 +1798,8 @@ void GameEventMgr::SetHolidayEventTime(GameEventData& event)
         timeInfo.tm_hour = (date >> 6) & 0x1F;
         timeInfo.tm_min = date & 0x3F;
         timeInfo.tm_sec = 0;
+        timeInfo.tm_wday = 0;
+        timeInfo.tm_yday = 0;
         timeInfo.tm_isdst = -1;
         tm tmCopy = timeInfo;
 

@@ -258,6 +258,7 @@ namespace WorldPackets
         class RequestPlayedTime;
         class SetTitle;
         class SetFactionAtWar;
+        class SetWarMode;
         class SetFactionNotAtWar;
         class SetFactionInactive;
         class SetWatchedFaction;
@@ -538,7 +539,6 @@ namespace WorldPackets
         class StartTimer;
         class StartElapsedTimer;
         class OpenAlliedRaceDetailsGiver;
-        class SetWarMode;
     }
 
     namespace Movement
@@ -669,6 +669,7 @@ namespace WorldPackets
         class QuestGiverHello;
         class QueryQuestInfo;
         class QuestGiverChooseReward;
+        class QuestGiverCloseQuest;
         class QuestGiverCompleteQuest;
         class QuestGiverRequestReward;
         class QuestGiverQueryQuest;
@@ -1157,19 +1158,11 @@ class TC_GAME_API WorldSession
         void SetLatency(uint32 latency) { m_latency = latency; }
         void ResetClientTimeDelay() { m_clientTimeDelay = 0; }
 
-        std::atomic<int32> m_timeOutTime;
-
-        void UpdateTimeOutTime(uint32 diff)
-        {
-            m_timeOutTime -= int32(diff);
-        }
+        std::atomic<time_t> m_timeOutTime;
 
         void ResetTimeOutTime(bool onlyActive);
 
-        bool IsConnectionIdle() const
-        {
-            return m_timeOutTime <= 0 && !m_inQueue;
-        }
+        bool IsConnectionIdle() const;
 
         // Recruit-A-Friend Handling
         uint32 GetRecruiterId() const { return recruiterId; }
@@ -1299,6 +1292,7 @@ class TC_GAME_API WorldSession
         void HandleSetFactionAtWar(WorldPackets::Character::SetFactionAtWar& packet);
         void HandleSetFactionNotAtWar(WorldPackets::Character::SetFactionNotAtWar& packet);
         void HandleSetFactionCheat(WorldPacket& recvData);
+        void HandleSetWarMode(WorldPackets::Character::SetWarMode& packet);
         void HandleSetWatchedFactionOpcode(WorldPackets::Character::SetWatchedFaction& packet);
         void HandleSetFactionInactiveOpcode(WorldPackets::Character::SetFactionInactive& packet);
         void HandleRequestForcedReactionsOpcode(WorldPackets::Reputation::RequestForcedReactions& requestForcedReactions);
@@ -1550,6 +1544,7 @@ class TC_GAME_API WorldSession
         void HandleQuestLogRemoveQuest(WorldPackets::Quest::QuestLogRemoveQuest& packet);
         void HandleQuestConfirmAccept(WorldPackets::Quest::QuestConfirmAccept& packet);
         void HandleQuestgiverCompleteQuest(WorldPackets::Quest::QuestGiverCompleteQuest& packet);
+        void HandleQuestgiverCloseQuest(WorldPackets::Quest::QuestGiverCloseQuest& questGiverCloseQuest);
         void HandlePushQuestToParty(WorldPackets::Quest::PushQuestToParty& packet);
         void HandleQuestPushResult(WorldPackets::Quest::QuestPushResult& packet);
         void HandleRequestWorldQuestUpdate(WorldPackets::Quest::RequestWorldQuestUpdate& packet);
@@ -1773,7 +1768,6 @@ class TC_GAME_API WorldSession
         void HandleAdventureJournalOpenQuest(WorldPackets::Misc::AdventureJournalOpenQuest& packet);
         void HandleSelectFactionOpcode(WorldPackets::Misc::FactionSelect& selectFaction);
         void HandleAdventureJournalStartQuest(WorldPackets::Misc::AdventureJournalStartQuest& packet);
-        void HandleSetWarModeOpcode(WorldPackets::Misc::SetWarMode& packet);
 
         // Toys
         void HandleAddToy(WorldPackets::Toy::AddToy& packet);

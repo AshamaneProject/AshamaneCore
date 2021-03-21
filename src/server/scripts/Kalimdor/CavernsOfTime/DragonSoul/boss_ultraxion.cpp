@@ -1211,7 +1211,7 @@ public:
     {
         PrepareAuraScript(spell_ultraxion_escense_of_dreams_AuraScript);
 
-        void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
+        void OnProc(AuraEffect* /*aurEff*/, ProcEventInfo& eventInfo)
         {
             if (!GetCaster())
                 return;

@@ -629,7 +629,7 @@ class spell_arti_pri_call_of_the_void : public AuraScript
         return eventInfo.GetSpellInfo() && eventInfo.GetSpellInfo()->Id == SPELL_PRIEST_MIND_FLAY;
     }
 
-    void HandleEffectProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+    void HandleEffectProc(AuraEffect* aurEff, ProcEventInfo& eventInfo)
     {
         if (Unit* caster = GetCaster())
             caster->CastSpell(eventInfo.GetProcTarget(), SPELL_PRIEST_CALL_OF_THE_VOID_SUMMON, true, nullptr, aurEff);

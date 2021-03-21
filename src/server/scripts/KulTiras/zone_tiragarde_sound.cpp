@@ -941,7 +941,7 @@ public:
         _numberOfSummonsAlive = 2;
         if (TempSummon* ts = me->SummonCreature(NPC_LIVING_ARTEFACT, pos[0], TEMPSUMMON_CORPSE_DESPAWN)) ts->AI()->AttackStart(me);
         if (TempSummon* ts = me->SummonCreature(NPC_ANGERED_REVENANT, pos[1], TEMPSUMMON_CORPSE_DESPAWN)) ts->AI()->AttackStart(me);
-        SetCanAttack(false);
+        SetActiveAttacker(false);
         //Start(false, false, summoner->GetGUID(), NULL, false, false, true);
     }
 

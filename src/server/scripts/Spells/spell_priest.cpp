@@ -369,7 +369,7 @@ public:
             return false;
         }
 
-        void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
+        void HandleProc(AuraEffect* /*aurEff*/, ProcEventInfo& eventInfo)
         {
             GetTarget()->CastSpell(eventInfo.GetActionTarget(), SPELL_PRIEST_SHADOWY_APPARITION_MISSILE, true);
             GetTarget()->SendPlaySpellVisual(eventInfo.GetActionTarget()->GetGUID(), SPELL_VISUAL_SHADOWY_APPARITION, SPELL_MISS_NONE, SPELL_MISS_NONE, SHADOWY_APPARITION_TRAVEL_SPEED, false);
@@ -428,7 +428,7 @@ class spell_pri_shadowy_insight : public AuraScript
             });
     }
 
-    void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
+    void HandleProc(AuraEffect* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
     {
         GetTarget()->GetSpellHistory()->ResetCharges(sSpellMgr->AssertSpellInfo(SPELL_PRIEST_MIND_BLAST, DIFFICULTY_NONE)->ChargeCategoryId);
     }
@@ -921,7 +921,7 @@ class spell_pri_divine_aegis : public SpellScriptLoader
                 return eventInfo.GetProcTarget() != nullptr;
             }
 
-            void HandleProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+            void HandleProc(AuraEffect* aurEff, ProcEventInfo& eventInfo)
             {
                 PreventDefaultAction();
 
@@ -1036,7 +1036,7 @@ class spell_pri_item_greater_heal_refund : public SpellScriptLoader
                 return true;
             }
 
-            void OnProc(AuraEffect const* aurEff, ProcEventInfo& /*eventInfo*/)
+            void OnProc(AuraEffect* aurEff, ProcEventInfo& /*eventInfo*/)
             {
                 PreventDefaultAction();
                 GetTarget()->CastSpell(GetTarget(), SPELL_PRIEST_ITEM_EFFICIENCY, true, NULL, aurEff);
@@ -1303,7 +1303,7 @@ class spell_pri_mana_leech : public SpellScriptLoader
                 return _procTarget != nullptr;
             }
 
-            void HandleProc(AuraEffect const* aurEff, ProcEventInfo& /*eventInfo*/)
+            void HandleProc(AuraEffect* aurEff, ProcEventInfo& /*eventInfo*/)
             {
                 PreventDefaultAction();
                 GetTarget()->CastSpell(_procTarget, SPELL_PRIEST_MANA_LEECH_PROC, true, nullptr, aurEff);
@@ -1692,7 +1692,7 @@ class spell_pri_phantasm : public SpellScriptLoader
                 return roll_chance_i(GetEffect(EFFECT_0)->GetAmount());
             }
 
-            void HandleEffectProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
+            void HandleEffectProc(AuraEffect* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
             {
                 PreventDefaultAction();
                 GetTarget()->RemoveMovementImpairingAuras();
@@ -1877,7 +1877,7 @@ class spell_pri_vampiric_embrace : public AuraScript
         return !(eventInfo.GetDamageInfo()->GetSpellInfo()->SpellFamilyFlags[1] & 0x80000);
     }
 
-    void HandleEffectProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+    void HandleEffectProc(AuraEffect* aurEff, ProcEventInfo& eventInfo)
     {
         PreventDefaultAction();
         int32 self = int32(CalculatePct(eventInfo.GetDamageInfo()->GetDamage(), aurEff->GetAmount()));
@@ -2374,7 +2374,7 @@ public:
             return (health - damageInfo->GetDamage() < threashold);
         }
 
-        void HandleEffectProc(AuraEffect const* /* aurEff */, ProcEventInfo& eventInfo)
+        void HandleEffectProc(AuraEffect* /* aurEff */, ProcEventInfo& eventInfo)
         {
             Unit* target = eventInfo.GetActionTarget();
             int64 bp0 = CalculatePct(target->GetMaxHealth(), GetSpellInfo()->GetEffect(EFFECT_1)->BasePoints);
@@ -2553,7 +2553,7 @@ class spell_pri_shadow_mend_aura : public AuraScript
             target->CastCustomSpell(SPELL_PRIEST_SHADOW_MEND_DAMAGE, SPELLVALUE_BASE_POINT0, aurEff->GetAmount(), target, TRIGGERED_FULL_MASK, NULL, NULL, caster->GetGUID());
     }
 
-    void DoProc(AuraEffect const* /*aurEff*/, ProcEventInfo& procInfo)
+    void DoProc(AuraEffect* /*aurEff*/, ProcEventInfo& procInfo)
     {
         if (AuraEffect const* eff0 = GetEffect(EFFECT_0))
         {
@@ -2747,7 +2747,7 @@ class spell_pri_atonement : public AuraScript
         return true;
     }
 
-    void HandleProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+    void HandleProc(AuraEffect* aurEff, ProcEventInfo& eventInfo)
     {
         Unit* caster = GetCaster();
         if (!caster)
@@ -2922,7 +2922,7 @@ public:
             return false;
         }
 
-        void PreventAction(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
+        void PreventAction(AuraEffect* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
         {
             PreventDefaultAction();
         }
