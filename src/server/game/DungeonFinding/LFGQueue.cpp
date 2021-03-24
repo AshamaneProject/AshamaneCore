@@ -720,18 +720,27 @@ void LFGQueue::UpdateBestCompatibleInQueue(LfgQueueDataContainer::iterator itrQu
         queueData.bestCompatible.c_str(), key.c_str(), itrQueue->first.ToString().c_str());
 
     queueData.bestCompatible = key;
-    queueData.tanks = 0;
-    queueData.healers = 0;
-    queueData.damages = 0;
+    queueData.tanks = LFG_TANKS_NEEDED;
+    queueData.healers = LFG_HEALERS_NEEDED;
+    queueData.damages = LFG_DPS_NEEDED;
     for (LfgRolesMap::const_iterator it = roles.begin(); it != roles.end(); ++it)
     {
         uint8 role = it->second;
         if (role & PLAYER_ROLE_TANK)
-            ++queueData.tanks;
+           {
+            if (queueData.tanks)
+                --queueData.tanks;
+        }
         else if (role & PLAYER_ROLE_HEALER)
-            ++queueData.healers;
-        else
-            ++queueData.damages;
+        {
+            if (queueData.healers)
+                --queueData.healers;
+        }
+        else if (role & PLAYER_ROLE_DAMAGE)
+        {
+            if (queueData.damages)
+                --queueData.damages;
+        }
     }
 }
 
