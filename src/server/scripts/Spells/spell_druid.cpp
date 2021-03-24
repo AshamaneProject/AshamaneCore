@@ -115,6 +115,7 @@ enum GuardianAffinitySpells
 
     SPELL_DRUID_THICK_HIDE              = 16931,
     SPELL_DRUID_MANGLE                  = 33917,
+    SPELL_DRUID_GORE_PROC               = 93622,
     SPELL_DRUID_THRASH_BEAR             = 106832,
     SPELL_DRUID_IRON_FUR                = 192081,
     SPELL_DRUID_FRENZIED_REGENERATION   = 22842
@@ -125,22 +126,34 @@ enum RestorationAffinitySpells
     SPELL_DRUID_RESTORATION_AFFINITY    = 197492
 };
 
-// 210706 - Gore 7.3.5
- class spell_dru_gore : public AuraScript
- {
+// 210706 - Gore
+class spell_dru_gore : public AuraScript
+{
     PrepareAuraScript(spell_dru_gore);
 
-    bool CheckProc(ProcEventInfo& eventInfo)
+    bool Validate(SpellInfo const* /*spellInfo*/) override
     {
-        bool _spellCanProc = (eventInfo.GetSpellInfo()->Id == SPELL_DRUID_THRASH || eventInfo.GetSpellInfo()->Id == SPELL_DRUID_MAUL || eventInfo.GetSpellInfo()->Id == SPELL_DRUID_MOONFIRE || eventInfo.GetSpellInfo()->Id == SPELL_DRUID_SWIPE);
-        return (eventInfo.GetHitMask() & PROC_HIT_NORMAL) && _spellCanProc;
+        return ValidateSpellInfo({ SPELL_DRUID_GORE_PROC, SPELL_DRUID_MANGLE });
+    }
+
+    bool CheckEffectProc(AuraEffect const* aurEff, ProcEventInfo& /*eventInfo*/)
+    {
+        return roll_chance_i(aurEff->GetAmount());
+    }
+
+    void HandleProc(AuraEffect* /*aurEff*/, ProcEventInfo& /*procInfo*/)
+    {
+        Unit* owner = GetTarget();
+        owner->CastSpell(owner, SPELL_DRUID_GORE_PROC);
+        owner->GetSpellHistory()->ResetCooldown(SPELL_DRUID_MANGLE, true);
     }
 
     void Register() override
     {
-        DoCheckProc += AuraCheckProcFn(spell_dru_gore::CheckProc);
+        DoCheckEffectProc += AuraCheckEffectProcFn(spell_dru_gore::CheckEffectProc, EFFECT_0, SPELL_AURA_DUMMY);
+        OnEffectProc += AuraEffectProcFn(spell_dru_gore::HandleProc, EFFECT_0, SPELL_AURA_DUMMY);
     }
- };
+};
 
 // Thrash (Bear Form) - 77758, 106832
 class spell_dru_thrash_bear : public SpellScript
@@ -1428,37 +1441,29 @@ public:
 
 // Activate Cat Form
 // @Called : Dash - 1850, Prowl - 5215, Displacer Beast - 102280
-// @Version : 7.1.0.22908
-class spell_dru_activate_cat_form : public SpellScriptLoader
+// @Version : 9.0.2
+class spell_dru_activate_cat_form : public SpellScript
 {
-public:
-    spell_dru_activate_cat_form() : SpellScriptLoader("spell_dru_activate_cat_form") { }
+    PrepareSpellScript(spell_dru_activate_cat_form);
 
-    class spell_dru_activate_cat_form_SpellScript : public SpellScript
+    bool Validate(SpellInfo const* /*spellInfo*/) override
     {
-        PrepareSpellScript(spell_dru_activate_cat_form_SpellScript);
+        return ValidateSpellInfo({ SPELL_DRUID_CAT_FORM });
+    }
 
-        void HandleOnHit()
-        {
-            Unit* caster = GetCaster();
-            if (!caster)
-                return;
-
-            if (!caster->HasAura(SPELL_DRUID_CAT_FORM))
-                caster->CastSpell(caster, SPELL_DRUID_CAT_FORM, true);
-        }
-
-        void Register() override
-        {
-            OnHit += SpellHitFn(spell_dru_activate_cat_form_SpellScript::HandleOnHit);
-        }
-    };
-
-    SpellScript* GetSpellScript() const override
+    void HandleOnCast()
     {
-        return new spell_dru_activate_cat_form_SpellScript();
+        // Change into cat form
+        if (GetCaster()->GetShapeshiftForm() != FORM_CAT_FORM)
+            GetCaster()->CastSpell(GetCaster(), SPELL_DRUID_CAT_FORM);
+    }
+
+    void Register() override
+    {
+        BeforeCast += SpellCastFn(spell_dru_activate_cat_form::HandleOnCast);
     }
 };
+
 
 enum KillerInstinctSpells
 {
@@ -1537,7 +1542,7 @@ public:
             return true;
         }
 
-        void HandleProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+        void HandleProc(AuraEffect* aurEff, ProcEventInfo& eventInfo)
         {
             PreventDefaultAction();
 
@@ -2665,7 +2670,7 @@ void AddSC_druid_spell_scripts()
     new spell_dru_bear_form();
     new spell_dru_skull_bash();
     new spell_dru_stampeding_roar();
-    new spell_dru_activate_cat_form();
+    RegisterSpellScript(spell_dru_activate_cat_form);
     new spell_dru_killer_instinct();
     new spell_dru_living_seed();
     new spell_dru_infected_wound();

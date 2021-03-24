@@ -300,7 +300,7 @@ class spell_pal_beacon_of_light_proc : public AuraScript
         return false;
     }
 
-    void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
+    void OnProc(AuraEffect* /*aurEff*/, ProcEventInfo& eventInfo)
     {
         PreventDefaultAction();
         bool auraCheck;
@@ -356,7 +356,7 @@ class spell_pal_infusion_of_light : public AuraScript
         return false;
     }
 
-    void HandleEffectProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
+    void HandleEffectProc(AuraEffect* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
     {
         Unit* caster = GetCaster();
 
@@ -655,7 +655,7 @@ class spell_pal_eye_for_an_eye : public AuraScript
         return ValidateSpellInfo({ SPELL_PALADIN_EYE_FOR_AN_EYE_DAMAGE });
     }
 
-    void HandleEffectProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
+    void HandleEffectProc(AuraEffect* /*aurEff*/, ProcEventInfo& eventInfo)
     {
         GetTarget()->CastSpell(eventInfo.GetProcTarget(), SPELL_PALADIN_EYE_FOR_AN_EYE_DAMAGE, true);
     }
@@ -671,7 +671,7 @@ class spell_pal_blade_of_wrath_proc : public AuraScript
 {
     PrepareAuraScript(spell_pal_blade_of_wrath_proc);
 
-    void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
+    void HandleProc(AuraEffect* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
     {
         Unit* caster = GetCaster();
         if (!caster)
@@ -1932,13 +1932,13 @@ class spell_pal_crusade : public AuraScript
         amount /= 10;
     }
 
-    void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
+    void OnProc(AuraEffect* /*aurEff*/, ProcEventInfo& eventInfo)
     {
         auto powerCosts = eventInfo.GetSpellInfo()->CalcPowerCost(eventInfo.GetActor(), SPELL_SCHOOL_MASK_HOLY);
 
         for (auto powerCost : powerCosts)
             if (powerCost.Power == POWER_HOLY_POWER)
-                GetAura()->ModStackAmount(powerCost.Amount, AURA_REMOVE_BY_DEFAULT, false, false);
+                GetAura()->ModStackAmount(powerCost.Amount, AURA_REMOVE_BY_DEFAULT, false);
     }
 
     void Register() override
@@ -2056,7 +2056,7 @@ class spell_pal_art_of_war : public AuraScript
 {
     PrepareAuraScript(spell_pal_art_of_war);
 
-    void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
+    void OnProc(AuraEffect* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
     {
         GetTarget()->GetSpellHistory()->ResetCooldown(SPELL_PALADIN_BLADE_OF_JUSTICE, true);
     }
@@ -2119,7 +2119,7 @@ class spell_pal_righteous_verdict : public AuraScript
 {
     PrepareAuraScript(spell_pal_righteous_verdict);
 
-    void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
+    void OnProc(AuraEffect* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
     {
         Unit* target = GetTarget();
 
@@ -2168,7 +2168,7 @@ class spell_pal_awakening : public AuraScript
         return false;
     }
 
-    void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
+    void OnProc(AuraEffect* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
     {
         GetTarget()->CastCustomSpell(SPELL_PALADIN_AVENGING_WRATH, SPELLVALUE_DURATION, GetEffectInfo(EFFECT_1)->BasePoints, GetTarget(), TRIGGERED_FULL_MASK);
     }

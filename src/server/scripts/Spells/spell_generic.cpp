@@ -136,7 +136,7 @@ class spell_gen_adaptive_warding : public SpellScriptLoader
                 return true;
             }
 
-            void HandleProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+            void HandleProc(AuraEffect* aurEff, ProcEventInfo& eventInfo)
             {
                 PreventDefaultAction();
 
@@ -460,7 +460,7 @@ class spell_gen_blood_reserve : public SpellScriptLoader
                 return false;
             }
 
-            void HandleProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+            void HandleProc(AuraEffect* aurEff, ProcEventInfo& eventInfo)
             {
                 PreventDefaultAction();
 
@@ -1724,7 +1724,7 @@ class spell_gen_interrupt : public SpellScriptLoader
                 return ValidateSpellInfo({ SPELL_GEN_THROW_INTERRUPT });
             }
 
-            void HandleProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+            void HandleProc(AuraEffect* aurEff, ProcEventInfo& eventInfo)
             {
                 PreventDefaultAction();
                 GetTarget()->CastSpell(eventInfo.GetProcTarget(), SPELL_GEN_THROW_INTERRUPT, true, nullptr, aurEff);
@@ -2013,7 +2013,7 @@ public:
             return ValidateSpellInfo({ SPELL_FALL_DOWN });
         }
 
-        void HandleProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+        void HandleProc(AuraEffect* aurEff, ProcEventInfo& eventInfo)
         {
             PreventDefaultAction();
             eventInfo.GetActionTarget()->CastSpell(nullptr, SPELL_FALL_DOWN, true, nullptr, aurEff);
@@ -2177,7 +2177,7 @@ class spell_gen_obsidian_armor : public SpellScriptLoader
                 return true;
             }
 
-            void OnProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+            void OnProc(AuraEffect* aurEff, ProcEventInfo& eventInfo)
             {
                 PreventDefaultAction();
 
@@ -3431,7 +3431,7 @@ class spell_gen_vampiric_touch : public SpellScriptLoader
                 return ValidateSpellInfo({ SPELL_VAMPIRIC_TOUCH_HEAL });
             }
 
-            void HandleProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+            void HandleProc(AuraEffect* aurEff, ProcEventInfo& eventInfo)
             {
                 PreventDefaultAction();
                 DamageInfo* damageInfo = eventInfo.GetDamageInfo();

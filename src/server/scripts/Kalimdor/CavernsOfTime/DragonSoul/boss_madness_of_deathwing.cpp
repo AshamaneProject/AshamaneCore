@@ -3648,7 +3648,7 @@ public:
         PrepareAuraScript(spell_madness_of_deathwing_spellweaving_AuraScript);
 
 
-        void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
+        void OnProc(AuraEffect* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
         {
             PreventDefaultAction();
             if (Unit* target = GetTarget())

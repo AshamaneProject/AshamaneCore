@@ -117,7 +117,7 @@ class aura_smashspite_brutality : public AuraScript
 {
     PrepareAuraScript(aura_smashspite_brutality);
 
-    void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
+    void OnProc(AuraEffect* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
     {
         GetTarget()->ModifyPower(POWER_ENERGY, 5);
 

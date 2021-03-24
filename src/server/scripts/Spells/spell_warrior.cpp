@@ -563,7 +563,7 @@ public:
             return true;
         }
 
-        void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
+        void OnProc(AuraEffect* /*aurEff*/, ProcEventInfo& eventInfo)
         {
             if (Aura* aur = eventInfo.GetProcTarget()->GetAura(SPELL_WARRIOR_REND, GetTarget()->GetGUID()))
                 aur->SetDuration(aur->GetSpellInfo()->GetMaxDuration(), true);
@@ -722,7 +722,7 @@ public:
             return GetTarget()->isInFront(eventInfo.GetActor(), float(M_PI)) && !GetTarget()->HasUnitState(UNIT_STATE_STUNNED);
         }
 
-        void HandleEffectProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+        void HandleEffectProc(AuraEffect* aurEff, ProcEventInfo& eventInfo)
         {
             PreventDefaultAction();
             GetTarget()->CastSpell(eventInfo.GetProcTarget(), SPELL_WARRIOR_RETALIATION_DAMAGE, true, NULL, aurEff);
@@ -824,7 +824,7 @@ public:
             return true;
         }
 
-        void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
+        void HandleProc(AuraEffect* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
         {
             if(!GetCaster())
                 return;
@@ -955,7 +955,7 @@ public:
             return _procTarget != nullptr;
         }
 
-        void HandleProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+        void HandleProc(AuraEffect* aurEff, ProcEventInfo& eventInfo)
         {
             PreventDefaultAction();
             if (eventInfo.GetDamageInfo())
@@ -1010,7 +1010,7 @@ public:
             return true;
         }
 
-        void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
+        void OnProc(AuraEffect* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
         {
             // Remove cooldown on Shield Slam
             if (Player* player = GetTarget()->ToPlayer())
@@ -1040,7 +1040,7 @@ public:
     {
         PrepareAuraScript(spell_warr_victorious_AuraScript);
 
-        void HandleEffectProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
+        void HandleEffectProc(AuraEffect* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
         {
             PreventDefaultAction();
             GetTarget()->RemoveAura(GetId());
@@ -2345,7 +2345,7 @@ public:
     {
         PrepareAuraScript(spell_warr_wrecking_ball_effect_AuraScript);
 
-        void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*procInfo*/)
+        void HandleProc(AuraEffect* /*aurEff*/, ProcEventInfo& /*procInfo*/)
         {
             if (Unit* caster = GetCaster())
             {
@@ -2413,7 +2413,7 @@ public:
             BloodBathDamage = 113344
         };
 
-        void HandleOnProc(AuraEffect const* aurEff, ProcEventInfo& p_ProcInfo)
+        void HandleOnProc(AuraEffect* aurEff, ProcEventInfo& p_ProcInfo)
         {
             PreventDefaultAction();
 
@@ -2518,7 +2518,7 @@ public:
     {
         PrepareAuraScript(spell_warr_frothing_berserker_AuraScript);
 
-        void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
+        void HandleProc(AuraEffect* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
         {
             GetCaster()->CastSpell(GetCaster(), 215572, true);
         }
@@ -2545,7 +2545,7 @@ public:
     {
         PrepareAuraScript(spell_warr_unrivaled_strenght_AuraScript);
 
-        void HandleProc(AuraEffect const* aurEff, ProcEventInfo& /*procInfo*/)
+        void HandleProc(AuraEffect* aurEff, ProcEventInfo& /*procInfo*/)
         {
             GetCaster()->CastSpell(GetCaster(), 200977, true);
             if(GetCaster()->HasAura(200977))
@@ -2612,7 +2612,7 @@ public:
     {
         PrepareAuraScript(spell_warr_tactician_AuraScript);
 
-        void HandleEffectProc(AuraEffect const* /*aurEff*/, ProcEventInfo& procInfo)
+        void HandleEffectProc(AuraEffect* /*aurEff*/, ProcEventInfo& procInfo)
         {
             PreventDefaultAction();
             int32 rageSpent = 0;
@@ -2740,7 +2740,7 @@ public:
             return false;
         }
 
-        void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
+        void HandleProc(AuraEffect* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
         {
             Unit* caster = GetCaster();
 

@@ -1189,16 +1189,3 @@ void WorldSession::HandleSelectFactionOpcode(WorldPackets::Misc::FactionSelect& 
         _player->CastSpell(_player, 113245, true);  // Faction Choice Trigger Spell: Horde
     }
 }
-
-void WorldSession::HandleSetWarModeOpcode(WorldPackets::Misc::SetWarMode& warMode)
-{
-    uint32 const warModeSpellId = 282559; // Enlisted
-
-    if (_player->GetZoneId() != ZONE_STORMWIND_CITY && _player->GetZoneId() != ZONE_ORGRIMMAR)
-        return;
-
-    if (warMode.Enabled)
-        _player->CastSpell(_player, warModeSpellId, true);
-    else
-        _player->RemoveAurasDueToSpell(warModeSpellId);
-}

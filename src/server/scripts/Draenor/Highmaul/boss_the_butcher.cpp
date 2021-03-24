@@ -708,7 +708,7 @@ class spell_highmaul_heavy_handed : public SpellScriptLoader
         {
             PrepareAuraScript(spell_highmaul_heavy_handed_AuraScript);
 
-            void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& p_EventInfo)
+            void OnProc(AuraEffect* /*aurEff*/, ProcEventInfo& p_EventInfo)
             {
                 PreventDefaultAction();
 

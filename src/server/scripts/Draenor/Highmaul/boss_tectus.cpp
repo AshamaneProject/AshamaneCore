@@ -1761,7 +1761,7 @@ class spell_highmaul_accretion : public SpellScriptLoader
                 return true;
             }
 
-            void OnProc(AuraEffect const* aurEff, ProcEventInfo& p_EventInfo)
+            void OnProc(AuraEffect* aurEff, ProcEventInfo& p_EventInfo)
             {
                 PreventDefaultAction();
 
@@ -1965,7 +1965,7 @@ class spell_highmaul_petrification : public SpellScriptLoader
                 Petrification = 163809
             };
 
-            void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& p_EventInfo)
+            void OnProc(AuraEffect* /*aurEff*/, ProcEventInfo& p_EventInfo)
             {
                 PreventDefaultAction();
 

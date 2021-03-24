@@ -641,7 +641,7 @@ class TC_GAME_API AuraScript : public _SpellScript
         typedef bool(CLASSNAME::*AuraCheckProcFnType)(ProcEventInfo&); \
         typedef bool(CLASSNAME::*AuraCheckEffectProcFnType)(AuraEffect const*, ProcEventInfo&); \
         typedef void(CLASSNAME::*AuraProcFnType)(ProcEventInfo&); \
-        typedef void(CLASSNAME::*AuraEffectProcFnType)(AuraEffect const*, ProcEventInfo&); \
+        typedef void(CLASSNAME::*AuraEffectProcFnType)(AuraEffect*, ProcEventInfo&); \
 
         AURASCRIPT_FUNCTION_TYPE_DEFINES(AuraScript)
 
@@ -793,7 +793,7 @@ class TC_GAME_API AuraScript : public _SpellScript
         {
             public:
                 EffectProcHandler(AuraEffectProcFnType effectHandlerScript, uint8 effIndex, uint16 effName);
-                void Call(AuraScript* auraScript, AuraEffect const* aurEff, ProcEventInfo& eventInfo);
+                void Call(AuraScript* auraScript, AuraEffect* aurEff, ProcEventInfo& eventInfo);
             private:
                 AuraEffectProcFnType _EffectHandlerScript;
         };
@@ -997,7 +997,7 @@ class TC_GAME_API AuraScript : public _SpellScript
         HookList<EffectProcHandler> OnEffectProc;
         // executed after aura effect proced
         // example: AfterEffectProc += AuraEffectProcFn(class::function, EffectIndexSpecifier, EffectAuraNameSpecifier);
-        // where function is: void function (AuraEffect const* aurEff, ProcEventInfo& procInfo);
+        // where function is: void function (AuraEffect* aurEff, ProcEventInfo& procInfo);
         HookList<EffectProcHandler> AfterEffectProc;
         #define AuraEffectProcFn(F, I, N) EffectProcHandlerFunction(&F, I, N)
 
@@ -1060,7 +1060,7 @@ class TC_GAME_API AuraScript : public _SpellScript
         // stack amount manipulation
         uint8 GetStackAmount() const;
         void SetStackAmount(uint8 num);
-        bool ModStackAmount(int32 num, AuraRemoveMode removeMode = AURA_REMOVE_BY_DEFAULT, bool resetPeriodicTimer = true, bool refresh = true);
+        bool ModStackAmount(int32 num, AuraRemoveMode removeMode = AURA_REMOVE_BY_DEFAULT, bool resetPeriodicTimer = true);
 
         // passive - "working in background", not saved, not removed by immunities, not seen by player
         bool IsPassive() const;

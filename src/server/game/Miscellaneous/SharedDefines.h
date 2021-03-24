@@ -821,7 +821,7 @@ enum SpellAttr12
     SPELL_ATTR12_UNK6                            = 0x00000040, //  6
     SPELL_ATTR12_UNK7                            = 0x00000080, //  7
     SPELL_ATTR12_UNK8                            = 0x00000100, //  8
-    SPELL_ATTR12_UNK9                            = 0x00000200, //  9
+    SPELL_ATTR12_IGNORE_CASTING_DISABLED         = 0x00000200, //  9 Ignores aura 263 SPELL_AURA_DISABLE_CASTING_EXCEPT_ABILITIES
     SPELL_ATTR12_UNK10                           = 0x00000400, // 10
     SPELL_ATTR12_UNK11                           = 0x00000800, // 11
     SPELL_ATTR12_UNK12                           = 0x00001000, // 12
@@ -7480,6 +7480,7 @@ enum Maps : uint32
     MAP_NELTHARION_LAIR         = 1458,
     MAP_TANAAN_JUNGLE           = 1464,
     MAP_DALARAN_UNDERBELLY      = 1502,
+    MAP_NPE                     = 2175
 };
 
 enum AreaName : uint32

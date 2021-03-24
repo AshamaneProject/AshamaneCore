@@ -19,6 +19,7 @@
 #include "Battleground.h"
 #include "Common.h"
 #include "Corpse.h"
+#include "FlightPathMovementGenerator.h"
 #include "GameTime.h"
 #include "Garrison.h"
 #include "InstancePackets.h"
@@ -35,7 +36,6 @@
 #include "MovementGenerator.h"
 #include "Transport.h"
 #include "Vehicle.h"
-#include "WaypointMovementGenerator.h"
 #include "SpellMgr.h"
 
 #include <boost/accumulators/statistics/variance.hpp>

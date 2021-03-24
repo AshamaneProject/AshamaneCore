@@ -620,7 +620,7 @@ public:
                     caster->CastSpell(caster, SPELL_MONK_JADE_LIGHTNING_ENERGIZE, true);
         }
 
-        void OnProc(AuraEffect const* /* aurEff */, ProcEventInfo& eventInfo)
+        void OnProc(AuraEffect* /* aurEff */, ProcEventInfo& eventInfo)
         {
             PreventDefaultAction();
 
@@ -1362,7 +1362,7 @@ class spell_monk_touch_of_death_amplifier : public AuraScript
         return eventInfo.GetDamageInfo() && eventInfo.GetDamageInfo()->GetDamage() > 0;
     }
 
-    void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
+    void HandleProc(AuraEffect* /*aurEff*/, ProcEventInfo& eventInfo)
     {
         if (AuraEffect* aurEff = GetTarget()->GetAuraEffect(SPELL_MONK_TOUCH_OF_DEATH, EFFECT_0))
             if (AuraEffect* aurEffAmplifier = eventInfo.GetActor()->GetAuraEffect(SPELL_MONK_TOUCH_OF_DEATH_AMPLIFIER, EFFECT_0))
@@ -1526,7 +1526,7 @@ public:
             return true;
         }
 
-        void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
+        void HandleProc(AuraEffect* /*aurEff*/, ProcEventInfo& eventInfo)
         {
             GetTarget()->CastSpell(eventInfo.GetActor(), SPELL_MONK_CRACKLING_JADE_LIGHTNING_KNOCKBACK, TRIGGERED_FULL_MASK);
             GetTarget()->CastSpell(GetTarget(), SPELL_MONK_CRACKLING_JADE_LIGHTNING_KNOCKBACK_CD, TRIGGERED_FULL_MASK);
@@ -1691,7 +1691,7 @@ public:
                 && sSpellMgr->GetSpellInfo(SPELL_MONK_RING_OF_PEACE_DISARM);
         }
 
-        void HandleDummyProc(AuraEffect const* /*auraEffect*/, ProcEventInfo& /*eventInfo*/)
+        void HandleDummyProc(AuraEffect* /*auraEffect*/, ProcEventInfo& /*eventInfo*/)
         {
             Unit* caster = GetCaster();
             Unit* target = GetTarget();
@@ -2179,7 +2179,7 @@ class spell_monk_spirit_of_the_crane_passive : public AuraScript
         return true;
     }
 
-    void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
+    void HandleProc(AuraEffect* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
     {
         // TODO: Basepoints can be float now... this is 1 but needs to be lower.
         GetTarget()->CastSpell(GetTarget(), SPELL_MONK_SPIRIT_OF_THE_CRANE_MANA, true);
@@ -2688,7 +2688,7 @@ public:
             return true;
         }
 
-        void HandleEffectProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
+        void HandleEffectProc(AuraEffect* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
         {
             Unit* caster = GetCaster();
 
@@ -2732,7 +2732,7 @@ class spell_monk_teachings_of_the_monastery_passive : public AuraScript
         return true;
     }
 
-    void HandleProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+    void HandleProc(AuraEffect* aurEff, ProcEventInfo& eventInfo)
     {
         if (eventInfo.GetSpellInfo()->Id == SPELL_MONK_TIGER_PALM)
             GetTarget()->CastSpell(GetTarget(), SPELL_MONK_TEACHINGS_OF_THE_MONASTERY, true);
@@ -2776,7 +2776,7 @@ class spell_monk_teachings_of_the_monastery_buff : public AuraScript
         return true;
     }
 
-    void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
+    void HandleProc(AuraEffect* /*aurEff*/, ProcEventInfo& eventInfo)
     {
         if (Aura* monasteryBuff = GetAura())
         {
@@ -3106,7 +3106,7 @@ public:
     {
         PrepareAuraScript(spell_monk_soothing_mist_aura_AuraScript);
 
-        void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
+        void HandleProc(AuraEffect* /*aurEff*/, ProcEventInfo& eventInfo)
         {
             if (Unit* caster = GetCaster())
                 if(eventInfo.GetProcTarget())
@@ -3550,7 +3550,7 @@ public:
     {
         PrepareAuraScript(spell_monk_lifecycles_AuraScript);
 
-        void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& procInfo)
+        void HandleProc(AuraEffect* /*aurEff*/, ProcEventInfo& procInfo)
         {
             Unit* caster = GetCaster();
 
@@ -3732,7 +3732,7 @@ public:
     class spell_monk_healing_elixirs_aura_AuraScript : public AuraScript
     {
         PrepareAuraScript(spell_monk_healing_elixirs_aura_AuraScript);
-        void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
+        void OnProc(AuraEffect* /*aurEff*/, ProcEventInfo& eventInfo)
         {
             PreventDefaultAction();
             if (!GetCaster())
@@ -3928,7 +3928,7 @@ class spell_monk_way_of_the_crane : public AuraScript
         return false;
     }
 
-    void HandleProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+    void HandleProc(AuraEffect* aurEff, ProcEventInfo& eventInfo)
     {
         PreventDefaultAction();
         int32 damage = eventInfo.GetDamageInfo()->GetDamage();

@@ -248,7 +248,7 @@ class npc_arc_vicious_manafang : public CreatureScript
                 me->SetReactState(REACT_PASSIVE);
                 me->SetDisableGravity(true);
                 me->AddUnitMovementFlag(MOVEMENTFLAG_FORWARD | MOVEMENTFLAG_DISABLE_GRAVITY);
-                me->AddExtraUnitMovementFlag(MOVEMENTFLAG2_JUMP_SPLINE_IN_AIR);
+                me->AddExtraUnitMovementFlag(MOVEMENTFLAG2_VEHICLE_PASSENGER_IS_TRANSITION_ALLOWED);
 
                 _isInLand = false;
                 _target = nullptr;
@@ -272,7 +272,7 @@ class npc_arc_vicious_manafang : public CreatureScript
                     me->SetReactState(REACT_AGGRESSIVE);
                     me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE));
                     me->RemoveUnitMovementFlag(MOVEMENTFLAG_FORWARD | MOVEMENTFLAG_DISABLE_GRAVITY);
-                    me->RemoveExtraUnitMovementFlag(MOVEMENTFLAG2_JUMP_SPLINE_IN_AIR);
+                    me->RemoveExtraUnitMovementFlag(MOVEMENTFLAG2_VEHICLE_PASSENGER_IS_TRANSITION_ALLOWED);
                     _events.ScheduleEvent(EVENT_DEVOUR, Seconds(10));
                 }
             }

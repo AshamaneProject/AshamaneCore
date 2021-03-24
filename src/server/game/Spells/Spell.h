@@ -305,7 +305,7 @@ struct SpellValue
     uint32    CustomBasePointsMask;
     uint32    MaxAffectedTargets;
     float     RadiusMod;
-    uint8     AuraStackAmount;
+    int32     AuraStackAmount;
     uint32    Duration;
     uint32    EffectTriggerSpell[MAX_SPELL_EFFECTS];
 };
