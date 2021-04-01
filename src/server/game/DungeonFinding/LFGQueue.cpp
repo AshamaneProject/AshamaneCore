@@ -722,7 +722,7 @@ void LFGQueue::UpdateBestCompatibleInQueue(LfgQueueDataContainer::iterator itrQu
     queueData.bestCompatible = key;
     queueData.tanks = LFG_TANKS_NEEDED;
     queueData.healers = LFG_HEALERS_NEEDED;
-    queueData.damages = LFG_DPS_NEEDED;
+    queueData.damages = LFG_DAMAGES_NEEDED;
     for (LfgRolesMap::const_iterator it = roles.begin(); it != roles.end(); ++it)
     {
         uint8 role = it->second;
