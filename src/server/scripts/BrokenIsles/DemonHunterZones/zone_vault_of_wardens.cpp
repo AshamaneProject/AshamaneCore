@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
+ * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
@@ -64,6 +63,7 @@ enum eSpells
     SPELL_FEL_INFUSION          = 133508,
     SPELL_UNLOCKING_ALTRUIS     = 184012,
     SPELL_UNLOCKING_KAYN        = 177803,
+    SPELL_PRISON_EXPLOSION      = 232248,
 };
 
 enum eKillCredits
@@ -74,6 +74,75 @@ enum eKillCredits
     KILL_CREDIT_REUNION_FINISHED_ALTRUIS        = 112287,
 };
 
+class npc_maiev_shadowsong_welcome : public CreatureScript
+{
+public:
+    npc_maiev_shadowsong_welcome() : CreatureScript("npc_maiev_shadowsong_welcome") { }
+
+    bool OnQuestAccept(Player* player, Creature* creature, Quest const* quest) override
+    {
+        if (quest->GetQuestId() == QUEST_BREAKING_OUT) {
+            player->SummonCreature(92718, creature->GetPosition(), TEMPSUMMON_MANUAL_DESPAWN, 10000, 0, true);
+        }
+        return true;
+    }
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_maiev_shadowsong_welcome_AI(creature);
+    }
+
+    struct npc_maiev_shadowsong_welcome_AI : public ScriptedAI
+    {
+        npc_maiev_shadowsong_welcome_AI(Creature* creature) : ScriptedAI(creature)
+        {
+            timer = 0;
+            movein = false;
+        }
+
+        uint32 timer;
+        bool movein;
+
+        void IsSummonedBy(Unit* summoner) override
+        {
+            Player* player = summoner->ToPlayer();
+
+            if (!player)
+                return;
+
+            timer = 2000;
+            movein = true;
+
+            Talk(0);
+        }
+
+        void UpdateAI(uint32 diff) override
+        {
+            if (movein)
+            {
+                if (timer <= diff)
+                {
+                    if (GameObject* go = me->FindNearestGameObject(244925, me->GetVisibilityRange()))
+                        go->UseDoorOrButton();
+
+                    me->GetMotionMaster()->MovePath(1092718, false);
+
+                    me->GetScheduler().Schedule(Seconds(4), [this](TaskContext context)
+                    {
+                        Creature* maiev = GetContextCreature();
+                        if (GameObject* go = maiev->FindNearestGameObject(244925, maiev->GetVisibilityRange()))
+                            go->ResetDoorOrButton();
+                    });
+
+                    movein = false;
+                    me->DespawnOrUnsummon(5000);
+                }
+                else timer -= diff;
+            }
+        }
+    };
+};
+
 // 103658
 class npc_kayn_cell : public CreatureScript
 {
@@ -82,18 +151,14 @@ public:
 
    bool OnGossipHello(Player* player, Creature* creature) override
    {
-       /*player->CastSpell(creature, SPELL_UNLOCKING_KAYN, true);
-       creature->DespawnOrUnsummon(25);
-       player->KilledMonsterCredit(KILL_CREDIT_REUNION_FINISHED_KAYN, ObjectGuid::Empty);
-       player->KilledMonsterCredit(KILL_CREDIT_KAYN_PICKED_UP_WEAPONS, ObjectGuid::Empty);*/
        if (player->GetQuestStatus(QUEST_BREAKING_OUT) == QUEST_STATUS_INCOMPLETE)
        {
            if (creature == nullptr)
                return false;
 
-            player->CastSpell(creature, SPELL_UNLOCKING_KAYN, true);
-           creature->DespawnOrUnsummon(25);
-           player->SummonCreature(99631, 4343.16f, -589.57f, -281.40f, 3.38f, TEMPSUMMON_TIMED_DESPAWN, 20000);
+           player->CastSpell(creature, SPELL_UNLOCKING_KAYN, true);
+           creature->DespawnOrUnsummon(60);
+           player->SummonCreature(99631, 4343.16f, -589.57f, -281.40f, 3.38f, TEMPSUMMON_TIMED_DESPAWN, 60000, false);
        }
        return true;
    }
@@ -106,20 +171,15 @@ public:
     npc_altruis_cell() : CreatureScript("npc_altruis_cell") { }
 
     bool OnGossipHello(Player* player, Creature* creature) override
-    {
-        //player->CastSpell(creature, SPELL_UNLOCKING_ALTRUIS, true);
-        //creature->DespawnOrUnsummon(25);
-        //player->KilledMonsterCredit(KILL_CREDIT_REUNION_FINISHED_ALTRUIS, ObjectGuid::Empty);
-        //player->KilledMonsterCredit(KILL_CREDIT_ALTRUIS_PICKED_UP_WEAPONS, ObjectGuid::Empty);
+    {   
         if (player->GetQuestStatus(QUEST_BREAKING_OUT) == QUEST_STATUS_INCOMPLETE)
         {
             if (creature == nullptr)
                 return false;
 
-
-             player->CastSpell(creature, SPELL_UNLOCKING_ALTRUIS, true);
-            creature->DespawnOrUnsummon(25);
-            player->SummonCreature(99632, 4309.94f, -589.618f, -281.407f, 6.13126f, TEMPSUMMON_TIMED_DESPAWN, 20000);
+            player->CastSpell(creature, SPELL_UNLOCKING_ALTRUIS, true);
+            creature->DespawnOrUnsummon(60);
+            player->SummonCreature(99632, 4309.94f, -589.618f, -281.407f, 6.13126f, TEMPSUMMON_TIMED_DESPAWN, 60000, false);
         }
         return true;
     }
@@ -145,10 +205,23 @@ public:
         }
         else if (newStatus == QUEST_STATUS_COMPLETE)
         {
-            if (Creature* Kayn = player->FindNearestCreature(99631, 30.0f))
-                Kayn->AI()->Talk(1);
-            if (Creature* Altruis = player->FindNearestCreature(99632, 30.0f))
-                Altruis->AI()->Talk(1);
+            if (Creature* Kayn = player->FindNearestCreature(99631, player->GetVisibilityRange(), true)) {
+                Kayn->AI()->SetData(21, 21);
+                Kayn->GetScheduler().Schedule(Seconds(3), [](TaskContext context)
+                {
+                    Creature* kayn = GetContextCreature();
+                    kayn->AI()->Talk(1);
+                });
+            }
+                
+            if (Creature* Altruis = player->FindNearestCreature(99632, player->GetVisibilityRange(), true)) {
+                Altruis->AI()->SetData(21, 21);
+                Altruis->GetScheduler().Schedule(Seconds(8), [](TaskContext context)
+                {
+                    Creature* altruis = GetContextCreature();
+                    altruis->AI()->Talk(1);
+                });
+            }
         }
     }
 };
@@ -262,30 +335,6 @@ public:
     }
 };
 
- // 197180
-struct npc_vault_of_the_wardens_sledge_or_crusher : public ScriptedAI
-{
-    npc_vault_of_the_wardens_sledge_or_crusher(Creature* creature) : ScriptedAI(creature) { }
-
-    enum Quest
-    {
-        QUEST_STOP_GULDAN_DMG_SPEC = 38723,
-        QUEST_STOP_GULDAN_TANK_SPEC = 40253,
-    };
-
-    void JustDied(Unit* /*killer*/) override
-    {
-        std::list<Player*> players;
-        me->GetPlayerListInGrid(players, 50.0f);
-
-        for (Player* player : players)
-        {
-            player->ForceCompleteQuest(QUEST_STOP_GULDAN_DMG_SPEC);
-            player->ForceCompleteQuest(QUEST_STOP_GULDAN_TANK_SPEC);
-        }
-    }
-};
-
 // guid: 20542913 id: 92984 Kayn Sunfury to fight with Sledge
 enum KaynSledgeFightEvents
 {
@@ -344,7 +393,7 @@ public:
         bool _talkedKaynFirstLine = false;
         bool _talkedKaynSecondLine = false;
         bool _talkedKaynThirdLine = false;
-
+        
         void MoveInLineOfSight(Unit* who) override
         {
             if (who->IsPlayer())
@@ -424,7 +473,7 @@ public:
             while (uint32 eventId = _events.ExecuteEvent())
             {
                 switch (eventId)
-                {
+                {   
                 case SAY_DO_NOT_SPEAK_OLD_TIMES:
                     if (Creature* creature = me->FindNearestCreature(NPC_ALTRUIS_SUFFERER_CRUSHER, me->GetVisibilityRange(), true))
                         creature->AI()->SetData(DATA_ALTRUIS_TALK_AFTER_10K_YEARS, DATA_ALTRUIS_TALK_AFTER_10K_YEARS);
@@ -547,7 +596,7 @@ public:
             if (damage >= me->GetHealth())
             {
                 std::list<HostileReference*> threatList;
-                threatList = me->GetThreatManager().getThreatList();
+                threatList = me->getThreatManager().getThreatList();
                 for (std::list<HostileReference*>::const_iterator itr = threatList.begin(); itr != threatList.end(); ++itr)
                     if (Player* target = (*itr)->getTarget()->ToPlayer())
                         if (target->GetQuestStatus(QUEST_STOP_GULDAN_H) == QUEST_STATUS_INCOMPLETE ||
@@ -753,7 +802,7 @@ public:
             while (uint32 eventId = _events.ExecuteEvent())
             {
                 switch (eventId)
-                {
+                {   
                 case EVENT_SET_DATA_FOR_KAYN_ANSWER_1:
                     if (Creature* creature = me->FindNearestCreature(NPC_KAYN_SUNFURY_SLEDGE, me->GetVisibilityRange(), true))
                         creature->AI()->SetData(DATA_ALTRUIS_TALK_OLD_TIMES, DATA_ALTRUIS_TALK_OLD_TIMES);
@@ -870,12 +919,12 @@ public:
                     creature->AI()->SetData(DATA_ALTRUIS_TALK_OLD_TIMES, DATA_ALTRUIS_TALK_OLD_TIMES);
                     _conversationStarted = true;
                 }
-            }
-
+            }       
+            
             if (damage >= me->GetHealth())
             {
                 std::list<HostileReference*> threatList;
-                threatList = me->GetThreatManager().getThreatList();
+                threatList = me->getThreatManager().getThreatList();
                 for (std::list<HostileReference*>::const_iterator itr = threatList.begin(); itr != threatList.end(); ++itr)
                     if (Player* target = (*itr)->getTarget()->ToPlayer())
                         if (target->GetQuestStatus(QUEST_STOP_GULDAN_H) == QUEST_STATUS_INCOMPLETE ||
@@ -1037,7 +1086,7 @@ public:
         void UpdateAI(uint32 diff)
         {
             std::list<Player*> playerList;
-            me->GetPlayerListInGrid(playerList, 10.0f);
+            go->GetPlayerListInGrid(playerList, 10.0f);
             for (Player* player : playerList)
             {
                 if (player->GetQuestStatus(39686) == QUEST_STATUS_INCOMPLETE)
@@ -1081,9 +1130,10 @@ enum eBastillax
     EVENT_FEL_ANNIHILATION = 0,
     EVENT_CRUSHING_SHADOWS = 1,
     EVENT_BLUR_OF_SHADOWS = 2,
-    SPELL_FEL_ANNIHILATION = 200007,
-    SPELL_CRUSHING_SHADOWS = 200027,
-    SPELL_BLUR_OF_SHADOWS = 200002,
+    SPELL_FEL_ANNIHILATION = 200007, // 5 + 35
+    SPELL_CRUSHING_SHADOWS = 200027, // 45
+    SPELL_BLUR_OF_SHADOWS = 200002, // 23 say
+    SPELL_3 = 200353,  // 16 + 50  say + summon
 };
 
 class npc_bastillax : public CreatureScript
@@ -1111,9 +1161,9 @@ public:
 
         void EnterCombat(Unit* /*who*/) override
         {
-            events.ScheduleEvent(EVENT_FEL_ANNIHILATION, urand(6000, 8000));
-            events.ScheduleEvent(EVENT_CRUSHING_SHADOWS, urand(10000, 12000));
-            events.ScheduleEvent(EVENT_BLUR_OF_SHADOWS, 3000);
+            events.RescheduleEvent(EVENT_FEL_ANNIHILATION, urand(4000, 6000));
+            events.RescheduleEvent(EVENT_CRUSHING_SHADOWS, 45000);
+            events.RescheduleEvent(EVENT_BLUR_OF_SHADOWS, 23000);
         }
 
         void UpdateAI(uint32 diff) override
@@ -1128,20 +1178,41 @@ public:
                     if (Unit* target = me->GetVictim())
                         me->CastSpell(me, SPELL_FEL_ANNIHILATION, true);
 
-                    events.ScheduleEvent(EVENT_FEL_ANNIHILATION, urand(8000, 10000));
+                    events.RescheduleEvent(EVENT_FEL_ANNIHILATION, 35000);
                     break;
                 case EVENT_CRUSHING_SHADOWS:
                     if (Unit* target = me->GetVictim())
                         me->CastSpell(target, SPELL_CRUSHING_SHADOWS, true);
 
-                    events.ScheduleEvent(EVENT_CRUSHING_SHADOWS, 6000);
+                    events.RescheduleEvent(EVENT_CRUSHING_SHADOWS, 45000);
                     break;
                 case EVENT_BLUR_OF_SHADOWS:
                     if (Unit* target = me->GetVictim())
                         me->CastSpell(target, SPELL_BLUR_OF_SHADOWS, true);
 
-                    events.ScheduleEvent(EVENT_BLUR_OF_SHADOWS, 6000);
+                    events.RescheduleEvent(EVENT_BLUR_OF_SHADOWS, 23000);
                     break;
+                /*case EVENT_3:
+                    DoCast(SPELL_3);
+                    Talk(1);
+                    for (uint8 i = 0; i < 4; i++)
+                    {
+                        if (Creature* add = me->SummonCreature(101505, 4221.51f + irand(-3, 3), -627.92f + irand(-3, 3), 255.12f, 3.10f))
+                        {
+                            add->GetMotionMaster()->MovePoint(0, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ());
+                            DoZoneInCombat(add, 50.0f);
+                        }
+                    }
+                    for (uint8 i = 0; i < 4; i++)
+                    {
+                        if (Creature* add = me->SummonCreature(101505, 4146.97f + irand(-3, 3), -626.29f + irand(-3, 3), 255.12f, 6.27f))
+                        {
+                            add->GetMotionMaster()->MovePoint(0, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ());
+                            DoZoneInCombat(add, 50.0f);
+                        }
+                    }
+                    events.RescheduleEvent(EVENT_3, 50000);
+                    break;*/
                 }
             }
 
@@ -1321,7 +1392,7 @@ public:
             if (damage >= me->GetHealth())
             {
                 std::list<HostileReference*> threatList;
-                threatList = me->GetThreatManager().getThreatList();
+                threatList = me->getThreatManager().getThreatList();
                 for (std::list<HostileReference*>::const_iterator itr = threatList.begin(); itr != threatList.end(); ++itr)
                     if (Player* target = (*itr)->getTarget()->ToPlayer())
                         if (target->GetQuestStatus(QUEST_FORGED_IN_FIRE_H) == QUEST_STATUS_INCOMPLETE ||
@@ -1405,7 +1476,7 @@ struct npc_vow_ashgolm : public ScriptedAI
         {
             me->CastSpell(nullptr, SPELL_LAVA);
             me->CastSpell(nullptr, SPELL_LAVA_WREATH);
-
+            
             context.Repeat(Seconds(30));
         });
     }
@@ -1493,7 +1564,7 @@ public:
        player->KilledMonsterCredit(KILL_CREDIT_ENTER_THE_CHAMBER);
        if (GameObject* go = player->FindNearestGameObject(244923, 50.0f)) {
            go->UseDoorOrButton();
-       }
+       }   
        player->TeleportTo(1468, 4084.52f, -297.89f, -282.28f, 3.132f, false);
    }
 };
@@ -1509,6 +1580,7 @@ public:
     {
         if (quest->GetQuestId() == QUEST_STOP_GULDAN_H || QUEST_STOP_GULDAN_A)
             player->GetSceneMgr().PlayScene(SCENE_GULDAN_STEAL_ILLIDAN_ID);
+
         return true;
     }
  };
@@ -1822,7 +1894,7 @@ public:
     };
 
     CreatureAI* GetAI(Creature* creature) const override
-    {
+    {   
         return new npc_altruis_sufferer_4AI(creature);
     }
 };
@@ -1832,7 +1904,7 @@ class npc_altruis_sufferer_freed_99632 : public CreatureScript {
 public:
     npc_altruis_sufferer_freed_99632() : CreatureScript("npc_altruis_sufferer_freed_99632") { }
 
-     enum eAltruisFreed {
+    enum eAltruisFreed {
         PHASE_NONE = 0,
         PHASE_CONTINUE = -1,
         DATA_EVENT_STARTER_GUID = 0,
@@ -1845,30 +1917,32 @@ public:
         WP_START = 1,
         WP_AT_WEAPON_CRATE = 6,
         WP_AT_HOME = 10,
+        DATA_TALK_QUEST_COMPLETE = 21,
+        EVENT_TALK_1 = 22,
     };
 
-     struct npc_altruis_sufferer_freed_99632_AI : public EscortAI
+    struct npc_altruis_sufferer_freed_99632_AI : public npc_escortAI
     {
-        npc_altruis_sufferer_freed_99632_AI(Creature* creature) : EscortAI(creature)
+        npc_altruis_sufferer_freed_99632_AI(Creature* creature) : npc_escortAI(creature)
         {
             Initialize();
         }
 
-         void Initialize()
+        void Initialize()
         {
             _phase = PHASE_NONE;
             _moveTimer = 0;
         }
 
-         ObjectGuid GetGUID(int32 type) const override
+        ObjectGuid GetGUID(int32 type) const override
         {
             if (type == DATA_EVENT_STARTER_GUID)
                 return _eventStarterGuid;
 
-             return ObjectGuid::Empty;
+            return ObjectGuid::Empty;
         }
 
-         void SetGUID(ObjectGuid guid, int32 type) override
+        void SetGUID(ObjectGuid guid, int32 type) override
         {
             switch (type)
             {
@@ -1880,13 +1954,25 @@ public:
             }
         }
 
-         void Reset() override
+        void SetData(uint32 id, uint32 /*value*/) override
+        {
+            switch (id)
+            {
+            case DATA_TALK_QUEST_COMPLETE:
+                _events.ScheduleEvent(EVENT_TALK_1, 2s);
+                break;
+            default:
+                break;
+            }
+        }
+
+        void Reset() override
         {
             Initialize();
             _events.Reset();
         }
 
-         void IsSummonedBy(Unit* who) override
+        void IsSummonedBy(Unit* who) override
         {
             if (Player* player = who->ToPlayer())
             {
@@ -1897,21 +1983,29 @@ public:
             }
         }
 
-         void UpdateAI(uint32 diff) override
+        void UpdateAI(uint32 diff) override
         {
             _events.Update(diff);
 
-             if (UpdateVictim())
-            {
-                DoMeleeAttackIfReady();
+            while (uint32 eventId = _events.ExecuteEvent()) {
+                switch (eventId) {
+                case EVENT_TALK_1:
+                    Talk(1);
+                    break;
+                default:
+                    break;
+                }
             }
 
-             if (HasEscortState(STATE_ESCORT_NONE))
-                return;
+            if (UpdateVictim())
+                DoMeleeAttackIfReady();
 
-             EscortAI::UpdateAI(diff);
+            /*if (HasEscortState(STATE_ESCORT_NONE))
+                return;*/
 
-             if (_phase)
+            npc_escortAI::UpdateAI(diff);
+
+            if (_phase)
             {
                 if (_moveTimer <= diff)
                 {
@@ -1923,7 +2017,6 @@ public:
                         _phase = PHASE_NONE;
                         break;
                     case PHASE_PEEK_WEAPONS_1:
-                        // me->HandleEmoteCommand(EMOTE_STATE_KNEEL_2);
                         me->LoadEquipment(3);
                         _moveTimer = 2 * IN_MILLISECONDS;
                         _phase = PHASE_PEEK_WEAPONS_2;
@@ -1934,24 +2027,19 @@ public:
                         if (Player* player = ObjectAccessor::GetPlayer(*me, _eventStarterGuid))
                         {
                             player->KilledMonsterCredit(KILL_CREDIT_ALTRUIS_PICKED_UP_WEAPONS, ObjectGuid::Empty);
-                            player->KilledMonsterCredit(KILL_CREDIT_REUNION_FINISHED_ALTRUIS, ObjectGuid::Empty);
-                        }
+                        }   
                         _moveTimer = 2 * IN_MILLISECONDS;
                         _phase = PHASE_PEEK_WEAPONS_3;
                         break;
-                    /*case PHASE_PEEK_WEAPONS_3:
-                        me->HandleEmoteCommand(EMOTE_STATE_NONE);
-                        _moveTimer = 0.5 * IN_MILLISECONDS;
-                        _phase = PHASE_PEEK_WEAPONS_4;
-                        break;*/
                     case PHASE_PEEK_WEAPONS_3:
                         me->HandleEmoteCommand(EMOTE_STATE_NONE);
                         SetEscortPaused(false);
                         _moveTimer = 0 * IN_MILLISECONDS;
                         _phase = PHASE_NONE;
                         break;
+                        SetEscortPaused(true);
                     case PHASE_DESPAWN:
-                        me->DespawnOrUnsummon();
+                        // me->DespawnOrUnsummon();
                         break;
                     default:
                         break;
@@ -1962,13 +2050,13 @@ public:
             }
         }
 
-         void WaypointReached(uint32 waypointId, uint32 /*pathId*/) override
+        void WaypointReached(uint32 waypointId) override
         {
             Player* player = GetPlayerForEscort();
             if (!player)
                 return;
 
-             switch (waypointId)
+            switch (waypointId)
             {
             case WP_START:
                 _moveTimer = 0 * IN_MILLISECONDS;
@@ -1983,6 +2071,9 @@ public:
                 _phase = PHASE_PEEK_WEAPONS_1;
                 break;
             case WP_AT_HOME:
+                if (Player* player = ObjectAccessor::GetPlayer(*me, _eventStarterGuid)) {
+                    player->KilledMonsterCredit(KILL_CREDIT_REUNION_FINISHED_ALTRUIS, ObjectGuid::Empty);
+                }
                 _moveTimer = 0.2 * IN_MILLISECONDS;
                 _phase = PHASE_DESPAWN;
                 break;
@@ -1991,24 +2082,24 @@ public:
             }
         }
 
-     private:
+    private:
         int8 _phase;
         uint32 _moveTimer;
         ObjectGuid _eventStarterGuid;
         EventMap _events;
     };
 
-     CreatureAI* GetAI(Creature* creature) const override
+    CreatureAI* GetAI(Creature* creature) const override
     {
         return new npc_altruis_sufferer_freed_99632_AI(creature);
     }
 };
 
- class npc_kayn_sunfury_freed_99631 : public CreatureScript {
+class npc_kayn_sunfury_freed_99631 : public CreatureScript {
 public:
     npc_kayn_sunfury_freed_99631() : CreatureScript("npc_kayn_sunfury_freed_99631") { }
 
-     enum eKaynFreed {
+    enum eKaynFreed {
         PHASE_NONE = 0,
         PHASE_CONTINUE = -1,
         DATA_EVENT_STARTER_GUID = 0,
@@ -2021,30 +2112,32 @@ public:
         WP_START = 1,
         WP_AT_WEAPON_CRATE = 6,
         WP_AT_HOME = 13,
+        DATA_TALK_QUEST_COMPLETE = 21,
+        EVENT_TALK_1 = 22,
     };
 
-     struct npc_kayn_sunfury_freed_99631_AI : public EscortAI
+    struct npc_kayn_sunfury_freed_99631_AI : public npc_escortAI
     {
-        npc_kayn_sunfury_freed_99631_AI(Creature* creature) : EscortAI(creature)
+        npc_kayn_sunfury_freed_99631_AI(Creature* creature) : npc_escortAI(creature)
         {
             Initialize();
         }
 
-         void Initialize()
+        void Initialize()
         {
             _phase = PHASE_NONE;
             _moveTimer = 0;
         }
 
-         ObjectGuid GetGUID(int32 type) const override
+        ObjectGuid GetGUID(int32 type) const override
         {
             if (type == DATA_EVENT_STARTER_GUID)
                 return _eventStarterGuid;
 
-             return ObjectGuid::Empty;
+            return ObjectGuid::Empty;
         }
 
-         void SetGUID(ObjectGuid guid, int32 type) override
+        void SetGUID(ObjectGuid guid, int32 type) override
         {
             switch (type)
             {
@@ -2056,13 +2149,25 @@ public:
             }
         }
 
-         void Reset() override
+        void SetData(uint32 id, uint32 /*value*/) override
+        {
+            switch (id)
+            {
+            case DATA_TALK_QUEST_COMPLETE:
+                _events.ScheduleEvent(EVENT_TALK_1, 7s);
+                break;
+            default:
+                break;
+            }
+        }
+
+        void Reset() override
         {
             Initialize();
             _events.Reset();
         }
 
-         void IsSummonedBy(Unit* who) override
+        void IsSummonedBy(Unit* who) override
         {
             if (Player* player = who->ToPlayer())
             {
@@ -2073,21 +2178,29 @@ public:
             }
         }
 
-         void UpdateAI(uint32 diff) override
+        void UpdateAI(uint32 diff) override
         {
             _events.Update(diff);
 
-             if (UpdateVictim())
-            {
-                DoMeleeAttackIfReady();
+            while (uint32 eventId = _events.ExecuteEvent()) {
+                switch (eventId) {
+                case EVENT_TALK_1:
+                    Talk(1);
+                    break;
+                default:
+                    break;
+                }
             }
 
-             if (HasEscortState(STATE_ESCORT_NONE))
-                return;
+            if (UpdateVictim())
+                DoMeleeAttackIfReady();
 
-             EscortAI::UpdateAI(diff);
+            /*if (HasEscortState(STATE_ESCORT_NONE))
+                return;*/
 
-             if (_phase)
+            npc_escortAI::UpdateAI(diff);
+
+            if (_phase)
             {
                 if (_moveTimer <= diff)
                 {
@@ -2099,7 +2212,6 @@ public:
                         _phase = PHASE_NONE;
                         break;
                     case PHASE_PEEK_WEAPONS_1:
-                        // me->HandleEmoteCommand(EMOTE_STATE_KNEEL_2);
                         me->LoadEquipment(3);
                         _moveTimer = 2 * IN_MILLISECONDS;
                         _phase = PHASE_PEEK_WEAPONS_2;
@@ -2110,24 +2222,19 @@ public:
                         if (Player* player = ObjectAccessor::GetPlayer(*me, _eventStarterGuid))
                         {
                             player->KilledMonsterCredit(KILL_CREDIT_KAYN_PICKED_UP_WEAPONS, ObjectGuid::Empty);
-                            player->KilledMonsterCredit(KILL_CREDIT_REUNION_FINISHED_KAYN, ObjectGuid::Empty);
-                        }
+                        }   
                         _moveTimer = 2 * IN_MILLISECONDS;
                         _phase = PHASE_PEEK_WEAPONS_3;
                         break;
-                    /*case PHASE_PEEK_WEAPONS_3:
-
-                        _moveTimer = 0.5 * IN_MILLISECONDS;
-                        _phase = PHASE_PEEK_WEAPONS_4;
-                        break;*/
                     case PHASE_PEEK_WEAPONS_3:
                         me->HandleEmoteCommand(EMOTE_STATE_NONE);
                         SetEscortPaused(false);
                         _moveTimer = 0 * IN_MILLISECONDS;
                         _phase = PHASE_NONE;
+                        SetEscortPaused(true);
                         break;
                     case PHASE_DESPAWN:
-                        me->DespawnOrUnsummon();
+                        // me->DespawnOrUnsummon();
                         break;
                     default:
                         break;
@@ -2138,13 +2245,13 @@ public:
             }
         }
 
-         void WaypointReached(uint32 waypointId, uint32 /*pathId*/) override
+        void WaypointReached(uint32 waypointId) override
         {
             Player* player = GetPlayerForEscort();
             if (!player)
                 return;
 
-             switch (waypointId)
+            switch (waypointId)
             {
             case WP_START:
                 _moveTimer = 0 * IN_MILLISECONDS;
@@ -2159,6 +2266,9 @@ public:
                 _phase = PHASE_PEEK_WEAPONS_1;
                 break;
             case WP_AT_HOME:
+                if (Player* player = ObjectAccessor::GetPlayer(*me, _eventStarterGuid)) {
+                    player->KilledMonsterCredit(KILL_CREDIT_REUNION_FINISHED_KAYN, ObjectGuid::Empty);
+                }
                 _moveTimer = 0.2 * IN_MILLISECONDS;
                 _phase = PHASE_DESPAWN;
                 break;
@@ -2167,20 +2277,20 @@ public:
             }
         }
 
-     private:
+    private:
         int8 _phase;
         uint32 _moveTimer;
         ObjectGuid _eventStarterGuid;
         EventMap _events;
     };
 
-     CreatureAI* GetAI(Creature* creature) const override
+    CreatureAI* GetAI(Creature* creature) const override
     {
         return new npc_kayn_sunfury_freed_99631_AI(creature);
     }
 };
 
- Position const secondStagePath[] =
+Position const secondStagePath[] =
 {
     { 4438.449f, -290.577f, -244.036f },
     { 4444.083f, -301.119f, -239.666f },
@@ -2198,21 +2308,21 @@ public:
 };
 size_t const pathSize = std::extent<decltype(secondStagePath)>::value;
 
- class npc_vault_of_the_wardens_vampiric_felbat : public CreatureScript
+class npc_vault_of_the_wardens_vampiric_felbat : public CreatureScript
 {
 public:
     npc_vault_of_the_wardens_vampiric_felbat() : CreatureScript("npc_vault_of_the_wardens_vampiric_felbat") { }
 
-     enum eFelBal {
+    enum eFelBat {
         EVENT_START_PATH = 1,
         EVENT_DESPAWN = 2,
     };
 
-     struct npc_vault_of_the_wardens_vampiric_felbat_AI : public VehicleAI
+    struct npc_vault_of_the_wardens_vampiric_felbat_AI : public VehicleAI
     {
         npc_vault_of_the_wardens_vampiric_felbat_AI(Creature* creature) : VehicleAI(creature) { }
 
-         void Initialize()
+        void Initialize()
         {
             me->SetCanFly(true);
             me->SetSpeed(MOVE_FLIGHT, 26);
@@ -2221,14 +2331,14 @@ public:
             me->SetSpeed(MOVE_FLIGHT, 75);
         }
 
-         void Reset() override
+        void Reset() override
         {
             _events.Reset();
             Initialize();
             _playerGUID = ObjectGuid::Empty;
         }
 
-         void PassengerBoarded(Unit* passenger, int8 /*seatId*/, bool apply) override
+        void PassengerBoarded(Unit* passenger, int8 /*seatId*/, bool apply) override
         {
             if (apply && passenger->GetTypeId() == TYPEID_PLAYER) {
                 _playerGUID = passenger->ToPlayer()->GetGUID();
@@ -2236,20 +2346,20 @@ public:
             }
         }
 
-         void MovementInform(uint32 type, uint32 pointId) override
+        void MovementInform(uint32 type, uint32 pointId) override
         {
             if (type == EFFECT_MOTION_TYPE && pointId == pathSize)
                 _events.ScheduleEvent(EVENT_DESPAWN, 200);
         }
 
-         void UpdateAI(uint32 diff) override
+        void UpdateAI(uint32 diff) override
         {
             _events.Update(diff);
 
-             if (me->HasUnitState(UNIT_STATE_CASTING))
+            if (me->HasUnitState(UNIT_STATE_CASTING))
                 return;
 
-             while (uint32 eventId = _events.ExecuteEvent())
+            while (uint32 eventId = _events.ExecuteEvent())
             {
                 switch (eventId)
                 {
@@ -2272,12 +2382,15 @@ public:
         ObjectGuid _playerGUID;
     };
 
-     CreatureAI* GetAI(Creature* creature) const override
+    CreatureAI* GetAI(Creature* creature) const override
     {
         return new npc_vault_of_the_wardens_vampiric_felbat_AI(creature);
     }
 };
 
+/*********/
+/* AddSC */
+/*********/
 void AddSC_zone_vault_of_wardens()
 {
     new npc_kayn_cell();
@@ -2307,13 +2420,12 @@ void AddSC_zone_vault_of_wardens()
     new scene_guldan_stealing_illidan_corpse();
     new npc_kayn_sunfury_4();
     new npc_altruis_sufferer_4();
-
     new PlayerScript_follower_choice();
     new On100DHArrival();
     new PlayerScript_bonus_objective();
     new PlayerScript_switch_phases();
-    RegisterCreatureAI(npc_vault_of_the_wardens_sledge_or_crusher);
     new npc_altruis_sufferer_freed_99632();
     new npc_kayn_sunfury_freed_99631();
     new npc_vault_of_the_wardens_vampiric_felbat();
+    new npc_maiev_shadowsong_welcome();
 }
