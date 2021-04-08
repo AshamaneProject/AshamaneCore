@@ -28,6 +28,7 @@
 #include "TemporarySummon.h"
 #include "PhasingHandler.h"
 #include "ScriptedGossip.h"
+#include "Conversation.h"
 #include "Log.h"
 
 enum eQuests
@@ -294,7 +295,7 @@ public:
         case 244439: {
             if (!player->GetReqKillOrCastCurrentCount(QUEST_ASSAULT_ON_MARDUM, NPC_FIRST_COMM)) {
                 player->KilledMonsterCredit(NPC_FIRST_COMM, go->GetGUID());
-                Conversation* conversation_558 = new Conversation;
+                Conversation* conversation_558 = new Conversation();
                 if (!conversation_558->CreateConversation(558, player, player->GetPosition(), { player->GetGUID() }))
                     delete conversation_558;
             }
@@ -353,7 +354,7 @@ public:
                         && player->HasQuest(QUEST_ASSAULT_ON_MARDUM)
                     ) {
                         player->KilledMonsterCredit(NPC_FIRST_SPREADER, ObjectGuid::Empty);
-                        Conversation* conversation = new Conversation;
+                        Conversation* conversation = new Conversation();
                         if (!conversation->CreateConversation(KAYN_SPREADER_CONVERSATION, player, player->GetPosition(), { player->GetGUID() }))
                             delete conversation;
                     }
@@ -472,7 +473,7 @@ public:
             if (TempSummon* personalCreature = player->SummonCreature(_insideNpc, creature->GetPosition(), TEMPSUMMON_TIMED_DESPAWN, 4000, 0, true))
             {
                 float x, y, z;
-                personalCreature->GetClosePoint(x, y, z, personalCreature->GetObjectSize() / 3, 50.0f);
+                personalCreature->GetClosePoint(x, y, z, personalCreature->GetCombatReach() / 3, 50.0f);
                 personalCreature->GetMotionMaster()->MovePoint(0, x, y, z);
 
                 // TODO : personalCreature->Talk(0);
@@ -1645,7 +1646,7 @@ public:
                 case EVENT_GO_OUT:
                     Talk(2);
                     float x, y, z;
-                    me->GetClosePoint(x, y, z, me->GetObjectSize() / 3, 50.0f);
+                    me->GetClosePoint(x, y, z, me->GetCombatReach() / 3, 50.0f);
                     me->GetMotionMaster()->MovePoint(0, x, y, z);
                     me->DespawnOrUnsummon(5s);
                     break;
@@ -1870,7 +1871,7 @@ public:
 
             if (who->GetTypeId() == TYPEID_PLAYER) {
                 who->ToPlayer()->GetScheduler().Schedule(Seconds(2), [](TaskContext context) {
-                    Conversation* conversation = new Conversation;
+                    Conversation* conversation = new Conversation();
                     if (!conversation->CreateConversation(ALLARI_CONVERSATION, GetContextUnit(), GetContextUnit()->GetPosition(), { GetContextUnit()->GetGUID() }))
                         delete conversation;
                 });
@@ -2759,7 +2760,7 @@ public:
                 _events.ScheduleEvent(EVENT_TYRANNA_DIED, 0);
 
                 std::list<HostileReference*> threatList;
-                threatList = me->getThreatManager().getThreatList();
+                threatList = me->GetThreatManager().getThreatList();
                 for (std::list<HostileReference*>::const_iterator itr = threatList.begin(); itr != threatList.end(); ++itr)
                     if (Player* target = (*itr)->getTarget()->ToPlayer())
                         if (target->GetQuestStatus(38728) == QUEST_STATUS_INCOMPLETE)
@@ -2901,8 +2902,8 @@ class spell_mardum_back_to_black_temple : public SpellScript
         {
             player->AddMovieDelayedAction(471, [player]
             {
-                player->EquipNewItem(15, 132243, true);
-                player->EquipNewItem(16, 128956, true);                
+                player->EquipNewItem(15, 132243, ItemContext::NONE, true);
+                player->EquipNewItem(16, 128956, ItemContext::NONE, true);
                 WorldLocation location(1468, 4325.46f, -620.53f, -281.40f, 1.517563f);
                 player->SetHomebind(location, 7873);
                 player->SendBindPointUpdate();
@@ -2947,7 +2948,7 @@ public:
                 {
                     GetContextUnit()->ToCreature()->AI()->Talk(1);
                     float x, y, z;
-                    GetContextUnit()->ToCreature()->GetClosePoint(x, y, z, GetContextUnit()->GetObjectSize() / 3, 50.0f);
+                    GetContextUnit()->ToCreature()->GetClosePoint(x, y, z, GetContextUnit()->GetCombatReach() / 3, 50.0f);
                     GetContextUnit()->ToCreature()->GetMotionMaster()->MovePoint(0, x, y, z);
                     GetContextUnit()->ToCreature()->DespawnOrUnsummon(5000);
                 });

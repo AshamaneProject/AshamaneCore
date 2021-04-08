@@ -4412,6 +4412,8 @@ void Player::BuildPlayerRepop()
 
     // OnPlayerRepop hook
     sScriptMgr->OnPlayerRepop(this);
+	
+    sScriptMgr->OnPlayerReleasedGhost(this);
 }
 
 void Player::ResurrectPlayer(float restore_percent, bool applySickness)

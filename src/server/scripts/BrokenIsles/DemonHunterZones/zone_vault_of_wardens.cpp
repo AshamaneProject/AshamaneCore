@@ -596,7 +596,7 @@ public:
             if (damage >= me->GetHealth())
             {
                 std::list<HostileReference*> threatList;
-                threatList = me->getThreatManager().getThreatList();
+                threatList = me->GetThreatManager().getThreatList();
                 for (std::list<HostileReference*>::const_iterator itr = threatList.begin(); itr != threatList.end(); ++itr)
                     if (Player* target = (*itr)->getTarget()->ToPlayer())
                         if (target->GetQuestStatus(QUEST_STOP_GULDAN_H) == QUEST_STATUS_INCOMPLETE ||
@@ -924,7 +924,7 @@ public:
             if (damage >= me->GetHealth())
             {
                 std::list<HostileReference*> threatList;
-                threatList = me->getThreatManager().getThreatList();
+                threatList = me->GetThreatManager().getThreatList();
                 for (std::list<HostileReference*>::const_iterator itr = threatList.begin(); itr != threatList.end(); ++itr)
                     if (Player* target = (*itr)->getTarget()->ToPlayer())
                         if (target->GetQuestStatus(QUEST_STOP_GULDAN_H) == QUEST_STATUS_INCOMPLETE ||
@@ -1086,7 +1086,7 @@ public:
         void UpdateAI(uint32 diff)
         {
             std::list<Player*> playerList;
-            go->GetPlayerListInGrid(playerList, 10.0f);
+            GetPlayerListInGrid(playerList, me, 10.0f);
             for (Player* player : playerList)
             {
                 if (player->GetQuestStatus(39686) == QUEST_STATUS_INCOMPLETE)
@@ -1392,7 +1392,7 @@ public:
             if (damage >= me->GetHealth())
             {
                 std::list<HostileReference*> threatList;
-                threatList = me->getThreatManager().getThreatList();
+                threatList = me->GetThreatManager().getThreatList();
                 for (std::list<HostileReference*>::const_iterator itr = threatList.begin(); itr != threatList.end(); ++itr)
                     if (Player* target = (*itr)->getTarget()->ToPlayer())
                         if (target->GetQuestStatus(QUEST_FORGED_IN_FIRE_H) == QUEST_STATUS_INCOMPLETE ||
@@ -1921,9 +1921,9 @@ public:
         EVENT_TALK_1 = 22,
     };
 
-    struct npc_altruis_sufferer_freed_99632_AI : public npc_escortAI
+    struct npc_altruis_sufferer_freed_99632_AI : public EscortAI
     {
-        npc_altruis_sufferer_freed_99632_AI(Creature* creature) : npc_escortAI(creature)
+        npc_altruis_sufferer_freed_99632_AI(Creature* creature) : EscortAI(creature)
         {
             Initialize();
         }
@@ -1934,7 +1934,7 @@ public:
             _moveTimer = 0;
         }
 
-        ObjectGuid GetGUID(int32 type) const override
+        ObjectGuid GetGUID(int32 type) const 
         {
             if (type == DATA_EVENT_STARTER_GUID)
                 return _eventStarterGuid;
@@ -1942,7 +1942,7 @@ public:
             return ObjectGuid::Empty;
         }
 
-        void SetGUID(ObjectGuid guid, int32 type) override
+        void SetGUID(ObjectGuid guid, int32 type)
         {
             switch (type)
             {
@@ -1954,7 +1954,7 @@ public:
             }
         }
 
-        void SetData(uint32 id, uint32 /*value*/) override
+        void SetData(uint32 id, uint32 /*value*/)
         {
             switch (id)
             {
@@ -1966,13 +1966,13 @@ public:
             }
         }
 
-        void Reset() override
+        void Reset()
         {
             Initialize();
             _events.Reset();
         }
 
-        void IsSummonedBy(Unit* who) override
+        void IsSummonedBy(Unit* who)
         {
             if (Player* player = who->ToPlayer())
             {
@@ -1983,7 +1983,7 @@ public:
             }
         }
 
-        void UpdateAI(uint32 diff) override
+        void UpdateAI(uint32 diff)
         {
             _events.Update(diff);
 
@@ -2003,7 +2003,7 @@ public:
             /*if (HasEscortState(STATE_ESCORT_NONE))
                 return;*/
 
-            npc_escortAI::UpdateAI(diff);
+            EscortAI::UpdateAI(diff);
 
             if (_phase)
             {
@@ -2050,13 +2050,13 @@ public:
             }
         }
 
-        void WaypointReached(uint32 waypointId) override
+        void WaypointReached(uint32 /*nodeId*/, uint32 pathId)
         {
             Player* player = GetPlayerForEscort();
             if (!player)
                 return;
 
-            switch (waypointId)
+            switch (pathId)
             {
             case WP_START:
                 _moveTimer = 0 * IN_MILLISECONDS;
@@ -2084,6 +2084,7 @@ public:
 
     private:
         int8 _phase;
+        bool Endwaypoint;
         uint32 _moveTimer;
         ObjectGuid _eventStarterGuid;
         EventMap _events;
@@ -2114,11 +2115,12 @@ public:
         WP_AT_HOME = 13,
         DATA_TALK_QUEST_COMPLETE = 21,
         EVENT_TALK_1 = 22,
+        Talk
     };
 
-    struct npc_kayn_sunfury_freed_99631_AI : public npc_escortAI
+    struct npc_kayn_sunfury_freed_99631_AI : public EscortAI
     {
-        npc_kayn_sunfury_freed_99631_AI(Creature* creature) : npc_escortAI(creature)
+        npc_kayn_sunfury_freed_99631_AI(Creature* creature) : EscortAI(creature)
         {
             Initialize();
         }
@@ -2129,7 +2131,7 @@ public:
             _moveTimer = 0;
         }
 
-        ObjectGuid GetGUID(int32 type) const override
+        ObjectGuid GetGUID(int32 type) const 
         {
             if (type == DATA_EVENT_STARTER_GUID)
                 return _eventStarterGuid;
@@ -2137,7 +2139,7 @@ public:
             return ObjectGuid::Empty;
         }
 
-        void SetGUID(ObjectGuid guid, int32 type) override
+        void SetGUID(ObjectGuid guid, int32 type) 
         {
             switch (type)
             {
@@ -2149,7 +2151,7 @@ public:
             }
         }
 
-        void SetData(uint32 id, uint32 /*value*/) override
+        void SetData(uint32 id, uint32 /*value*/)
         {
             switch (id)
             {
@@ -2161,13 +2163,13 @@ public:
             }
         }
 
-        void Reset() override
+        void Reset()
         {
             Initialize();
             _events.Reset();
         }
 
-        void IsSummonedBy(Unit* who) override
+        void IsSummonedBy(Unit* who)
         {
             if (Player* player = who->ToPlayer())
             {
@@ -2178,7 +2180,7 @@ public:
             }
         }
 
-        void UpdateAI(uint32 diff) override
+        void UpdateAI(uint32 diff)
         {
             _events.Update(diff);
 
@@ -2198,7 +2200,7 @@ public:
             /*if (HasEscortState(STATE_ESCORT_NONE))
                 return;*/
 
-            npc_escortAI::UpdateAI(diff);
+            EscortAI::UpdateAI(diff);
 
             if (_phase)
             {
@@ -2245,13 +2247,13 @@ public:
             }
         }
 
-        void WaypointReached(uint32 waypointId) override
+        void WaypointReached(uint32 /*nodeId*/, uint32 pathId)
         {
             Player* player = GetPlayerForEscort();
             if (!player)
                 return;
 
-            switch (waypointId)
+            switch (pathId)
             {
             case WP_START:
                 _moveTimer = 0 * IN_MILLISECONDS;
