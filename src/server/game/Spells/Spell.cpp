@@ -1945,10 +1945,10 @@ void Spell::SearchTargets(SEARCHER& searcher, uint32 containerMask, Unit* refere
         Map* map = referer->GetMap();
 
         if (searchInWorld)
-            Cell::VisitWorldObjects(x, y, map, searcher, radius);
+            Cell::VisitWorldObjects(nullptr, x, y, map, searcher, radius);
 
         if (searchInGrid)
-            Cell::VisitGridObjects(x, y, map, searcher, radius);
+            Cell::VisitGridObjects(nullptr, x, y, map, searcher, radius);
     }
 }
 
@@ -7648,6 +7648,10 @@ SpellCastResult Spell::CanOpenLock(uint32 effIndex, uint32 lockId, SkillType& sk
 
                 return SPELL_CAST_OK;
             }
+
+            case LOCK_KEY_SPELL: // has a spellid which client will cast for opening
+                return SPELL_CAST_OK;
+
         }
     }
 

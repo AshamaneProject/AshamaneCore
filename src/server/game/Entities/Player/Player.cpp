@@ -30372,3 +30372,10 @@ void Player::UpdateWarModeAuras()
         RemovePlayerFlag(PLAYER_FLAGS_WAR_MODE_ACTIVE);
     }
 }
+
+void Player::OnPhaseChange()
+{
+    Unit::OnPhaseChange();
+
+    GetMap()->GetMultiPersonalPhaseTracker().OnOwnerPhaseChanged(this);
+}
