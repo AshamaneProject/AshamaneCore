@@ -453,8 +453,16 @@ bool Player::Create(ObjectGuid::LowType guidlow, WorldPackets::Character::Charac
 
     if (createInfo->UseNPE)
     {
-        Relocate(-66.986f, -13.536f, 46.000f, 0.182f); // ExilesReachNorthSea Tutorial location
-        SetMap(sMapMgr->CreateMap(2175, this));
+	    if (GetTeam() == ALLIANCE)
+        {
+         Relocate(11.1301f, -0.417182f, 5.18741f, 3.1484f); // aliance
+        }
+        else if (GetTeam() == HORDE)
+        {
+          Relocate(-10.7291f, -7.14635f, 8.73113f, 1.563205957412719726f); // orda scene 2486
+        }
+		 SetMap(sMapMgr->CreateMap(2175, this));
+		 UpdatePositionData();
     }
     else
     {
