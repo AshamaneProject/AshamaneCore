@@ -1811,7 +1811,7 @@ public:
                 return;
 
             mod = new SpellModifier(aurEffect->GetBase());
-            mod->op = SPELLMOD_CRITICAL_CHANCE;
+            mod->op = SpellModOp::CritChance;
             mod->type = SPELLMOD_FLAT;
             mod->spellId = SPELL_MAGE_FIRE_MAGE_PASSIVE;
             mod->value = 200;

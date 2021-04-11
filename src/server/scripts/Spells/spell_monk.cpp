@@ -700,7 +700,7 @@ public:
                     int32 newDuration = stacks * IN_MILLISECONDS;
 
                     mod = new SpellModifier(manaTeaStacks);
-                    mod->op = SPELLMOD_DURATION;
+                    mod->op = SpellModOp::Duration;
                     mod->type = SPELLMOD_FLAT;
                     mod->spellId = SPELL_MONK_MANA_TEA_REGEN;
                     mod->value = newDuration;

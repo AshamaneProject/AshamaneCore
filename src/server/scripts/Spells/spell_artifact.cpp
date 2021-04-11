@@ -214,7 +214,7 @@ public:
     spell_arti_mage_immolation()
     {
         mod = new SpellModifier(GetAura());
-        mod->op = SPELLMOD_CRITICAL_CHANCE;
+        mod->op = SpellModOp::CritChance;
         mod->type = SPELLMOD_FLAT;
         mod->spellId = SPELL_MAGE_IMMOLATION;
         mod->value = 200;

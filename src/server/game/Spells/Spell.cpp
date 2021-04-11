@@ -591,7 +591,7 @@ m_spellValue(new SpellValue(m_spellInfo, caster)), _spellEvent(nullptr)
                 m_spellSchoolMask = SpellSchoolMask(1 << pItem->GetTemplate()->GetDamageType());
 
     if (Player const* modOwner = caster->GetSpellModOwner())
-        modOwner->ApplySpellMod(info->Id, SPELLMOD_STACK_AMOUNT, m_spellValue->AuraStackAmount, this);
+        modOwner->ApplySpellMod(info->Id, SpellModOp::Doses, m_spellValue->AuraStackAmount, this);
 
     if (!originalCasterGUID.IsEmpty())
         m_originalCasterGUID = originalCasterGUID;
@@ -1682,7 +1682,7 @@ void Spell::SelectImplicitChainTargets(SpellEffIndex effIndex, SpellImplicitTarg
 
     uint32 maxTargets = effect->ChainTargets;
     if (Player* modOwner = m_caster->GetSpellModOwner())
-        modOwner->ApplySpellMod(m_spellInfo->Id, SPELLMOD_JUMP_TARGETS, maxTargets, this);
+        modOwner->ApplySpellMod(m_spellInfo->Id, SpellModOp::ChainTargets, maxTargets, this);
 
     if (maxTargets > 1)
     {
@@ -2000,7 +2000,7 @@ void Spell::SearchChainTargets(std::list<WorldObject*>& targets, uint32 chainTar
     }
 
     if (Player* modOwner = m_caster->GetSpellModOwner())
-        modOwner->ApplySpellMod(m_spellInfo->Id, SPELLMOD_JUMP_DISTANCE, jumpRadius, this);
+        modOwner->ApplySpellMod(m_spellInfo->Id, SpellModOp::ChainJumpDistance, jumpRadius, this);
 
     // chain lightning/heal spells and similar - allow to jump at larger distance and go out of los
     bool isBouncingFar = (m_spellInfo->HasAttribute(SPELL_ATTR4_AREA_TARGET_CHAIN)
@@ -2985,7 +2985,7 @@ bool Spell::UpdateChanneledTargetList()
     {
         range = m_spellInfo->GetMaxRange(m_spellInfo->IsPositive());
         if (Player* modOwner = m_caster->GetSpellModOwner())
-            modOwner->ApplySpellMod(m_spellInfo->Id, SPELLMOD_RANGE, range, this);
+            modOwner->ApplySpellMod(m_spellInfo->Id, SpellModOp::Range, range, this);
 
         if (!range)
             range = maxRadius;
@@ -3538,7 +3538,7 @@ void Spell::handle_immediate()
             // First mod_duration then haste - see Missile Barrage
             // Apply duration mod
             if (Player* modOwner = m_caster->GetSpellModOwner())
-                modOwner->ApplySpellMod(m_spellInfo->Id, SPELLMOD_DURATION, duration);
+                modOwner->ApplySpellMod(m_spellInfo->Id, SpellModOp::Duration, duration);
 
             // Apply haste mods
             m_caster->ModSpellDurationTime(m_spellInfo, duration, this);
@@ -4791,7 +4791,7 @@ void Spell::TakePower()
                                 hit = false;
                                 //lower spell cost on fail (by talent aura)
                                 if (Player* modOwner = m_caster->ToPlayer()->GetSpellModOwner())
-                                    modOwner->ApplySpellMod(m_spellInfo->Id, SPELLMOD_SPELL_COST_REFUND_ON_FAIL, cost.Amount);
+                                    modOwner->ApplySpellMod(m_spellInfo->Id, SpellModOp::PowerCostOnMiss, cost.Amount);
                             }
                             break;
                         }
@@ -6430,7 +6430,7 @@ std::pair<float, float> Spell::GetMinMaxRange(bool strict) const
             maxRange *= ranged->GetTemplate()->GetRangedModRange() * 0.01f;
 
     if (Player* modOwner = m_caster->GetSpellModOwner())
-        modOwner->ApplySpellMod(m_spellInfo->Id, SPELLMOD_RANGE, maxRange, const_cast<Spell*>(this));
+        modOwner->ApplySpellMod(m_spellInfo->Id, SpellModOp::Range, maxRange, const_cast<Spell*>(this));
 
     maxRange += rangeMod;
 
@@ -7031,7 +7031,7 @@ void Spell::Delayed() // only called in DealDamage()
     //check pushback reduce
     int32 delaytime = 150;      // spellcasting delay is normally 500ms, updated Legion 2x150ms ~
     int32 delayReduce = 100;    // must be initialized to 100 for percent modifiers
-    m_caster->ToPlayer()->ApplySpellMod(m_spellInfo->Id, SPELLMOD_NOT_LOSE_CASTING_TIME, delayReduce, this);
+    m_caster->ToPlayer()->ApplySpellMod(m_spellInfo->Id, SpellModOp::ResistPushback, delayReduce, this);
     delayReduce += m_caster->GetTotalAuraModifier(SPELL_AURA_REDUCE_PUSHBACK) - 100;
     if (delayReduce >= 100)
         return;
@@ -7072,7 +7072,7 @@ void Spell::DelayedChannel()
     int32 delaytime = 150;
     int32 delayReduce = 100;    // must be initialized to 100 for percent modifiers
 
-    m_caster->ToPlayer()->ApplySpellMod(m_spellInfo->Id, SPELLMOD_NOT_LOSE_CASTING_TIME, delayReduce, this);
+    m_caster->ToPlayer()->ApplySpellMod(m_spellInfo->Id, SpellModOp::ResistPushback, delayReduce, this);
     delayReduce += m_caster->GetTotalAuraModifier(SPELL_AURA_REDUCE_PUSHBACK) - 100;
     if (delayReduce >= 100)
         return;
@@ -8085,7 +8085,7 @@ void Spell::TriggerGlobalCooldown()
     {
         // gcd modifier auras are applied only to own spells and only players have such mods
         if (Player* modOwner = m_caster->GetSpellModOwner())
-            modOwner->ApplySpellMod(m_spellInfo->Id, SPELLMOD_GLOBAL_COOLDOWN, gcd, this);
+            modOwner->ApplySpellMod(m_spellInfo->Id, SpellModOp::StartCooldown, gcd, this);
 
         bool isMeleeOrRangedSpell = m_spellInfo->DmgClass == SPELL_DAMAGE_CLASS_MELEE ||
             m_spellInfo->DmgClass == SPELL_DAMAGE_CLASS_RANGED ||
