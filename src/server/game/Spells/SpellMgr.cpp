@@ -2934,6 +2934,18 @@ inline void ApplySpellFix(std::initializer_list<uint32> spellIds, void(*fix)(Spe
     }
 }
 
+inline void ApplySpellEffectFix(SpellInfo* spellInfo, SpellEffIndex effectIndex, void(*fix)(SpellEffectInfo*))
+{
+    SpellEffectInfo const* effect = spellInfo->GetEffect(effectIndex);
+    if (!effect)
+    {
+        TC_LOG_ERROR("server.loading", "Spell effect info correction specified for non-existing effect %u of spell %u", uint32(effectIndex), spellInfo->Id);
+        return;
+    }
+
+    fix(const_cast<SpellEffectInfo*>(effect));
+}
+
 void SpellMgr::LoadSpellInfoCorrections()
 {
     uint32 oldMSTime = getMSTime();
@@ -2949,13 +2961,19 @@ void SpellMgr::LoadSpellInfoCorrections()
         63137  // Summon Valiant Test (HACK: Target shouldn't be changed; summon position should be untied from spell destination)
     }, [](SpellInfo* spellInfo)
     {
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->TargetA = SpellImplicitTargetInfo(TARGET_DEST_DB);
+        ApplySpellEffectFix(spellInfo, EFFECT_0, [](SpellEffectInfo* spellEffectInfo)
+        {
+            spellEffectInfo->TargetA = SpellImplicitTargetInfo(TARGET_DEST_DB);
+        });
     });
 
     // Summon Skeletons
     ApplySpellFix({ 52611, 52612 }, [](SpellInfo* spellInfo)
     {
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->MiscValueB = 64;
+        ApplySpellEffectFix(spellInfo, EFFECT_0, [](SpellEffectInfo* spellEffectInfo)
+        {
+            spellEffectInfo->MiscValueB = 64;
+        });
     });
 
     ApplySpellFix({
@@ -2966,7 +2984,10 @@ void SpellMgr::LoadSpellInfoCorrections()
         42835  // Spout, remove damage effect, only anim is needed
     }, [](SpellInfo* spellInfo)
     {
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->Effect = 0;
+        ApplySpellEffectFix(spellInfo, EFFECT_0, [](SpellEffectInfo* spellEffectInfo)
+        {
+            spellEffectInfo->Effect = 0;
+        });
     });
 
     ApplySpellFix({
@@ -2977,8 +2998,11 @@ void SpellMgr::LoadSpellInfoCorrections()
         29200  // Purify Helboar Meat
     }, [](SpellInfo* spellInfo)
     {
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->TargetA = SpellImplicitTargetInfo(TARGET_UNIT_CASTER);
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->TargetB = SpellImplicitTargetInfo();
+        ApplySpellEffectFix(spellInfo, EFFECT_0, [](SpellEffectInfo* spellEffectInfo)
+        {
+            spellEffectInfo->TargetA = SpellImplicitTargetInfo(TARGET_UNIT_CASTER);
+            spellEffectInfo->TargetB = SpellImplicitTargetInfo();
+        });
     });
 
     ApplySpellFix({
@@ -2995,7 +3019,10 @@ void SpellMgr::LoadSpellInfoCorrections()
     // Howl of Azgalor
     ApplySpellFix({ 31344 }, [](SpellInfo* spellInfo)
     {
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->RadiusEntry = sSpellRadiusStore.LookupEntry(EFFECT_RADIUS_100_YARDS); // 100yards instead of 50000?!
+        ApplySpellEffectFix(spellInfo, EFFECT_0, [](SpellEffectInfo* spellEffectInfo)
+        {
+            spellEffectInfo->RadiusEntry = sSpellRadiusStore.LookupEntry(EFFECT_RADIUS_100_YARDS); // 100yards instead of 50000?!
+        });
     });
 
     ApplySpellFix({
@@ -3009,7 +3036,10 @@ void SpellMgr::LoadSpellInfoCorrections()
     // They Must Burn Bomb Aura (self)
     ApplySpellFix({ 36350 }, [](SpellInfo* spellInfo)
     {
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->TriggerSpell = 36325; // They Must Burn Bomb Drop (DND)
+        ApplySpellEffectFix(spellInfo, EFFECT_0, [](SpellEffectInfo* spellEffectInfo)
+        {
+            spellEffectInfo->TriggerSpell = 36325; // They Must Burn Bomb Drop (DND)
+        });
     });
 
     // Execute
@@ -3130,13 +3160,19 @@ void SpellMgr::LoadSpellInfoCorrections()
     ApplySpellFix({ 33711, 38794 }, [](SpellInfo* spellInfo)
     {
         spellInfo->MaxAffectedTargets = 1;
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->TriggerSpell = 33760;
+        ApplySpellEffectFix(spellInfo, EFFECT_0, [](SpellEffectInfo* spellEffectInfo)
+        {
+            spellEffectInfo->TriggerSpell = 33760;
+        });
     });
 
     // Fingers of Frost
     ApplySpellFix({ 44544 }, [](SpellInfo* spellInfo)
     {
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->SpellClassMask[0] |= 0x20000;
+        ApplySpellEffectFix(spellInfo, EFFECT_0, [](SpellEffectInfo* spellEffectInfo)
+        {
+            spellEffectInfo->SpellClassMask[0] |= 0x20000;
+        });
     });
 
     ApplySpellFix({
@@ -3157,19 +3193,28 @@ void SpellMgr::LoadSpellInfoCorrections()
     // Crafty's Ultra-Advanced Proto-Typical Shortening Blaster
     ApplySpellFix({ 51912 }, [](SpellInfo* spellInfo)
     {
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->ApplyAuraPeriod = 3000;
+        ApplySpellEffectFix(spellInfo, EFFECT_0, [](SpellEffectInfo* spellEffectInfo)
+        {
+            spellEffectInfo->ApplyAuraPeriod = 3000;
+        });
     });
 
     // Nether Portal - Perseverence
     ApplySpellFix({ 30421 }, [](SpellInfo* spellInfo)
     {
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_2))->BasePoints += 30000;
+        ApplySpellEffectFix(spellInfo, EFFECT_2, [](SpellEffectInfo* spellEffectInfo)
+        {
+            spellEffectInfo->BasePoints += 30000;
+        });
     });
 
     // Parasitic Shadowfiend Passive
     ApplySpellFix({ 41913 }, [](SpellInfo* spellInfo)
     {
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->ApplyAuraName = SPELL_AURA_DUMMY; // proc debuff, and summon infinite fiends
+        ApplySpellEffectFix(spellInfo, EFFECT_0, [](SpellEffectInfo* spellEffectInfo)
+        {
+            spellEffectInfo->ApplyAuraName = SPELL_AURA_DUMMY; // proc debuff, and summon infinite fiends
+        });
     });
 
     // BfA Dungeon Underrot
@@ -3186,7 +3231,10 @@ void SpellMgr::LoadSpellInfoCorrections()
         27935, // To Anchor 1
     }, [](SpellInfo* spellInfo)
     {
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->RadiusEntry = sSpellRadiusStore.LookupEntry(EFFECT_RADIUS_10_YARDS);
+        ApplySpellEffectFix(spellInfo, EFFECT_0, [](SpellEffectInfo* spellEffectInfo)
+        {
+            spellEffectInfo->RadiusEntry = sSpellRadiusStore.LookupEntry(EFFECT_RADIUS_10_YARDS);
+        });
     });
 
     // Wrath of the Plaguebringer
@@ -3194,8 +3242,14 @@ void SpellMgr::LoadSpellInfoCorrections()
     {
         // target allys instead of enemies, target A is src_caster, spells with effect like that have ally target
         // this is the only known exception, probably just wrong data
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->TargetB = SpellImplicitTargetInfo(TARGET_UNIT_SRC_AREA_ALLY);
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_1))->TargetB = SpellImplicitTargetInfo(TARGET_UNIT_SRC_AREA_ALLY);
+        ApplySpellEffectFix(spellInfo, EFFECT_0, [](SpellEffectInfo* spellEffectInfo)
+        {
+            spellEffectInfo->TargetB = SpellImplicitTargetInfo(TARGET_UNIT_SRC_AREA_ALLY);
+        });
+        ApplySpellEffectFix(spellInfo, EFFECT_1, [](SpellEffectInfo* spellEffectInfo)
+        {
+            spellEffectInfo->TargetB = SpellImplicitTargetInfo(TARGET_UNIT_SRC_AREA_ALLY);
+        });
     });
 
     // Vampiric Embrace
@@ -3215,8 +3269,11 @@ void SpellMgr::LoadSpellInfoCorrections()
         70840  // Devious Minds (needs target selection script)
     }, [](SpellInfo* spellInfo)
     {
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->TargetA = SpellImplicitTargetInfo(TARGET_UNIT_CASTER);
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->TargetB = SpellImplicitTargetInfo(TARGET_UNIT_PET);
+        ApplySpellEffectFix(spellInfo, EFFECT_0, [](SpellEffectInfo* spellEffectInfo)
+        {
+            spellEffectInfo->TargetA = SpellImplicitTargetInfo(TARGET_UNIT_CASTER);
+            spellEffectInfo->TargetB = SpellImplicitTargetInfo(TARGET_UNIT_PET);
+        });
     });
 
     // Penance Damage
@@ -3234,7 +3291,10 @@ void SpellMgr::LoadSpellInfoCorrections()
     // Ride Carpet
     ApplySpellFix({ 45602 }, [](SpellInfo* spellInfo)
     {
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->BasePoints = 0; // force seat 0, vehicle doesn't have the required seat flags for "no seat specified (-1)"
+        ApplySpellEffectFix(spellInfo, EFFECT_0, [](SpellEffectInfo* spellEffectInfo)
+        {
+            spellEffectInfo->BasePoints = 0; // force seat 0, vehicle doesn't have the required seat flags for "no seat specified (-1)"
+        });
     });
 
     // Easter Lay Noblegarden Egg Aura - Interrupt flags copied from aura which this aura is linked with
@@ -3278,14 +3338,20 @@ void SpellMgr::LoadSpellInfoCorrections()
     }, [](SpellInfo* spellInfo)
     {
         //! HACK: This spell break quest complete for alliance and on retail not used
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->Effect = 0;
+        ApplySpellEffectFix(spellInfo, EFFECT_0, [](SpellEffectInfo* spellEffectInfo)
+        {
+            spellEffectInfo->Effect = 0;
+        });
     });
 
     // Siege Cannon (Tol Barad)
     ApplySpellFix({ 85123 }, [](SpellInfo* spellInfo)
     {
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->RadiusEntry = sSpellRadiusStore.LookupEntry(EFFECT_RADIUS_200_YARDS);
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->TargetA = SpellImplicitTargetInfo(TARGET_UNIT_SRC_AREA_ENTRY);
+        ApplySpellEffectFix(spellInfo, EFFECT_0, [](SpellEffectInfo* spellEffectInfo)
+        {
+            spellEffectInfo->RadiusEntry = sSpellRadiusStore.LookupEntry(EFFECT_RADIUS_200_YARDS);
+            spellEffectInfo->TargetA = SpellImplicitTargetInfo(TARGET_UNIT_SRC_AREA_ENTRY);
+        });
     });
 
     // Gathering Storms
@@ -3570,13 +3636,19 @@ void SpellMgr::LoadSpellInfoCorrections()
     ApplySpellFix({ 71604 }, [](SpellInfo* spellInfo)
     {
         // THIS IS HERE BECAUSE COOLDOWN ON CREATURE PROCS WERE NOT IMPLEMENTED WHEN THE SCRIPT WAS WRITTEN
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_1))->Effect = 0;
+        ApplySpellEffectFix(spellInfo, EFFECT_1, [](SpellEffectInfo* spellEffectInfo)
+        {
+            spellEffectInfo->Effect = 0;
+        });
     });
 
     // Unbound Plague (Professor Putricide) (needs target selection script)
     ApplySpellFix({ 70911 }, [](SpellInfo* spellInfo)
     {
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->TargetB = SpellImplicitTargetInfo(TARGET_UNIT_TARGET_ENEMY);
+        ApplySpellEffectFix(spellInfo, EFFECT_0, [](SpellEffectInfo* spellEffectInfo)
+        {
+            spellEffectInfo->TargetB = SpellImplicitTargetInfo(TARGET_UNIT_TARGET_ENEMY);
+        });
     });
 
     // Empowered Flare (Blood Prince Council)
@@ -3612,15 +3684,21 @@ void SpellMgr::LoadSpellInfoCorrections()
     // Summon Suppressor (needs target selection script)
     ApplySpellFix({ 70936 }, [](SpellInfo* spellInfo)
     {
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->TargetA = SpellImplicitTargetInfo(TARGET_UNIT_TARGET_ANY);
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->TargetB = SpellImplicitTargetInfo();
         spellInfo->RangeEntry = sSpellRangeStore.LookupEntry(157); // 90yd
+        ApplySpellEffectFix(spellInfo, EFFECT_0, [](SpellEffectInfo* spellEffectInfo)
+        {
+            spellEffectInfo->TargetA = SpellImplicitTargetInfo(TARGET_UNIT_TARGET_ANY);
+            spellEffectInfo->TargetB = SpellImplicitTargetInfo();
+        });
     });
 
     // Sindragosa's Fury
     ApplySpellFix({ 70598 }, [](SpellInfo* spellInfo)
     {
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->TargetA = SpellImplicitTargetInfo(TARGET_DEST_DEST);
+        ApplySpellEffectFix(spellInfo, EFFECT_0, [](SpellEffectInfo* spellEffectInfo)
+        {
+            spellEffectInfo->TargetA = SpellImplicitTargetInfo(TARGET_DEST_DEST);
+        });
     });
 
     // Frost Bomb
@@ -3657,8 +3735,14 @@ void SpellMgr::LoadSpellInfoCorrections()
     // Defile
     ApplySpellFix({ 72754 }, [](SpellInfo* spellInfo)
     {
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->RadiusEntry = sSpellRadiusStore.LookupEntry(EFFECT_RADIUS_200_YARDS); // 200yd
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_1))->RadiusEntry = sSpellRadiusStore.LookupEntry(EFFECT_RADIUS_200_YARDS); // 200yd
+        ApplySpellEffectFix(spellInfo, EFFECT_0, [](SpellEffectInfo* spellEffectInfo)
+        {
+            spellEffectInfo->RadiusEntry = sSpellRadiusStore.LookupEntry(EFFECT_RADIUS_200_YARDS); // 200yd
+        });
+        ApplySpellEffectFix(spellInfo, EFFECT_1, [](SpellEffectInfo* spellEffectInfo)
+        {
+            spellEffectInfo->RadiusEntry = sSpellRadiusStore.LookupEntry(EFFECT_RADIUS_200_YARDS); // 200yd
+        });
     });
 
     // Val'kyr Target Search
@@ -3700,7 +3784,10 @@ void SpellMgr::LoadSpellInfoCorrections()
     // Summon Spirit Bomb
     ApplySpellFix({ 73579 }, [](SpellInfo* spellInfo)
     {
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->RadiusEntry = sSpellRadiusStore.LookupEntry(EFFECT_RADIUS_25_YARDS); // 25yd
+        ApplySpellEffectFix(spellInfo, EFFECT_0, [](SpellEffectInfo* spellEffectInfo)
+        {
+            spellEffectInfo->RadiusEntry = sSpellRadiusStore.LookupEntry(EFFECT_RADIUS_25_YARDS); // 25yd
+        });
     });
 
     // Raise Dead
@@ -3713,15 +3800,21 @@ void SpellMgr::LoadSpellInfoCorrections()
     ApplySpellFix({ 71809 }, [](SpellInfo* spellInfo)
     {
         spellInfo->RangeEntry = sSpellRangeStore.LookupEntry(5); // 40yd
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->RadiusEntry = sSpellRadiusStore.LookupEntry(EFFECT_RADIUS_10_YARDS); // 10yd
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->MiscValue = 190;
+        ApplySpellEffectFix(spellInfo, EFFECT_0, [](SpellEffectInfo* spellEffectInfo)
+        {
+            spellEffectInfo->RadiusEntry = sSpellRadiusStore.LookupEntry(EFFECT_RADIUS_10_YARDS); // 10yd
+            spellEffectInfo->MiscValue = 190;
+        });
     });
 
     // Broken Frostmourne
     ApplySpellFix({ 72405 }, [](SpellInfo* spellInfo)
     {
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_1))->RadiusEntry = sSpellRadiusStore.LookupEntry(EFFECT_RADIUS_20_YARDS); // 20yd
         spellInfo->AttributesEx |= SPELL_ATTR1_NO_THREAT;
+        ApplySpellEffectFix(spellInfo, EFFECT_1, [](SpellEffectInfo* spellEffectInfo)
+        {
+            spellEffectInfo->RadiusEntry = sSpellRadiusStore.LookupEntry(EFFECT_RADIUS_20_YARDS); // 20yd
+        });
     });
     // ENDOF ICECROWN CITADEL SPELLS
 
@@ -3731,7 +3824,10 @@ void SpellMgr::LoadSpellInfoCorrections()
     // Soul Consumption
     ApplySpellFix({ 74799 }, [](SpellInfo* spellInfo)
     {
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_1))->RadiusEntry = sSpellRadiusStore.LookupEntry(EFFECT_RADIUS_12_YARDS);
+        ApplySpellEffectFix(spellInfo, EFFECT_1, [](SpellEffectInfo* spellEffectInfo)
+        {
+            spellEffectInfo->RadiusEntry = sSpellRadiusStore.LookupEntry(EFFECT_RADIUS_12_YARDS);
+        });
     });
 
     // Twilight Mending
@@ -3792,7 +3888,10 @@ void SpellMgr::LoadSpellInfoCorrections()
         95285  // Teleport (from Slabhide to entrance)
     }, [](SpellInfo* spellInfo)
     {
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->TargetB = SpellImplicitTargetInfo(TARGET_DEST_DB);
+        ApplySpellEffectFix(spellInfo, EFFECT_0, [](SpellEffectInfo* spellEffectInfo)
+        {
+            spellEffectInfo->TargetB = SpellImplicitTargetInfo(TARGET_DEST_DB);
+        });
     });
     // ENDOF STONECORE SPELLS
 
@@ -3805,7 +3904,10 @@ void SpellMgr::LoadSpellInfoCorrections()
     }, [](SpellInfo* spellInfo)
     {
         // Little hack, Increase the radius so it can hit the Cave In Stalkers in the platform.
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->MaxRadiusEntry = sSpellRadiusStore.LookupEntry(EFFECT_RADIUS_45_YARDS);
+        ApplySpellEffectFix(spellInfo, EFFECT_0, [](SpellEffectInfo* spellEffectInfo)
+        {
+            spellEffectInfo->MaxRadiusEntry = sSpellRadiusStore.LookupEntry(EFFECT_RADIUS_45_YARDS);
+        });
     });
 
     // ENDOF HALLS OF ORIGINATION SPELLS
@@ -3849,7 +3951,10 @@ void SpellMgr::LoadSpellInfoCorrections()
     // Evolution
     ApplySpellFix({ 75697 }, [](SpellInfo* spellInfo)
     {
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->TargetA = SpellImplicitTargetInfo(TARGET_UNIT_SRC_AREA_ENTRY);
+        ApplySpellEffectFix(spellInfo, EFFECT_0, [](SpellEffectInfo* spellEffectInfo)
+        {
+            spellEffectInfo->TargetA = SpellImplicitTargetInfo(TARGET_UNIT_SRC_AREA_ENTRY);
+        });
     });
 
     // Fel Rush &  Demon Hunter Glide
@@ -3874,7 +3979,10 @@ void SpellMgr::LoadSpellInfoCorrections()
     // Torment Searcher
     ApplySpellFix({ 99253 }, [](SpellInfo* spellInfo)
     {
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->MaxRadiusEntry = sSpellRadiusStore.LookupEntry(EFFECT_RADIUS_15_YARDS);
+        ApplySpellEffectFix(spellInfo, EFFECT_0, [](SpellEffectInfo* spellEffectInfo)
+        {
+            spellEffectInfo->MaxRadiusEntry = sSpellRadiusStore.LookupEntry(EFFECT_RADIUS_15_YARDS);
+        });
     });
 
     // Torment Damage
@@ -3942,7 +4050,10 @@ void SpellMgr::LoadSpellInfoCorrections()
         117597  // Summon Ji
     }, [](SpellInfo* spellInfo)
     {
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->TargetA = SpellImplicitTargetInfo(TARGET_DEST_DB);
+        ApplySpellEffectFix(spellInfo, EFFECT_0, [](SpellEffectInfo* spellEffectInfo)
+        {
+            spellEffectInfo->TargetA = SpellImplicitTargetInfo(TARGET_DEST_DB);
+        });
     });
     //
     // ANTORUS THE BURNING THRONE SPELLS
@@ -3953,7 +4064,10 @@ void SpellMgr::LoadSpellInfoCorrections()
     {
         // For some reason there is a instakill effect that serves absolutely no purpose.
         // Until we figure out what it's actually used for we disable it.
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_2))->Effect = 0;
+        ApplySpellEffectFix(spellInfo, EFFECT_2, [](SpellEffectInfo* spellEffectInfo)
+        {
+            spellEffectInfo->Effect = 0;
+        });
     });
 
     // ENDOF ANTORUS THE BURNING THRONE SPELLS
