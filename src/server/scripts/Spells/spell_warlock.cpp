@@ -1153,7 +1153,7 @@ class spell_warlock_doomguard_doom_bolt : public SpellScriptLoader
             void HandleHit(SpellEffIndex /*effIndex*/)
             {
                 // "Deals 20% additional damage to targets below 20% health"
-                if (GetHitUnit()->HasAuraState(AURA_STATE_HEALTHLESS_20_PERCENT))
+                if (GetHitUnit()->HasAuraState(AURA_STATE_WOUNDED_20_PERCENT))
                 {
                     uint32 damage = GetHitDamage();
                     AddPct(damage, GetSpellInfo()->GetEffect(EFFECT_1)->BasePoints);

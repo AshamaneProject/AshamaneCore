@@ -22874,7 +22874,7 @@ void Player::PetSpellInitialize()
                 continue;
 
             // Do not send this spells, they are used indirectly
-            if (sSpellMgr->GetSpellInfo(itr->first, DIFFICULTY_NONE)->HasAttribute(SPELL_ATTR4_UNK15))
+            if (sSpellMgr->GetSpellInfo(itr->first, DIFFICULTY_NONE)->HasAttribute(SPELL_ATTR4_HIDDEN_IN_SPELLBOOK))
                 continue;
 
             petSpellsPacket.Actions.push_back(MAKE_UNIT_ACTION_BUTTON(itr->first, itr->second.active));

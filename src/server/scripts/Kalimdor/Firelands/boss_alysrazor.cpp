@@ -817,7 +817,7 @@ class boss_alysrazor : public CreatureScript
             }
 
         private:
-            bool _isEventRunning;//si l'event et le combat qui s'ensuit est lancé
+            bool _isEventRunning;//si l'event et le combat qui s'ensuit est lanc?
             void RemoveEncounterAuras()
             {
                 instance->DoRemoveAurasDueToSpellOnPlayers(SPELL_BLAZING_POWER_AURA);
@@ -1540,7 +1540,7 @@ class npc_alysrazor_voracious_hatchling : public CreatureScript // 53509
 
             void IsSummonedBy(Unit* /*summoner*/) override
             {
-                me->ModifyAuraState(AURA_STATE_UNKNOWN22, true);
+                me->ModifyAuraState(AURA_STATE_RAID_ENCOUNTER, true);
                 if (Unit* pTarget = me->SelectNearestPlayer(300.0f))
                 {
                     AttackStart(pTarget);

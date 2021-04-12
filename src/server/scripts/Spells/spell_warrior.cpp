@@ -962,8 +962,8 @@ public:
             {
                 SpellInfo const* spellInfo = eventInfo.GetDamageInfo()->GetSpellInfo();
                 if (spellInfo && (spellInfo->Id == SPELL_WARRIOR_BLADESTORM_PERIODIC_WHIRLWIND ||
-                    (spellInfo->Id == SPELL_WARRIOR_EXECUTE && !_procTarget->HasAuraState(AURA_STATE_HEALTHLESS_20_PERCENT)) ||
-                    (spellInfo->Id == SPELL_WARRIOR_EXECUTE_PVP && !_procTarget->HasAuraState(AURA_STATE_HEALTHLESS_25_PERCENT))))
+                    (spellInfo->Id == SPELL_WARRIOR_EXECUTE && !_procTarget->HasAuraState(AURA_STATE_WOUNDED_20_PERCENT)) ||
+                    (spellInfo->Id == SPELL_WARRIOR_EXECUTE_PVP && !_procTarget->HasAuraState(AURA_STATE_WOUNDED_25_PERCENT))))
                 {
                     // If triggered by Execute (while target is not under 20% hp) or Bladestorm deals normalized weapon damage
                     GetTarget()->CastSpell(_procTarget, SPELL_WARRIOR_SWEEPING_STRIKES_EXTRA_ATTACK_2, true, NULL, aurEff);
@@ -1432,7 +1432,7 @@ public:
         void CalculateAmount(const AuraEffect* /*aurEff*/, int32& amount, bool & /*canBeRecalculated*/)
         {
             if (Unit* caster = GetCaster())
-                if (!caster->HasAuraState(AURA_STATE_ENRAGE))
+                if (!caster->HasAuraState(AURA_STATE_ENRAGED))
                     amount = 0;
         }
 

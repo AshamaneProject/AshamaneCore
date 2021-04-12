@@ -1301,7 +1301,7 @@ public:
         void CheckBleed(SpellMissInfo /*missInfo*/)
         {
             if (Unit* target = GetHitUnit())
-                bleeding = target->HasAuraState(AURA_STATE_BLEEDING);
+                bleeding = target->HasAuraState(AURA_STATE_BLEED);
         }
 
         void RemoveCP()

@@ -859,7 +859,7 @@ class spell_dru_ferocious_bite : public SpellScript
             // If caster's target is below 25% health or the caster have Sabertooth talent,
             // refresh the duration of caster's Rip on the target
             if (Unit* target = GetHitUnit())
-                if (target->HasAuraState(AURA_STATE_HEALTHLESS_25_PERCENT) || caster->HasAura(SPELL_DRUID_SABERTOOTH))
+                if (target->HasAuraState(AURA_STATE_WOUNDED_25_PERCENT) || caster->HasAura(SPELL_DRUID_SABERTOOTH))
                     if (Aura* rip = target->GetAura(SPELL_DRUID_RIP, caster->GetGUID()))
                         rip->RefreshDuration();
         }
@@ -2569,7 +2569,7 @@ class spell_dru_swipe : public SpellScript
             caster->ModifyPower(POWER_COMBO_POINTS, sSpellMgr->GetSpellInfo(SPELL_DRUID_SWIPE_CAT)->GetEffect(EFFECT_0)->BasePoints);
 
         // If caster is level >= 44 and the target is bleeding, deals 20% increased damage (get value from the spell data)
-        if ((casterLevel >= 44) && target->HasAuraState(AURA_STATE_BLEEDING))
+        if ((casterLevel >= 44) && target->HasAuraState(AURA_STATE_BLEED))
             AddPct(damage, sSpellMgr->GetSpellInfo(SPELL_DRUID_SWIPE_CAT)->GetEffect(EFFECT_1)->BasePoints);
 
         SetHitDamage(damage);
@@ -2693,7 +2693,7 @@ class spell_dru_shred : public SpellScript
             caster->ModifyPower(POWER_COMBO_POINTS, 1); // effect 1
 
         // If caster is level >= 42 and the target is bleeding, deals 20% increased damage (get value from the spell data)
-        if ((m_casterLevel >= 42) && target->HasAuraState(AURA_STATE_BLEEDING))
+        if ((m_casterLevel >= 42) && target->HasAuraState(AURA_STATE_BLEED))
             AddPct(damage, sSpellMgr->GetSpellInfo(SPELL_DRUID_SHRED)->GetEffect(EFFECT_3)->BasePoints);
 
         // If caster is level >= 36, While stealthed or have Incarnation: King of the Jungle aura,
