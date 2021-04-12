@@ -104,7 +104,6 @@ bool Player::UpdateStats(Stats stat)
     switch (stat)
     {
         case STAT_AGILITY:
-            UpdateArmor();
             UpdateAllCritPercentages();
             UpdateDodgePercentage();
             break;
@@ -113,7 +112,6 @@ bool Player::UpdateStats(Stats stat)
             break;
         case STAT_INTELLECT:
             UpdateSpellCritChance();
-            UpdateArmor();                                  //SPELL_AURA_MOD_RESISTANCE_OF_INTELLECT_PERCENT, only armor currently
             break;
         default:
             break;
@@ -127,6 +125,7 @@ bool Player::UpdateStats(Stats stat)
         UpdateAttackPowerAndDamage(true);
     }
 
+    UpdateArmor();
     UpdateSpellDamageAndHealingBonus();
     UpdateManaRegen();
     return true;
@@ -250,13 +249,25 @@ void Player::UpdateArmor()
 {
     UnitMods unitMod = UNIT_MOD_ARMOR;
 
-    float value = GetFlatModifierValue(unitMod, BASE_VALUE);    // base armor (from items)
+    float value = GetFlatModifierValue(unitMod, BASE_VALUE);    // base armor
+    value *= GetPctModifierValue(unitMod, BASE_PCT);            // armor percent
+	
+    // SPELL_AURA_MOD_ARMOR_PCT_FROM_STAT counts as base armor
+    GetTotalAuraModifier(SPELL_AURA_MOD_ARMOR_PCT_FROM_STAT, [this, &value](AuraEffect const* aurEff) {
+        int32 miscValue = aurEff->GetMiscValue();
+        Stats stat = (miscValue != -2) ? Stats(miscValue) : GetPrimaryStat();
+
+        value += CalculatePct(float(GetStat(stat)), aurEff->GetAmount());
+
+        return true;
+    });
+
     float baseValue = value;
-    value *= GetPctModifierValue(unitMod, BASE_PCT);           // armor percent from items
-    value += GetFlatModifierValue(unitMod, TOTAL_VALUE);
+
+    value += GetFlatModifierValue(unitMod, TOTAL_VALUE);        // bonus armor from auras and items
     value *= GetPctModifierValue(unitMod, TOTAL_PCT);
 
-    SetArmor(int32(baseValue), int32(value - baseValue));
+    SetArmor(int32(value), int32(value - baseValue));
 
     if (Pet* pet = GetPet())
         pet->UpdateArmor();
