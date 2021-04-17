@@ -324,7 +324,7 @@ public:
         std::vector<uint8> Data;
     };
 
-    using HotfixContainer = std::set<HotfixRecord>;
+    using HotfixContainer = std::unordered_map<int32, std::vector<HotfixRecord>>;
 
     using ItemBonusList = std::vector<ItemBonusEntry const*>;
     using MapDifficultyContainer = std::unordered_map<uint32, std::unordered_map<uint32, MapDifficultyEntry const*>>;
