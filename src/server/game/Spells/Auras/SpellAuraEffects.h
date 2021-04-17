@@ -344,6 +344,7 @@ class TC_GAME_API AuraEffect
         void HandleLinkedSummon(AuraApplication const* aurApp, uint8 mode, bool apply) const;
         void HandleTriggerSpellOnPowerAmount(AuraApplication const* aurApp, uint8 mode, bool apply) const;
         void HandleTriggerSpellOnPowerPercent(AuraApplication const* aurApp, uint8 mode, bool apply) const;
+        void HandleStoreTeleportReturnPoint(AuraApplication const* aurApp, uint8 mode, bool apply) const;
         void HandleSetFFAPvP(AuraApplication const* aurApp, uint8 mode, bool apply) const;
         void HandleSwitchTeam(AuraApplication const* aurApp, uint8 mode, bool apply) const;
         void HandleModOverrideZonePVPType(AuraApplication const* aurApp, uint8 mode, bool apply) const;
