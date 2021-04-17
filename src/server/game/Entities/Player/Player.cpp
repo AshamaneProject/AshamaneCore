@@ -9000,9 +9000,14 @@ ObjectGuid Player::GetLootWorldObjectGUID(ObjectGuid const& lootObjectGuid) cons
     return ObjectGuid::Empty;
 }
 
-void Player::RemoveAELootedObject(ObjectGuid const& lootObjectGuid)
+void Player::RemoveAELootedWorldObject(ObjectGuid const& lootWorldObjectGuid)
 {
-    m_AELootView.erase(lootObjectGuid);
+    auto itr = std::find_if(m_AELootView.begin(), m_AELootView.end(), [&lootWorldObjectGuid](std::pair<ObjectGuid const, ObjectGuid> const& lootView)
+    {
+        return lootView.second == lootWorldObjectGuid;
+    });
+    if (itr != m_AELootView.end())
+        m_AELootView.erase(itr);
 }
 
 bool Player::HasLootWorldObjectGUID(ObjectGuid const& lootWorldObjectGuid) const
@@ -9062,9 +9067,8 @@ void Player::SendLootReleaseAll() const
 
 void Player::SendLoot(ObjectGuid guid, LootType loot_type, bool aeLooting/* = false*/)
 {
-    ObjectGuid currentLootGuid = GetLootGUID();
-    if (!currentLootGuid.IsEmpty() && !aeLooting)
-        m_session->DoLootRelease(currentLootGuid);
+    if (!GetLootGUID().IsEmpty() && !aeLooting)
+        m_session->DoLootReleaseAll();
 
     Loot* loot;
     PermissionTypes permission = ALL_PERMISSION;
