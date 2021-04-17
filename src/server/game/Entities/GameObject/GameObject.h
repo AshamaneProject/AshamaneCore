@@ -328,10 +328,6 @@ class TC_GAME_API GameObject : public WorldObject, public GridObject<GameObject>
         void setShouldIntersectWithAllPhases(bool value) { m_shouldIntersectWithAllPhases = value; }
         bool shouldIntersectWithAllPhases() const { return m_shouldIntersectWithAllPhases; }
 
-        void SetVisibleByUnitOnly(ObjectGuid unit) { m_visibleByUnitOnly = unit; }
-        bool IsVisibleByUnitOnly() const { return !m_visibleByUnitOnly.IsEmpty(); }
-        ObjectGuid GetVisibleByUnitOnly() const { return m_visibleByUnitOnly; }
-
         TaskScheduler& GetScheduler() { return _scheduler; }
 
         UF::UpdateField<UF::GameObjectData, 0, TYPEID_GAMEOBJECT> m_gameObjectData;
@@ -392,7 +388,6 @@ class TC_GAME_API GameObject : public WorldObject, public GridObject<GameObject>
         bool m_respawnCompatibilityMode;
         uint16 _animKitId;
         uint32 _worldEffectID;
-        ObjectGuid m_visibleByUnitOnly;
         TaskScheduler _scheduler;
 };
 #endif
