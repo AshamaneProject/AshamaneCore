@@ -1096,7 +1096,7 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
     pCurrChar->SendInitialPacketsBeforeAddToMap();
 
     //Show cinematic at the first time that player login
-    if (!pCurrChar->getCinematic())
+    if (!pCurrChar->getCinematic() && pCurrChar->GetMapId() != 2175)
     {
         pCurrChar->setCinematic(1);
 
@@ -1143,25 +1143,22 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
                 chH.PSendSysMessage("%s", sWorld->GetNewCharString().c_str());
         }
     }
-    else if (!pCurrChar->getCinematic() && pCurrChar->GetMapId() == MAP_NPE) // Exile's Reach
+    else if (pCurrChar->HasAtLoginFlag(AT_LOGIN_FIRST))
     {
-        pCurrChar->setCinematic(1);
-
         switch (pCurrChar->GetTeam())
         {
-            case ALLIANCE:
-                pCurrChar->GetScheduler().Schedule(1s, [pCurrChar](TaskContext /*context*/)
-                {
-                    pCurrChar->GetSceneMgr().PlaySceneByPackageId(2578);
-                });           
-                break;
-
-            case HORDE:
-                pCurrChar->GetScheduler().Schedule(1s, [pCurrChar](TaskContext /*context*/)
-                {
-                    pCurrChar->GetSceneMgr().PlaySceneByPackageId(2894);
-                });
-                break;
+        case ALLIANCE:
+            pCurrChar->GetScheduler().Schedule(2s, [pCurrChar](TaskContext /*context*/)
+            {
+                pCurrChar->GetSceneMgr().PlaySceneByPackageId(2578);
+            });           
+            break;
+        case HORDE:
+            pCurrChar->GetScheduler().Schedule(2s, [pCurrChar](TaskContext /*context*/)
+            {
+                pCurrChar->GetSceneMgr().PlaySceneByPackageId(2894);
+            });
+            break;
         }
 
         if (!sWorld->GetNewCharString().empty())
