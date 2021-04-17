@@ -191,11 +191,11 @@ bool Garrison::LoadFromDB()
             Mission& mission = _missions[dbId];
             mission.PacketInfo.DbID             = dbId;
             mission.PacketInfo.MissionRecID     = missionId;
-            mission.PacketInfo.OfferTime        = time_t(fields[2].GetUInt32());
-            mission.PacketInfo.OfferDuration    = missionEntry->OfferDuration;
+            mission.PacketInfo.OfferTime     = time_t(fields[2].GetUInt32());
+            mission.PacketInfo.OfferDuration = missionEntry->OfferDuration;
             mission.PacketInfo.StartTime        = time_t(fields[3].GetUInt32());
-            mission.PacketInfo.TravelDuration   = missionEntry->TravelDuration;
-            mission.PacketInfo.MissionDuration  = missionEntry->MissionDuration;
+            mission.PacketInfo.TravelDuration = missionEntry->TravelDuration;
+            mission.PacketInfo.MissionDuration = missionEntry->MissionDuration;
             mission.PacketInfo.MissionState     = fields[4].GetUInt8();
 
             if (mission.PacketInfo.StartTime == 0)

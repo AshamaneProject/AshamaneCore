@@ -629,7 +629,7 @@ namespace WorldPackets
 
         struct WorldQuestUpdateInfo
         {
-            int32 LastUpdate = 0;
+            Timestamp<> LastUpdate = 0;
             uint32 QuestID = 0;
             uint32 Timer = 0;
             // WorldState
