@@ -3557,11 +3557,11 @@ struct JournalEncounterLoadInfo
     {
         static DB2FieldMeta const fields[] =
         {
-            { false, FT_INT, "ID" },
             { false, FT_STRING, "Name" },
             { false, FT_STRING, "Description" },
             { false, FT_FLOAT, "Map1" },
             { false, FT_FLOAT, "Map2" },
+            { false, FT_INT, "ID" },
             { false, FT_SHORT, "JournalInstanceID" },
             { false, FT_SHORT, "Unk815" },
             { false, FT_INT, "OrderIndex" },

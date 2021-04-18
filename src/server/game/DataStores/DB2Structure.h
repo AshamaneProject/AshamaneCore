@@ -2233,10 +2233,10 @@ struct ItemXBonusTreeEntry
 
 struct JournalEncounterEntry
 {
-    uint32 ID;
     LocalizedString Name;
     LocalizedString Description;
     float Map[2];
+    uint32 ID;
     uint16 JournalInstanceID;
     uint16 Unk815;
     uint32 OrderIndex;
