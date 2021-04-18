@@ -50,18 +50,20 @@ void HotfixDatabaseConnection::DoPrepareStatements()
 
     // AdventureJournal.db2
     PrepareStatement(HOTFIX_SEL_ADVENTURE_JOURNAL, "SELECT ID, Name, Description, ButtonText, RewardDescription, ContinueDescription, Type, "
-        "PlayerConditionId, Flags, ButtonActionType, TextureFileDataId, LfgDungeonId, QuestId, BattleMasterListId, PriorityMin, PriorityMax, ItemId, "
-        "ItemQuantity, CurrencyType, CurrencyQuantity, UiMapId, BonusPlayerConditionId1, BonusPlayerConditionId2, BonusValue1, BonusValue2"
+        "PlayerConditionID, Flags, ButtonActionType, TextureFileDataID, LfgDungeonID, QuestID, BattleMasterListID, PriorityMin, PriorityMax, ItemID, "
+        "ItemQuantity, CurrencyType, CurrencyQuantity, UiMapID, BonusPlayerConditionID1, BonusPlayerConditionID2, BonusValue1, BonusValue2"
         " FROM adventure_journal WHERE (`VerifiedBuild` > 0) = ?", CONNECTION_SYNCH);
     PREPARE_MAX_ID_STMT(HOTFIX_SEL_ADVENTURE_JOURNAL, "SELECT MAX(ID) + 1 FROM adventure_journal", CONNECTION_SYNCH);
     PREPARE_LOCALE_STMT(HOTFIX_SEL_ADVENTURE_JOURNAL, "SELECT ID, Name_lang, Description_lang, ButtonText_lang, RewardDescription_lang, "
         "ContinueDescription_lang FROM adventure_journal_locale WHERE (`VerifiedBuild` > 0) = ? AND locale = ?", CONNECTION_SYNCH);
 
-    // AdventureMapPOI.db2
-    PrepareStatement(HOTFIX_SEL_ADVENTURE_MAP_POI, "SELECT Title, Description, WorldPosition1, WorldPosition2, Type, PlayerConditionID, QuestID, "
+    // AdventureMapPoi.db2
+    PrepareStatement(HOTFIX_SEL_ADVENTURE_MAP_POI, "SELECT ID, Title, Description, WorldPositionX, WorldPositionY, Type, PlayerConditionID, QuestID, "
         "LfgDungeonID, RewardItemID, UiTextureAtlasMemberID, UiTextureKitID, MapID, AreaTableID FROM adventure_map_poi WHERE (`VerifiedBuild` > 0) = ?", CONNECTION_SYNCH);
-    PREPARE_MAX_ID_STMT(HOTFIX_SEL_ADVENTURE_MAP_POI, "SELECT MAX(ID) + 1 FROM adventure_map_poi_locale", CONNECTION_SYNCH);
-    PREPARE_LOCALE_STMT(HOTFIX_SEL_ADVENTURE_MAP_POI, "SELECT ID, Title_lang, Description_lang FROM adventure_map_poi_locale WHERE (`VerifiedBuild` > 0) = ? AND locale = ?", CONNECTION_SYNCH);
+    PREPARE_MAX_ID_STMT(HOTFIX_SEL_ADVENTURE_MAP_POI, "SELECT MAX(ID) + 1 FROM adventure_map_poi", CONNECTION_SYNCH);
+    PREPARE_LOCALE_STMT(HOTFIX_SEL_ADVENTURE_MAP_POI, "SELECT ID, Title_lang, Description_lang FROM adventure_map_poi_locale"
+        " WHERE (`VerifiedBuild` > 0) = ? AND locale = ?", CONNECTION_SYNCH);
+
 
     // AnimKit.db2
     PrepareStatement(HOTFIX_SEL_ANIM_KIT, "SELECT ID, OneShotDuration, OneShotStopAnimKitID, LowDefAnimKitID FROM anim_kit"
@@ -352,7 +354,8 @@ void HotfixDatabaseConnection::DoPrepareStatements()
     // ChrCustomizationElement.db2
     PrepareStatement(HOTFIX_SEL_CHR_CUSTOMIZATION_ELEMENT, "SELECT ID, ChrCustomizationChoiceID, RelatedChrCustomizationChoiceID, "
         "ChrCustomizationGeosetID, ChrCustomizationSkinnedModelID, ChrCustomizationMaterialID, ChrCustomizationBoneSetID, "
-        "ChrCustomizationCondModelID, ChrCustomizationDisplayInfoID FROM chr_customization_element WHERE (`VerifiedBuild` > 0) = ?", CONNECTION_SYNCH);
+        "ChrCustomizationCondModelID, ChrCustomizationDisplayInfoID, ChrCustItemGeoModifyID FROM chr_customization_element"
+        " WHERE (`VerifiedBuild` > 0) = ?", CONNECTION_SYNCH);
     PREPARE_MAX_ID_STMT(HOTFIX_SEL_CHR_CUSTOMIZATION_ELEMENT, "SELECT MAX(ID) + 1 FROM chr_customization_element", CONNECTION_SYNCH);
 
     // ChrCustomizationOption.db2
@@ -793,7 +796,7 @@ void HotfixDatabaseConnection::DoPrepareStatements()
 
     // ItemBonusTreeNode.db2
     PrepareStatement(HOTFIX_SEL_ITEM_BONUS_TREE_NODE, "SELECT ID, ItemContext, ChildItemBonusTreeID, ChildItemBonusListID, ChildItemLevelSelectorID, "
-        "ParentItemBonusTreeID FROM item_bonus_tree_node WHERE (`VerifiedBuild` > 0) = ?", CONNECTION_SYNCH);
+        "ItemBonusListGroupID, ParentItemBonusTreeNodeID, ParentItemBonusTreeID FROM item_bonus_tree_node WHERE (`VerifiedBuild` > 0) = ?", CONNECTION_SYNCH);
     PREPARE_MAX_ID_STMT(HOTFIX_SEL_ITEM_BONUS_TREE_NODE, "SELECT MAX(ID) + 1 FROM item_bonus_tree_node", CONNECTION_SYNCH);
 
     // ItemChildEquipment.db2
@@ -946,7 +949,7 @@ void HotfixDatabaseConnection::DoPrepareStatements()
     PREPARE_MAX_ID_STMT(HOTFIX_SEL_ITEM_X_BONUS_TREE, "SELECT MAX(ID) + 1 FROM item_x_bonus_tree", CONNECTION_SYNCH);
 
     // JournalEncounter.db2
-    PrepareStatement(HOTFIX_SEL_JOURNAL_ENCOUNTER, "SELECT ID, Name, Description, Map1, Map2, JournalInstanceID, OrderIndex, FirstSectionID, "
+    PrepareStatement(HOTFIX_SEL_JOURNAL_ENCOUNTER, "SELECT Name, Description, Map1, Map2, ID, JournalInstanceID, OrderIndex, FirstSectionID, "
         "UiMapId, MapDisplayConditionId, Flags, DifficultyMask FROM journal_encounter WHERE (`VerifiedBuild` > 0) = ?", CONNECTION_SYNCH);
     PREPARE_MAX_ID_STMT(HOTFIX_SEL_JOURNAL_ENCOUNTER, "SELECT MAX(ID) + 1 FROM journal_encounter", CONNECTION_SYNCH);
     PREPARE_LOCALE_STMT(HOTFIX_SEL_JOURNAL_ENCOUNTER, "SELECT ID, Name_lang, Description_lang FROM journal_encounter_locale WHERE (`VerifiedBuild` > 0) = ? AND locale = ?", CONNECTION_SYNCH);
@@ -1208,8 +1211,10 @@ void HotfixDatabaseConnection::DoPrepareStatements()
     PrepareStatement(HOTFIX_SEL_QUEST_POI_POINT, "SELECT Id, X, Y, QuestPoiBlobID FROM quest_poi_point WHERE (`VerifiedBuild` > 0) = ?", CONNECTION_SYNCH);
 
     // RandPropPoints.db2
-    PrepareStatement(HOTFIX_SEL_RAND_PROP_POINTS, "SELECT ID, DamageReplaceStat, DamageSecondary, Epic1, Epic2, Epic3, Epic4, Epic5, Superior1, "
-        "Superior2, Superior3, Superior4, Superior5, Good1, Good2, Good3, Good4, Good5 FROM rand_prop_points WHERE (`VerifiedBuild` > 0) = ?", CONNECTION_SYNCH);
+    PrepareStatement(HOTFIX_SEL_RAND_PROP_POINTS, "SELECT ID, DamageReplaceStatF, DamageSecondaryF, DamageReplaceStat, DamageSecondary, EpicF1, "
+        "EpicF2, EpicF3, EpicF4, EpicF5, SuperiorF1, SuperiorF2, SuperiorF3, SuperiorF4, SuperiorF5, GoodF1, GoodF2, GoodF3, GoodF4, GoodF5, Epic1, "
+        "Epic2, Epic3, Epic4, Epic5, Superior1, Superior2, Superior3, Superior4, Superior5, Good1, Good2, Good3, Good4, Good5 FROM rand_prop_points"
+        " WHERE (`VerifiedBuild` > 0) = ?", CONNECTION_SYNCH);
     PREPARE_MAX_ID_STMT(HOTFIX_SEL_RAND_PROP_POINTS, "SELECT MAX(ID) + 1 FROM rand_prop_points", CONNECTION_SYNCH);
 
     // ResearchBranch.db2

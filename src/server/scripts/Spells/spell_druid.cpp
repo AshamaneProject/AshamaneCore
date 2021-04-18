@@ -20,6 +20,7 @@
 #include "AreaTriggerAI.h"
 #include "PhasingHandler.h"
 #include "Player.h"
+#include "Spell.h"
 #include "ScriptMgr.h"
 #include "SpellMgr.h"
 #include "SpellScript.h"
@@ -68,6 +69,9 @@ enum DruidSpells
 enum ShapeshiftFormSpells
 {
     SPELL_DRUID_BEAR_FORM                           = 5487,
+    SPELL_DRUID_FORM_AQUATIC_PASSIVE                = 276012,
+    SPELL_DRUID_FORM_AQUATIC                        = 1066,
+    SPELL_DRUID_FORM_STAG                           = 165961,
     SPELL_DRUID_CAT_FORM                            = 768,
     SPELL_DRUID_MOONKIN_FORM                        = 24858,
     SPELL_DRUID_INCARNATION_TREE_OF_LIFE            = 33891,
@@ -1973,13 +1977,19 @@ public:
     {
         PrepareSpellScript(spell_dru_travel_form_dummy_SpellScript);
 
+
+        bool Validate(SpellInfo const* /*spellInfo*/) override
+        {
+            return ValidateSpellInfo({ SPELL_DRUID_FORM_AQUATIC_PASSIVE, SPELL_DRUID_FORM_AQUATIC, SPELL_DRUID_FORM_STAG });
+        }
+
         SpellCastResult CheckCast()
         {
             Player* player = GetCaster()->ToPlayer();
             if (!player)
                 return SPELL_FAILED_CUSTOM_ERROR;
 
-            SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(player->IsInWater() ? DRUID_AQUATIC_FORM : DRUID_STAG_FORM);
+            SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(player->IsInWater() ? SPELL_DRUID_FORM_AQUATIC : SPELL_DRUID_FORM_STAG, GetCastDifficulty());
             return spellInfo->CheckLocation(player->GetMapId(), player->GetZoneId(), player->GetAreaId(), player);
         }
 
@@ -2069,7 +2079,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            return ValidateSpellInfo({ DRUID_STAG_FORM, DRUID_AQUATIC_FORM, DRUID_FLIGHT_FORM, DRUID_SWIFT_FLIGHT_FORM });
+            return ValidateSpellInfo({ DRUID_STAG_FORM, SPELL_DRUID_FORM_AQUATIC_PASSIVE, DRUID_AQUATIC_FORM, DRUID_FLIGHT_FORM, DRUID_SWIFT_FLIGHT_FORM });
         }
 
         bool Load() override
@@ -2088,11 +2098,11 @@ public:
 
             // Check what form is appropriate
             Player* player = GetTarget()->ToPlayer();
-            if (player->IsInWater()) // Aquatic form
+            if (player->HasSpell(SPELL_DRUID_FORM_AQUATIC_PASSIVE) && player->IsInWater()) // Aquatic form
                 triggeredSpellId = DRUID_AQUATIC_FORM;
             else if (player->GetSkillValue(SKILL_RIDING) >= 225 && CheckLocationForForm(DRUID_FLIGHT_FORM) == SPELL_CAST_OK) // Flight form
                 triggeredSpellId = player->GetSkillValue(SKILL_RIDING) >= 300 ? DRUID_SWIFT_FLIGHT_FORM : DRUID_FLIGHT_FORM;
-            else if (CheckLocationForForm(DRUID_STAG_FORM) == SPELL_CAST_OK) // Stag form
+            else if (!player->IsInWater() && CheckLocationForForm(DRUID_STAG_FORM) == SPELL_CAST_OK) // Stag form
                 triggeredSpellId = DRUID_STAG_FORM;
 
             // If chosen form is current aura, just don't remove it.

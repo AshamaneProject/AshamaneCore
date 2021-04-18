@@ -439,7 +439,8 @@ class TC_GAME_API Map : public GridRefManager<NGridType>
         bool GameObjectRespawnRelocation(GameObject* go, bool diffGridOnly);
 
         // assert print helper
-        bool CheckGridIntegrity(Creature* c, bool moved) const;
+        template <typename T>
+        static bool CheckGridIntegrity(T* object, bool moved, char const* objType);
 
         uint32 GetInstanceId() const { return i_InstanceId; }
 
@@ -521,7 +522,7 @@ class TC_GAME_API Map : public GridRefManager<NGridType>
 
         void UpdateIteratorBack(Player* player);
 
-        TempSummon* SummonCreature(uint32 entry, Position const& pos, SummonPropertiesEntry const* properties = nullptr, uint32 duration = 0, Unit* summoner = nullptr, uint32 spellId = 0, uint32 vehId = 0, bool visibleBySummonerOnly = false, Spell const* summonSpell = nullptr);
+        TempSummon* SummonCreature(uint32 entry, Position const& pos, SummonPropertiesEntry const* properties = nullptr, uint32 duration = 0, Unit* summoner = nullptr, uint32 spellId = 0, uint32 vehId = 0, bool personalSpawn = false, Spell const* summonSpell = nullptr);
         void SummonCreatureGroup(uint8 group, std::list<TempSummon*>* list = nullptr);
         GameObject* SummonGameObject(uint32 entry, Position const& pos, QuaternionData const& rot, uint32 respawnTime /* s */);
         AreaTrigger* GetAreaTrigger(ObjectGuid const& guid);
@@ -671,6 +672,9 @@ class TC_GAME_API Map : public GridRefManager<NGridType>
         void SetTimer(uint32 t) { i_gridExpiry = t < MIN_GRID_DELAY ? MIN_GRID_DELAY : t; }
 
         void SendInitSelf(Player* player);
+
+        template <typename T>
+        bool MapObjectCellRelocation(T* object, Cell new_cell, char const* objType);
 
         bool CreatureCellRelocation(Creature* creature, Cell new_cell);
         bool GameObjectCellRelocation(GameObject* go, Cell new_cell);

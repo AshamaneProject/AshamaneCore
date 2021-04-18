@@ -44,7 +44,7 @@ public:
     void RemoveCompletedObjective(QuestObjective const* questObjective);
 
 protected:
-    void SendCriteriaUpdate(Criteria const* entry, CriteriaProgress const* progress, uint32 timeElapsed, bool timedCompleted) const override;
+    void SendCriteriaUpdate(Criteria const* entry, CriteriaProgress const* progress, Seconds timeElapsed, bool timedCompleted) const override;
 
     void SendCriteriaProgressRemoved(uint32 criteriaId) override;
 

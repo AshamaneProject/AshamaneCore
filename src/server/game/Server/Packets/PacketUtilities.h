@@ -102,8 +102,9 @@ namespace WorldPackets
     private:
         storage_type _storage;
     };
-	
-    template<typename Underlying = uint32>
+
+    template<typename Underlying = int64>
+
     class Timestamp
     {
     public:
@@ -149,7 +150,7 @@ namespace WorldPackets
         time_t _value = time_t(0);
     };
 
-    template<typename ChronoDuration, typename Underlying = uint32>
+    template<typename ChronoDuration, typename Underlying = int64>
     class Duration
     {
     public:

@@ -613,6 +613,7 @@ void Object::BuildMovementUpdate(ByteBuffer* data, CreateObjectBits flags) const
     //if (flags.SmoothPhasing)
     //{
     //    data->WriteBit(ReplaceActive);
+    //    data->WriteBit(StopAnimKits);
     //    data->WriteBit(HasReplaceObject);
     //    data->FlushBits();
     //    if (HasReplaceObject)
@@ -1509,12 +1510,32 @@ float WorldObject::GetSightRange(WorldObject const* target) const
     return 0.0f;
 }
 
+bool WorldObject::CheckPrivateObjectOwnerVisibility(WorldObject const* seer) const
+{
+    if (!IsPrivateObject())
+        return true;
+
+    // Owner of this private object
+    if (_privateObjectOwner == seer->GetGUID())
+        return true;
+
+    // Another private object of the same owner
+    if (_privateObjectOwner == seer->GetPrivateObjectOwner())
+        return true;
+
+    return false;
+}
+
 bool WorldObject::CanSeeOrDetect(WorldObject const* obj, bool ignoreStealth, bool distanceCheck, bool checkAlert) const
 {
     if (this == obj)
         return true;
 
+
     if (obj->IsNeverVisibleFor(this) || CanNeverSee(obj))
+        return false;
+
+    if (!obj->CheckPrivateObjectOwnerVisibility(this))
         return false;
 
     if (obj->IsVisibleBySummonerOnly())
@@ -1560,17 +1581,7 @@ bool WorldObject::CanSeeOrDetect(WorldObject const* obj, bool ignoreStealth, boo
 
         WorldObject const* viewpoint = this;
         if (Player const* player = ToPlayer())
-        {
             viewpoint = player->GetViewpoint();
-
-            if (Creature const* creature = obj->ToCreature())
-                if (TempSummon::IsPersonalSummonOfAnotherPlayer(creature, GetGUID()))
-                    return false;
-        }
-
-        if (GameObject const* go = obj->ToGameObject())
-            if (go->IsVisibleByUnitOnly() && GetGUID() != go->GetVisibleByUnitOnly())
-                return false;
 
         if (!viewpoint)
             viewpoint = this;
@@ -1796,7 +1807,7 @@ void WorldObject::AddObjectToRemoveList()
     map->AddObjectToRemoveList(this);
 }
 
-TempSummon* Map::SummonCreature(uint32 entry, Position const& pos, SummonPropertiesEntry const* properties /*= nullptr*/, uint32 duration /*= 0*/, Unit* summoner /*= nullptr*/, uint32 spellId /*= 0*/, uint32 vehId /*= 0*/, bool visibleBySummonerOnly /*= false*/, Spell const* summonSpell /*= nullptr*/)
+TempSummon* Map::SummonCreature(uint32 entry, Position const& pos, SummonPropertiesEntry const* properties /*= nullptr*/, uint32 duration /*= 0*/, Unit* summoner /*= nullptr*/, uint32 spellId /*= 0*/, uint32 vehId /*= 0*/, bool personalSpawn /*= false*/, Spell const* summonSpell /*= nullptr*/)
 {
     uint32 mask = UNIT_MASK_SUMMON;
     if (properties)
@@ -1882,7 +1893,8 @@ TempSummon* Map::SummonCreature(uint32 entry, Position const& pos, SummonPropert
 
     summon->InitStats(duration);
 
-    summon->SetVisibleBySummonerOnly(visibleBySummonerOnly);
+    if (personalSpawn && summoner)
+        summon->SetPrivateObjectOwner(summoner->IsPrivateObject() ? summoner->GetPrivateObjectOwner() : summoner->GetGUID());
 
     AddToMap(summon->ToCreature());
     summon->InitSummon(summonSpell);
@@ -1953,11 +1965,11 @@ Scenario* WorldObject::GetScenario() const
     return nullptr;
 }
 
-TempSummon* WorldObject::SummonCreature(uint32 entry, Position const& pos, TempSummonType despawnType /*= TEMPSUMMON_MANUAL_DESPAWN*/, uint32 despawnTime /*= 0*/, uint32 vehId /*= 0*/, bool visibleBySummonerOnly /*= false*/)
+TempSummon* WorldObject::SummonCreature(uint32 entry, Position const& pos, TempSummonType despawnType /*= TEMPSUMMON_MANUAL_DESPAWN*/, uint32 despawnTime /*= 0*/, uint32 vehId /*= 0*/, bool personalSpawn /* = false */)
 {
     if (Map* map = FindMap())
     {
-        if (TempSummon* summon = map->SummonCreature(entry, pos, nullptr, despawnTime, ToUnit(), 0, vehId, visibleBySummonerOnly))
+        if (TempSummon* summon = map->SummonCreature(entry, pos, nullptr, despawnTime, ToUnit(), 0, vehId, personalSpawn))
         {
             summon->SetTempSummonType(despawnType);
             return summon;
@@ -1967,13 +1979,13 @@ TempSummon* WorldObject::SummonCreature(uint32 entry, Position const& pos, TempS
     return nullptr;
 }
 
-TempSummon* WorldObject::SummonCreature(uint32 id, float x, float y, float z, float o /*= 0*/, TempSummonType despawnType /*= TEMPSUMMON_MANUAL_DESPAWN*/, uint32 despawnTime /*= 0*/, bool visibleBySummonerOnly /*= false*/)
+TempSummon* WorldObject::SummonCreature(uint32 id, float x, float y, float z, float o /*= 0*/, TempSummonType despawnType /*= TEMPSUMMON_MANUAL_DESPAWN*/, uint32 despawnTime /*= 0*/, bool personalSpawn /*= false*/)
 {
     if (!x && !y && !z)
         GetClosePoint(x, y, z, GetCombatReach());
     if (!o)
         o = GetOrientation();
-    return SummonCreature(id, { x,y,z,o }, despawnType, despawnTime, 0, visibleBySummonerOnly);
+    return SummonCreature(id, { x,y,z,o }, despawnType, despawnTime, 0, personalSpawn);
 }
 
 GameObject* WorldObject::SummonGameObject(uint32 entry, Position const& pos, QuaternionData const& rot, uint32 respawnTime, bool visibleBySummonerOnly /*= false*/)

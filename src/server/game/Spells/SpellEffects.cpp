@@ -98,7 +98,7 @@ NonDefaultConstructible<pEffect> SpellEffects[TOTAL_SPELL_EFFECTS] =
     &Spell::EffectHeal,                                     // 10 SPELL_EFFECT_HEAL
     &Spell::EffectBind,                                     // 11 SPELL_EFFECT_BIND
     &Spell::EffectNULL,                                     // 12 SPELL_EFFECT_PORTAL
-    &Spell::EffectUnused,                                   // 13 SPELL_EFFECT_RITUAL_BASE              unused
+    &Spell::EffectTeleportToReturnPoint,                    // 13 SPELL_EFFECT_TELEPORT_TO_RETURN_POINT
     &Spell::EffectUnused,                                   // 14 SPELL_EFFECT_INCREASE_CURRENCY_CAP
     &Spell::EffectUnused,                                   // 15 SPELL_EFFECT_RITUAL_ACTIVATE_PORTAL   unused
     &Spell::EffectQuestComplete,                            // 16 SPELL_EFFECT_QUEST_COMPLETE
@@ -5673,6 +5673,16 @@ void Spell::EffectBind(SpellEffIndex /*effIndex*/)
     player->SendDirectMessage(packet.Write());
 }
 
+void Spell::EffectTeleportToReturnPoint(SpellEffIndex /*effIndex*/)
+{
+    if (effectHandleMode != SPELL_EFFECT_HANDLE_HIT_TARGET)
+        return;
+
+    if (Player* player = unitTarget->ToPlayer())
+        if (WorldLocation const* dest = player->GetStoredAuraTeleportLocation(effectInfo->MiscValue))
+            player->TeleportTo(*dest, unitTarget == m_caster ? TELE_TO_SPELL | TELE_TO_NOT_LEAVE_COMBAT : 0);
+}
+
 void Spell::EffectSummonRaFFriend(SpellEffIndex effIndex)
 {
     if (effectHandleMode != SPELL_EFFECT_HANDLE_HIT_TARGET)
@@ -5727,7 +5737,7 @@ void Spell::EffectSummonPersonalGameObject(SpellEffIndex effIndex)
 
     go->SetRespawnTime(duration > 0 ? duration / IN_MILLISECONDS : 0);
     go->SetSpellId(m_spellInfo->Id);
-    go->SetVisibleByUnitOnly(m_caster->GetGUID());
+    go->SetPrivateObjectOwner(m_caster->GetGUID());
 
     ExecuteLogEffectSummonObject(effIndex, go);
 

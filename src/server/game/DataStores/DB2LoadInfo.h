@@ -1172,6 +1172,7 @@ struct ChrCustomizationElementLoadInfo
             { true, FT_INT, "ChrCustomizationBoneSetID" },
             { true, FT_INT, "ChrCustomizationCondModelID" },
             { true, FT_INT, "ChrCustomizationDisplayInfoID" },
+            { true, FT_INT, "ChrCustItemGeoModifyID" },
         };
         static DB2LoadInfo const loadInfo(&fields[0], std::extent<decltype(fields)>::value, ChrCustomizationElementMeta::Instance(), HOTFIX_SEL_CHR_CUSTOMIZATION_ELEMENT);
         return &loadInfo;
@@ -2941,6 +2942,8 @@ struct ItemBonusTreeNodeLoadInfo
             { false, FT_SHORT, "ChildItemBonusTreeID" },
             { false, FT_SHORT, "ChildItemBonusListID" },
             { false, FT_SHORT, "ChildItemLevelSelectorID" },
+            { true, FT_INT, "ItemBonusListGroupID" },
+            { true, FT_INT, "ParentItemBonusTreeNodeID" },
             { false, FT_INT, "ParentItemBonusTreeID" },
         };
         static DB2LoadInfo const loadInfo(&fields[0], std::extent<decltype(fields)>::value, ItemBonusTreeNodeMeta::Instance(), HOTFIX_SEL_ITEM_BONUS_TREE_NODE);
@@ -3554,11 +3557,11 @@ struct JournalEncounterLoadInfo
     {
         static DB2FieldMeta const fields[] =
         {
-            { false, FT_INT, "ID" },
             { false, FT_STRING, "Name" },
             { false, FT_STRING, "Description" },
             { false, FT_FLOAT, "Map1" },
             { false, FT_FLOAT, "Map2" },
+            { false, FT_INT, "ID" },
             { false, FT_SHORT, "JournalInstanceID" },
             { false, FT_SHORT, "Unk815" },
             { false, FT_INT, "OrderIndex" },
@@ -4780,8 +4783,25 @@ struct RandPropPointsLoadInfo
         static DB2FieldMeta const fields[] =
         {
             { false, FT_INT, "ID" },
+            { false, FT_FLOAT, "DamageReplaceStatF" },
+            { false, FT_FLOAT, "DamageSecondaryF" },
             { true, FT_INT, "DamageReplaceStat" },
             { true, FT_INT, "DamageSecondary" },
+            { false, FT_FLOAT, "EpicF1" },
+            { false, FT_FLOAT, "EpicF2" },
+            { false, FT_FLOAT, "EpicF3" },
+            { false, FT_FLOAT, "EpicF4" },
+            { false, FT_FLOAT, "EpicF5" },
+            { false, FT_FLOAT, "SuperiorF1" },
+            { false, FT_FLOAT, "SuperiorF2" },
+            { false, FT_FLOAT, "SuperiorF3" },
+            { false, FT_FLOAT, "SuperiorF4" },
+            { false, FT_FLOAT, "SuperiorF5" },
+            { false, FT_FLOAT, "GoodF1" },
+            { false, FT_FLOAT, "GoodF2" },
+            { false, FT_FLOAT, "GoodF3" },
+            { false, FT_FLOAT, "GoodF4" },
+            { false, FT_FLOAT, "GoodF5" },
             { false, FT_INT, "Epic1" },
             { false, FT_INT, "Epic2" },
             { false, FT_INT, "Epic3" },

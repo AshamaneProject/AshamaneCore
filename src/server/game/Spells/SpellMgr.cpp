@@ -3049,7 +3049,13 @@ void SpellMgr::LoadSpellInfoCorrections()
     });
 
     // Chi Torpedo
-    ApplySpellFix({ 115008 }, [](SpellInfo* spellInfo) { const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_2))->BasePoints = 410; });
+    ApplySpellFix({ 115008 }, [](SpellInfo* spellInfo)
+    {
+        ApplySpellEffectFix(spellInfo, EFFECT_2, [](SpellEffectInfo* spellEffectInfo)
+        {
+                spellEffectInfo->BasePoints = 410;
+        });
+    });
 
     ApplySpellFix({
         31347, // Doom
@@ -3221,8 +3227,12 @@ void SpellMgr::LoadSpellInfoCorrections()
     // Boss 1: Creeping Rot Visual
     ApplySpellFix({ 260891 }, [](SpellInfo* spellInfo)
     {
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->TargetA = SpellImplicitTargetInfo(TARGET_DEST_CASTER_FRONT);
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->RadiusEntry = sSpellRadiusStore.LookupEntry(EFFECT_RADIUS_3_YARDS);
+        ApplySpellEffectFix(spellInfo, EFFECT_0, [](SpellEffectInfo* spellEffectInfo)
+        {
+            spellEffectInfo->TargetA = SpellImplicitTargetInfo(TARGET_DEST_CASTER_FRONT);
+            spellEffectInfo->RadiusEntry = sSpellRadiusStore.LookupEntry(EFFECT_RADIUS_3_YARDS);
+        });
+
     });
 
     ApplySpellFix({
@@ -3279,13 +3289,19 @@ void SpellMgr::LoadSpellInfoCorrections()
     // Penance Damage
     ApplySpellFix({ 47758 }, [](SpellInfo* spellInfo)
     {
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_1))->TargetA = SpellImplicitTargetInfo(TARGET_UNIT_TARGET_ENEMY);
+        ApplySpellEffectFix(spellInfo, EFFECT_1, [](SpellEffectInfo* spellEffectInfo)
+        {
+            spellEffectInfo->TargetA = SpellImplicitTargetInfo(TARGET_UNIT_TARGET_ENEMY);
+        });
     });
 
     // Penance Heal
     ApplySpellFix({47757}, [](SpellInfo* spellInfo)
     {
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_1))->TargetA = SpellImplicitTargetInfo(TARGET_UNIT_TARGET_ALLY);
+        ApplySpellEffectFix(spellInfo, EFFECT_1, [](SpellEffectInfo* spellEffectInfo)
+        {
+            spellEffectInfo->TargetA = SpellImplicitTargetInfo(TARGET_UNIT_TARGET_ALLY);
+        });
     });
 
     // Ride Carpet
@@ -4002,21 +4018,30 @@ void SpellMgr::LoadSpellInfoCorrections()
         98553  // Summon Spark of Rhyolith
     }, [](SpellInfo* spellInfo)
     {
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->TargetA = SpellImplicitTargetInfo(TARGET_DEST_DEST);
+        ApplySpellEffectFix(spellInfo, EFFECT_0, [](SpellEffectInfo* spellEffectInfo)
+        {
+            spellEffectInfo->TargetA = SpellImplicitTargetInfo(TARGET_DEST_DEST);
+        });
     });
 
     // Volcanic Birth
     ApplySpellFix({ 98010 }, [](SpellInfo* spellInfo)
     {
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_1))->TargetA = SpellImplicitTargetInfo(TARGET_DEST_DEST);
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_1))->TargetB = 0;
+        ApplySpellEffectFix(spellInfo, EFFECT_1, [](SpellEffectInfo* spellEffectInfo)
+        {
+            spellEffectInfo->TargetA = SpellImplicitTargetInfo(TARGET_DEST_DEST);
+            spellEffectInfo->TargetB = 0;
+        });
     });
 
     // Burning Orbs summon
     ApplySpellFix({ 98565 }, [](SpellInfo* spellInfo)
     {
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->TargetA = SpellImplicitTargetInfo(TARGET_DEST_DEST);
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->TargetB = 0;
+        ApplySpellEffectFix(spellInfo, EFFECT_0, [](SpellEffectInfo* spellEffectInfo)
+        {
+            spellEffectInfo->TargetA = SpellImplicitTargetInfo(TARGET_DEST_DEST);
+            spellEffectInfo->TargetB = 0;
+        });
     });
     // ENDOF FIRELANDS SPELLS
 
@@ -4024,7 +4049,10 @@ void SpellMgr::LoadSpellInfoCorrections()
     // Summon Pet
     ApplySpellFix({ 107924 }, [](SpellInfo* spellInfo)
     {
-        const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_1))->TargetA = SpellImplicitTargetInfo(TARGET_UNIT_CASTER);
+        ApplySpellEffectFix(spellInfo, EFFECT_0, [](SpellEffectInfo* spellEffectInfo)
+        {
+            spellEffectInfo->TargetA = SpellImplicitTargetInfo(TARGET_UNIT_CASTER);
+        });
     });
 
     ApplySpellFix({

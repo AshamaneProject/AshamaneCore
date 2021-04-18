@@ -706,6 +706,7 @@ struct ChrCustomizationElementEntry
     int32 ChrCustomizationBoneSetID;
     int32 ChrCustomizationCondModelID;
     int32 ChrCustomizationDisplayInfoID;
+    int32 ChrCustItemGeoModifyID;
 };
 
 struct ChrCustomizationOptionEntry
@@ -1926,6 +1927,8 @@ struct ItemBonusTreeNodeEntry
     uint16 ChildItemBonusTreeID;
     uint16 ChildItemBonusListID;
     uint16 ChildItemLevelSelectorID;
+    int32 ItemBonusListGroupID;
+    int32 ParentItemBonusTreeNodeID;
     uint32 ParentItemBonusTreeID;
 };
 
@@ -2230,10 +2233,10 @@ struct ItemXBonusTreeEntry
 
 struct JournalEncounterEntry
 {
-    uint32 ID;
     LocalizedString Name;
     LocalizedString Description;
     float Map[2];
+    uint32 ID;
     uint16 JournalInstanceID;
     uint16 Unk815;
     uint32 OrderIndex;
@@ -2877,8 +2880,13 @@ struct QuestXPEntry
 struct RandPropPointsEntry
 {
     uint32 ID;
+    float DamageReplaceStatF;
+    float DamageSecondaryF;
     int32 DamageReplaceStat;
     int32 DamageSecondary;
+    float EpicF[5];
+    float SuperiorF[5];
+    float GoodF[5];
     uint32 Epic[5];
     uint32 Superior[5];
     uint32 Good[5];

@@ -97,12 +97,9 @@ class TC_GAME_API TempSummon : public Creature
         TempSummonType const& GetSummonType() { return m_type; }
         uint32 GetTimer() const { return m_timer; }
 
-        void SetVisibleBySummonerOnly(bool visibleBySummonerOnly) { m_visibleBySummonerOnly = visibleBySummonerOnly; }
-        bool IsVisibleBySummonerOnly() const { return m_visibleBySummonerOnly; }
         void SetSummonerSpecificEntry(uint32 entry);
         uint32 GetSummonerSpecificEntry() const { return m_summonerSpecificEntry; }
         uint32 GetSummonerSpecificDisplayID() const { return m_summonerSpecificDisplayID; }
-        static bool IsPersonalSummonOfAnotherPlayer(Creature const* summon, ObjectGuid playerToCheck);
 
         SummonPropertiesEntry const* const m_Properties;
     private:
@@ -110,7 +107,6 @@ class TC_GAME_API TempSummon : public Creature
         uint32 m_timer;
         uint32 m_lifetime;
         ObjectGuid m_summonerGUID;
-        bool m_visibleBySummonerOnly;
         uint32 m_summonerSpecificEntry;
         uint32 m_summonerSpecificDisplayID;
 };

@@ -190,6 +190,17 @@ struct PlayerSpell
     bool disabled          : 1;                             // first rank has been learned in result talent learn but currently talent unlearned, save max learned ranks
 };
 
+struct StoredAuraTeleportLocation
+{
+    WorldLocation Loc;
+
+    enum
+    {
+        UNCHANGED,
+        CHANGED,
+        DELETED,
+    } State;
+};
 
 enum TalentSpecialization // talent tabs
 {
@@ -788,6 +799,7 @@ enum PlayerLoginQueryIndex
     PLAYER_LOGIN_QUERY_LOAD_BOUND_INSTANCES,
     PLAYER_LOGIN_QUERY_LOAD_AURAS,
     PLAYER_LOGIN_QUERY_LOAD_AURA_EFFECTS,
+    PLAYER_LOGIN_QUERY_LOAD_AURA_STORED_LOCATIONS,
     PLAYER_LOGIN_QUERY_LOAD_SPELLS,
     PLAYER_LOGIN_QUERY_LOAD_QUEST_STATUS,
     PLAYER_LOGIN_QUERY_LOAD_QUEST_STATUS_OBJECTIVES,
@@ -1680,6 +1692,10 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         void RemoveEquipedSpecializationItems();
         void SendSpellCategoryCooldowns() const;
 
+        void AddStoredAuraTeleportLocation(uint32 spellId);
+        void RemoveStoredAuraTeleportLocation(uint32 spellId);
+        WorldLocation const* GetStoredAuraTeleportLocation(uint32 spellId) const;
+
         void SetReputation(uint32 factionentry, int32 value);
         int32 GetReputation(uint32 factionentry) const;
         std::string GetGuildName() const;
@@ -1941,7 +1957,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         ObjectGuid const& GetLootGUID() const { return m_playerData->LootTargetGUID; }
         void SetLootGUID(ObjectGuid const& guid) { SetUpdateFieldValue(m_values.ModifyValue(&Player::m_playerData).ModifyValue(&UF::PlayerData::LootTargetGUID), guid); }
         ObjectGuid GetLootWorldObjectGUID(ObjectGuid const& lootObjectGuid) const;
-        void RemoveAELootedObject(ObjectGuid const& lootObjectGuid);
+        void RemoveAELootedWorldObject(ObjectGuid const& lootWorldObjectGuid);
         bool HasLootWorldObjectGUID(ObjectGuid const& lootWorldObjectGuid) const;
         std::unordered_map<ObjectGuid, ObjectGuid> const& GetAELootView() const { return m_AELootView; }
 
@@ -2788,6 +2804,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         void _LoadGroup(PreparedQueryResult result);
         void _LoadSkills(PreparedQueryResult result);
         void _LoadSpells(PreparedQueryResult result);
+        void _LoadStoredAuraTeleportLocations(PreparedQueryResult result);
         bool _LoadHomeBind(PreparedQueryResult result);
         void _LoadDeclinedNames(PreparedQueryResult result);
         void _LoadEquipmentSets(PreparedQueryResult result);
@@ -2818,6 +2835,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         void _SaveSeasonalQuestStatus(CharacterDatabaseTransaction& trans);
         void _SaveSkills(CharacterDatabaseTransaction& trans);
         void _SaveSpells(CharacterDatabaseTransaction& trans);
+        void _SaveStoredAuraTeleportLocations(CharacterDatabaseTransaction& trans);
         void _SaveEquipmentSets(CharacterDatabaseTransaction& trans);
         void _SaveArenaData(CharacterDatabaseTransaction& trans);
         void _SaveBGData(CharacterDatabaseTransaction& trans);
@@ -2898,6 +2916,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         PlayerSpellMap m_spells;
         std::unordered_map<uint32 /*overridenSpellId*/, std::unordered_set<uint32> /*newSpellId*/> m_overrideSpells;
         uint32 m_lastPotionId;                              // last used health/mana potion in combat, that block next potion use
+        std::unordered_map<uint32, StoredAuraTeleportLocation> m_storedAuraTeleportLocations;
 
         SpecializationInfo _specializationInfo;
 
