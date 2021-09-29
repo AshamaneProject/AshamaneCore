@@ -808,7 +808,7 @@ void HotfixDatabaseConnection::DoPrepareStatements()
     // QuestV2CliTask.db2
     PrepareStatement(HOTFIX_SEL_QUEST_V2_CLI_TASK, "SELECT Unk1, Name, Description, Unk2, Unk3, Unk4, Unk5, QuestID0, QuestID1, QuestID2, "
         "Unk7, Unk8, Unk9, Unk10, Unk11, Unk12, Unk13, Unk14, Unk15, Unk16, RequiredLevel, Unk18, ID, Unk19, QuestInfoID "
-        "FROM QuestV2CliTask ORDER BY ID DESC", CONNECTION_SYNCH);
+        "FROM questv2clitask ORDER BY ID DESC", CONNECTION_SYNCH);
 
     // QuestPackageItem.db2
     PrepareStatement(HOTFIX_SEL_QUEST_PACKAGE_ITEM, "SELECT ID, ItemID, PackageID, DisplayType, ItemQuantity FROM quest_package_item ORDER BY ID DESC", CONNECTION_SYNCH);
