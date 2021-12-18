@@ -17,8 +17,7 @@
 
 ## Build Status
 
-[![master Build Status](https://travis-ci.org/AshamaneProject/AshamaneCore.svg?branch=master)](https://travis-ci.org/AshamaneProject/AshamaneCore)
-[![Build status](https://ci.appveyor.com/api/projects/status/kb0wjxh3va9c3e0k/branch/master?svg=true)](https://ci.appveyor.com/project/Traesh/ashamanecore/branch/master)
+[![Build status](http://paivansade.org:8050/api/projects/status/q10d6k7t9uh6dy64?svg=true)](http://paivansade.org:8050/project/AppVeyor/ashamanecore)
 
 ## Introduction
 
