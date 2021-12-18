@@ -1,0 +1,15 @@
+version: 1.0.{build}
+build_script:
+- sh: >-
+    mkdir build && cd build
+
+    cmake ../ -DCMAKE_INSTALL_PREFIX=/home/$USER/projects/ashamanecore -DWITH_WARNINGS=0 -DWITH_COREDEBUG=0 -DUSE_COREPCH=1 -DUSE_SCRIPTPCH=1 -DTOOLS=1 -DSCRIPTS=static -DSERVERS=1 -DCMAKE_BUILD_TYPE=Release
+
+    make -j 16 -k && make install
+
+    cd /home/appveyor/projects/ashamanecore/bin
+
+    ./bnetserver --version
+
+    ./worldserver --version
+...
