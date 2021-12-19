@@ -59,7 +59,7 @@ with Ashamane Database (ADB) :
 It is completely open source; community involvement is highly encouraged.
 
 If you wish to contribute ideas or code please visit our site linked below or
-make pull requests to our [Github repository](https://github.com/AshamaneProject/AshamaneCore/pulls).
+make pull requests to our [Github repository](https://github.com/Greaver/AshamaneCore/pulls).
 
 ## Requirements
 
@@ -73,11 +73,11 @@ Windows, Linux and macOS.
 
 ## Contribute
 
-You can help Ashamane using our [Patreon Page](https://www.patreon.com/ashamane). All the collected money will be used to pay developers for their work using bountysource
+You can help by playing and creating issue reports for things you find broken.
 
 ## Reporting issues
 
-Issues can be reported via our [Mantis issue tracker](https://bt.ashamane.com).
+Issues can be reported via our [GitHub issue tracker](https://github.com/XayeCW/Celestial-wow-Issues/).
 
 Please take the time to review existing issues before submitting your own to
 prevent duplicates.
@@ -99,7 +99,6 @@ Read file [THANKS](THANKS).
 
 ## Links
 
-* [Website](https://www.ashamane.com)
+* [Website](https://celestial-wow.com)
 * [Wiki](https://www.trinitycore.info)
-* [Forums](http://forum.ashamane.com/)
 * [TrinityCore](https://www.trinitycore.org/)
