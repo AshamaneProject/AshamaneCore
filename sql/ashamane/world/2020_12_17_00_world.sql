@@ -58,4 +58,4 @@ DELETE FROM creature_template_model WHERE CreatureID = 119314 AND Idx = 0 AND Cr
 DELETE FROM creature_template_model WHERE CreatureID = 126326 AND Idx = 0 AND CreatureDisplayId = 86774;
 DELETE FROM creature_template_model WHERE CreatureID = 129049 AND Idx = 0 AND CreatureDisplayId = 87401;
 
-ALTER TABLE `ashamane_base_world`.`creature_template_model` DROP PRIMARY KEY, ADD PRIMARY KEY (`CreatureID`, `Idx`);
+ALTER TABLE `creature_template_model` DROP PRIMARY KEY, ADD PRIMARY KEY (`CreatureID`, `Idx`);
